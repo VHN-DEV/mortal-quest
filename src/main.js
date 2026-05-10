@@ -302,15 +302,15 @@ function init() {
             if (e.target.checked) {
                 ui.toast("Bắt đầu tự động tu hành...", "info");
                 autoCultivateInterval = setInterval(() => {
-                    if (player.stamina > 0) {
-                        player.cultivate(0.7);
+                    const res = player.cultivate(0.7);
+                    if (res.success) {
                         // Trigger a small visual effect at the center of the aura
                         const rect = elAuraBorder.getBoundingClientRect();
-                        ui.createClickParticle(rect.left + rect.width/2, rect.top + rect.height/2);
+                        ui.createClickParticle(rect.left + rect.width/2, rect.top + rect.height/2, player.cultivationFocus);
                     } else {
                         autoCultivateToggle.checked = false;
                         clearInterval(autoCultivateInterval);
-                        ui.toast("Thể lực cạn kiệt, tự động tu hành kết thúc.", "warning");
+                        ui.toast(res.reason, "warning");
                     }
                 }, 1000); // Once per second
             } else {
@@ -402,7 +402,7 @@ async function handleTypeBreakthrough(type) {
         saveGame();
         refreshUI();
     } else {
-        ui.alert(res.msg, 'Phá Cảnh Thất Bại');
+        ui.toast(res.msg, 'error', 7000);
     }
 }
 
@@ -449,7 +449,7 @@ async function handleSeclusion() {
         if (gardenSystem) gardenSystem.update(secondsPassed);
 
         ui.showLoading(false);
-        ui.alert(`Sau khi bế quan ${minutes / 12} ngày, căn cơ của bạn đã vững chắc hơn rất nhiều. Thân thể đã già đi một chút.`, 'Bế Quan Kết Thúc');
+        ui.toast(`Sau khi bế quan ${minutes / 12} ngày, căn cơ của bạn đã vững chắc hơn rất nhiều. Thân thể đã già đi một chút.`, 'success', 8000);
 
         refreshUI();
     }, 1500);
@@ -492,6 +492,17 @@ function update() {
 
     player.update(delta, multiplier);
 
+    // Process Pending Events (Forced Breakthroughs, etc.)
+    if (player.pendingEvents && player.pendingEvents.length > 0) {
+        player.pendingEvents.forEach(event => {
+            if (event.type === 'forced_breakthrough') {
+                ui.toast(event.msg, event.success ? "success" : "error", 10000);
+                refreshUI();
+            }
+        });
+        player.pendingEvents = [];
+    }
+
     if (timeSystem) timeSystem.update(delta);
 
     // Update NPCs
@@ -523,7 +534,7 @@ function handleDeath() {
     const penalty = Math.floor(player.tuVi * 0.1);
     player.tuVi -= penalty;
     
-    ui.alert(`Bạn đã kiệt sức và ngất đi. Sau khi được một vị ẩn sĩ cứu giúp, bạn tỉnh lại nhưng đã mất đi ${penalty.toLocaleString()} tu vi tích lũy.`, 'Thiên Đạo Luân Hồi');
+    ui.toast(`Bạn đã kiệt sức và ngất đi. Sau khi được một vị ẩn sĩ cứu giúp, bạn tỉnh lại nhưng đã mất đi ${penalty.toLocaleString()} tu vi tích lũy.`, 'error', 12000);
     
     refreshUI();
 }
@@ -561,7 +572,20 @@ function render() {
     elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
     elLingShiText.textContent = player.getFormattedLingShi();
 
-    ui.toggleOverlay(btnBreakthrough, player.canBreakthrough('tuvi').can);
+    const breakthroughCheck = player.canBreakthrough('tuvi');
+    btnBreakthrough.classList.remove('hidden');
+    btnBreakthrough.disabled = !breakthroughCheck.can;
+    if (breakthroughCheck.can) {
+        btnBreakthrough.classList.add('animate-pulse-gold');
+        btnBreakthrough.style.opacity = '1';
+        btnBreakthrough.style.filter = 'none';
+        btnBreakthrough.style.cursor = 'pointer';
+    } else {
+        btnBreakthrough.classList.remove('animate-pulse-gold');
+        btnBreakthrough.style.opacity = '0.3';
+        btnBreakthrough.style.filter = 'grayscale(0.5)';
+        btnBreakthrough.style.cursor = 'not-allowed';
+    }
 
     if (currentCombat) updateBattleUI();
 
@@ -1721,7 +1745,7 @@ function renderSects() {
 window.game.joinSect = (id) => {
     player.sectId = id;
     player.calculateStats();
-    ui.alert(`Bạn đã gia nhập ${getSectById(id).name}!`, "Gia Nhập Tông Môn");
+    ui.toast(`Bạn đã gia nhập ${getSectById(id).name}!`, "success", 5000);
     renderSects();
 };
 
@@ -2086,7 +2110,7 @@ btnNpcDual.onclick = () => {
                 player.hp -= player.maxHp * 0.5;
                 player.tuVi -= player.tuVi * 0.1;
                 elNpcDialogue.textContent = "Á!!! Linh lực nghịch chuyển... Chúng ta tẩu hỏa nhập ma rồi!";
-                ui.alert("Tẩu hỏa nhập ma! Bạn bị thương nặng và tổn thất tu vi.", "Tẩu Hỏa Nhập Ma");
+                ui.toast("Tẩu hỏa nhập ma! Bạn bị thương nặng và tổn thất tu vi.", "error", 8000);
             } else {
                 player.tuViPerSecond *= 2;
                 elNpcDialogue.textContent = "Âm dương giao hòa, vạn vật sinh sôi. Chúng ta bắt đầu thôi...";
@@ -2172,11 +2196,11 @@ window.game.handleStoryChoice = (idx) => {
 
     if (option.next === 'complete') {
         currentNPC.storyStep = 0;
-        ui.alert("Bạn đã hoàn thành chuỗi cốt truyện của NPC này!", "Hoàn Thành Cốt Truyện");
+        ui.toast("Bạn đã hoàn thành chuỗi cốt truyện của NPC này!", "success", 5000);
     } else if (option.next === 'betrayed') {
         currentNPC.storyStep = 0;
         currentNPC.relationship = -100;
-        ui.alert("Bạn đã phản bội NPC!", "Phản Bội");
+        ui.toast("Bạn đã phản bội NPC!", "error", 5000);
     } else {
         currentNPC.storyStep = option.next;
     }
@@ -2293,16 +2317,16 @@ btnBackToWorlds.onclick = () => { ui.toggleOverlay(viewLocations, false); ui.tog
 btnBackToLocs.onclick = () => { ui.toggleOverlay(viewExplore, false); ui.toggleOverlay(viewLocations, true); };
 
 btnCultivate.addEventListener('click', (e) => {
-    if (player.cultivate()) {
-        ui.createClickParticle(e.clientX, e.clientY);
-        // Optional: Add a subtle text popup or sound
+    const result = player.cultivate();
+    if (result.success) {
+        ui.createClickParticle(e.clientX, e.clientY, player.cultivationFocus);
     } else {
-        ui.toast("Kiệt sức rồi, hãy nghỉ ngơi một chút!", "warning");
+        ui.toast(result.reason, "warning");
     }
 });
 btnBreakthrough.addEventListener('click', async () => {
     if (player.breakthrough()) {
-        ui.alert('Chúc mừng Đạo hữu đã đột phá thành công, thực lực đại tăng!', 'Thiên Đạo Chúc Phúc');
+        ui.toast('Chúc mừng Đạo hữu đã đột phá thành công, thực lực đại tăng!', 'success', 7000);
         refreshUI();
     }
 });
@@ -2529,7 +2553,7 @@ async function showTechniqueDetail(id) {
 
         const res = techniqueSystem.breakthroughStage(id);
         if (res.success) {
-            ui.alert(res.msg, 'Đột Phá Thành Công');
+            ui.toast(res.msg, 'success', 7000);
             showTechniqueDetail(id);
             refreshUI();
         } else {
@@ -2768,7 +2792,7 @@ function handleCreationStart() {
             saveGame();
             refreshUI();
             ui.showLoading(false);
-            ui.alert(`Đạo hữu ${player.name} thân mến, hành trình tu tiên của bạn bắt đầu từ đây. Hãy vững bước trên con đường tìm kiếm đại đạo!`, 'Thiên Cơ Khởi Động');
+            ui.toast(`Đạo hữu ${player.name} thân mến, hành trình tu tiên của bạn bắt đầu từ đây. Hãy vững bước trên con đường tìm kiếm đại đạo!`, 'info', 10000);
         } else {
             ui.showLoading(false);
             ui.toast("Khởi tạo thất bại!", "error");

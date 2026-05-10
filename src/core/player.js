@@ -132,6 +132,7 @@ export class Player {
         this.equippedSecretTechniqueIds = []; // up to 3 slots
         this.techniquePoints = 0;
         this.knownNPCs = {};
+        this.pendingEvents = []; // To communicate forced events to UI
     }
 
     getFormattedLingShi() {
@@ -182,13 +183,34 @@ export class Player {
         // The focused path gets full exp, while others get 20%
         const focus = this.cultivationFocus || 'tuvi';
         
-        const tuViGain = this.tuViPerSecond * (focus === 'tuvi' ? 1.0 : 0.2) * multiplier * delta;
-        const bodyGain = this.bodyExpPerSecond * (focus === 'body' ? 1.0 : 0.2) * multiplier * delta;
-        const soulGain = this.soulExpPerSecond * (focus === 'soul' ? 1.0 : 0.2) * multiplier * delta;
+        // Check if has technique for the focused path to gain exp
+        const hasTech = (focus === 'tuvi' && this.mainTechniqueId) || 
+                        (focus === 'body' && this.mainBodyTechniqueId) || 
+                        (focus === 'soul' && this.mainSoulTechniqueId);
 
-        this.tuVi += tuViGain;
-        this.bodyExp += bodyGain;
-        this.soulExp += soulGain;
+        if (hasTech) {
+            const tuViGain = this.tuViPerSecond * (focus === 'tuvi' ? 1.0 : 0.2) * multiplier * delta;
+            const bodyGain = this.bodyExpPerSecond * (focus === 'body' ? 1.0 : 0.2) * multiplier * delta;
+            const soulGain = this.soulExpPerSecond * (focus === 'soul' ? 1.0 : 0.2) * multiplier * delta;
+
+            this.tuVi += tuViGain;
+            this.bodyExp += bodyGain;
+            this.soulExp += soulGain;
+        }
+        
+        // Forced Breakthrough Check (Heavenly Dao)
+        // If exp exceeds 150% of required, force breakthrough with higher risk
+        const realm = this.getCurrentRealm(focus);
+        const exp = focus === 'tuvi' ? this.tuVi : (focus === 'body' ? this.bodyExp : this.soulExp);
+        if (exp >= realm.expRequired * 1.5) {
+            const result = this.breakthrough(focus, true);
+            this.pendingEvents.push({ 
+                type: 'forced_breakthrough', 
+                success: result.success, 
+                msg: result.msg,
+                path: focus
+            });
+        }
         
         // Regen
         this.stamina = Math.min(this.maxStamina, this.stamina + 0.1 * delta);
@@ -198,9 +220,19 @@ export class Player {
     }
 
     cultivate(efficiency = 1.0) {
+        const focus = this.cultivationFocus || 'tuvi';
+        
+        // Require technique to cultivate
+        const hasTech = (focus === 'tuvi' && this.mainTechniqueId) || 
+                        (focus === 'body' && this.mainBodyTechniqueId) || 
+                        (focus === 'soul' && this.mainSoulTechniqueId);
+        
+        if (!hasTech) {
+            return { success: false, reason: "Ngươi chưa có công pháp phù hợp để dẫn dắt linh lực!" };
+        }
+
         if (this.stamina >= 1) {
             this.stamina -= 1;
-            const focus = this.cultivationFocus || 'tuvi';
             
             // Influence of Spiritual Root (1.0 to 3.0x)
             const rootMult = (this.spiritualRoot && this.spiritualRoot.multiplier) ? this.spiritualRoot.multiplier : 1.0;
@@ -221,9 +253,9 @@ export class Player {
                 const gain = this.soulExpPerSecond * 12 * totalMult;
                 this.soulExp += gain;
             }
-            return true;
+            return { success: true };
         }
-        return false;
+        return { success: false, reason: "Kiệt sức rồi, hãy nghỉ ngơi một chút!" };
     }
 
     canBreakthrough(type = 'tuvi') {
@@ -261,19 +293,23 @@ export class Player {
         return 20; // Critical instability
     }
 
-    breakthrough(type = 'tuvi') {
+    breakthrough(type = 'tuvi', isForced = false) {
         const check = this.canBreakthrough(type);
         if (check.can) {
-            // Check for Qi Deviation risk on Tu Vi breakthrough
-            if (type === 'tuvi') {
-                const stability = this.getStability();
-                const roll = Math.random() * 100;
-                if (roll > stability) {
-                    // Qi Deviation!
-                    this.hp *= 0.5;
-                    this.tuVi *= 0.8;
-                    return { success: false, msg: "Tẩu hỏa nhập ma! Linh lực bạo tẩu làm tổn thương kinh mạch." };
-                }
+            // Check for Qi Deviation risk
+            let stability = this.getStability();
+            if (isForced) stability *= 0.5; // Double risk for forced breakthrough
+            
+            const roll = Math.random() * 100;
+            if (roll > stability) {
+                // Qi Deviation!
+                this.hp *= 0.3; // Heavy damage
+                const penalty = isForced ? 0.6 : 0.8;
+                if (type === 'tuvi') this.tuVi *= penalty;
+                else if (type === 'body') this.bodyExp *= penalty;
+                else if (type === 'soul') this.soulExp *= penalty;
+                
+                return { success: false, msg: isForced ? "Thiên Đạo cưỡng ép đột phá thất bại! Kinh mạch đứt đoạn, tu vi tổn thất nặng nề!" : "Tẩu hỏa nhập ma! Linh lực bạo tẩu làm tổn thương kinh mạch." };
             }
 
             if (type === 'tuvi') this.realmId++;
@@ -281,7 +317,7 @@ export class Player {
             else if (type === 'soul') this.soulRealmId++;
             
             this.calculateStats();
-            return { success: true, msg: "Đột phá thành công!" };
+            return { success: true, msg: isForced ? "Thiên Đạo cưỡng ép đột phá thành công! Ngươi may mắn thoát khỏi một kiếp." : "Đột phá thành công!" };
         }
         return { success: false, msg: check.reason || "Chưa đủ điều kiện đột phá." };
     }

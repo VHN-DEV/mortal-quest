@@ -15,8 +15,9 @@ export class UISystem {
      * Show a temporary toast notification
      * @param {string} message 
      * @param {string} type 'info', 'success', 'warning', 'error'
+     * @param {number} duration milliseconds
      */
-    toast(message, type = 'info') {
+    toast(message, type = 'info', duration = 5000) {
         const toast = document.createElement('div');
         toast.className = `w-full p-4 bg-cultivation-dark/95 border-l-4 rounded-r-xl shadow-2xl relative overflow-hidden transform translate-y-[-10px] opacity-0 transition-all duration-500 pointer-events-auto flex items-center space-x-3`;
 
@@ -36,13 +37,24 @@ export class UISystem {
 
         toast.classList.add(...(colors[type] || colors.info).split(' '));
         toast.innerHTML = `
-            <i class="ph ${icons[type] || icons.info} text-xl"></i>
-            <div class="flex flex-col">
-                <span class="text-[10px] font-bold text-white/50 uppercase tracking-widest">${type}</span>
-                <span class="text-xs font-bold text-white font-ancient leading-tight">${message}</span>
+            <i class="ph ${icons[type] || icons.info} text-xl flex-shrink-0"></i>
+            <div class="flex-grow flex flex-col min-w-0">
+                <span class="text-[9px] font-bold text-white/40 uppercase tracking-widest">${type}</span>
+                <span class="text-xs font-bold text-white font-ancient leading-tight break-words">${message}</span>
             </div>
-            <div class="toast-progress" style="animation-duration: 5s"></div>
+            <button class="toast-close p-1 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0">
+                <i class="ph ph-x text-sm"></i>
+            </button>
+            <div class="toast-progress" style="animation-duration: ${duration}ms"></div>
         `;
+
+        const closeBtn = toast.querySelector('.toast-close');
+        closeBtn.onclick = (e) => {
+            e.stopPropagation();
+            toast.style.transform = 'translateY(-10px)';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 500);
+        };
 
         this.notifContainer.appendChild(toast);
 
@@ -54,11 +66,13 @@ export class UISystem {
 
         // Animate out and remove
         setTimeout(() => {
-            toast.style.transform = 'translateY(-10px)';
-            toast.style.opacity = '0';
-            toast.style.pointerEvents = 'none';
-            setTimeout(() => toast.remove(), 500);
-        }, 5000);
+            if (toast.parentElement) {
+                toast.style.transform = 'translateY(-10px)';
+                toast.style.opacity = '0';
+                toast.style.pointerEvents = 'none';
+                setTimeout(() => toast.remove(), 500);
+            }
+        }, duration);
     }
 
     /**
@@ -248,17 +262,26 @@ export class UISystem {
     /**
      * Create a cultivation click particle
      */
-    createClickParticle(x, y) {
-        const container = document.querySelector('.qi-particles');
-        if (!container) return;
-
+    createClickParticle(x, y, type = 'tuvi') {
         const p = document.createElement('div');
         p.className = 'qi-particle w-2 h-2';
+        
+        // Path-aligned colors
+        const colors = {
+            tuvi: 'var(--qi-blue)',
+            body: 'var(--qi-red)',
+            soul: 'var(--qi-purple)'
+        };
+        
+        p.style.position = 'fixed';
         p.style.left = `${x}px`;
         p.style.top = `${y}px`;
+        p.style.zIndex = '9999';
+        p.style.background = `radial-gradient(circle, ${colors[type] || colors.tuvi} 0%, transparent 70%)`;
+        p.style.boxShadow = `0 0 10px ${colors[type] || colors.tuvi}`;
 
-        container.appendChild(p);
-        setTimeout(() => p.remove(), 3000);
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 2000);
     }
 }
 
