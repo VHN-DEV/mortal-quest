@@ -583,7 +583,7 @@ function renderTime() {
     elTimeSeason.textContent = t.seasonName;
     elTimeSeason.style.borderColor = t.seasonColor;
     elTimeSeason.style.color = t.seasonColor;
-    elTimeDate.textContent = `Ngày ${t.day} Tháng ${t.month} Năm ${t.year}`;
+    elTimeDate.textContent = `${t.worldEra} - Ngày ${t.day} Tháng ${t.month} Năm ${t.year}`;
 
     if (t.phenomenon) {
         elTimePhenomenon.textContent = t.phenomenon;

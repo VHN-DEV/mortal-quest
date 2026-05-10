@@ -5,8 +5,12 @@ export class TimeSystem {
         this.player = player;
         this.ui = ui;
         
-        // Time state
-        this.totalMinutes = 0; // Each minute is 1 Giờ
+        // Time state - Start at a random historical point (Year 1000 to 9000)
+        // 12 hours/day * 30 days/month * 12 months/year = 4320 minutes per year
+        const randomStartYear = 1000 + Math.floor(Math.random() * 8000);
+        const randomDayOffset = Math.floor(Math.random() * 30 * 12); // Random month/day
+        this.totalMinutes = (randomStartYear * 12 * 30 * 12) + randomDayOffset;
+        
         this.lastTickTime = Date.now();
         this.tickRate = 60000; // 1 real minute = 1 game Giờ
         
@@ -120,6 +124,7 @@ export class TimeSystem {
             day: d,
             month: m,
             year: y,
+            worldEra: 'Kỷ Nguyên Thiên Đạo',
             seasonName: s.name,
             seasonColor: s.color,
             period: h.period,
