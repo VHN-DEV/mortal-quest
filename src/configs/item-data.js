@@ -1,3 +1,15 @@
+// --- Hệ Thống Phẩm Cấp Pháp Bảo ---
+// 1. Phàm Phẩm
+// 2. Hoàng Phẩm
+// 3. Huyền Phẩm
+// 4. Địa Phẩm
+// 5. Thiên Phẩm
+// 6. Linh Bảo
+// 7. Thông Thiên Linh Bảo
+// 8. Tiên Khí
+// 9. Thánh Khí
+// 10. Đạo Khí
+
 export const ITEMS = {
     // Tiêu hao
     'ngung_khi_dan': {
@@ -87,7 +99,7 @@ export const ITEMS = {
         effect: { type: 'heal', value: 0.5 }
     },
 
-    // Trang bị (Mới)
+    // Trang bị
     'phi_kiem_go': {
         id: 'phi_kiem_go',
         name: 'Phi Kiếm Gỗ',
