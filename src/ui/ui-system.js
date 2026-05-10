@@ -19,7 +19,7 @@ export class UISystem {
     toast(message, type = 'info') {
         const toast = document.createElement('div');
         toast.className = `w-full p-4 bg-cultivation-dark/95 border-l-4 rounded-r-xl shadow-2xl relative overflow-hidden transform translate-y-[-10px] opacity-0 transition-all duration-500 pointer-events-auto flex items-center space-x-3`;
-        
+
         const colors = {
             info: 'border-qi-blue text-qi-blue',
             success: 'border-qi-jade text-qi-jade',
@@ -91,7 +91,7 @@ export class UISystem {
     showModal({ title, message, icon = 'ph-info', confirmText = 'LĨNH CHỈ', cancelText = 'BÃI BÃI', showCancel = true, onConfirm, onCancel }) {
         this.modalTitle.textContent = title;
         this.modalMessage.textContent = message;
-        this.modalIcon.className = `ph ${icon} text-5xl text-cultivation-gold mb-4 animate-bounce-subtle`;
+        this.modalIcon.className = `ph ${icon} text-5xl text-cultivation-gold animate-bounce-subtle`;
         this.modalBtnConfirm.textContent = confirmText;
         this.modalBtnCancel.textContent = cancelText;
         this.modalBtnCancel.style.display = showCancel ? 'block' : 'none';
@@ -129,10 +129,10 @@ export class UISystem {
 
             this.modalTitle.textContent = title;
             this.modalIcon.className = `ph ph-list text-5xl text-qi-blue mb-4 animate-bounce-subtle`;
-            
+
             const optionsContainer = document.createElement('div');
             optionsContainer.className = 'flex flex-col space-y-2 w-full mt-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar';
-            
+
             options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-ancient text-gray-300 transition-all active:scale-95 flex items-center justify-center space-x-2 group';
@@ -154,7 +154,7 @@ export class UISystem {
             this.modalBtnConfirm.style.display = 'none';
             this.modalBtnCancel.style.display = 'block';
             this.modalBtnCancel.textContent = 'HỦY BỎ';
-            
+
             this.modalBtnCancel.onclick = () => {
                 this.toggleOverlay(this.modalOverlay, false);
                 this.modalMessage.innerHTML = originalMessage;
@@ -184,7 +184,7 @@ export class UISystem {
     showLoading(show, message = 'Đang Cảm Ứng Thiên Địa...') {
         const msgEl = this.loadingOverlay.querySelector('.text-xs');
         if (msgEl) msgEl.textContent = message;
-        
+
         if (show) {
             this.loadingOverlay.classList.remove('hidden');
             this.loadingOverlay.classList.add('flex');
@@ -200,14 +200,14 @@ export class UISystem {
     toggleOverlay(overlay, show) {
         const el = typeof overlay === 'string' ? document.getElementById(overlay) : overlay;
         if (!el) return;
-        
+
         if (show) {
             el.classList.remove('hidden');
             el.classList.add('flex');
             // Force reflow for animation
-            el.offsetHeight; 
+            el.offsetHeight;
             el.classList.add('animate-fade-in');
-            
+
             // Add to stack if it's a major overlay
             if (el.id && el.id.includes('overlay')) {
                 document.body.classList.add('modal-open');
@@ -215,7 +215,7 @@ export class UISystem {
         } else {
             el.classList.add('hidden');
             el.classList.remove('flex', 'animate-fade-in');
-            
+
             // Check if any other overlays are still visible
             const visibleOverlays = document.querySelectorAll('.fixed:not(.hidden)');
             if (visibleOverlays.length === 0) {
@@ -231,11 +231,11 @@ export class UISystem {
         const popup = document.createElement('div');
         popup.className = `damage-popup ${crit ? 'text-2xl text-yellow-400 scale-125' : 'text-red-500'}`;
         popup.textContent = `-${value}`;
-        
+
         const rect = anchor.getBoundingClientRect();
         popup.style.left = `${rect.left + rect.width / 2}px`;
         popup.style.top = `${rect.top}px`;
-        
+
         document.body.appendChild(popup);
         setTimeout(() => popup.remove(), 1000);
     }
@@ -246,12 +246,12 @@ export class UISystem {
     createClickParticle(x, y) {
         const container = document.querySelector('.qi-particles');
         if (!container) return;
-        
+
         const p = document.createElement('div');
         p.className = 'qi-particle w-2 h-2';
         p.style.left = `${x}px`;
         p.style.top = `${y}px`;
-        
+
         container.appendChild(p);
         setTimeout(() => p.remove(), 3000);
     }
