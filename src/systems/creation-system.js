@@ -151,16 +151,6 @@ export class CreationSystem {
         player.hp = player.maxHp;
         player.mana = player.maxMana;
         
-        // Grant starting technique based on root or default
-        let startingTechId = 'truong_xuan_nap_khi_quyet';
-        if (this.selectedRoot === 'thien_linh_can') {
-            const elements = ['liet_duong_cong', 'han_thuy_quyet', 'thanh_moc_tam_kinh', 'canh_kim_quyet', 'hau_tho_cong'];
-            startingTechId = elements[Math.floor(Math.random() * elements.length)];
-        }
-        
-        player.learnTechnique(startingTechId);
-        player.activeTechniqueId = startingTechId;
-        
         return player;
     }
 

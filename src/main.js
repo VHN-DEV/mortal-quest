@@ -1250,16 +1250,31 @@ function renderCharacter() {
 
     if (elLuck) elLuck.textContent = player.luck;
 
-    // Main Technique
+    // Active Techniques
     const elMainTech = document.getElementById('char-main-technique');
+    const elMainBodyTech = document.getElementById('char-main-body-technique');
+    const elMainSoulTech = document.getElementById('char-main-soul-technique');
+
     if (elMainTech) {
         if (player.mainTechniqueId) {
-            const tech = TECHNIQUES[player.mainTechniqueId];
+            const tech = getTechniqueById(player.mainTechniqueId);
             const entry = player.learnedTechniques.find(t => t.id === player.mainTechniqueId);
-            elMainTech.textContent = tech ? `${tech.name} (Tầng ${entry?.stage || 1})` : "Không";
-        } else {
-            elMainTech.textContent = "Không";
-        }
+            elMainTech.textContent = tech ? `${tech.name} (${entry?.stage || 1})` : "Không";
+        } else elMainTech.textContent = "Không";
+    }
+    if (elMainBodyTech) {
+        if (player.mainBodyTechniqueId) {
+            const tech = getTechniqueById(player.mainBodyTechniqueId);
+            const entry = player.learnedTechniques.find(t => t.id === player.mainBodyTechniqueId);
+            elMainBodyTech.textContent = tech ? `${tech.name} (${entry?.stage || 1})` : "Không";
+        } else elMainBodyTech.textContent = "Không";
+    }
+    if (elMainSoulTech) {
+        if (player.mainSoulTechniqueId) {
+            const tech = getTechniqueById(player.mainSoulTechniqueId);
+            const entry = player.learnedTechniques.find(t => t.id === player.mainSoulTechniqueId);
+            elMainSoulTech.textContent = tech ? `${tech.name} (${entry?.stage || 1})` : "Không";
+        } else elMainSoulTech.textContent = "Không";
     }
 
     // Render Party
@@ -1371,7 +1386,7 @@ function selectItem(id) {
     elDetailType.textContent = `${displayQuality} phẩm | ${itemData.type}`;
     elDetailDesc.textContent = itemData.description;
 
-    btnUseItem.style.display = itemData.type === 'consumable' ? 'block' : 'none';
+    btnUseItem.style.display = (itemData.type === 'consumable' || itemData.type === 'book') ? 'block' : 'none';
 
     const equippable = ['weapon', 'armor', 'accessory', 'treasure'].includes(itemData.type);
     btnEquipItem.style.display = equippable ? 'block' : 'none';
@@ -2354,7 +2369,7 @@ function renderTechniques() {
             learned.forEach(entry => {
                 const tech = getTechniqueById(entry.id);
                 if (!tech) return;
-                const isMain = player.mainTechniqueId === entry.id;
+                const isMain = player.mainTechniqueId === entry.id || player.mainBodyTechniqueId === entry.id || player.mainSoulTechniqueId === entry.id;
                 const mastery = techniqueSystem.getMasteryLevel(entry.mastery);
                 const qClass = getQualityClass(tech.quality);
                 
@@ -2429,7 +2444,7 @@ async function showTechniqueDetail(id) {
     document.getElementById('tech-detail-view').classList.remove('hidden');
 
     const detailContent = document.getElementById('tech-detail-content');
-    const isMain = player.mainTechniqueId === id;
+    const isMain = player.mainTechniqueId === id || player.mainBodyTechniqueId === id || player.mainSoulTechniqueId === id;
     const mastery = techniqueSystem.getMasteryLevel(entry.mastery);
     const bonus = techniqueSystem.calculateBonus(id);
     const qClass = getQualityClass(tech.quality);

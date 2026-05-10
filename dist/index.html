@@ -12,8 +12,8 @@
         rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-CkGmWhzo.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-Hc4TxsI9.css">
+  <script type="module" crossorigin src="./assets/index-WQbfw_3V.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-D_a7jkH5.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -241,91 +241,93 @@
             </div>
 
             <div id="screen-main"
-                class="screen flex flex-col h-full items-center justify-center p-6 space-y-10 animate-fade-in">
-                <div class="relative w-72 h-72 flex items-center justify-center">
-                    <!-- Spiritual Rings -->
-                    <div class="absolute inset-0 border-[0.5px] border-qi-blue/10 rounded-full animate-spin-slow"></div>
-                    <div class="absolute inset-6 border-[1px] border-qi-purple/10 rounded-full animate-spin-slow"
-                        style="animation-direction: reverse; animation-duration: 20s;"></div>
-                    <div class="absolute inset-12 border-[0.5px] border-cultivation-gold/10 rounded-full animate-spin-slow"
-                        style="animation-duration: 30s;"></div>
+                class="screen flex flex-col h-full overflow-y-auto custom-scrollbar animate-fade-in">
+                <div class="flex-grow flex flex-col items-center justify-center p-6 pt-10 space-y-10 min-h-full">
+                    <div class="relative w-64 h-64 md:w-72 md:h-72 flex items-center justify-center shrink-0">
+                        <!-- Spiritual Rings -->
+                        <div class="absolute inset-0 border-[0.5px] border-qi-blue/10 rounded-full animate-spin-slow"></div>
+                        <div class="absolute inset-6 border-[1px] border-qi-purple/10 rounded-full animate-spin-slow"
+                            style="animation-direction: reverse; animation-duration: 20s;"></div>
+                        <div class="absolute inset-12 border-[0.5px] border-cultivation-gold/10 rounded-full animate-spin-slow"
+                            style="animation-duration: 30s;"></div>
 
-                    <!-- Player Aura -->
-                    <div id="aura-glow"
-                        class="absolute inset-16 bg-qi-blue/5 rounded-full blur-3xl animate-pulse aura-glow"></div>
+                        <!-- Player Aura -->
+                        <div id="aura-glow"
+                            class="absolute inset-16 bg-qi-blue/5 rounded-full blur-3xl animate-pulse aura-glow"></div>
 
-                    <div id="aura-border"
-                        class="relative w-56 h-56 rounded-full overflow-hidden border border-cultivation-gold/30 shadow-[0_0_60px_rgba(212,175,55,0.15)] group aura-border">
-                        <img id="main-player-portrait" src="./assets/player-CKwXHBQJ.png"
-                            class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110">
-                        <div class="absolute inset-0 bg-gradient-to-t from-qi-ink via-transparent to-transparent"></div>
-                        <!-- Inner Glow -->
-                        <div class="absolute inset-0 shadow-[inset_0_0_40px_rgba(79,209,197,0.2)]"></div>
-                    </div>
-
-                    <div class="qi-particles absolute inset-0 pointer-events-none"></div>
-                </div>
-
-                <div class="w-full space-y-5 px-4">
-                    <div class="flex justify-between items-end">
-                        <div class="flex flex-col">
-                            <span class="text-[9px] text-gray-500 font-ancient uppercase tracking-[0.2em] mb-1">Cơ Duyên
-                                Tu Vi</span>
-                            <span id="tu-vi-text" class="text-xs font-mono text-qi-blue">0 / 100</span>
+                        <div id="aura-border"
+                            class="relative w-56 h-56 rounded-full overflow-hidden border border-cultivation-gold/30 shadow-[0_0_60px_rgba(212,175,55,0.15)] group aura-border">
+                            <img id="main-player-portrait" src="./assets/player-CKwXHBQJ.png"
+                                class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-qi-ink via-transparent to-transparent"></div>
+                            <!-- Inner Glow -->
+                            <div class="absolute inset-0 shadow-[inset_0_0_40px_rgba(79,209,197,0.2)]"></div>
                         </div>
-                        <div id="tu-vi-per-sec" class="text-[10px] text-qi-purple/60 italic font-ancient">+1 linh
-                            khí/giây</div>
-                    </div>
-                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
-                        <div id="tu-vi-progress"
-                            class="h-full bg-gradient-to-r from-qi-blue via-qi-purple to-qi-blue bg-[length:200%_100%] animate-gradient-x transition-all duration-700 shadow-[0_0_10px_rgba(79,209,197,0.5)]"
-                            style="width: 0%"></div>
-                    </div>
-                </div>
 
-                <div class="flex flex-col space-y-4 w-full px-4">
-                    <div class="flex space-x-2 bg-black/40 p-1 rounded-xl border border-white/5 mb-2">
-                        <button id="focus-tuvi"
-                            class="flex-grow py-2 bg-qi-blue/20 text-qi-blue rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-qi-blue/30 transition-all focus-tuvi">Tu
-                            Vi</button>
-                        <button id="focus-body"
-                            class="flex-grow py-2 text-gray-500 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-transparent transition-all">Luyện
-                            Thể</button>
-                        <button id="focus-soul"
-                            class="flex-grow py-2 text-gray-500 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-transparent transition-all">Thần
-                            Thức</button>
+                        <div class="qi-particles absolute inset-0 pointer-events-none"></div>
                     </div>
 
-                    <div class="flex items-center justify-center space-x-4 mb-2">
-                        <span class="text-[9px] text-gray-500 uppercase tracking-widest font-ancient">Tự động Tu
-                            Luyện</span>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="auto-cultivate-toggle" class="sr-only peer">
-                            <div
-                                class="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-300 after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-qi-blue">
+                    <div class="w-full space-y-5 px-4">
+                        <div class="flex justify-between items-end">
+                            <div class="flex flex-col">
+                                <span class="text-[9px] text-gray-500 font-ancient uppercase tracking-[0.2em] mb-1">Cơ Duyên
+                                    Tu Vi</span>
+                                <span id="tu-vi-text" class="text-xs font-mono text-qi-blue">0 / 100</span>
                             </div>
-                        </label>
+                            <div id="tu-vi-per-sec" class="text-[10px] text-qi-purple/60 italic font-ancient">+1 linh
+                                khí/giây</div>
+                        </div>
+                        <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
+                            <div id="tu-vi-progress"
+                                class="h-full bg-gradient-to-r from-qi-blue via-qi-purple to-qi-blue bg-[length:200%_100%] animate-gradient-x transition-all duration-700 shadow-[0_0_10px_rgba(79,209,197,0.5)]"
+                                style="width: 0%"></div>
+                        </div>
                     </div>
 
-                    <button id="cultivate-btn"
-                        class="relative overflow-hidden w-full py-5 btn-premium rounded-2xl text-white font-bold tracking-[0.3em] group font-ancient shadow-lg shadow-black/50">
-                        <span class="relative z-10 flex items-center justify-center" id="cultivate-btn-text">
-                            <i class="ph ph-sparkle mr-2 text-qi-blue"></i>
-                            THU NẠP LINH KHÍ
-                        </span>
-                        <div
-                            class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shine">
+                    <div class="flex flex-col space-y-4 w-full px-4 pb-10">
+                        <div class="flex space-x-2 bg-black/40 p-1 rounded-xl border border-white/5 mb-2">
+                            <button id="focus-tuvi"
+                                class="flex-grow py-2 bg-qi-blue/20 text-qi-blue rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-qi-blue/30 transition-all focus-tuvi">Tu
+                                Vi</button>
+                            <button id="focus-body"
+                                class="flex-grow py-2 text-gray-500 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-transparent transition-all">Luyện
+                                Thể</button>
+                            <button id="focus-soul"
+                                class="flex-grow py-2 text-gray-500 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-transparent transition-all">Thần
+                                Thức</button>
                         </div>
-                    </button>
-                    <button id="breakthrough-btn"
-                        class="w-full py-5 btn-gold font-ancient font-black rounded-2xl hidden animate-pulse-gold uppercase tracking-[0.4em] text-sm">
-                        XUNG KÍCH CẢNH GIỚI
-                    </button>
-                    <button id="seclusion-btn"
-                        class="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl text-gray-400 font-ancient tracking-widest transition-all uppercase text-[10px] flex items-center justify-center">
-                        <i class="ph ph-moon mr-2"></i>
-                        VÀO TRẠNG THÁI BẾ QUAN
-                    </button>
+
+                        <div class="flex items-center justify-center space-x-4 mb-2">
+                            <span class="text-[9px] text-gray-500 uppercase tracking-widest font-ancient">Tự động Tu
+                                Luyện</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="auto-cultivate-toggle" class="sr-only peer">
+                                <div
+                                    class="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-300 after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-qi-blue">
+                                </div>
+                            </label>
+                        </div>
+
+                        <button id="cultivate-btn"
+                            class="relative overflow-hidden w-full py-5 btn-premium rounded-2xl text-white font-bold tracking-[0.3em] group font-ancient shadow-lg shadow-black/50">
+                            <span class="relative z-10 flex items-center justify-center" id="cultivate-btn-text">
+                                <i class="ph ph-sparkle mr-2 text-qi-blue"></i>
+                                THU NẠP LINH KHÍ
+                            </span>
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shine">
+                            </div>
+                        </button>
+                        <button id="breakthrough-btn"
+                            class="w-full py-5 btn-gold font-ancient font-black rounded-2xl hidden animate-pulse-gold uppercase tracking-[0.4em] text-sm">
+                            XUNG KÍCH CẢNH GIỚI
+                        </button>
+                        <button id="seclusion-btn"
+                            class="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl text-gray-400 font-ancient tracking-widest transition-all uppercase text-[10px] flex items-center justify-center">
+                            <i class="ph ph-moon mr-2"></i>
+                            VÀO TRẠNG THÁI BẾ QUAN
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -499,19 +501,40 @@
                     </div>
                 </div>
 
-                <!-- Active Technique -->
-                <div class="mb-4">
-                    <div class="bg-black/40 p-4 rounded-2xl border border-qi-blue/20 flex items-center justify-between group cursor-pointer" onclick="document.getElementById('nav-technique').click()">
+                <!-- Active Techniques -->
+                <div class="mb-4 grid grid-cols-1 gap-2">
+                    <div class="bg-black/40 p-3 rounded-2xl border border-qi-blue/20 flex items-center justify-between group cursor-pointer" onclick="document.getElementById('nav-technique').click()">
                         <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-qi-blue/10 rounded-xl flex items-center justify-center text-xl text-qi-blue border border-qi-blue/20">
+                            <div class="w-8 h-8 bg-qi-blue/10 rounded-xl flex items-center justify-center text-lg text-qi-blue border border-qi-blue/20">
                                 <i class="ph ph-scroll"></i>
                             </div>
                             <div>
-                                <h4 class="text-[10px] text-gray-500 uppercase tracking-widest">Công Pháp Đang Tu</h4>
-                                <p id="char-main-technique" class="text-xs font-bold text-white font-ancient">Chưa có</p>
+                                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest">Linh Lực</h4>
+                                <p id="char-main-technique" class="text-[10px] font-bold text-white font-ancient">Chưa có</p>
                             </div>
                         </div>
-                        <i class="ph ph-caret-right text-gray-600 group-hover:text-qi-blue transition-colors"></i>
+                    </div>
+                    <div class="bg-black/40 p-3 rounded-2xl border border-red-500/20 flex items-center justify-between group cursor-pointer" onclick="document.getElementById('nav-technique').click()">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-red-500/10 rounded-xl flex items-center justify-center text-lg text-red-500 border border-red-500/20">
+                                <i class="ph ph-barbell"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest">Luyện Thể</h4>
+                                <p id="char-main-body-technique" class="text-[10px] font-bold text-white font-ancient">Chưa có</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-black/40 p-3 rounded-2xl border border-qi-purple/20 flex items-center justify-between group cursor-pointer" onclick="document.getElementById('nav-technique').click()">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-qi-purple/10 rounded-xl flex items-center justify-center text-lg text-qi-purple border border-qi-purple/20">
+                                <i class="ph ph-brain"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest">Thần Thức</h4>
+                                <p id="char-main-soul-technique" class="text-[10px] font-bold text-white font-ancient">Chưa có</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -599,7 +622,7 @@
 
 
             <!-- Tab 4: Lò Luyện (Crafting - NEW) -->
-            <div id="screen-alchemy" class="screen hidden flex flex-col h-full p-6 overflow-hidden">
+            <div id="screen-alchemy" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                 <div class="flex justify-between items-end mb-8">
                     <div>
                         <h2 class="text-3xl font-charm text-cultivation-gold">Luyện Đan Các</h2>
@@ -633,7 +656,7 @@
             </div>
 
             <!-- Tab 5: Túi Đồ (Inventory) -->
-            <div id="screen-inventory" class="screen hidden flex flex-col h-full p-4 overflow-hidden">
+            <div id="screen-inventory" class="screen hidden flex flex-col h-full p-4 overflow-y-auto custom-scroll">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-3xl font-charm text-cultivation-gold">Túi Càn Khôn</h2>
                     <div class="flex items-center space-x-3">
@@ -708,7 +731,7 @@
             </div>
 
                         <!-- Tab: Bách Nghệ Hub (Crafting Hub - NEW) -->
-                        <div id="screen-crafting-hub" class="screen hidden flex flex-col h-full p-6 overflow-hidden">
+                        <div id="screen-crafting-hub" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                             <div class="mb-8">
                                 <h2 class="text-3xl font-charm text-cultivation-gold">Bách Nghệ Đường</h2>
                                 <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Nghề Nghiệp Phụ &
@@ -851,7 +874,7 @@
                         </div>
 
                         <!-- Tab: Phù Lục (Talisman - NEW) -->
-                        <div id="screen-talisman" class="screen hidden flex flex-col h-full p-6 overflow-hidden">
+                        <div id="screen-talisman" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                             <div class="flex justify-between items-end mb-8">
                                 <div>
                                     <h2 class="text-3xl font-charm text-qi-blue">Phù Đạo Các</h2>
@@ -888,7 +911,7 @@
                         </div>
 
                         <!-- Tab: Luyện Khí (Smithing - NEW) -->
-                        <div id="screen-smithing" class="screen hidden flex flex-col h-full p-6 overflow-hidden">
+                        <div id="screen-smithing" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                             <div class="flex justify-between items-end mb-8">
                                 <div>
                                     <h2 class="text-3xl font-charm text-red-500">Luyện Khí Điện</h2>
@@ -935,7 +958,7 @@
                         </div>
 
                         <!-- Tab: Trận Pháp (Formation - NEW) -->
-                        <div id="screen-formation" class="screen hidden flex flex-col h-full p-6 overflow-hidden">
+                        <div id="screen-formation" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                             <div class="flex justify-between items-end mb-8">
                                 <div>
                                     <h2 class="text-3xl font-charm text-qi-purple">Trận Pháp Đường</h2>
@@ -960,7 +983,7 @@
                         </div>
 
                         <!-- Tab: Luyện Thi (Corpse - NEW) -->
-                        <div id="screen-corpse" class="screen hidden flex flex-col h-full p-6 overflow-hidden">
+                        <div id="screen-corpse" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                             <div class="flex justify-between items-end mb-8">
                                 <div>
                                     <h2 class="text-3xl font-charm text-red-700">Thi Luyện Điện</h2>
@@ -985,7 +1008,7 @@
                         </div>
 
                         <!-- Tab: Linh Thú & Kỳ Trùng (Beast - NEW) -->
-                        <div id="screen-beast" class="screen hidden flex flex-col h-full p-6 overflow-hidden">
+                        <div id="screen-beast" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                             <div class="flex justify-between items-end mb-8">
                                 <div>
                                     <h2 class="text-3xl font-charm text-cultivation-gold">Vạn Thú Viên</h2>
@@ -1021,7 +1044,7 @@
                         </div>
 
             <!-- Tab: Công Pháp & Bí Pháp (NEW) -->
-            <div id="screen-technique" class="screen hidden flex flex-col h-full p-6 overflow-hidden">
+            <div id="screen-technique" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                 <div class="flex justify-between items-end mb-8">
                     <div>
                         <h2 class="text-3xl font-ancient text-qi-blue">Tàng Kinh Các</h2>
@@ -1188,24 +1211,6 @@
         <!-- Navigation Footer -->
         <nav
             class="bg-qi-ink/80 backdrop-blur-md border-t border-white/5 px-4 py-3 flex justify-around items-center z-50">
-            <button id="nav-main" class="nav-item flex flex-col items-center transition-all group active">
-                <i class="ph ph-house-line text-xl group-hover:text-cultivation-gold transition-colors"></i>
-                <span
-                    class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Tu
-                    Hành</span>
-            </button>
-            <button id="nav-adventure" class="nav-item flex flex-col items-center transition-all group text-gray-500">
-                <i class="ph ph-compass text-xl group-hover:text-qi-blue transition-colors"></i>
-                <span
-                    class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Lịch
-                    Lãm</span>
-            </button>
-            <button id="nav-inventory" class="nav-item flex flex-col items-center transition-all group text-gray-500">
-                <i class="ph ph-backpack text-xl group-hover:text-white transition-colors"></i>
-                <span
-                    class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Túi
-                    Đồ</span>
-            </button>
             <button id="nav-technique"
                 class="nav-item flex flex-col items-center transition-all group text-gray-500">
                 <i class="ph ph-scroll text-xl group-hover:text-qi-blue transition-colors"></i>
@@ -1213,12 +1218,30 @@
                     class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Công
                     Pháp</span>
             </button>
+            <button id="nav-adventure" class="nav-item flex flex-col items-center transition-all group text-gray-500">
+                <i class="ph ph-compass text-xl group-hover:text-qi-blue transition-colors"></i>
+                <span
+                    class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Lịch
+                    Lãm</span>
+            </button>
+            <button id="nav-main" class="nav-item flex flex-col items-center transition-all group active">
+                <i class="ph ph-house-line text-xl group-hover:text-cultivation-gold transition-colors"></i>
+                <span
+                    class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Tu
+                    Hành</span>
+            </button>
             <button id="nav-crafting-hub"
                 class="nav-item flex flex-col items-center transition-all group text-gray-500">
                 <i class="ph ph-magic-wand text-xl group-hover:text-cultivation-gold transition-colors"></i>
                 <span
                     class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Bách
                     Nghệ</span>
+            </button>
+            <button id="nav-inventory" class="nav-item flex flex-col items-center transition-all group text-gray-500">
+                <i class="ph ph-backpack text-xl group-hover:text-white transition-colors"></i>
+                <span
+                    class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Túi
+                    Đồ</span>
             </button>
         </nav>
 

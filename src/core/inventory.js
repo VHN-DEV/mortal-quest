@@ -46,13 +46,20 @@ export class Inventory {
 
     useItem(itemId) {
         const itemData = getItemById(itemId);
-        if (!itemData || itemData.type !== 'consumable') return false;
+        if (!itemData) return false;
 
         const index = this.items.findIndex(i => i.id === itemId);
-        if (index > -1 && this.items[index].quantity > 0) {
+        if (index === -1 || this.items[index].quantity <= 0) return false;
+
+        if (itemData.type === 'consumable' && itemData.effect) {
             this.applyEffect(itemData.effect);
             this.removeItem(itemId, 1);
             return true;
+        } else if (itemData.type === 'book' && itemData.techniqueId) {
+            if (this.player.learnTechnique(itemData.techniqueId)) {
+                this.removeItem(itemId, 1);
+                return true;
+            }
         }
         return false;
     }

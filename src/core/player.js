@@ -32,9 +32,12 @@ export class Player {
         this.def = 5;
         this.spd = 10;
         
-        this.tuViPerSecond = 1;
-        this.bodyExpPerSecond = 0.2;
-        this.soulExpPerSecond = 0.2;
+        this.tuViPerSecond = 0;
+        this.bodyExpPerSecond = 0;
+        this.soulExpPerSecond = 0;
+        this.mainTechniqueId = null;
+        this.mainBodyTechniqueId = null;
+        this.mainSoulTechniqueId = null;
         
         // Equipment slots
         this.equipment = {
@@ -289,66 +292,42 @@ export class Player {
         const bodyLevel = this.bodyRealmId;
         const soulLevel = this.soulRealmId;
 
-        // Tu Vi primarily increases Mana and Base stats
-        this.maxMana = 50 * Math.pow(1.6, realmLevel - 1);
-        this.tuViPerSecond = 1 * Math.pow(1.2, realmLevel - 1);
-        
-        // Body Realm primarily increases HP and Def
-        this.maxHp = 100 * Math.pow(1.5, realmLevel - 1) * Math.pow(1.3, bodyLevel - 1);
-        this.def = 5 * Math.pow(1.3, realmLevel - 1) * Math.pow(1.4, bodyLevel - 1);
-        this.atk = 10 * Math.pow(1.4, realmLevel - 1) * Math.pow(1.2, bodyLevel - 1);
-        
-        // Soul Realm increases Mana, Spd and provides utility bonuses
-        this.maxMana += 20 * (soulLevel - 1);
-        this.spd = 10 + (realmLevel * 2) + (soulLevel * 3);
-        
-        // Lifespan increases with realm
-        const lifespans = [100, 200, 500, 1000, 2000, 5000, 10000, 50000, 100000, 1000000];
-        this.maxAge = lifespans[realmLevel - 1] || 1000000;
+        // Base rates are 0. MUST have technique to cultivate.
+        this.tuViPerSecond = 0;
+        this.bodyExpPerSecond = 0;
+        this.soulExpPerSecond = 0;
 
-        // Add equipment bonuses
-        Object.values(this.equipment).forEach(itemId => {
-            if (itemId) {
-                const item = getItemById(itemId);
-                if (item && item.stats) {
-                    if (item.stats.atk) this.atk += item.stats.atk;
-                    if (item.stats.def) this.def += item.stats.def;
-                    if (item.stats.spd) this.spd += item.stats.spd;
-                    if (item.stats.tvps) this.tuViPerSecond += item.stats.tvps;
-                    if (item.stats.maxHp) this.maxHp += item.stats.maxHp;
-                }
-            }
-        });
+        // TU VI level increases ALL base stats significantly
+        const realmMult = Math.pow(1.8, realmLevel - 1);
+        
+        this.maxMana = 50 * realmMult;
+        this.maxHp = 100 * realmMult;
+        this.atk = 10 * realmMult;
+        this.def = 5 * realmMult;
+        this.spd = 15 + (realmLevel * 5);
 
-        // Add Spiritual Root Bonus
-        if (this.spiritualRoot) {
-            this.tuViPerSecond *= this.spiritualRoot.multiplier;
+        // Body Realm adds to HP and Def
+        this.maxHp += 50 * (bodyLevel - 1) * Math.sqrt(realmLevel);
+        this.def += 10 * (bodyLevel - 1) * Math.sqrt(realmLevel);
+        
+        // Soul Realm adds to Mana and Spd
+        this.maxMana += 30 * (soulLevel - 1) * Math.sqrt(realmLevel);
+        this.spd += 5 * (soulLevel - 1);
+
+        // Apply Destiny Bonuses
+        if (this.destinyStats) {
+            if (this.destinyStats.atk) this.atk += this.destinyStats.atk;
+            if (this.destinyStats.def) this.def += this.destinyStats.def;
+            if (this.destinyStats.maxHp) this.maxHp += this.destinyStats.maxHp;
         }
 
-        // Add Physique Bonus
-        if (this.physique && this.physique.bonus) {
-            const b = this.physique.bonus;
-            if (b.maxHp) this.maxHp += b.maxHp;
-            if (b.atk) this.atk += b.atk;
-            if (b.def) this.def += b.def;
-            if (b.spd) this.spd += b.spd;
-            if (b.tvps) this.tuViPerSecond *= b.tvps;
-            if (b.luck) this.luck += b.luck;
-        }
+        // Process Techniques for each path
+        this.applyTechniqueToStats('tuvi', this.mainTechniqueId);
+        this.applyTechniqueToStats('body', this.mainBodyTechniqueId);
+        this.applyTechniqueToStats('soul', this.mainSoulTechniqueId);
 
-        // Add Talent Bonuses
-        this.talents.forEach(t => {
-            if (t.bonus) {
-                if (t.bonus.atk) this.atk += t.bonus.atk;
-                if (t.bonus.spd) this.spd += t.bonus.spd;
-                if (t.bonus.tvps) this.tuViPerSecond *= t.bonus.tvps;
-                if (t.bonus.mana) this.maxMana += t.bonus.mana;
-            }
-        });
-
-        // Add Sect Bonus
+        // Add Sect bonuses
         if (this.sectId) {
-            // Basic sect bonus: +10% to all main stats
             this.atk *= 1.1;
             this.def *= 1.1;
             this.maxHp *= 1.1;
@@ -357,41 +336,55 @@ export class Player {
 
         // Add Active Formations Bonus
         this.activeFormations.forEach(f => {
-            // Formations are handled in mountain-system usually, but we add base buffs here
             if (f.id === 'tu_linh_tran') this.tuViPerSecond *= 1.2;
         });
-
-        // Add Destiny Bonuses (if implemented via points/stats)
-        if (this.destinyStats) {
-            if (this.destinyStats.atk) this.atk += this.destinyStats.atk;
-            if (this.destinyStats.def) this.def += this.destinyStats.def;
-        }
-
-        // Add Technique Bonuses
-        if (this.mainTechniqueId) {
-            const techData = getTechniqueById(this.mainTechniqueId);
-            const playerTech = this.learnedTechniques.find(t => t.id === this.mainTechniqueId);
-            
-            if (techData && playerTech && techData.effects) {
-                const stageMult = 1 + (playerTech.stage - 1) * 0.1;
-                const qualityLevel = TECHNIQUE_LEVELS[techData.quality];
-                const qualityMult = qualityLevel ? qualityLevel.multiplier : 1.0;
-                
-                const finalMult = stageMult * qualityMult;
-                
-                if (techData.effects.tvps) this.tuViPerSecond *= (1 + (techData.effects.tvps - 1) * finalMult);
-                if (techData.effects.atk) this.atk += techData.effects.atk * finalMult;
-                if (techData.effects.def) this.def += techData.effects.def * finalMult;
-                if (techData.effects.maxHp) this.maxHp += techData.effects.maxHp * finalMult;
-                if (techData.effects.mana) this.maxMana += techData.effects.mana * finalMult;
-                if (techData.effects.spd) this.spd += techData.effects.spd * finalMult;
-            }
-        }
-
+        
         // Ensure current HP/Mana don't exceed max
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);
     }
+
+    applyTechniqueToStats(path, techId) {
+        if (!techId) return;
+        const techData = getTechniqueById(techId);
+        const playerTech = this.learnedTechniques.find(t => t.id === techId);
+        if (!techData || !playerTech) return;
+
+        const stageMult = 1 + (playerTech.stage - 1) * 0.2;
+        const qualityLevel = TECHNIQUE_LEVELS[techData.quality];
+        const qualityMult = qualityLevel ? qualityLevel.multiplier : 1.0;
+        
+        // Attribute matching logic
+        let attributeMult = 1.0;
+        if (this.spiritualRoot && techData.element) {
+             // 50% bonus if technique matches spiritual root element
+             if (this.spiritualRoot.type === 'Thiên Linh Căn' || 
+                 this.spiritualRoot.type.includes(techData.element)) {
+                 attributeMult = 1.5;
+             }
+        }
+
+        const finalMult = stageMult * qualityMult * attributeMult;
+
+        // Apply path-specific cultivation rate
+        if (path === 'tuvi' && techData.effects.tvps) {
+            this.tuViPerSecond = techData.effects.tvps * finalMult;
+        } else if (path === 'body' && techData.effects.bodyPs) {
+            this.bodyExpPerSecond = techData.effects.bodyPs * finalMult;
+        } else if (path === 'soul' && techData.effects.soulPs) {
+            this.soulExpPerSecond = techData.effects.soulPs * finalMult;
+        }
+        
+        // Apply stat bonuses from technique
+        if (techData.stats) {
+            if (techData.stats.atk) this.atk += techData.stats.atk * finalMult;
+            if (techData.stats.def) this.def += techData.stats.def * finalMult;
+            if (techData.stats.hp) this.maxHp += techData.stats.hp * finalMult;
+            if (techData.stats.mana) this.maxMana += techData.stats.mana * finalMult;
+            if (techData.stats.spd) this.spd += techData.stats.spd * finalMult;
+        }
+    }
+
 
     equip(itemId) {
         const item = getItemById(itemId);
@@ -664,8 +657,13 @@ export class Player {
             quality: TECHNIQUE_QUALITIES[qualityId.toUpperCase()] || TECHNIQUE_QUALITIES.BINH_THUONG
         });
 
-        if (!this.mainTechniqueId) {
+        // Auto-equip as main if none equipped for that path
+        if (techData.type === 'Linh Lực' && !this.mainTechniqueId) {
             this.mainTechniqueId = techId;
+        } else if (techData.type === 'Luyện Thể' && !this.mainBodyTechniqueId) {
+            this.mainBodyTechniqueId = techId;
+        } else if (techData.type === 'Thần Thức' && !this.mainSoulTechniqueId) {
+            this.mainSoulTechniqueId = techId;
         }
 
         if (typeof this.calculateStats === 'function') this.calculateStats();
@@ -687,9 +685,13 @@ export class Player {
     }
 
     setMainTechnique(techId) {
-        const tech = this.learnedTechniques.find(t => t.id === techId);
-        if (tech) {
-            this.mainTechniqueId = techId;
+        const techEntry = this.learnedTechniques.find(t => t.id === techId);
+        const techData = getTechniqueById(techId);
+        if (techEntry && techData) {
+            if (techData.type === 'Linh Lực') this.mainTechniqueId = techId;
+            else if (techData.type === 'Luyện Thể') this.mainBodyTechniqueId = techId;
+            else if (techData.type === 'Thần Thức') this.mainSoulTechniqueId = techId;
+            
             if (typeof this.calculateStats === 'function') this.calculateStats();
             return true;
         }

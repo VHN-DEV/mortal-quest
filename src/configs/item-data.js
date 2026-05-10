@@ -630,6 +630,107 @@ export const ITEMS = {
         price: 50000,
         description: 'Lệnh bài cổ xưa giúp tăng khả năng thuần phục yêu thú.',
         stats: { tamingBonus: 0.2 }
+    },
+    // --- TECHNIQUE BOOKS ---
+    'truong_xuan_book': {
+        id: 'truong_xuan_book',
+        name: 'Sách: Trường Xuân Công',
+        type: 'book',
+        icon: '📘',
+        quality: 'Hoàng',
+        price: 300,
+        techniqueId: 'truong_xuan_nap_khi_quyet',
+        description: 'Bản sao chép công pháp nhập môn cơ bản nhất.'
+    },
+    'liet_duong_book': {
+        id: 'liet_duong_book',
+        name: 'Sách: Liệt Dương Công',
+        type: 'book',
+        icon: '📙',
+        quality: 'Hoàng',
+        price: 800,
+        techniqueId: 'liet_duong_cong',
+        description: 'Ghi chép phương pháp hấp thu Hỏa linh khí.'
+    },
+    'han_thuy_book': {
+        id: 'han_thuy_book',
+        name: 'Sách: Hàn Thủy Quyết',
+        type: 'book',
+        icon: '📗',
+        quality: 'Hoàng',
+        price: 800,
+        techniqueId: 'han_thuy_quyet',
+        description: 'Ghi chép phương pháp hấp thu Thủy linh khí.'
+    },
+    'thanh_moc_book': {
+        id: 'thanh_moc_book',
+        name: 'Sách: Thanh Mộc Tâm Kinh',
+        type: 'book',
+        icon: '📒',
+        quality: 'Hoàng',
+        price: 800,
+        techniqueId: 'thanh_moc_tam_kinh',
+        description: 'Ghi chép phương pháp hấp thu Mộc linh khí.'
+    },
+    'canh_kim_book': {
+        id: 'canh_kim_book',
+        name: 'Sách: Canh Kim Quyết',
+        type: 'book',
+        icon: '📖',
+        quality: 'Hoàng',
+        price: 800,
+        techniqueId: 'canh_kim_quyet',
+        description: 'Ghi chép phương pháp hấp thu Kim linh khí.'
+    },
+    'hau_tho_book': {
+        id: 'hau_tho_book',
+        name: 'Sách: Hậu Thổ Công',
+        type: 'book',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 800,
+        techniqueId: 'hau_tho_cong',
+        description: 'Ghi chép phương pháp hấp thu Thổ linh khí.'
+    },
+    'man_nguu_book': {
+        id: 'man_nguu_book',
+        name: 'Sách: Man Ngưu Kình',
+        type: 'book',
+        icon: '🐂',
+        quality: 'Hoàng',
+        price: 1500,
+        techniqueId: 'man_nguu_kinh',
+        description: 'Bí pháp Luyện Thể sơ cấp, rèn luyện cơ bắp.'
+    },
+    'duong_than_book': {
+        id: 'duong_than_book',
+        name: 'Sách: Dưỡng Thần Quyết',
+        type: 'book',
+        icon: '🧠',
+        quality: 'Hoàng',
+        price: 2000,
+        techniqueId: 'duong_than_quyet',
+        description: 'Bí pháp Thần Thức sơ cấp, rèn luyện linh hồn.'
+    },
+    'cuu_chuyen_kim_than_book': {
+        id: 'cuu_chuyen_kim_than_book',
+        name: 'Sách: Cửu Chuyển Kim Thân',
+        type: 'book',
+        icon: '🔱',
+        quality: 'Huyền',
+        price: 12000,
+        techniqueId: 'cuu_chuyen_kim_than',
+        description: 'Bí pháp Luyện Thể trung cấp cực kỳ quý hiếm.'
+    },
+    'u_minh_book': {
+        id: 'u_minh_book',
+        name: 'Sách: U Minh Huy Ngạn',
+        type: 'book',
+        icon: '💀',
+        quality: 'Huyền',
+        price: 15000,
+        techniqueId: 'u_minh_huy_ngan',
+        description: 'Bí pháp Thần Thức trung cấp, tu luyện linh hồn.'
     }
 };
 
