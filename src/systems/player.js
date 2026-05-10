@@ -8,6 +8,13 @@ export class Player {
         this.realmId = 1;
         this.tuVi = 0;
         this.lingShi = 100;
+
+        // Body & Soul systems
+        this.bodyRealmId = 1;
+        this.bodyExp = 0;
+        this.soulRealmId = 1;
+        this.soulExp = 0;
+        this.cultivationFocus = 'tuvi'; // 'tuvi', 'body', 'soul'
         
         // Base Stats
         this.maxHp = 100;
@@ -22,6 +29,8 @@ export class Player {
         this.spd = 10;
         
         this.tuViPerSecond = 1;
+        this.bodyExpPerSecond = 0.2;
+        this.soulExpPerSecond = 0.2;
         
         // Equipment slots
         this.equipment = {
@@ -68,8 +77,8 @@ export class Player {
         this.maxAge = 100; // Base human lifespan
     }
 
-    getCurrentRealm() {
-        return getRealmById(this.realmId);
+    getCurrentRealm(type = 'tuvi') {
+        return getRealmById(type === 'tuvi' ? this.realmId : (type === 'body' ? this.bodyRealmId : this.soulRealmId), type);
     }
 
     update(multiplier = 1.0) {
@@ -77,8 +86,17 @@ export class Player {
         const delta = (now - this.lastUpdate) / 1000;
         this.lastUpdate = now;
 
-        // Auto cultivation with external multiplier (seasons, phenomena)
-        this.tuVi += this.tuViPerSecond * multiplier * delta;
+        // Independent progression for all three paths
+        // The focused path gets full exp, while others get 20%
+        const focus = this.cultivationFocus || 'tuvi';
+        
+        const tuViGain = this.tuViPerSecond * (focus === 'tuvi' ? 1.0 : 0.2) * multiplier * delta;
+        const bodyGain = this.bodyExpPerSecond * (focus === 'body' ? 1.0 : 0.2) * multiplier * delta;
+        const soulGain = this.soulExpPerSecond * (focus === 'soul' ? 1.0 : 0.2) * multiplier * delta;
+
+        this.tuVi += tuViGain;
+        this.bodyExp += bodyGain;
+        this.soulExp += soulGain;
         
         // Regen
         this.stamina = Math.min(this.maxStamina, this.stamina + 0.1 * delta);
@@ -89,37 +107,95 @@ export class Player {
     cultivate() {
         if (this.stamina >= 1) {
             this.stamina -= 1;
-            this.tuVi += this.tuViPerSecond * 2;
+            const focus = this.cultivationFocus || 'tuvi';
+            if (focus === 'tuvi') this.tuVi += this.tuViPerSecond * 2;
+            if (focus === 'body') this.bodyExp += this.bodyExpPerSecond * 10;
+            if (focus === 'soul') this.soulExp += this.soulExpPerSecond * 10;
             return true;
         }
         return false;
     }
 
-    canBreakthrough() {
-        const realm = this.getCurrentRealm();
-        return this.tuVi >= realm.expRequired;
+    canBreakthrough(type = 'tuvi') {
+        const realm = this.getCurrentRealm(type);
+        const exp = type === 'tuvi' ? this.tuVi : (type === 'body' ? this.bodyExp : this.soulExp);
+        
+        // Special requirements for Tu Vi breakthroughs
+        if (type === 'tuvi') {
+            const nextRealmId = this.realmId + 1;
+            // Example requirements from prompt
+            if (nextRealmId === 18) { // Kết Đan
+                if (this.bodyRealmId < 3) return { can: false, reason: "Nhục thân cần đạt Luyện Cốt để chịu được Kim Đan ngưng tụ." };
+            }
+            if (nextRealmId === 22) { // Nguyên Anh
+                if (this.soulRealmId < 3) return { can: false, reason: "Thần thức cần đạt Thần Hải để ngưng tụ Nguyên Anh." };
+            }
+            if (nextRealmId === 26) { // Hóa Thần
+                if (this.soulRealmId < 4) return { can: false, reason: "Thần thức cần đạt Hóa Thần Niệm." };
+            }
+            if (nextRealmId === 38) { // Đại Thừa
+                if (this.bodyRealmId < 8) return { can: false, reason: "Nhục thân cần đạt Bất Diệt Thể để chống Thiên Kiếp." };
+            }
+        }
+
+        return { can: exp >= realm.expRequired, reason: exp < realm.expRequired ? "Chưa đủ tích lũy." : "" };
     }
 
-    breakthrough() {
-        if (this.canBreakthrough()) {
-            this.realmId++;
+    getStability() {
+        // Stability decreases if Tu Vi is too far ahead of Body or Soul
+        const avgOthers = (this.bodyRealmId + this.soulRealmId) / 2;
+        const diff = this.realmId - avgOthers;
+        if (diff <= 2) return 100; // Stable
+        if (diff <= 5) return 80;  // Slightly unstable
+        if (diff <= 10) return 50; // Unstable - Risk of Qi Deviation
+        return 20; // Critical instability
+    }
+
+    breakthrough(type = 'tuvi') {
+        const check = this.canBreakthrough(type);
+        if (check.can) {
+            // Check for Qi Deviation risk on Tu Vi breakthrough
+            if (type === 'tuvi') {
+                const stability = this.getStability();
+                const roll = Math.random() * 100;
+                if (roll > stability) {
+                    // Qi Deviation!
+                    this.hp *= 0.5;
+                    this.tuVi *= 0.8;
+                    return { success: false, msg: "Tẩu hỏa nhập ma! Linh lực bạo tẩu làm tổn thương kinh mạch." };
+                }
+            }
+
+            if (type === 'tuvi') this.realmId++;
+            else if (type === 'body') this.bodyRealmId++;
+            else if (type === 'soul') this.soulRealmId++;
+            
             this.calculateStats();
-            return true;
+            return { success: true, msg: "Đột phá thành công!" };
         }
-        return false;
+        return { success: false, msg: check.reason || "Chưa đủ điều kiện đột phá." };
     }
 
     calculateStats() {
         // Base stats from realm
         const realmLevel = this.realmId;
-        this.maxHp = 100 * Math.pow(1.5, realmLevel - 1);
-        this.atk = 10 * Math.pow(1.4, realmLevel - 1);
-        this.def = 5 * Math.pow(1.3, realmLevel - 1);
-        this.spd = 10 + (realmLevel * 2);
+        const bodyLevel = this.bodyRealmId;
+        const soulLevel = this.soulRealmId;
+
+        // Tu Vi primarily increases Mana and Base stats
+        this.maxMana = 50 * Math.pow(1.6, realmLevel - 1);
         this.tuViPerSecond = 1 * Math.pow(1.2, realmLevel - 1);
         
+        // Body Realm primarily increases HP and Def
+        this.maxHp = 100 * Math.pow(1.5, realmLevel - 1) * Math.pow(1.3, bodyLevel - 1);
+        this.def = 5 * Math.pow(1.3, realmLevel - 1) * Math.pow(1.4, bodyLevel - 1);
+        this.atk = 10 * Math.pow(1.4, realmLevel - 1) * Math.pow(1.2, bodyLevel - 1);
+        
+        // Soul Realm increases Mana, Spd and provides utility bonuses
+        this.maxMana += 20 * (soulLevel - 1);
+        this.spd = 10 + (realmLevel * 2) + (soulLevel * 3);
+        
         // Lifespan increases with realm
-        // Luyện Khí (1): 100, Trúc Cơ (2): 200, Kết Đan (3): 500, Nguyên Anh (4): 1000...
         const lifespans = [100, 200, 500, 1000, 2000, 5000, 10000, 50000, 100000, 1000000];
         this.maxAge = lifespans[realmLevel - 1] || 1000000;
 
@@ -174,19 +250,10 @@ export class Player {
 
         const slot = item.type; // weapon, armor, accessory, treasure
         if (this.equipment.hasOwnProperty(slot)) {
-            // If slot is occupied, we need 1 slot to swap (the new item is already removed from inv, but old goes back)
-            // Wait, the new item is removed AFTER checking if it's equippable.
-            
-            // Unequip current item if any
             if (this.equipment[slot]) {
-                // If inventory is full, we can't unequip
-                if (this.inventory.items.length >= this.inventory.maxSlots) {
-                    return false; // No space to swap
-                }
+                if (this.inventory.items.length >= this.inventory.maxSlots) return false;
                 this.inventory.addItem(this.equipment[slot], 1);
             }
-            
-            // Equip new item
             this.equipment[slot] = itemId;
             this.inventory.removeItem(itemId, 1);
             this.calculateStats();
@@ -197,10 +264,7 @@ export class Player {
 
     unequip(slot) {
         if (this.equipment[slot]) {
-            // Check inventory space
-            if (this.inventory.items.length >= this.inventory.maxSlots) {
-                return false; 
-            }
+            if (this.inventory.items.length >= this.inventory.maxSlots) return false;
             const itemId = this.equipment[slot];
             if (this.inventory.addItem(itemId, 1)) {
                 this.equipment[slot] = null;
@@ -228,6 +292,13 @@ export class Player {
         this.realmId = data.realmId || 1;
         this.tuVi = data.tuVi || 0;
         this.lingShi = data.lingShi || 0;
+
+        this.bodyRealmId = data.bodyRealmId || 1;
+        this.bodyExp = data.bodyExp || 0;
+        this.soulRealmId = data.soulRealmId || 1;
+        this.soulExp = data.soulExp || 0;
+        this.cultivationFocus = data.cultivationFocus || 'tuvi';
+
         this.hp = data.hp || 100;
         this.mana = data.mana || 50;
         this.stamina = data.stamina || 100;
@@ -239,13 +310,11 @@ export class Player {
             this.inventory.load(data.inventory);
         }
 
-        // Load Destiny
         this.spiritualRoot = data.spiritualRoot || null;
         this.physique = data.physique || null;
         this.origin = data.origin || null;
         this.luck = data.luck || 50;
         this.talents = data.talents || [];
-        // Load NPC systems
         this.knownNPCs = data.knownNPCs || {};
         this.karma = data.karma || 0;
         this.party = data.party || [];
@@ -272,6 +341,11 @@ export class Player {
             realmId: this.realmId,
             tuVi: this.tuVi,
             lingShi: this.lingShi,
+            bodyRealmId: this.bodyRealmId,
+            bodyExp: this.bodyExp,
+            soulRealmId: this.soulRealmId,
+            soulExp: this.soulExp,
+            cultivationFocus: this.cultivationFocus,
             hp: this.hp,
             mana: this.mana,
             stamina: this.stamina,

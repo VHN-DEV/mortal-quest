@@ -99,8 +99,13 @@
                 </div>
 
                 <div class="flex flex-col space-y-4 w-full px-4">
+                    <div class="flex space-x-2 bg-black/40 p-1 rounded-xl border border-white/5 mb-2">
+                        <button id="focus-tuvi" class="flex-grow py-2 bg-qi-blue/20 text-qi-blue rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-qi-blue/30 transition-all">Tu Vi</button>
+                        <button id="focus-body" class="flex-grow py-2 text-gray-500 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-transparent transition-all">Luyện Thể</button>
+                        <button id="focus-soul" class="flex-grow py-2 text-gray-500 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-transparent transition-all">Thần Thức</button>
+                    </div>
                     <button id="cultivate-btn" class="relative overflow-hidden w-full py-5 bg-gradient-to-r from-qi-blue/5 to-qi-purple/5 hover:from-qi-blue/10 hover:to-qi-purple/10 border border-white/10 rounded-2xl text-white font-bold tracking-[0.3em] transition-all active:scale-95 group font-ancient shadow-lg shadow-black/50">
-                        <span class="relative z-10">THU NẠP LINH KHÍ</span>
+                        <span class="relative z-10" id="cultivate-btn-text">THU NẠP LINH KHÍ</span>
                         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shine"></div>
                         <div class="text-[9px] text-gray-500 font-normal mt-1 opacity-40 group-hover:opacity-100 transition-opacity uppercase tracking-widest">-1 Thể lực</div>
                     </button>
@@ -163,10 +168,10 @@
             </div>
 
             <!-- Tab 3: Nhân Vật (NEW) -->
-            <div id="screen-character" class="screen hidden flex flex-col h-full p-4 overflow-hidden">
+            <div id="screen-character" class="screen hidden flex flex-col h-full p-4 overflow-y-auto">
                 <h2 class="text-3xl font-charm text-cultivation-gold mb-6 text-center">Bản Tòa Trạng Thái</h2>
                 
-                <div class="grid grid-cols-2 gap-6 flex-grow">
+                <div class="grid grid-cols-2 gap-6 mb-6">
                     <!-- Avatar & Equipment Slots -->
                     <div class="relative aspect-[3/4] bg-white/5 rounded-2xl border border-white/10 p-2">
                         <img src="/assets/images/player.png" class="w-full h-full object-cover rounded-xl opacity-60">
@@ -212,15 +217,67 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-white/5 p-4 rounded-xl border border-white/10 flex-grow">
-                            <h3 class="text-[10px] font-ancient text-cultivation-gold mb-2 uppercase tracking-widest">Đạo Hữu Đồng Hành</h3>
-                            <div id="char-party-list" class="space-y-2">
-                                <div class="text-[9px] text-gray-600 italic">Chưa có đồng hành</div>
+                    </div>
+                </div>
+
+                <!-- Three Path System Detail -->
+                <div class="space-y-4 mb-10">
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5 space-y-4">
+                        <h3 class="text-xs font-ancient text-cultivation-gold uppercase tracking-[0.2em] border-b border-white/5 pb-2">Tam Đại Cảnh Giới</h3>
+                        
+                        <!-- Tu Vi -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-end">
+                                <span class="text-[10px] text-qi-blue font-ancient uppercase">Tu Vi Linh Lực</span>
+                                <span id="char-realm-tuvi" class="text-[10px] text-white">Luyện Khí Tầng 1</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                <div id="char-progress-tuvi" class="h-full bg-qi-blue" style="width: 0%"></div>
+                            </div>
+                            <div class="flex justify-between">
+                                <span id="char-exp-tuvi" class="text-[8px] text-gray-500 font-mono">0 / 100</span>
+                                <button class="btn-bt-type text-[8px] px-2 py-0.5 bg-qi-blue/20 text-qi-blue rounded border border-qi-blue/30" data-type="tuvi">ĐỘT PHÁ</button>
+                            </div>
+                        </div>
+
+                        <!-- Luyện Thể -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-end">
+                                <span class="text-[10px] text-red-400 font-ancient uppercase">Nhục Thân Luyện Thể</span>
+                                <span id="char-realm-body" class="text-[10px] text-white">Phàm Thể</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                <div id="char-progress-body" class="h-full bg-red-500" style="width: 0%"></div>
+                            </div>
+                            <div class="flex justify-between">
+                                <span id="char-exp-body" class="text-[8px] text-gray-500 font-mono">0 / 1000</span>
+                                <button class="btn-bt-type text-[8px] px-2 py-0.5 bg-red-900/40 text-red-400 rounded border border-red-500/30" data-type="body">ĐỘT PHÁ</button>
+                            </div>
+                        </div>
+
+                        <!-- Thần Thức -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-end">
+                                <span class="text-[10px] text-qi-purple font-ancient uppercase">Linh Hồn Thần Thức</span>
+                                <span id="char-realm-soul" class="text-[10px] text-white">Linh Thức</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                <div id="char-progress-soul" class="h-full bg-qi-purple" style="width: 0%"></div>
+                            </div>
+                            <div class="flex justify-between">
+                                <span id="char-exp-soul" class="text-[8px] text-gray-500 font-mono">0 / 1000</span>
+                                <button class="btn-bt-type text-[8px] px-2 py-0.5 bg-qi-purple/40 text-qi-purple rounded border border-qi-purple/30" data-type="soul">ĐỘT PHÁ</button>
                             </div>
                         </div>
                     </div>
+
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                        <h3 class="text-xs font-ancient text-qi-blue uppercase tracking-[0.2em] mb-3">Đồng Hành</h3>
+                        <div id="char-party-list" class="space-y-2 text-[9px] text-gray-600 italic text-center">Chưa có đồng hành</div>
+                    </div>
                 </div>
             </div>
+
 
             <!-- Tab 4: Lò Luyện (Crafting - NEW) -->
             <div id="screen-alchemy" class="screen hidden flex flex-col h-full p-6 overflow-hidden">

@@ -225,20 +225,78 @@ function init() {
     setInterval(saveGame, 30000);
     
     if (btnSeclusion) btnSeclusion.onclick = handleSeclusion;
+
+    // Focus Buttons
+    const btnFocusTuvi = document.getElementById('focus-tuvi');
+    const btnFocusBody = document.getElementById('focus-body');
+    const btnFocusSoul = document.getElementById('focus-soul');
+    const elCultivateText = document.getElementById('cultivate-btn-text');
+
+    if (btnFocusTuvi) {
+        const updateFocusUI = () => {
+            [btnFocusTuvi, btnFocusBody, btnFocusSoul].forEach(btn => {
+                btn.className = 'flex-grow py-2 text-gray-500 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-transparent transition-all';
+            });
+
+            if (player.cultivationFocus === 'tuvi') {
+                btnFocusTuvi.className = 'flex-grow py-2 bg-qi-blue/20 text-qi-blue rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-qi-blue/30 transition-all';
+                if (elCultivateText) elCultivateText.textContent = "THU NẠP LINH KHÍ";
+            } else if (player.cultivationFocus === 'body') {
+                btnFocusBody.className = 'flex-grow py-2 bg-red-900/20 text-red-400 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-red-500/30 transition-all';
+                if (elCultivateText) elCultivateText.textContent = "RÈN LUYỆN THÂN THỂ";
+            } else if (player.cultivationFocus === 'soul') {
+                btnFocusSoul.className = 'flex-grow py-2 bg-qi-purple/20 text-qi-purple rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-qi-purple/30 transition-all';
+                if (elCultivateText) elCultivateText.textContent = "NGƯNG TỤ THẦN NIỆM";
+            }
+        };
+
+        btnFocusTuvi.onclick = () => { player.cultivationFocus = 'tuvi'; updateFocusUI(); };
+        btnFocusBody.onclick = () => { player.cultivationFocus = 'body'; updateFocusUI(); };
+        btnFocusSoul.onclick = () => { player.cultivationFocus = 'soul'; updateFocusUI(); };
+        
+        updateFocusUI();
+    }
+
+    // Multi-Breakthrough
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-bt-type')) {
+            const type = e.target.dataset.type;
+            handleTypeBreakthrough(type);
+        }
+    });
     
     update();
 }
 
+async function handleTypeBreakthrough(type) {
+    const res = player.breakthrough(type);
+    if (res.success) {
+        ui.toast(res.msg, 'success');
+        saveGame();
+        render();
+    } else {
+        ui.alert(res.msg, 'Phá Cảnh Thất Bại');
+    }
+}
+
 async function handleSeclusion() {
     const options = [
-        { label: 'Bế Quan 7 Ngày (Linh Khí Tiểu Tụ)', value: 7 * 12 },
-        { label: 'Bế Quan 1 Tháng (Vong Ngã Cảnh)', value: 30 * 12 },
-        { label: 'Bế Quan 3 Tháng (Thiên Nhân Hợp Nhất)', value: 90 * 12 },
-        { label: 'Bế Quan 1 Năm (Thương Hải Tang Điền)', value: 360 * 12 },
-        { label: 'Bế Quan 2 Năm (Nghịch Thiên Cải Mệnh)', value: 720 * 12 }
+        { label: 'Tập Trung: Tu Vi Linh Lực', value: 'tuvi' },
+        { label: 'Tập Trung: Nhục Thân Luyện Thể', value: 'body' },
+        { label: 'Tập Trung: Thần Thức Linh Hồn', value: 'soul' }
     ];
 
-    const minutes = await ui.promptOptions('Chọn Thời Gian Bế Quan', options);
+    const focus = await ui.promptOptions('Chọn Tâm Điểm Bế Quan', options);
+    if (!focus) return;
+
+    const timeOptions = [
+        { label: 'Bế Quan 7 Ngày', value: 7 * 12 },
+        { label: 'Bế Quan 1 Tháng', value: 30 * 12 },
+        { label: 'Bế Quan 3 Tháng', value: 90 * 12 },
+        { label: 'Bế Quan 1 Năm', value: 360 * 12 }
+    ];
+
+    const minutes = await ui.promptOptions('Chọn Thời Gian Bế Quan', timeOptions);
     if (!minutes) return;
 
     const staminaCost = Math.floor(minutes / 12) * 2;
@@ -253,18 +311,18 @@ async function handleSeclusion() {
         player.stamina -= staminaCost;
         
         // Calculate gains
-        const tuViGain = player.tuViPerSecond * minutes * 60; // Total seconds in seclusion
-        player.tuVi += tuViGain;
-        
+        const secondsPassed = minutes * 60;
+        if (focus === 'tuvi') player.tuVi += player.tuViPerSecond * secondsPassed;
+        if (focus === 'body') player.bodyExp += player.bodyExpPerSecond * secondsPassed;
+        if (focus === 'soul') player.soulExp += player.soulExpPerSecond * secondsPassed;
+
         // Advance world time
         timeSystem.advanceTime(minutes);
         
-        // Update other systems based on passed time (seconds)
-        const secondsPassed = minutes * 60;
         if (gardenSystem) gardenSystem.update(secondsPassed);
         
         ui.showLoading(false);
-        ui.alert(`Sau khi bế quan ${minutes/12} ngày, bạn đã nhận được ${Math.floor(tuViGain).toLocaleString()} Tu vi. Thân thể đã già đi một chút.`, 'Bế Quan Kết Thúc');
+        ui.alert(`Sau khi bế quan ${minutes/12} ngày, căn cơ của bạn đã vững chắc hơn rất nhiều. Thân thể đã già đi một chút.`, 'Bế Quan Kết Thúc');
         
         saveGame();
         render();
@@ -333,7 +391,7 @@ function render() {
     elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
     elLingShiText.textContent = Math.floor(player.lingShi).toLocaleString();
 
-    if (player.canBreakthrough()) btnBreakthrough.classList.remove('hidden');
+    if (player.canBreakthrough('tuvi').can) btnBreakthrough.classList.remove('hidden');
     else btnBreakthrough.classList.add('hidden');
 
     if (currentCombat) updateBattleUI();
@@ -788,6 +846,35 @@ function renderCharacter() {
     elCharMana.textContent = `${Math.floor(player.mana)} / ${Math.floor(player.maxMana)}`;
     if (elCharAge) elCharAge.textContent = `${Math.floor(player.age)} / ${player.maxAge}`;
     
+    // Detailed Realms
+    const tuviRealm = player.getCurrentRealm('tuvi');
+    const bodyRealm = player.getCurrentRealm('body');
+    const soulRealm = player.getCurrentRealm('soul');
+
+    document.getElementById('char-realm-tuvi').textContent = tuviRealm.name;
+    document.getElementById('char-realm-body').textContent = bodyRealm.name;
+    document.getElementById('char-realm-soul').textContent = soulRealm.name;
+
+    document.getElementById('char-progress-tuvi').style.width = `${Math.min(100, (player.tuVi / tuviRealm.expRequired) * 100)}%`;
+    document.getElementById('char-progress-body').style.width = `${Math.min(100, (player.bodyExp / bodyRealm.expRequired) * 100)}%`;
+    document.getElementById('char-progress-soul').style.width = `${Math.min(100, (player.soulExp / soulRealm.expRequired) * 100)}%`;
+
+    document.getElementById('char-exp-tuvi').textContent = `${Math.floor(player.tuVi).toLocaleString()} / ${tuviRealm.expRequired.toLocaleString()}`;
+    document.getElementById('char-exp-body').textContent = `${Math.floor(player.bodyExp).toLocaleString()} / ${bodyRealm.expRequired.toLocaleString()}`;
+    document.getElementById('char-exp-soul').textContent = `${Math.floor(player.soulExp).toLocaleString()} / ${soulRealm.expRequired.toLocaleString()}`;
+
+    // Highlight BT buttons if ready
+    document.querySelectorAll('.btn-bt-type').forEach(btn => {
+        const type = btn.dataset.type;
+        if (player.canBreakthrough(type).can) {
+            btn.classList.add('animate-pulse');
+            btn.style.opacity = '1';
+        } else {
+            btn.classList.remove('animate-pulse');
+            btn.style.opacity = '0.5';
+        }
+    });
+
     if (player.age >= player.maxAge) {
         ui.toast("Thọ nguyên sắp cạn, hãy mau chóng đột phá!", "error");
     }

@@ -79,4 +79,37 @@ export const REALMS = [
     { id: 64, name: "Đạo Tổ Đỉnh Phong", expRequired: 10000000000000000000000000000 },
 ];
 
-export const getRealmById = (id) => REALMS.find(r => r.id === id) || REALMS[0];
+export const BODY_REALMS = [
+    { id: 1, name: "Phàm Thể", expRequired: 1000 },
+    { id: 2, name: "Luyện Bì", expRequired: 5000 },
+    { id: 3, name: "Luyện Cốt", expRequired: 25000 },
+    { id: 4, name: "Luyện Tạng", expRequired: 100000 },
+    { id: 5, name: "Đổi Huyết", expRequired: 500000 },
+    { id: 6, name: "Kim Cương Thể", expRequired: 2000000 },
+    { id: 7, name: "Long Tượng Thể", expRequired: 10000000 },
+    { id: 8, name: "Bất Diệt Thể", expRequired: 50000000 },
+    { id: 9, name: "Thánh Thể", expRequired: 250000000 },
+    { id: 10, name: "Tiên Thể", expRequired: 1000000000 },
+    { id: 11, name: "Đạo Thể", expRequired: 5000000000 },
+];
+
+export const SOUL_REALMS = [
+    { id: 1, name: "Linh Thức", expRequired: 1000 },
+    { id: 2, name: "Thần Niệm", expRequired: 5000 },
+    { id: 3, name: "Thần Hải", expRequired: 25000 },
+    { id: 4, name: "Hóa Thần Niệm", expRequired: 100000 },
+    { id: 5, name: "Thần Du", expRequired: 500000 },
+    { id: 6, name: "Phân Thần", expRequired: 2000000 },
+    { id: 7, name: "Hư Không Thần Thức", expRequired: 10000000 },
+    { id: 8, name: "Bất Diệt Hồn", expRequired: 50000000 },
+    { id: 9, name: "Tiên Hồn", expRequired: 250000000 },
+    { id: 10, name: "Đạo Hồn", expRequired: 1000000000 },
+];
+
+export const getRealmById = (id, type = 'tuvi') => {
+    let list = REALMS;
+    if (type === 'body') list = BODY_REALMS;
+    if (type === 'soul') list = SOUL_REALMS;
+    return list.find(r => r.id === id) || list[0];
+};
+
