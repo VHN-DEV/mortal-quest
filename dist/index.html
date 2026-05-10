@@ -11,9 +11,9 @@
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700;800&family=Charm:wght@400;700&family=Noto+Serif+VI:ital,wght@0,400;0,700;1,400&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="icon" type="image/png" href="./mortal_quest_favicon_1778413702699.png">
-  <script type="module" crossorigin src="./assets/index-DFG-jO6T.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-C_LBNWOq.css">
+    <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
+  <script type="module" crossorigin src="./assets/index-CRyKqItx.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CDlOK5OR.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -83,7 +83,10 @@
             <!-- Tab 0: Khởi Tạo Nhân Vật (New) -->
             <div id="screen-creation" class="screen flex flex-col h-full bg-qi-ink z-[100] animate-fade-in overflow-y-auto pb-[env(safe-area-inset-bottom,80px)]">
                 <div class="p-6 md:p-8 space-y-6 md:space-y-8 pb-32">
-                    <div class="text-center space-y-2 pt-4">
+                    <div class="relative text-center space-y-2 pt-4">
+                        <button id="btn-open-guide" class="absolute right-0 top-4 w-8 h-8 rounded-full bg-cultivation-gold/20 border border-cultivation-gold/40 text-cultivation-gold flex items-center justify-center hover:bg-cultivation-gold/30 transition-all active:scale-95" title="Hướng dẫn chơi">
+                            <i class="ph ph-question text-lg"></i>
+                        </button>
                         <h2 class="text-3xl md:text-4xl font-charm text-cultivation-gold">Định Hình Tiên Duyên</h2>
                         <p class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest">Mỗi lựa chọn là một nhân quả</p>
                     </div>
@@ -147,6 +150,90 @@
                     <button id="creation-start-btn" class="w-full py-4 bg-cultivation-gold/20 border border-cultivation-gold/50 text-cultivation-gold rounded-2xl text-xs font-bold uppercase tracking-[0.3em] hover:bg-cultivation-gold/30 transition-all active:scale-95 shadow-[0_0_20px_rgba(212,175,55,0.1)]">
                         Bắt Đầu Hành Trình
                     </button>
+                </div>
+            </div>
+
+            <!-- Game Guide Overlay -->
+            <div id="guide-overlay" class="fixed inset-0 z-[200] hidden">
+                <div class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
+                <div class="absolute inset-0 flex items-center justify-center p-4">
+                    <div class="w-full max-w-lg bg-qi-ink border border-cultivation-gold/30 rounded-3xl overflow-hidden flex flex-col max-h-[85vh] shadow-[0_0_50px_rgba(212,175,55,0.2)]">
+                        <!-- Header -->
+                        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-cultivation-gold/5">
+                            <h3 class="text-xl font-ancient text-cultivation-gold uppercase tracking-widest">Hướng Dẫn Tu Tiên</h3>
+                            <button id="btn-close-guide" class="text-gray-500 hover:text-white transition-all">
+                                <i class="ph ph-x text-2xl"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="flex-grow overflow-y-auto p-6 space-y-8 custom-scrollbar">
+                            <!-- Basic Intro -->
+                            <section class="space-y-3">
+                                <h4 class="text-sm font-bold text-qi-blue flex items-center">
+                                    <i class="ph ph-sparkle mr-2"></i> KHỞI ĐẦU HÀNH TRÌNH
+                                </h4>
+                                <p class="text-xs text-gray-400 leading-relaxed">
+                                    Chào mừng đạo hữu đến với <span class="text-cultivation-gold">Mortal Quest</span>. Tại đây, bạn sẽ bắt đầu từ một phàm nhân, thông qua tu luyện, chiến đấu và kỳ ngộ để phi thăng tiên giới.
+                                </p>
+                            </section>
+
+                            <!-- Cultivation -->
+                            <section class="space-y-3">
+                                <h4 class="text-sm font-bold text-qi-jade flex items-center">
+                                    <i class="ph ph-leaf mr-2"></i> HỆ THỐNG TU LUYỆN
+                                </h4>
+                                <div class="grid grid-cols-1 gap-2">
+                                    <div class="p-3 bg-white/5 rounded-xl border border-white/5">
+                                        <div class="text-[10px] font-bold text-white mb-1">Tam Đại Hệ Thống</div>
+                                        <p class="text-[9px] text-gray-500">Tu Vi (Khí), Thân Thể (Lực), và Thần Thức (Hồn) là ba trụ cột sức mạnh. Hãy cân bằng để tránh tẩu hỏa nhập ma.</p>
+                                    </div>
+                                    <div class="p-3 bg-white/5 rounded-xl border border-white/5">
+                                        <div class="text-[10px] font-bold text-white mb-1">Công Pháp & Bí Pháp</div>
+                                        <p class="text-[9px] text-gray-500">Công pháp quyết định tốc độ tu luyện. Bí pháp là kỹ năng chiến đấu chủ động.</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Adventure -->
+                            <section class="space-y-3">
+                                <h4 class="text-sm font-bold text-qi-purple flex items-center">
+                                    <i class="ph ph-map-trifold mr-2"></i> THẾ GIỚI & KHÁM PHÁ
+                                </h4>
+                                <p class="text-xs text-gray-400 leading-relaxed">
+                                    Khám phá các vùng đất khác nhau, chiến đấu với yêu thú, tìm kiếm thảo dược và kỳ bảo. Mỗi địa điểm đều có độ nguy hiểm và cơ duyên riêng.
+                                </p>
+                            </section>
+
+                            <!-- Crafting -->
+                            <section class="space-y-3">
+                                <h4 class="text-sm font-bold text-red-400 flex items-center">
+                                    <i class="ph ph-flask mr-2"></i> BÁCH NGHỆ TU TIÊN
+                                </h4>
+                                <p class="text-xs text-gray-400 leading-relaxed">
+                                    Luyện Đan, Luyện Khí, Chế Phù, Trận Pháp, Trình Thi và Linh Thú. Trở thành một đại sư trong bất kỳ lĩnh vực nào cũng sẽ giúp con đường tu tiên rộng mở hơn.
+                                </p>
+                            </section>
+
+                            <!-- Tips -->
+                            <section class="p-4 bg-cultivation-gold/10 border border-cultivation-gold/20 rounded-2xl">
+                                <h4 class="text-xs font-bold text-cultivation-gold uppercase mb-2">Mẹo Nhỏ:</h4>
+                                <ul class="text-[10px] text-gray-400 space-y-1 list-disc pl-4">
+                                    <li>Nhấn vào <span class="text-white">Ảnh Đại Diện</span> để xem chi tiết trạng thái.</li>
+                                    <li>Dùng <span class="text-white">Linh Thạch</span> để mua đan dược hỗ trợ đột phá.</li>
+                                    <li>Tham gia <span class="text-white">Tông Môn</span> để học các công pháp cao cấp hơn.</li>
+                                    <li>Chú ý <span class="text-white">Tuổi Thọ</span>, hãy đột phá cảnh giới để tăng thọ nguyên.</li>
+                                </ul>
+                            </section>
+                        </div>
+                        
+                        <!-- Footer -->
+                        <div class="p-6 border-t border-white/5">
+                            <button id="btn-guide-got-it" class="w-full py-4 bg-cultivation-gold/20 border border-cultivation-gold/50 text-cultivation-gold rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-cultivation-gold/30 transition-all">
+                                Đã Hiểu, Bắt Đầu Tu Tiên!
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

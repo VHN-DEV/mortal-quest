@@ -206,7 +206,12 @@ export class UISystem {
             el.classList.add('flex');
             // Force reflow for animation
             el.offsetHeight;
-            el.classList.add('animate-fade-in');
+            
+            if (el.id === 'guide-overlay' || el.id === 'modal-overlay') {
+                el.classList.add('animate-zoom-in');
+            } else {
+                el.classList.add('animate-fade-in');
+            }
 
             // Add to stack if it's a major overlay
             if (el.id && el.id.includes('overlay')) {
@@ -214,7 +219,7 @@ export class UISystem {
             }
         } else {
             el.classList.add('hidden');
-            el.classList.remove('flex', 'animate-fade-in');
+            el.classList.remove('flex', 'animate-fade-in', 'animate-zoom-in');
 
             // Check if any other overlays are still visible
             const visibleOverlays = document.querySelectorAll('.fixed:not(.hidden)');

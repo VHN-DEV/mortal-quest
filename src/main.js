@@ -63,6 +63,7 @@ let selectedTechId = null;
 // DOM Elements
 const screens = document.querySelectorAll('.screen');
 const navButtons = document.querySelectorAll('.nav-item');
+const elNav = document.querySelector('nav');
 console.log(`[UI] Đã tìm thấy ${screens.length} màn hình và ${navButtons.length} nút điều hướng.`);
 const elHeaderPortrait = document.getElementById('header-portrait');
 const elPlayerNameHeader = document.getElementById('player-name-header');
@@ -261,6 +262,7 @@ function init() {
 
     if (btnFocusTuvi) {
         const updateFocusUI = () => {
+            if (!player) return;
             [btnFocusTuvi, btnFocusBody, btnFocusSoul].forEach(btn => {
                 btn.className = 'flex-grow py-2 text-gray-500 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-transparent transition-all';
             });
@@ -527,6 +529,7 @@ function handleDeath() {
 }
 
 function refreshUI() {
+    if (!player) return;
     render();
     renderCharacter();
     renderInventory();
@@ -537,6 +540,7 @@ function refreshUI() {
 }
 
 function render() {
+    if (!player) return;
     const realm = player.getCurrentRealm();
     const progress = (player.tuVi / realm.expRequired) * 100;
 
@@ -615,6 +619,7 @@ function getQualityClass(quality) {
 
 // --- MAP ---
 function renderWorldList() {
+    if (!player) return;
     const worlds = getWorlds();
     elWorldList.innerHTML = '';
     Object.keys(worlds).forEach(id => {
@@ -1177,6 +1182,7 @@ function initGameSystems(player, savedData = null) {
 
 // --- CHARACTER & EQUIPMENT ---
 function renderCharacter() {
+    if (!player) return;
     elCharHp.textContent = `${Math.floor(player.hp)} / ${Math.floor(player.maxHp)}`;
     elCharAtk.textContent = Math.floor(player.atk);
     elCharDef.textContent = Math.floor(player.def);
@@ -1299,6 +1305,7 @@ function renderCharacter() {
 
 // --- INVENTORY ---
 function renderInventory() {
+    if (!player) return;
     elInventoryGrid.innerHTML = '';
     elInventoryCapacity.textContent = `${player.inventory.items.length}/${player.inventory.maxSlots}`;
     player.inventory.items.forEach(item => {
@@ -1419,6 +1426,7 @@ btnAlchemyTabGarden.onclick = () => {
 };
 
 function renderAlchemy() {
+    if (!player) return;
     const elRecipes = document.getElementById('alchemy-recipes-view');
     const elGarden = document.getElementById('alchemy-garden-view');
     const elLvlText = document.getElementById('alchemy-level-text');
@@ -2330,6 +2338,7 @@ init();
 
 // --- TECHNIQUES & SECRETS ---
 function renderTechniques() {
+    if (!player) return;
     const elList = document.getElementById('tech-list-view');
     const elPoints = document.getElementById('tech-points');
     if (!elList || !elPoints) return;
@@ -2629,6 +2638,16 @@ function renderCreationScreen() {
     
     document.getElementById('creation-name-input').oninput = (e) => { creationSystem.playerName = e.target.value || "Phàm Nhân"; };
     document.getElementById('creation-start-btn').onclick = handleCreationStart;
+
+    // Guide Handlers
+    const guideOverlay = document.getElementById('guide-overlay');
+    const openGuideBtn = document.getElementById('btn-open-guide');
+    const closeGuideBtn = document.getElementById('btn-close-guide');
+    const gotItGuideBtn = document.getElementById('btn-guide-got-it');
+
+    if (openGuideBtn) openGuideBtn.onclick = () => ui.toggleOverlay(guideOverlay, true);
+    if (closeGuideBtn) closeGuideBtn.onclick = () => ui.toggleOverlay(guideOverlay, false);
+    if (gotItGuideBtn) gotItGuideBtn.onclick = () => ui.toggleOverlay(guideOverlay, false);
 }
 
 function updateCreationPoints() {
@@ -2643,6 +2662,7 @@ function renderCreationRoots() {
     const grid = document.getElementById('creation-roots-grid');
     grid.innerHTML = Object.values(CREATION_ROOTS).map(root => `
         <button class="p-4 bg-black/40 border ${creationSystem.selectedRoot === root.id ? 'border-qi-blue bg-qi-blue/5' : 'border-white/5'} rounded-2xl text-left transition-all"
+                title="${root.desc}"
                 onclick="window.creationSystem.selectedRoot = '${root.id}'; window.creationSystem.calculatePoints(); window.renderCreationScreen();">
             <div class="text-[10px] font-ancient text-qi-blue mb-1">${root.name}</div>
             <div class="text-[9px] text-gray-500 line-clamp-2">${root.desc}</div>
@@ -2655,6 +2675,7 @@ function renderCreationPhysiques() {
     const list = document.getElementById('creation-physiques-list');
     list.innerHTML = Object.values(CREATION_PHYSIQUES).map(phys => `
         <button class="w-full p-4 bg-black/40 border ${creationSystem.selectedPhysique === phys.id ? 'border-qi-blue bg-qi-blue/5' : 'border-white/5'} rounded-2xl text-left flex justify-between items-center transition-all"
+                title="${phys.desc}"
                 onclick="window.creationSystem.selectedPhysique = '${phys.id}'; window.creationSystem.calculatePoints(); window.renderCreationScreen();">
             <div>
                 <div class="text-[10px] font-ancient text-qi-blue mb-1">${phys.name}</div>
@@ -2669,6 +2690,7 @@ function renderCreationOrigins() {
     const list = document.getElementById('creation-origins-list');
     list.innerHTML = Object.values(CREATION_ORIGINS).map(origin => `
         <button class="w-full p-4 bg-black/40 border ${creationSystem.selectedOrigin === origin.id ? 'border-qi-blue bg-qi-blue/5' : 'border-white/5'} rounded-2xl text-left flex justify-between items-center transition-all"
+                title="${origin.desc}"
                 onclick="window.creationSystem.selectedOrigin = '${origin.id}'; window.creationSystem.calculatePoints(); window.renderCreationScreen();">
             <div>
                 <div class="text-[10px] font-ancient text-qi-purple mb-1">${origin.name}</div>
@@ -2685,6 +2707,7 @@ function renderCreationTraits() {
         const isSelected = creationSystem.selectedTraits.includes(trait.id);
         return `
         <button class="p-4 bg-black/40 border ${isSelected ? 'border-qi-blue bg-qi-blue/5' : 'border-white/5'} rounded-2xl text-left transition-all"
+                title="${trait.desc}"
                 onclick="window.creationSystem.toggleTrait('${trait.id}'); window.renderCreationScreen();">
             <div class="text-[10px] font-ancient ${trait.type === 'advantage' ? 'text-cultivation-gold' : 'text-red-400'} mb-1">${trait.name}</div>
             <div class="text-[9px] text-gray-500 line-clamp-2">${trait.desc}</div>
