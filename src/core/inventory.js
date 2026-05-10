@@ -66,6 +66,10 @@ export class Inventory {
         } else if (effect.type === 'mana') {
             const manaAmount = Math.floor(this.player.maxMana * effect.value);
             this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaAmount);
+        } else if (effect.type === 'learn_technique') {
+            this.player.learnTechnique(effect.value);
+        } else if (effect.type === 'learn_secret') {
+            this.player.learnSecretTechnique(effect.value);
         }
     }
 

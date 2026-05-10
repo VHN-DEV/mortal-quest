@@ -1,6 +1,7 @@
 import { getRealmById } from '../configs/realm-data.js';
 import { Inventory } from './inventory.js';
 import { getItemById } from '../configs/item-data.js';
+import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS } from '../configs/technique-data.js';
 
 export class Player {
     constructor() {
@@ -120,6 +121,14 @@ export class Player {
         this.corpseLevel = 1;
         this.corpseExp = 0;
         this.refinedCorpses = [];
+
+        // Technique System
+        this.mainTechniqueId = null;
+        this.learnedTechniques = []; // Array of { id, stage, mastery }
+        this.learnedSecretTechniqueIds = [];
+        this.equippedSecretTechniqueIds = []; // up to 3 slots
+        this.techniquePoints = 0;
+        this.knownNPCs = {};
     }
 
     getFormattedLingShi() {
@@ -358,6 +367,27 @@ export class Player {
             if (this.destinyStats.def) this.def += this.destinyStats.def;
         }
 
+        // Add Technique Bonuses
+        if (this.mainTechniqueId) {
+            const techData = getTechniqueById(this.mainTechniqueId);
+            const playerTech = this.learnedTechniques.find(t => t.id === this.mainTechniqueId);
+            
+            if (techData && playerTech && techData.effects) {
+                const stageMult = 1 + (playerTech.stage - 1) * 0.1;
+                const qualityLevel = TECHNIQUE_LEVELS[techData.quality];
+                const qualityMult = qualityLevel ? qualityLevel.multiplier : 1.0;
+                
+                const finalMult = stageMult * qualityMult;
+                
+                if (techData.effects.tvps) this.tuViPerSecond *= (1 + (techData.effects.tvps - 1) * finalMult);
+                if (techData.effects.atk) this.atk += techData.effects.atk * finalMult;
+                if (techData.effects.def) this.def += techData.effects.def * finalMult;
+                if (techData.effects.maxHp) this.maxHp += techData.effects.maxHp * finalMult;
+                if (techData.effects.mana) this.maxMana += techData.effects.mana * finalMult;
+                if (techData.effects.spd) this.spd += techData.effects.spd * finalMult;
+            }
+        }
+
         // Ensure current HP/Mana don't exceed max
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);
@@ -482,6 +512,12 @@ export class Player {
 
         this.formationLevel = data.formationLevel || 1;
         this.formationExp = data.formationExp || 0;
+        
+        this.mainTechniqueId = data.mainTechniqueId || null;
+        this.learnedTechniques = data.learnedTechniques || {};
+        this.equippedSecretTechniqueIds = data.equippedSecretTechniqueIds || [];
+        this.secretTechniqueCooldowns = data.secretTechniqueCooldowns || {};
+        this.techniquePoints = data.techniquePoints || 0;
 
         this.calculateStats();
     }
@@ -535,7 +571,12 @@ export class Player {
             corpseExp: this.corpseExp,
             refinedCorpses: this.refinedCorpses,
             formationLevel: this.formationLevel,
-            formationExp: this.formationExp
+            formationExp: this.formationExp,
+            mainTechniqueId: this.mainTechniqueId,
+            learnedTechniques: this.learnedTechniques,
+            equippedSecretTechniqueIds: this.equippedSecretTechniqueIds,
+            secretTechniqueCooldowns: this.secretTechniqueCooldowns,
+            techniquePoints: this.techniquePoints
         };
     }
 
@@ -603,6 +644,49 @@ export class Player {
         const index = this.party.findIndex(npc => npc.id === npcId);
         if (index > -1) {
             this.party.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
+
+    // Technique Methods
+    learnTechnique(techId, qualityId = 'binh_thuong') {
+        if (this.learnedTechniques[techId]) return false;
+        
+        const techData = getTechniqueById(techId);
+        if (!techData) return false;
+
+        this.learnedTechniques[techId] = {
+            id: techId,
+            level: techData.level,
+            stage: 1,
+            mastery: 0,
+            quality: TECHNIQUE_QUALITIES[qualityId.toUpperCase()] || TECHNIQUE_QUALITIES.BINH_THUONG
+        };
+
+        if (!this.mainTechniqueId) {
+            this.mainTechniqueId = techId;
+        }
+
+        this.calculateStats();
+        return true;
+    }
+
+    learnSecretTechnique(secretId) {
+        if (this.equippedSecretTechniqueIds.includes(secretId)) return false;
+        const secretData = getSecretTechniqueById(secretId);
+        if (!secretData) return false;
+
+        if (this.equippedSecretTechniqueIds.length < 4) {
+            this.equippedSecretTechniqueIds.push(secretId);
+        }
+        return true;
+    }
+
+    setMainTechnique(techId) {
+        if (this.learnedTechniques[techId]) {
+            this.mainTechniqueId = techId;
+            this.calculateStats();
             return true;
         }
         return false;

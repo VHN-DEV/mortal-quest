@@ -26,7 +26,9 @@ export const SHOPS = {
                 { id: 'thanh_lien_hoa_seed', stock: 1, minVip: 3 }
             ],
             'cong_phap': [
-                { id: 'truong_sinh_quyet', stock: 1 }
+                { id: 'truong_sinh_quyet_book', stock: 1 },
+                { id: 'huyet_don_thuat_book', stock: 1, minVip: 1 },
+                { id: 'cuu_chuyen_kim_than_book', stock: 1, minVip: 2 }
             ],
             'tran_phap': [
                 { id: 'tran_do_tu_linh', stock: 5 }

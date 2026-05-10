@@ -1,3 +1,5 @@
+import { getSecretTechniqueById } from '../configs/technique-data.js';
+
 export class CombatEngine {
     constructor(player, enemy, onUpdate, onEnd) {
         this.player = player;
@@ -51,6 +53,9 @@ export class CombatEngine {
             case 'skill':
                 this.playerSkill();
                 break;
+            case 'secret':
+                this.playerSecretTechnique(arguments[1]);
+                break;
         }
     }
 
@@ -98,6 +103,55 @@ export class CombatEngine {
         const damage = Math.floor(this.player.atk * 1.8);
         this.enemy.hp -= damage;
         this.addLog(`Bạn thi triển Linh Thuật gây ${damage} sát thương!`);
+        this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
+
+        if (this.enemy.hp <= 0) {
+            this.enemy.hp = 0;
+            this.win();
+        } else {
+            this.turn = 1;
+            this.nextTurn();
+        }
+    }
+
+    playerSecretTechnique(secretId) {
+        if (!secretId) return;
+        
+        const secretData = getSecretTechniqueById(secretId);
+        if (!secretData) return;
+
+        const now = Date.now();
+        const lastUsed = this.player.secretTechniqueCooldowns[secretId] || 0;
+        if (now - lastUsed < secretData.cooldown * 1000) {
+            this.addLog(`Bí pháp ${secretData.name} chưa hồi xong!`);
+            return;
+        }
+
+        // Apply cost
+        if (secretData.cost) {
+            if (secretData.cost.hp) this.player.hp -= Math.floor(this.player.maxHp * secretData.cost.hp);
+            if (secretData.cost.mana) this.player.mana -= secretData.cost.mana;
+            if (secretData.cost.lifespan) this.player.age += secretData.cost.lifespan;
+        }
+
+        this.player.secretTechniqueCooldowns[secretId] = now;
+
+        let damage = 0;
+        if (secretData.effect.type === 'damage') {
+            damage = secretData.effect.value;
+            this.enemy.hp -= damage;
+            this.addLog(`Bạn thi triển ${secretData.name} gây ${damage} sát thương!`);
+        } else if (secretData.effect.atkMultiplier) {
+            damage = Math.floor(this.player.atk * secretData.effect.atkMultiplier);
+            this.enemy.hp -= damage;
+            this.addLog(`Bạn kích hoạt ${secretData.name}, bộc phát ${damage} sát thương!`);
+        } else if (secretData.effect.type === 'escape') {
+            this.addLog(`Bạn thi triển ${secretData.name} và thoát khỏi trận chiến!`);
+            setTimeout(() => this.onEnd('escape'), 1000);
+            this.isActive = false;
+            return;
+        }
+
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
 
         if (this.enemy.hp <= 0) {

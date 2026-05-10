@@ -34,6 +34,8 @@ import { SMITHING_RECIPES, getSmithingLevelInfo } from './configs/smithing-data.
 import { BeastSystem } from './systems/beast-system.js';
 import { CorpseSystem } from './systems/corpse-system.js';
 import { BEASTS, BEAST_TYPES, getBeastLevelInfo } from './configs/beast-data.js';
+import { TechniqueSystem } from './systems/technique-system.js';
+import { TECHNIQUES, SECRET_TECHNIQUES, getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, MASTERY_LEVELS } from './configs/technique-data.js';
 
 // Global error handler
 window.onerror = function (msg, url, lineNo, columnNo, error) {
@@ -42,7 +44,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 };
 
 // State
-let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem, formationSystem, talismanSystem, smithingSystem, beastSystem, corpseSystem;
+let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem, formationSystem, talismanSystem, smithingSystem, beastSystem, corpseSystem, techniqueSystem;
 let currentCombat = null;
 let currentNPC = null;
 let selectedItemId = null;
@@ -53,6 +55,8 @@ let shopView = 'buy';
 let alchemyView = 'recipes';
 let beastView = 'list';
 let currentDestiny = null;
+let techView = 'cultivation';
+let selectedTechId = null;
 
 // DOM Elements
 const screens = document.querySelectorAll('.screen');
@@ -166,7 +170,7 @@ const btnSkill = document.getElementById('btn-skill');
 
 // Stats Modal
 const modalStats = document.getElementById('stats-modal');
-const btnOpenStats = document.getElementById('open-stats-btn');
+const btnResetGame = document.getElementById('reset-game-btn');
 const btnCloseStats = document.getElementById('close-stats-btn');
 const elStatHp = document.getElementById('stat-hp');
 const elStatAtk = document.getElementById('stat-atk');
@@ -321,6 +325,52 @@ function init() {
         };
     }
 
+    // Technique System Init
+    techniqueSystem = new TechniqueSystem(player);
+    
+    // Technique Event Listeners
+    const btnNavTechnique = document.getElementById('nav-technique');
+    const btnTechTabCultivation = document.getElementById('tech-tab-cultivation');
+    const btnTechTabSecret = document.getElementById('tech-tab-secret');
+    const btnTechBack = document.getElementById('tech-back-btn');
+
+    if (btnNavTechnique) {
+        btnNavTechnique.onclick = () => {
+            ui.showLoading(true, "Đang Mở Tàng Kinh Các...");
+            setTimeout(() => {
+                ui.showLoading(false);
+                switchScreen('screen-technique', btnNavTechnique);
+                renderTechniques();
+            }, 500);
+        };
+    }
+
+    if (btnTechTabCultivation) {
+        btnTechTabCultivation.onclick = () => {
+            techView = 'cultivation';
+            btnTechTabCultivation.className = 'flex-grow py-2 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            btnTechTabSecret.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            renderTechniques();
+        };
+    }
+
+    if (btnTechTabSecret) {
+        btnTechTabSecret.onclick = () => {
+            techView = 'secret';
+            btnTechTabSecret.className = 'flex-grow py-2 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            btnTechTabCultivation.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            renderTechniques();
+        };
+    }
+
+    if (btnTechBack) {
+        btnTechBack.onclick = () => {
+            document.getElementById('tech-list-view').classList.remove('hidden');
+            document.getElementById('tech-detail-view').classList.add('hidden');
+            selectedTechId = null;
+        };
+    }
+
     update();
 }
 
@@ -460,6 +510,7 @@ function refreshUI() {
     if (typeof renderAlchemy === 'function') renderAlchemy();
     if (typeof renderShop === 'function') renderShop();
     if (typeof renderCraftingHub === 'function') renderCraftingHub();
+    if (typeof renderTechniques === 'function') renderTechniques();
 }
 
 function render() {
@@ -499,6 +550,12 @@ function render() {
     elManaBar.style.width = `${(player.mana / player.maxMana) * 100}%`;
 
     if (timeSystem) renderTime();
+
+    // Update Technique Points display
+    const elTechPoints = document.getElementById('tech-points');
+    if (elTechPoints) {
+        elTechPoints.textContent = player.techniquePoints || 0;
+    }
 }
 
 function renderTime() {
@@ -1163,6 +1220,18 @@ function renderCharacter() {
     }
 
     if (elLuck) elLuck.textContent = player.luck;
+
+    // Main Technique
+    const elMainTech = document.getElementById('char-main-technique');
+    if (elMainTech) {
+        if (player.mainTechniqueId) {
+            const tech = TECHNIQUES[player.mainTechniqueId];
+            const entry = player.learnedTechniques.find(t => t.id === player.mainTechniqueId);
+            elMainTech.textContent = tech ? `${tech.name} (Tầng ${entry?.stage || 1})` : "Không";
+        } else {
+            elMainTech.textContent = "Không";
+        }
+    }
 
     // Render Party
     if (elCharPartyList) {
@@ -2102,8 +2171,10 @@ function initiateBattle(enemy) {
                 currentCombat = null;
                 if (result === 'win') {
                     const droppedShi = Math.floor(Math.random() * 20 * enemy.realmId);
+                    const techPoints = Math.max(1, Math.floor(enemy.realmId / 2));
                     player.lingShi += droppedShi;
-                    ui.toast(`Đắc Thắng! +${droppedShi} Linh Thạch.`, "success");
+                    player.techniquePoints = (player.techniquePoints || 0) + techPoints;
+                    ui.toast(`Đắc Thắng! +${droppedShi} Linh Thạch, +${techPoints} Điểm Công Pháp.`, "success");
                 }
                 refreshUI();
             }, 2000);
@@ -2189,7 +2260,15 @@ btnBreakthrough.addEventListener('click', async () => {
     }
 });
 
-btnOpenStats.onclick = () => ui.toggleOverlay(modalStats, true);
+if (btnResetGame) {
+    btnResetGame.onclick = async () => {
+        const confirm = await ui.confirm("Bạn có chắc chắn muốn 'Trảm Trần Duyên', xóa bỏ mọi tu vi và bắt đầu lại từ đầu không? Hành động này không thể hoàn tác!");
+        if (confirm) {
+            localStorage.clear();
+            location.reload();
+        }
+    };
+}
 btnCloseStats.onclick = () => ui.toggleOverlay(modalStats, false);
 
 function updateBattleUI() {
@@ -2202,7 +2281,280 @@ function updateBattleUI() {
 
 btnAttack.addEventListener('click', () => currentCombat?.doAction('attack'));
 btnDefend.addEventListener('click', () => currentCombat?.doAction('defend'));
-btnSkill.addEventListener('click', () => currentCombat?.doAction('skill'));
+btnSkill.addEventListener('click', async () => {
+    if (!currentCombat) return;
+    const secrets = player.equippedSecretTechniqueIds.map(id => getSecretTechniqueById(id)).filter(s => s);
+    if (secrets.length === 0) {
+        ui.toast("Ngươi chưa trang bị bí pháp nào!", "warning");
+        return;
+    }
+
+    const options = secrets.map(s => ({
+        label: s.name,
+        value: s.id,
+        icon: s.icon || '✨'
+    }));
+
+    const selectedSecretId = await ui.promptOptions('Chọn Bí Pháp Thi Triển', options);
+    if (selectedSecretId) {
+        currentCombat.doAction('skill', selectedSecretId);
+    }
+});
 
 
 init();
+
+// --- TECHNIQUES & SECRETS ---
+function renderTechniques() {
+    const elList = document.getElementById('tech-list-view');
+    const elPoints = document.getElementById('tech-points');
+    if (!elList || !elPoints) return;
+
+    elPoints.textContent = player.techniquePoints || 0;
+    elList.innerHTML = '';
+
+    if (techView === 'cultivation') {
+        const learned = player.learnedTechniques || [];
+        if (learned.length === 0) {
+            elList.innerHTML = '<div class="text-center py-10 text-gray-500 italic font-ancient text-xs">Chưa học được công pháp nào...</div>';
+        } else {
+            learned.forEach(entry => {
+                const tech = getTechniqueById(entry.id);
+                if (!tech) return;
+                const isMain = player.mainTechniqueId === entry.id;
+                const mastery = techniqueSystem.getMasteryLevel(entry.mastery);
+                const qClass = getQualityClass(tech.quality);
+                
+                const el = document.createElement('div');
+                el.className = `p-4 rounded-2xl bg-white/5 border ${isMain ? 'border-qi-blue shadow-[0_0_15px_rgba(79,209,197,0.1)]' : 'border-white/10'} cursor-pointer hover:bg-white/10 transition-all group`;
+                el.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <div class="text-sm font-bold text-white font-ancient flex items-center">
+                                ${tech.name}
+                                ${isMain ? '<span class="ml-2 px-1.5 py-0.5 bg-qi-blue/20 text-qi-blue text-[7px] border border-qi-blue/30 rounded uppercase tracking-widest">Đang Tu Luyện</span>' : ''}
+                            </div>
+                            <div class="text-[9px] uppercase tracking-widest quality-${qClass}">${tech.quality} Phẩm | ${tech.type}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[10px] text-gray-400 font-ancient tracking-widest uppercase">${mastery.name}</div>
+                            <div class="text-[9px] text-qi-purple/60">Tầng ${entry.stage} / ${tech.maxStage}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 mt-4">
+                        <div class="flex-grow h-1 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-qi-blue" style="width: ${(entry.mastery / mastery.next) * 100}%"></div>
+                        </div>
+                    </div>
+                `;
+                el.onclick = () => showTechniqueDetail(entry.id);
+                elList.appendChild(el);
+            });
+        }
+    } else {
+        // Secrets
+        const learned = player.learnedSecretTechniqueIds || [];
+        if (learned.length === 0) {
+            elList.innerHTML = '<div class="text-center py-10 text-gray-500 italic font-ancient text-xs">Chưa lĩnh hội được bí pháp nào...</div>';
+        } else {
+            learned.forEach(id => {
+                const secret = getSecretTechniqueById(id);
+                if (!secret) return;
+                const isEquipped = player.equippedSecretTechniqueIds.includes(id);
+                const qClass = getQualityClass(secret.quality);
+                
+                const el = document.createElement('div');
+                el.className = `p-4 rounded-2xl bg-white/5 border ${isEquipped ? 'border-qi-purple' : 'border-white/10'} cursor-pointer hover:bg-white/10 transition-all group`;
+                el.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-black/40 rounded-xl flex items-center justify-center text-xl border border-white/10">${secret.icon || '📜'}</div>
+                            <div>
+                                <div class="text-sm font-bold text-white font-ancient">${secret.name}</div>
+                                <div class="text-[9px] uppercase tracking-widest quality-${qClass}">${secret.quality} Phẩm | ${secret.type}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            ${isEquipped ? '<span class="px-1.5 py-0.5 bg-qi-purple/20 text-qi-purple text-[7px] border border-qi-purple/30 rounded uppercase tracking-widest">Đã Mang</span>' : ''}
+                        </div>
+                    </div>
+                `;
+                el.onclick = () => showSecretDetail(id);
+                elList.appendChild(el);
+            });
+        }
+    }
+}
+
+async function showTechniqueDetail(id) {
+    const entry = player.learnedTechniques.find(t => t.id === id);
+    const tech = getTechniqueById(id);
+    if (!entry || !tech) return;
+
+    selectedTechId = id;
+    document.getElementById('tech-list-view').classList.add('hidden');
+    document.getElementById('tech-detail-view').classList.remove('hidden');
+
+    const detailContent = document.getElementById('tech-detail-content');
+    const isMain = player.mainTechniqueId === id;
+    const mastery = techniqueSystem.getMasteryLevel(entry.mastery);
+    const bonus = techniqueSystem.calculateBonus(id);
+    const qClass = getQualityClass(tech.quality);
+
+    let statEffects = '';
+    Object.entries(tech.stats).forEach(([stat, value]) => {
+        const bonusVal = bonus[stat] || 0;
+        const statName = { atk: 'Công Kích', def: 'Phòng Thủ', spd: 'Thân Pháp', hp: 'Khí Huyết', mana: 'Linh Lực' }[stat];
+        statEffects += `<div class="flex justify-between text-xs"><span class="text-gray-500">${statName}:</span> <span class="text-white">+${bonusVal.toFixed(1)}</span></div>`;
+    });
+
+    detailContent.innerHTML = `
+        <div class="bg-white/5 p-6 rounded-3xl border border-white/10 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 text-[100px] opacity-5 pointer-events-none">📜</div>
+            <h3 class="text-2xl font-bold text-white font-ancient mb-1">${tech.name}</h3>
+            <div class="text-[10px] uppercase tracking-[0.2em] quality-${qClass} mb-4">${tech.quality} Phẩm | ${tech.type}</div>
+            <p class="text-xs text-gray-400 italic mb-6">"${tech.description}"</p>
+            
+            <div class="space-y-4 pt-4 border-t border-white/5">
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] text-gray-500 uppercase">Tiến Độ Tầng:</span>
+                    <span class="text-xs text-white">Tầng ${entry.stage} / ${tech.maxStage}</span>
+                </div>
+                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-qi-blue" style="width: ${(entry.stage / tech.maxStage) * 100}%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-black/40 p-4 rounded-2xl border border-white/5 space-y-2">
+                <h4 class="text-[10px] text-gray-500 uppercase tracking-widest mb-2 border-b border-white/5 pb-1">Thuộc Tính Cộng Thêm</h4>
+                ${statEffects}
+            </div>
+            <div class="bg-black/40 p-4 rounded-2xl border border-white/5 space-y-2">
+                <h4 class="text-[10px] text-gray-500 uppercase tracking-widest mb-2 border-b border-white/5 pb-1">Cấp Độ Thông Thạo</h4>
+                <div class="text-xs text-white text-center py-2 font-ancient">${mastery.name}</div>
+                <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-qi-purple" style="width: ${(entry.mastery / mastery.next) * 100}%"></div>
+                </div>
+                <div class="text-[8px] text-gray-600 text-center">${entry.mastery} / ${mastery.next}</div>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <button id="btn-tech-set-main" class="w-full py-4 ${isMain ? 'bg-gray-800 text-gray-500' : 'btn-premium bg-qi-blue/10 text-qi-blue'} rounded-2xl text-xs font-bold uppercase tracking-widest" ${isMain ? 'disabled' : ''}>
+                ${isMain ? 'ĐANG TU LUYỆN' : 'THIẾT LẬP CÔNG PHÁP CHÍNH'}
+            </button>
+            <div class="grid grid-cols-2 gap-3">
+                <button id="btn-tech-cultivate" class="py-4 bg-white/5 border border-white/10 text-white rounded-2xl text-xs font-bold uppercase tracking-widest active:scale-95 transition-all">
+                    TU LUYỆN (1 ĐIỂM)
+                </button>
+                <button id="btn-tech-breakthrough" class="py-4 bg-cultivation-gold/20 border border-cultivation-gold/30 text-cultivation-gold rounded-2xl text-xs font-bold uppercase tracking-widest active:scale-95 transition-all">
+                    ĐỘT PHÁ TẦNG
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('btn-tech-set-main').onclick = () => {
+        if (player.setMainTechnique(id)) {
+            ui.toast(`Đã chuyển sang tu luyện ${tech.name}`, 'success');
+            showTechniqueDetail(id);
+            refreshUI();
+        }
+    };
+
+    document.getElementById('btn-tech-cultivate').onclick = () => {
+        const res = techniqueSystem.cultivate(id);
+        if (res.success) {
+            ui.toast(res.msg, 'success');
+            showTechniqueDetail(id);
+            refreshUI();
+        } else {
+            ui.toast(res.msg, 'warning');
+        }
+    };
+
+    document.getElementById('btn-tech-breakthrough').onclick = async () => {
+        const confirm = await ui.confirm(`Đột phá lên Tầng ${entry.stage + 1} của ${tech.name}? Cần ${entry.stage * 100} Tu Vi.`);
+        if (!confirm) return;
+
+        const res = techniqueSystem.breakthroughStage(id);
+        if (res.success) {
+            ui.alert(res.msg, 'Đột Phá Thành Công');
+            showTechniqueDetail(id);
+            refreshUI();
+        } else {
+            ui.toast(res.msg, 'error');
+        }
+    };
+}
+
+async function showSecretDetail(id) {
+    const secret = getSecretTechniqueById(id);
+    if (!secret) return;
+
+    selectedTechId = id;
+    document.getElementById('tech-list-view').classList.add('hidden');
+    document.getElementById('tech-detail-view').classList.remove('hidden');
+
+    const detailContent = document.getElementById('tech-detail-content');
+    const isEquipped = player.equippedSecretTechniqueIds.includes(id);
+    const qClass = getQualityClass(secret.quality);
+
+    let costDesc = '';
+    if (secret.costs.hp) costDesc += `<div class="flex justify-between text-xs"><span class="text-gray-500">Tiêu hao HP:</span> <span class="text-red-400">${secret.costs.hp}%</span></div>`;
+    if (secret.costs.mana) costDesc += `<div class="flex justify-between text-xs"><span class="text-gray-500">Tiêu hao Linh Lực:</span> <span class="text-blue-400">${secret.costs.mana}</span></div>`;
+    if (secret.costs.lifespan) costDesc += `<div class="flex justify-between text-xs"><span class="text-gray-500">Tiêu hao Thọ Nguyên:</span> <span class="text-cultivation-gold">${secret.costs.lifespan} Năm</span></div>`;
+
+    detailContent.innerHTML = `
+        <div class="bg-white/5 p-6 rounded-3xl border border-white/10 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 text-[100px] opacity-5 pointer-events-none">✨</div>
+            <div class="w-16 h-16 bg-black/40 rounded-2xl flex items-center justify-center text-4xl border border-white/10 mb-4">${secret.icon || '📜'}</div>
+            <h3 class="text-2xl font-bold text-white font-ancient mb-1">${secret.name}</h3>
+            <div class="text-[10px] uppercase tracking-[0.2em] quality-${qClass} mb-4">${secret.quality} Phẩm | ${secret.type}</div>
+            <p class="text-xs text-gray-400 italic mb-6">"${secret.description}"</p>
+            
+            <div class="space-y-4 pt-4 border-t border-white/5">
+                <h4 class="text-[10px] text-gray-500 uppercase tracking-widest mb-2">Cái Giá Phải Trả</h4>
+                ${costDesc}
+                <div class="flex justify-between text-xs border-t border-white/5 pt-2 mt-2">
+                    <span class="text-gray-500">Thời gian hồi:</span>
+                    <span class="text-white">${secret.cooldown} Lượt</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-black/40 p-6 rounded-2xl border border-white/5 space-y-3">
+            <h4 class="text-[10px] text-gray-500 uppercase tracking-widest mb-2 border-b border-white/5 pb-1">Hiệu Ứng Tuyệt Kỹ</h4>
+            <div class="text-xs text-gray-300 leading-relaxed">
+                ${secret.type === 'attack' ? 'Gây sát thương lớn lên kẻ địch dựa trên Công Kích và phẩm cấp bí pháp.' : ''}
+                ${secret.type === 'escape' ? 'Sử dụng tàn ảnh hoặc huyết độn để thoát khỏi chiến đấu ngay lập tức.' : ''}
+                ${secret.type === 'buff' ? 'Tăng mạnh các chỉ số chiến đấu trong thời gian ngắn.' : ''}
+                ${secret.effects.damageMult ? `<br>Sát thương: x${secret.effects.damageMult}` : ''}
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <button id="btn-secret-equip" class="w-full py-4 ${isEquipped ? 'bg-red-900/20 text-red-400' : 'btn-premium bg-qi-purple/10 text-qi-purple'} rounded-2xl text-xs font-bold uppercase tracking-widest">
+                ${isEquipped ? 'THÁO BỎ BÍ PHÁP' : 'TRANG BỊ BÍ PHÁP'}
+            </button>
+        </div>
+    `;
+
+    document.getElementById('btn-secret-equip').onclick = () => {
+        if (isEquipped) {
+            player.equippedSecretTechniqueIds = player.equippedSecretTechniqueIds.filter(sid => sid !== id);
+            ui.toast('Đã tháo bỏ bí pháp', 'info');
+        } else {
+            if (player.equippedSecretTechniqueIds.length >= 3) {
+                ui.toast('Chỉ có thể trang bị tối đa 3 bí pháp', 'warning');
+                return;
+            }
+            player.equippedSecretTechniqueIds.push(id);
+            ui.toast('Đã trang bị bí pháp', 'success');
+        }
+        showSecretDetail(id);
+        refreshUI();
+    };
+}

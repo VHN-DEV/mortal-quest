@@ -27,8 +27,10 @@ export const EVENTS = [
         description: 'Bên cạnh một bộ xương khô héo, bạn tìm thấy một cuốn sách rách nát.',
         result: (player) => {
             const reward = Math.floor(player.tuViPerSecond * 500);
+            const techPoints = 5;
             player.tuVi += reward;
-            return `Bạn lĩnh hội được một phần công pháp, nhận được ${reward} tu vi!`;
+            player.techniquePoints = (player.techniquePoints || 0) + techPoints;
+            return `Bạn lĩnh hội được một phần công pháp, nhận được ${reward} tu vi và ${techPoints} điểm công pháp!`;
         }
     },
     {
