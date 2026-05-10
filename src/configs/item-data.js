@@ -478,6 +478,79 @@ export const ITEMS = {
         quality: 'Thiên',
         price: 50000,
         description: 'Kiếm quyết cấp cao mượn lực thiên lôi, uy lực vô song.'
+    },
+
+    // --- SMITHING MATERIALS (LINH QUẶNG & DỊ KIM) ---
+    'huyen_thiet': {
+        id: 'huyen_thiet',
+        name: 'Huyền Thiết',
+        type: 'material',
+        icon: '🧱',
+        quality: 'Hoàng',
+        price: 200,
+        description: 'Quặng sắt nặng chứa linh khí, nguyên liệu cơ bản luyện khí.'
+    },
+    'tinh_kim': {
+        id: 'tinh_kim',
+        name: 'Tinh Kim',
+        type: 'material',
+        icon: '✨',
+        quality: 'Huyền',
+        price: 1500,
+        description: 'Kim loại tinh khiết, dẫn linh lực cực tốt.'
+    },
+    'thai_duong_than_kim': {
+        id: 'thai_duong_than_kim',
+        name: 'Thái Dương Thần Kim',
+        type: 'material',
+        icon: '🌞',
+        quality: 'Thiên',
+        price: 150000,
+        description: 'Vật liệu chí dương, sinh ra từ lõi mặt trời.'
+    },
+
+    // --- SPIRIT WOOD (LINH MỘC) ---
+    'loi_kich_moc': {
+        id: 'loi_kich_moc',
+        name: 'Lôi Kích Mộc',
+        type: 'material',
+        icon: '🪵',
+        quality: 'Địa',
+        price: 12000,
+        description: 'Gỗ cây linh thụ bị sét đánh mà không chết, chứa lôi đình chi lực.'
+    },
+
+    // --- SMITHING TOOLS ---
+    'luyen_khi_dai': {
+        id: 'luyen_khi_dai',
+        name: 'Luyện Khí Đài',
+        type: 'smithing_tool',
+        icon: '⚒️',
+        quality: 'Huyền',
+        price: 3000,
+        description: 'Bệ rèn linh văn chuyên dụng cho luyện khí sư.'
+    },
+
+    // --- CRAFTABLE EQUIPMENT ---
+    'phi_kiem_tinh_ha': {
+        id: 'phi_kiem_tinh_ha',
+        name: 'Tinh Hà Phi Kiếm',
+        type: 'weapon',
+        icon: '🗡️',
+        quality: 'Huyền',
+        price: 15000,
+        description: 'Kiếm mang ánh sáng tinh hà, sát thương cực lớn.',
+        stats: { atk: 150, critical: 0.15 }
+    },
+    'long_lan_giap': {
+        id: 'long_lan_giap',
+        name: 'Long Lân Giáp',
+        type: 'armor',
+        icon: '🛡️',
+        quality: 'Địa',
+        price: 85000,
+        description: 'Giáp làm từ vảy giao long, phòng ngự kinh người.',
+        stats: { def: 450, resistance: 0.3 }
     }
 };
 

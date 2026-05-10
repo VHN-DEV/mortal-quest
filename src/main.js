@@ -28,6 +28,8 @@ import { CraftingSystem } from './systems/crafting-system.js';
 import { FormationSystem } from './systems/formation-system.js';
 import { TalismanSystem } from './systems/talisman-system.js';
 import { TALISMAN_RECIPES, getTalismanLevelInfo } from './configs/talisman-data.js';
+import { SmithingSystem } from './systems/smithing-system.js';
+import { SMITHING_RECIPES, getSmithingLevelInfo } from './configs/smithing-data.js';
 
 // Global error handler
 window.onerror = function (msg, url, lineNo, columnNo, error) {
@@ -36,7 +38,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 };
 
 // State
-let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem, formationSystem, talismanSystem;
+let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem, formationSystem, talismanSystem, smithingSystem;
 let currentCombat = null;
 let currentNPC = null;
 let selectedItemId = null;
@@ -793,7 +795,8 @@ function renderShopSections() {
         'nguyen_lieu': '🌿 Nguyên Liệu',
         'cong_phap': '📖 Công Pháp',
         'tran_phap': '📜 Trận Pháp',
-        'phu_luc': '📜 Phù Lục'
+        'phu_luc': '📜 Phù Lục',
+        'luyen_khi': '⚒️ Luyện Khí'
     };
 
     elShopSectionNav.innerHTML = '';
@@ -982,6 +985,7 @@ function initGameSystems(player, savedData = null) {
     craftingSystem = new CraftingSystem(player);
     formationSystem = new FormationSystem(player, ui);
     talismanSystem = new TalismanSystem(player, ui);
+    smithingSystem = new SmithingSystem(player, ui);
 
     // Legacy support for older property names if any
     if (savedData && savedData.time) {
@@ -1600,6 +1604,73 @@ window.game.drawTalisman = (id) => {
     refreshUI();
 };
 
+// --- SMITHING SYSTEM ---
+function renderSmithing() {
+    const elRecipes = document.getElementById('smithing-recipes');
+    const elLevelText = document.getElementById('smithing-level-text');
+    const elExpBar = document.getElementById('smithing-exp-bar');
+    const elToolName = document.getElementById('smithing-tool-name');
+    const elFlameName = document.getElementById('smithing-flame-name');
+
+    if (!elRecipes) return;
+
+    const levelInfo = getSmithingLevelInfo(player.smithingLevel);
+    const nextInfo = getSmithingLevelInfo(player.smithingLevel + 1);
+
+    elLevelText.textContent = levelInfo.name;
+    const progress = nextInfo.exp > 0 ? (player.smithingExp / nextInfo.exp) * 100 : 100;
+    elExpBar.style.width = `${Math.min(100, progress)}%`;
+
+    const tool = getItemById(player.smithingTool);
+    elToolName.textContent = tool ? tool.name : 'Chưa có';
+    
+    const flame = getFlameById(player.currentFlame);
+    elFlameName.textContent = flame ? flame.name : 'Linh Hỏa Cơ Bản';
+
+    elRecipes.innerHTML = '';
+    Object.values(SMITHING_RECIPES).forEach(recipe => {
+        const resultItem = getItemById(recipe.id);
+        const el = document.createElement('div');
+        el.className = 'p-4 bg-white/5 border border-white/10 rounded-2xl space-y-3';
+
+        let materialsHTML = '';
+        recipe.materials.forEach(mat => {
+            const matItem = getItemById(mat.id);
+            const count = player.inventory.getItemQuantity(mat.id);
+            const enough = count >= mat.quantity;
+            materialsHTML += `<div class="text-[10px] ${enough ? 'text-gray-400' : 'text-red-500'}">${matItem.name}: ${count}/${mat.quantity}</div>`;
+        });
+
+        const locked = player.smithingLevel < recipe.level;
+
+        el.innerHTML = `
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <span class="text-xl mr-2">${resultItem.icon}</span>
+                    <span class="font-bold text-white font-ancient">${resultItem.name}</span>
+                </div>
+                ${locked ?
+                `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
+                `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg active:scale-95 transition-all flex items-center justify-center" onclick="window.game.forgeItem('${recipe.id}')">
+                    <i class="ph ph-hammer mr-1"></i>RÈN
+                </button>`
+            }
+            </div>
+            <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
+            <div class="text-[9px] text-gray-500 italic">${resultItem.description}</div>
+            <div class="text-[8px] text-gray-600">Thành công cơ bản: ${recipe.baseSuccessRate * 100}% | EXP: +${recipe.expGain}</div>
+        `;
+        elRecipes.appendChild(el);
+    });
+}
+
+window.game.forgeItem = (id) => {
+    const res = smithingSystem.forge(id);
+    ui.toast(res.msg, res.success ? 'success' : 'error');
+    renderSmithing();
+    refreshUI();
+};
+
 // --- NPC & COMBAT ---
 function openNPCInteraction() {
     currentNPC = NPCSystem.generate(player.realmId);
@@ -1840,6 +1911,8 @@ navButtons.forEach(btn => {
             renderAlchemy();
         } else if (targetId === 'screen-talisman') {
             renderTalisman();
+        } else if (targetId === 'screen-smithing') {
+            renderSmithing();
         }
     });
 });

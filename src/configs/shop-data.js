@@ -37,6 +37,11 @@ export const SHOPS = {
                 { id: 'truc_phu_but', stock: 1 },
                 { id: 'hoa_cau_phu', stock: 20 },
                 { id: 'kim_cuong_phu', stock: 5, minVip: 1 }
+            ],
+            'luyen_khi': [
+                { id: 'huyen_thiet', stock: 50 },
+                { id: 'tinh_kim', stock: 20 },
+                { id: 'luyen_khi_dai', stock: 1, minVip: 1 }
             ]
         }
     }

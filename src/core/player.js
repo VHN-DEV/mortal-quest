@@ -87,6 +87,12 @@ export class Player {
         this.knownAlchemyTechniques = {};
         this.alchemyExp = 0;
         this.alchemyLevel = 1;
+
+        // Smithing System
+        this.smithingLevel = 1;
+        this.smithingExp = 0;
+        this.smithingTool = null;
+        this.lifeBoundTreasureId = null;
         this.age = 18;
         this.maxAge = 100; // Base human lifespan
 
