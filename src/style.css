@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cultivation-dark: #0a0a0c;
+  --color-cultivation-gold: #d4af37;
+  --color-qi-blue: #4fd1c5;
+  --color-qi-purple: #9f7aea;
+}
+
+:root {
+  --cultivation-gold: #d4af37;
+  --qi-blue: #4fd1c5;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+.font-serif {
+  font-family: 'Noto Serif VI', serif;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 10s linear infinite;
+}
+
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+/* Floating animation for particles */
+@keyframes float {
+  0% { transform: translateY(0px) translateX(0px); opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { transform: translateY(-100px) translateX(10px); opacity: 0; }
+}
+
+.qi-particle {
+  position: absolute;
+  background: var(--qi-blue);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(2px);
+  animation: float 3s ease-in infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+/* Quality Colors */
+.quality-pham { color: #9ca3af; } /* Gray */
+.quality-hoang { color: #4ade80; } /* Green */
+.quality-huyen { color: #3b82f6; } /* Blue */
+.quality-dia { color: #a855f7; } /* Purple */
+.quality-thien { color: #f59e0b; } /* Orange/Gold */
+.quality-tien { color: #ec4899; } /* Pink */
+.quality-than { color: #ef4444; } /* Red */
+
+.border-pham { border-color: #4b5563; }
+.border-hoang { border-color: #166534; }
+.border-huyen { border-color: #1e3a8a; }
+.border-dia { border-color: #581c87; }
+.border-thien { border-color: #78350f; }
+
+@keyframes slide-up {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up { animation: slide-up 0.3s ease-out forwards; }
+
+@keyframes damage-up {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-50px); opacity: 0; }
+}
+
+.damage-popup {
+  position: absolute;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #ef4444;
+  text-shadow: 0 0 5px rgba(0,0,0,0.8);
+  pointer-events: none;
+  animation: damage-up 1s ease-out forwards;
+}
+
+.screen {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.screen.hidden {
+  display: none;
+}
+
