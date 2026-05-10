@@ -12,6 +12,7 @@ import { getRealmById } from './data/realms.js';
 import { ShopSystem } from './systems/shop_system.js';
 import { CraftingSystem, CRAFTING_RECIPES } from './systems/crafting.js';
 import { SECTS, getSectById } from './data/sects.js';
+import { DestinySystem } from './systems/destiny_system.js';
 
 // Global error handler
 window.onerror = function(msg, url, lineNo, columnNo, error) {
@@ -28,6 +29,7 @@ let currentWorldId = 'nhan_gioi';
 let currentLocId = null;
 let explorationProgress = 0;
 let shopView = 'buy';
+let currentDestiny = null;
 
 // DOM Elements
 const screens = document.querySelectorAll('.screen');
@@ -130,17 +132,36 @@ const elStatDef = document.getElementById('stat-def');
 const elStatSpd = document.getElementById('stat-spd');
 const elStatTvps = document.getElementById('stat-tvps');
 
+// Destiny Overlay
+const overlayDestiny = document.getElementById('destiny-overlay');
+const elDestinyRootName = document.getElementById('destiny-root-name');
+const elDestinyRootQuality = document.getElementById('destiny-root-quality');
+const elDestinyRootBg = document.getElementById('destiny-root-bg');
+const elDestinyPhysiqueName = document.getElementById('destiny-physique-name');
+const elDestinyPhysiqueDesc = document.getElementById('destiny-physique-desc');
+const elDestinyOriginName = document.getElementById('destiny-origin-name');
+const elDestinyLuckValue = document.getElementById('destiny-luck-value');
+const elDestinyTalentsList = document.getElementById('destiny-talents-list');
+const elDestinyRating = document.getElementById('destiny-rating');
+const btnRerollDestiny = document.getElementById('btn-reroll-destiny');
+const btnConfirmDestiny = document.getElementById('btn-confirm-destiny');
+
 // Initialization
 function init() {
     player = new Player();
     const savedData = SaveSystem.load();
-    player.load(savedData);
-    shopSystem = new ShopSystem(player);
-    craftingSystem = new CraftingSystem(player);
-
-    elPlayerNameHeader.textContent = player.name;
-    elHeaderPortrait.src = ASSETS.portraits.player;
-    document.getElementById('main-player-portrait').src = ASSETS.portraits.player;
+    
+    if (!savedData) {
+        showDestinySelection();
+    } else {
+        player.load(savedData);
+        shopSystem = new ShopSystem(player);
+        craftingSystem = new CraftingSystem(player);
+        
+        elPlayerNameHeader.textContent = player.name;
+        elHeaderPortrait.src = ASSETS.portraits.player;
+        document.getElementById('main-player-portrait').src = ASSETS.portraits.player;
+    }
     
     update();
 }
@@ -384,6 +405,69 @@ window.game = {
 btnShopTabBuy.onclick = () => { shopView = 'buy'; btnShopTabBuy.className = 'flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold'; btnShopTabSell.className = 'flex-grow py-3 text-gray-500'; renderShop(); };
 btnShopTabSell.onclick = () => { shopView = 'sell'; btnShopTabSell.className = 'flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold'; btnShopTabBuy.className = 'flex-grow py-3 text-gray-500'; renderShop(); };
 
+// --- DESTINY SELECTION ---
+function showDestinySelection() {
+    overlayDestiny.classList.remove('hidden');
+    rerollDestiny();
+}
+
+function rerollDestiny() {
+    currentDestiny = DestinySystem.generateDestiny();
+    renderDestinyUI();
+}
+
+function renderDestinyUI() {
+    const d = currentDestiny;
+    elDestinyRootName.textContent = d.spiritualRoot.type;
+    elDestinyRootName.style.color = d.spiritualRoot.color;
+    elDestinyRootQuality.textContent = d.spiritualRoot.quality + " Phẩm";
+    elDestinyRootQuality.style.color = d.spiritualRoot.color;
+    elDestinyRootBg.style.background = `radial-gradient(circle, ${d.spiritualRoot.color} 0%, transparent 70%)`;
+    
+    if (d.physique) {
+        elDestinyPhysiqueName.textContent = d.physique.name;
+        elDestinyPhysiqueDesc.textContent = d.physique.desc;
+    } else {
+        elDestinyPhysiqueName.textContent = "Không có";
+        elDestinyPhysiqueDesc.textContent = "Hầu hết phàm nhân đều không có thể chất đặc biệt.";
+    }
+    
+    elDestinyOriginName.textContent = d.origin.name;
+    elDestinyLuckValue.textContent = d.luck;
+    
+    elDestinyTalentsList.innerHTML = d.talents.map(t => `<span class="px-2 py-1 bg-white/10 rounded text-[9px] text-gray-300 border border-white/5">${t.name}</span>`).join('');
+    
+    elDestinyRating.textContent = d.destinyRating;
+}
+
+btnRerollDestiny.onclick = () => rerollDestiny();
+
+btnConfirmDestiny.onclick = () => {
+    // Apply destiny to player
+    player.spiritualRoot = currentDestiny.spiritualRoot;
+    player.physique = currentDestiny.physique;
+    player.origin = currentDestiny.origin;
+    player.luck = currentDestiny.luck;
+    player.talents = currentDestiny.talents;
+    player.destinyRating = currentDestiny.destinyRating;
+    
+    // Initial resources
+    player.lingShi = currentDestiny.origin.resources.lingShi;
+    
+    player.calculateStats();
+    
+    // Initialize systems for the new player
+    shopSystem = new ShopSystem(player);
+    craftingSystem = new CraftingSystem(player);
+
+    overlayDestiny.classList.add('hidden');
+    SaveSystem.save(player.save());
+    
+    elPlayerNameHeader.textContent = player.name;
+    elHeaderPortrait.src = ASSETS.portraits.player;
+    document.getElementById('main-player-portrait').src = ASSETS.portraits.player;
+};
+
 // --- CHARACTER & EQUIPMENT ---
 function renderCharacter() {
     elCharHp.textContent = `${Math.floor(player.hp)} / ${Math.floor(player.maxHp)}`;
@@ -392,14 +476,32 @@ function renderCharacter() {
     elCharSpd.textContent = Math.floor(player.spd);
     elCharMana.textContent = `${Math.floor(player.mana)} / ${Math.floor(player.maxMana)}`;
     
-    if (player.sectId) {
-        const sect = getSectById(player.sectId);
-        elCharSectInfo.textContent = sect.name;
-        elCharSectInfo.className = 'text-xs text-qi-blue font-bold';
-    } else {
-        elCharSectInfo.textContent = 'Chưa gia nhập tông môn';
-        elCharSectInfo.className = 'text-xs italic text-gray-500';
+    if (elCharSectInfo) {
+        if (player.sectId) {
+            const sect = getSectById(player.sectId);
+            elCharSectInfo.textContent = sect.name;
+            elCharSectInfo.className = 'text-xs text-qi-blue font-bold';
+        } else {
+            elCharSectInfo.textContent = 'Chưa gia nhập';
+            elCharSectInfo.className = 'text-xs italic text-gray-500';
+        }
     }
+
+    // Destiny Info
+    const elRoot = document.getElementById('char-root');
+    const elPhysique = document.getElementById('char-physique');
+    const elLuck = document.getElementById('char-luck');
+
+    if (elRoot && player.spiritualRoot) {
+        elRoot.textContent = player.spiritualRoot.type;
+        elRoot.style.color = player.spiritualRoot.color;
+    }
+    
+    if (elPhysique) {
+        elPhysique.textContent = player.physique ? player.physique.name : "Không";
+    }
+    
+    if (elLuck) elLuck.textContent = player.luck;
 
     equipmentSlots.forEach(slot => {
         const type = slot.dataset.slot;

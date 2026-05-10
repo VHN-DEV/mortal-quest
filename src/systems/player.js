@@ -37,6 +37,14 @@ export class Player {
         // Sect info
         this.sectId = null;
         this.sectContribution = 0;
+
+        // Destiny properties
+        this.spiritualRoot = null;
+        this.physique = null;
+        this.origin = null;
+        this.luck = 50;
+        this.talents = [];
+        this.destinyRating = "Phàm mệnh";
     }
 
     getCurrentRealm() {
@@ -103,6 +111,32 @@ export class Player {
             }
         });
 
+        // Add Spiritual Root Bonus
+        if (this.spiritualRoot) {
+            this.tuViPerSecond *= this.spiritualRoot.multiplier;
+        }
+
+        // Add Physique Bonus
+        if (this.physique && this.physique.bonus) {
+            const b = this.physique.bonus;
+            if (b.maxHp) this.maxHp += b.maxHp;
+            if (b.atk) this.atk += b.atk;
+            if (b.def) this.def += b.def;
+            if (b.spd) this.spd += b.spd;
+            if (b.tvps) this.tuViPerSecond *= b.tvps;
+            if (b.luck) this.luck += b.luck;
+        }
+
+        // Add Talent Bonuses
+        this.talents.forEach(t => {
+            if (t.bonus) {
+                if (t.bonus.atk) this.atk += t.bonus.atk;
+                if (t.bonus.spd) this.spd += t.bonus.spd;
+                if (t.bonus.tvps) this.tuViPerSecond *= t.bonus.tvps;
+                if (t.bonus.mana) this.maxMana += t.bonus.mana;
+            }
+        });
+
         // Ensure current HP/Mana don't exceed max
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);
@@ -155,6 +189,15 @@ export class Player {
         if (data.inventory) {
             this.inventory.load(data.inventory);
         }
+
+        // Load Destiny
+        this.spiritualRoot = data.spiritualRoot || null;
+        this.physique = data.physique || null;
+        this.origin = data.origin || null;
+        this.luck = data.luck || 50;
+        this.talents = data.talents || [];
+        this.destinyRating = data.destinyRating || "Phàm mệnh";
+
         this.calculateStats();
     }
 
@@ -170,7 +213,13 @@ export class Player {
             equipment: this.equipment,
             inventory: this.inventory.save(),
             sectId: this.sectId,
-            sectContribution: this.sectContribution
+            sectContribution: this.sectContribution,
+            spiritualRoot: this.spiritualRoot,
+            physique: this.physique,
+            origin: this.origin,
+            luck: this.luck,
+            talents: this.talents,
+            destinyRating: this.destinyRating
         };
     }
 }
