@@ -122,46 +122,55 @@ export class UISystem {
      */
     promptOptions(title, options) {
         return new Promise((resolve) => {
-            const originalContent = this.modalContent.innerHTML;
-            
+            const originalMessage = this.modalMessage.innerHTML;
+            const originalConfirmDisplay = this.modalBtnConfirm.style.display;
+            const originalCancelDisplay = this.modalBtnCancel.style.display;
+            const originalCancelText = this.modalBtnCancel.textContent;
+
             this.modalTitle.textContent = title;
-            this.modalIcon.className = `ph ph-list text-5xl text-qi-blue mb-4`;
+            this.modalIcon.className = `ph ph-list text-5xl text-qi-blue mb-4 animate-bounce-subtle`;
             
             const optionsContainer = document.createElement('div');
-            optionsContainer.className = 'flex flex-col space-y-2 w-full mt-4';
+            optionsContainer.className = 'flex flex-col space-y-2 w-full mt-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar';
             
             options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-ancient text-gray-300 transition-all active:scale-95';
-                btn.textContent = opt.label;
+                btn.className = 'w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-ancient text-gray-300 transition-all active:scale-95 flex items-center justify-center space-x-2 group';
+                btn.innerHTML = `
+                    ${opt.icon ? `<span class="text-lg group-hover:scale-110 transition-transform">${opt.icon}</span>` : ''}
+                    <span>${opt.label}</span>
+                `;
                 btn.onclick = () => {
-                    this.modalOverlay.classList.add('hidden');
-                    this.modalOverlay.classList.remove('flex');
-                    this.modalContent.innerHTML = originalContent; // Restore
-                    // Need to re-bind elements if innerHTML is replaced
-                    this._rebindElements();
+                    this.toggleOverlay(this.modalOverlay, false);
+                    this.modalMessage.innerHTML = originalMessage; // Restore
+                    this._restoreButtons(originalConfirmDisplay, originalCancelDisplay, originalCancelText);
                     resolve(opt.value);
                 };
                 optionsContainer.appendChild(btn);
             });
 
-            // Replace modal message with options
             this.modalMessage.innerHTML = '';
             this.modalMessage.appendChild(optionsContainer);
             this.modalBtnConfirm.style.display = 'none';
             this.modalBtnCancel.style.display = 'block';
             this.modalBtnCancel.textContent = 'HỦY BỎ';
+            
             this.modalBtnCancel.onclick = () => {
-                this.modalOverlay.classList.add('hidden');
-                this.modalOverlay.classList.remove('flex');
-                this.modalContent.innerHTML = originalContent;
-                this._rebindElements();
+                this.toggleOverlay(this.modalOverlay, false);
+                this.modalMessage.innerHTML = originalMessage;
+                this._restoreButtons(originalConfirmDisplay, originalCancelDisplay, originalCancelText);
                 resolve(null);
             };
 
-            this.modalOverlay.classList.remove('hidden');
-            this.modalOverlay.classList.add('flex');
+            this.toggleOverlay(this.modalOverlay, true);
         });
+    }
+
+    _restoreButtons(confirmDisp, cancelDisp, cancelText) {
+        this.modalBtnConfirm.style.display = confirmDisp;
+        this.modalBtnCancel.style.display = cancelDisp;
+        this.modalBtnCancel.textContent = cancelText;
+        this.modalBtnCancel.onclick = null; // Reset
     }
 
     _rebindElements() {
@@ -183,6 +192,68 @@ export class UISystem {
             this.loadingOverlay.classList.add('hidden');
             this.loadingOverlay.classList.remove('flex');
         }
+    }
+
+    /**
+     * Centralized overlay management with stack support
+     */
+    toggleOverlay(overlay, show) {
+        const el = typeof overlay === 'string' ? document.getElementById(overlay) : overlay;
+        if (!el) return;
+        
+        if (show) {
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            // Force reflow for animation
+            el.offsetHeight; 
+            el.classList.add('animate-fade-in');
+            
+            // Add to stack if it's a major overlay
+            if (el.id && el.id.includes('overlay')) {
+                document.body.classList.add('modal-open');
+            }
+        } else {
+            el.classList.add('hidden');
+            el.classList.remove('flex', 'animate-fade-in');
+            
+            // Check if any other overlays are still visible
+            const visibleOverlays = document.querySelectorAll('.fixed:not(.hidden)');
+            if (visibleOverlays.length === 0) {
+                document.body.classList.remove('modal-open');
+            }
+        }
+    }
+
+    /**
+     * Create a damage popup effect
+     */
+    createDamagePopup(anchor, value, crit) {
+        const popup = document.createElement('div');
+        popup.className = `damage-popup ${crit ? 'text-2xl text-yellow-400 scale-125' : 'text-red-500'}`;
+        popup.textContent = `-${value}`;
+        
+        const rect = anchor.getBoundingClientRect();
+        popup.style.left = `${rect.left + rect.width / 2}px`;
+        popup.style.top = `${rect.top}px`;
+        
+        document.body.appendChild(popup);
+        setTimeout(() => popup.remove(), 1000);
+    }
+
+    /**
+     * Create a cultivation click particle
+     */
+    createClickParticle(x, y) {
+        const container = document.querySelector('.qi-particles');
+        if (!container) return;
+        
+        const p = document.createElement('div');
+        p.className = 'qi-particle w-2 h-2';
+        p.style.left = `${x}px`;
+        p.style.top = `${y}px`;
+        
+        container.appendChild(p);
+        setTimeout(() => p.remove(), 3000);
     }
 }
 

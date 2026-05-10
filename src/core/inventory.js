@@ -58,6 +58,9 @@ export class Inventory {
         } else if (effect.type === 'heal') {
             const healAmount = Math.floor(this.player.maxHp * effect.value);
             this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+        } else if (effect.type === 'mana') {
+            const manaAmount = Math.floor(this.player.maxMana * effect.value);
+            this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaAmount);
         }
     }
 

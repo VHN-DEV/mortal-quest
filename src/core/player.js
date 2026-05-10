@@ -75,6 +75,10 @@ export class Player {
         // Time & Lifespan
         this.age = 18;
         this.maxAge = 100; // Base human lifespan
+
+        // Persistence of location
+        this.currentWorldId = 'nhan_gioi';
+        this.currentLocId = null;
     }
 
     getCurrentRealm(type = 'tuvi') {
@@ -99,7 +103,8 @@ export class Player {
         // Regen
         this.stamina = Math.min(this.maxStamina, this.stamina + 0.1 * delta);
         this.mana = Math.min(this.maxMana, this.mana + 0.05 * delta);
-        this.hp = Math.min(this.maxHp, this.hp + 0.02 * delta);
+        // Base regen is 0.2% per second, increased to 1% for better experience
+        this.hp = Math.min(this.maxHp, this.hp + 0.01 * this.maxHp * delta);
     }
 
     cultivate() {
@@ -330,6 +335,9 @@ export class Player {
         this.age = data.age || 18;
         this.maxAge = data.maxAge || 100;
 
+        this.currentWorldId = data.currentWorldId || 'nhan_gioi';
+        this.currentLocId = data.currentLocId || null;
+
         this.calculateStats();
     }
 
@@ -371,7 +379,9 @@ export class Player {
             gardenPlots: this.gardenPlots,
             mountainSurvival: this.mountainSurvival,
             age: this.age,
-            maxAge: this.maxAge
+            maxAge: this.maxAge,
+            currentWorldId: this.currentWorldId,
+            currentLocId: this.currentLocId
         };
     }
 }

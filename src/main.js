@@ -261,7 +261,7 @@ async function handleTypeBreakthrough(type) {
     if (res.success) {
         ui.toast(res.msg, 'success');
         saveGame();
-        render();
+        refreshUI();
     } else {
         ui.alert(res.msg, 'Phá Cảnh Thất Bại');
     }
@@ -312,17 +312,19 @@ async function handleSeclusion() {
         ui.showLoading(false);
         ui.alert(`Sau khi bế quan ${minutes / 12} ngày, căn cơ của bạn đã vững chắc hơn rất nhiều. Thân thể đã già đi một chút.`, 'Bế Quan Kết Thúc');
 
-        saveGame();
-        render();
+        refreshUI();
     }, 1500);
 }
 
 function saveGame() {
-    if (!player) return;
-    const data = player.save();
-    if (timeSystem) data.time = timeSystem.save();
-    SaveSystem.save(data);
-    console.log('Thiên Cơ được lưu giữ.');
+    if (player) {
+        player.currentWorldId = currentWorldId;
+        player.currentLocId = currentLocId;
+        const data = player.save();
+        if (timeSystem) data.time = timeSystem.save();
+        SaveSystem.save(data);
+        console.log('Thiên Cơ được lưu giữ.');
+    }
 }
 
 function update() {
@@ -354,8 +356,35 @@ function update() {
         renderMountain();
     }
 
+    // Check for death
+    if (player.hp <= 0) {
+        handleDeath();
+    }
+
     render();
     requestAnimationFrame(update);
+}
+
+function handleDeath() {
+    if (currentCombat) currentCombat.isActive = false;
+    ui.toggleOverlay(overlayBattle, false);
+    ui.toggleOverlay(overlayMountain, false);
+    
+    player.hp = Math.floor(player.maxHp * 0.1); // Revive with 10% HP
+    const penalty = Math.floor(player.tuVi * 0.1);
+    player.tuVi -= penalty;
+    
+    ui.alert(`Bạn đã kiệt sức và ngất đi. Sau khi được một vị ẩn sĩ cứu giúp, bạn tỉnh lại nhưng đã mất đi ${penalty.toLocaleString()} tu vi tích lũy.`, 'Thiên Đạo Luân Hồi');
+    
+    refreshUI();
+}
+
+function refreshUI() {
+    render();
+    renderCharacter();
+    renderInventory();
+    if (typeof renderAlchemy === 'function') renderAlchemy();
+    if (typeof renderShop === 'function') renderShop();
 }
 
 function render() {
@@ -379,8 +408,7 @@ function render() {
     elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
     elLingShiText.textContent = Math.floor(player.lingShi).toLocaleString();
 
-    if (player.canBreakthrough('tuvi').can) btnBreakthrough.classList.remove('hidden');
-    else btnBreakthrough.classList.add('hidden');
+    ui.toggleOverlay(btnBreakthrough, player.canBreakthrough('tuvi').can);
 
     if (currentCombat) updateBattleUI();
 
@@ -455,8 +483,8 @@ function selectWorld(id) {
     currentWorldId = id;
     const w = getWorlds()[id];
     elCurrentWorldName.textContent = w.name;
-    viewWorlds.classList.add('hidden');
-    viewLocations.classList.remove('hidden');
+    ui.toggleOverlay(viewWorlds, false);
+    ui.toggleOverlay(viewLocations, true);
     renderLocationList();
     if (timeSystem) timeSystem.timeMultiplier = 1.0;
 }
@@ -501,9 +529,10 @@ function startExploration(locId) {
     const loc = getLocationById(currentWorldId, locId);
     elCurrentLocName.textContent = loc.name;
     explorationProgress = 0;
+    ui.toggleOverlay(viewWorlds, false);
+    ui.toggleOverlay(viewLocations, false);
+    ui.toggleOverlay(viewExplore, true);
     updateExplorationUI();
-    viewLocations.classList.add('hidden');
-    viewExplore.classList.remove('hidden');
     elExploreEvent.textContent = 'Bạn đã tới địa điểm.';
 
     // Set time flow for this location (default 1.0)
@@ -514,29 +543,20 @@ function startExploration(locId) {
         }
     }
 
-    // Check if this is a shop location
-    if (loc.id === 'van_bao_cac') {
-        btnEnterShop.classList.remove('hidden');
-    } else {
-        btnEnterShop.classList.add('hidden');
-    }
+    // Shop
+    ui.toggleOverlay(btnEnterShop, loc.id === 'van_bao_cac');
 
-    // Check if this is a sect location
-    if (SECTS[loc.id]) {
-        btnEnterSect.classList.remove('hidden');
-    } else {
-        btnEnterSect.classList.add('hidden');
-    }
+    // Sect
+    ui.toggleOverlay(btnEnterSect, !!SECTS[loc.id]);
 
-    // Check if this is a guild location
-    if (loc.special === 'guild') btnEnterGuild.classList.remove('hidden');
-    else btnEnterGuild.classList.add('hidden');
+    // Guild
+    ui.toggleOverlay(btnEnterGuild, loc.special === 'guild');
 
-    if (loc.special === 'tower') btnEnterTower.classList.remove('hidden');
-    else btnEnterTower.classList.add('hidden');
+    // Tower
+    ui.toggleOverlay(btnEnterTower, loc.special === 'tower');
 
-    if (loc.special === 'mountain') btnEnterMountain.classList.remove('hidden');
-    else btnEnterMountain.classList.add('hidden');
+    // Mountain
+    ui.toggleOverlay(btnEnterMountain, loc.special === 'mountain');
 
     // Smooth scroll to top of exploration view
     viewExplore.scrollTop = 0;
@@ -589,7 +609,13 @@ btnMove.onclick = () => {
             player.lingShi += droppedShi;
             setTimeout(() => { elExploreEvent.textContent = resultMsg + ` (+${droppedShi} LT)`; }, 1000);
         } else if (event.type === 'npc') {
-            setTimeout(() => { openNPCInteraction(); }, 1000);
+            setTimeout(() => { 
+                ui.toggleOverlay(overlayNPC, true);
+                renderNPC();
+            }, 1000);
+        } else if (event.type === 'shop') {
+            ui.toggleOverlay(overlayShop, true);
+            renderShop();
         } else if (event.type === 'combat') {
             setTimeout(() => { startBattle(currentWorldId, currentLocId); }, 1000);
         }
@@ -611,18 +637,18 @@ btnEnterShop.onclick = () => {
     ui.showLoading(true, "Đang Bước Vào Vạn Bảo Thiên Các...");
     setTimeout(() => {
         ui.showLoading(false);
-        overlayShop.classList.remove('hidden');
+        ui.toggleOverlay(overlayShop, true);
         renderShop();
     }, 800);
 };
 
-btnCloseShop.onclick = () => overlayShop.classList.add('hidden');
+btnCloseShop.onclick = () => ui.toggleOverlay(overlayShop, false);
 
 btnEnterSect.onclick = () => {
     ui.showLoading(true, "Đang Bước Vào Tông Môn Thánh Địa...");
     setTimeout(() => {
         ui.showLoading(false);
-        overlaySects.classList.remove('hidden');
+        ui.toggleOverlay(overlaySects, true);
         renderSects();
     }, 800);
 };
@@ -631,29 +657,29 @@ btnEnterGuild.onclick = () => {
     ui.showLoading(true, "Đang Bước Vào Công Hội Luyện Dược Sư...");
     setTimeout(() => {
         ui.showLoading(false);
-        overlayGuild.classList.remove('hidden');
+        ui.toggleOverlay(overlayGuild, true);
         renderGuild();
     }, 800);
 };
 
-btnCloseGuild.onclick = () => overlayGuild.classList.add('hidden');
+btnCloseGuild.onclick = () => ui.toggleOverlay(overlayGuild, false);
 
 btnEnterTower.onclick = () => {
     ui.showLoading(true, "Đang Tiến Vào Thánh Địa Đan Tháp...");
     setTimeout(() => {
         ui.showLoading(false);
-        overlayTower.classList.remove('hidden');
+        ui.toggleOverlay(overlayTower, true);
         renderTower();
     }, 800);
 };
 
-btnCloseTower.onclick = () => overlayTower.classList.add('hidden');
+btnCloseTower.onclick = () => ui.toggleOverlay(overlayTower, false);
 
 btnEnterMountain.onclick = () => {
     ui.showLoading(true, "Đang Tiến Vào Thập Vạn Đại Sơn...");
     setTimeout(() => {
         ui.showLoading(false);
-        overlayMountain.classList.remove('hidden');
+        ui.toggleOverlay(overlayMountain, true);
         mountainSystem.start();
         renderMountain();
     }, 1200);
@@ -661,7 +687,7 @@ btnEnterMountain.onclick = () => {
 
 btnCloseMountain.onclick = () => {
     mountainSystem.stop();
-    overlayMountain.classList.add('hidden');
+    ui.toggleOverlay(overlayMountain, false);
 };
 
 btnMountainDeeper.onclick = () => {
@@ -675,18 +701,18 @@ btnMountainRetreat.onclick = () => {
 };
 
 btnBackToLocs.onclick = () => {
-    viewExplore.classList.add('hidden');
-    viewLocations.classList.remove('hidden');
+    ui.toggleOverlay(viewExplore, false);
+    ui.toggleOverlay(viewLocations, true);
     if (timeSystem) timeSystem.timeMultiplier = 1.0;
 };
 
 btnLeaveLoc.onclick = () => {
-    viewExplore.classList.add('hidden');
-    viewLocations.classList.remove('hidden');
+    ui.toggleOverlay(viewExplore, false);
+    ui.toggleOverlay(viewLocations, true);
     if (timeSystem) timeSystem.timeMultiplier = 1.0;
 };
 
-btnCloseSects.onclick = () => overlaySects.classList.add('hidden');
+btnCloseSects.onclick = () => ui.toggleOverlay(overlaySects, false);
 
 function renderShop() {
     elShopLingShi.textContent = Math.floor(player.lingShi);
@@ -791,7 +817,7 @@ btnShopTabSell.onclick = () => { shopView = 'sell'; btnShopTabSell.className = '
 
 // --- DESTINY SELECTION ---
 function showDestinySelection() {
-    overlayDestiny.classList.remove('hidden');
+    ui.toggleOverlay(overlayDestiny, true);
     rerollDestiny();
 }
 
@@ -843,7 +869,7 @@ btnConfirmDestiny.onclick = () => {
     // Initialize systems for the new player
     initGameSystems(player);
 
-    overlayDestiny.classList.add('hidden');
+    ui.toggleOverlay(overlayDestiny, false);
     saveGame();
 
     elPlayerNameHeader.textContent = player.name;
@@ -870,6 +896,17 @@ function initGameSystems(player, savedData = null) {
     if (elPlayerNameHeader) elPlayerNameHeader.textContent = player.name;
     const mainPortrait = document.getElementById('main-player-portrait');
     if (mainPortrait) mainPortrait.src = ASSETS.portraits.player;
+
+    // Restore location
+    if (player.currentWorldId) {
+        currentWorldId = player.currentWorldId;
+        if (player.currentLocId) {
+            currentLocId = player.currentLocId;
+            enterLocation(currentLocId);
+        } else {
+            renderWorldList();
+        }
+    }
 }
 
 // --- CHARACTER & EQUIPMENT ---
@@ -1010,7 +1047,6 @@ function selectItem(id) {
     selectedItemId = id;
     const itemData = getItemById(id);
     const qClass = getQualityClass(itemData.quality);
-    elItemDetail.classList.remove('hidden');
     elDetailIcon.textContent = itemData.icon;
     elDetailIcon.className = `text-3xl mr-3 bg-black/40 p-2 rounded-lg border border-${qClass}/50`;
     elDetailName.textContent = itemData.name;
@@ -1023,13 +1059,14 @@ function selectItem(id) {
     const equippable = ['weapon', 'armor', 'accessory', 'treasure'].includes(itemData.type);
     btnEquipItem.style.display = equippable ? 'block' : 'none';
 
+    ui.toggleOverlay(elItemDetail, true);
     renderInventory();
 }
 
 btnEquipItem.onclick = () => {
     if (selectedItemId && player.equip(selectedItemId)) {
         selectedItemId = null;
-        elItemDetail.classList.add('hidden');
+        ui.toggleOverlay(elItemDetail, false);
         renderInventory();
     }
 };
@@ -1037,9 +1074,11 @@ btnEquipItem.onclick = () => {
 btnInventorySort.onclick = () => { player.inventory.sortItems(); renderInventory(); };
 btnUseItem.onclick = () => {
     if (selectedItemId && player.inventory.useItem(selectedItemId)) {
-        if (!player.inventory.items.find(i => i.id === selectedItemId)) { selectedItemId = null; elItemDetail.classList.add('hidden'); }
-        renderInventory();
-        render();
+        if (!player.inventory.items.find(i => i.id === selectedItemId)) {
+            selectedItemId = null;
+            ui.toggleOverlay(elItemDetail, false);
+        }
+        refreshUI();
     }
 };
 
@@ -1427,13 +1466,13 @@ btnNpcAttack.onclick = () => {
     currentNPC.relationship = -100;
     elNpcDialogue.textContent = currentNPC.getDialogue('hostile');
     setTimeout(() => {
-        overlayNPC.classList.add('hidden');
+        ui.toggleOverlay(overlayNPC, false);
         startBattleWithNPC(currentNPC);
     }, 1000);
 };
 
 btnNpcLeave.onclick = () => {
-    overlayNPC.classList.add('hidden');
+    ui.toggleOverlay(overlayNPC, false);
     if (currentNPC && !player.knownNPCs[currentNPC.id]) {
         player.knownNPCs[currentNPC.id] = currentNPC;
     }
@@ -1500,9 +1539,8 @@ window.game.handleStoryChoice = (idx) => {
         currentNPC.storyStep = option.next;
     }
 
+    refreshUI();
     renderNPC();
-    renderNPC();
-    saveGame();
 };
 
 function startBattleWithNPC(npc) {
@@ -1521,25 +1559,28 @@ function initiateBattle(enemy) {
     elBattleEnemyName.textContent = enemy.name;
     elEnemyImg.src = enemy.image;
     elBattleLog.innerHTML = '';
-    overlayBattle.classList.remove('hidden');
-    battleActions.classList.add('hidden');
+    ui.toggleOverlay(overlayBattle, true);
+    ui.toggleOverlay(battleActions, false);
 
     currentCombat = new CombatEngine(player, enemy,
         (type, data) => {
-            if (type === 'damage') createDamagePopup(data.target, data.value, data.crit);
-            if (type === 'player-turn-start') battleActions.classList.remove('hidden');
-            if (type === 'player-turn-end' || type === 'end') battleActions.classList.add('hidden');
+            if (type === 'damage') {
+                const anchor = data.target === 'enemy' ? elEnemyImg : elBattlePlayerName;
+                ui.createDamagePopup(anchor, data.value, data.crit);
+            }
+            if (type === 'player-turn-start') ui.toggleOverlay(battleActions, true);
+            if (type === 'player-turn-end' || type === 'end') ui.toggleOverlay(battleActions, false);
         },
         (result) => {
             setTimeout(() => {
-                overlayBattle.classList.add('hidden');
+                ui.toggleOverlay(overlayBattle, false);
                 currentCombat = null;
                 if (result === 'win') {
                     const droppedShi = Math.floor(Math.random() * 20 * enemy.realmId);
                     player.lingShi += droppedShi;
                     ui.toast(`Đắc Thắng! +${droppedShi} Linh Thạch.`, "success");
                 }
-                saveGame();
+                refreshUI();
             }, 2000);
         }
     );
@@ -1573,19 +1614,27 @@ navButtons.forEach(btn => {
         btn.classList.add('text-cultivation-gold', 'active');
         btn.classList.remove('text-gray-500');
 
-        if (targetId === 'screen-adventure') { renderWorldList(); viewWorlds.classList.remove('hidden'); viewLocations.classList.add('hidden'); viewExplore.classList.add('hidden'); }
-        if (targetId === 'screen-character') renderCharacter();
-        if (targetId === 'screen-inventory') renderInventory();
-        if (targetId === 'screen-alchemy') renderAlchemy();
+        if (targetId === 'screen-adventure') {
+            renderWorldList();
+            ui.toggleOverlay(viewWorlds, true);
+            ui.toggleOverlay(viewLocations, false);
+            ui.toggleOverlay(viewExplore, false);
+        } else if (targetId === 'screen-character') {
+            renderCharacter();
+        } else if (targetId === 'screen-inventory') {
+            renderInventory();
+        } else if (targetId === 'screen-alchemy') {
+            renderAlchemy();
+        }
     });
 });
 
-btnBackToWorlds.onclick = () => { viewLocations.classList.add('hidden'); viewWorlds.classList.remove('hidden'); };
-btnBackToLocs.onclick = () => { viewExplore.classList.add('hidden'); viewLocations.classList.remove('hidden'); };
+btnBackToWorlds.onclick = () => { ui.toggleOverlay(viewLocations, false); ui.toggleOverlay(viewWorlds, true); };
+btnBackToLocs.onclick = () => { ui.toggleOverlay(viewExplore, false); ui.toggleOverlay(viewLocations, true); };
 
 btnCultivate.addEventListener('click', (e) => {
     if (player.cultivate()) {
-        createClickParticle(e.clientX, e.clientY);
+        ui.createClickParticle(e.clientX, e.clientY);
         // Optional: Add a subtle text popup or sound
     } else {
         ui.toast("Kiệt sức rồi, hãy nghỉ ngơi một chút!", "warning");
@@ -1594,32 +1643,12 @@ btnCultivate.addEventListener('click', (e) => {
 btnBreakthrough.addEventListener('click', async () => {
     if (player.breakthrough()) {
         ui.alert('Chúc mừng Đạo hữu đã đột phá thành công, thực lực đại tăng!', 'Thiên Đạo Chúc Phúc');
-        saveGame();
-        render(); // Refresh UI
+        refreshUI();
     }
 });
 
-function createDamagePopup(target, value, crit) {
-    const popup = document.createElement('div');
-    popup.className = `damage-popup ${crit ? 'text-2xl text-yellow-400 scale-125' : 'text-red-500'}`;
-    popup.textContent = `-${value}`;
-    const anchor = target === 'enemy' ? elEnemyImg : elBattlePlayerName;
-    const rect = anchor.getBoundingClientRect();
-    popup.style.left = `${rect.left + rect.width / 2}px`; popup.style.top = `${rect.top}px`;
-    document.body.appendChild(popup);
-    setTimeout(() => popup.remove(), 1000);
-}
-
-function createClickParticle(x, y) {
-    const p = document.createElement('div');
-    p.className = 'qi-particle w-2 h-2';
-    p.style.left = `${x}px`; p.style.top = `${y}px`;
-    document.querySelector('.qi-particles').appendChild(p);
-    setTimeout(() => p.remove(), 3000);
-}
-
-btnOpenStats.onclick = () => modalStats.classList.remove('hidden');
-btnCloseStats.onclick = () => modalStats.classList.add('hidden');
+btnOpenStats.onclick = () => ui.toggleOverlay(modalStats, true);
+btnCloseStats.onclick = () => ui.toggleOverlay(modalStats, false);
 
 function updateBattleUI() {
     const p = currentCombat.player; const e = currentCombat.enemy;
