@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700;800&family=Charm:wght@400;700&family=Noto+Serif+VI:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <script type="module" crossorigin src="./assets/index-Dg-rKxYS.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-C5OM0ZG9.css">
+  <script type="module" crossorigin src="./assets/index-BXaDsp3_.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DMzt0qR8.css">
 </head>
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
     
@@ -448,7 +448,57 @@
                                 <div id="mountain-toxicity-bar" class="h-full bg-red-500" style="width: 0%"></div>
                             </div>
                         </div>
+            </div>
+
+            <!-- Tab: Bách Nghệ Hub (Crafting Hub - NEW) -->
+            <div id="screen-crafting-hub" class="screen hidden flex flex-col h-full p-6 overflow-hidden">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-charm text-cultivation-gold">Bách Nghệ Đường</h2>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Nghề Nghiệp Phụ & Sáng Chế</p>
+                </div>
+
+                <div class="space-y-4 overflow-y-auto custom-scroll pb-6">
+                    <!-- Alchemy Card -->
+                    <div onclick="window.game.openCrafting('alchemy')" class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+                        <div class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">🧪</div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-14 h-14 bg-qi-jade/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(0,168,107,0.2)]">🧪</div>
+                            <div class="flex-grow">
+                                <h3 class="text-xl font-ancient text-white group-hover:text-qi-jade transition-colors">Luyện Đan</h3>
+                                <p id="hub-alchemy-level" class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Luyện Dược Sư</p>
+                            </div>
+                            <i class="ph ph-caret-right text-gray-600"></i>
+                        </div>
                     </div>
+
+                    <!-- Talisman Card -->
+                    <div onclick="window.game.openCrafting('talisman')" class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+                        <div class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">📜</div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-14 h-14 bg-qi-blue/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(79,209,197,0.2)]">📜</div>
+                            <div class="flex-grow">
+                                <h3 class="text-xl font-ancient text-white group-hover:text-qi-blue transition-colors">Phù Lục</h3>
+                                <p id="hub-talisman-level" class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Phù Sư</p>
+                            </div>
+                            <i class="ph ph-caret-right text-gray-600"></i>
+                        </div>
+                    </div>
+
+                    <!-- Smithing Card -->
+                    <div onclick="window.game.openCrafting('smithing')" class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+                        <div class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">⚒️</div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-14 h-14 bg-red-500/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(239,68,68,0.2)]">⚒️</div>
+                            <div class="flex-grow">
+                                <h3 class="text-xl font-ancient text-white group-hover:text-red-500 transition-colors">Luyện Khí</h3>
+                                <p id="hub-smithing-level" class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Luyện Khí Sư</p>
+                            </div>
+                            <i class="ph ph-caret-right text-gray-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tab: Phù Lục (Talisman - NEW) -->
             <div id="screen-talisman" class="screen hidden flex flex-col h-full p-6 overflow-hidden">
                 <div class="flex justify-between items-end mb-8">
@@ -571,21 +621,13 @@
                 <i class="ph ph-user-focus text-xl group-hover:text-qi-purple transition-colors"></i>
                 <span class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Trạng Thái</span>
             </button>
-            <button id="nav-alchemy" class="nav-item flex flex-col items-center transition-all group text-gray-500">
-                <i class="ph ph-flask text-xl group-hover:text-qi-jade transition-colors"></i>
-                <span class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Luyện Đan</span>
-            </button>
             <button id="nav-inventory" class="nav-item flex flex-col items-center transition-all group text-gray-500">
                 <i class="ph ph-backpack text-xl group-hover:text-white transition-colors"></i>
                 <span class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Túi Đồ</span>
             </button>
-            <button id="nav-talisman" class="nav-item flex flex-col items-center transition-all group text-gray-500">
-                <i class="ph ph-scroll text-xl group-hover:text-qi-blue transition-colors"></i>
-                <span class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Phù Lục</span>
-            </button>
-            <button id="nav-smithing" class="nav-item flex flex-col items-center transition-all group text-gray-500">
-                <i class="ph ph-hammer text-xl group-hover:text-red-500 transition-colors"></i>
-                <span class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Luyện Khí</span>
+            <button id="nav-crafting-hub" class="nav-item flex flex-col items-center transition-all group text-gray-500">
+                <i class="ph ph-magic-wand text-xl group-hover:text-cultivation-gold transition-colors"></i>
+                <span class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Bách Nghệ</span>
             </button>
         </nav>
 

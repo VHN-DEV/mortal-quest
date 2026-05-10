@@ -415,3 +415,30 @@ button:active {
 .bg-vip-3 { background: #7c3aed; color: #f8fafc; }
 .bg-vip-4 { background: #db2777; color: #f8fafc; }
 .bg-vip-5 { background: linear-gradient(to right, #d4af37, #f59e0b); color: #0a0a0c; box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
+
+/* Crafting Hub Cards */
+.hub-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hub-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(212, 175, 55, 0.3);
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+}
+
+.hub-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(255,255,255,0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hub-card:hover::before {
+    opacity: 1;
+}

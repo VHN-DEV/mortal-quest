@@ -1,4 +1,5 @@
 import './styles/main.css';
+console.log("%c🌌 Mortal Quest: Phàm Nhân Vấn Đạo - Khởi Động...", "color: #d4af37; font-size: 16px; font-weight: bold;");
 import { Player } from './core/player.js';
 import { SaveSystem } from './core/save-system.js';
 import { EnemyGenerator, Enemy } from './core/enemy.js';
@@ -52,6 +53,7 @@ let currentDestiny = null;
 // DOM Elements
 const screens = document.querySelectorAll('.screen');
 const navButtons = document.querySelectorAll('.nav-item');
+console.log(`[UI] Đã tìm thấy ${screens.length} màn hình và ${navButtons.length} nút điều hướng.`);
 const elHeaderPortrait = document.getElementById('header-portrait');
 const elPlayerNameHeader = document.getElementById('player-name-header');
 const elLingShiText = document.getElementById('ling-shi-text');
@@ -435,6 +437,7 @@ function refreshUI() {
     renderInventory();
     if (typeof renderAlchemy === 'function') renderAlchemy();
     if (typeof renderShop === 'function') renderShop();
+    if (typeof renderCraftingHub === 'function') renderCraftingHub();
 }
 
 function render() {
@@ -929,6 +932,20 @@ window.game = {
         if (player.removeFromParty(npcId)) {
             ui.toast("Đồng hành đã rời đội.", "info");
             renderCharacter();
+        }
+    },
+    openCrafting: (type) => {
+        const screens = document.querySelectorAll('.screen');
+        const navButtons = document.querySelectorAll('.nav-item');
+        
+        screens.forEach(s => s.classList.add('hidden'));
+        const target = document.getElementById(`screen-${type}`);
+        if (target) {
+            target.classList.remove('hidden');
+            target.classList.add('animate-fade-in');
+            if (type === 'alchemy') renderAlchemy();
+            if (type === 'talisman') renderTalisman();
+            if (type === 'smithing') renderSmithing();
         }
     }
 };
@@ -1689,6 +1706,25 @@ function renderSmithing() {
     });
 }
 
+function renderCraftingHub() {
+    const elAlchemyLvl = document.getElementById('hub-alchemy-level');
+    const elTalismanLvl = document.getElementById('hub-talisman-level');
+    const elSmithingLvl = document.getElementById('hub-smithing-level');
+
+    if (elAlchemyLvl && typeof getAlchemyLevelInfo === 'function') {
+        const info = getAlchemyLevelInfo(player.alchemyLevel);
+        elAlchemyLvl.textContent = `${info.name} (Cấp ${player.alchemyLevel})`;
+    }
+    if (elTalismanLvl && typeof getTalismanLevelInfo === 'function') {
+        const info = getTalismanLevelInfo(player.talismanLevel);
+        elTalismanLvl.textContent = `${info.name} (Cấp ${player.talismanLevel})`;
+    }
+    if (elSmithingLvl && typeof getSmithingLevelInfo === 'function') {
+        const info = getSmithingLevelInfo(player.smithingLevel);
+        elSmithingLvl.textContent = `${info.name} (Cấp ${player.smithingLevel})`;
+    }
+}
+
 window.game.forgeItem = (id) => {
     const res = smithingSystem.forge(id);
     ui.toast(res.msg, res.success ? 'success' : 'error');
@@ -1897,25 +1933,33 @@ function initiateBattle(enemy) {
 }
 
 // --- UI & NAV ---
-navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+const elNav = document.querySelector('nav');
+if (elNav) {
+    elNav.addEventListener('click', (e) => {
+        const btn = e.target.closest('.nav-item');
+        if (!btn) return;
+
         const targetId = btn.id.replace('nav-', 'screen-');
+        console.log(`[NAV] Chuyển đến: ${targetId}`);
         const targetScreen = document.getElementById(targetId);
 
         if (!targetScreen) {
-            console.error(`Thất bại: Không tìm thấy màn hình ${targetId}`);
+            console.warn(`[NAV] Không tìm thấy màn hình: ${targetId}`);
             return;
         }
 
-        screens.forEach(s => {
+        // Hide all screens
+        document.querySelectorAll('.screen').forEach(s => {
             s.classList.add('hidden');
             s.classList.remove('animate-fade-in');
         });
 
+        // Show target
         targetScreen.classList.remove('hidden');
         targetScreen.classList.add('animate-fade-in');
 
-        navButtons.forEach(b => {
+        // Update nav buttons
+        document.querySelectorAll('.nav-item').forEach(b => {
             b.classList.remove('text-cultivation-gold', 'active');
             b.classList.add('text-gray-500');
         });
@@ -1923,6 +1967,7 @@ navButtons.forEach(btn => {
         btn.classList.add('text-cultivation-gold', 'active');
         btn.classList.remove('text-gray-500');
 
+        // Specific screen triggers
         if (targetId === 'screen-adventure') {
             renderWorldList();
             ui.toggleOverlay(viewWorlds, true);
@@ -1938,9 +1983,13 @@ navButtons.forEach(btn => {
             renderTalisman();
         } else if (targetId === 'screen-smithing') {
             renderSmithing();
+        } else if (targetId === 'screen-crafting-hub') {
+            renderCraftingHub();
         }
     });
-});
+} else {
+    console.error("[UI] Không tìm thấy phần tử <nav>!");
+}
 
 btnBackToWorlds.onclick = () => { ui.toggleOverlay(viewLocations, false); ui.toggleOverlay(viewWorlds, true); };
 btnBackToLocs.onclick = () => { ui.toggleOverlay(viewExplore, false); ui.toggleOverlay(viewLocations, true); };
