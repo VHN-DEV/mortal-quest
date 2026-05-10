@@ -36,6 +36,8 @@ import { CorpseSystem } from './systems/corpse-system.js';
 import { BEASTS, BEAST_TYPES, getBeastLevelInfo } from './configs/beast-data.js';
 import { TechniqueSystem } from './systems/technique-system.js';
 import { TECHNIQUES, SECRET_TECHNIQUES, getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, MASTERY_LEVELS } from './configs/technique-data.js';
+import { CreationSystem } from './systems/creation-system.js';
+import { CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS } from './configs/creation-data.js';
 
 // Global error handler
 window.onerror = function (msg, url, lineNo, columnNo, error) {
@@ -44,7 +46,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 };
 
 // State
-let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem, formationSystem, talismanSystem, smithingSystem, beastSystem, corpseSystem, techniqueSystem;
+let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem, formationSystem, talismanSystem, smithingSystem, beastSystem, corpseSystem, techniqueSystem, creationSystem;
 let currentCombat = null;
 let currentNPC = null;
 let selectedItemId = null;
@@ -219,14 +221,26 @@ function init() {
     ui = new UISystem();
     window.ui = ui;
 
-    player = new Player();
+    creationSystem = new CreationSystem();
+
     const savedData = SaveSystem.load();
 
     if (!savedData) {
-        showDestinySelection();
+        ui.toggleOverlay(document.getElementById('screen-creation'), true);
+        ui.toggleOverlay(document.getElementById('screen-main'), false);
+        document.querySelector('header').classList.add('hidden');
+        document.getElementById('time-hud').classList.add('hidden');
+        document.querySelector('nav').classList.add('hidden');
+        renderCreationScreen();
     } else {
+        player = new Player();
         player.load(savedData);
         initGameSystems(player, savedData);
+        ui.toggleOverlay(document.getElementById('screen-creation'), false);
+        ui.toggleOverlay(document.getElementById('screen-main'), true);
+        document.querySelector('header').classList.remove('hidden');
+        document.getElementById('time-hud').classList.remove('hidden');
+        document.querySelector('nav').classList.remove('hidden');
     }
 
     // Auto-save every 30 seconds
@@ -446,6 +460,10 @@ function saveGame() {
 }
 
 function update() {
+    if (!player) {
+        requestAnimationFrame(update);
+        return;
+    }
     const now = Date.now();
     const delta = (now - player.lastUpdate) / 1000;
 
@@ -2265,7 +2283,7 @@ if (btnResetGame) {
         const confirm = await ui.confirm("Bạn có chắc chắn muốn 'Trảm Trần Duyên', xóa bỏ mọi tu vi và bắt đầu lại từ đầu không? Hành động này không thể hoàn tác!");
         if (confirm) {
             localStorage.clear();
-            location.reload();
+            location.reload(); // Reload will trigger init() which shows creation screen
         }
     };
 }
@@ -2558,3 +2576,155 @@ async function showSecretDetail(id) {
         refreshUI();
     };
 }
+
+// --- CHARACTER CREATION UI ---
+function renderCreationScreen() {
+    const mode = creationSystem.mode;
+    
+    // Update Mode Buttons
+    document.getElementById('creation-mode-random').className = `flex-grow py-3 text-[10px] font-ancient uppercase rounded-xl transition-all ${mode === 'random' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500'}`;
+    document.getElementById('creation-mode-custom').className = `flex-grow py-3 text-[10px] font-ancient uppercase rounded-xl transition-all ${mode === 'custom' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500'}`;
+    document.getElementById('creation-mode-special').className = `flex-grow py-3 text-[10px] font-ancient uppercase rounded-xl transition-all ${mode === 'special' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500'}`;
+
+    // Show/Hide Panels based on mode
+    const pointsContainer = document.getElementById('creation-points-container');
+    const scenariosPanel = document.getElementById('creation-scenarios-panel');
+    const standardPanels = ['creation-roots-grid', 'creation-physiques-list', 'creation-origins-list', 'creation-traits-grid'].map(id => document.getElementById(id).parentElement);
+
+    if (mode === 'special') {
+        pointsContainer.classList.add('hidden');
+        scenariosPanel.classList.remove('hidden');
+        standardPanels.forEach(p => p.classList.add('hidden'));
+        renderCreationScenarios();
+    } else {
+        pointsContainer.classList.toggle('hidden', mode === 'random');
+        scenariosPanel.classList.add('hidden');
+        standardPanels.forEach(p => p.classList.remove('hidden'));
+        
+        renderCreationRoots();
+        renderCreationPhysiques();
+        renderCreationOrigins();
+        renderCreationTraits();
+        updateCreationPoints();
+    }
+
+    // Set Listeners
+    document.getElementById('creation-mode-random').onclick = () => { creationSystem.rollRandom(); renderCreationScreen(); };
+    document.getElementById('creation-mode-custom').onclick = () => { creationSystem.mode = 'custom'; renderCreationScreen(); };
+    document.getElementById('creation-mode-special').onclick = () => { creationSystem.mode = 'special'; renderCreationScreen(); };
+    
+    document.getElementById('creation-name-input').oninput = (e) => { creationSystem.playerName = e.target.value || "Phàm Nhân"; };
+    document.getElementById('creation-start-btn').onclick = handleCreationStart;
+}
+
+function updateCreationPoints() {
+    const pointsEl = document.getElementById('creation-points-value');
+    if (pointsEl) {
+        pointsEl.textContent = creationSystem.points;
+        pointsEl.className = `text-2xl font-bold font-mono ${creationSystem.points >= 0 ? 'text-qi-blue' : 'text-red-500'}`;
+    }
+}
+
+function renderCreationRoots() {
+    const grid = document.getElementById('creation-roots-grid');
+    grid.innerHTML = Object.values(CREATION_ROOTS).map(root => `
+        <button class="p-4 bg-black/40 border ${creationSystem.selectedRoot === root.id ? 'border-qi-blue bg-qi-blue/5' : 'border-white/5'} rounded-2xl text-left transition-all"
+                onclick="window.creationSystem.selectedRoot = '${root.id}'; window.creationSystem.calculatePoints(); window.renderCreationScreen();">
+            <div class="text-[10px] font-ancient text-qi-blue mb-1">${root.name}</div>
+            <div class="text-[9px] text-gray-500 line-clamp-2">${root.desc}</div>
+            <div class="mt-2 text-[10px] font-mono ${root.cost > 0 ? 'text-red-400' : 'text-green-400'}">${root.cost > 0 ? '-' : '+'}${Math.abs(root.cost)} Pts</div>
+        </button>
+    `).join('');
+}
+
+function renderCreationPhysiques() {
+    const list = document.getElementById('creation-physiques-list');
+    list.innerHTML = Object.values(CREATION_PHYSIQUES).map(phys => `
+        <button class="w-full p-4 bg-black/40 border ${creationSystem.selectedPhysique === phys.id ? 'border-qi-blue bg-qi-blue/5' : 'border-white/5'} rounded-2xl text-left flex justify-between items-center transition-all"
+                onclick="window.creationSystem.selectedPhysique = '${phys.id}'; window.creationSystem.calculatePoints(); window.renderCreationScreen();">
+            <div>
+                <div class="text-[10px] font-ancient text-qi-blue mb-1">${phys.name}</div>
+                <div class="text-[9px] text-gray-500">${phys.desc}</div>
+            </div>
+            <div class="text-[10px] font-mono ${phys.cost > 0 ? 'text-red-400' : 'text-green-400'}">${phys.cost > 0 ? '-' : '+'}${Math.abs(phys.cost)} Pts</div>
+        </button>
+    `).join('');
+}
+
+function renderCreationOrigins() {
+    const list = document.getElementById('creation-origins-list');
+    list.innerHTML = Object.values(CREATION_ORIGINS).map(origin => `
+        <button class="w-full p-4 bg-black/40 border ${creationSystem.selectedOrigin === origin.id ? 'border-qi-blue bg-qi-blue/5' : 'border-white/5'} rounded-2xl text-left flex justify-between items-center transition-all"
+                onclick="window.creationSystem.selectedOrigin = '${origin.id}'; window.creationSystem.calculatePoints(); window.renderCreationScreen();">
+            <div>
+                <div class="text-[10px] font-ancient text-qi-purple mb-1">${origin.name}</div>
+                <div class="text-[9px] text-gray-500">${origin.desc}</div>
+            </div>
+            <div class="text-[10px] font-mono ${origin.cost > 0 ? 'text-red-400' : 'text-green-400'}">${origin.cost > 0 ? '-' : '+'}${Math.abs(origin.cost)} Pts</div>
+        </button>
+    `).join('');
+}
+
+function renderCreationTraits() {
+    const grid = document.getElementById('creation-traits-grid');
+    grid.innerHTML = Object.values(CREATION_TRAITS).map(trait => {
+        const isSelected = creationSystem.selectedTraits.includes(trait.id);
+        return `
+        <button class="p-4 bg-black/40 border ${isSelected ? 'border-qi-blue bg-qi-blue/5' : 'border-white/5'} rounded-2xl text-left transition-all"
+                onclick="window.creationSystem.toggleTrait('${trait.id}'); window.renderCreationScreen();">
+            <div class="text-[10px] font-ancient ${trait.type === 'advantage' ? 'text-cultivation-gold' : 'text-red-400'} mb-1">${trait.name}</div>
+            <div class="text-[9px] text-gray-500 line-clamp-2">${trait.desc}</div>
+            <div class="mt-2 text-[10px] font-mono ${trait.cost > 0 ? 'text-red-400' : 'text-green-400'}">${trait.cost > 0 ? '-' : '+'}${Math.abs(trait.cost)} Pts</div>
+        </button>
+        `;
+    }).join('');
+}
+
+function renderCreationScenarios() {
+    const list = document.getElementById('creation-scenarios-list');
+    list.innerHTML = Object.values(CREATION_SCENARIOS).map(scen => `
+        <button class="w-full p-6 bg-black/40 border border-white/5 rounded-3xl text-left hover:border-red-500/50 transition-all group"
+                onclick="window.creationSystem.applyScenario('${scen.id}'); window.handleCreationStart();">
+            <div class="text-xl font-charm text-red-400 mb-2 group-hover:text-red-300">${scen.name}</div>
+            <div class="text-xs text-gray-400 italic mb-4">"${scen.desc}"</div>
+            <div class="flex space-x-2">
+                <span class="px-2 py-1 bg-white/5 rounded-lg text-[8px] uppercase text-gray-500">${CREATION_ROOTS[scen.setup.root].name}</span>
+                <span class="px-2 py-1 bg-white/5 rounded-lg text-[8px] uppercase text-gray-500">${CREATION_PHYSIQUES[scen.setup.physique].name}</span>
+            </div>
+        </button>
+    `).join('');
+}
+
+function handleCreationStart() {
+    if (creationSystem.points < 0 && creationSystem.mode === 'custom') {
+        ui.toast("Điểm Tiên Duyên không đủ!", "error");
+        return;
+    }
+
+    ui.showLoading(true, "Đang Khởi Tạo Tiên Cơ...");
+    
+    setTimeout(() => {
+        const newPlayer = creationSystem.buildPlayer();
+        if (newPlayer) {
+            player = newPlayer;
+            initGameSystems(player, null);
+            ui.toggleOverlay(document.getElementById('screen-creation'), false);
+            ui.toggleOverlay(document.getElementById('screen-main'), true);
+            document.querySelector('header').classList.remove('hidden');
+            document.getElementById('time-hud').classList.remove('hidden');
+            document.querySelector('nav').classList.remove('hidden');
+            saveGame();
+            refreshUI();
+            ui.showLoading(false);
+            ui.alert(`Đạo hữu ${player.name} thân mến, hành trình tu tiên của bạn bắt đầu từ đây. Hãy vững bước trên con đường tìm kiếm đại đạo!`, 'Thiên Cơ Khởi Động');
+        } else {
+            ui.showLoading(false);
+            ui.toast("Khởi tạo thất bại!", "error");
+        }
+    }, 2000);
+}
+
+// Global exposure for onclick handlers
+window.renderCreationScreen = renderCreationScreen;
+window.handleCreationStart = handleCreationStart;
+window.creationSystem = creationSystem;
