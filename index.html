@@ -11,6 +11,7 @@
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700;800&family=Charm:wght@400;700&family=Noto+Serif+VI:ital,wght@0,400;0,700;1,400&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="icon" type="image/png" href="./mortal_quest_favicon_1778413702699.png">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -29,7 +30,7 @@
         <header
             class="p-4 bg-gradient-to-b from-black to-transparent border-b border-white/5 flex items-center justify-between z-50">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-full border border-cultivation-gold p-0.5 relative">
+                <div id="header-portrait-container" class="w-10 h-10 rounded-full border border-cultivation-gold p-0.5 relative cursor-pointer active:scale-90 transition-all hover:shadow-[0_0_15px_rgba(212,175,55,0.4)]">
                     <img id="header-portrait" src="./src/assets/images/player.png"
                         class="w-full h-full object-cover rounded-full">
                 </div>
@@ -549,6 +550,33 @@
                             class="p-1 bg-gray-800 rounded text-xs hover:bg-gray-700">🔄</button>
                     </div>
                 </div>
+                <div id="inventory-equipment-slots" class="grid grid-cols-4 gap-3 mb-6 bg-black/20 p-4 rounded-2xl border border-white/5">
+                    <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50" data-slot="head">
+                        <i class="ph ph-crown text-gray-500 text-lg"></i>
+                    </div>
+                    <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50" data-slot="necklace">
+                        <i class="ph ph-diamond text-gray-500 text-lg"></i>
+                    </div>
+                    <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50" data-slot="weapon">
+                        <i class="ph ph-sword text-gray-500 text-lg"></i>
+                    </div>
+                    <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50" data-slot="artifact">
+                        <i class="ph ph-magic-wand text-gray-500 text-lg"></i>
+                    </div>
+                    <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50" data-slot="armor">
+                        <i class="ph ph-coat-hanger text-gray-500 text-lg"></i>
+                    </div>
+                    <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50" data-slot="treasure">
+                        <i class="ph ph-sparkle text-gray-500 text-lg"></i>
+                    </div>
+                    <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50" data-slot="shoes">
+                        <i class="ph ph-sneaker text-gray-500 text-lg"></i>
+                    </div>
+                    <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50" data-slot="accessory">
+                        <i class="ph ph-ring text-gray-500 text-lg"></i>
+                    </div>
+                </div>
+
                 <div class="flex-grow bg-black/40 rounded-xl border border-gray-800 p-4 overflow-y-auto">
                     <div id="inventory-grid" class="grid grid-cols-4 gap-3"></div>
                 </div>
@@ -1079,12 +1107,6 @@
                 <span
                     class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Lịch
                     Lãm</span>
-            </button>
-            <button id="nav-character" class="nav-item flex flex-col items-center transition-all group text-gray-500">
-                <i class="ph ph-user-focus text-xl group-hover:text-qi-purple transition-colors"></i>
-                <span
-                    class="text-[7px] mt-1 font-ancient uppercase tracking-widest opacity-60 group-hover:opacity-100">Trạng
-                    Thái</span>
             </button>
             <button id="nav-inventory" class="nav-item flex flex-col items-center transition-all group text-gray-500">
                 <i class="ph ph-backpack text-xl group-hover:text-white transition-colors"></i>

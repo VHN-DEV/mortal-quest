@@ -1,3 +1,12 @@
+export const TECHNIQUE_QUALITIES = {
+    'BINH_THUONG': { id: 1, name: 'Bình Thường', multiplier: 1.0 },
+    'UU_TU': { id: 2, name: 'Ưu Tú', multiplier: 1.2 },
+    'TINH_ANH': { id: 3, name: 'Tinh Anh', multiplier: 1.5 },
+    'HAOLAM': { id: 4, name: 'Hào Lam', multiplier: 2.0 },
+    'HUYEN_THOAI': { id: 5, name: 'Huyền Thoại', multiplier: 3.0 },
+    'THAN_THOAI': { id: 6, name: 'Thần Thoại', multiplier: 5.0 }
+};
+
 export const TECHNIQUE_LEVELS = {
     'Hoàng': { id: 1, name: 'Hoàng Cấp', multiplier: 1.0 },
     'Huyền': { id: 2, name: 'Huyền Cấp', multiplier: 1.5 },
@@ -18,35 +27,65 @@ export const MASTERY_LEVELS = [
 ];
 
 export const TECHNIQUES = {
-    'truong_sinh_quyet': {
-        id: 'truong_sinh_quyet',
-        name: 'Thanh Mộc Trường Sinh Quyết',
+    'truong_xuan_nap_khi_quyet': {
+        id: 'truong_xuan_nap_khi_quyet',
+        name: 'Trường Xuân Nạp Khí Quyết',
         type: 'Linh Lực',
         quality: 'Hoàng',
-        description: 'Môn công pháp cơ bản giúp tăng cường thọ nguyên và sinh mệnh.',
-        maxStage: 5,
-        stats: { hp: 20, mana: 10 },
-        effects: { tvps: 1.1, maxHp: 20 }
+        description: 'Công pháp nhập môn phổ thông được lưu truyền rộng rãi trong Nhân Giới. Ổn định, dễ tu luyện, ít tẩu hỏa nhập ma.',
+        maxStage: 7,
+        stats: { mana: 20, spd: 5 },
+        effects: { tvps: 1.2, manaRegen: 1.0, stability: 10 }
     },
-    'cuu_chuyen_kim_than': {
-        id: 'cuu_chuyen_kim_than',
-        name: 'Cửu Chuyển Kim Thân Quyết',
-        type: 'Luyện Thể',
-        quality: 'Địa',
-        description: 'Môn công pháp luyện thể chí cao vô thượng, rèn luyện nhục thân thành kim cương bất hoại.',
-        maxStage: 9,
-        stats: { hp: 50, def: 10, spd: -2 },
-        effects: { maxHp: 50, def: 10 }
-    },
-    'thai_am_chan_kinh': {
-        id: 'thai_am_chan_kinh',
-        name: 'Thái Âm Chân Kinh',
+    'liet_duong_cong': {
+        id: 'liet_duong_cong',
+        name: 'Liệt Dương Công',
         type: 'Linh Lực',
-        quality: 'Thiên',
-        description: 'Hấp thụ tinh hoa của ánh trăng, linh lực mang tính hàn cực mạnh.',
-        maxStage: 12,
-        stats: { mana: 100, atk: 20 },
-        effects: { mana: 100, atk: 20, tvps: 1.5 }
+        quality: 'Hoàng',
+        description: 'Công pháp thuộc tính Hỏa, hấp thu linh khí mang tính nóng bỏng của mặt trời.',
+        maxStage: 5,
+        stats: { atk: 15, mana: 10 },
+        effects: { tvps: 1.3, fireDamage: 1.2 }
+    },
+    'han_thuy_quyet': {
+        id: 'han_thuy_quyet',
+        name: 'Hàn Thủy Quyết',
+        type: 'Linh Lực',
+        quality: 'Hoàng',
+        description: 'Công pháp thuộc tính Thủy, linh lực mang tính hàn băng, giúp ổn định tâm tính.',
+        maxStage: 5,
+        stats: { def: 10, mana: 30 },
+        effects: { tvps: 1.3, iceDamage: 1.2 }
+    },
+    'thanh_moc_tam_kinh': {
+        id: 'thanh_moc_tam_kinh',
+        name: 'Thanh Mộc Tâm Kinh',
+        type: 'Linh Lực',
+        quality: 'Hoàng',
+        description: 'Công pháp thuộc tính Mộc, tăng cường khả năng phục hồi và thọ nguyên.',
+        maxStage: 5,
+        stats: { hp: 50, mana: 10 },
+        effects: { tvps: 1.4, healing: 1.5 }
+    },
+    'canh_kim_quyet': {
+        id: 'canh_kim_quyet',
+        name: 'Canh Kim Quyết',
+        type: 'Linh Lực',
+        quality: 'Hoàng',
+        description: 'Công pháp thuộc tính Kim, linh lực sắc bén như thần binh lợi khí.',
+        maxStage: 5,
+        stats: { atk: 25 },
+        effects: { tvps: 1.2, penet: 0.1 }
+    },
+    'hau_tho_cong': {
+        id: 'hau_tho_cong',
+        name: 'Hậu Thổ Công',
+        type: 'Linh Lực',
+        quality: 'Hoàng',
+        description: 'Công pháp thuộc tính Thổ, phòng ngự vững chãi như đại địa.',
+        maxStage: 5,
+        stats: { def: 20, hp: 30 },
+        effects: { tvps: 1.2, defMult: 1.15 }
     }
 };
 

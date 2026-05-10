@@ -650,43 +650,47 @@ export class Player {
     }
 
     // Technique Methods
-    learnTechnique(techId, qualityId = 'binh_thuong') {
-        if (this.learnedTechniques[techId]) return false;
+    learnTechnique(techId, qualityId = 'BINH_THUONG') {
+        const existing = this.learnedTechniques.find(t => t.id === techId);
+        if (existing) return false;
         
         const techData = getTechniqueById(techId);
         if (!techData) return false;
 
-        this.learnedTechniques[techId] = {
+        this.learnedTechniques.push({
             id: techId,
-            level: techData.level,
             stage: 1,
             mastery: 0,
             quality: TECHNIQUE_QUALITIES[qualityId.toUpperCase()] || TECHNIQUE_QUALITIES.BINH_THUONG
-        };
+        });
 
         if (!this.mainTechniqueId) {
             this.mainTechniqueId = techId;
         }
 
-        this.calculateStats();
+        if (typeof this.calculateStats === 'function') this.calculateStats();
         return true;
     }
 
     learnSecretTechnique(secretId) {
-        if (this.equippedSecretTechniqueIds.includes(secretId)) return false;
+        if (this.learnedSecretTechniqueIds.includes(secretId)) return false;
         const secretData = getSecretTechniqueById(secretId);
         if (!secretData) return false;
 
-        if (this.equippedSecretTechniqueIds.length < 4) {
+        this.learnedSecretTechniqueIds.push(secretId);
+        
+        // Auto-equip if slot available
+        if (this.equippedSecretTechniqueIds.length < 3) {
             this.equippedSecretTechniqueIds.push(secretId);
         }
         return true;
     }
 
     setMainTechnique(techId) {
-        if (this.learnedTechniques[techId]) {
+        const tech = this.learnedTechniques.find(t => t.id === techId);
+        if (tech) {
             this.mainTechniqueId = techId;
-            this.calculateStats();
+            if (typeof this.calculateStats === 'function') this.calculateStats();
             return true;
         }
         return false;

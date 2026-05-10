@@ -253,6 +253,11 @@ function init() {
     const btnFocusBody = document.getElementById('focus-body');
     const btnFocusSoul = document.getElementById('focus-soul');
     const elCultivateText = document.getElementById('cultivate-btn-text');
+    const elHeaderPortraitContainer = document.getElementById('header-portrait-container');
+
+    if (elHeaderPortraitContainer) {
+        elHeaderPortraitContainer.onclick = () => switchScreen('screen-character');
+    }
 
     if (btnFocusTuvi) {
         const updateFocusUI = () => {
@@ -1271,38 +1276,7 @@ function renderCharacter() {
         }
     }
 
-    equipmentSlots.forEach(slot => {
-        const type = slot.dataset.slot;
-        const itemId = player.equipment[type];
-        slot.innerHTML = '';
-        
-        // Clear any previous dynamic border classes
-        const classesToRemove = Array.from(slot.classList).filter(c => c.startsWith('border-') && c !== 'border-white/20');
-        slot.classList.remove(...classesToRemove);
-
-        if (itemId) {
-            const item = getItemById(itemId);
-            if (item) {
-                const qClass = getQualityClass(item.quality);
-                slot.classList.remove('border-white/20');
-                slot.classList.add(`border-${qClass}/50`);
-                slot.innerHTML = `<span class="text-xl">${item.icon}</span>`;
-                slot.onclick = () => {
-                    if (player.unequip(type)) renderCharacter();
-                };
-            } else {
-                slot.classList.add('border-white/20');
-                const icons = { head: 'ph-crown', shoes: 'ph-sneaker', necklace: 'ph-diamond', artifact: 'ph-magic-wand', weapon: 'ph-sword', armor: 'ph-coat-hanger', accessory: 'ph-ring', treasure: 'ph-sparkle' };
-                slot.innerHTML = `<i class="ph ${icons[type] || 'ph-question'} text-gray-600"></i>`;
-                slot.onclick = null;
-            }
-        } else {
-            slot.classList.add('border-white/20');
-            const icons = { head: 'ph-crown', shoes: 'ph-sneaker', necklace: 'ph-diamond', artifact: 'ph-magic-wand', weapon: 'ph-sword', armor: 'ph-coat-hanger', accessory: 'ph-ring', treasure: 'ph-sparkle' };
-            slot.innerHTML = `<i class="ph ${icons[type] || 'ph-question'} text-gray-600"></i>`;
-            slot.onclick = null;
-        }
-    });
+    renderEquipmentSlots();
 
     // Render Formations
     const elFormationList = document.getElementById('active-formations-list');
@@ -1337,6 +1311,39 @@ function renderInventory() {
         el.innerHTML = `<div class="text-2xl mb-1">${itemData.icon}</div><div class="text-[10px] text-gray-400">x${item.quantity}</div>`;
         el.onclick = () => selectItem(item.id);
         elInventoryGrid.appendChild(el);
+    });
+
+    // Also update equipment slots in inventory screen
+    renderEquipmentSlots();
+}
+
+function renderEquipmentSlots() {
+    equipmentSlots.forEach(slot => {
+        const type = slot.dataset.slot;
+        const itemId = player.equipment[type];
+        slot.innerHTML = '';
+        
+        // Clear any previous dynamic border classes
+        const classesToRemove = Array.from(slot.classList).filter(c => c.startsWith('border-') && c !== 'border-white/20');
+        slot.classList.remove(...classesToRemove);
+
+        if (itemId) {
+            const item = getItemById(itemId);
+            if (item) {
+                const qClass = getQualityClass(item.quality);
+                slot.classList.remove('border-white/20');
+                slot.classList.add(`border-${qClass}/50`);
+                slot.innerHTML = `<span class="text-xl">${item.icon}</span>`;
+                slot.onclick = () => {
+                    if (player.unequip(type)) refreshUI();
+                };
+            }
+        } else {
+            slot.classList.add('border-white/20');
+            const icons = { head: 'ph-crown', shoes: 'ph-sneaker', necklace: 'ph-diamond', artifact: 'ph-magic-wand', weapon: 'ph-sword', armor: 'ph-coat-hanger', accessory: 'ph-ring', treasure: 'ph-sparkle' };
+            slot.innerHTML = `<i class="ph ${icons[type] || 'ph-question'} text-gray-400"></i>`;
+            slot.onclick = null;
+        }
     });
 }
 
@@ -2202,64 +2209,63 @@ function initiateBattle(enemy) {
 }
 
 // --- UI & NAV ---
-const elNav = document.querySelector('nav');
+function switchScreen(targetId, btn = null) {
+    const targetScreen = document.getElementById(targetId);
+    if (!targetScreen) return;
+
+    // Hide all screens
+    document.querySelectorAll('.screen').forEach(s => {
+        s.classList.add('hidden');
+        s.classList.remove('animate-fade-in');
+    });
+
+    // Show target
+    targetScreen.classList.remove('hidden');
+    targetScreen.classList.add('animate-fade-in');
+
+    // Update nav buttons
+    document.querySelectorAll('.nav-item').forEach(b => {
+        b.classList.remove('text-cultivation-gold', 'active');
+        b.classList.add('text-gray-500');
+        
+        // If this button corresponds to the targetId, activate it
+        if (b.id.replace('nav-', 'screen-') === targetId) {
+            b.classList.add('text-cultivation-gold', 'active');
+            b.classList.remove('text-gray-500');
+        }
+    });
+
+    // Specific screen triggers
+    if (targetId === 'screen-adventure') {
+        renderWorldList();
+        ui.toggleOverlay(viewWorlds, true);
+        ui.toggleOverlay(viewLocations, false);
+        ui.toggleOverlay(viewExplore, false);
+    } else if (targetId === 'screen-character') {
+        renderCharacter();
+    } else if (targetId === 'screen-inventory') {
+        renderInventory();
+    } else if (targetId === 'screen-alchemy') {
+        renderAlchemy();
+    } else if (targetId === 'screen-talisman') {
+        renderTalisman();
+    } else if (targetId === 'screen-smithing') {
+        renderSmithing();
+    } else if (targetId === 'screen-crafting-hub') {
+        renderCraftingHub();
+    } else if (targetId === 'screen-technique') {
+        renderTechniques();
+    }
+}
+
 if (elNav) {
     elNav.addEventListener('click', (e) => {
         const btn = e.target.closest('.nav-item');
         if (!btn) return;
-
         const targetId = btn.id.replace('nav-', 'screen-');
-        console.log(`[NAV] Chuyển đến: ${targetId}`);
-        const targetScreen = document.getElementById(targetId);
-
-        if (!targetScreen) {
-            console.warn(`[NAV] Không tìm thấy màn hình: ${targetId}`);
-            return;
-        }
-
-        // Hide all screens
-        document.querySelectorAll('.screen').forEach(s => {
-            s.classList.add('hidden');
-            s.classList.remove('animate-fade-in');
-        });
-
-        // Show target
-        targetScreen.classList.remove('hidden');
-        targetScreen.classList.add('animate-fade-in');
-
-        // Update nav buttons
-        document.querySelectorAll('.nav-item').forEach(b => {
-            b.classList.remove('text-cultivation-gold', 'active');
-            b.classList.add('text-gray-500');
-        });
-
-        btn.classList.add('text-cultivation-gold', 'active');
-        btn.classList.remove('text-gray-500');
-
-        // Specific screen triggers
-        if (targetId === 'screen-adventure') {
-            renderWorldList();
-            ui.toggleOverlay(viewWorlds, true);
-            ui.toggleOverlay(viewLocations, false);
-            ui.toggleOverlay(viewExplore, false);
-        } else if (targetId === 'screen-character') {
-            renderCharacter();
-        } else if (targetId === 'screen-inventory') {
-            renderInventory();
-        } else if (targetId === 'screen-alchemy') {
-            renderAlchemy();
-        } else if (targetId === 'screen-talisman') {
-            renderTalisman();
-        } else if (targetId === 'screen-smithing') {
-            renderSmithing();
-        } else if (targetId === 'screen-crafting-hub') {
-            renderCraftingHub();
-        }
+        switchScreen(targetId, btn);
     });
-} else {
-    console.error("[UI] Không tìm thấy phần tử <nav>!");
 }
-
 btnBackToWorlds.onclick = () => { ui.toggleOverlay(viewLocations, false); ui.toggleOverlay(viewWorlds, true); };
 btnBackToLocs.onclick = () => { ui.toggleOverlay(viewExplore, false); ui.toggleOverlay(viewLocations, true); };
 
