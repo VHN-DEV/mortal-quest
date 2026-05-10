@@ -117,6 +117,61 @@ export class UISystem {
         };
     }
 
+    /**
+     * Show a list of options for the user to choose from
+     */
+    promptOptions(title, options) {
+        return new Promise((resolve) => {
+            const originalContent = this.modalContent.innerHTML;
+            
+            this.modalTitle.textContent = title;
+            this.modalIcon.className = `ph ph-list text-5xl text-qi-blue mb-4`;
+            
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'flex flex-col space-y-2 w-full mt-4';
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-ancient text-gray-300 transition-all active:scale-95';
+                btn.textContent = opt.label;
+                btn.onclick = () => {
+                    this.modalOverlay.classList.add('hidden');
+                    this.modalOverlay.classList.remove('flex');
+                    this.modalContent.innerHTML = originalContent; // Restore
+                    // Need to re-bind elements if innerHTML is replaced
+                    this._rebindElements();
+                    resolve(opt.value);
+                };
+                optionsContainer.appendChild(btn);
+            });
+
+            // Replace modal message with options
+            this.modalMessage.innerHTML = '';
+            this.modalMessage.appendChild(optionsContainer);
+            this.modalBtnConfirm.style.display = 'none';
+            this.modalBtnCancel.style.display = 'block';
+            this.modalBtnCancel.textContent = 'HỦY BỎ';
+            this.modalBtnCancel.onclick = () => {
+                this.modalOverlay.classList.add('hidden');
+                this.modalOverlay.classList.remove('flex');
+                this.modalContent.innerHTML = originalContent;
+                this._rebindElements();
+                resolve(null);
+            };
+
+            this.modalOverlay.classList.remove('hidden');
+            this.modalOverlay.classList.add('flex');
+        });
+    }
+
+    _rebindElements() {
+        this.modalIcon = document.getElementById('modal-icon');
+        this.modalTitle = document.getElementById('modal-title');
+        this.modalMessage = document.getElementById('modal-message');
+        this.modalBtnConfirm = document.getElementById('modal-btn-confirm');
+        this.modalBtnCancel = document.getElementById('modal-btn-cancel');
+    }
+
     showLoading(show, message = 'Đang Cảm Ứng Thiên Địa...') {
         const msgEl = this.loadingOverlay.querySelector('.text-xs');
         if (msgEl) msgEl.textContent = message;

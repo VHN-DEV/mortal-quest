@@ -62,19 +62,23 @@ export class Player {
         this.currentAlchemyRoom = null;
         this.gardenPlots = [null, null, null]; // 3 initial plots
         this.mountainSurvival = { oxygen: 100, toxicity: 0 };
+        
+        // Time & Lifespan
+        this.age = 18;
+        this.maxAge = 100; // Base human lifespan
     }
 
     getCurrentRealm() {
         return getRealmById(this.realmId);
     }
 
-    update() {
+    update(multiplier = 1.0) {
         const now = Date.now();
         const delta = (now - this.lastUpdate) / 1000;
         this.lastUpdate = now;
 
-        // Auto cultivation
-        this.tuVi += this.tuViPerSecond * delta;
+        // Auto cultivation with external multiplier (seasons, phenomena)
+        this.tuVi += this.tuViPerSecond * multiplier * delta;
         
         // Regen
         this.stamina = Math.min(this.maxStamina, this.stamina + 0.1 * delta);
@@ -113,6 +117,11 @@ export class Player {
         this.def = 5 * Math.pow(1.3, realmLevel - 1);
         this.spd = 10 + (realmLevel * 2);
         this.tuViPerSecond = 1 * Math.pow(1.2, realmLevel - 1);
+        
+        // Lifespan increases with realm
+        // Luyện Khí (1): 100, Trúc Cơ (2): 200, Kết Đan (3): 500, Nguyên Anh (4): 1000...
+        const lifespans = [100, 200, 500, 1000, 2000, 5000, 10000, 50000, 100000, 1000000];
+        this.maxAge = lifespans[realmLevel - 1] || 1000000;
 
         // Add equipment bonuses
         Object.values(this.equipment).forEach(itemId => {
@@ -251,6 +260,8 @@ export class Player {
         this.currentAlchemyRoom = data.currentAlchemyRoom || null;
         this.gardenPlots = data.gardenPlots || [null, null, null];
         this.mountainSurvival = data.mountainSurvival || { oxygen: 100, toxicity: 0 };
+        this.age = data.age || 18;
+        this.maxAge = data.maxAge || 100;
 
         this.calculateStats();
     }
@@ -286,7 +297,9 @@ export class Player {
             alchemyReputation: this.alchemyReputation,
             currentAlchemyRoom: this.currentAlchemyRoom,
             gardenPlots: this.gardenPlots,
-            mountainSurvival: this.mountainSurvival
+            mountainSurvival: this.mountainSurvival,
+            age: this.age,
+            maxAge: this.maxAge
         };
     }
 }

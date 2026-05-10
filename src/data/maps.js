@@ -94,6 +94,16 @@ export const WORLDS = {
                 resources: ['Tiên Đan', 'Dị Hỏa Chi Lực'],
                 eventProbs: { combat: 0.0, loot: 0.0, npc: 0.9, empty: 0.1 },
                 special: 'tower'
+            },
+            {
+                id: 'thoi_khong_bi_canh',
+                name: 'Thời Không Bí Cảnh',
+                minRealm: 30,
+                danger: 'Trung Cấp',
+                description: 'Nơi quy luật thời gian bị bẻ cong, một ngày bên trong bằng mười ngày bên ngoài.',
+                resources: ['Thời Không Tinh Thạch'],
+                eventProbs: { combat: 0.3, loot: 0.4, npc: 0.1, empty: 0.2 },
+                timeRate: 10
             }
         ]
     },

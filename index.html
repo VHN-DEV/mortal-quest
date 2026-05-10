@@ -42,6 +42,24 @@
                 </button>
             </div>
         </header>
+        
+        <!-- Time HUD -->
+        <div id="time-hud" class="px-4 py-2 bg-black/40 border-b border-white/5 flex items-center justify-between text-[10px] font-ancient">
+            <div class="flex items-center space-x-3">
+                <div id="time-clock-icon" class="text-qi-blue"><i class="ph ph-clock animate-pulse"></i></div>
+                <div>
+                    <span id="time-hour" class="text-white font-bold uppercase tracking-widest">Giờ Tý</span>
+                    <span id="time-period" class="text-gray-500 ml-1">(Ban Đêm)</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div id="time-phenomenon" class="hidden text-red-400 animate-pulse font-bold">Huyết Nguyệt</div>
+                <div class="flex items-center space-x-2">
+                    <span id="time-season" class="px-2 py-0.5 rounded border border-qi-jade/30 text-qi-jade">Mùa Xuân</span>
+                    <span id="time-date" class="text-gray-400">Ngày 1 Tháng 1 Năm 1</span>
+                </div>
+            </div>
+        </div>
 
         <!-- Main Content Area (Tabs) -->
         <main class="flex-grow relative overflow-hidden">
@@ -88,6 +106,9 @@
                     </button>
                     <button id="breakthrough-btn" class="w-full py-5 bg-cultivation-gold text-qi-ink font-ancient font-black rounded-2xl hidden animate-pulse-gold shadow-xl shadow-cultivation-gold/20 uppercase tracking-[0.4em] text-sm">
                         XUNG KÍCH CẢNH GIỚI
+                    </button>
+                    <button id="seclusion-btn" class="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl text-gray-400 font-ancient tracking-widest transition-all active:scale-95 uppercase text-[10px]">
+                        VÀO TRẠNG THÁI BẾ QUAN
                     </button>
                 </div>
             </div>
@@ -174,6 +195,7 @@
                                 <div class="flex justify-between"><span class="text-gray-500 font-ancient">Phòng Thủ:</span> <span id="char-def" class="text-blue-400">5</span></div>
                                 <div class="flex justify-between"><span class="text-gray-500 font-ancient">Thân Pháp:</span> <span id="char-spd" class="text-green-400">10</span></div>
                                 <div class="flex justify-between"><span class="text-gray-500 font-ancient">Linh Lực:</span> <span id="char-mana">50/50</span></div>
+                                <div class="flex justify-between pt-2 border-t border-white/5"><span class="text-gray-500 font-ancient">Tuổi Thọ:</span> <span id="char-age" class="text-cultivation-gold">18 / 100</span></div>
                             </div>
                         </div>
                         <div class="bg-white/5 p-4 rounded-xl border border-white/10 flex-grow space-y-3">

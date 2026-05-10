@@ -23,6 +23,7 @@ import { SECTS, getSectById } from './data/sects.js';
 import { DestinySystem } from './systems/destiny_system.js';
 import { NPC_STORIES } from './data/npc_stories.js';
 import { UISystem } from './systems/ui_system.js';
+import { TimeSystem } from './systems/time_system.js';
 
 // Global error handler
 window.onerror = function(msg, url, lineNo, columnNo, error) {
@@ -31,7 +32,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 };
 
 // State
-let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui;
+let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem;
 let currentCombat = null;
 let currentNPC = null;
 let selectedItemId = null;
@@ -76,6 +77,7 @@ const btnEnterTower = document.getElementById('btn-enter-tower');
 const btnEnterMountain = document.getElementById('btn-enter-mountain');
 const btnBackToWorlds = document.getElementById('back-to-worlds');
 const btnBackToLocs = document.getElementById('back-to-locations');
+const btnLeaveLoc = document.getElementById('btn-leave-loc');
 
 // Character Tab
 const elCharHp = document.getElementById('char-hp');
@@ -97,6 +99,16 @@ const btnNpcTalk = document.getElementById('btn-npc-talk');
 const btnNpcTrade = document.getElementById('btn-npc-trade');
 const btnNpcAttack = document.getElementById('btn-npc-attack');
 const btnNpcLeave = document.getElementById('btn-npc-leave');
+
+// Time HUD
+const elTimeHour = document.getElementById('time-hour');
+const elTimePeriod = document.getElementById('time-period');
+const elTimeSeason = document.getElementById('time-season');
+const elTimeDate = document.getElementById('time-date');
+const elTimePhenomenon = document.getElementById('time-phenomenon');
+const elApp = document.getElementById('app');
+const btnSeclusion = document.getElementById('seclusion-btn');
+const elCharAge = document.getElementById('char-age');
 
 // Shop Overlay
 const overlayShop = document.getElementById('shop-overlay');
@@ -200,20 +212,91 @@ function init() {
         mountainSystem = new MountainSystem(player, ui);
         
         if (elPlayerNameHeader) elPlayerNameHeader.textContent = player.name;
-        if (elHeaderPortrait) elHeaderPortrait.src = ASSETS.portraits.player;
         const mainPortrait = document.getElementById('main-player-portrait');
         if (mainPortrait) mainPortrait.src = ASSETS.portraits.player;
+
+        timeSystem = new TimeSystem(player, ui);
+        if (savedData && savedData.time) {
+            timeSystem.load(savedData.time);
+        }
     }
     
+    // Auto-save every 30 seconds
+    setInterval(saveGame, 30000);
+    
+    if (btnSeclusion) btnSeclusion.onclick = handleSeclusion;
+    
     update();
+}
+
+async function handleSeclusion() {
+    const options = [
+        { label: 'Bế Quan 7 Ngày (Linh Khí Tiểu Tụ)', value: 7 * 12 },
+        { label: 'Bế Quan 1 Tháng (Vong Ngã Cảnh)', value: 30 * 12 },
+        { label: 'Bế Quan 3 Tháng (Thiên Nhân Hợp Nhất)', value: 90 * 12 },
+        { label: 'Bế Quan 1 Năm (Thương Hải Tang Điền)', value: 360 * 12 },
+        { label: 'Bế Quan 2 Năm (Nghịch Thiên Cải Mệnh)', value: 720 * 12 }
+    ];
+
+    const minutes = await ui.promptOptions('Chọn Thời Gian Bế Quan', options);
+    if (!minutes) return;
+
+    const staminaCost = Math.floor(minutes / 12) * 2;
+    if (player.stamina < staminaCost) {
+        ui.toast(`Cần ${staminaCost} Thể lực để bế quan lâu như vậy!`, 'error');
+        return;
+    }
+
+    ui.showLoading(true, "Đang Bế Quan Tu Luyện...");
+    
+    setTimeout(() => {
+        player.stamina -= staminaCost;
+        
+        // Calculate gains
+        const tuViGain = player.tuViPerSecond * minutes * 60; // Total seconds in seclusion
+        player.tuVi += tuViGain;
+        
+        // Advance world time
+        timeSystem.advanceTime(minutes);
+        
+        // Update other systems based on passed time (seconds)
+        const secondsPassed = minutes * 60;
+        if (gardenSystem) gardenSystem.update(secondsPassed);
+        
+        ui.showLoading(false);
+        ui.alert(`Sau khi bế quan ${minutes/12} ngày, bạn đã nhận được ${Math.floor(tuViGain).toLocaleString()} Tu vi. Thân thể đã già đi một chút.`, 'Bế Quan Kết Thúc');
+        
+        saveGame();
+        render();
+    }, 1500);
+}
+
+function saveGame() {
+    if (!player) return;
+    const data = player.save();
+    if (timeSystem) data.time = timeSystem.save();
+    SaveSystem.save(data);
+    console.log('Thiên Cơ được lưu giữ.');
 }
 
 function update() {
     const now = Date.now();
     const delta = (now - player.lastUpdate) / 1000;
     
-    player.update();
+    // Calculate global cultivation multiplier
+    let multiplier = 1.0;
+    if (timeSystem) {
+        const season = timeSystem.getSeason();
+        if (season.bonus && season.bonus.tvps) multiplier *= season.bonus.tvps;
+        if (timeSystem.currentPhenomenon && timeSystem.currentPhenomenon.effect.tvps) {
+            multiplier *= timeSystem.currentPhenomenon.effect.tvps;
+        }
+    }
+
+    player.update(multiplier);
     
+    if (timeSystem) timeSystem.update(delta);
+
     // Update NPCs
     if (typeof updateNPCs === 'function') {
         updateNPCs(delta);
@@ -236,7 +319,18 @@ function render() {
     elRealm.textContent = realm.name;
     elProgress.style.width = `${Math.min(100, progress)}%`;
     elTuViText.textContent = `${Math.floor(player.tuVi).toLocaleString()} / ${realm.expRequired.toLocaleString()}`;
-    elPerSec.textContent = `+${player.tuViPerSecond.toFixed(1)}/s`;
+    
+    // Calculate final TVPS with seasonal bonus
+    let tvps = player.tuViPerSecond;
+    if (timeSystem) {
+        const season = timeSystem.getSeason();
+        if (season.bonus && season.bonus.tvps) tvps *= season.bonus.tvps;
+        if (timeSystem.currentPhenomenon && timeSystem.currentPhenomenon.effect.tvps) {
+            tvps *= timeSystem.currentPhenomenon.effect.tvps;
+        }
+    }
+    
+    elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
     elLingShiText.textContent = Math.floor(player.lingShi).toLocaleString();
 
     if (player.canBreakthrough()) btnBreakthrough.classList.remove('hidden');
@@ -254,6 +348,35 @@ function render() {
 
     elStaminaBar.style.width = `${(player.stamina / player.maxStamina) * 100}%`;
     elManaBar.style.width = `${(player.mana / player.maxMana) * 100}%`;
+
+    if (timeSystem) renderTime();
+}
+
+function renderTime() {
+    const t = timeSystem.getFormattedTime();
+    elTimeHour.textContent = t.hourName;
+    elTimePeriod.textContent = `(${t.period === 'Night' ? 'Ban Đêm' : 'Ban Ngày'})`;
+    elTimeSeason.textContent = t.seasonName;
+    elTimeSeason.style.borderColor = t.seasonColor;
+    elTimeSeason.style.color = t.seasonColor;
+    elTimeDate.textContent = `Ngày ${t.day} Tháng ${t.month} Năm ${t.year}`;
+
+    if (t.phenomenon) {
+        elTimePhenomenon.textContent = t.phenomenon;
+        elTimePhenomenon.classList.remove('hidden');
+    } else {
+        elTimePhenomenon.classList.add('hidden');
+    }
+
+    // Apply visual filters
+    elApp.classList.remove('time-night', 'time-blood-moon', 'time-spiritual-tide', 'time-eclipse');
+    if (timeSystem.isNight()) elApp.classList.add('time-night');
+    
+    if (timeSystem.currentPhenomenon) {
+        if (timeSystem.currentPhenomenon.id === 'blood_moon') elApp.classList.add('time-blood-moon');
+        if (timeSystem.currentPhenomenon.id === 'spiritual_tide') elApp.classList.add('time-spiritual-tide');
+        if (timeSystem.currentPhenomenon.id === 'eclipse') elApp.classList.add('time-eclipse');
+    }
 }
 
 function getQualityClass(quality) {
@@ -289,6 +412,7 @@ function selectWorld(id) {
     viewWorlds.classList.add('hidden');
     viewLocations.classList.remove('hidden');
     renderLocationList();
+    if (timeSystem) timeSystem.timeMultiplier = 1.0;
 }
 
 function renderLocationList() {
@@ -335,6 +459,14 @@ function startExploration(locId) {
     viewLocations.classList.add('hidden');
     viewExplore.classList.remove('hidden');
     elExploreEvent.textContent = 'Bạn đã tới địa điểm.';
+
+    // Set time flow for this location (default 1.0)
+    if (timeSystem) {
+        timeSystem.timeMultiplier = loc.timeRate || 1.0;
+        if (timeSystem.timeMultiplier !== 1.0) {
+            ui.toast(`Dòng chảy thời gian tại đây dường như khác biệt... (x${timeSystem.timeMultiplier})`, 'warning');
+        }
+    }
     
     // Check if this is a shop location
     if (loc.id === 'van_bao_cac') {
@@ -384,12 +516,24 @@ function renderExplore() {
 btnMove.onclick = () => {
     if (player.stamina < 5) { alert('Không đủ thể lực!'); return; }
     player.stamina -= 5;
+    
+    // Each move consumes 1 game Giờ
+    if (timeSystem) timeSystem.advanceTime(1);
+    
     explorationProgress += 5 + Math.random() * 5;
     if (explorationProgress >= 100) explorationProgress = 100;
     updateExplorationUI();
 
     const loc = getLocationById(currentWorldId, currentLocId);
-    const event = getRandomEvent(loc.eventProbs);
+    
+    // Adjust event probabilities based on time
+    let probs = { ...loc.eventProbs };
+    if (timeSystem && timeSystem.isNight()) {
+        probs.combat = (probs.combat || 0) * 1.5;
+        probs.loot = (probs.loot || 0) * 1.2;
+    }
+
+    const event = getRandomEvent(probs);
 
     if (event) {
         elExploreEvent.textContent = event.description;
@@ -482,6 +626,18 @@ btnMountainDeeper.onclick = () => {
 btnMountainRetreat.onclick = () => {
     mountainSystem.retreat();
     renderMountain();
+};
+
+btnBackToLocs.onclick = () => {
+    viewExplore.classList.add('hidden');
+    viewLocations.classList.remove('hidden');
+    if (timeSystem) timeSystem.timeMultiplier = 1.0;
+};
+
+btnLeaveLoc.onclick = () => {
+    viewExplore.classList.add('hidden');
+    viewLocations.classList.remove('hidden');
+    if (timeSystem) timeSystem.timeMultiplier = 1.0;
 };
 
 btnCloseSects.onclick = () => overlaySects.classList.add('hidden');
@@ -614,7 +770,7 @@ btnConfirmDestiny.onclick = () => {
     craftingSystem = new CraftingSystem(player);
 
     overlayDestiny.classList.add('hidden');
-    SaveSystem.save(player.save());
+    saveGame();
     
     elPlayerNameHeader.textContent = player.name;
     elHeaderPortrait.src = ASSETS.portraits.player;
@@ -630,6 +786,11 @@ function renderCharacter() {
     elCharDef.textContent = Math.floor(player.def);
     elCharSpd.textContent = Math.floor(player.spd);
     elCharMana.textContent = `${Math.floor(player.mana)} / ${Math.floor(player.maxMana)}`;
+    if (elCharAge) elCharAge.textContent = `${Math.floor(player.age)} / ${player.maxAge}`;
+    
+    if (player.age >= player.maxAge) {
+        ui.toast("Thọ nguyên sắp cạn, hãy mau chóng đột phá!", "error");
+    }
     
     if (elCharSectInfo) {
         if (player.sectId) {
