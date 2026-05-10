@@ -7,7 +7,10 @@ export class Player {
         this.name = "Phàm Nhân";
         this.realmId = 1;
         this.tuVi = 0;
-        this.lingShi = 100;
+        this.lingShi = 1000; // Base Hạ Phẩm
+        this.totalSpent = 0;
+        this.vipLevel = 0;
+        this.lingShiGrades = { ha: 1000, trung: 0, thuong: 0, cuc: 0 };
 
         // Body & Soul systems
         this.bodyRealmId = 1;
@@ -79,6 +82,47 @@ export class Player {
         // Persistence of location
         this.currentWorldId = 'nhan_gioi';
         this.currentLocId = null;
+
+        // Formation System
+        this.activeFormations = []; // { id, startTime, staminaConsumed }
+        this.formationSlots = 1;
+    }
+
+    getFormattedLingShi() {
+        let total = this.lingShi;
+        const cuc = Math.floor(total / 1000000);
+        total %= 1000000;
+        const thuong = Math.floor(total / 10000);
+        total %= 10000;
+        const trung = Math.floor(total / 100);
+        const ha = total % 100;
+
+        let res = [];
+        if (cuc > 0) res.push(`${cuc} Cực`);
+        if (thuong > 0) res.push(`${thuong} Thượng`);
+        if (trung > 0) res.push(`${trung} Trung`);
+        if (ha > 0 || res.length === 0) res.push(`${ha} Hạ`);
+        
+        return res.join(' ');
+    }
+
+    spendLingShi(amount) {
+        if (this.lingShi >= amount) {
+            this.lingShi -= amount;
+            this.totalSpent += amount;
+            this.updateVipLevel();
+            return true;
+        }
+        return false;
+    }
+
+    updateVipLevel() {
+        // Simple VIP tiers
+        if (this.totalSpent >= 10000000) this.vipLevel = 5;
+        else if (this.totalSpent >= 1000000) this.vipLevel = 4;
+        else if (this.totalSpent >= 100000) this.vipLevel = 3;
+        else if (this.totalSpent >= 10000) this.vipLevel = 2;
+        else if (this.totalSpent >= 1000) this.vipLevel = 1;
     }
 
     getCurrentRealm(type = 'tuvi') {

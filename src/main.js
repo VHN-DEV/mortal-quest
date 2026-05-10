@@ -25,6 +25,7 @@ import { NPC_STORIES } from './configs/npc-story-data.js';
 import { UISystem } from './ui/ui-system.js';
 import { TimeSystem } from './systems/time-system.js';
 import { CraftingSystem } from './systems/crafting-system.js';
+import { FormationSystem } from './systems/formation-system.js';
 
 // Global error handler
 window.onerror = function (msg, url, lineNo, columnNo, error) {
@@ -33,7 +34,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 };
 
 // State
-let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem;
+let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem, formationSystem;
 let currentCombat = null;
 let currentNPC = null;
 let selectedItemId = null;
@@ -124,6 +125,7 @@ const elShopLingShi = document.getElementById('shop-ling-shi');
 const btnShopTabBuy = document.getElementById('shop-tab-buy');
 const btnShopTabSell = document.getElementById('shop-tab-sell');
 const btnCloseShop = document.getElementById('close-shop-btn');
+const elShopSectionNav = document.getElementById('shop-section-nav');
 
 // Sect Overlay
 const overlaySects = document.getElementById('sects-overlay');
@@ -379,6 +381,12 @@ function update() {
         }
     }
 
+    if (formationSystem) {
+        formationSystem.update(delta / 60);
+        const buffs = formationSystem.getBuffs();
+        multiplier *= buffs.tuViMult;
+    }
+
     player.update(delta, multiplier);
 
     if (timeSystem) timeSystem.update(delta);
@@ -444,7 +452,7 @@ function render() {
     }
 
     elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
-    elLingShiText.textContent = Math.floor(player.lingShi).toLocaleString();
+    elLingShiText.textContent = player.getFormattedLingShi();
 
     ui.toggleOverlay(btnBreakthrough, player.canBreakthrough('tuvi').can);
 
@@ -753,16 +761,50 @@ btnLeaveLoc.onclick = () => {
 btnCloseSects.onclick = () => ui.toggleOverlay(overlaySects, false);
 
 function renderShop() {
-    elShopLingShi.textContent = Math.floor(player.lingShi);
+    elShopLingShi.textContent = player.getFormattedLingShi();
+    
+    // Update VIP display
+    const elVip = document.getElementById('shop-vip-level');
+    if (elVip) {
+        elVip.textContent = `VIP ${player.vipLevel}`;
+        elVip.className = `px-2 py-1 rounded text-[10px] font-bold bg-vip-${player.vipLevel}`;
+    }
+
     if (shopView === 'buy') {
         elShopBuyView.classList.remove('hidden');
         elShopSellView.classList.add('hidden');
+        elShopSectionNav.classList.remove('hidden');
+        renderShopSections();
         renderShopBuy();
     } else {
         elShopBuyView.classList.add('hidden');
         elShopSellView.classList.remove('hidden');
+        elShopSectionNav.classList.add('hidden');
         renderShopSell();
     }
+}
+
+function renderShopSections() {
+    const sections = {
+        'dan_duoc': '🧪 Đan Dược',
+        'phap_bao': '⚔️ Pháp Bảo',
+        'nguyen_lieu': '🌿 Nguyên Liệu',
+        'cong_phap': '📖 Công Pháp',
+        'tran_phap': '📜 Trận Pháp'
+    };
+
+    elShopSectionNav.innerHTML = '';
+    Object.entries(sections).forEach(([id, name]) => {
+        const btn = document.createElement('button');
+        const isActive = shopSystem.currentSection === id;
+        btn.className = `px-3 py-1.5 text-[10px] rounded-lg border transition-all ${isActive ? 'bg-qi-blue/20 border-qi-blue text-qi-blue' : 'bg-white/5 border-white/10 text-gray-400'}`;
+        btn.textContent = name;
+        btn.onclick = () => {
+            shopSystem.currentSection = id;
+            renderShop();
+        };
+        elShopSectionNav.appendChild(btn);
+    });
 }
 
 function renderShopBuy() {
@@ -935,6 +977,7 @@ function initGameSystems(player, savedData = null) {
     mountainSystem = new MountainSystem(player, ui);
     timeSystem = new TimeSystem(player, ui);
     craftingSystem = new CraftingSystem(player);
+    formationSystem = new FormationSystem(player, ui);
 
     // Legacy support for older property names if any
     if (savedData && savedData.time) {
@@ -1081,6 +1124,24 @@ function renderCharacter() {
         };
         slot.style = positions[type];
     });
+
+    // Render Formations
+    const elFormationList = document.getElementById('active-formations-list');
+    if (elFormationList) {
+        if (player.activeFormations.length === 0) {
+            elFormationList.innerHTML = '<div class="text-[9px] text-gray-600 italic">Chưa có trận pháp nào</div>';
+        } else {
+            elFormationList.innerHTML = player.activeFormations.map(f => `
+                <div class="flex justify-between items-center p-2 bg-qi-blue/5 border border-qi-blue/20 rounded-lg">
+                    <div class="flex items-center space-x-2">
+                        <i class="ph ph-scroll text-qi-blue text-xs"></i>
+                        <div class="text-[10px] font-bold text-white">${f.name}</div>
+                    </div>
+                    <div class="text-[8px] text-gray-400">Đang hoạt động</div>
+                </div>
+            `).join('');
+        }
+    }
 }
 
 // --- INVENTORY ---
@@ -1127,7 +1188,17 @@ function selectItem(id) {
 }
 
 btnEquipItem.onclick = () => {
-    if (selectedItemId && player.equip(selectedItemId)) {
+    if (!selectedItemId) return;
+    const itemData = getItemById(selectedItemId);
+    
+    if (itemData.type === 'formation') {
+        const res = formationSystem.activateFormation(selectedItemId);
+        ui.toast(res.msg, res.success ? 'success' : 'error');
+        if (res.success) {
+            ui.toggleOverlay(elItemDetail, false);
+            refreshUI();
+        }
+    } else if (player.equip(selectedItemId)) {
         selectedItemId = null;
         ui.toggleOverlay(elItemDetail, false);
         renderInventory();

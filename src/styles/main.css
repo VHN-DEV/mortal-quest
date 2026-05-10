@@ -399,3 +399,19 @@ button:active {
     background: var(--glass-border);
     border-radius: 10px;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* VIP Levels */
+.bg-vip-0 { background: #475569; color: #f8fafc; }
+.bg-vip-1 { background: #059669; color: #f8fafc; }
+.bg-vip-2 { background: #2563eb; color: #f8fafc; }
+.bg-vip-3 { background: #7c3aed; color: #f8fafc; }
+.bg-vip-4 { background: #db2777; color: #f8fafc; }
+.bg-vip-5 { background: linear-gradient(to right, #d4af37, #f59e0b); color: #0a0a0c; box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }

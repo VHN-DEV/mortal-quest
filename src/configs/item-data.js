@@ -155,6 +155,126 @@ export const ITEMS = {
         price: 50,
         description: 'Thuốc cầm máu cơ bản, hồi phục 20% HP.',
         effect: { type: 'heal', value: 0.2 }
+    },
+
+    // --- SPIRITUAL STONES ---
+    'ling_thach_ha': {
+        id: 'ling_thach_ha',
+        name: 'Hạ Phẩm Linh Thạch',
+        type: 'currency',
+        icon: '💎',
+        quality: 'Phàm',
+        price: 1,
+        description: 'Linh thạch phổ thông nhất, dùng cho giao dịch và tu luyện sơ cấp.'
+    },
+    'ling_thach_trung': {
+        id: 'ling_thach_trung',
+        name: 'Trung Phẩm Linh Thạch',
+        type: 'currency',
+        icon: '💠',
+        quality: 'Huyền',
+        price: 100,
+        description: 'Linh khí tinh thuần, 1 viên tương đương 100 Hạ Phẩm.'
+    },
+    'ling_thach_thuong': {
+        id: 'ling_thach_thuong',
+        name: 'Thượng Phẩm Linh Thạch',
+        type: 'currency',
+        icon: '🔮',
+        quality: 'Thiên',
+        price: 10000,
+        description: 'Linh lực đậm đặc, dùng trong các giao dịch đấu giá hoặc đột phá.'
+    },
+    'ling_thach_cuc': {
+        id: 'ling_thach_cuc',
+        name: 'Cực Phẩm Linh Thạch',
+        type: 'currency',
+        icon: '🌌',
+        quality: 'Thần',
+        price: 1000000,
+        description: 'Cực kỳ hiếm thấy, chứa đựng linh lực hóa lỏng vô tận.'
+    },
+
+    // --- DHARMA TREASURES (PHÁP BẢO) ---
+    'phi_kiem_thanh_tuyen': {
+        id: 'phi_kiem_thanh_tuyen',
+        name: 'Thanh Tuyền Kiếm',
+        type: 'weapon',
+        quality: 'Hoàng',
+        icon: '🗡️',
+        description: 'Phi kiếm cấp thấp, tăng nhẹ công kích và tốc độ.',
+        price: 800,
+        stats: { atk: 25, spd: 3 }
+    },
+    'bat_quai_kinh': {
+        id: 'bat_quai_kinh',
+        name: 'Bát Quái Kính',
+        type: 'treasure',
+        quality: 'Huyền',
+        icon: '🪞',
+        description: 'Phòng ngự pháp bảo, tạo lớp chắn linh khí giảm sát thương.',
+        price: 2500,
+        stats: { def: 40, resistance: 0.1 }
+    },
+    'u_minh_chuong': {
+        id: 'u_minh_chuong',
+        name: 'U Minh Chuông',
+        type: 'treasure',
+        quality: 'Địa',
+        icon: '🔔',
+        description: 'Hồn hệ pháp bảo, tăng mạnh Thần Thức và kháng ảo cảnh.',
+        price: 12000,
+        stats: { soul: 150, def: 20 }
+    },
+    'tui_tru_vat_trung': {
+        id: 'tui_tru_vat_trung',
+        name: 'Túi Trữ Vật (Trung)',
+        type: 'bag',
+        icon: '🎒',
+        quality: 'Huyền',
+        price: 2500,
+        description: 'Mở rộng thêm 20 ô chứa đồ.',
+        stats: { slots: 20 }
+    },
+
+    // --- FORMATIONS (TRẬN PHÁP) ---
+    'tran_do_tu_linh': {
+        id: 'tran_do_tu_linh',
+        name: 'Tụ Linh Trận Đồ',
+        type: 'formation',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 1000,
+        description: 'Trận đồ cơ bản dùng để tụ tập linh khí xung quanh.'
+    },
+    'tran_do_ao_anh': {
+        id: 'tran_do_ao_anh',
+        name: 'Ảo Ảnh Trận Đồ',
+        type: 'formation',
+        icon: '🌫️',
+        quality: 'Huyền',
+        price: 4500,
+        description: 'Tạo huyễn cảnh che mắt đối thủ.'
+    },
+
+    // --- TECHNIQUES (CÔNG PHÁP) ---
+    'truong_sinh_quyet': {
+        id: 'truong_sinh_quyet',
+        name: 'Trường Sinh Quyết',
+        type: 'technique',
+        icon: '📖',
+        quality: 'Hoàng',
+        price: 500,
+        description: 'Công pháp cơ bản giúp gia tăng thọ nguyên và thể chất.'
+    },
+    'thien_loi_kiem_quyet': {
+        id: 'thien_loi_kiem_quyet',
+        name: 'Thiên Lôi Kiếm Quyết',
+        type: 'technique',
+        icon: '⚡',
+        quality: 'Thiên',
+        price: 50000,
+        description: 'Kiếm quyết cấp cao mượn lực thiên lôi, uy lực vô song.'
     }
 };
 

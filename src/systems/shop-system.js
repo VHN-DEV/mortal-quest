@@ -5,33 +5,48 @@ export class ShopSystem {
     constructor(player) {
         this.player = player;
         this.currentShopId = 'nhan_gioi';
+        this.currentSection = 'dan_duoc';
     }
 
     getShopInventory() {
-        return SHOPS[this.currentShopId].inventory;
+        const shop = SHOPS[this.currentShopId];
+        return shop.sections[this.currentSection] || [];
     }
 
     buyItem(itemId, quantity = 1) {
         const itemData = getItemById(itemId);
         if (!itemData) return { success: false, msg: 'Vật phẩm không tồn tại!' };
 
-        const totalPrice = itemData.price * quantity;
+        // Check VIP requirement
+        const section = SHOPS[this.currentShopId].sections[this.currentSection];
+        const shopItem = section.find(i => i.id === itemId);
+        
+        if (shopItem.minVip && this.player.vipLevel < shopItem.minVip) {
+            return { success: false, msg: `Cần cấp độ khách quý VIP ${shopItem.minVip} để mua vật phẩm này!` };
+        }
+
+        // Calculate price with VIP discount (5% per level, max 25%)
+        const discount = Math.min(0.25, this.player.vipLevel * 0.05);
+        const unitPrice = Math.floor(itemData.price * (1 - discount));
+        const totalPrice = unitPrice * quantity;
+
         if (this.player.lingShi < totalPrice) {
             return { success: false, msg: 'Không đủ Linh Thạch!' };
         }
 
         // Check stock
-        const shopItem = SHOPS[this.currentShopId].inventory.find(i => i.id === itemId);
         if (!shopItem || shopItem.stock < quantity) {
             return { success: false, msg: 'Hết hàng!' };
         }
 
-        // Execute transaction
-        this.player.lingShi -= totalPrice;
-        this.player.inventory.addItem(itemId, quantity);
-        shopItem.stock -= quantity;
+        // Execute transaction using the new player method
+        if (this.player.spendLingShi(totalPrice)) {
+            this.player.inventory.addItem(itemId, quantity);
+            shopItem.stock -= quantity;
+            return { success: true, msg: `Đã mua ${quantity}x ${itemData.name} với giá ưu đãi VIP!` };
+        }
 
-        return { success: true, msg: `Đã mua ${quantity}x ${itemData.name}!` };
+        return { success: false, msg: 'Giao dịch thất bại!' };
     }
 
     sellItem(itemId, quantity = 1) {
