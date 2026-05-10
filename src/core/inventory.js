@@ -39,6 +39,11 @@ export class Inventory {
         return false;
     }
 
+    hasItem(itemId, quantity = 1) {
+        const item = this.items.find(i => i.id === itemId);
+        return item && item.quantity >= quantity;
+    }
+
     useItem(itemId) {
         const itemData = getItemById(itemId);
         if (!itemData || itemData.type !== 'consumable') return false;

@@ -384,4 +384,13 @@ export class Player {
             currentLocId: this.currentLocId
         };
     }
+
+    removeFromParty(npcId) {
+        const index = this.party.findIndex(npc => npc.id === npcId);
+        if (index > -1) {
+            this.party.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
 }

@@ -809,6 +809,12 @@ window.game = {
         ui.toast(res.msg, res.success ? 'success' : 'error');
         renderCharacter();
         renderInventory();
+    },
+    removeFromParty: (npcId) => {
+        if (player.removeFromParty(npcId)) {
+            ui.toast("Đồng hành đã rời đội.", "info");
+            renderCharacter();
+        }
     }
 };
 
@@ -902,7 +908,7 @@ function initGameSystems(player, savedData = null) {
         currentWorldId = player.currentWorldId;
         if (player.currentLocId) {
             currentLocId = player.currentLocId;
-            enterLocation(currentLocId);
+            startExploration(currentLocId);
         } else {
             renderWorldList();
         }
@@ -992,7 +998,7 @@ function renderCharacter() {
                             <div class="text-[8px] text-gray-400">${npc.role} - LV.${npc.realmId}</div>
                         </div>
                     </div>
-                    <button onclick="window.removeFromParty('${npc.id}')" class="text-[8px] text-red-400 hover:text-red-300">RỜI ĐỘI</button>
+                    <button onclick="window.game.removeFromParty('${npc.id}')" class="text-[8px] text-red-400 hover:text-red-300">RỜI ĐỘI</button>
                 </div>
             `).join('');
         }
