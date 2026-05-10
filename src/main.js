@@ -31,6 +31,9 @@ import { TalismanSystem } from './systems/talisman-system.js';
 import { TALISMAN_RECIPES, getTalismanLevelInfo } from './configs/talisman-data.js';
 import { SmithingSystem } from './systems/smithing-system.js';
 import { SMITHING_RECIPES, getSmithingLevelInfo } from './configs/smithing-data.js';
+import { BeastSystem } from './systems/beast-system.js';
+import { CorpseSystem } from './systems/corpse-system.js';
+import { BEASTS, BEAST_TYPES, getBeastLevelInfo } from './configs/beast-data.js';
 
 // Global error handler
 window.onerror = function (msg, url, lineNo, columnNo, error) {
@@ -39,7 +42,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 };
 
 // State
-let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem, formationSystem, talismanSystem, smithingSystem;
+let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem, formationSystem, talismanSystem, smithingSystem, beastSystem, corpseSystem;
 let currentCombat = null;
 let currentNPC = null;
 let selectedItemId = null;
@@ -48,6 +51,7 @@ let currentLocId = null;
 let explorationProgress = 0;
 let shopView = 'buy';
 let alchemyView = 'recipes';
+let beastView = 'list';
 let currentDestiny = null;
 
 // DOM Elements
@@ -298,6 +302,24 @@ function init() {
             handleTypeBreakthrough(type);
         }
     });
+
+    // Beast Tabs
+    const btnBeastTabList = document.getElementById('beast-tab-list');
+    const btnBeastTabHatch = document.getElementById('beast-tab-hatch');
+    if (btnBeastTabList && btnBeastTabHatch) {
+        btnBeastTabList.onclick = () => {
+            beastView = 'list';
+            btnBeastTabList.className = 'flex-grow py-2 bg-qi-jade/10 text-qi-jade border border-qi-jade/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            btnBeastTabHatch.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            renderBeast();
+        };
+        btnBeastTabHatch.onclick = () => {
+            beastView = 'hatch';
+            btnBeastTabHatch.className = 'flex-grow py-2 bg-cultivation-gold/10 text-cultivation-gold border border-cultivation-gold/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            btnBeastTabList.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            renderBeast();
+        };
+    }
 
     update();
 }
@@ -934,6 +956,24 @@ window.game = {
             renderCharacter();
         }
     },
+    hatchBeast: (eggId) => {
+        const res = beastSystem.hatch(eggId);
+        ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderBeast();
+        refreshUI();
+    },
+    feedBeast: (uniqueId) => {
+        // Find best food available
+        const foods = player.inventory.items.filter(i => getItemById(i.id).type === 'beast_food');
+        if (foods.length === 0) {
+            ui.toast("Bạn không có thức ăn linh thú!", "error");
+            return;
+        }
+        const res = beastSystem.feed(uniqueId, foods[0].id);
+        ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderBeast();
+        refreshUI();
+    },
     openCrafting: (type) => {
         const screens = document.querySelectorAll('.screen');
         const navButtons = document.querySelectorAll('.nav-item');
@@ -946,6 +986,9 @@ window.game = {
             if (type === 'alchemy') renderAlchemy();
             if (type === 'talisman') renderTalisman();
             if (type === 'smithing') renderSmithing();
+            if (type === 'formation') renderFormation();
+            if (type === 'corpse') renderCorpse();
+            if (type === 'beast') renderBeast();
         }
     }
 };
@@ -1028,6 +1071,8 @@ function initGameSystems(player, savedData = null) {
     formationSystem = new FormationSystem(player, ui);
     talismanSystem = new TalismanSystem(player, ui);
     smithingSystem = new SmithingSystem(player, ui);
+    beastSystem = new BeastSystem(player, ui);
+    corpseSystem = new CorpseSystem(player, ui);
 
     // Legacy support for older property names if any
     if (savedData && savedData.time) {
@@ -1710,6 +1755,9 @@ function renderCraftingHub() {
     const elAlchemyLvl = document.getElementById('hub-alchemy-level');
     const elTalismanLvl = document.getElementById('hub-talisman-level');
     const elSmithingLvl = document.getElementById('hub-smithing-level');
+    const elFormationLvl = document.getElementById('hub-formation-level');
+    const elCorpseLvl = document.getElementById('hub-corpse-level');
+    const elBeastLvl = document.getElementById('hub-beast-level');
 
     if (elAlchemyLvl && typeof getAlchemyLevelInfo === 'function') {
         const info = getAlchemyLevelInfo(player.alchemyLevel);
@@ -1723,6 +1771,141 @@ function renderCraftingHub() {
         const info = getSmithingLevelInfo(player.smithingLevel);
         elSmithingLvl.textContent = `${info.name} (Cấp ${player.smithingLevel})`;
     }
+    if (elFormationLvl) elFormationLvl.textContent = `Trận Pháp Sư (Cấp ${player.formationLevel})`;
+    if (elCorpseLvl) elCorpseLvl.textContent = `Luyện Thi Sư (Cấp ${player.corpseLevel})`;
+    if (elBeastLvl) elBeastLvl.textContent = `Ngự Thú Sư (Cấp ${player.beastLevel})`;
+}
+
+function renderBeast() {
+    const elList = document.getElementById('beast-list-view');
+    const elHatch = document.getElementById('beast-hatch-view');
+    const elBeastLvlText = document.getElementById('beast-level-text');
+    const elBeastExpBar = document.getElementById('beast-exp-bar');
+
+    if (elBeastLvlText) elBeastLvlText.textContent = `Ngự Thú Sư (Cấp ${player.beastLevel})`;
+    if (elBeastExpBar) {
+        const nextExp = Math.floor(100 * Math.pow(player.beastLevel, 2));
+        elBeastExpBar.style.width = `${(player.beastExp / nextExp) * 100}%`;
+    }
+
+    if (beastView === 'list') {
+        elList?.classList.remove('hidden');
+        elHatch?.classList.add('hidden');
+        renderBeastList();
+    } else {
+        elList?.classList.add('hidden');
+        elHatch?.classList.remove('hidden');
+        renderBeastHatch();
+    }
+}
+
+function renderBeastList() {
+    const el = document.getElementById('beast-list-view');
+    if (!el) return;
+    el.innerHTML = '';
+    if (player.beasts.length === 0) {
+        el.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa có linh thú nào. Hãy đi ấp trứng hoặc thu phục chúng!</div>';
+        return;
+    }
+
+    player.beasts.forEach(beast => {
+        const beastData = BEASTS[beast.id];
+        if (!beastData) return;
+        const card = document.createElement('div');
+        card.className = 'bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center space-x-4';
+        card.innerHTML = `
+            <div class="text-4xl">${beastData.icon}</div>
+            <div class="flex-grow">
+                <div class="flex justify-between">
+                    <span class="text-white font-bold">${beast.name}</span>
+                    <span class="text-[10px] text-cultivation-gold uppercase">LV.${beast.level}</span>
+                </div>
+                <div class="text-[9px] text-gray-500">${beastData.type} | Loyalty: ${beast.loyalty}%</div>
+                <div class="w-full h-1 bg-white/5 rounded-full mt-2 overflow-hidden">
+                    <div class="h-full bg-qi-jade shadow-[0_0_5px_rgba(0,168,107,0.5)]" style="width: ${(beast.exp / getBeastLevelInfo(beast.level).expRequired) * 100}%"></div>
+                </div>
+            </div>
+            <button onclick="window.game.feedBeast('${beast.uniqueId}')" class="px-3 py-1.5 bg-qi-jade/20 text-qi-jade rounded-lg text-[10px] uppercase font-ancient border border-qi-jade/30 active:scale-95 transition-all">Cho ăn</button>
+        `;
+        el.appendChild(card);
+    });
+}
+
+function renderBeastHatch() {
+    const el = document.getElementById('beast-hatch-view');
+    if (!el) return;
+    el.innerHTML = '';
+    const eggs = player.inventory.items.filter(i => getItemById(i.id).type === 'beast_egg');
+    
+    if (eggs.length === 0) {
+        el.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Trong túi không có trứng linh thú nào.</div>';
+        return;
+    }
+
+    eggs.forEach(egg => {
+        const item = getItemById(egg.id);
+        const card = document.createElement('div');
+        card.className = 'bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between';
+        card.innerHTML = `
+            <div class="flex items-center space-x-4">
+                <div class="text-3xl">${item.icon}</div>
+                <div>
+                    <div class="text-white font-bold">${item.name}</div>
+                    <div class="text-[9px] text-gray-500">Thời gian ấp: ${item.hatchTime}s</div>
+                </div>
+            </div>
+            <button onclick="window.game.hatchBeast('${egg.id}')" class="px-4 py-2 bg-cultivation-gold text-black rounded-xl text-[10px] font-bold uppercase active:scale-95 transition-all shadow-lg shadow-cultivation-gold/20">Ấp Nở</button>
+        `;
+        el.appendChild(card);
+    });
+}
+
+function renderFormation() {
+    const el = document.getElementById('formation-list');
+    if (!el) return;
+    el.innerHTML = '';
+    
+    const formations = formationSystem.formations;
+    Object.keys(formations).forEach(id => {
+        const f = formations[id];
+        const isActive = player.activeFormations.some(af => af.id === id);
+        
+        const card = document.createElement('div');
+        card.className = `bg-white/5 border ${isActive ? 'border-qi-purple shadow-[0_0_10px_rgba(168,85,247,0.3)]' : 'border-white/10'} rounded-2xl p-4 flex items-center justify-between transition-all`;
+        card.innerHTML = `
+            <div class="flex items-center space-x-4">
+                <div class="text-3xl">${isActive ? '🌀' : '📜'}</div>
+                <div>
+                    <div class="text-white font-bold">${f.name}</div>
+                    <div class="text-[9px] text-gray-500">${isActive ? 'Đang kích hoạt' : 'Bố trận bằng trận đồ'}</div>
+                    <div class="text-[8px] text-qi-purple uppercase tracking-tighter mt-1">Hao tốn: ${f.costPerTick} Hạ Phẩm / phút</div>
+                </div>
+            </div>
+            <button onclick="window.game.toggleFormation('${id}')" class="px-4 py-2 ${isActive ? 'bg-red-900/40 text-red-400' : 'bg-qi-purple/20 text-qi-purple'} rounded-xl text-[10px] font-bold uppercase active:scale-95 transition-all border ${isActive ? 'border-red-900/50' : 'border-qi-purple/30'}">
+                ${isActive ? 'Dừng' : 'Kích hoạt'}
+            </button>
+        `;
+        el.appendChild(card);
+    });
+}
+
+window.game.toggleFormation = (id) => {
+    const isActive = player.activeFormations.some(af => af.id === id);
+    let res;
+    if (isActive) {
+        res = formationSystem.deactivateFormation(id);
+    } else {
+        res = formationSystem.activateFormation(id);
+    }
+    ui.toast(res.msg, res.success ? 'success' : 'error');
+    renderFormation();
+    refreshUI();
+};
+
+function renderCorpse() {
+    const el = document.getElementById('corpse-list');
+    if (!el) return;
+    el.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Cấm thuật Luyện Thi yêu cầu tu vi Ma Đạo.</div>';
 }
 
 window.game.forgeItem = (id) => {

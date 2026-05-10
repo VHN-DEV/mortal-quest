@@ -24,6 +24,10 @@ export class FormationSystem {
         const formation = this.formations[diagramId];
         if (!formation) return { success: false, msg: 'Trận pháp không xác định!' };
 
+        if (this.player.activeFormations.some(af => af.id === diagramId)) {
+            return { success: false, msg: 'Trận pháp này đã được kích hoạt!' };
+        }
+
         if (this.player.activeFormations.length >= this.player.formationSlots) {
             return { success: false, msg: 'Đã đạt giới hạn số lượng trận pháp kích hoạt!' };
         }
@@ -44,6 +48,15 @@ export class FormationSystem {
         });
 
         return { success: true, msg: `Đã kích hoạt ${formation.name}!` };
+    }
+
+    deactivateFormation(diagramId) {
+        const index = this.player.activeFormations.findIndex(af => af.id === diagramId);
+        if (index === -1) return { success: false, msg: 'Trận pháp chưa được kích hoạt!' };
+
+        const name = this.player.activeFormations[index].name;
+        this.player.activeFormations.splice(index, 1);
+        return { success: true, msg: `Đã thu hồi ${name}!` };
     }
 
     update(minutes) {

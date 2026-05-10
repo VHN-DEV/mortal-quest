@@ -103,6 +103,19 @@ export class Player {
         // Formation System
         this.activeFormations = []; // { id, startTime, staminaConsumed }
         this.formationSlots = 1;
+        this.formationLevel = 1;
+        this.formationExp = 0;
+
+        // Beast System
+        this.beasts = [];
+        this.hatchingBeasts = [];
+        this.beastLevel = 1;
+        this.beastExp = 0;
+
+        // Corpse System
+        this.corpseLevel = 1;
+        this.corpseExp = 0;
+        this.refinedCorpses = [];
     }
 
     getFormattedLingShi() {
@@ -451,8 +464,19 @@ export class Player {
         this.age = data.age || 18;
         this.maxAge = data.maxAge || 100;
 
-        this.currentWorldId = data.currentWorldId || 'nhan_gioi';
         this.currentLocId = data.currentLocId || null;
+        
+        this.beastLevel = data.beastLevel || 1;
+        this.beastExp = data.beastExp || 0;
+        this.beasts = data.beasts || [];
+        this.hatchingBeasts = data.hatchingBeasts || [];
+
+        this.corpseLevel = data.corpseLevel || 1;
+        this.corpseExp = data.corpseExp || 0;
+        this.refinedCorpses = data.refinedCorpses || [];
+
+        this.formationLevel = data.formationLevel || 1;
+        this.formationExp = data.formationExp || 0;
 
         this.calculateStats();
     }
@@ -497,7 +521,16 @@ export class Player {
             age: this.age,
             maxAge: this.maxAge,
             currentWorldId: this.currentWorldId,
-            currentLocId: this.currentLocId
+            currentLocId: this.currentLocId,
+            beastLevel: this.beastLevel,
+            beastExp: this.beastExp,
+            beasts: this.beasts,
+            hatchingBeasts: this.hatchingBeasts,
+            corpseLevel: this.corpseLevel,
+            corpseExp: this.corpseExp,
+            refinedCorpses: this.refinedCorpses,
+            formationLevel: this.formationLevel,
+            formationExp: this.formationExp
         };
     }
 
@@ -526,6 +559,36 @@ export class Player {
         const nextLevel = Math.floor(Math.sqrt(this.smithingExp / 1000)) + 1; // Smithing is harder
         if (nextLevel > this.smithingLevel) {
             this.smithingLevel = nextLevel;
+            return true;
+        }
+        return false;
+    }
+
+    addBeastExp(amount) {
+        this.beastExp += amount;
+        const nextLevel = Math.floor(Math.sqrt(this.beastExp / 100)) + 1;
+        if (nextLevel > this.beastLevel) {
+            this.beastLevel = nextLevel;
+            return true;
+        }
+        return false;
+    }
+
+    addCorpseExp(amount) {
+        this.corpseExp += amount;
+        const nextLevel = Math.floor(Math.sqrt(this.corpseExp / 100)) + 1;
+        if (nextLevel > this.corpseLevel) {
+            this.corpseLevel = nextLevel;
+            return true;
+        }
+        return false;
+    }
+
+    addFormationExp(amount) {
+        this.formationExp += amount;
+        const nextLevel = Math.floor(Math.sqrt(this.formationExp / 100)) + 1;
+        if (nextLevel > this.formationLevel) {
+            this.formationLevel = nextLevel;
             return true;
         }
         return false;

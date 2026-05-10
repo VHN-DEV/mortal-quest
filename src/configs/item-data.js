@@ -563,6 +563,73 @@ export const ITEMS = {
         price: 85000,
         description: 'Giáp làm từ vảy giao long, phòng ngự kinh người.',
         stats: { def: 450, resistance: 0.3 }
+    },
+
+    // --- BEAST & INSECT ITEMS (NEW) ---
+    'trung_hac_linh': {
+        id: 'trung_hac_linh',
+        name: 'Trứng Thanh Vân Hạc',
+        type: 'beast_egg',
+        icon: '🥚',
+        quality: 'Hoàng',
+        price: 2000,
+        description: 'Một quả trứng hạc tỏa ra linh khí thanh khiết.',
+        beastId: 'thanh_van_hac',
+        hatchTime: 300 // 5 minutes
+    },
+    'trung_xich_lang': {
+        id: 'trung_xich_lang',
+        name: 'Trứng Xích Diễm Lang',
+        type: 'beast_egg',
+        icon: '🔥',
+        quality: 'Hoàng',
+        price: 3500,
+        description: 'Trứng sói lửa, sờ vào thấy ấm nóng.',
+        beastId: 'xich_diem_lang',
+        hatchTime: 600
+    },
+    'ken_kim_tam': {
+        id: 'ken_kim_tam',
+        name: 'Kén Kim Tàm',
+        type: 'beast_egg',
+        icon: '🧶',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Kén của Kim Tàm, đang chờ đợi ngày phá kén.',
+        beastId: 'kim_tam',
+        hatchTime: 1200
+    },
+    'linh_thu_dan': {
+        id: 'linh_thu_dan',
+        name: 'Linh Thú Đan',
+        type: 'beast_food',
+        icon: '💊',
+        quality: 'Phàm',
+        price: 100,
+        description: 'Đan dược bồi bổ cho linh thú, tăng kinh nghiệm và độ thân mật.',
+        expGain: 100,
+        loyaltyGain: 5
+    },
+    'yeu_nhuc_tuoi': {
+        id: 'yeu_nhuc_tuoi',
+        name: 'Yêu Nhục Tươi',
+        type: 'beast_food',
+        icon: '🥩',
+        quality: 'Phàm',
+        price: 50,
+        description: 'Thịt yêu thú tươi sống, linh thú rất thích ăn.',
+        expGain: 50,
+        loyaltyGain: 2
+    },
+    'van_thu_lenh': {
+        id: 'van_thu_lenh',
+        name: 'Vạn Thú Lệnh',
+        type: 'treasure',
+        icon: '📜',
+        quality: 'Địa',
+        price: 50000,
+        description: 'Lệnh bài cổ xưa giúp tăng khả năng thuần phục yêu thú.',
+        stats: { tamingBonus: 0.2 }
     }
 };
 
