@@ -187,8 +187,8 @@ export class Player {
             const focus = this.cultivationFocus || 'tuvi';
             
             // Influence of Spiritual Root (1.0 to 3.0x)
-            const rootMult = this.destiny.spiritualRoot.multiplier || 1.0;
-            const luckBonus = (this.destiny.luck / 100) * 0.2; // Max 20% bonus from luck
+            const rootMult = (this.spiritualRoot && this.spiritualRoot.multiplier) ? this.spiritualRoot.multiplier : 1.0;
+            const luckBonus = ((this.luck || 50) / 100) * 0.2; // Max 20% bonus from luck
             
             // Random variance (0.9x to 1.1x)
             const variance = 0.9 + Math.random() * 0.2;
