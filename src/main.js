@@ -2410,7 +2410,7 @@ function renderTechniques() {
                         </div>
                         <div class="text-right">
                             <div class="text-[10px] text-gray-400 font-ancient tracking-widest uppercase">${mastery.name}</div>
-                            <div class="text-[9px] text-qi-purple/60">Tầng ${entry.stage} / ${tech.maxStage}</div>
+                            <div class="text-[9px] text-qi-purple/60">${tech.stageNames ? tech.stageNames[entry.stage - 1] : 'Tầng ' + entry.stage}</div>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2 mt-4">
@@ -2489,8 +2489,8 @@ async function showTechniqueDetail(id) {
             
             <div class="space-y-4 pt-4 border-t border-white/5">
                 <div class="flex justify-between items-center">
-                    <span class="text-[10px] text-gray-500 uppercase">Tiến Độ Tầng:</span>
-                    <span class="text-xs text-white">Tầng ${entry.stage} / ${tech.maxStage}</span>
+                    <span class="text-[10px] text-gray-500 uppercase">Tiến Độ:</span>
+                    <span class="text-xs text-white">${tech.stageNames ? tech.stageNames[entry.stage - 1] : 'Tầng ' + entry.stage} / ${tech.maxStage}</span>
                 </div>
                 <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                     <div class="h-full bg-qi-blue" style="width: ${(entry.stage / tech.maxStage) * 100}%"></div>
@@ -2548,7 +2548,8 @@ async function showTechniqueDetail(id) {
     };
 
     document.getElementById('btn-tech-breakthrough').onclick = async () => {
-        const confirm = await ui.confirm(`Đột phá lên Tầng ${entry.stage + 1} của ${tech.name}? Cần ${entry.stage * 100} Tu Vi.`);
+        const cost = entry.stage * 1000;
+        const confirm = await ui.confirm(`Đột phá lên Tầng ${entry.stage + 1} (${tech.stageNames ? tech.stageNames[entry.stage] : ''}) của ${tech.name}? Cần ${cost} Tu Vi.`);
         if (!confirm) return;
 
         const res = techniqueSystem.breakthroughStage(id);

@@ -17,13 +17,12 @@ export const TECHNIQUE_LEVELS = {
 };
 
 export const MASTERY_LEVELS = [
-    { threshold: 0, name: 'Sơ Học Sạ Luyện', next: 100 },
-    { threshold: 100, name: 'Lược Hiểu Môn Kính', next: 300 },
-    { threshold: 300, name: 'Tiểu Thành', next: 800 },
-    { threshold: 800, name: 'Đại Thành', next: 2000 },
-    { threshold: 2000, name: 'Viên Mãn', next: 5000 },
-    { threshold: 5000, name: 'Đăng Phong Tạo Cực', next: 12000 },
-    { threshold: 12000, name: 'Xuất Thần Nhập Hóa', next: Infinity }
+    { threshold: 0, name: 'Nhập Môn', next: 200 },
+    { threshold: 200, name: 'Tiểu Thành', next: 1000 },
+    { threshold: 1000, name: 'Đại Thành', next: 5000 },
+    { threshold: 5000, name: 'Viên Mãn', next: 15000 },
+    { threshold: 15000, name: 'Đăng Phong Tạo Cực', next: 40000 },
+    { threshold: 40000, name: 'Xuất Thần Nhập Hóa', next: Infinity }
 ];
 
 export const TECHNIQUES = {
@@ -31,12 +30,42 @@ export const TECHNIQUES = {
         id: 'truong_xuan_nap_khi_quyet',
         name: 'Trường Xuân Nạp Khí Quyết',
         type: 'Linh Lực',
-        element: 'Mộc',
+        element: 'Neutral',
         quality: 'Hoàng',
         description: 'Công pháp nhập môn phổ thông được lưu truyền rộng rãi trong Nhân Giới. Ổn định, dễ tu luyện, ít tẩu hỏa nhập ma.',
         maxStage: 7,
+        stageNames: [
+            'Cảm Khí', 'Dẫn Khí', 'Tụ Khí', 'Luyện Mạch', 
+            'Tiểu Chu Thiên', 'Đại Chu Thiên', 'Khí Hải Ổn Định'
+        ],
         stats: { mana: 20, spd: 5 },
-        effects: { tvps: 1.2, manaRegen: 1.0, stability: 10 }
+        effects: { 
+            tvps: 1.2, 
+            manaRegen: 1.0, 
+            stability: 15,
+            manaConsumptionReduce: 0.1,
+            deviationRiskReduce: 0.2
+        },
+        compatibility: {
+            'Mộc': 1.2,
+            'Thủy': 1.1,
+            'Hỏa': 0.9,
+            'Kim': 0.8,
+            'Thổ': 1.0,
+            'Lôi': 0.7,
+            'Phong': 0.8,
+            'Băng': 0.9,
+            'Tạp': 1.1
+        },
+        mutations: [
+            { id: 'thanh_moc_truong_sinh_quyet', chance: 0.05, condition: 'Mộc' },
+            { id: 'huyen_thuy_nap_linh_quyet', chance: 0.05, condition: 'Thủy' },
+            { id: 'tu_duong_chan_khi', chance: 0.03, condition: 'Hỏa' }
+        ],
+        evolution: {
+            id: 'truong_xuan_dao_kinh',
+            condition: 'Viên Mãn'
+        }
     },
     'liet_duong_cong': {
         id: 'liet_duong_cong',
@@ -138,6 +167,50 @@ export const TECHNIQUES = {
         maxStage: 3,
         stats: { mana: 50 },
         effects: { soulPs: 1.2 }
+    },
+    'thanh_moc_truong_sinh_quyet': {
+        id: 'thanh_moc_truong_sinh_quyet',
+        name: 'Thanh Mộc Trường Sinh Quyết',
+        type: 'Linh Lực',
+        element: 'Mộc',
+        quality: 'Huyền',
+        description: 'Bản biến dị mộc hệ của Trường Xuân Quyết, tập trung vào khả năng hồi phục và thọ nguyên cực mạnh.',
+        maxStage: 9,
+        stats: { hp: 200, mana: 50 },
+        effects: { tvps: 1.8, healing: 2.0, lifespanBonus: 50 }
+    },
+    'huyen_thuy_nap_linh_quyet': {
+        id: 'huyen_thuy_nap_linh_quyet',
+        name: 'Huyền Thủy Nạp Linh Quyết',
+        type: 'Linh Lực',
+        element: 'Thủy',
+        quality: 'Huyền',
+        description: 'Bản biến dị thủy hệ, linh lực tinh thuần như nước, giúp tốc độ hấp thu linh khí tăng mạnh.',
+        maxStage: 9,
+        stats: { mana: 300, def: 50 },
+        effects: { tvps: 2.0, manaRegen: 1.5 }
+    },
+    'tu_duong_chan_khi': {
+        id: 'tu_duong_chan_khi',
+        name: 'Tử Dương Chân Khí',
+        type: 'Linh Lực',
+        element: 'Hỏa',
+        quality: 'Huyền',
+        description: 'Bản biến dị hỏa hệ, mang theo tử khí của mặt trời buổi sớm, cực kỳ bá đạo.',
+        maxStage: 9,
+        stats: { atk: 150, spd: 20 },
+        effects: { tvps: 1.6, fireDamage: 1.5 }
+    },
+    'truong_xuan_dao_kinh': {
+        id: 'truong_xuan_dao_kinh',
+        name: 'Trường Xuân Đạo Kinh',
+        type: 'Linh Lực',
+        element: 'Neutral',
+        quality: 'Tiên',
+        description: 'Phiên bản tiến hóa cổ đại thất truyền của Trường Xuân Quyết. Đạo pháp tự nhiên, trường sinh bất tử.',
+        maxStage: 12,
+        stats: { hp: 1000, mana: 1000, atk: 500, def: 500, spd: 100 },
+        effects: { tvps: 5.0, lifespanBonus: 1000, allRes: 0.3 }
     }
 };
 

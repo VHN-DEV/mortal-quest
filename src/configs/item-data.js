@@ -634,13 +634,13 @@ export const ITEMS = {
     // --- TECHNIQUE BOOKS ---
     'truong_xuan_book': {
         id: 'truong_xuan_book',
-        name: 'Sách: Trường Xuân Công',
+        name: 'Sách: Trường Xuân Nạp Khí Quyết',
         type: 'book',
         icon: '📘',
         quality: 'Hoàng',
         price: 300,
         techniqueId: 'truong_xuan_nap_khi_quyet',
-        description: 'Bản sao chép công pháp nhập môn cơ bản nhất.'
+        description: 'Bản sao chép công pháp nhập môn phổ thông được lưu truyền rộng rãi trong Nhân Giới.'
     },
     'liet_duong_book': {
         id: 'liet_duong_book',

@@ -392,12 +392,25 @@ export class Player {
         
         // Attribute matching logic
         let attributeMult = 1.0;
-        if (this.spiritualRoot && techData.element) {
-             // 50% bonus if technique matches spiritual root element
-             if (this.spiritualRoot.type === 'Thiên Linh Căn' || 
-                 this.spiritualRoot.type.includes(techData.element)) {
-                 attributeMult = 1.5;
-             }
+        if (this.spiritualRoot) {
+            // Use compatibility multiplier if defined, otherwise check for element match
+            if (techData.compatibility) {
+                const rootType = this.spiritualRoot.type;
+                // Check for exact match or generic "Mixed" (Tạp) root
+                if (techData.compatibility[rootType]) {
+                    attributeMult = techData.compatibility[rootType];
+                } else if (rootType.includes('Tạp') && techData.compatibility['Tạp']) {
+                    attributeMult = techData.compatibility['Tạp'];
+                } else if (rootType === 'Thiên Linh Căn') {
+                    attributeMult = 1.5; // Heaven Root gets 1.5x bonus for everything
+                }
+            } else if (techData.element) {
+                // Legacy element match (50% bonus if technique matches spiritual root element)
+                if (this.spiritualRoot.type === 'Thiên Linh Căn' || 
+                    this.spiritualRoot.type.includes(techData.element)) {
+                    attributeMult = 1.5;
+                }
+            }
         }
 
         const finalMult = stageMult * qualityMult * attributeMult;
@@ -543,7 +556,7 @@ export class Player {
         this.formationExp = data.formationExp || 0;
         
         this.mainTechniqueId = data.mainTechniqueId || null;
-        this.learnedTechniques = data.learnedTechniques || {};
+        this.learnedTechniques = data.learnedTechniques || [];
         this.equippedSecretTechniqueIds = data.equippedSecretTechniqueIds || [];
         this.secretTechniqueCooldowns = data.secretTechniqueCooldowns || {};
         this.techniquePoints = data.techniquePoints || 0;
