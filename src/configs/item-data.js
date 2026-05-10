@@ -136,6 +136,25 @@ export const ITEMS = {
         quality: 'Phàm',
         price: 5,
         description: 'Dùng để gieo trồng trong Linh Điền.'
+    },
+    'seed_linh_thao_trung': {
+        id: 'seed_linh_thao_trung',
+        name: 'Hạt Giống Linh Thảo Trung Cấp',
+        type: 'seed',
+        icon: '🌿',
+        quality: 'Huyền',
+        price: 25,
+        description: 'Hạt giống linh thảo cấp trung, cần thời gian gieo trồng lâu hơn.'
+    },
+    'hoi_huyet_dan': {
+        id: 'hoi_huyet_dan',
+        name: 'Hồi Huyết Đan',
+        type: 'consumable',
+        icon: '🧪',
+        quality: 'Phàm',
+        price: 50,
+        description: 'Thuốc cầm máu cơ bản, hồi phục 20% HP.',
+        effect: { type: 'heal', value: 0.2 }
     }
 };
 

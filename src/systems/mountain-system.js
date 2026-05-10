@@ -21,6 +21,7 @@ export class MountainSystem {
         if (!this.isActive) return;
 
         const layer = MOUNTAIN_LAYERS.find(l => l.id === this.currentLayer);
+        if (!layer) return;
         
         // Decrease oxygen, increase toxicity
         this.player.mountainSurvival.oxygen -= 0.1 * layer.survivalFactor * delta;
@@ -55,8 +56,9 @@ export class MountainSystem {
     retreat() {
         const currentIndex = MOUNTAIN_LAYERS.findIndex(l => l.id === this.currentLayer);
         if (currentIndex > 0) {
-            this.currentLayer = MOUNTAIN_LAYERS[currentIndex - 1].id;
-            this.ui.toast(`Lùi về ${this.currentLayer.name}...`, "info");
+            const prevLayer = MOUNTAIN_LAYERS[currentIndex - 1];
+            this.currentLayer = prevLayer.id;
+            this.ui.toast(`Lùi về ${prevLayer.name}...`, "info");
             return true;
         }
         return false;

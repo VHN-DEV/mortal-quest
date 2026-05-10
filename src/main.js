@@ -1050,7 +1050,8 @@ function renderInventory() {
     player.inventory.items.forEach(item => {
         const itemData = getItemById(item.id);
         if (!itemData) return;
-        const qClass = getQualityClass(itemData.quality);
+        const displayQuality = (item.metadata && item.metadata.quality) ? item.metadata.quality : itemData.quality;
+        const qClass = getQualityClass(displayQuality);
         const el = document.createElement('div');
         el.className = `p-2 border rounded-lg bg-black/20 flex flex-col items-center cursor-pointer transition-all border-${qClass}/30 ${selectedItemId === item.id ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'}`;
         el.innerHTML = `<div class="text-2xl mb-1">${itemData.icon}</div><div class="text-[10px] text-gray-400">x${item.quantity}</div>`;
@@ -1063,12 +1064,17 @@ function selectItem(id) {
     selectedItemId = id;
     const itemData = getItemById(id);
     if (!itemData) return;
-    const qClass = getQualityClass(itemData.quality);
+    
+    // Check for metadata quality (for crafted items)
+    const playerItem = player.inventory.items.find(i => i.id === id);
+    const displayQuality = (playerItem && playerItem.metadata && playerItem.metadata.quality) ? playerItem.metadata.quality : itemData.quality;
+    
+    const qClass = getQualityClass(displayQuality);
     elDetailIcon.textContent = itemData.icon;
     elDetailIcon.className = `text-3xl mr-3 bg-black/40 p-2 rounded-lg border border-${qClass}/50`;
     elDetailName.textContent = itemData.name;
     elDetailName.className = `font-bold quality-${qClass}`;
-    elDetailType.textContent = `${itemData.quality} phẩm | ${itemData.type}`;
+    elDetailType.textContent = `${displayQuality} phẩm | ${itemData.type}`;
     elDetailDesc.textContent = itemData.description;
 
     btnUseItem.style.display = itemData.type === 'consumable' ? 'block' : 'none';

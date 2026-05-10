@@ -20,6 +20,7 @@ export class GardenSystem {
 
     plant(plotIndex, seedId) {
         const seed = SEEDS.find(s => s.id === seedId);
+        if (!seed) return false;
         if (this.player.gardenPlots[plotIndex] === null) {
             this.player.gardenPlots[plotIndex] = {
                 seedId: seedId,
@@ -36,6 +37,10 @@ export class GardenSystem {
         const plot = this.player.gardenPlots[plotIndex];
         if (plot && plot.status === 'ready') {
             const seed = SEEDS.find(s => s.id === plot.seedId);
+            if (!seed) {
+                this.player.gardenPlots[plotIndex] = null;
+                return false;
+            }
             this.player.inventory.addItem(seed.resultId, 1);
             this.player.gardenPlots[plotIndex] = null;
             return true;

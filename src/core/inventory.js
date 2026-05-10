@@ -73,6 +73,7 @@ export class Inventory {
         this.items.sort((a, b) => {
             const itemA = getItemById(a.id);
             const itemB = getItemById(b.id);
+            if (!itemA || !itemB) return 0;
             if (itemA.type !== itemB.type) return itemA.type.localeCompare(itemB.type);
             return itemA.name.localeCompare(itemB.name);
         });

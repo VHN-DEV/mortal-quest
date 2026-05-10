@@ -141,7 +141,7 @@ export class CombatEngine {
         // Loot logic
         const lootItems = [];
         if (Math.random() > 0.5) lootItems.push('linh_thao_thap');
-        if (Math.random() > 0.8) lootItems.push('tu_vi_dan_so');
+        if (Math.random() > 0.8) lootItems.push('ngung_khi_dan');
         if (Math.random() > 0.7) lootItems.push('hoi_huyet_dan');
         
         lootItems.forEach(itemId => {
