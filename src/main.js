@@ -55,6 +55,10 @@ const elProgress = document.getElementById('tu-vi-progress');
 const elTuViText = document.getElementById('tu-vi-text');
 const elPerSec = document.getElementById('tu-vi-per-sec');
 const btnCultivate = document.getElementById('cultivate-btn');
+const elAuraGlow = document.getElementById('aura-glow');
+const elAuraBorder = document.getElementById('aura-border');
+const autoCultivateToggle = document.getElementById('auto-cultivate-toggle');
+let autoCultivateInterval = null;
 const btnBreakthrough = document.getElementById('breakthrough-btn');
 
 // Map
@@ -226,15 +230,25 @@ function init() {
                 btn.className = 'flex-grow py-2 text-gray-500 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-transparent transition-all';
             });
 
+            // Remove all focus classes from aura
+            if (elAuraGlow) elAuraGlow.className = 'absolute inset-16 rounded-full blur-3xl animate-pulse aura-glow';
+            if (elAuraBorder) elAuraBorder.className = 'relative w-56 h-56 rounded-full overflow-hidden border shadow-[0_0_60px_rgba(212,175,55,0.15)] group aura-border';
+
             if (player.cultivationFocus === 'tuvi') {
-                btnFocusTuvi.className = 'flex-grow py-2 bg-qi-blue/20 text-qi-blue rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-qi-blue/30 transition-all';
-                if (elCultivateText) elCultivateText.textContent = "THU NẠP LINH KHÍ";
+                btnFocusTuvi.className = 'flex-grow py-2 bg-qi-blue/20 text-qi-blue rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-qi-blue/30 transition-all focus-tuvi';
+                if (elCultivateText) elCultivateText.innerHTML = '<i class="ph ph-sparkle mr-2 text-qi-blue"></i>THU NẠP LINH KHÍ';
+                if (elAuraGlow) elAuraGlow.classList.add('focus-tuvi');
+                if (elAuraBorder) elAuraBorder.classList.add('focus-tuvi');
             } else if (player.cultivationFocus === 'body') {
-                btnFocusBody.className = 'flex-grow py-2 bg-red-900/20 text-red-400 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-red-500/30 transition-all';
-                if (elCultivateText) elCultivateText.textContent = "RÈN LUYỆN THÂN THỂ";
+                btnFocusBody.className = 'flex-grow py-2 bg-red-900/20 text-red-400 rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-red-500/30 transition-all focus-body';
+                if (elCultivateText) elCultivateText.innerHTML = '<i class="ph ph-fire mr-2 text-red-500"></i>RÈN LUYỆN THÂN THỂ';
+                if (elAuraGlow) elAuraGlow.classList.add('focus-body');
+                if (elAuraBorder) elAuraBorder.classList.add('focus-body');
             } else if (player.cultivationFocus === 'soul') {
-                btnFocusSoul.className = 'flex-grow py-2 bg-qi-purple/20 text-qi-purple rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-qi-purple/30 transition-all';
-                if (elCultivateText) elCultivateText.textContent = "NGƯNG TỤ THẦN NIỆM";
+                btnFocusSoul.className = 'flex-grow py-2 bg-qi-purple/20 text-qi-purple rounded-lg text-[9px] font-ancient uppercase tracking-widest border border-qi-purple/30 transition-all focus-soul';
+                if (elCultivateText) elCultivateText.innerHTML = '<i class="ph ph-eye mr-2 text-qi-purple"></i>NGƯNG TỤ THẦN NIỆM';
+                if (elAuraGlow) elAuraGlow.classList.add('focus-soul');
+                if (elAuraBorder) elAuraBorder.classList.add('focus-soul');
             }
         };
 
@@ -243,6 +257,30 @@ function init() {
         btnFocusSoul.onclick = () => { player.cultivationFocus = 'soul'; updateFocusUI(); };
 
         updateFocusUI();
+    }
+
+    // Auto-Cultivate Toggle
+    if (autoCultivateToggle) {
+        autoCultivateToggle.onchange = (e) => {
+            if (e.target.checked) {
+                ui.toast("Bắt đầu tự động tu hành...", "info");
+                autoCultivateInterval = setInterval(() => {
+                    if (player.stamina > 0) {
+                        player.cultivate(0.7);
+                        // Trigger a small visual effect at the center of the aura
+                        const rect = elAuraBorder.getBoundingClientRect();
+                        ui.createClickParticle(rect.left + rect.width/2, rect.top + rect.height/2);
+                    } else {
+                        autoCultivateToggle.checked = false;
+                        clearInterval(autoCultivateInterval);
+                        ui.toast("Thể lực cạn kiệt, tự động tu hành kết thúc.", "warning");
+                    }
+                }, 1000); // Once per second
+            } else {
+                clearInterval(autoCultivateInterval);
+                ui.toast("Đã ngừng tự động tu hành.", "info");
+            }
+        };
     }
 
     // Multi-Breakthrough
@@ -746,7 +784,9 @@ function renderShopBuy() {
             </div>
             <div class="flex items-center space-x-3">
                 <div class="text-xs font-mono text-cultivation-gold">${itemData.price} LT</div>
-                <button class="px-3 py-1 bg-qi-purple text-white text-[10px] font-bold rounded-lg hover:bg-purple-600 transition-all ${item.stock <= 0 ? 'opacity-50 grayscale' : ''}" onclick="window.game.buyItem('${item.id}')">MUA</button>
+                <button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg transition-all ${item.stock <= 0 ? 'opacity-50 grayscale pointer-events-none' : ''}" onclick="window.game.buyItem('${item.id}')">
+                    <i class="ph ph-shopping-cart-simple mr-1"></i>MUA
+                </button>
             </div>
         `;
         elShopBuyView.appendChild(el);
@@ -1131,13 +1171,13 @@ function renderAlchemy() {
     if (alchemyView === 'recipes') {
         viewAlchemyRecipes.classList.remove('hidden');
         viewAlchemyGarden.classList.add('hidden');
-        btnAlchemyTabRecipes.className = 'flex-grow py-2 bg-qi-blue border border-qi-blue/50 rounded-lg text-[10px] font-ancient text-black uppercase';
-        btnAlchemyTabGarden.className = 'flex-grow py-2 bg-white/5 border border-white/10 rounded-lg text-[10px] font-ancient text-gray-500 uppercase';
+        btnAlchemyTabRecipes.className = 'flex-grow py-3 btn-premium bg-qi-blue/10 text-qi-blue border-qi-blue/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest';
+        btnAlchemyTabGarden.className = 'flex-grow py-3 btn-premium text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest';
     } else {
         viewAlchemyRecipes.classList.add('hidden');
         viewAlchemyGarden.classList.remove('hidden');
-        btnAlchemyTabRecipes.className = 'flex-grow py-2 bg-white/5 border border-white/10 rounded-lg text-[10px] font-ancient text-gray-500 uppercase';
-        btnAlchemyTabGarden.className = 'flex-grow py-2 bg-qi-blue border border-qi-blue/50 rounded-lg text-[10px] font-ancient text-black uppercase';
+        btnAlchemyTabRecipes.className = 'flex-grow py-3 btn-premium text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest';
+        btnAlchemyTabGarden.className = 'flex-grow py-3 btn-premium bg-qi-blue/10 text-qi-blue border-qi-blue/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest';
     }
 
     elRecipes.innerHTML = '';
@@ -1175,7 +1215,9 @@ function renderAlchemy() {
                     </div>
                     ${locked ?
                     `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
-                    `<button class="px-4 py-1.5 bg-qi-blue text-black text-[10px] font-bold rounded-lg active:scale-95 transition-all" onclick="window.game.craft('${recipe.id}')">LUYỆN CHẾ</button>`
+                    `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg active:scale-95 transition-all flex items-center justify-center" onclick="window.game.craft('${recipe.id}')">
+                        <i class="ph ph-flask mr-1"></i>LUYỆN CHẾ
+                    </button>`
                 }
                 </div>
                 <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
@@ -1201,7 +1243,9 @@ function renderAlchemy() {
                             <p class="text-[10px] text-gray-500">${isReady ? 'Đã chín muồi!' : 'Đang phát triển...'}</p>
                         </div>
                         ${isReady ?
-                        `<button class="px-4 py-2 bg-green-500 text-black text-[10px] font-bold rounded-lg" onclick="window.game.harvest(${index})">THU HOẠCH</button>` :
+                        `<button class="px-4 py-2 btn-premium bg-qi-jade/10 text-qi-jade text-[10px] font-bold rounded-lg flex items-center justify-center" onclick="window.game.harvest(${index})">
+                            <i class="ph ph-hand-grabbing mr-1"></i>THU HOẠCH
+                        </button>` :
                         `<div class="text-[10px] font-mono text-qi-blue">${Math.ceil(plot.remainingTime)}s</div>`
                     }
                     </div>
@@ -1365,7 +1409,9 @@ function renderSects() {
                                     <div class="text-sm font-bold">${m.name}</div>
                                     <div class="text-[9px] text-gray-500">${m.desc}</div>
                                 </div>
-                                <button class="px-3 py-1 bg-qi-purple text-white text-[10px] font-bold rounded" onclick="window.game.doMission('${m.id}')">NHẬN</button>
+                                <button class="px-4 py-2 btn-premium bg-qi-purple/10 text-qi-purple text-[10px] font-bold rounded-lg flex items-center justify-center" onclick="window.game.doMission('${m.id}')">
+                                    <i class="ph ph-scroll mr-1"></i>LÀM
+                                </button>
                             </div>
                         `).join('')}
                     </div>
@@ -1383,7 +1429,9 @@ function renderSects() {
                     <span class="text-[10px] ${canJoin ? 'text-qi-blue' : 'text-red-500'}">${canJoin ? 'Có thể gia nhập' : 'Cần: ' + getRealmById(sect.minRealm).name}</span>
                 </div>
                 <p class="text-xs text-gray-500">${sect.description}</p>
-                <button class="w-full py-2 bg-qi-blue/10 border border-qi-blue/30 text-qi-blue text-xs font-bold rounded-lg ${canJoin ? '' : 'hidden'}" onclick="window.game.joinSect('${sect.id}')">GIA NHẬP</button>
+                <button class="w-full py-3 btn-premium bg-qi-blue/10 text-qi-blue text-xs font-bold rounded-xl flex items-center justify-center ${canJoin ? '' : 'hidden'}" onclick="window.game.joinSect('${sect.id}')">
+                    <i class="ph ph-identification-badge mr-2"></i>GIA NHẬP TÔNG MÔN
+                </button>
             `;
             elSects.appendChild(el);
         });

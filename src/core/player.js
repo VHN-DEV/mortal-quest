@@ -107,13 +107,30 @@ export class Player {
         this.hp = Math.min(this.maxHp, this.hp + 0.01 * this.maxHp * delta);
     }
 
-    cultivate() {
+    cultivate(efficiency = 1.0) {
         if (this.stamina >= 1) {
             this.stamina -= 1;
             const focus = this.cultivationFocus || 'tuvi';
-            if (focus === 'tuvi') this.tuVi += this.tuViPerSecond * 2;
-            if (focus === 'body') this.bodyExp += this.bodyExpPerSecond * 10;
-            if (focus === 'soul') this.soulExp += this.soulExpPerSecond * 10;
+            
+            // Influence of Spiritual Root (1.0 to 3.0x)
+            const rootMult = this.destiny.spiritualRoot.multiplier || 1.0;
+            const luckBonus = (this.destiny.luck / 100) * 0.2; // Max 20% bonus from luck
+            
+            // Random variance (0.9x to 1.1x)
+            const variance = 0.9 + Math.random() * 0.2;
+            
+            const totalMult = rootMult * (1 + luckBonus) * variance * efficiency;
+
+            if (focus === 'tuvi') {
+                const gain = this.tuViPerSecond * 3 * totalMult;
+                this.tuVi += gain;
+            } else if (focus === 'body') {
+                const gain = this.bodyExpPerSecond * 12 * totalMult;
+                this.bodyExp += gain;
+            } else if (focus === 'soul') {
+                const gain = this.soulExpPerSecond * 12 * totalMult;
+                this.soulExp += gain;
+            }
             return true;
         }
         return false;
