@@ -44,8 +44,10 @@ export class SmithingSystem {
         if (roll <= successRate) {
             // Success
             this.player.inventory.addItem(recipe.id, 1);
-            this.player.smithingExp += recipe.expGain;
-            this.checkLevelUp();
+            if (this.player.addSmithingExp(recipe.expGain)) {
+                 const nextInfo = getSmithingLevelInfo(this.player.smithingLevel);
+                 this.ui.alert(`Đẳng cấp Luyện Khí Sư tăng lên ${nextInfo.name}!`, "Rèn Thần Kỹ");
+            }
             return { success: true, msg: `Chúc mừng! Bạn đã rèn thành công [${getItemById(recipe.id).name}]!` };
         } else {
             // Failure
@@ -54,14 +56,6 @@ export class SmithingSystem {
                 this.player.hp -= 30;
             }
             return { success: false, msg: 'Rèn thất bại! Nguyên liệu đã biến thành đống sắt vụn.' };
-        }
-    }
-
-    checkLevelUp() {
-        const nextInfo = getSmithingLevelInfo(this.player.smithingLevel + 1);
-        if (this.player.smithingExp >= nextInfo.exp && nextInfo.exp > 0) {
-            this.player.smithingLevel++;
-            if (this.ui) this.ui.alert(`Đẳng cấp Luyện Khí Sư tăng lên ${nextInfo.name}!`, "Rèn Thần Kỹ");
         }
     }
 }

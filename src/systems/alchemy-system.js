@@ -164,7 +164,10 @@ export class AlchemySystem {
             };
             
             this.player.inventory.addItem(result.resultId, quantity, itemMetadata);
-            this.player.addAlchemyExp(recipe.level * 10);
+            if (this.player.addAlchemyExp(recipe.level * 10)) {
+                const levelInfo = getAlchemyLevelInfo(this.player.alchemyLevel);
+                this.ui.alert(`Đẳng cấp Luyện Dược Sư tăng lên ${levelInfo.name}!`, "Đan Đạo Tấn Thăng");
+            }
             
             if (quantity > 1) {
                 result.msg += ` (Số lượng: ${quantity} viên)`;

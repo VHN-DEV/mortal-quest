@@ -59,8 +59,11 @@ export class ShopSystem {
             return { success: false, msg: 'Không đủ vật phẩm để bán!' };
         }
 
-        // Sell price is usually 50% of buy price
-        const sellPrice = Math.floor(itemData.price * 0.5) * quantity;
+        // Sell price: 30% for materials, 50% for others
+        let multiplier = 0.5;
+        if (['material', 'herb', 'ore', 'wood'].includes(itemData.type)) multiplier = 0.3;
+        
+        const sellPrice = Math.floor(itemData.price * multiplier) * quantity;
         
         // Execute transaction
         this.player.inventory.removeItem(itemId, quantity);

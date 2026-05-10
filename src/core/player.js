@@ -320,6 +320,27 @@ export class Player {
             }
         });
 
+        // Add Sect Bonus
+        if (this.sectId) {
+            // Basic sect bonus: +10% to all main stats
+            this.atk *= 1.1;
+            this.def *= 1.1;
+            this.maxHp *= 1.1;
+            this.tuViPerSecond *= 1.05;
+        }
+
+        // Add Active Formations Bonus
+        this.activeFormations.forEach(f => {
+            // Formations are handled in mountain-system usually, but we add base buffs here
+            if (f.id === 'tu_linh_tran') this.tuViPerSecond *= 1.2;
+        });
+
+        // Add Destiny Bonuses (if implemented via points/stats)
+        if (this.destinyStats) {
+            if (this.destinyStats.atk) this.atk += this.destinyStats.atk;
+            if (this.destinyStats.def) this.def += this.destinyStats.def;
+        }
+
         // Ensure current HP/Mana don't exceed max
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);
@@ -328,6 +349,23 @@ export class Player {
     equip(itemId) {
         const item = getItemById(itemId);
         if (!item || !item.type) return false;
+
+        // Specialized Profession Tools
+        if (item.type === 'cauldron') {
+            this.currentCauldron = itemId;
+            this.inventory.removeItem(itemId, 1);
+            return true;
+        }
+        if (item.type === 'talisman_pen') {
+            this.currentTalismanPen = itemId;
+            this.inventory.removeItem(itemId, 1);
+            return true;
+        }
+        if (item.type === 'smithing_tool') {
+            this.smithingTool = itemId;
+            this.inventory.removeItem(itemId, 1);
+            return true;
+        }
 
         const slot = item.type; // weapon, armor, accessory, treasure
         if (this.equipment.hasOwnProperty(slot)) {
@@ -465,11 +503,32 @@ export class Player {
 
     addAlchemyExp(amount) {
         this.alchemyExp += amount;
-        // Simple level up logic: level = floor(sqrt(exp/100)) + 1
         const nextLevel = Math.floor(Math.sqrt(this.alchemyExp / 100)) + 1;
         if (nextLevel > this.alchemyLevel) {
             this.alchemyLevel = nextLevel;
+            return true;
         }
+        return false;
+    }
+
+    addTalismanExp(amount) {
+        this.talismanExp += amount;
+        const nextLevel = Math.floor(Math.sqrt(this.talismanExp / 100)) + 1;
+        if (nextLevel > this.talismanLevel) {
+            this.talismanLevel = nextLevel;
+            return true;
+        }
+        return false;
+    }
+
+    addSmithingExp(amount) {
+        this.smithingExp += amount;
+        const nextLevel = Math.floor(Math.sqrt(this.smithingExp / 1000)) + 1; // Smithing is harder
+        if (nextLevel > this.smithingLevel) {
+            this.smithingLevel = nextLevel;
+            return true;
+        }
+        return false;
     }
 
     removeFromParty(npcId) {

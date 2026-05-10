@@ -783,7 +783,8 @@ function renderShop() {
     } else {
         elShopBuyView.classList.add('hidden');
         elShopSellView.classList.remove('hidden');
-        elShopSectionNav.classList.add('hidden');
+        elShopSectionNav.classList.remove('hidden'); // Show sections for sell too
+        renderShopSections();
         renderShopSell();
     }
 }
@@ -831,7 +832,10 @@ function renderShopBuy() {
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                <div class="text-xs font-mono text-cultivation-gold">${itemData.price} LT</div>
+                <div class="text-right">
+                    <div class="text-[8px] text-gray-500 line-through">${itemData.price} LT</div>
+                    <div class="text-xs font-mono text-cultivation-gold">${Math.floor(itemData.price * (1 - Math.min(0.25, player.vipLevel * 0.05)))} LT</div>
+                </div>
                 <button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg transition-all ${item.stock <= 0 ? 'opacity-50 grayscale pointer-events-none' : ''}" onclick="window.game.buyItem('${item.id}')">
                     <i class="ph ph-shopping-cart-simple mr-1"></i>MUA
                 </button>
@@ -843,22 +847,43 @@ function renderShopBuy() {
 
 function renderShopSell() {
     elShopSellGrid.innerHTML = '';
+    const sectionType = shopSystem.currentSection;
+    
     player.inventory.items.forEach(item => {
         const itemData = getItemById(item.id);
         if (!itemData) return;
+
+        // Simple mapping for filtering
+        const typeMap = {
+            'dan_duoc': ['consumable'],
+            'phap_bao': ['weapon', 'armor', 'accessory', 'treasure'],
+            'nguyen_lieu': ['material', 'herb', 'ore', 'wood'],
+            'cong_phap': ['technique'],
+            'tran_phap': ['formation'],
+            'phu_luc': ['talisman'],
+            'luyen_khi': ['material', 'smithing_tool']
+        };
+
+        if (sectionType && typeMap[sectionType] && !typeMap[sectionType].includes(itemData.type)) return;
+
         const qClass = getQualityClass(itemData.quality);
         const el = document.createElement('div');
         el.className = `p-2 border border-gray-800 rounded-lg bg-black/20 flex flex-col items-center cursor-pointer hover:border-${qClass}`;
+        
+        // Custom sell price logic
+        let sellMult = 0.5;
+        if (['material', 'herb', 'ore', 'wood'].includes(itemData.type)) sellMult = 0.3;
+
         el.innerHTML = `
             <div class="text-2xl mb-1">${itemData.icon}</div>
             <div class="text-[9px] text-gray-400">x${item.quantity}</div>
-            <div class="text-[8px] text-cultivation-gold mt-1">${Math.floor(itemData.price * 0.5)} LT</div>
+            <div class="text-[8px] text-cultivation-gold mt-1">${Math.floor(itemData.price * sellMult)} LT</div>
         `;
         el.onclick = () => {
             const res = shopSystem.sellItem(item.id, 1);
             ui.toast(res.msg, res.success ? 'success' : 'error');
             renderShopSell();
-            elShopLingShi.textContent = Math.floor(player.lingShi);
+            elShopLingShi.textContent = player.getFormattedLingShi();
         };
         elShopSellGrid.appendChild(el);
     });

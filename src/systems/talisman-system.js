@@ -48,8 +48,10 @@ export class TalismanSystem {
         if (roll <= successRate) {
             // Success
             this.player.inventory.addItem(recipe.id, 1);
-            this.player.talismanExp += recipe.expGain;
-            this.checkLevelUp();
+            if (this.player.addTalismanExp(recipe.expGain)) {
+                 const nextLevelInfo = getTalismanLevelInfo(this.player.talismanLevel);
+                 this.ui.alert(`Chúc mừng! Bạn đã đột phá lên ${nextLevelInfo.name}!`, "Phù Đạo Tấn Thăng");
+            }
             return { success: true, msg: `Bạn đã vẽ thành công một tấm ${recipe.name}!` };
         } else {
             // Failure
@@ -60,14 +62,6 @@ export class TalismanSystem {
                 return { success: false, msg: `Văn phù sụp đổ! Phù nổ tung gây ${damage} sát thương lên Thần Thức của bạn.` };
             }
             return { success: false, msg: 'Vẽ phù thất bại! Phù văn bị nhòe và mất đi linh tính.' };
-        }
-    }
-
-    checkLevelUp() {
-        const nextLevelInfo = getTalismanLevelInfo(this.player.talismanLevel + 1);
-        if (this.player.talismanExp >= nextLevelInfo.exp && nextLevelInfo.exp > 0) {
-            this.player.talismanLevel++;
-            if (this.ui) this.ui.alert(`Chúc mừng! Bạn đã đột phá lên ${nextLevelInfo.name}!`, "Phù Đạo Tấn Thăng");
         }
     }
 }
