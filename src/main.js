@@ -27,7 +27,7 @@ import { TimeSystem } from './systems/time-system.js';
 import { CraftingSystem } from './systems/crafting-system.js';
 
 // Global error handler
-window.onerror = function(msg, url, lineNo, columnNo, error) {
+window.onerror = function (msg, url, lineNo, columnNo, error) {
     console.error('Thiên Cơ Hỗn Loạn:', msg, '\nTại:', url, ':', lineNo, ':', columnNo, '\nChi tiết:', error);
     return false;
 };
@@ -201,17 +201,17 @@ function init() {
 
     player = new Player();
     const savedData = SaveSystem.load();
-    
+
     if (!savedData) {
         showDestinySelection();
     } else {
         player.load(savedData);
         initGameSystems(player, savedData);
     }
-    
+
     // Auto-save every 30 seconds
     setInterval(saveGame, 30000);
-    
+
     if (btnSeclusion) btnSeclusion.onclick = handleSeclusion;
 
     // Focus Buttons
@@ -241,7 +241,7 @@ function init() {
         btnFocusTuvi.onclick = () => { player.cultivationFocus = 'tuvi'; updateFocusUI(); };
         btnFocusBody.onclick = () => { player.cultivationFocus = 'body'; updateFocusUI(); };
         btnFocusSoul.onclick = () => { player.cultivationFocus = 'soul'; updateFocusUI(); };
-        
+
         updateFocusUI();
     }
 
@@ -252,7 +252,7 @@ function init() {
             handleTypeBreakthrough(type);
         }
     });
-    
+
     update();
 }
 
@@ -294,10 +294,10 @@ async function handleSeclusion() {
     }
 
     ui.showLoading(true, "Đang Bế Quan Tu Luyện...");
-    
+
     setTimeout(() => {
         player.stamina -= staminaCost;
-        
+
         // Calculate gains
         const secondsPassed = minutes * 60;
         if (focus === 'tuvi') player.tuVi += player.tuViPerSecond * secondsPassed;
@@ -306,12 +306,12 @@ async function handleSeclusion() {
 
         // Advance world time
         timeSystem.advanceTime(minutes);
-        
+
         if (gardenSystem) gardenSystem.update(secondsPassed);
-        
+
         ui.showLoading(false);
-        ui.alert(`Sau khi bế quan ${minutes/12} ngày, căn cơ của bạn đã vững chắc hơn rất nhiều. Thân thể đã già đi một chút.`, 'Bế Quan Kết Thúc');
-        
+        ui.alert(`Sau khi bế quan ${minutes / 12} ngày, căn cơ của bạn đã vững chắc hơn rất nhiều. Thân thể đã già đi một chút.`, 'Bế Quan Kết Thúc');
+
         saveGame();
         render();
     }, 1500);
@@ -328,7 +328,7 @@ function saveGame() {
 function update() {
     const now = Date.now();
     const delta = (now - player.lastUpdate) / 1000;
-    
+
     // Calculate global cultivation multiplier
     let multiplier = 1.0;
     if (timeSystem) {
@@ -340,7 +340,7 @@ function update() {
     }
 
     player.update(delta, multiplier);
-    
+
     if (timeSystem) timeSystem.update(delta);
 
     // Update NPCs
@@ -361,11 +361,11 @@ function update() {
 function render() {
     const realm = player.getCurrentRealm();
     const progress = (player.tuVi / realm.expRequired) * 100;
-    
+
     elRealm.textContent = realm.name;
     elProgress.style.width = `${Math.min(100, progress)}%`;
     elTuViText.textContent = `${Math.floor(player.tuVi).toLocaleString()} / ${realm.expRequired.toLocaleString()}`;
-    
+
     // Calculate final TVPS with seasonal bonus
     let tvps = player.tuViPerSecond;
     if (timeSystem) {
@@ -375,7 +375,7 @@ function render() {
             tvps *= timeSystem.currentPhenomenon.effect.tvps;
         }
     }
-    
+
     elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
     elLingShiText.textContent = Math.floor(player.lingShi).toLocaleString();
 
@@ -417,7 +417,7 @@ function renderTime() {
     // Apply visual filters
     elApp.classList.remove('time-night', 'time-blood-moon', 'time-spiritual-tide', 'time-eclipse');
     if (timeSystem.isNight()) elApp.classList.add('time-night');
-    
+
     if (timeSystem.currentPhenomenon) {
         if (timeSystem.currentPhenomenon.id === 'blood_moon') elApp.classList.add('time-blood-moon');
         if (timeSystem.currentPhenomenon.id === 'spiritual_tide') elApp.classList.add('time-spiritual-tide');
@@ -487,7 +487,7 @@ function updateNPCs(delta) {
             npc.simulate(delta);
         }
     });
-    
+
     // Update party members
     player.party.forEach(npc => {
         if (typeof npc.simulate === 'function') {
@@ -513,7 +513,7 @@ function startExploration(locId) {
             ui.toast(`Dòng chảy thời gian tại đây dường như khác biệt... (x${timeSystem.timeMultiplier})`, 'warning');
         }
     }
-    
+
     // Check if this is a shop location
     if (loc.id === 'van_bao_cac') {
         btnEnterShop.classList.remove('hidden');
@@ -551,7 +551,7 @@ function updateExplorationUI() {
 function renderExplore() {
     const loc = getLocationById(currentWorldId, currentLocId);
     if (!loc) return;
-    
+
     // Update background if location has one
     const bgUrl = loc.image || ASSETS.backgrounds[loc.id] || ASSETS.backgrounds.nhan_gioi;
     viewExplore.style.backgroundImage = `url('${bgUrl}')`;
@@ -562,16 +562,16 @@ function renderExplore() {
 btnMove.onclick = () => {
     if (player.stamina < 5) { alert('Không đủ thể lực!'); return; }
     player.stamina -= 5;
-    
+
     // Each move consumes 1 game Giờ
     if (timeSystem) timeSystem.advanceTime(1);
-    
+
     explorationProgress += 5 + Math.random() * 5;
     if (explorationProgress >= 100) explorationProgress = 100;
     updateExplorationUI();
 
     const loc = getLocationById(currentWorldId, currentLocId);
-    
+
     // Adjust event probabilities based on time
     let probs = { ...loc.eventProbs };
     if (timeSystem && timeSystem.isNight()) {
@@ -807,7 +807,7 @@ function renderDestinyUI() {
     elDestinyRootQuality.textContent = d.spiritualRoot.quality + " Phẩm";
     elDestinyRootQuality.style.color = d.spiritualRoot.color;
     elDestinyRootBg.style.background = `radial-gradient(circle, ${d.spiritualRoot.color} 0%, transparent 70%)`;
-    
+
     if (d.physique) {
         elDestinyPhysiqueName.textContent = d.physique.name;
         elDestinyPhysiqueDesc.textContent = d.physique.desc;
@@ -815,12 +815,12 @@ function renderDestinyUI() {
         elDestinyPhysiqueName.textContent = "Không có";
         elDestinyPhysiqueDesc.textContent = "Hầu hết phàm nhân đều không có thể chất đặc biệt.";
     }
-    
+
     elDestinyOriginName.textContent = d.origin.name;
     elDestinyLuckValue.textContent = d.luck;
-    
+
     elDestinyTalentsList.innerHTML = d.talents.map(t => `<span class="px-2 py-1 bg-white/10 rounded text-[9px] text-gray-300 border border-white/5">${t.name}</span>`).join('');
-    
+
     elDestinyRating.textContent = d.destinyRating;
 }
 
@@ -834,22 +834,22 @@ btnConfirmDestiny.onclick = () => {
     player.luck = currentDestiny.luck;
     player.talents = currentDestiny.talents;
     player.destinyRating = currentDestiny.destinyRating;
-    
+
     // Initial resources
     player.lingShi = currentDestiny.origin.resources.lingShi;
-    
+
     player.calculateStats();
-    
+
     // Initialize systems for the new player
     initGameSystems(player);
 
     overlayDestiny.classList.add('hidden');
     saveGame();
-    
+
     elPlayerNameHeader.textContent = player.name;
     elHeaderPortrait.src = ASSETS.portraits.player;
     document.getElementById('main-player-portrait').src = ASSETS.portraits.player;
-    
+
     ui.toast("Thức tỉnh thiên mệnh thành công!", "success");
 };
 
@@ -861,12 +861,12 @@ function initGameSystems(player, savedData = null) {
     mountainSystem = new MountainSystem(player, ui);
     timeSystem = new TimeSystem(player, ui);
     craftingSystem = new CraftingSystem(player);
-    
+
     // Legacy support for older property names if any
     if (savedData && savedData.time) {
         timeSystem.load(savedData.time);
     }
-    
+
     if (elPlayerNameHeader) elPlayerNameHeader.textContent = player.name;
     const mainPortrait = document.getElementById('main-player-portrait');
     if (mainPortrait) mainPortrait.src = ASSETS.portraits.player;
@@ -880,7 +880,7 @@ function renderCharacter() {
     elCharSpd.textContent = Math.floor(player.spd);
     elCharMana.textContent = `${Math.floor(player.mana)} / ${Math.floor(player.maxMana)}`;
     if (elCharAge) elCharAge.textContent = `${Math.floor(player.age)} / ${player.maxAge}`;
-    
+
     // Detailed Realms
     const tuviRealm = player.getCurrentRealm('tuvi');
     const bodyRealm = player.getCurrentRealm('body');
@@ -913,7 +913,7 @@ function renderCharacter() {
     if (player.age >= player.maxAge) {
         ui.toast("Thọ nguyên sắp cạn, hãy mau chóng đột phá!", "error");
     }
-    
+
     if (elCharSectInfo) {
         if (player.sectId) {
             const sect = getSectById(player.sectId);
@@ -934,11 +934,11 @@ function renderCharacter() {
         elRoot.textContent = player.spiritualRoot.type;
         elRoot.style.color = player.spiritualRoot.color;
     }
-    
+
     if (elPhysique) {
         elPhysique.textContent = player.physique ? player.physique.name : "Không";
     }
-    
+
     if (elLuck) elLuck.textContent = player.luck;
 
     // Render Party
@@ -979,7 +979,7 @@ function renderCharacter() {
             slot.innerHTML = `<i class="ph ${icons[type]} text-gray-600"></i>`;
             slot.onclick = null;
         }
-        
+
         // Position them manually to match CSS grid in HTML
         const positions = {
             weapon: 'top: 1rem; left: 1rem;',
@@ -1017,12 +1017,12 @@ function selectItem(id) {
     elDetailName.className = `font-bold quality-${qClass}`;
     elDetailType.textContent = `${itemData.quality} phẩm | ${itemData.type}`;
     elDetailDesc.textContent = itemData.description;
-    
+
     btnUseItem.style.display = itemData.type === 'consumable' ? 'block' : 'none';
-    
+
     const equippable = ['weapon', 'armor', 'accessory', 'treasure'].includes(itemData.type);
     btnEquipItem.style.display = equippable ? 'block' : 'none';
-    
+
     renderInventory();
 }
 
@@ -1064,7 +1064,7 @@ function renderAlchemy() {
     const elGarden = document.getElementById('alchemy-garden-view');
     const elLvlText = document.getElementById('alchemy-level-text');
     const elExpBar = document.getElementById('alchemy-exp-bar');
-    
+
     // Toggle views
     if (alchemyView === 'recipes') {
         viewAlchemyRecipes.classList.remove('hidden');
@@ -1081,17 +1081,17 @@ function renderAlchemy() {
     elRecipes.innerHTML = '';
     const lvlInfo = getAlchemyLevelInfo(player.alchemyLevel);
     elLvlText.textContent = lvlInfo.name;
-    
+
     const nextLevelExp = player.alchemyLevel * 100 * Math.pow(1.5, player.alchemyLevel - 1);
     elExpBar.style.width = `${(player.alchemyExp / nextLevelExp) * 100}%`;
-    
+
     if (alchemyView === 'recipes') {
         ALCHEMY_RECIPES.forEach(recipe => {
             const resultItem = getItemById(recipe.resultId);
             const qClass = getQualityClass(resultItem.quality);
             const el = document.createElement('div');
             el.className = 'p-4 border border-gray-800 rounded-2xl bg-white/5 space-y-3';
-            
+
             let materialsHTML = '';
             recipe.materials.forEach(mat => {
                 const matItem = getItemById(mat.id);
@@ -1109,10 +1109,10 @@ function renderAlchemy() {
                         <span class="text-xl mr-2">${resultItem.icon}</span>
                         <span class="font-bold quality-${qClass} font-ancient">${resultItem.name}</span>
                     </div>
-                    ${locked ? 
-                        `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
-                        `<button class="px-4 py-1.5 bg-qi-blue text-black text-[10px] font-bold rounded-lg active:scale-95 transition-all" onclick="window.game.craft('${recipe.id}')">LUYỆN CHẾ</button>`
-                    }
+                    ${locked ?
+                    `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
+                    `<button class="px-4 py-1.5 bg-qi-blue text-black text-[10px] font-bold rounded-lg active:scale-95 transition-all" onclick="window.game.craft('${recipe.id}')">LUYỆN CHẾ</button>`
+                }
                 </div>
                 <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
                 <div class="text-[9px] text-gray-500 italic">${recipe.description}</div>
@@ -1126,7 +1126,7 @@ function renderAlchemy() {
         player.gardenPlots.forEach((plot, index) => {
             const el = document.createElement('div');
             el.className = 'p-4 border border-white/5 rounded-2xl bg-white/5 flex flex-col space-y-3';
-            
+
             if (plot) {
                 const seed = SEEDS.find(s => s.id === plot.seedId);
                 const isReady = plot.status === 'ready';
@@ -1136,10 +1136,10 @@ function renderAlchemy() {
                             <h4 class="text-xs font-ancient text-white">${seed.name}</h4>
                             <p class="text-[10px] text-gray-500">${isReady ? 'Đã chín muồi!' : 'Đang phát triển...'}</p>
                         </div>
-                        ${isReady ? 
-                            `<button class="px-4 py-2 bg-green-500 text-black text-[10px] font-bold rounded-lg" onclick="window.game.harvest(${index})">THU HOẠCH</button>` :
-                            `<div class="text-[10px] font-mono text-qi-blue">${Math.ceil(plot.remainingTime)}s</div>`
-                        }
+                        ${isReady ?
+                        `<button class="px-4 py-2 bg-green-500 text-black text-[10px] font-bold rounded-lg" onclick="window.game.harvest(${index})">THU HOẠCH</button>` :
+                        `<div class="text-[10px] font-mono text-qi-blue">${Math.ceil(plot.remainingTime)}s</div>`
+                    }
                     </div>
                     <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
                         <div class="h-full bg-green-500" style="width: ${((seed.growthTime - plot.remainingTime) / seed.growthTime) * 100}%"></div>
@@ -1203,7 +1203,7 @@ function renderGuild() {
         el.innerHTML = `
             <div>
                 <h4 class="text-sm font-ancient text-white">${room.name} ${active ? '⭐' : ''}</h4>
-                <p class="text-[10px] text-gray-500">Phí thuê: ${room.fee} LT | Tăng ${room.successBonus*100}% thành công</p>
+                <p class="text-[10px] text-gray-500">Phí thuê: ${room.fee} LT | Tăng ${room.successBonus * 100}% thành công</p>
             </div>
             <button class="px-4 py-2 ${active ? 'bg-gray-800' : 'bg-cultivation-gold'} text-black text-[10px] font-bold rounded-lg" 
                 onclick="window.game.guildRent('${room.id}')">${active ? 'ĐANG THUÊ' : 'THUÊ'}</button>
@@ -1231,7 +1231,7 @@ window.game.guildRent = (id) => {
 function renderTower() {
     const elFloors = document.getElementById('tower-floor-list');
     elFloors.innerHTML = '';
-    
+
     TOWER_LEVELS.forEach(floor => {
         const locked = player.alchemyLevel < floor.minAlchemyLevel;
         const el = document.createElement('div');
@@ -1424,20 +1424,20 @@ btnNpcTrade.onclick = () => {
 
 btnNpcAttack.onclick = () => {
     player.karma -= 20;
-    currentNPC.relationship = -100; 
-    elNpcDialogue.textContent = currentNPC.getDialogue('hostile'); 
-    setTimeout(() => { 
-        overlayNPC.classList.add('hidden'); 
-        startBattleWithNPC(currentNPC); 
-    }, 1000); 
+    currentNPC.relationship = -100;
+    elNpcDialogue.textContent = currentNPC.getDialogue('hostile');
+    setTimeout(() => {
+        overlayNPC.classList.add('hidden');
+        startBattleWithNPC(currentNPC);
+    }, 1000);
 };
 
-btnNpcLeave.onclick = () => { 
-    overlayNPC.classList.add('hidden'); 
+btnNpcLeave.onclick = () => {
+    overlayNPC.classList.add('hidden');
     if (currentNPC && !player.knownNPCs[currentNPC.id]) {
         player.knownNPCs[currentNPC.id] = currentNPC;
     }
-    currentNPC = null; 
+    currentNPC = null;
 };
 
 window.removeFromParty = (id) => {
@@ -1451,12 +1451,12 @@ function renderNPC() {
     elNpcTitle.textContent = currentNPC.title;
     elNpcName.textContent = `${currentNPC.name} (${currentNPC.getRelationshipStatus()}: ${currentNPC.relationship})`;
     elNpcRealm.textContent = getRealmById(currentNPC.realmId).name;
-    
+
     // Check for story
     if (currentNPC.storyArcId && currentNPC.storyStep > 0) {
         const arc = NPC_STORIES[currentNPC.storyArcId];
         const step = arc.steps.find(s => s.id === currentNPC.storyStep);
-        
+
         if (step) {
             elNpcDialogue.textContent = `[CỐT TRUYỆN: ${arc.name}] ${step.desc}`;
             elNpcStoryOptions.classList.remove('hidden');
@@ -1475,11 +1475,11 @@ function renderNPC() {
 
 window.game.handleStoryChoice = (idx) => {
     if (!currentNPC || !currentNPC.storyArcId) return;
-    
+
     const arc = NPC_STORIES[currentNPC.storyArcId];
     const step = arc.steps.find(s => s.id === currentNPC.storyStep);
     const option = step.options[idx];
-    
+
     if (option.karma) player.karma += option.karma;
     if (option.relation) currentNPC.relationship += option.relation;
     if (option.reward) {
@@ -1488,7 +1488,7 @@ window.game.handleStoryChoice = (idx) => {
             option.reward.items.forEach(id => player.inventory.addItem(id, 1));
         }
     }
-    
+
     if (option.next === 'complete') {
         currentNPC.storyStep = 0;
         ui.alert("Bạn đã hoàn thành chuỗi cốt truyện của NPC này!", "Hoàn Thành Cốt Truyện");
@@ -1499,11 +1499,10 @@ window.game.handleStoryChoice = (idx) => {
     } else {
         currentNPC.storyStep = option.next;
     }
-    
+
     renderNPC();
     renderNPC();
     saveGame();
-};
 };
 
 function startBattleWithNPC(npc) {
@@ -1525,12 +1524,12 @@ function initiateBattle(enemy) {
     overlayBattle.classList.remove('hidden');
     battleActions.classList.add('hidden');
 
-    currentCombat = new CombatEngine(player, enemy, 
+    currentCombat = new CombatEngine(player, enemy,
         (type, data) => {
             if (type === 'damage') createDamagePopup(data.target, data.value, data.crit);
             if (type === 'player-turn-start') battleActions.classList.remove('hidden');
             if (type === 'player-turn-end' || type === 'end') battleActions.classList.add('hidden');
-        }, 
+        },
         (result) => {
             setTimeout(() => {
                 overlayBattle.classList.add('hidden');
@@ -1552,7 +1551,7 @@ navButtons.forEach(btn => {
     btn.addEventListener('click', () => {
         const targetId = btn.id.replace('nav-', 'screen-');
         const targetScreen = document.getElementById(targetId);
-        
+
         if (!targetScreen) {
             console.error(`Thất bại: Không tìm thấy màn hình ${targetId}`);
             return;
@@ -1562,15 +1561,15 @@ navButtons.forEach(btn => {
             s.classList.add('hidden');
             s.classList.remove('animate-fade-in');
         });
-        
+
         targetScreen.classList.remove('hidden');
         targetScreen.classList.add('animate-fade-in');
-        
+
         navButtons.forEach(b => {
             b.classList.remove('text-cultivation-gold', 'active');
             b.classList.add('text-gray-500');
         });
-        
+
         btn.classList.add('text-cultivation-gold', 'active');
         btn.classList.remove('text-gray-500');
 
@@ -1584,20 +1583,20 @@ navButtons.forEach(btn => {
 btnBackToWorlds.onclick = () => { viewLocations.classList.add('hidden'); viewWorlds.classList.remove('hidden'); };
 btnBackToLocs.onclick = () => { viewExplore.classList.add('hidden'); viewLocations.classList.remove('hidden'); };
 
-btnCultivate.addEventListener('click', (e) => { 
+btnCultivate.addEventListener('click', (e) => {
     if (player.cultivate()) {
-        createClickParticle(e.clientX, e.clientY); 
+        createClickParticle(e.clientX, e.clientY);
         // Optional: Add a subtle text popup or sound
     } else {
         ui.toast("Kiệt sức rồi, hãy nghỉ ngơi một chút!", "warning");
     }
 });
-btnBreakthrough.addEventListener('click', async () => { 
-    if (player.breakthrough()) { 
+btnBreakthrough.addEventListener('click', async () => {
+    if (player.breakthrough()) {
         ui.alert('Chúc mừng Đạo hữu đã đột phá thành công, thực lực đại tăng!', 'Thiên Đạo Chúc Phúc');
-        saveGame(); 
+        saveGame();
         render(); // Refresh UI
-    } 
+    }
 });
 
 function createDamagePopup(target, value, crit) {
