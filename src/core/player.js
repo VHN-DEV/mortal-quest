@@ -37,10 +37,14 @@ export class Player {
         
         // Equipment slots
         this.equipment = {
+            head: null,
+            necklace: null,
             weapon: null,    // itemId
             armor: null,
             accessory: null,
-            treasure: null
+            artifact: null,
+            treasure: null,
+            shoes: null
         };
         
         this.inventory = new Inventory(this);
@@ -434,7 +438,8 @@ export class Player {
         this.hp = data.hp || 100;
         this.mana = data.mana || 50;
         this.stamina = data.stamina || 100;
-        this.equipment = data.equipment || { weapon: null, armor: null, accessory: null, treasure: null };
+        const defaultEquipment = { head: null, necklace: null, weapon: null, armor: null, accessory: null, artifact: null, treasure: null, shoes: null };
+        this.equipment = { ...defaultEquipment, ...(data.equipment || {}) };
         this.sectId = data.sectId || null;
         this.sectContribution = data.sectContribution || 0;
         

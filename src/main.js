@@ -1188,36 +1188,33 @@ function renderCharacter() {
         const type = slot.dataset.slot;
         const itemId = player.equipment[type];
         slot.innerHTML = '';
+        
+        // Clear any previous dynamic border classes
+        const classesToRemove = Array.from(slot.classList).filter(c => c.startsWith('border-') && c !== 'border-white/20');
+        slot.classList.remove(...classesToRemove);
+
         if (itemId) {
             const item = getItemById(itemId);
             if (item) {
                 const qClass = getQualityClass(item.quality);
-                slot.className = `absolute w-12 h-12 border bg-black/60 rounded-lg flex items-center justify-center equipment-slot border-${qClass}/50`;
+                slot.classList.remove('border-white/20');
+                slot.classList.add(`border-${qClass}/50`);
                 slot.innerHTML = `<span class="text-xl">${item.icon}</span>`;
                 slot.onclick = () => {
                     if (player.unequip(type)) renderCharacter();
                 };
             } else {
-                slot.className = `absolute w-12 h-12 border border-white/20 bg-black/40 rounded-lg flex items-center justify-center equipment-slot`;
-                const icons = { weapon: 'ph-sword', armor: 'ph-coat-hanger', accessory: 'ph-ring', treasure: 'ph-magic-wand' };
-                slot.innerHTML = `<i class="ph ${icons[type]} text-gray-600"></i>`;
+                slot.classList.add('border-white/20');
+                const icons = { head: 'ph-crown', shoes: 'ph-sneaker', necklace: 'ph-diamond', artifact: 'ph-magic-wand', weapon: 'ph-sword', armor: 'ph-coat-hanger', accessory: 'ph-ring', treasure: 'ph-sparkle' };
+                slot.innerHTML = `<i class="ph ${icons[type] || 'ph-question'} text-gray-600"></i>`;
                 slot.onclick = null;
             }
         } else {
-            slot.className = `absolute w-12 h-12 border border-white/20 bg-black/40 rounded-lg flex items-center justify-center equipment-slot`;
-            const icons = { weapon: 'ph-sword', armor: 'ph-coat-hanger', accessory: 'ph-ring', treasure: 'ph-magic-wand' };
-            slot.innerHTML = `<i class="ph ${icons[type]} text-gray-600"></i>`;
+            slot.classList.add('border-white/20');
+            const icons = { head: 'ph-crown', shoes: 'ph-sneaker', necklace: 'ph-diamond', artifact: 'ph-magic-wand', weapon: 'ph-sword', armor: 'ph-coat-hanger', accessory: 'ph-ring', treasure: 'ph-sparkle' };
+            slot.innerHTML = `<i class="ph ${icons[type] || 'ph-question'} text-gray-600"></i>`;
             slot.onclick = null;
         }
-
-        // Position them manually to match CSS grid in HTML
-        const positions = {
-            weapon: 'top: 1rem; left: 1rem;',
-            armor: 'top: 5rem; left: 1rem;',
-            accessory: 'top: 9rem; left: 1rem;',
-            treasure: 'top: 13rem; left: 1rem;'
-        };
-        slot.style = positions[type];
     });
 
     // Render Formations
