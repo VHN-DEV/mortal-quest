@@ -257,6 +257,120 @@ export const ITEMS = {
         description: 'Tạo huyễn cảnh che mắt đối thủ.'
     },
 
+    // --- TALISMAN PAPERS (GIẤY PHÙ) ---
+    'hoang_chi_phu': {
+        id: 'hoang_chi_phu',
+        name: 'Hoàng Chỉ Phù',
+        type: 'talisman_paper',
+        icon: '📄',
+        quality: 'Phàm',
+        price: 10,
+        description: 'Giấy phù phổ thông, dùng cho phù lục sơ cấp.'
+    },
+    'linh_moc_phu': {
+        id: 'linh_moc_phu',
+        name: 'Linh Mộc Phù Chỉ',
+        type: 'talisman_paper',
+        icon: '🪵',
+        quality: 'Hoàng',
+        price: 50,
+        description: 'Làm từ gỗ linh mộc, tăng độ ổn định khi vẽ phù.'
+    },
+    'yeu_thu_da_phu': {
+        id: 'yeu_thu_da_phu',
+        name: 'Yêu Thú Da Phù',
+        type: 'talisman_paper',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 250,
+        description: 'Làm từ da yêu thú, tăng uy lực cho phù công kích.'
+    },
+
+    // --- SPIRIT INKS (MỰC PHÙ) ---
+    'chu_sa_muc': {
+        id: 'chu_sa_muc',
+        name: 'Chu Sa Linh Mực',
+        type: 'talisman_ink',
+        icon: '🩸',
+        quality: 'Phàm',
+        price: 20,
+        description: 'Mực chu sa chứa linh lực loãng, dùng vẽ phù cơ bản.'
+    },
+    'yeu_huyet_muc': {
+        id: 'yeu_huyet_muc',
+        name: 'Yêu Huyết Mực',
+        type: 'talisman_ink',
+        icon: '🧪',
+        quality: 'Huyền',
+        price: 150,
+        description: 'Pha trộn từ máu yêu thú, tăng sát thương cho phù lục.'
+    },
+
+    // --- TALISMAN PENS (PHÙ BÚT) ---
+    'truc_phu_but': {
+        id: 'truc_phu_but',
+        name: 'Trúc Phù Bút',
+        type: 'talisman_pen',
+        icon: '🖌️',
+        quality: 'Hoàng',
+        price: 500,
+        description: 'Bút vẽ phù làm từ linh trúc, tăng tỷ lệ thành công thêm 5%.',
+        stats: { successRate: 0.05 }
+    },
+
+    // --- FINISHED TALISMANS (PHÙ LỤC THÀNH PHẨM) ---
+    'hoa_cau_phu': {
+        id: 'hoa_cau_phu',
+        name: 'Hỏa Cầu Phù',
+        type: 'talisman',
+        icon: '🔥',
+        quality: 'Phàm',
+        price: 100,
+        description: 'Triệu hồi hỏa cầu tấn công, gây sát thương Hỏa.',
+        effect: { type: 'damage', value: 200, element: 'fire' }
+    },
+    'kim_cuong_phu': {
+        id: 'kim_cuong_phu',
+        name: 'Kim Cương Phù',
+        type: 'talisman',
+        icon: '🛡️',
+        quality: 'Hoàng',
+        price: 350,
+        description: 'Tạo lớp bảo vệ cứng như kim cương, tăng 100 DEF trong 3 lượt.',
+        effect: { type: 'buff', stat: 'def', value: 100, duration: 3 }
+    },
+    'than_hanh_phu': {
+        id: 'than_hanh_phu',
+        name: 'Thần Hành Phù',
+        type: 'talisman',
+        icon: '👟',
+        quality: 'Hoàng',
+        price: 200,
+        description: 'Tăng tốc độ di chuyển cực nhanh trong thời gian ngắn.',
+        effect: { type: 'utility', speedBoost: 2.0, duration: 60 } // seconds
+    },
+    'thun_di_phu': {
+        id: 'thun_di_phu',
+        name: 'Thuấn Di Phù',
+        type: 'talisman',
+        icon: '⚡',
+        quality: 'Huyền',
+        price: 2000,
+        description: 'Dịch chuyển tức thời thoát khỏi nguy hiểm.',
+        effect: { type: 'escape' }
+    },
+
+    // --- TALISMAN TECHNIQUES (BÍ PHÁP) ---
+    'thien_loi_phu_quyen': {
+        id: 'thien_loi_phu_quyen',
+        name: 'Thiên Lôi Phù Quyển',
+        type: 'talisman_recipe',
+        icon: '⚡',
+        quality: 'Thiên',
+        price: 45000,
+        description: 'Ghi chép cách vẽ Thiên Lôi Phù, uy lực kinh thiên động địa.'
+    },
+
     // --- TECHNIQUES (CÔNG PHÁP) ---
     'truong_sinh_quyet': {
         id: 'truong_sinh_quyet',

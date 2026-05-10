@@ -74,6 +74,12 @@ export class Player {
         this.currentAlchemyRoom = null;
         this.gardenPlots = [null, null, null]; // 3 initial plots
         this.mountainSurvival = { oxygen: 100, toxicity: 0 };
+
+        // Talisman System
+        this.talismanLevel = 1;
+        this.talismanExp = 0;
+        this.currentTalismanPen = 'truc_phu_but';
+        this.knownTalismanRecipes = ['hoa_cau_phu'];
         
         // Time & Lifespan
         this.age = 18;

@@ -26,6 +26,13 @@ export const SHOPS = {
             ],
             'tran_phap': [
                 { id: 'tran_do_tu_linh', stock: 5 }
+            ],
+            'phu_luc': [
+                { id: 'hoang_chi_phu', stock: 100 },
+                { id: 'chu_sa_muc', stock: 50 },
+                { id: 'truc_phu_but', stock: 1 },
+                { id: 'hoa_cau_phu', stock: 20 },
+                { id: 'kim_cuong_phu', stock: 5, minVip: 1 }
             ]
         }
     }
