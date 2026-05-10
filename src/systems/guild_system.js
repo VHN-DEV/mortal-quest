@@ -1,5 +1,5 @@
-import { ALCHEMY_CERTIFICATIONS, GUILD_MISSIONS, ALCHEMY_ROOMS } from '../data/guild_data.js';
-import { getItemById } from '../data/items.js';
+import { ALCHEMY_CERTIFICATIONS, GUILD_MISSIONS, ALCHEMY_ROOMS } from '../configs/guild_data.js';
+import { getItemById } from '../configs/items.js';
 
 export class GuildSystem {
     constructor(player, ui) {

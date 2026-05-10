@@ -1,4 +1,4 @@
-import { HOURS, SEASONS, PHENOMENA } from '../data/time_data.js';
+import { HOURS, SEASONS, PHENOMENA } from '../configs/time_data.js';
 
 export class TimeSystem {
     constructor(player, ui) {

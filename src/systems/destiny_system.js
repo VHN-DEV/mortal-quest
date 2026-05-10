@@ -1,4 +1,4 @@
-import { ROOT_TYPES, ROOT_QUALITIES, PHYSIQUES, ORIGINS, TALENTS } from '../data/destiny.js';
+import { ROOT_TYPES, ROOT_QUALITIES, PHYSIQUES, ORIGINS, TALENTS } from '../configs/destiny.js';
 
 export class DestinySystem {
     static generateDestiny() {

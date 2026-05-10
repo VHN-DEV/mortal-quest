@@ -1,6 +1,6 @@
-import { getRealmById } from '../data/realms.js';
+import { getRealmById } from '../configs/realms.js';
 import { Inventory } from './inventory.js';
-import { getItemById } from '../data/items.js';
+import { getItemById } from '../configs/items.js';
 
 export class Player {
     constructor() {

@@ -1,6 +1,6 @@
-import { getRecipeById, getCauldronById, getFlameById, getAlchemyLevelInfo } from '../data/alchemy_data.js';
-import { ALCHEMY_ROOMS } from '../data/guild_data.js';
-import { getItemById } from '../data/items.js';
+import { getRecipeById, getCauldronById, getFlameById, getAlchemyLevelInfo } from '../configs/alchemy_data.js';
+import { ALCHEMY_ROOMS } from '../configs/guild_data.js';
+import { getItemById } from '../configs/items.js';
 
 export class AlchemySystem {
     constructor(player, ui) {

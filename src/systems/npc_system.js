@@ -1,4 +1,4 @@
-import { NPC_TEMPLATES } from '../data/npcs.js';
+import { NPC_TEMPLATES } from '../configs/npcs.js';
 
 export class NPC {
     constructor(templateId, realmId) {

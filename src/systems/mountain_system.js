@@ -1,4 +1,4 @@
-import { MOUNTAIN_LAYERS, MOUNTAIN_BEASTS, MOUNTAIN_EVENTS } from '../data/great_mountain_data.js';
+import { MOUNTAIN_LAYERS, MOUNTAIN_BEASTS, MOUNTAIN_EVENTS } from '../configs/great_mountain_data.js';
 
 export class MountainSystem {
     constructor(player, ui) {

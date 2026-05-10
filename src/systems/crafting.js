@@ -1,4 +1,4 @@
-import { getItemById } from '../data/items.js';
+import { getItemById } from '../configs/items.js';
 
 export const CRAFTING_RECIPES = [
     {
