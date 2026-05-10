@@ -1,23 +1,32 @@
 export const ITEMS = {
     // Tiêu hao
-    'tu_vi_dan_so': {
-        id: 'tu_vi_dan_so',
-        name: 'Tu Vi Đan (Sơ)',
+    'ngung_khi_dan': {
+        id: 'ngung_khi_dan',
+        name: 'Ngưng Khí Đan',
         type: 'consumable',
         icon: '💊',
         quality: 'Hoàng',
-        price: 50,
-        description: 'Đan dược giúp tăng nhẹ tu vi cho tu sĩ Luyện Khí.',
-        effect: { type: 'tu_vi', value: 100 }
+        price: 150,
+        description: 'Tăng 500 linh khí ngay lập tức.',
+        effect: { type: 'tu_vi', value: 500 }
     },
     'linh_thao_thap': {
         id: 'linh_thao_thap',
-        name: 'Linh Thảo (Thấp)',
+        name: 'Linh Thảo Hạ Phẩm',
         type: 'material',
         icon: '🌿',
         quality: 'Phàm',
-        price: 10,
-        description: 'Nguyên liệu cơ bản để luyện chế các loại đan dược.'
+        price: 20,
+        description: 'Linh thảo chứa ít linh khí, thường thấy ở các bìa rừng.'
+    },
+    'linh_thao_trung': {
+        id: 'linh_thao_trung',
+        name: 'Linh Thảo Trung Phẩm',
+        type: 'material',
+        icon: '🍃',
+        quality: 'Huyền',
+        price: 100,
+        description: 'Linh thảo có dược tính ổn định, thích hợp luyện đan bậc trung.'
     },
     'truc_co_dan': {
         id: 'truc_co_dan',
@@ -25,9 +34,37 @@ export const ITEMS = {
         type: 'consumable',
         quality: 'Huyền',
         icon: '💎',
-        description: 'Đan dược cần thiết để đột phá Trúc Cơ Kỳ.',
+        description: 'Đan dược chí bảo giúp phàm nhân đúc thành đạo cơ.',
         price: 5000,
-        stats: { breakthroughRate: 0.2 }
+        stats: { breakthroughRate: 0.3 }
+    },
+    'bo_nguyen_dan': {
+        id: 'bo_nguyen_dan',
+        name: 'Bổ Nguyên Đan',
+        type: 'consumable',
+        quality: 'Huyền',
+        icon: '🍶',
+        price: 450,
+        description: 'Đan dược bồi bổ nguyên khí, hồi phục 100 Khí Huyết và 50 Linh Lực.',
+        effect: { type: 'restore', hp: 100, mana: 50 }
+    },
+    'thuy_tinh': {
+        id: 'thuy_tinh',
+        name: 'Thủy Tinh Linh Khoáng',
+        type: 'material',
+        icon: '💠',
+        quality: 'Hoàng',
+        price: 200,
+        description: 'Một loại khoáng thạch chứa thủy tính linh lực.'
+    },
+    'ma_thach': {
+        id: 'ma_thach',
+        name: 'Ma Thạch Hạ Phẩm',
+        type: 'material',
+        icon: '🌑',
+        quality: 'Huyền',
+        price: 350,
+        description: 'Đá chứa ma khí loãng, dùng cho các loại đan dược đặc thù.'
     },
     'thanh_hong_kiem': {
         id: 'thanh_hong_kiem',
@@ -90,6 +127,15 @@ export const ITEMS = {
         price: 500,
         description: 'Mở rộng thêm 10 ô chứa đồ.',
         stats: { slots: 10 }
+    },
+    'seed_linh_thao': {
+        id: 'seed_linh_thao',
+        name: 'Hạt Giống Linh Thảo',
+        type: 'seed',
+        icon: '🌱',
+        quality: 'Phàm',
+        price: 5,
+        description: 'Dùng để gieo trồng trong Linh Điền.'
     }
 };
 

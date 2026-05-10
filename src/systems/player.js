@@ -45,6 +45,23 @@ export class Player {
         this.luck = 50;
         this.talents = [];
         this.destinyRating = "Phàm mệnh";
+
+        // NPC & Story systems
+        this.party = []; // Array of NPC objects
+        this.knownNPCs = {}; // Map of id -> NPC object
+        this.karma = 0; // -1000 to 1000
+        
+        // Alchemy System
+        this.alchemyLevel = 1;
+        this.alchemyExp = 0;
+        this.currentCauldron = 'pham_lu';
+        this.currentFlame = 'linh_hoa';
+        this.danPoison = 0;
+        this.knownRecipes = ['ngung_khi_dan'];
+        this.alchemyReputation = 0;
+        this.currentAlchemyRoom = null;
+        this.gardenPlots = [null, null, null]; // 3 initial plots
+        this.mountainSurvival = { oxygen: 100, toxicity: 0 };
     }
 
     getCurrentRealm() {
@@ -173,6 +190,17 @@ export class Player {
         return false;
     }
 
+    addAlchemyExp(amount) {
+        this.alchemyExp += amount;
+        const nextLevelExp = this.alchemyLevel * 100 * Math.pow(1.5, this.alchemyLevel - 1);
+        if (this.alchemyExp >= nextLevelExp) {
+            this.alchemyExp -= nextLevelExp;
+            this.alchemyLevel++;
+            return true;
+        }
+        return false;
+    }
+
     load(data) {
         if (!data) return;
         this.name = data.name || "Phàm Nhân";
@@ -196,7 +224,21 @@ export class Player {
         this.origin = data.origin || null;
         this.luck = data.luck || 50;
         this.talents = data.talents || [];
-        this.destinyRating = data.destinyRating || "Phàm mệnh";
+        // Load NPC systems
+        this.knownNPCs = data.knownNPCs || {};
+        this.karma = data.karma || 0;
+        this.party = data.party || [];
+
+        this.alchemyLevel = data.alchemyLevel || 1;
+        this.alchemyExp = data.alchemyExp || 0;
+        this.currentCauldron = data.currentCauldron || 'pham_lu';
+        this.currentFlame = data.currentFlame || 'linh_hoa';
+        this.danPoison = data.danPoison || 0;
+        this.knownRecipes = data.knownRecipes || ['ngung_khi_dan'];
+        this.alchemyReputation = data.alchemyReputation || 0;
+        this.currentAlchemyRoom = data.currentAlchemyRoom || null;
+        this.gardenPlots = data.gardenPlots || [null, null, null];
+        this.mountainSurvival = data.mountainSurvival || { oxygen: 100, toxicity: 0 };
 
         this.calculateStats();
     }
@@ -219,7 +261,20 @@ export class Player {
             origin: this.origin,
             luck: this.luck,
             talents: this.talents,
-            destinyRating: this.destinyRating
+            destinyRating: this.destinyRating,
+            knownNPCs: this.knownNPCs,
+            karma: this.karma,
+            party: this.party,
+            alchemyLevel: this.alchemyLevel,
+            alchemyExp: this.alchemyExp,
+            currentCauldron: this.currentCauldron,
+            currentFlame: this.currentFlame,
+            danPoison: this.danPoison,
+            knownRecipes: this.knownRecipes,
+            alchemyReputation: this.alchemyReputation,
+            currentAlchemyRoom: this.currentAlchemyRoom,
+            gardenPlots: this.gardenPlots,
+            mountainSurvival: this.mountainSurvival
         };
     }
 }

@@ -10,18 +10,28 @@ import { ASSETS } from './data/assets.js';
 import { NPCSystem } from './systems/npc_system.js';
 import { getRealmById } from './data/realms.js';
 import { ShopSystem } from './systems/shop_system.js';
-import { CraftingSystem, CRAFTING_RECIPES } from './systems/crafting.js';
+import { AlchemySystem } from './systems/alchemy_system.js';
+import { GuildSystem } from './systems/guild_system.js';
+import { GardenSystem } from './systems/garden_system.js';
+import { MountainSystem } from './systems/mountain_system.js';
+import { ALCHEMY_RECIPES, getAlchemyLevelInfo } from './data/alchemy_data.js';
+import { SEEDS } from './data/garden_data.js';
+import { MOUNTAIN_LAYERS } from './data/great_mountain_data.js';
+import { ALCHEMY_CERTIFICATIONS, GUILD_MISSIONS, ALCHEMY_ROOMS } from './data/guild_data.js';
+import { TOWER_LEVELS, TOWER_MASTERS } from './data/tower_data.js';
 import { SECTS, getSectById } from './data/sects.js';
 import { DestinySystem } from './systems/destiny_system.js';
+import { NPC_STORIES } from './data/npc_stories.js';
+import { UISystem } from './systems/ui_system.js';
 
 // Global error handler
 window.onerror = function(msg, url, lineNo, columnNo, error) {
-    console.error('Lỗi Hệ Thống:', msg, '\nTại:', url, ':', lineNo, ':', columnNo, '\nChi tiết:', error);
+    console.error('Thiên Cơ Hỗn Loạn:', msg, '\nTại:', url, ':', lineNo, ':', columnNo, '\nChi tiết:', error);
     return false;
 };
 
 // State
-let player, shopSystem, craftingSystem;
+let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui;
 let currentCombat = null;
 let currentNPC = null;
 let selectedItemId = null;
@@ -29,6 +39,7 @@ let currentWorldId = 'nhan_gioi';
 let currentLocId = null;
 let explorationProgress = 0;
 let shopView = 'buy';
+let alchemyView = 'recipes';
 let currentDestiny = null;
 
 // DOM Elements
@@ -61,6 +72,9 @@ const elManaBar = document.getElementById('explore-mana-bar');
 const btnMove = document.getElementById('btn-move');
 const btnEnterShop = document.getElementById('btn-enter-shop');
 const btnEnterSect = document.getElementById('btn-enter-sect');
+const btnEnterGuild = document.getElementById('btn-enter-guild');
+const btnEnterTower = document.getElementById('btn-enter-tower');
+const btnEnterMountain = document.getElementById('btn-enter-mountain');
 const btnBackToWorlds = document.getElementById('back-to-worlds');
 const btnBackToLocs = document.getElementById('back-to-locations');
 
@@ -146,6 +160,27 @@ const elDestinyRating = document.getElementById('destiny-rating');
 const btnRerollDestiny = document.getElementById('btn-reroll-destiny');
 const btnConfirmDestiny = document.getElementById('btn-confirm-destiny');
 
+// NPC Interactions
+const btnNpcGift = document.getElementById('btn-npc-gift');
+const btnNpcParty = document.getElementById('btn-npc-party');
+const btnNpcDual = document.getElementById('btn-npc-dual');
+const elCharPartyList = document.getElementById('char-party-list');
+const elNpcStoryOptions = document.getElementById('npc-story-options');
+
+// Guild Overlay
+const overlayGuild = document.getElementById('guild-overlay');
+const btnCloseGuild = document.getElementById('close-guild-btn');
+
+// Tower Overlay
+const overlayTower = document.getElementById('tower-overlay');
+const btnCloseTower = document.getElementById('close-tower-btn');
+
+// Mountain Overlay
+const overlayMountain = document.getElementById('mountain-overlay');
+const btnCloseMountain = document.getElementById('close-mountain-btn');
+const btnMountainDeeper = document.getElementById('btn-mountain-deeper');
+const btnMountainRetreat = document.getElementById('btn-mountain-retreat');
+
 // Initialization
 function init() {
     player = new Player();
@@ -156,18 +191,39 @@ function init() {
     } else {
         player.load(savedData);
         shopSystem = new ShopSystem(player);
-        craftingSystem = new CraftingSystem(player);
+        alchemySystem = new AlchemySystem(player, ui);
+        guildSystem = new GuildSystem(player, ui);
+        gardenSystem = new GardenSystem(player, ui);
+        mountainSystem = new MountainSystem(player, ui);
         
         elPlayerNameHeader.textContent = player.name;
         elHeaderPortrait.src = ASSETS.portraits.player;
         document.getElementById('main-player-portrait').src = ASSETS.portraits.player;
     }
     
+    ui = new UISystem();
+    window.ui = ui; // Expose to window for console access
+    
     update();
 }
 
 function update() {
+    const now = Date.now();
+    const delta = (now - player.lastUpdate) / 1000;
+    
     player.update();
+    
+    // Update NPCs
+    if (typeof updateNPCs === 'function') {
+        updateNPCs(delta);
+    }
+
+    if (gardenSystem) gardenSystem.update(delta);
+    if (mountainSystem && mountainSystem.isActive) {
+        mountainSystem.update(delta);
+        renderMountain();
+    }
+
     render();
     requestAnimationFrame(update);
 }
@@ -215,7 +271,7 @@ function renderWorldList() {
         el.className = `p-4 border rounded-xl bg-black/40 cursor-pointer transition-all ${locked ? 'opacity-50 grayscale' : 'hover:border-qi-purple border-gray-800'}`;
         el.innerHTML = `
             <div class="flex justify-between items-center">
-                <span class="text-xl font-bold font-cinzel text-white">${w.name}</span>
+                <span class="text-xl font-bold font-ancient text-white">${w.name}</span>
                 <span class="text-xs ${locked ? 'text-red-500' : 'text-qi-blue'}">${locked ? 'Cần: ' + getRealmById(w.minRealm).name : 'Đã mở'}</span>
             </div>
             <p class="text-xs text-gray-500 mt-2">${w.description}</p>
@@ -253,6 +309,22 @@ function renderLocationList() {
     });
 }
 
+function updateNPCs(delta) {
+    // Update known NPCs
+    Object.values(player.knownNPCs).forEach(npc => {
+        if (typeof npc.simulate === 'function') {
+            npc.simulate(delta);
+        }
+    });
+    
+    // Update party members
+    player.party.forEach(npc => {
+        if (typeof npc.simulate === 'function') {
+            npc.simulate(delta);
+        }
+    });
+}
+
 function startExploration(locId) {
     currentLocId = locId;
     const loc = getLocationById(currentWorldId, locId);
@@ -276,6 +348,18 @@ function startExploration(locId) {
     } else {
         btnEnterSect.classList.add('hidden');
     }
+
+    // Check if this is a guild location
+    if (loc.special === 'guild') btnEnterGuild.classList.remove('hidden');
+    else btnEnterGuild.classList.add('hidden');
+
+    if (loc.special === 'tower') btnEnterTower.classList.remove('hidden');
+    else btnEnterTower.classList.add('hidden');
+
+    if (loc.special === 'mountain') btnEnterMountain.classList.remove('hidden');
+    else btnEnterMountain.classList.add('hidden');
+
+    renderExplore();
 }
 
 function updateExplorationUI() {
@@ -311,7 +395,7 @@ btnMove.onclick = () => {
 
     if (explorationProgress >= 100) {
         setTimeout(() => {
-            alert(`Bạn đã hoàn thành khám phá ${loc.name}!`);
+            ui.toast(`Bạn đã hoàn thành khám phá ${loc.name}!`, 'success');
             explorationProgress = 0;
             updateExplorationUI();
         }, 1500);
@@ -320,15 +404,70 @@ btnMove.onclick = () => {
 
 // --- SHOP ---
 btnEnterShop.onclick = () => {
-    overlayShop.classList.remove('hidden');
-    renderShop();
+    ui.showLoading(true, "Đang Bước Vào Vạn Bảo Thiên Các...");
+    setTimeout(() => {
+        ui.showLoading(false);
+        overlayShop.classList.remove('hidden');
+        renderShop();
+    }, 800);
 };
 
 btnCloseShop.onclick = () => overlayShop.classList.add('hidden');
 
 btnEnterSect.onclick = () => {
-    overlaySects.classList.remove('hidden');
-    renderSects();
+    ui.showLoading(true, "Đang Bước Vào Tông Môn Thánh Địa...");
+    setTimeout(() => {
+        ui.showLoading(false);
+        overlaySects.classList.remove('hidden');
+        renderSects();
+    }, 800);
+};
+
+btnEnterGuild.onclick = () => {
+    ui.showLoading(true, "Đang Bước Vào Công Hội Luyện Dược Sư...");
+    setTimeout(() => {
+        ui.showLoading(false);
+        overlayGuild.classList.remove('hidden');
+        renderGuild();
+    }, 800);
+};
+
+btnCloseGuild.onclick = () => overlayGuild.classList.add('hidden');
+
+btnEnterTower.onclick = () => {
+    ui.showLoading(true, "Đang Tiến Vào Thánh Địa Đan Tháp...");
+    setTimeout(() => {
+        ui.showLoading(false);
+        overlayTower.classList.remove('hidden');
+        renderTower();
+    }, 800);
+};
+
+btnCloseTower.onclick = () => overlayTower.classList.add('hidden');
+
+btnEnterMountain.onclick = () => {
+    ui.showLoading(true, "Đang Tiến Vào Thập Vạn Đại Sơn...");
+    setTimeout(() => {
+        ui.showLoading(false);
+        overlayMountain.classList.remove('hidden');
+        mountainSystem.start();
+        renderMountain();
+    }, 1200);
+};
+
+btnCloseMountain.onclick = () => {
+    mountainSystem.stop();
+    overlayMountain.classList.add('hidden');
+};
+
+btnMountainDeeper.onclick = () => {
+    mountainSystem.moveDeeper();
+    renderMountain();
+};
+
+btnMountainRetreat.onclick = () => {
+    mountainSystem.retreat();
+    renderMountain();
 };
 
 btnCloseSects.onclick = () => overlaySects.classList.add('hidden');
@@ -385,7 +524,7 @@ function renderShopSell() {
         `;
         el.onclick = () => {
             const res = shopSystem.sellItem(item.id, 1);
-            alert(res.msg);
+            ui.toast(res.msg, res.success ? 'success' : 'error');
             renderShopSell();
             elShopLingShi.textContent = Math.floor(player.lingShi);
         };
@@ -396,7 +535,7 @@ function renderShopSell() {
 window.game = {
     buyItem: (id) => {
         const res = shopSystem.buyItem(id, 1);
-        alert(res.msg);
+        ui.toast(res.msg, res.success ? 'success' : 'error');
         renderShopBuy();
         elShopLingShi.textContent = Math.floor(player.lingShi);
     }
@@ -466,6 +605,8 @@ btnConfirmDestiny.onclick = () => {
     elPlayerNameHeader.textContent = player.name;
     elHeaderPortrait.src = ASSETS.portraits.player;
     document.getElementById('main-player-portrait').src = ASSETS.portraits.player;
+    
+    ui.toast("Thức tỉnh thiên mệnh thành công!", "success");
 };
 
 // --- CHARACTER & EQUIPMENT ---
@@ -502,6 +643,26 @@ function renderCharacter() {
     }
     
     if (elLuck) elLuck.textContent = player.luck;
+
+    // Render Party
+    if (elCharPartyList) {
+        if (player.party.length === 0) {
+            elCharPartyList.innerHTML = '<div class="text-[9px] text-gray-600 italic">Chưa có đồng hành</div>';
+        } else {
+            elCharPartyList.innerHTML = player.party.map(npc => `
+                <div class="flex justify-between items-center p-2 bg-white/5 border border-white/10 rounded-lg">
+                    <div class="flex items-center space-x-2">
+                        <img src="${npc.portrait}" class="w-6 h-6 rounded-full border border-cultivation-gold/30">
+                        <div>
+                            <div class="text-[10px] font-bold text-white">${npc.name}</div>
+                            <div class="text-[8px] text-gray-400">${npc.role} - LV.${npc.realmId}</div>
+                        </div>
+                    </div>
+                    <button onclick="window.removeFromParty('${npc.id}')" class="text-[8px] text-red-400 hover:text-red-300">RỜI ĐỘI</button>
+                </div>
+            `).join('');
+        }
+    }
 
     equipmentSlots.forEach(slot => {
         const type = slot.dataset.slot;
@@ -586,47 +747,261 @@ btnUseItem.onclick = () => {
 };
 
 // --- ALCHEMY & CRAFTING ---
-function renderAlchemy() {
-    const elRecipes = document.getElementById('alchemy-recipes');
-    elRecipes.innerHTML = '';
-    
-    CRAFTING_RECIPES.forEach(recipe => {
-        const resultItem = getItemById(recipe.resultId);
-        const qClass = getQualityClass(resultItem.quality);
-        const el = document.createElement('div');
-        el.className = 'p-4 border border-gray-800 rounded-lg bg-black/20 space-y-3';
-        
-        let materialsHTML = '';
-        recipe.materials.forEach(mat => {
-            const matItem = getItemById(mat.id);
-            const playerMat = player.inventory.items.find(i => i.id === mat.id);
-            const count = playerMat ? playerMat.quantity : 0;
-            const enough = count >= mat.quantity;
-            materialsHTML += `<div class="text-[10px] ${enough ? 'text-gray-400' : 'text-red-500'}">${matItem.name}: ${count}/${mat.quantity}</div>`;
-        });
+const btnAlchemyTabRecipes = document.getElementById('alchemy-tab-recipes');
+const btnAlchemyTabGarden = document.getElementById('alchemy-tab-garden');
+const viewAlchemyRecipes = document.getElementById('alchemy-recipes-view');
+const viewAlchemyGarden = document.getElementById('alchemy-garden-view');
 
-        el.innerHTML = `
-            <div class="flex justify-between items-center">
-                <div class="flex items-center">
-                    <span class="text-xl mr-2">${resultItem.icon}</span>
-                    <span class="font-bold quality-${qClass}">${resultItem.name}</span>
-                </div>
-                <button class="px-3 py-1 bg-qi-blue text-black text-[10px] font-bold rounded" onclick="window.game.craft('${recipe.id}')">LUYỆN</button>
-            </div>
-            <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
-            <div class="text-[9px] text-gray-600 italic">Tỷ lệ thành công: ${recipe.successRate * 100}% | Yêu cầu: ${getRealmById(recipe.minRealm).name}</div>
-        `;
-        elRecipes.appendChild(el);
-    });
-}
-
-window.game.craft = (id) => {
-    const res = craftingSystem.craft(id);
-    alert(res.msg);
+btnAlchemyTabRecipes.onclick = () => {
+    alchemyView = 'recipes';
     renderAlchemy();
 };
 
-// --- SECTS ---
+btnAlchemyTabGarden.onclick = () => {
+    alchemyView = 'garden';
+    renderAlchemy();
+};
+
+function renderAlchemy() {
+    const elRecipes = document.getElementById('alchemy-recipes-view');
+    const elGarden = document.getElementById('alchemy-garden-view');
+    const elLvlText = document.getElementById('alchemy-level-text');
+    const elExpBar = document.getElementById('alchemy-exp-bar');
+    
+    // Toggle views
+    if (alchemyView === 'recipes') {
+        viewAlchemyRecipes.classList.remove('hidden');
+        viewAlchemyGarden.classList.add('hidden');
+        btnAlchemyTabRecipes.className = 'flex-grow py-2 bg-qi-blue border border-qi-blue/50 rounded-lg text-[10px] font-ancient text-black uppercase';
+        btnAlchemyTabGarden.className = 'flex-grow py-2 bg-white/5 border border-white/10 rounded-lg text-[10px] font-ancient text-gray-500 uppercase';
+    } else {
+        viewAlchemyRecipes.classList.add('hidden');
+        viewAlchemyGarden.classList.remove('hidden');
+        btnAlchemyTabRecipes.className = 'flex-grow py-2 bg-white/5 border border-white/10 rounded-lg text-[10px] font-ancient text-gray-500 uppercase';
+        btnAlchemyTabGarden.className = 'flex-grow py-2 bg-qi-blue border border-qi-blue/50 rounded-lg text-[10px] font-ancient text-black uppercase';
+    }
+
+    elRecipes.innerHTML = '';
+    const lvlInfo = getAlchemyLevelInfo(player.alchemyLevel);
+    elLvlText.textContent = lvlInfo.name;
+    
+    const nextLevelExp = player.alchemyLevel * 100 * Math.pow(1.5, player.alchemyLevel - 1);
+    elExpBar.style.width = `${(player.alchemyExp / nextLevelExp) * 100}%`;
+    
+    if (alchemyView === 'recipes') {
+        ALCHEMY_RECIPES.forEach(recipe => {
+            const resultItem = getItemById(recipe.resultId);
+            const qClass = getQualityClass(resultItem.quality);
+            const el = document.createElement('div');
+            el.className = 'p-4 border border-gray-800 rounded-2xl bg-white/5 space-y-3';
+            
+            let materialsHTML = '';
+            recipe.materials.forEach(mat => {
+                const matItem = getItemById(mat.id);
+                const playerMat = player.inventory.items.find(i => i.id === mat.id);
+                const count = playerMat ? playerMat.quantity : 0;
+                const enough = count >= mat.quantity;
+                materialsHTML += `<div class="text-[10px] ${enough ? 'text-gray-400' : 'text-red-500'}">${matItem.name}: ${count}/${mat.quantity}</div>`;
+            });
+
+            const locked = player.alchemyLevel < recipe.level;
+
+            el.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <span class="text-xl mr-2">${resultItem.icon}</span>
+                        <span class="font-bold quality-${qClass} font-ancient">${resultItem.name}</span>
+                    </div>
+                    ${locked ? 
+                        `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
+                        `<button class="px-4 py-1.5 bg-qi-blue text-black text-[10px] font-bold rounded-lg active:scale-95 transition-all" onclick="window.game.craft('${recipe.id}')">LUYỆN CHẾ</button>`
+                    }
+                </div>
+                <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
+                <div class="text-[9px] text-gray-500 italic">${recipe.description}</div>
+                <div class="text-[8px] text-gray-600">Thời gian: ${recipe.time}s | Thành công cơ bản: ${recipe.baseSuccessRate * 100}%</div>
+            `;
+            elRecipes.appendChild(el);
+        });
+    } else {
+        const elPlots = document.getElementById('garden-plots');
+        elPlots.innerHTML = '';
+        player.gardenPlots.forEach((plot, index) => {
+            const el = document.createElement('div');
+            el.className = 'p-4 border border-white/5 rounded-2xl bg-white/5 flex flex-col space-y-3';
+            
+            if (plot) {
+                const seed = SEEDS.find(s => s.id === plot.seedId);
+                const isReady = plot.status === 'ready';
+                el.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="text-xs font-ancient text-white">${seed.name}</h4>
+                            <p class="text-[10px] text-gray-500">${isReady ? 'Đã chín muồi!' : 'Đang phát triển...'}</p>
+                        </div>
+                        ${isReady ? 
+                            `<button class="px-4 py-2 bg-green-500 text-black text-[10px] font-bold rounded-lg" onclick="window.game.harvest(${index})">THU HOẠCH</button>` :
+                            `<div class="text-[10px] font-mono text-qi-blue">${Math.ceil(plot.remainingTime)}s</div>`
+                        }
+                    </div>
+                    <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div class="h-full bg-green-500" style="width: ${((seed.growthTime - plot.remainingTime) / seed.growthTime) * 100}%"></div>
+                    </div>
+                `;
+            } else {
+                el.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-gray-600 italic font-ancient">Mảnh đất trống</span>
+                        <button class="px-4 py-2 bg-white/10 text-gray-400 text-[10px] font-bold rounded-lg" onclick="window.game.showPlantMenu(${index})">GIEO HẠT</button>
+                    </div>
+                `;
+            }
+            elPlots.appendChild(el);
+        });
+    }
+}
+
+window.game.showPlantMenu = async (index) => {
+    // Simple plant for now
+    if (player.inventory.hasItem('seed_linh_thao')) {
+        gardenSystem.plant(index, 'seed_linh_thao');
+        player.inventory.removeItem('seed_linh_thao', 1);
+        renderAlchemy();
+    } else {
+        ui.toast("Bạn không có hạt giống nào!", "error");
+    }
+};
+
+window.game.harvest = (index) => {
+    if (gardenSystem.harvest(index)) {
+        ui.toast("Đã thu hoạch linh thảo!", "success");
+        renderAlchemy();
+        renderInventory();
+    }
+};
+
+window.game.craft = async (id) => {
+    const res = await alchemySystem.craft(id);
+    if (res.msg) ui.toast(res.msg, res.success ? 'success' : 'error');
+    renderAlchemy();
+    renderInventory();
+};
+
+// --- GUILD ---
+function renderGuild() {
+    const elCerts = document.getElementById('guild-cert-list');
+    const elMissions = document.getElementById('guild-mission-list');
+    const elRooms = document.getElementById('guild-room-list');
+
+    elCerts.innerHTML = '';
+    ALCHEMY_CERTIFICATIONS.forEach(cert => {
+        const locked = player.alchemyLevel < cert.requirements.alchemyLevel;
+        const el = document.createElement('div');
+        el.className = 'p-4 border border-white/5 rounded-xl bg-white/5 flex justify-between items-center';
+        el.innerHTML = `
+            <div>
+                <h4 class="text-sm font-ancient text-white">${cert.name}</h4>
+                <p class="text-[10px] text-gray-500">Phí: ${cert.requirements.fee} LT | Cần luyện: ${cert.task.quantity} ${getItemById(cert.task.targetId).name}</p>
+            </div>
+            <button class="px-4 py-2 bg-qi-blue text-black text-[10px] font-bold rounded-lg ${locked ? 'opacity-50' : ''}" 
+                onclick="window.game.guildCertify(${cert.level})">KHẢO HẠCH</button>
+        `;
+        elCerts.appendChild(el);
+    });
+
+    elMissions.innerHTML = '';
+    GUILD_MISSIONS.forEach(mission => {
+        const el = document.createElement('div');
+        el.className = 'p-4 border border-white/5 rounded-xl bg-white/5 space-y-2';
+        el.innerHTML = `
+            <div class="flex justify-between items-center">
+                <h4 class="text-sm font-ancient text-white">${mission.name}</h4>
+                <button class="px-3 py-1 bg-qi-purple text-white text-[10px] font-bold rounded-lg" 
+                    onclick="window.game.guildMission('${mission.id}')">GIAO NỘP</button>
+            </div>
+            <p class="text-[10px] text-gray-400 italic">${mission.description}</p>
+            <p class="text-[9px] text-cultivation-gold">Thưởng: ${mission.rewards.lingShi} LT | Danh vọng: ${mission.rewards.reputation}</p>
+        `;
+        elMissions.appendChild(el);
+    });
+
+    elRooms.innerHTML = '';
+    ALCHEMY_ROOMS.forEach(room => {
+        const active = player.currentAlchemyRoom === room.id;
+        const el = document.createElement('div');
+        el.className = `p-4 border border-white/5 rounded-xl bg-white/5 flex justify-between items-center ${active ? 'border-cultivation-gold' : ''}`;
+        el.innerHTML = `
+            <div>
+                <h4 class="text-sm font-ancient text-white">${room.name} ${active ? '⭐' : ''}</h4>
+                <p class="text-[10px] text-gray-500">Phí thuê: ${room.fee} LT | Tăng ${room.successBonus*100}% thành công</p>
+            </div>
+            <button class="px-4 py-2 ${active ? 'bg-gray-800' : 'bg-cultivation-gold'} text-black text-[10px] font-bold rounded-lg" 
+                onclick="window.game.guildRent('${room.id}')">${active ? 'ĐANG THUÊ' : 'THUÊ'}</button>
+        `;
+        elRooms.appendChild(el);
+    });
+}
+
+window.game.guildCertify = async (lvl) => {
+    const res = await guildSystem.certify(lvl);
+    if (res) renderGuild();
+};
+
+window.game.guildMission = (id) => {
+    const res = guildSystem.completeMission(id);
+    if (res) renderGuild();
+};
+
+window.game.guildRent = (id) => {
+    const res = guildSystem.rentRoom(id);
+    if (res) renderGuild();
+};
+
+// --- TOWER ---
+function renderTower() {
+    const elFloors = document.getElementById('tower-floor-list');
+    elFloors.innerHTML = '';
+    
+    TOWER_LEVELS.forEach(floor => {
+        const locked = player.alchemyLevel < floor.minAlchemyLevel;
+        const el = document.createElement('div');
+        el.className = `p-6 border border-white/5 rounded-2xl bg-white/5 space-y-3 ${locked ? 'opacity-40' : 'hover:border-cultivation-gold/50 cursor-pointer'}`;
+        el.innerHTML = `
+            <div class="flex justify-between items-center">
+                <h4 class="text-lg font-ancient text-cultivation-gold">${floor.name}</h4>
+                ${locked ? `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${floor.minAlchemyLevel}</span>` : '<i class="ph ph-caret-right text-gray-500"></i>'}
+            </div>
+            <p class="text-xs text-gray-400">${floor.description}</p>
+        `;
+        if (!locked) el.onclick = () => ui.toast(`Đang tiến vào ${floor.name}...`, "success");
+        elFloors.appendChild(el);
+    });
+}
+
+// --- MOUNTAIN ---
+function renderMountain() {
+    const elLayerName = document.getElementById('mountain-layer-name');
+    const elLayerDesc = document.getElementById('mountain-layer-desc');
+    const elOxyText = document.getElementById('mountain-oxygen-text');
+    const elOxyBar = document.getElementById('mountain-oxygen-bar');
+    const elToxText = document.getElementById('mountain-toxicity-text');
+    const elToxBar = document.getElementById('mountain-toxicity-bar');
+
+    const layer = MOUNTAIN_LAYERS.find(l => l.id === mountainSystem.currentLayer);
+    elLayerName.textContent = layer.name;
+    elLayerDesc.textContent = layer.description;
+
+    elOxyText.textContent = `${Math.ceil(player.mountainSurvival.oxygen)}%`;
+    elOxyBar.style.width = `${player.mountainSurvival.oxygen}%`;
+    elToxText.textContent = `${Math.ceil(player.mountainSurvival.toxicity)}%`;
+    elToxBar.style.width = `${player.mountainSurvival.toxicity}%`;
+
+    // Check if player is dying
+    if (player.hp <= 0) {
+        mountainSystem.stop();
+        overlayMountain.classList.add('hidden');
+    }
+}
 function renderSects() {
     const elSects = document.getElementById('sects-view');
     elSects.innerHTML = '';
@@ -639,7 +1014,7 @@ function renderSects() {
                     <img src="${sect.portrait}" class="w-full h-full object-cover opacity-40">
                     <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                     <div class="absolute bottom-4 left-4">
-                        <h3 class="text-2xl font-cinzel text-white">${sect.name}</h3>
+                        <h3 class="text-2xl font-ancient text-white">${sect.name}</h3>
                         <p class="text-[10px] text-qi-blue uppercase">Đệ tử nội môn</p>
                     </div>
                 </div>
@@ -648,7 +1023,7 @@ function renderSects() {
                         <span class="text-gray-500">Điểm cống hiến:</span>
                         <span class="text-cultivation-gold">${player.sectContribution}</span>
                     </div>
-                    <h4 class="text-xs font-cinzel text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2">Nhiệm Vụ Tông Môn</h4>
+                    <h4 class="text-xs font-ancient text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2">Nhiệm Vụ Tông Môn</h4>
                     <div class="space-y-3">
                         ${sect.missions.map(m => `
                             <div class="p-3 bg-black/40 rounded-lg border border-white/5 flex justify-between items-center">
@@ -670,7 +1045,7 @@ function renderSects() {
             el.className = `p-4 border rounded-xl bg-black/40 space-y-3 ${canJoin ? 'border-gray-800' : 'opacity-50 grayscale'}`;
             el.innerHTML = `
                 <div class="flex justify-between items-center">
-                    <h3 class="text-xl font-cinzel text-white">${sect.name}</h3>
+                    <h3 class="text-xl font-ancient text-white">${sect.name}</h3>
                     <span class="text-[10px] ${canJoin ? 'text-qi-blue' : 'text-red-500'}">${canJoin ? 'Có thể gia nhập' : 'Cần: ' + getRealmById(sect.minRealm).name}</span>
                 </div>
                 <p class="text-xs text-gray-500">${sect.description}</p>
@@ -684,7 +1059,7 @@ function renderSects() {
 window.game.joinSect = (id) => {
     player.sectId = id;
     player.calculateStats();
-    alert(`Bạn đã gia nhập ${getSectById(id).name}!`);
+    ui.alert(`Bạn đã gia nhập ${getSectById(id).name}!`, "Gia Nhập Tông Môn");
     renderSects();
 };
 
@@ -696,27 +1071,170 @@ window.game.doMission = (id) => {
         player.sectContribution += mission.reward.contribution || 0;
         if (mission.reward.lingShi) player.lingShi += mission.reward.lingShi;
         if (mission.reward.tuVi) player.tuVi += mission.reward.tuVi;
-        alert(`Hoàn thành: ${mission.name}!`);
+        if (mission.reward.lingShi) player.lingShi += mission.reward.lingShi;
+        if (mission.reward.tuVi) player.tuVi += mission.reward.tuVi;
+        ui.toast(`Hoàn thành: ${mission.name}!`, "success");
         renderSects();
     } else {
-        alert('Không đủ thể lực!');
+        ui.toast('Không đủ thể lực!', "error");
     }
 };
 
 // --- NPC & COMBAT ---
 function openNPCInteraction() {
     currentNPC = NPCSystem.generate(player.realmId);
-    elNpcPortrait.src = currentNPC.portrait;
-    elNpcTitle.textContent = currentNPC.title;
-    elNpcName.textContent = currentNPC.name;
-    elNpcRealm.textContent = getRealmById(currentNPC.realmId).name;
-    elNpcDialogue.textContent = currentNPC.getDialogue('meet');
+    renderNPC();
     overlayNPC.classList.remove('hidden');
 }
 
-btnNpcTalk.onclick = () => { currentNPC.relationship += 10; elNpcDialogue.textContent = currentNPC.getDialogue('friendly'); };
-btnNpcAttack.onclick = () => { currentNPC.relationship = -100; elNpcDialogue.textContent = currentNPC.getDialogue('hostile'); setTimeout(() => { overlayNPC.classList.add('hidden'); startBattleWithNPC(currentNPC); }, 1000); };
-btnNpcLeave.onclick = () => { overlayNPC.classList.add('hidden'); currentNPC = null; };
+btnNpcTalk.onclick = () => {
+    if (currentNPC) {
+        currentNPC.relationship += 2;
+        elNpcDialogue.textContent = currentNPC.getDialogue('friendly');
+        renderNPC();
+    }
+};
+
+btnNpcGift.onclick = () => {
+    if (currentNPC) {
+        if (player.lingShi >= 100) {
+            player.lingShi -= 100;
+            currentNPC.relationship += 10;
+            elNpcDialogue.textContent = "Đa tạ đạo hữu, món quà này rất hợp ý ta!";
+            renderNPC();
+        } else {
+            elNpcDialogue.textContent = "Ngươi không đủ linh thạch...";
+        }
+    }
+};
+
+btnNpcParty.onclick = () => {
+    if (currentNPC) {
+        if (player.party.length >= 3) {
+            elNpcDialogue.textContent = "Tổ đội của ngươi đã đầy!";
+            return;
+        }
+        if (currentNPC.relationship >= 50) {
+            if (!player.party.find(p => p.id === currentNPC.id)) {
+                player.party.push(currentNPC);
+                elNpcDialogue.textContent = "Rất vinh hạnh được đồng hành cùng đạo hữu!";
+                renderCharacter();
+                renderNPC();
+            } else {
+                elNpcDialogue.textContent = "Ta đã ở trong tổ đội của ngươi rồi.";
+            }
+        } else {
+            elNpcDialogue.textContent = "Ta và ngươi chưa đủ thân thiết để giao phó tính mạng.";
+        }
+    }
+};
+
+btnNpcDual.onclick = () => {
+    if (currentNPC) {
+        if (currentNPC.relationship >= 90) {
+            // Chance of Qi deviation (5%)
+            if (Math.random() < 0.05) {
+                player.hp -= player.maxHp * 0.5;
+                player.tuVi -= player.tuVi * 0.1;
+                elNpcDialogue.textContent = "Á!!! Linh lực nghịch chuyển... Chúng ta tẩu hỏa nhập ma rồi!";
+                ui.alert("Tẩu hỏa nhập ma! Bạn bị thương nặng và tổn thất tu vi.", "Tẩu Hỏa Nhập Ma");
+            } else {
+                player.tuViPerSecond *= 2;
+                elNpcDialogue.textContent = "Âm dương giao hòa, vạn vật sinh sôi. Chúng ta bắt đầu thôi...";
+                setTimeout(() => { player.calculateStats(); }, 60000);
+            }
+            overlayNPC.classList.add('hidden');
+        } else {
+            elNpcDialogue.textContent = "Ngươi nghĩ ta là người thế nào? Hãy tôn trọng ta!";
+        }
+    }
+};
+
+btnNpcTrade.onclick = () => {
+    elNpcDialogue.textContent = "Ta có một vài món đồ tốt, ngươi xem qua thử?";
+};
+
+btnNpcAttack.onclick = () => {
+    player.karma -= 20;
+    currentNPC.relationship = -100; 
+    elNpcDialogue.textContent = currentNPC.getDialogue('hostile'); 
+    setTimeout(() => { 
+        overlayNPC.classList.add('hidden'); 
+        startBattleWithNPC(currentNPC); 
+    }, 1000); 
+};
+
+btnNpcLeave.onclick = () => { 
+    overlayNPC.classList.add('hidden'); 
+    if (currentNPC && !player.knownNPCs[currentNPC.id]) {
+        player.knownNPCs[currentNPC.id] = currentNPC;
+    }
+    currentNPC = null; 
+};
+
+window.removeFromParty = (id) => {
+    player.party = player.party.filter(p => p.id !== id);
+    renderCharacter();
+};
+
+function renderNPC() {
+    if (!currentNPC) return;
+    elNpcPortrait.src = currentNPC.portrait;
+    elNpcTitle.textContent = currentNPC.title;
+    elNpcName.textContent = `${currentNPC.name} (${currentNPC.getRelationshipStatus()}: ${currentNPC.relationship})`;
+    elNpcRealm.textContent = getRealmById(currentNPC.realmId).name;
+    
+    // Check for story
+    if (currentNPC.storyArcId && currentNPC.storyStep > 0) {
+        const arc = NPC_STORIES[currentNPC.storyArcId];
+        const step = arc.steps.find(s => s.id === currentNPC.storyStep);
+        
+        if (step) {
+            elNpcDialogue.textContent = `[CỐT TRUYỆN: ${arc.name}] ${step.desc}`;
+            elNpcStoryOptions.classList.remove('hidden');
+            elNpcStoryOptions.innerHTML = step.options.map((opt, idx) => `
+                <button onclick="window.game.handleStoryChoice(${idx})" class="w-full py-2 bg-qi-blue/20 border border-qi-blue/50 text-white text-xs rounded-lg hover:bg-qi-blue/40">${opt.text}</button>
+            `).join('');
+        } else {
+            elNpcStoryOptions.classList.add('hidden');
+            elNpcDialogue.textContent = currentNPC.getDialogue('meet');
+        }
+    } else {
+        elNpcStoryOptions.classList.add('hidden');
+        elNpcDialogue.textContent = currentNPC.getDialogue('meet');
+    }
+}
+
+window.game.handleStoryChoice = (idx) => {
+    if (!currentNPC || !currentNPC.storyArcId) return;
+    
+    const arc = NPC_STORIES[currentNPC.storyArcId];
+    const step = arc.steps.find(s => s.id === currentNPC.storyStep);
+    const option = step.options[idx];
+    
+    if (option.karma) player.karma += option.karma;
+    if (option.relation) currentNPC.relationship += option.relation;
+    if (option.reward) {
+        if (option.reward.tuVi) player.tuVi += option.reward.tuVi;
+        if (option.reward.items) {
+            option.reward.items.forEach(id => player.inventory.addItem(id, 1));
+        }
+    }
+    
+    if (option.next === 'complete') {
+        currentNPC.storyStep = 0;
+        ui.alert("Bạn đã hoàn thành chuỗi cốt truyện của NPC này!", "Hoàn Thành Cốt Truyện");
+    } else if (option.next === 'betrayed') {
+        currentNPC.storyStep = 0;
+        currentNPC.relationship = -100;
+        ui.alert("Bạn đã phản bội NPC!", "Phản Bội");
+    } else {
+        currentNPC.storyStep = option.next;
+    }
+    
+    renderNPC();
+    SaveSystem.save(player.save());
+};
 
 function startBattleWithNPC(npc) {
     const enemyData = { name: npc.name, img: npc.portrait, statMult: 1.2 };
@@ -750,7 +1268,7 @@ function initiateBattle(enemy) {
                 if (result === 'win') {
                     const droppedShi = Math.floor(Math.random() * 20 * enemy.realmId);
                     player.lingShi += droppedShi;
-                    alert(`Thắng! +${droppedShi} LT.`);
+                    ui.toast(`Đắc Thắng! +${droppedShi} Linh Thạch.`, "success");
                 }
                 SaveSystem.save(player.save());
             }, 2000);
@@ -779,7 +1297,12 @@ btnBackToWorlds.onclick = () => { viewLocations.classList.add('hidden'); viewWor
 btnBackToLocs.onclick = () => { viewExplore.classList.add('hidden'); viewLocations.classList.remove('hidden'); };
 
 btnCultivate.addEventListener('click', (e) => { player.cultivate(); createClickParticle(e.clientX, e.clientY); });
-btnBreakthrough.addEventListener('click', () => { if (player.breakthrough()) { alert('Đột phá thành công!'); SaveSystem.save(player.save()); } });
+btnBreakthrough.addEventListener('click', async () => { 
+    if (player.breakthrough()) { 
+        ui.alert('Chúc mừng Đạo hữu đã đột phá thành công, thực lực đại tăng!', 'Xung Kích Thành Công');
+        SaveSystem.save(player.save()); 
+    } 
+});
 
 function createDamagePopup(target, value, crit) {
     const popup = document.createElement('div');

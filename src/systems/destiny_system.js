@@ -46,11 +46,11 @@ export class DestinySystem {
         }
         
         let typeName = "";
-        if (mutated) typeName = `Biến dị ${mutated}`;
-        else if (elementCount === 1) typeName = `Đơn linh căn (${elements[0]})`;
-        else if (elementCount === 2) typeName = `Song linh căn`;
-        else if (elementCount === 3) typeName = `Tam linh căn`;
-        else typeName = `Ngũ hành tạp linh căn`;
+        if (mutated) typeName = `Biến Dị ${mutated}`;
+        else if (elementCount === 1) typeName = `Đơn Linh Căn (${elements[0]})`;
+        else if (elementCount === 2) typeName = `Song Linh Căn`;
+        else if (elementCount === 3) typeName = `Tam Linh Căn`;
+        else typeName = `Ngũ Hành Tạp Linh Căn`;
 
         return {
             type: typeName,
@@ -86,10 +86,10 @@ export class DestinySystem {
         if (physique) score += 50;
         score += luck;
         
-        if (score < 50) return "Phàm mệnh";
-        if (score < 100) return "Đại khí vãn thành";
-        if (score < 150) return "Thiên kiêu";
-        if (score < 200) return "Mệnh cách nghịch thiên";
-        return "Có tư chất phi thăng";
+        if (score < 50) return "Phàm Nhân Mệnh Cách";
+        if (score < 100) return "Đại Khí Vãn Thành";
+        if (score < 150) return "Tuyệt Thế Thiên Kiêu";
+        if (score < 200) return "Nghịch Thiên Mệnh Cách";
+        return "Vạn Cổ Đệ Nhất Tiên";
     }
 }

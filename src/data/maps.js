@@ -1,83 +1,113 @@
 export const WORLDS = {
     'nhan_gioi': {
-        name: 'Nhân Giới',
+        name: 'Phàm Trần Giới',
         minRealm: 1,
-        description: 'Vùng đất của phàm nhân và các tu sĩ sơ cấp.',
+        description: 'Vùng đất của phàm nhân và các tu sĩ bắt đầu con đường nghịch thiên.',
         locations: [
             {
                 id: 'van_thu_lam',
-                name: 'Vạn Thú Lâm',
+                name: 'Vạn Thú Chi Lâm',
                 minRealm: 1,
-                danger: 'Thấp',
-                description: 'Nơi quái thú hoành hành, đầy rẫy hiểm nguy và linh thảo.',
-                resources: ['Linh Thảo (Thấp)', 'Linh Thạch (Hạ)'],
+                danger: 'Hạ Cấp',
+                description: 'Nơi yêu thú sơ cấp hoành hành, đầy rẫy linh thảo thiên nhiên.',
+                resources: ['Linh Thảo', 'Linh Thạch Hạ Phẩm'],
                 eventProbs: { combat: 0.4, loot: 0.3, npc: 0.1, empty: 0.2 }
             },
             {
                 id: 'loan_tinh_hai',
-                name: 'Loạn Tinh Hải',
+                name: 'Loạn Tinh Đại Hải',
                 minRealm: 1,
-                danger: 'Thấp',
-                description: 'Vùng biển đầy rẫy đảo nhỏ và yêu thú cấp thấp.',
-                resources: ['Linh Thảo (Thấp)', 'Linh Thạch (Hạ)'],
+                danger: 'Hạ Cấp',
+                description: 'Vùng biển hỗn loạn với vô số đảo nhỏ và yêu thú thủy tộc.',
+                resources: ['Thủy Tinh', 'Linh Thạch Hạ Phẩm'],
                 eventProbs: { combat: 0.3, loot: 0.2, npc: 0.1, empty: 0.4 }
             },
             {
                 id: 'thien_kiem_tong',
-                name: 'Thiên Kiếm Tông',
+                name: 'Thiên Kiếm Thánh Tông',
                 minRealm: 5,
-                danger: 'Thấp',
-                description: 'Một trong những tông môn kiếm đạo lớn nhất Nhân Giới.',
+                danger: 'An Toàn',
+                description: 'Kiếm đạo thánh địa, nơi vạn kiếm quy tông.',
                 resources: ['Kiếm Ý', 'Linh Khoáng'],
                 eventProbs: { combat: 0.1, loot: 0.1, npc: 0.5, empty: 0.3 }
             },
             {
                 id: 'huyen_am_coc',
-                name: 'Huyền Âm Cốc',
+                name: 'Huyền Âm Ma Cốc',
                 minRealm: 10,
-                danger: 'Trung bình',
-                description: 'Nơi u ám, chứa đầy âm khí và ma tu phục kích.',
-                resources: ['Âm Sát Khí', 'Linh Thảo Quý'],
+                danger: 'Trung Cấp',
+                description: 'U ám tà khí, nơi ma tu thường xuyên ẩn nấp phục kích.',
+                resources: ['Âm Sát', 'Ma Thạch'],
                 eventProbs: { combat: 0.5, loot: 0.2, npc: 0.1, empty: 0.2 }
             },
             {
                 id: 'van_bao_cac',
-                name: 'Vạn Bảo Các',
+                name: 'Vạn Bảo Thiên Các',
                 minRealm: 1,
-                danger: 'An toàn',
-                description: 'Nơi giao thương sầm uất nhất của giới tu tiên.',
-                resources: ['Trang bị', 'Đan dược'],
+                danger: 'Tuyệt Đối An Toàn',
+                description: 'Thương hội liên giới, nơi có mọi thứ mà tu sĩ cần.',
+                resources: ['Đan Dược', 'Pháp Bảo'],
                 eventProbs: { combat: 0.0, loot: 0.0, npc: 0.8, empty: 0.2 }
+            },
+            {
+                id: 'cong_hoi_luyen_duoc',
+                name: 'Công Hội Luyện Dược Sư',
+                minRealm: 1,
+                danger: 'An Toàn',
+                description: 'Nơi quản lý và cấp chứng nhận cho các Luyện Dược Sư.',
+                resources: ['Đan Phương', 'Linh Thảo'],
+                eventProbs: { combat: 0.0, loot: 0.0, npc: 0.7, empty: 0.3 },
+                special: 'guild'
+            },
+            {
+                id: 'thap_van_dai_son',
+                name: 'Thập Vạn Đại Sơn',
+                minRealm: 1,
+                danger: 'Cực Kỳ Nguy Hiểm',
+                description: 'Dãy núi cổ vô tận, nơi chôn giấu bí mật thời thượng cổ.',
+                resources: ['Yêu Đan', 'Linh Dược Cổ'],
+                eventProbs: { combat: 0.5, loot: 0.2, npc: 0.1, empty: 0.2 },
+                special: 'mountain'
             }
         ]
     },
     'linh_gioi': {
-        name: 'Linh Giới',
-        minRealm: 30, // Luyện Hư sơ kỳ
-        description: 'Thế giới của những cường giả thực sự.',
+        name: 'Linh Tiên Giới',
+        minRealm: 30,
+        description: 'Vùng đất của linh khí tinh thuần, nơi cường giả tụ hội.',
         locations: [
             {
                 id: 'linh_vuc_thanh_dia',
-                name: 'Linh Vực Thánh Địa',
+                name: 'Thượng Cổ Linh Vực',
                 minRealm: 30,
-                danger: 'Cao',
-                description: 'Nơi linh khí đậm đặc gấp trăm lần Nhân Giới.',
-                resources: ['Linh Thạch (Trung)', 'Cổ Bảo'],
+                danger: 'Cao Cấp',
+                description: 'Di tích cổ đại với linh khí đậm đặc gấp bội.',
+                resources: ['Linh Thạch Trung Phẩm', 'Cổ Bảo'],
                 eventProbs: { combat: 0.4, loot: 0.3, npc: 0.2, empty: 0.1 }
+            },
+            {
+                id: 'dan_thap',
+                name: 'Thánh Địa Đan Tháp',
+                minRealm: 30,
+                danger: 'An Toàn',
+                description: 'Nơi cao nhất của Đan Đạo, hội tụ các bậc đại sư.',
+                resources: ['Tiên Đan', 'Dị Hỏa Chi Lực'],
+                eventProbs: { combat: 0.0, loot: 0.0, npc: 0.9, empty: 0.1 },
+                special: 'tower'
             }
         ]
     },
     'tien_gioi': {
-        name: 'Tiên Giới',
-        minRealm: 42, // Chân Tiên sơ kỳ
-        description: 'Đỉnh cao của con đường tu hành.',
+        name: 'Thượng Cổ Tiên Giới',
+        minRealm: 42,
+        description: 'Đỉnh cao của chư thiên vạn giới.',
         locations: [
             {
                 id: 'cuu_trong_thien',
-                name: 'Cửu Trọng Thiên',
+                name: 'Cửu Trọng Thiên Khuyết',
                 minRealm: 42,
-                danger: 'Tử địa',
-                description: 'Nơi ở của các Tiên nhân và Đạo tổ.',
+                danger: 'Tử Địa',
+                description: 'Nơi ở của các Tiên nhân và Đạo tổ vĩnh hằng.',
                 resources: ['Tiên Khí', 'Đạo Quả'],
                 eventProbs: { combat: 0.6, loot: 0.2, npc: 0.1, empty: 0.1 }
             }

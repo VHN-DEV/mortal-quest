@@ -63,6 +63,21 @@ export class CombatEngine {
         this.addLog(`Bạn tấn công gây ${finalDamage} sát thương${crit ? " (BẠO KÍCH!)" : ""}.`);
         this.onUpdate('damage', { target: 'enemy', value: finalDamage, crit });
         
+        // Party attacks
+        if (this.player.party && this.player.party.length > 0) {
+            this.player.party.forEach(npc => {
+                const npcDamage = Math.max(1, Math.floor(npc.atk * 0.4) - Math.floor(this.enemy.def / 4));
+                this.enemy.hp -= npcDamage;
+                this.addLog(`${npc.name} (${npc.role}) hỗ trợ gây ${npcDamage} sát thương.`);
+                this.onUpdate('damage', { target: 'enemy', value: npcDamage, crit: false });
+            });
+            
+            // Coordinated bonus
+            const bonus = Math.floor(finalDamage * 0.1 * this.player.party.length);
+            this.enemy.hp -= bonus;
+            this.addLog(`Liên kích tổ đội gây thêm ${bonus} sát thương!`);
+        }
+        
         if (this.enemy.hp <= 0) {
             this.enemy.hp = 0;
             this.win();

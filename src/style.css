@@ -19,8 +19,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.font-cinzel {
-  font-family: 'Cinzel', serif;
+.font-ancient {
+  font-family: 'EB Garamond', serif;
+  letter-spacing: 0.05em;
+}
+
+.font-charm {
+  font-family: 'Charm', cursive;
 }
 
 .font-serif {
@@ -112,5 +117,42 @@ body {
 
 .screen.hidden {
   display: none;
+}
+
+/* Custom UI Styles */
+#notification-container {
+    padding: 1rem;
+}
+
+#modal-overlay {
+    backdrop-filter: blur(8px);
+}
+
+#modal-content {
+    background: radial-gradient(circle at top left, #1a1a1f, #0a0a0c);
+}
+
+#loading-overlay {
+    z-index: 2000;
+    background: rgba(0,0,0,0.95);
+}
+
+.ph {
+    line-height: 1;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 

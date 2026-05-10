@@ -6,7 +6,7 @@
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Serif+VI:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700;800&family=Charm:wght@400;700&family=Noto+Serif+VI:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body class="bg-cultivation-dark text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -19,12 +19,12 @@
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-full border border-cultivation-gold p-0.5 relative">
                     <img id="header-portrait" src="/assets/images/player.png" class="w-full h-full object-cover rounded-full">
-                    <div class="absolute -bottom-1 -right-1 bg-qi-purple text-[8px] px-1 rounded border border-white/20">Cấp <span id="player-level-header">1</span></div>
+                    <div class="absolute -bottom-1 -right-1 bg-qi-purple text-[8px] px-1 rounded border border-white/20">Bậc <span id="player-level-header">1</span></div>
                 </div>
                 <div>
                     <h1 id="player-name-header" class="text-xs font-bold text-white">Phàm Nhân</h1>
                     <div class="flex items-center space-x-2">
-                        <span id="current-realm" class="text-[9px] text-cultivation-gold uppercase tracking-widest font-cinzel">Luyện Khí Kỳ</span>
+                        <span id="current-realm" class="text-[9px] text-cultivation-gold uppercase tracking-widest font-ancient">Phàm Nhân</span>
                     </div>
                 </div>
             </div>
@@ -56,22 +56,22 @@
 
                 <div class="w-full space-y-4">
                     <div class="flex justify-between items-end">
-                        <span class="text-xs text-gray-500 font-cinzel uppercase tracking-tighter">Tu Vi Tiến Độ</span>
+                        <span class="text-xs text-gray-500 font-ancient uppercase tracking-tighter">Tu Vi Cảnh Giới</span>
                         <span id="tu-vi-text" class="text-xs font-mono text-qi-blue">0 / 100</span>
                     </div>
                     <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
                         <div id="tu-vi-progress" class="h-full bg-gradient-to-r from-qi-blue to-qi-purple transition-all duration-500" style="width: 0%"></div>
                     </div>
-                    <div id="tu-vi-per-sec" class="text-center text-[10px] text-gray-500 italic">+1 tu vi/giây</div>
+                    <div id="tu-vi-per-sec" class="text-center text-[10px] text-gray-500 italic">+1 linh khí/giây</div>
                 </div>
 
                 <div class="flex flex-col space-y-3 w-full">
-                    <button id="cultivate-btn" class="w-full py-4 bg-qi-blue/10 hover:bg-qi-blue/20 border border-qi-blue/30 rounded-xl text-qi-blue font-bold tracking-widest transition-all active:scale-95 group">
-                        KÍCH HOẠT LINH KHÍ
+                    <button id="cultivate-btn" class="w-full py-4 bg-qi-blue/10 hover:bg-qi-blue/20 border border-qi-blue/30 rounded-xl text-qi-blue font-bold tracking-widest transition-all active:scale-95 group font-ancient">
+                        THU NẠP LINH KHÍ
                         <div class="text-[9px] text-gray-500 font-normal mt-1 opacity-50 group-hover:opacity-100 transition-opacity">(-1 Thể lực)</div>
                     </button>
-                    <button id="breakthrough-btn" class="w-full py-4 bg-cultivation-gold text-black font-cinzel font-black rounded-xl hidden animate-pulse shadow-lg shadow-cultivation-gold/20">
-                        ĐỘT PHÁ CẢNH GIỚI
+                    <button id="breakthrough-btn" class="w-full py-4 bg-cultivation-gold text-black font-ancient font-black rounded-xl hidden animate-pulse shadow-lg shadow-cultivation-gold/20">
+                        XUNG KÍCH CẢNH GIỚI
                     </button>
                 </div>
             </div>
@@ -79,14 +79,14 @@
             <!-- Tab 2: Bản Đồ (Adventure) -->
             <div id="screen-adventure" class="screen hidden flex flex-col h-full overflow-hidden">
                 <div id="map-world-view" class="p-4 space-y-4 overflow-y-auto h-full">
-                    <h2 class="text-2xl font-cinzel text-cultivation-gold mb-6 text-center">Đại Giới</h2>
+                    <h2 class="text-3xl font-charm text-cultivation-gold mb-6 text-center">Đại Giới Khung</h2>
                     <div id="world-list" class="grid grid-cols-1 gap-4"></div>
                 </div>
                 
                 <div id="map-location-view" class="hidden flex flex-col h-full">
                     <div class="p-4 border-b border-white/10 flex items-center">
                         <button id="back-to-worlds" class="mr-4 text-qi-blue"><i class="ph ph-arrow-left text-xl"></i></button>
-                        <h2 id="current-world-name" class="text-xl font-cinzel text-white">Nhân Giới</h2>
+                        <h2 id="current-world-name" class="text-xl font-ancient text-white">Nhân Giới</h2>
                     </div>
                     <div id="location-list" class="p-4 flex-grow overflow-y-auto space-y-3"></div>
                 </div>
@@ -95,7 +95,7 @@
                     <div class="p-4 border-b border-white/10 flex items-center justify-between">
                         <div class="flex items-center">
                             <button id="back-to-locations" class="mr-4 text-qi-blue"><i class="ph ph-arrow-left text-xl"></i></button>
-                            <h2 id="current-location-name" class="text-lg font-cinzel text-white">Vạn Thú Lâm</h2>
+                            <h2 id="current-location-name" class="text-lg font-ancient text-white">Vạn Thú Lâm</h2>
                         </div>
                         <div class="flex space-x-2">
                             <div class="w-16 h-1.5 bg-gray-800 rounded-full overflow-hidden"><div id="explore-stamina-bar" class="h-full bg-green-500 w-full"></div></div>
@@ -111,6 +111,9 @@
                                 <button id="btn-move" class="py-4 bg-qi-blue text-black font-bold rounded-xl active:scale-95 transition-all">TIẾN BƯỚC</button>
                                 <button id="btn-enter-shop" class="py-4 bg-cultivation-gold text-black font-bold rounded-xl active:scale-95 transition-all hidden">VÀO CỬA HÀNG</button>
                                 <button id="btn-enter-sect" class="py-4 bg-qi-purple text-white font-bold rounded-xl active:scale-95 transition-all hidden">VÀO TÔNG MÔN</button>
+                                <button id="btn-enter-guild" class="py-4 bg-qi-blue text-black font-bold rounded-xl active:scale-95 transition-all hidden">VÀO CÔNG HỘI</button>
+                                <button id="btn-enter-tower" class="py-4 bg-cultivation-gold text-black font-bold rounded-xl active:scale-95 transition-all hidden">VÀO ĐAN THÁP</button>
+                                <button id="btn-enter-mountain" class="py-4 bg-red-900 text-white font-bold rounded-xl active:scale-95 transition-all hidden">VÀO ĐẠI SƠN</button>
                                 <button id="btn-leave-loc" class="py-4 bg-white/10 text-white rounded-xl active:scale-95 transition-all">QUAY VỀ</button>
                             </div>
                             <div class="bg-black/40 p-2 rounded-lg border border-white/5">
@@ -124,7 +127,7 @@
 
             <!-- Tab 3: Nhân Vật (NEW) -->
             <div id="screen-character" class="screen hidden flex flex-col h-full p-4 overflow-hidden">
-                <h2 class="text-2xl font-cinzel text-cultivation-gold mb-6 text-center">Nhân Vật</h2>
+                <h2 class="text-3xl font-charm text-cultivation-gold mb-6 text-center">Bản Tòa Trạng Thái</h2>
                 
                 <div class="grid grid-cols-2 gap-6 flex-grow">
                     <!-- Avatar & Equipment Slots -->
@@ -148,27 +151,33 @@
                     <!-- Detailed Stats -->
                     <div class="flex flex-col space-y-4">
                         <div class="bg-white/5 p-4 rounded-xl border border-white/10">
-                            <h3 class="text-xs font-cinzel text-qi-blue mb-2 uppercase tracking-widest">Chỉ Số Chi Tiết</h3>
+                            <h3 class="text-xs font-ancient text-qi-blue mb-2 uppercase tracking-widest">Cơ Năng Thuộc Tính</h3>
                             <div class="space-y-2 text-sm">
-                                <div class="flex justify-between"><span class="text-gray-500">HP:</span> <span id="char-hp">100/100</span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">Công:</span> <span id="char-atk" class="text-red-400">10</span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">Thủ:</span> <span id="char-def" class="text-blue-400">5</span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">Tốc:</span> <span id="char-spd" class="text-green-400">10</span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">Linh Lực:</span> <span id="char-mana">50/50</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500 font-ancient">Khí Huyết:</span> <span id="char-hp">100/100</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500 font-ancient">Công Kích:</span> <span id="char-atk" class="text-red-400">10</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500 font-ancient">Phòng Thủ:</span> <span id="char-def" class="text-blue-400">5</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500 font-ancient">Thân Pháp:</span> <span id="char-spd" class="text-green-400">10</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500 font-ancient">Linh Lực:</span> <span id="char-mana">50/50</span></div>
                             </div>
                         </div>
                         <div class="bg-white/5 p-4 rounded-xl border border-white/10 flex-grow space-y-3">
                             <div>
-                                <h3 class="text-[10px] font-cinzel text-cultivation-gold mb-1 uppercase tracking-widest">Tông Môn</h3>
-                                <div id="char-sect-info" class="text-xs italic text-gray-500">Chưa gia nhập</div>
+                                <h3 class="text-[10px] font-ancient text-cultivation-gold mb-1 uppercase tracking-widest">Môn Phái</h3>
+                                <div id="char-sect-info" class="text-xs italic text-gray-500">Độc Hành</div>
                             </div>
                             <div>
-                                <h3 class="text-[10px] font-cinzel text-qi-blue mb-1 uppercase tracking-widest">Thiên Mệnh</h3>
+                                <h3 class="text-[10px] font-ancient text-qi-blue mb-1 uppercase tracking-widest">Thiên Mệnh Chi Tử</h3>
                                 <div id="char-destiny-info" class="space-y-1">
                                     <div class="text-[10px]"><span class="text-gray-400">Căn:</span> <span id="char-root" class="font-bold"></span></div>
                                     <div class="text-[10px]"><span class="text-gray-400">Thể:</span> <span id="char-physique" class="font-bold text-qi-purple"></span></div>
                                     <div class="text-[10px]"><span class="text-gray-400">Vận:</span> <span id="char-luck" class="font-mono"></span></div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/10 flex-grow">
+                            <h3 class="text-[10px] font-ancient text-cultivation-gold mb-2 uppercase tracking-widest">Đạo Hữu Đồng Hành</h3>
+                            <div id="char-party-list" class="space-y-2">
+                                <div class="text-[9px] text-gray-600 italic">Chưa có đồng hành</div>
                             </div>
                         </div>
                     </div>
@@ -177,19 +186,31 @@
 
             <!-- Tab 4: Lò Luyện (Crafting - NEW) -->
             <div id="screen-alchemy" class="screen hidden flex flex-col h-full p-4 overflow-hidden">
-                <div class="flex justify-center space-x-4 mb-6">
-                    <button class="text-cultivation-gold border-b-2 border-cultivation-gold pb-1 px-4">LUYỆN ĐAN</button>
-                    <button class="text-gray-500 pb-1 px-4 opacity-50">LUYỆN KHÍ</button>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-charm text-cultivation-gold">Luyện Đan Các</h2>
+                    <div class="text-right">
+                        <div id="alchemy-level-text" class="text-[10px] font-ancient text-qi-blue uppercase tracking-widest">Nhất Phẩm Luyện Dược Sư</div>
+                        <div class="w-24 h-1 bg-white/5 rounded-full mt-1 overflow-hidden">
+                            <div id="alchemy-exp-bar" class="h-full bg-qi-blue" style="width: 0%"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex-grow bg-black/40 rounded-xl border border-gray-800 p-4 overflow-y-auto">
-                    <div id="alchemy-recipes" class="space-y-3"></div>
+                
+                <div class="flex space-x-2 mb-4">
+                    <button id="alchemy-tab-recipes" class="flex-grow py-2 bg-qi-blue border border-qi-blue/50 rounded-lg text-[10px] font-ancient text-black uppercase">Đan Phương</button>
+                    <button id="alchemy-tab-garden" class="flex-grow py-2 bg-white/5 border border-white/10 rounded-lg text-[10px] font-ancient text-gray-500 uppercase">Linh Điền</button>
+                </div>
+
+                <div id="alchemy-recipes-view" class="flex-grow overflow-y-auto space-y-4"></div>
+                <div id="alchemy-garden-view" class="flex-grow overflow-y-auto space-y-4 hidden">
+                    <div id="garden-plots" class="grid grid-cols-1 gap-4"></div>
                 </div>
             </div>
 
             <!-- Tab 5: Túi Đồ (Inventory) -->
             <div id="screen-inventory" class="screen hidden flex flex-col h-full p-4 overflow-hidden">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-cinzel text-cultivation-gold">Túi Đồ</h2>
+                    <h2 class="text-3xl font-charm text-cultivation-gold">Túi Càn Khôn</h2>
                     <div class="flex items-center space-x-3">
                         <span id="inventory-capacity" class="text-[10px] text-gray-500 font-mono">0/20</span>
                         <button id="btn-inventory-sort" class="p-1 bg-gray-800 rounded text-xs hover:bg-gray-700">🔄</button>
@@ -216,12 +237,104 @@
                 </div>
             </div>
 
-            <!-- Sect Overlay (Previously Tab 6) -->
+            <!-- Guild Overlay -->
+        <div id="guild-overlay" class="fixed inset-0 bg-black/90 z-[110] hidden flex flex-col p-6 animate-fade-in overflow-y-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-charm text-cultivation-gold">Công Hội Luyện Dược</h2>
+                <button id="close-guild-btn" class="text-gray-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
+            </div>
+
+            <div class="space-y-8 pb-10">
+                <!-- Certifications -->
+                <section>
+                    <h3 class="text-[10px] font-ancient text-qi-blue uppercase tracking-[0.3em] mb-4 border-b border-qi-blue/20 pb-1">Khảo Hạch Cấp Bậc</h3>
+                    <div id="guild-cert-list" class="space-y-3"></div>
+                </section>
+
+                <!-- Missions -->
+                <section>
+                    <h3 class="text-[10px] font-ancient text-qi-purple uppercase tracking-[0.3em] mb-4 border-b border-qi-purple/20 pb-1">Nhiệm Vụ Công Hội</h3>
+                    <div id="guild-mission-list" class="space-y-3"></div>
+                </section>
+
+                <!-- Rooms -->
+                <section>
+                    <h3 class="text-[10px] font-ancient text-cultivation-gold uppercase tracking-[0.3em] mb-4 border-b border-cultivation-gold/20 pb-1">Phòng Luyện Đan</h3>
+                    <div id="guild-room-list" class="space-y-3"></div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Mountain Overlay -->
+        <div id="mountain-overlay" class="fixed inset-0 bg-slate-900/95 z-[120] hidden flex flex-col p-6 animate-fade-in overflow-hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-charm text-red-500">Thập Vạn Đại Sơn</h2>
+                <button id="close-mountain-btn" class="text-gray-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
+            </div>
+
+            <div class="flex-grow flex flex-col justify-between">
+                <div class="space-y-6">
+                    <div class="bg-black/40 p-4 rounded-2xl border border-red-900/30 text-center">
+                        <h3 id="mountain-layer-name" class="text-xl font-ancient text-red-400 mb-2">Ngoại Vi Đại Sơn</h3>
+                        <p id="mountain-layer-desc" class="text-[10px] text-gray-500 italic">Vùng ngoài cùng, linh khí loãng.</p>
+                    </div>
+
+                    <!-- Survival Stats -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-black/60 p-4 rounded-xl border border-white/5 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[9px] text-gray-400 uppercase font-ancient">Dưỡng Khí</span>
+                                <span id="mountain-oxygen-text" class="text-[10px] text-qi-blue font-mono">100%</span>
+                            </div>
+                            <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                                <div id="mountain-oxygen-bar" class="h-full bg-qi-blue" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="bg-black/60 p-4 rounded-xl border border-white/5 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[9px] text-gray-400 uppercase font-ancient">Chướng Khí</span>
+                                <span id="mountain-toxicity-text" class="text-[10px] text-red-500 font-mono">0%</span>
+                            </div>
+                            <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                                <div id="mountain-toxicity-bar" class="h-full bg-red-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="mountain-event-log" class="flex-grow bg-black/20 rounded-xl p-4 border border-white/5 h-48 overflow-y-auto text-[10px] space-y-2 font-ancient text-gray-400">
+                        <p>Đã bước vào chân núi...</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pt-6">
+                    <button id="btn-mountain-deeper" class="py-4 bg-red-900 text-white font-bold rounded-xl active:scale-95 transition-all">TIẾN SÂU</button>
+                    <button id="btn-mountain-retreat" class="py-4 bg-slate-800 text-white font-bold rounded-xl active:scale-95 transition-all">RÚT LUI</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dan Tower Overlay -->
+        <div id="tower-overlay" class="fixed inset-0 bg-black/95 z-[110] hidden flex flex-col p-6 animate-fade-in overflow-y-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-charm text-cultivation-gold">Thánh Địa Đan Tháp</h2>
+                <button id="close-tower-btn" class="text-gray-500 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
+            </div>
+
+            <div class="space-y-8">
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10 text-center space-y-2">
+                    <p class="text-xs text-gray-400 italic">"Nơi cao nhất của Đan Đạo, chỉ dành cho những người nghịch thiên cải mệnh."</p>
+                </div>
+
+                <div id="tower-floor-list" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- Sect Overlay (Previously Tab 6) -->
             <div id="sects-overlay" class="fixed inset-0 bg-black/95 z-[110] hidden flex flex-col">
                 <div class="p-4 border-b border-white/10 flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <button id="close-sects-btn" class="text-qi-blue"><i class="ph ph-arrow-left text-2xl"></i></button>
-                        <h2 class="text-xl font-cinzel text-cultivation-gold">Tông Môn</h2>
+                        <h2 class="text-xl font-ancient text-cultivation-gold">Tông Môn</h2>
                     </div>
                 </div>
                 <div id="sects-view" class="flex-grow overflow-y-auto p-4 space-y-4">
@@ -235,24 +348,24 @@
         <nav class="bg-black border-t border-white/10 px-2 py-2 flex justify-between items-center z-50">
             <button id="nav-main" class="nav-item flex flex-col items-center flex-grow py-1 text-cultivation-gold transition-all">
                 <i class="ph ph-house text-xl"></i>
-                <span class="text-[8px] mt-1 font-cinzel">Tu Luyện</span>
+                <span class="text-[8px] mt-1 font-ancient">Tu Hành</span>
             </button>
             <button id="nav-adventure" class="nav-item flex flex-col items-center flex-grow py-1 text-gray-500 transition-all">
                 <i class="ph ph-map-trifold text-xl"></i>
-                <span class="text-[8px] mt-1 font-cinzel">Bản Đồ</span>
+                <span class="text-[8px] mt-1 font-ancient">Lịch Lãm</span>
             </button>
             <button id="nav-character" class="nav-item flex flex-col items-center flex-grow py-1 text-gray-500 transition-all">
                 <i class="ph ph-user text-xl"></i>
-                <span class="text-[8px] mt-1 font-cinzel">Nhân Vật</span>
+                <span class="text-[8px] mt-1 font-ancient">Trạng Thái</span>
             </button>
 
             <button id="nav-alchemy" class="nav-item flex flex-col items-center flex-grow py-1 text-gray-500 transition-all">
                 <i class="ph ph-flask text-xl"></i>
-                <span class="text-[8px] mt-1 font-cinzel">Lò Luyện</span>
+                <span class="text-[8px] mt-1 font-ancient">Luyện Đan</span>
             </button>
             <button id="nav-inventory" class="nav-item flex flex-col items-center flex-grow py-1 text-gray-500 transition-all">
                 <i class="ph ph-backpack text-xl"></i>
-                <span class="text-[8px] mt-1 font-cinzel">Túi Đồ</span>
+                <span class="text-[8px] mt-1 font-ancient">Túi Càn Khôn</span>
             </button>
         </nav>
 
@@ -265,19 +378,25 @@
                 <img id="npc-portrait" src="" class="w-full h-full object-cover rounded-full border-2 border-qi-purple/50 shadow-2xl">
             </div>
             <div class="text-center mb-8 space-y-2">
-                <h4 id="npc-title" class="text-[10px] text-qi-blue font-cinzel uppercase tracking-widest">Tán Tu</h4>
-                <h3 id="npc-name" class="text-2xl font-bold text-white font-cinzel">Lý Đạo Nhân</h3>
+                <h4 id="npc-title" class="text-[10px] text-qi-blue font-ancient uppercase tracking-widest">Kẻ Đồng Hành</h4>
+                <h3 id="npc-name" class="text-2xl font-bold text-white font-charm">Lý Đạo Nhân</h3>
                 <p id="npc-realm" class="text-[10px] text-cultivation-gold">Trúc Cơ Sơ Kỳ</p>
             </div>
-            <div id="npc-dialogue-box" class="w-full p-4 bg-white/5 border border-white/10 rounded-2xl text-sm italic text-gray-300 leading-relaxed text-center mb-8">
+            <div id="npc-dialogue-box" class="w-full p-4 bg-white/5 border border-white/10 rounded-2xl text-sm italic text-gray-300 leading-relaxed text-center mb-4">
                 "Đạo hữu xin dừng bước..."
             </div>
-            <div class="grid grid-cols-1 w-full gap-3">
-                <button id="btn-npc-talk" class="w-full py-3 bg-white/10 rounded-xl text-sm font-bold active:scale-95 transition-all">ĐÀM ĐẠO</button>
-                <button id="btn-npc-trade" class="w-full py-3 bg-cultivation-gold text-black rounded-xl text-sm font-bold active:scale-95 transition-all">GIAO DỊCH</button>
-                <button id="btn-npc-attack" class="w-full py-3 bg-red-900/50 text-red-200 border border-red-500/30 rounded-xl text-sm font-bold active:scale-95 transition-all">TẤN CÔNG</button>
-                <button id="btn-npc-leave" class="w-full py-3 bg-transparent text-gray-500 rounded-xl text-xs active:scale-95 transition-all mt-4">RỜI ĐI</button>
+            
+            <!-- Story Options -->
+            <div id="npc-story-options" class="w-full space-y-2 mb-6 hidden"></div>
+            <div class="grid grid-cols-2 w-full gap-3">
+                <button id="btn-npc-talk" class="py-3 bg-white/10 rounded-xl text-sm font-bold active:scale-95 transition-all">ĐÀM ĐẠO</button>
+                <button id="btn-npc-gift" class="py-3 bg-qi-purple/20 text-qi-purple border border-qi-purple/30 rounded-xl text-sm font-bold active:scale-95 transition-all">TẶNG QUÀ</button>
+                <button id="btn-npc-party" class="py-3 bg-qi-blue/20 text-qi-blue border border-qi-blue/30 rounded-xl text-sm font-bold active:scale-95 transition-all">MỜI TỔ ĐỘI</button>
+                <button id="btn-npc-dual" class="py-3 bg-red-900/20 text-red-400 border border-red-500/30 rounded-xl text-sm font-bold active:scale-95 transition-all">SONG TU</button>
+                <button id="btn-npc-trade" class="py-3 bg-cultivation-gold text-black rounded-xl text-sm font-bold active:scale-95 transition-all">GIAO DỊCH</button>
+                <button id="btn-npc-attack" class="py-3 bg-red-900/50 text-red-200 border border-red-500/30 rounded-xl text-sm font-bold active:scale-95 transition-all">TẤN CÔNG</button>
             </div>
+            <button id="btn-npc-leave" class="w-full py-3 bg-transparent text-gray-500 rounded-xl text-xs active:scale-95 transition-all mt-4">RỜI ĐI</button>
         </div>
 
         <!-- Shop (Vạn Bảo Các) Overlay -->
@@ -285,7 +404,7 @@
             <div class="p-4 border-b border-white/10 flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <button id="close-shop-btn" class="text-qi-blue"><i class="ph ph-arrow-left text-2xl"></i></button>
-                    <h2 class="text-xl font-cinzel text-cultivation-gold">Vạn Bảo Các</h2>
+                    <h2 class="text-xl font-ancient text-cultivation-gold">Vạn Bảo Các</h2>
                 </div>
                 <div class="text-xs bg-black/40 px-3 py-1 rounded-full border border-cultivation-gold/30">
                     <span class="text-cultivation-gold">LT:</span> <span id="shop-ling-shi" class="text-white font-mono">100</span>
@@ -308,8 +427,8 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                 <div class="absolute bottom-4 left-0 right-0 p-4">
                     <div class="flex justify-between items-end mb-2">
-                        <span id="battle-enemy-name" class="text-lg font-cinzel text-white">Yêu Hổ</span>
-                        <span class="text-[10px] text-red-500 uppercase">Cấp 5</span>
+                        <span id="battle-enemy-name" class="text-lg font-ancient text-white">Yêu Hổ</span>
+                        <span class="text-[10px] text-red-500 uppercase">Cảnh Giới 5</span>
                     </div>
                     <div class="h-2 w-full bg-red-900/30 rounded-full overflow-hidden border border-red-500/20">
                         <div id="battle-enemy-hp" class="h-full bg-red-500 transition-all duration-300" style="width: 100%"></div>
@@ -336,7 +455,7 @@
         <!-- Global Stats Modal -->
         <div id="stats-modal" class="fixed inset-0 bg-black/95 z-[300] hidden flex flex-col p-6 items-center justify-center">
             <div class="w-full max-w-xs space-y-6 animate-fade-in">
-                <h2 class="text-3xl font-cinzel text-cultivation-gold text-center">Bảng Trạng Thái</h2>
+                <h2 class="text-3xl font-ancient text-cultivation-gold text-center">Bảng Trạng Thái</h2>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/10">
                         <span class="text-xs text-gray-500 uppercase">Khí Huyết</span>
@@ -365,13 +484,13 @@
 
         <!-- Destiny / Character Creation Overlay -->
         <div id="destiny-overlay" class="fixed inset-0 bg-black z-[500] hidden flex flex-col p-6 overflow-y-auto">
-            <h2 class="text-4xl font-cinzel text-cultivation-gold text-center mb-8 animate-pulse">Thức Tỉnh Thiên Mệnh</h2>
+            <h2 class="text-4xl font-ancient text-cultivation-gold text-center mb-8 animate-pulse">Thức Tỉnh Thiên Mệnh</h2>
             
             <div class="flex-grow space-y-6 max-w-sm mx-auto w-full">
                 <!-- Spiritual Root Card -->
                 <div class="bg-white/5 border border-white/10 rounded-2xl p-5 relative overflow-hidden group">
                     <div id="destiny-root-bg" class="absolute inset-0 opacity-10 transition-all duration-1000"></div>
-                    <h3 class="text-xs font-cinzel text-gray-400 uppercase tracking-widest mb-3">Linh Căn</h3>
+                    <h3 class="text-xs font-ancient text-gray-400 uppercase tracking-widest mb-3">Linh Căn</h3>
                     <div id="destiny-root-name" class="text-2xl font-bold text-white mb-1">---</div>
                     <div id="destiny-root-quality" class="text-xs font-bold uppercase tracking-tighter">---</div>
                     <p class="text-[10px] text-gray-500 mt-2">Quyết định tốc độ tu luyện và khả năng tương thích công pháp.</p>
@@ -379,7 +498,7 @@
 
                 <!-- Physique Card -->
                 <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
-                    <h3 class="text-xs font-cinzel text-gray-400 uppercase tracking-widest mb-3">Thể Chất Đặc Biệt</h3>
+                    <h3 class="text-xs font-ancient text-gray-400 uppercase tracking-widest mb-3">Thể Chất Đặc Biệt</h3>
                     <div id="destiny-physique-name" class="text-xl font-bold text-qi-purple mb-1">Không có</div>
                     <p id="destiny-physique-desc" class="text-[10px] text-gray-400 italic">Hầu hết phàm nhân đều không có thể chất đặc biệt.</p>
                 </div>
@@ -387,32 +506,63 @@
                 <!-- Origin & Talents -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
-                        <h3 class="text-[10px] font-cinzel text-gray-500 uppercase mb-2">Xuất Thân</h3>
+                        <h3 class="text-[10px] font-ancient text-gray-500 uppercase mb-2">Xuất Thân</h3>
                         <div id="destiny-origin-name" class="text-sm font-bold text-white">---</div>
                     </div>
                     <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
-                        <h3 class="text-[10px] font-cinzel text-gray-500 uppercase mb-2">Khí Vận</h3>
+                        <h3 class="text-[10px] font-ancient text-gray-500 uppercase mb-2">Khí Vận</h3>
                         <div id="destiny-luck-value" class="text-sm font-mono text-cultivation-gold">---</div>
                     </div>
                 </div>
 
                 <!-- Talents List -->
                 <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
-                    <h3 class="text-[10px] font-cinzel text-gray-500 uppercase mb-2">Thiên Phú</h3>
+                    <h3 class="text-[10px] font-ancient text-gray-500 uppercase mb-2">Thiên Phú</h3>
                     <div id="destiny-talents-list" class="flex flex-wrap gap-2"></div>
                 </div>
 
                 <!-- Evaluation -->
                 <div class="text-center py-4">
                     <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Thiên Đạo Đánh Giá</div>
-                    <div id="destiny-rating" class="text-2xl font-cinzel text-white">---</div>
+                    <div id="destiny-rating" class="text-2xl font-ancient text-white">---</div>
                 </div>
             </div>
 
             <div class="flex space-x-4 mt-8 max-w-sm mx-auto w-full">
                 <button id="btn-reroll-destiny" class="flex-grow py-4 bg-white/5 border border-white/20 rounded-xl text-white font-bold hover:bg-white/10 transition-all">TRÙNG SINH</button>
-                <button id="btn-confirm-destiny" class="flex-grow py-4 bg-cultivation-gold text-black font-cinzel font-black rounded-xl shadow-lg shadow-cultivation-gold/20">BẮT ĐẦU</button>
+                <button id="btn-confirm-destiny" class="flex-grow py-4 bg-cultivation-gold text-black font-ancient font-black rounded-xl shadow-lg shadow-cultivation-gold/20">BẮT ĐẦU</button>
             </div>
+        </div>
+
+        </div>
+
+        <!-- --- GLOBAL UI OVERLAYS --- -->
+
+        <!-- Notification Container (Toasts) -->
+        <div id="notification-container" class="fixed top-4 left-1/2 -translate-x-1/2 w-full max-w-xs z-[1000] pointer-events-none flex flex-col items-center space-y-2"></div>
+
+        <!-- Modal Overlay (Alert / Confirm) -->
+        <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[900] hidden flex items-center justify-center p-6 animate-fade-in">
+            <div id="modal-content" class="w-full max-w-xs bg-cultivation-dark border border-white/10 rounded-2xl p-6 shadow-2xl shadow-qi-purple/20 space-y-6">
+                <div class="text-center">
+                    <i id="modal-icon" class="ph ph-info text-4xl text-qi-blue mb-4"></i>
+                    <h3 id="modal-title" class="text-xl font-ancient text-white mb-2">Thông Báo</h3>
+                    <p id="modal-message" class="text-xs text-gray-400 leading-relaxed italic"></p>
+                </div>
+                <div id="modal-actions" class="flex flex-col space-y-3">
+                    <button id="modal-btn-confirm" class="w-full py-3 bg-qi-blue text-black font-bold rounded-xl active:scale-95 transition-all">LĨNH CHỈ</button>
+                    <button id="modal-btn-cancel" class="w-full py-3 bg-white/5 text-gray-500 rounded-xl text-xs active:scale-95 transition-all">BÃI BÃI</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="fixed inset-0 bg-black z-[2000] hidden flex flex-col items-center justify-center animate-fade-in">
+            <div class="relative w-24 h-24 mb-6">
+                <div class="absolute inset-0 border-4 border-qi-blue/20 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-qi-blue border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <div class="text-xs font-ancient text-qi-blue uppercase tracking-[0.3em] animate-pulse">Đang Cảm Ứng Thiên Địa...</div>
         </div>
 
     </div>
