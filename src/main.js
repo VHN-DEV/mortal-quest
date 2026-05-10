@@ -732,6 +732,7 @@ function renderShopBuy() {
     elShopBuyView.innerHTML = '';
     inv.forEach(item => {
         const itemData = getItemById(item.id);
+        if (!itemData) return;
         const qClass = getQualityClass(itemData.quality);
         const el = document.createElement('div');
         el.className = `flex items-center justify-between p-3 bg-black/40 border border-gray-800 rounded-xl hover:border-${qClass}`;
@@ -756,6 +757,7 @@ function renderShopSell() {
     elShopSellGrid.innerHTML = '';
     player.inventory.items.forEach(item => {
         const itemData = getItemById(item.id);
+        if (!itemData) return;
         const qClass = getQualityClass(itemData.quality);
         const el = document.createElement('div');
         el.className = `p-2 border border-gray-800 rounded-lg bg-black/20 flex flex-col items-center cursor-pointer hover:border-${qClass}`;
@@ -1010,12 +1012,19 @@ function renderCharacter() {
         slot.innerHTML = '';
         if (itemId) {
             const item = getItemById(itemId);
-            const qClass = getQualityClass(item.quality);
-            slot.className = `absolute w-12 h-12 border bg-black/60 rounded-lg flex items-center justify-center equipment-slot border-${qClass}/50`;
-            slot.innerHTML = `<span class="text-xl">${item.icon}</span>`;
-            slot.onclick = () => {
-                if (player.unequip(type)) renderCharacter();
-            };
+            if (item) {
+                const qClass = getQualityClass(item.quality);
+                slot.className = `absolute w-12 h-12 border bg-black/60 rounded-lg flex items-center justify-center equipment-slot border-${qClass}/50`;
+                slot.innerHTML = `<span class="text-xl">${item.icon}</span>`;
+                slot.onclick = () => {
+                    if (player.unequip(type)) renderCharacter();
+                };
+            } else {
+                slot.className = `absolute w-12 h-12 border border-white/20 bg-black/40 rounded-lg flex items-center justify-center equipment-slot`;
+                const icons = { weapon: 'ph-sword', armor: 'ph-coat-hanger', accessory: 'ph-ring', treasure: 'ph-magic-wand' };
+                slot.innerHTML = `<i class="ph ${icons[type]} text-gray-600"></i>`;
+                slot.onclick = null;
+            }
         } else {
             slot.className = `absolute w-12 h-12 border border-white/20 bg-black/40 rounded-lg flex items-center justify-center equipment-slot`;
             const icons = { weapon: 'ph-sword', armor: 'ph-coat-hanger', accessory: 'ph-ring', treasure: 'ph-magic-wand' };
@@ -1040,6 +1049,7 @@ function renderInventory() {
     elInventoryCapacity.textContent = `${player.inventory.items.length}/${player.inventory.maxSlots}`;
     player.inventory.items.forEach(item => {
         const itemData = getItemById(item.id);
+        if (!itemData) return;
         const qClass = getQualityClass(itemData.quality);
         const el = document.createElement('div');
         el.className = `p-2 border rounded-lg bg-black/20 flex flex-col items-center cursor-pointer transition-all border-${qClass}/30 ${selectedItemId === item.id ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'}`;
@@ -1052,6 +1062,7 @@ function renderInventory() {
 function selectItem(id) {
     selectedItemId = id;
     const itemData = getItemById(id);
+    if (!itemData) return;
     const qClass = getQualityClass(itemData.quality);
     elDetailIcon.textContent = itemData.icon;
     elDetailIcon.className = `text-3xl mr-3 bg-black/40 p-2 rounded-lg border border-${qClass}/50`;
@@ -1133,6 +1144,7 @@ function renderAlchemy() {
     if (alchemyView === 'recipes') {
         ALCHEMY_RECIPES.forEach(recipe => {
             const resultItem = getItemById(recipe.resultId);
+            if (!resultItem) return;
             const qClass = getQualityClass(resultItem.quality);
             const el = document.createElement('div');
             el.className = 'p-4 border border-gray-800 rounded-2xl bg-white/5 space-y-3';
@@ -1140,6 +1152,7 @@ function renderAlchemy() {
             let materialsHTML = '';
             recipe.materials.forEach(mat => {
                 const matItem = getItemById(mat.id);
+                if (!matItem) return;
                 const playerMat = player.inventory.items.find(i => i.id === mat.id);
                 const count = playerMat ? playerMat.quantity : 0;
                 const enough = count >= mat.quantity;
