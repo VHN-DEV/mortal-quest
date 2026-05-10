@@ -1,5 +1,5 @@
-import { getItemById } from '../configs/items.js';
-import { SHOPS } from '../configs/shop.js';
+import { getItemById } from '../configs/item-data.js';
+import { SHOPS } from '../configs/shop-data.js';
 
 export class ShopSystem {
     constructor(player) {

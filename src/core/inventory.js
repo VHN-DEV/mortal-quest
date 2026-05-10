@@ -1,4 +1,4 @@
-import { getItemById } from '../configs/items.js';
+import { getItemById } from '../configs/item-data.js';
 
 export class Inventory {
     constructor(player) {

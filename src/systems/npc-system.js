@@ -1,4 +1,5 @@
-import { NPC_TEMPLATES } from '../configs/npcs.js';
+import { NPC_TEMPLATES } from '../configs/npc-data.js';
+import { getRealmById } from '../configs/realm-data.js';
 
 export class NPC {
     constructor(templateId, realmId) {
@@ -43,12 +44,13 @@ export class NPC {
         const tuViGain = (this.realmId * 0.5) * delta;
         this.tuVi += tuViGain;
         
-        // Chance to breakthrough
-        if (this.tuVi > 1000 * Math.pow(2, this.realmId)) {
+        // Sync breakthrough threshold with player realm data
+        const currentRealm = getRealmById(this.realmId);
+        if (currentRealm && this.tuVi >= currentRealm.expRequired) {
             this.realmId++;
             this.tuVi = 0;
             this.calculateStats();
-            console.log(`NPC ${this.name} đột phá lên ${this.realmId}`);
+            console.log(`NPC ${this.name} đã đột phá lên ${getRealmById(this.realmId).name}`);
         }
     }
 

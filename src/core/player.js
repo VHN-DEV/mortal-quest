@@ -1,6 +1,6 @@
-import { getRealmById } from '../configs/realms.js';
+import { getRealmById } from '../configs/realm-data.js';
 import { Inventory } from './inventory.js';
-import { getItemById } from '../configs/items.js';
+import { getItemById } from '../configs/item-data.js';
 
 export class Player {
     constructor() {
@@ -81,10 +81,8 @@ export class Player {
         return getRealmById(type === 'tuvi' ? this.realmId : (type === 'body' ? this.bodyRealmId : this.soulRealmId), type);
     }
 
-    update(multiplier = 1.0) {
-        const now = Date.now();
-        const delta = (now - this.lastUpdate) / 1000;
-        this.lastUpdate = now;
+    update(delta, multiplier = 1.0) {
+        this.lastUpdate = Date.now();
 
         // Independent progression for all three paths
         // The focused path gets full exp, while others get 20%

@@ -1,4 +1,4 @@
-import { ASSETS } from './assets.js';
+import { ASSETS } from './asset-data.js';
 
 export const NPC_TEMPLATES = {
     'tan_tu': {

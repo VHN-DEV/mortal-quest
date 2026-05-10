@@ -1,4 +1,4 @@
-import { SEEDS, SOILS } from '../configs/garden_data.js';
+import { SEEDS, SOILS } from '../configs/garden-data.js';
 
 export class GardenSystem {
     constructor(player, ui) {

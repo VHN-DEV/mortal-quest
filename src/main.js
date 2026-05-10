@@ -1,29 +1,30 @@
 import './styles/main.css';
 import { Player } from './core/player.js';
-import { SaveSystem } from './core/save.js';
+import { SaveSystem } from './core/save-system.js';
 import { EnemyGenerator, Enemy } from './core/enemy.js';
-import { CombatEngine } from './core/combat.js';
-import { getItemById } from './configs/items.js';
-import { getWorlds, getLocationById } from './configs/maps.js';
-import { getRandomEvent } from './configs/events.js';
-import { ASSETS } from './configs/assets.js';
-import { NPCSystem } from './systems/npc_system.js';
-import { getRealmById } from './configs/realms.js';
-import { ShopSystem } from './systems/shop_system.js';
-import { AlchemySystem } from './systems/alchemy_system.js';
-import { GuildSystem } from './systems/guild_system.js';
-import { GardenSystem } from './systems/garden_system.js';
-import { MountainSystem } from './systems/mountain_system.js';
-import { ALCHEMY_RECIPES, getAlchemyLevelInfo } from './configs/alchemy_data.js';
-import { SEEDS } from './configs/garden_data.js';
-import { MOUNTAIN_LAYERS } from './configs/great_mountain_data.js';
-import { ALCHEMY_CERTIFICATIONS, GUILD_MISSIONS, ALCHEMY_ROOMS } from './configs/guild_data.js';
-import { TOWER_LEVELS, TOWER_MASTERS } from './configs/tower_data.js';
-import { SECTS, getSectById } from './configs/sects.js';
-import { DestinySystem } from './systems/destiny_system.js';
-import { NPC_STORIES } from './configs/npc_stories.js';
-import { UISystem } from './ui/ui_system.js';
-import { TimeSystem } from './systems/time_system.js';
+import { CombatEngine } from './core/combat-engine.js';
+import { getItemById } from './configs/item-data.js';
+import { getWorlds, getLocationById } from './configs/map-data.js';
+import { getRandomEvent } from './configs/event-data.js';
+import { ASSETS } from './configs/asset-data.js';
+import { NPCSystem } from './systems/npc-system.js';
+import { getRealmById } from './configs/realm-data.js';
+import { ShopSystem } from './systems/shop-system.js';
+import { AlchemySystem } from './systems/alchemy-system.js';
+import { GuildSystem } from './systems/guild-system.js';
+import { GardenSystem } from './systems/garden-system.js';
+import { MountainSystem } from './systems/mountain-system.js';
+import { ALCHEMY_RECIPES, getAlchemyLevelInfo } from './configs/alchemy-data.js';
+import { SEEDS } from './configs/garden-data.js';
+import { MOUNTAIN_LAYERS } from './configs/mountain-data.js';
+import { ALCHEMY_CERTIFICATIONS, GUILD_MISSIONS, ALCHEMY_ROOMS } from './configs/guild-data.js';
+import { TOWER_LEVELS, TOWER_MASTERS } from './configs/tower-data.js';
+import { SECTS, getSectById } from './configs/sect-data.js';
+import { DestinySystem } from './systems/destiny-system.js';
+import { NPC_STORIES } from './configs/npc-story-data.js';
+import { UISystem } from './ui/ui-system.js';
+import { TimeSystem } from './systems/time-system.js';
+import { CraftingSystem } from './systems/crafting-system.js';
 
 // Global error handler
 window.onerror = function(msg, url, lineNo, columnNo, error) {
@@ -32,7 +33,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 };
 
 // State
-let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem;
+let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem;
 let currentCombat = null;
 let currentNPC = null;
 let selectedItemId = null;
@@ -205,20 +206,7 @@ function init() {
         showDestinySelection();
     } else {
         player.load(savedData);
-        shopSystem = new ShopSystem(player);
-        alchemySystem = new AlchemySystem(player, ui);
-        guildSystem = new GuildSystem(player, ui);
-        gardenSystem = new GardenSystem(player, ui);
-        mountainSystem = new MountainSystem(player, ui);
-        
-        if (elPlayerNameHeader) elPlayerNameHeader.textContent = player.name;
-        const mainPortrait = document.getElementById('main-player-portrait');
-        if (mainPortrait) mainPortrait.src = ASSETS.portraits.player;
-
-        timeSystem = new TimeSystem(player, ui);
-        if (savedData && savedData.time) {
-            timeSystem.load(savedData.time);
-        }
+        initGameSystems(player, savedData);
     }
     
     // Auto-save every 30 seconds
@@ -351,7 +339,7 @@ function update() {
         }
     }
 
-    player.update(multiplier);
+    player.update(delta, multiplier);
     
     if (timeSystem) timeSystem.update(delta);
 
@@ -766,6 +754,35 @@ window.game = {
         ui.toast(res.msg, res.success ? 'success' : 'error');
         renderShopBuy();
         elShopLingShi.textContent = Math.floor(player.lingShi);
+    },
+    showPlantMenu: async (index) => {
+        // Simple plant for now
+        if (player.inventory.hasItem('seed_linh_thao')) {
+            gardenSystem.plant(index, 'seed_linh_thao');
+            player.inventory.removeItem('seed_linh_thao', 1);
+            renderAlchemy();
+        } else {
+            ui.toast("Bạn không có hạt giống nào!", "error");
+        }
+    },
+    harvest: (index) => {
+        if (gardenSystem.harvest(index)) {
+            ui.toast("Đã thu hoạch linh thảo!", "success");
+            renderAlchemy();
+            renderInventory();
+        }
+    },
+    craft: async (id) => {
+        const res = await alchemySystem.craft(id);
+        if (res.msg) ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderAlchemy();
+        renderInventory();
+    },
+    doCraft: (id) => {
+        const res = craftingSystem.craft(id);
+        ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderCharacter();
+        renderInventory();
     }
 };
 
@@ -824,8 +841,7 @@ btnConfirmDestiny.onclick = () => {
     player.calculateStats();
     
     // Initialize systems for the new player
-    shopSystem = new ShopSystem(player);
-    craftingSystem = new CraftingSystem(player);
+    initGameSystems(player);
 
     overlayDestiny.classList.add('hidden');
     saveGame();
@@ -836,6 +852,25 @@ btnConfirmDestiny.onclick = () => {
     
     ui.toast("Thức tỉnh thiên mệnh thành công!", "success");
 };
+
+function initGameSystems(player, savedData = null) {
+    shopSystem = new ShopSystem(player);
+    alchemySystem = new AlchemySystem(player, ui);
+    guildSystem = new GuildSystem(player, ui);
+    gardenSystem = new GardenSystem(player, ui);
+    mountainSystem = new MountainSystem(player, ui);
+    timeSystem = new TimeSystem(player, ui);
+    craftingSystem = new CraftingSystem(player);
+    
+    // Legacy support for older property names if any
+    if (savedData && savedData.time) {
+        timeSystem.load(savedData.time);
+    }
+    
+    if (elPlayerNameHeader) elPlayerNameHeader.textContent = player.name;
+    const mainPortrait = document.getElementById('main-player-portrait');
+    if (mainPortrait) mainPortrait.src = ASSETS.portraits.player;
+}
 
 // --- CHARACTER & EQUIPMENT ---
 function renderCharacter() {
@@ -1122,33 +1157,6 @@ function renderAlchemy() {
         });
     }
 }
-
-window.game.showPlantMenu = async (index) => {
-    // Simple plant for now
-    if (player.inventory.hasItem('seed_linh_thao')) {
-        gardenSystem.plant(index, 'seed_linh_thao');
-        player.inventory.removeItem('seed_linh_thao', 1);
-        renderAlchemy();
-    } else {
-        ui.toast("Bạn không có hạt giống nào!", "error");
-    }
-};
-
-window.game.harvest = (index) => {
-    if (gardenSystem.harvest(index)) {
-        ui.toast("Đã thu hoạch linh thảo!", "success");
-        renderAlchemy();
-        renderInventory();
-    }
-};
-
-window.game.craft = async (id) => {
-    const res = await alchemySystem.craft(id);
-    if (res.msg) ui.toast(res.msg, res.success ? 'success' : 'error');
-    renderAlchemy();
-    renderInventory();
-};
-
 // --- GUILD ---
 function renderGuild() {
     const elCerts = document.getElementById('guild-cert-list');
@@ -1493,7 +1501,9 @@ window.game.handleStoryChoice = (idx) => {
     }
     
     renderNPC();
-    SaveSystem.save(player.save());
+    renderNPC();
+    saveGame();
+};
 };
 
 function startBattleWithNPC(npc) {
@@ -1530,7 +1540,7 @@ function initiateBattle(enemy) {
                     player.lingShi += droppedShi;
                     ui.toast(`Đắc Thắng! +${droppedShi} Linh Thạch.`, "success");
                 }
-                SaveSystem.save(player.save());
+                saveGame();
             }, 2000);
         }
     );
@@ -1585,7 +1595,7 @@ btnCultivate.addEventListener('click', (e) => {
 btnBreakthrough.addEventListener('click', async () => { 
     if (player.breakthrough()) { 
         ui.alert('Chúc mừng Đạo hữu đã đột phá thành công, thực lực đại tăng!', 'Thiên Đạo Chúc Phúc');
-        SaveSystem.save(player.save()); 
+        saveGame(); 
         render(); // Refresh UI
     } 
 });
@@ -1624,5 +1634,5 @@ btnAttack.addEventListener('click', () => currentCombat?.doAction('attack'));
 btnDefend.addEventListener('click', () => currentCombat?.doAction('defend'));
 btnSkill.addEventListener('click', () => currentCombat?.doAction('skill'));
 
-setInterval(() => SaveSystem.save(player.save()), 5000);
+
 init();

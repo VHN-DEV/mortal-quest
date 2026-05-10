@@ -1,5 +1,5 @@
-import { REALMS } from '../configs/realms.js';
-import { ASSETS } from '../configs/assets.js';
+import { REALMS } from '../configs/realm-data.js';
+import { ASSETS } from '../configs/asset-data.js';
 
 export class Enemy {
     constructor(realmId, typeData) {
