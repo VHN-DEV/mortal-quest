@@ -207,6 +207,48 @@ export const ITEMS = {
         description: 'Cực kỳ hiếm thấy, chứa đựng linh lực hóa lỏng vô tận.'
     },
 
+    // --- SPECIAL ENERGY SOURCES ---
+    'ma_tinh': {
+        id: 'ma_tinh',
+        name: 'Ma Tinh',
+        type: 'consumable',
+        icon: '🌑',
+        quality: 'Huyền',
+        price: 1000,
+        description: 'Tinh thể ngưng tụ từ ma khí đậm đặc, dùng để tăng Ma Khí.',
+        effect: { type: 'qi_absorb', qiType: 'ma_khi', amount: 500, purity: 'TINH_THUAN' }
+    },
+    'tien_ngoc': {
+        id: 'tien_ngoc',
+        name: 'Tiên Ngọc',
+        type: 'consumable',
+        icon: '💎',
+        quality: 'Thiên',
+        price: 50000,
+        description: 'Ngọc thạch từ Tiên Giới, chứa đựng Tiên Khí tinh thuần.',
+        effect: { type: 'qi_absorb', qiType: 'tien_khi', amount: 1000, purity: 'CUC_PHAM' }
+    },
+    'hon_don_tinh_thach': {
+        id: 'hon_don_tinh_thach',
+        name: 'Hỗn Độn Tinh Thạch',
+        type: 'consumable',
+        icon: '🌌',
+        quality: 'Thần',
+        price: 500000,
+        description: 'Mảnh vỡ từ thuở khai thiên lập địa, chứa Hỗn Độn Khí cực kỳ nguy hiểm.',
+        effect: { type: 'qi_absorb', qiType: 'hon_don_khi', amount: 200, purity: 'DAO' }
+    },
+    'sinh_menh_thach': {
+        id: 'sinh_menh_thach',
+        name: 'Sinh Mệnh Thạch',
+        type: 'consumable',
+        icon: '🌱',
+        quality: 'Địa',
+        price: 15000,
+        description: 'Đá quý chứa đựng sinh cơ dồi dào, giúp tăng Sinh Khí.',
+        effect: { type: 'qi_absorb', qiType: 'sinh_khi', amount: 800, purity: 'TINH_THUAN' }
+    },
+
     // --- DHARMA TREASURES (PHÁP BẢO) ---
     'phi_kiem_thanh_tuyen': {
         id: 'phi_kiem_thanh_tuyen',

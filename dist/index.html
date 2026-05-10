@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-CEc1bzrw.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-CZG5pRsv.css">
+  <script type="module" crossorigin src="./assets/index-CPkBmTUC.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Bc0pGkzJ.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -422,8 +422,19 @@
                     </div>
                     <div class="flex-grow p-4 flex flex-col justify-between">
                         <div id="explore-event-display"
-                            class="bg-white/5 rounded-2xl p-6 border border-white/10 min-h-[200px] flex items-center justify-center text-center animate-fade-in italic text-gray-400">
+                            class="bg-white/5 rounded-2xl p-6 border border-white/10 min-h-[160px] flex items-center justify-center text-center animate-fade-in italic text-gray-400">
                             Đang đứng ở lối vào...
+                        </div>
+                        
+                        <!-- Environmental Energy Display -->
+                        <div id="env-energy-display" class="bg-black/40 p-3 rounded-xl border border-white/5 space-y-2 mt-4">
+                            <h4 class="text-[8px] text-gray-500 uppercase tracking-widest font-ancient border-b border-white/5 pb-1 flex justify-between">
+                                <span>Linh Khí Môi Trường</span>
+                                <span id="env-purity-tag" class="text-qi-blue">TINH THUẦN</span>
+                            </h4>
+                            <div id="env-energy-list" class="grid grid-cols-2 gap-2">
+                                <!-- Dynamic Energy Items -->
+                            </div>
                         </div>
                         <div class="space-y-4">
                             <div id="explore-actions" class="grid grid-cols-2 gap-4">
@@ -665,6 +676,18 @@
                     </div>
 
                     <div class="bg-black/40 p-4 rounded-2xl border border-white/5 space-y-6">
+                        <!-- Accumulated Energies -->
+                        <div class="space-y-3">
+                            <h4 class="text-[9px] text-gray-500 uppercase tracking-widest border-b border-white/5 pb-1 flex justify-between">
+                                <span>Tích Lũy Khí Tức</span>
+                                <span class="text-cultivation-gold">Hệ Thống Khí</span>
+                            </h4>
+                            <div id="char-energy-list" class="grid grid-cols-1 gap-2 max-h-[150px] overflow-y-auto custom-scroll">
+                                <!-- Dynamic Energy Accumulation Items -->
+                                <div class="text-[9px] text-gray-600 italic">Chưa có khí tức tích lũy</div>
+                            </div>
+                        </div>
+
                         <!-- Party -->
                         <div class="space-y-3">
                             <h4 class="text-[9px] text-gray-500 uppercase tracking-widest border-b border-white/5 pb-1">

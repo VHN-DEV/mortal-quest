@@ -133,6 +133,10 @@ export class Player {
         this.techniquePoints = 0;
         this.knownNPCs = {};
         this.pendingEvents = []; // To communicate forced events to UI
+
+        // --- Energy (Qi) System ---
+        this.qiAccumulated = {}; // { [qiId]: { amount: 0, purity: 'TINH_THUAN' } }
+        this.currentEnvironmentalQi = null; // { type, concentration, purity }
     }
 
     getFormattedLingShi() {
@@ -375,6 +379,17 @@ export class Player {
             if (f.id === 'tu_linh_tran') this.tuViPerSecond *= 1.2;
         });
         
+        // Add Energy (Qi) System Bonuses
+        if (typeof energySystem !== 'undefined' && energySystem) {
+            const energyBonuses = energySystem.getStatBonuses();
+            this.atk += energyBonuses.atk || 0;
+            this.def += energyBonuses.def || 0;
+            this.maxHp += energyBonuses.hp || 0;
+            this.maxMana += energyBonuses.mana || 0;
+            this.spd += energyBonuses.spd || 0;
+            // Soul/Thần thức bonus logic would go here if soul is tracked separately
+        }
+        
         // Ensure current HP/Mana don't exceed max
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);
@@ -561,6 +576,10 @@ export class Player {
         this.secretTechniqueCooldowns = data.secretTechniqueCooldowns || {};
         this.techniquePoints = data.techniquePoints || 0;
 
+        // Energy (Qi) System
+        this.qiAccumulated = data.qiAccumulated || {};
+        this.currentEnvironmentalQi = data.currentEnvironmentalQi || null;
+
         this.calculateStats();
     }
 
@@ -618,7 +637,9 @@ export class Player {
             learnedTechniques: this.learnedTechniques,
             equippedSecretTechniqueIds: this.equippedSecretTechniqueIds,
             secretTechniqueCooldowns: this.secretTechniqueCooldowns,
-            techniquePoints: this.techniquePoints
+            techniquePoints: this.techniquePoints,
+            qiAccumulated: this.qiAccumulated,
+            currentEnvironmentalQi: this.currentEnvironmentalQi
         };
     }
 

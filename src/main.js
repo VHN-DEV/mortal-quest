@@ -35,6 +35,7 @@ import { BeastSystem } from './systems/beast-system.js';
 import { CorpseSystem } from './systems/corpse-system.js';
 import { BEASTS, BEAST_TYPES, getBeastLevelInfo } from './configs/beast-data.js';
 import { TechniqueSystem } from './systems/technique-system.js';
+import { EnergySystem } from './systems/energy-system.js';
 import { TECHNIQUES, SECRET_TECHNIQUES, getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, MASTERY_LEVELS } from './configs/technique-data.js';
 import { CreationSystem } from './systems/creation-system.js';
 import { CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS } from './configs/creation-data.js';
@@ -46,7 +47,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 };
 
 // State
-let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem, formationSystem, talismanSystem, smithingSystem, beastSystem, corpseSystem, techniqueSystem, creationSystem;
+let player, shopSystem, alchemySystem, guildSystem, gardenSystem, mountainSystem, ui, timeSystem, craftingSystem, formationSystem, talismanSystem, smithingSystem, beastSystem, corpseSystem, techniqueSystem, creationSystem, energySystem;
 let currentCombat = null;
 let currentNPC = null;
 let selectedItemId = null;
@@ -492,6 +493,12 @@ function update() {
 
     player.update(delta, multiplier);
 
+    // Update Energy System
+    if (energySystem) {
+        const loc = getLocationById(currentWorldId, currentLocId);
+        energySystem.updateEnvironmental(loc);
+    }
+
     // Process Pending Events (Forced Breakthroughs, etc.)
     if (player.pendingEvents && player.pendingEvents.length > 0) {
         player.pendingEvents.forEach(event => {
@@ -761,6 +768,7 @@ function renderExplore() {
     viewExplore.style.backgroundImage = `url('${bgUrl}')`;
     viewExplore.style.backgroundSize = 'cover';
     viewExplore.style.backgroundPosition = 'center';
+    renderEnergy();
 }
 
 btnMove.onclick = () => {
@@ -1182,6 +1190,8 @@ function initGameSystems(player, savedData = null) {
     smithingSystem = new SmithingSystem(player, ui);
     beastSystem = new BeastSystem(player, ui);
     corpseSystem = new CorpseSystem(player, ui);
+    energySystem = new EnergySystem(player, ui);
+    window.energySystem = energySystem;
 
     // Legacy support for older property names if any
     if (savedData && savedData.time) {
@@ -1338,6 +1348,75 @@ function renderCharacter() {
                     <div class="text-[8px] text-gray-400">Đang hoạt động</div>
                 </div>
             `).join('');
+        }
+    }
+    renderEnergy();
+}
+
+function renderEnergy() {
+    if (!player) return;
+
+    // 1. Render Environmental Qi (Adventure Screen)
+    const elEnvList = document.getElementById('env-energy-list');
+    const elEnvPurity = document.getElementById('env-purity-tag');
+    if (elEnvList && currentLocId) {
+        const loc = getLocationById(currentWorldId, currentLocId);
+        if (loc && loc.energies) {
+            // Update purity tag based on the first energy (usually the primary one)
+            if (elEnvPurity && loc.energies.length > 0) {
+                const purityId = loc.energies[0].purity || 'TINH_THUAN';
+                const purity = energySystem.getPurity(purityId);
+                elEnvPurity.textContent = purity.name;
+            }
+            elEnvList.innerHTML = loc.energies.map(e => {
+                const type = energySystem.getEnergyType(e.type);
+                return `
+                    <div class="flex items-center space-x-2 p-1.5 bg-white/5 rounded-lg border border-white/5">
+                        <span class="text-xs">${type.icon}</span>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[8px] text-gray-300 font-ancient">${type.name}</span>
+                                <span class="text-[8px] text-qi-blue font-mono">${e.concentration}%</span>
+                            </div>
+                            <div class="h-0.5 w-full bg-gray-800 rounded-full mt-0.5">
+                                <div class="h-full bg-qi-blue" style="width: ${e.concentration}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            elEnvList.innerHTML = '<div class="col-span-2 text-[8px] text-gray-600 italic">Môi trường thái bình, không có khí tức đặc biệt.</div>';
+        }
+    }
+
+    // 2. Render Accumulated Qi (Character Screen)
+    const elCharEnergyList = document.getElementById('char-energy-list');
+    if (elCharEnergyList) {
+        const entries = Object.entries(player.qiAccumulated).filter(([_, data]) => data.amount > 0);
+        if (entries.length === 0) {
+            elCharEnergyList.innerHTML = '<div class="text-[9px] text-gray-600 italic">Chưa có khí tức tích lũy</div>';
+        } else {
+            elCharEnergyList.innerHTML = entries.map(([typeId, data]) => {
+                const type = energySystem.getEnergyType(typeId);
+                const purity = energySystem.getPurity(data.purity);
+                const logAmount = Math.log10(data.amount + 1);
+                return `
+                    <div class="p-2 bg-white/5 border border-white/10 rounded-lg flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm">${type.icon}</span>
+                            <div>
+                                <div class="text-[9px] font-bold text-white font-ancient">${type.name}</div>
+                                <div class="text-[7px] text-qi-blue uppercase">${purity.name}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[8px] font-mono text-gray-400">${Math.floor(data.amount).toLocaleString()} Qi</div>
+                            <div class="text-[7px] text-cultivation-gold">+${(logAmount * 10).toFixed(1)} Bonus</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
     }
 }

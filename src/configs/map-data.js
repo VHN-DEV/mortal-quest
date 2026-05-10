@@ -10,7 +10,8 @@ export const WORLDS = {
                 minRealm: 1,
                 danger: 'Hạ Cấp',
                 description: 'Nơi yêu thú sơ cấp hoành hành, đầy rẫy linh thảo thiên nhiên.',
-                resources: ['Linh Thảo', 'Linh Thạch Hạ Phẩm'],
+                resources: ['Linh Thảo', 'Yêu Đan Hạ Phẩm'],
+                energies: [{ type: 'linh_khi', element: 'Mộc', concentration: 15, purity: 'TINH_THUAN' }, { type: 'yeu_khi', concentration: 20, purity: 'TAP' }, { type: 'sinh_khi', concentration: 5, purity: 'TINH_THUAN' }],
                 eventProbs: { combat: 0.4, loot: 0.3, npc: 0.1, empty: 0.2 }
             },
             {
@@ -20,6 +21,7 @@ export const WORLDS = {
                 danger: 'Hạ Cấp',
                 description: 'Vùng biển hỗn loạn với vô số đảo nhỏ và yêu thú thủy tộc.',
                 resources: ['Thủy Tinh', 'Linh Thạch Hạ Phẩm'],
+                energies: [{ type: 'linh_khi', element: 'Thủy', concentration: 20, purity: 'TINH_THUAN' }],
                 eventProbs: { combat: 0.3, loot: 0.2, npc: 0.1, empty: 0.4 }
             },
             {
@@ -29,6 +31,7 @@ export const WORLDS = {
                 danger: 'An Toàn',
                 description: 'Kiếm đạo thánh địa, nơi vạn kiếm quy tông.',
                 resources: ['Kiếm Ý', 'Linh Khoáng'],
+                energies: [{ type: 'kiem_khi', concentration: 60, purity: 'CUC_PHAM' }, { type: 'linh_khi', element: 'Kim', concentration: 30, purity: 'TINH_THUAN' }, { type: 'hao_nhien_chinh_khi', concentration: 10, purity: 'TINH_THUAN' }],
                 eventProbs: { combat: 0.1, loot: 0.1, npc: 0.5, empty: 0.3 }
             },
             {
@@ -38,6 +41,7 @@ export const WORLDS = {
                 danger: 'Trung Cấp',
                 description: 'U ám tà khí, nơi ma tu thường xuyên ẩn nấp phục kích.',
                 resources: ['Âm Sát', 'Ma Thạch'],
+                energies: [{ type: 'ma_khi', concentration: 80, purity: 'TINH_THUAN' }, { type: 'tu_khi', concentration: 40, purity: 'TAP' }, { type: 'hon_khi', concentration: 10, purity: 'TAP' }],
                 eventProbs: { combat: 0.5, loot: 0.2, npc: 0.1, empty: 0.2 }
             },
             {
@@ -66,6 +70,7 @@ export const WORLDS = {
                 danger: 'Cực Kỳ Nguy Hiểm',
                 description: 'Dãy núi cổ vô tận, nơi chôn giấu bí mật thời thượng cổ.',
                 resources: ['Yêu Đan', 'Linh Dược Cổ'],
+                energies: [{ type: 'yeu_khi', concentration: 80, purity: 'CUC_PHAM' }, { type: 'sinh_khi', concentration: 15, purity: 'TINH_THUAN' }],
                 eventProbs: { combat: 0.5, loot: 0.2, npc: 0.1, empty: 0.2 },
                 special: 'mountain'
             }
@@ -83,6 +88,7 @@ export const WORLDS = {
                 danger: 'Cao Cấp',
                 description: 'Di tích cổ đại với linh khí đậm đặc gấp bội.',
                 resources: ['Linh Thạch Trung Phẩm', 'Cổ Bảo'],
+                energies: [{ type: 'linh_khi', concentration: 100, purity: 'CUC_PHAM' }],
                 eventProbs: { combat: 0.4, loot: 0.3, npc: 0.2, empty: 0.1 }
             },
             {
@@ -102,6 +108,7 @@ export const WORLDS = {
                 danger: 'Trung Cấp',
                 description: 'Nơi quy luật thời gian bị bẻ cong, một ngày bên trong bằng mười ngày bên ngoài.',
                 resources: ['Thời Không Tinh Thạch'],
+                energies: [{ type: 'khong_gian_chi_khi', concentration: 30, purity: 'CUC_PHAM' }, { type: 'thoi_gian_chi_khi', concentration: 10, purity: 'DAO' }],
                 eventProbs: { combat: 0.3, loot: 0.4, npc: 0.1, empty: 0.2 },
                 timeRate: 10
             }
@@ -119,6 +126,7 @@ export const WORLDS = {
                 danger: 'Tử Địa',
                 description: 'Nơi ở của các Tiên nhân và Đạo tổ vĩnh hằng.',
                 resources: ['Tiên Khí', 'Đạo Quả'],
+                energies: [{ type: 'tien_khi', concentration: 300, purity: 'DAO' }, { type: 'hong_mong_tu_khi', concentration: 5, purity: 'DAO' }, { type: 'hon_don_khi', concentration: 2, purity: 'DAO' }],
                 eventProbs: { combat: 0.6, loot: 0.2, npc: 0.1, empty: 0.1 }
             }
         ]

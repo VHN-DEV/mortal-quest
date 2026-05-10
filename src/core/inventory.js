@@ -77,6 +77,12 @@ export class Inventory {
             this.player.learnTechnique(effect.value);
         } else if (effect.type === 'learn_secret') {
             this.player.learnSecretTechnique(effect.value);
+        } else if (effect.type === 'qi_absorb') {
+            // Check if energySystem exists (it should be global or accessible via player)
+            const es = window.energySystem || (this.player.energySystem);
+            if (es) {
+                es.absorbQi(effect.qiType, effect.amount, effect.purity || 'TINH_THUAN');
+            }
         }
     }
 
