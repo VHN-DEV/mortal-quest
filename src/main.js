@@ -2609,7 +2609,15 @@ function renderCreationScreen() {
     }
 
     // Set Listeners
-    document.getElementById('creation-mode-random').onclick = () => { creationSystem.rollRandom(); renderCreationScreen(); };
+    document.getElementById('creation-mode-random').onclick = () => { 
+        ui.showLoading(true, "Đang Quay Thiên Mệnh...");
+        setTimeout(() => {
+            creationSystem.rollRandom(); 
+            renderCreationScreen();
+            ui.showLoading(false);
+            ui.toast("Thiên mệnh đã định!", "success");
+        }, 500);
+    };
     document.getElementById('creation-mode-custom').onclick = () => { creationSystem.mode = 'custom'; renderCreationScreen(); };
     document.getElementById('creation-mode-special').onclick = () => { creationSystem.mode = 'special'; renderCreationScreen(); };
     
