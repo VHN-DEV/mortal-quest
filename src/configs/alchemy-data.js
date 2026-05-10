@@ -24,6 +24,8 @@ export const CAULDRONS = {
         successBonus: 0,
         qualityBonus: 0,
         stability: 0.5,
+        heatRate: 1.0,
+        outputBonus: 0,
         description: 'Lò luyện đan phổ thông của các học đồ.'
     },
     'huyen_lu': {
@@ -33,7 +35,9 @@ export const CAULDRONS = {
         successBonus: 0.05,
         qualityBonus: 0.1,
         stability: 0.7,
-        description: 'Được đúc từ huyền thiết, có độ ổn định khá cao.'
+        heatRate: 1.2,
+        outputBonus: 1,
+        description: 'Được đúc từ huyền thiết, có độ ổn định và khả năng tụ nhiệt khá cao.'
     },
     'dia_lu': {
         id: 'dia_lu',
@@ -42,7 +46,9 @@ export const CAULDRONS = {
         successBonus: 0.15,
         qualityBonus: 0.2,
         stability: 0.85,
-        description: 'Chứa đựng tinh hoa chi lực của địa long.'
+        heatRate: 1.5,
+        outputBonus: 2,
+        description: 'Chứa đựng tinh hoa chi lực của địa long, khống hỏa cực tốt.'
     },
     'thien_lu': {
         id: 'thien_lu',
@@ -51,7 +57,8 @@ export const CAULDRONS = {
         successBonus: 0.3,
         qualityBonus: 0.4,
         stability: 0.95,
-        description: 'Pháp bảo cấp Thiên, có khả năng tự điều hòa hỏa lực.'
+        heatRate: 2.0,
+        outputBonus: 5,
     }
 };
 
@@ -94,6 +101,21 @@ export const FLAMES = {
     }
 };
 
+export const ALCHEMY_TECHNIQUES = {
+    'cuu_chuyen_ngung_dan': {
+        id: 'cuu_chuyen_ngung_dan',
+        name: 'Cửu Chuyển Ngưng Đan Thuật',
+        bonus: { quality: 0.2, success: 0.1 },
+        description: 'Bí pháp cổ xưa giúp ngưng tụ linh khí, tăng tỷ lệ cực phẩm.'
+    },
+    'thien_hoa_khong_vien': {
+        id: 'thien_hoa_khong_vien',
+        name: 'Thiên Hỏa Khống Viêm Quyết',
+        bonus: { stability: 0.15, time: -0.2 }, // -20% time
+        description: 'Bí thuật khống hỏa đỉnh cấp, giúp ổn định hỏa lực và tăng tốc luyện chế.'
+    }
+};
+
 export const ALCHEMY_RECIPES = [
     {
         id: 'ngung_khi_dan',
@@ -104,34 +126,35 @@ export const ALCHEMY_RECIPES = [
             { id: 'linh_thao_thap', quantity: 3 }
         ],
         baseSuccessRate: 0.8,
-        time: 5, // seconds
+        time: 5,
         description: 'Dùng để tăng tốc độ tích lũy linh khí cho Luyện Khí cảnh.'
+    },
+    {
+        id: 'than_tam_dan',
+        name: 'Thanh Tâm Đan',
+        resultId: 'than_tam_dan',
+        level: 2,
+        materials: [
+            { id: 'linh_thao_10y', quantity: 2 },
+            { id: 'chu_sa_muc', quantity: 1 }
+        ],
+        baseSuccessRate: 0.7,
+        time: 15,
+        description: 'Giúp bình ổn tâm thần, hồi phục 50% HP.'
     },
     {
         id: 'truc_co_dan',
         name: 'Trúc Cơ Đan',
         resultId: 'truc_co_dan',
-        level: 2,
-        materials: [
-            { id: 'linh_thao_thap', quantity: 10 },
-            { id: 'thuy_tinh', quantity: 2 }
-        ],
-        baseSuccessRate: 0.5,
-        time: 30,
-        description: 'Đan dược trọng yếu để đột phá lên Trúc Cơ Cảnh.'
-    },
-    {
-        id: 'bo_nguyen_dan',
-        name: 'Bổ Nguyên Đan',
-        resultId: 'bo_nguyen_dan',
         level: 3,
         materials: [
-            { id: 'linh_thao_trung', quantity: 5 },
-            { id: 'ma_thach', quantity: 1 }
+            { id: 'linh_thao_100y', quantity: 1 },
+            { id: 'yeu_dan_so', quantity: 1 },
+            { id: 'hoa_tinh_thach', quantity: 1 }
         ],
-        baseSuccessRate: 0.6,
+        baseSuccessRate: 0.45,
         time: 60,
-        description: 'Hồi phục lượng lớn Khí Huyết và Linh Lực.'
+        description: 'Đan dược trọng yếu để đột phá lên Trúc Cơ Cảnh.'
     }
 ];
 

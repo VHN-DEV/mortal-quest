@@ -1,4 +1,4 @@
-import { getRecipeById, getCauldronById, getFlameById, getAlchemyLevelInfo } from '../configs/alchemy-data.js';
+import { getRecipeById, getCauldronById, getFlameById, getAlchemyLevelInfo, ALCHEMY_TECHNIQUES } from '../configs/alchemy-data.js';
 import { ALCHEMY_ROOMS } from '../configs/guild-data.js';
 import { getItemById } from '../configs/item-data.js';
 
@@ -98,11 +98,24 @@ export class AlchemySystem {
             }
         }
 
+        const cauldron = getCauldronById(this.player.currentCauldron || 'pham_lu');
+        const flame = getFlameById(this.player.currentFlame || 'linh_hoa');
+        
+        let craftTime = recipe.time;
+        if (cauldron && cauldron.heatRate) craftTime /= cauldron.heatRate;
+        if (flame && flame.power) craftTime /= (flame.power * 0.5);
+
+        // Apply technique time bonus
+        Object.keys(this.player.knownAlchemyTechniques || {}).forEach(tid => {
+            const tech = ALCHEMY_TECHNIQUES[tid];
+            if (tech && tech.bonus.time) craftTime *= (1 + tech.bonus.time);
+        });
+
         this.isCrafting = true;
         this.ui.showLoading(true, `Đang tinh luyện ${recipe.name}...`);
 
         // Simulate time
-        await new Promise(resolve => setTimeout(resolve, recipe.time * 1000));
+        await new Promise(resolve => setTimeout(resolve, Math.max(1000, craftTime * 1000)));
 
         // Consume materials
         recipe.materials.forEach(mat => {
@@ -115,6 +128,7 @@ export class AlchemySystem {
         this.isCrafting = false;
 
         if (result.success) {
+            // ... (Dan Tribulation logic remains)
             if (result.hasTribulation) {
                 const survived = await this.ui.confirm(
                     `Linh đan xuất thế dẫn động Đan Kiếp! Bạn có muốn dùng linh lực che chắn lò luyện? (Rủi ro: Nổ lò)`, 
@@ -137,15 +151,24 @@ export class AlchemySystem {
         }
 
         if (result.success) {
+            // Output quantity
+            let quantity = 1;
+            if (cauldron && cauldron.outputBonus) quantity += cauldron.outputBonus;
+
             // Create item with metadata
-            const item = {
+            const itemMetadata = {
                 id: result.resultId,
                 quality: result.quality,
                 danVeins: result.danVeins,
                 poison: result.poisonValue
             };
-            this.player.inventory.addItem(result.resultId, 1, item);
+            
+            this.player.inventory.addItem(result.resultId, quantity, itemMetadata);
             this.player.addAlchemyExp(recipe.level * 10);
+            
+            if (quantity > 1) {
+                result.msg += ` (Số lượng: ${quantity} viên)`;
+            }
             return result;
         } else {
             if (result.exploded) {

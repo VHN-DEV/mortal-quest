@@ -81,7 +81,12 @@ export class Player {
         this.currentTalismanPen = 'truc_phu_but';
         this.knownTalismanRecipes = ['hoa_cau_phu'];
         
-        // Time & Lifespan
+        // Alchemy Expanded
+        this.currentCauldron = 'pham_lu';
+        this.currentFlame = 'linh_hoa';
+        this.knownAlchemyTechniques = {};
+        this.alchemyExp = 0;
+        this.alchemyLevel = 1;
         this.age = 18;
         this.maxAge = 100; // Base human lifespan
 
@@ -450,6 +455,15 @@ export class Player {
             currentWorldId: this.currentWorldId,
             currentLocId: this.currentLocId
         };
+    }
+
+    addAlchemyExp(amount) {
+        this.alchemyExp += amount;
+        // Simple level up logic: level = floor(sqrt(exp/100)) + 1
+        const nextLevel = Math.floor(Math.sqrt(this.alchemyExp / 100)) + 1;
+        if (nextLevel > this.alchemyLevel) {
+            this.alchemyLevel = nextLevel;
+        }
     }
 
     removeFromParty(npcId) {

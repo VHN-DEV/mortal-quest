@@ -371,6 +371,95 @@ export const ITEMS = {
         description: 'Ghi chép cách vẽ Thiên Lôi Phù, uy lực kinh thiên động địa.'
     },
 
+    // --- ALCHEMY MATERIALS (EXPANDED) ---
+    'linh_thao_10y': {
+        id: 'linh_thao_10y',
+        name: 'Linh Thảo (10 năm)',
+        type: 'material',
+        icon: '🌿',
+        quality: 'Hoàng',
+        price: 80,
+        description: 'Linh thảo đã có chút hỏa hầu, dược tính ổn định.'
+    },
+    'linh_thao_100y': {
+        id: 'linh_thao_100y',
+        name: 'Linh Thảo (100 năm)',
+        type: 'material',
+        icon: '🍃',
+        quality: 'Huyền',
+        price: 500,
+        description: 'Linh thảo trăm năm, chứa đựng linh khí đậm đặc.'
+    },
+    'linh_thao_1000y': {
+        id: 'linh_thao_1000y',
+        name: 'Linh Thảo (1000 năm)',
+        type: 'material',
+        icon: '🎋',
+        quality: 'Địa',
+        price: 5000,
+        description: 'Linh thảo ngàn năm, hiếm có khó tìm, dùng luyện cao cấp đan dược.'
+    },
+
+    // --- MONSTER MATERIALS ---
+    'yeu_dan_so': {
+        id: 'yeu_dan_so',
+        name: 'Yêu Đan Sơ Cấp',
+        type: 'material',
+        icon: '🟡',
+        quality: 'Hoàng',
+        price: 300,
+        description: 'Nội đan của yêu thú cấp thấp, chứa tinh hoa yêu lực.'
+    },
+    'yeu_huyet': {
+        id: 'yeu_huyet',
+        name: 'Yêu Thú Tinh Huyết',
+        type: 'material',
+        icon: '🩸',
+        quality: 'Hoàng',
+        price: 100,
+        description: 'Máu tươi của yêu thú, dùng trong luyện thể hoặc luyện đan.'
+    },
+
+    // --- ORES & MINERALS ---
+    'hoa_tinh_thach': {
+        id: 'hoa_tinh_thach',
+        name: 'Hỏa Tinh Thạch',
+        type: 'material',
+        icon: '🔥',
+        quality: 'Huyền',
+        price: 1200,
+        description: 'Khoáng thạch chứa hỏa tính cực mạnh.'
+    },
+    'han_ngoc_tuy': {
+        id: 'han_ngoc_tuy',
+        name: 'Hàn Ngọc Tủy',
+        type: 'material',
+        icon: '❄️',
+        quality: 'Địa',
+        price: 8500,
+        description: 'Tinh túy từ hàn ngọc vạn năm, lạnh thấu xương.'
+    },
+
+    // --- ALCHEMY TOOLS (AS ITEMS) ---
+    'huyen_lu_item': {
+        id: 'huyen_lu_item',
+        name: 'Huyền Thiết Trọng Lư',
+        type: 'cauldron',
+        icon: '🏺',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Đan lư đúc từ huyền thiết, giúp ổn định hỏa lực.'
+    },
+    'thanh_lien_hoa_seed': {
+        id: 'thanh_lien_hoa_seed',
+        name: 'Thanh Liên Địa Tâm Hỏa (Chủng)',
+        type: 'flame',
+        icon: '🔥',
+        quality: 'Địa',
+        price: 50000,
+        description: 'Hỏa chủng của Thanh Liên Địa Tâm Hỏa, có thể luyện hóa thành linh hỏa.'
+    },
+
     // --- TECHNIQUES (CÔNG PHÁP) ---
     'truong_sinh_quyet': {
         id: 'truong_sinh_quyet',
