@@ -151,6 +151,15 @@ body {
   animation: spin-slow 15s linear infinite;
 }
 
+@keyframes spin-reverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 8s linear infinite;
+}
+
 @keyframes pulse-gold {
   0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
   50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.4); }

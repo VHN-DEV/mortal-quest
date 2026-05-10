@@ -1,7 +1,7 @@
 import { getRealmById } from '../configs/realm-data.js';
 import { Inventory } from './inventory.js';
 import { getItemById } from '../configs/item-data.js';
-import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS } from '../configs/technique-data.js';
+import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_QUALITIES } from '../configs/technique-data.js';
 
 export class Player {
     constructor() {

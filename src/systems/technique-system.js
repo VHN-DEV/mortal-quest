@@ -6,6 +6,14 @@ export class TechniqueSystem {
     }
 
     /**
+     * Lấy thông tin cấp độ thuần thục dựa trên điểm
+     * @param {number} mastery 
+     */
+    getMasteryLevel(mastery) {
+        return MASTERY_LEVELS.filter(m => mastery >= m.threshold).pop() || MASTERY_LEVELS[0];
+    }
+
+    /**
      * Tăng độ thuần thục (Mastery) cho công pháp
      * @param {string} techId 
      * @param {number} amount 
