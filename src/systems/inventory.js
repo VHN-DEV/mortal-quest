@@ -7,8 +7,8 @@ export class Inventory {
         this.maxSlots = 20;
     }
 
-    addItem(itemId, quantity = 1) {
-        const existing = this.items.find(i => i.id === itemId);
+    addItem(itemId, quantity = 1, metadata = {}) {
+        const existing = this.items.find(i => i.id === itemId && this.compareMetadata(i.metadata, metadata));
         if (existing) {
             existing.quantity += quantity;
             return true;
@@ -16,9 +16,15 @@ export class Inventory {
             if (this.items.length >= this.maxSlots) {
                 return false; // Inventory full
             }
-            this.items.push({ id: itemId, quantity });
+            this.items.push({ id: itemId, quantity, metadata });
             return true;
         }
+    }
+
+    compareMetadata(m1, m2) {
+        if (!m1 && !m2) return true;
+        if (!m1 || !m2) return false;
+        return JSON.stringify(m1) === JSON.stringify(m2);
     }
 
     removeItem(itemId, quantity = 1) {

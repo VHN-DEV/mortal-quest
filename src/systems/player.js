@@ -165,10 +165,18 @@ export class Player {
 
         const slot = item.type; // weapon, armor, accessory, treasure
         if (this.equipment.hasOwnProperty(slot)) {
+            // If slot is occupied, we need 1 slot to swap (the new item is already removed from inv, but old goes back)
+            // Wait, the new item is removed AFTER checking if it's equippable.
+            
             // Unequip current item if any
             if (this.equipment[slot]) {
+                // If inventory is full, we can't unequip
+                if (this.inventory.items.length >= this.inventory.maxSlots) {
+                    return false; // No space to swap
+                }
                 this.inventory.addItem(this.equipment[slot], 1);
             }
+            
             // Equip new item
             this.equipment[slot] = itemId;
             this.inventory.removeItem(itemId, 1);
@@ -180,6 +188,10 @@ export class Player {
 
     unequip(slot) {
         if (this.equipment[slot]) {
+            // Check inventory space
+            if (this.inventory.items.length >= this.inventory.maxSlots) {
+                return false; 
+            }
             const itemId = this.equipment[slot];
             if (this.inventory.addItem(itemId, 1)) {
                 this.equipment[slot] = null;

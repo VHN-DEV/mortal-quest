@@ -18,47 +18,51 @@ export class UISystem {
      */
     toast(message, type = 'info') {
         const toast = document.createElement('div');
-        toast.className = `w-full p-4 bg-cultivation-dark/90 border-l-4 rounded-r-xl shadow-xl transform translate-y-[-20px] opacity-0 transition-all duration-300 pointer-events-auto flex items-center space-x-3`;
+        toast.className = `w-full p-4 bg-cultivation-dark/95 border-l-4 rounded-r-xl shadow-2xl relative overflow-hidden transform translate-y-[-10px] opacity-0 transition-all duration-500 pointer-events-auto flex items-center space-x-3`;
         
         const colors = {
             info: 'border-qi-blue text-qi-blue',
-            success: 'border-green-500 text-green-500',
+            success: 'border-qi-jade text-qi-jade',
             warning: 'border-cultivation-gold text-cultivation-gold',
             error: 'border-red-500 text-red-500'
         };
 
         const icons = {
             info: 'ph-info',
-            success: 'ph-check-circle',
-            warning: 'ph-warning',
-            error: 'ph-x-circle'
+            success: 'ph-sparkle',
+            warning: 'ph-warning-octagon',
+            error: 'ph-prohibit'
         };
 
-        toast.classList.add(...colors[type].split(' '));
+        toast.classList.add(...(colors[type] || colors.info).split(' '));
         toast.innerHTML = `
-            <i class="ph ${icons[type]} text-xl"></i>
-            <span class="text-xs font-bold text-white font-ancient">${message}</span>
+            <i class="ph ${icons[type] || icons.info} text-xl"></i>
+            <div class="flex flex-col">
+                <span class="text-[10px] font-bold text-white/50 uppercase tracking-widest">${type}</span>
+                <span class="text-xs font-bold text-white font-ancient leading-tight">${message}</span>
+            </div>
+            <div class="toast-progress" style="animation-duration: 5s"></div>
         `;
 
         this.notifContainer.appendChild(toast);
 
         // Animate in
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             toast.style.transform = 'translateY(0)';
             toast.style.opacity = '1';
-        }, 10);
+        });
 
         // Animate out and remove
         setTimeout(() => {
-            toast.style.transform = 'translateY(-20px)';
+            toast.style.transform = 'translateY(-10px)';
             toast.style.opacity = '0';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+            toast.style.pointerEvents = 'none';
+            setTimeout(() => toast.remove(), 500);
+        }, 5000);
     }
 
     /**
      * Show a custom modal dialog
-     * @param {object} options { title, message, icon, type, confirmText, cancelText, onConfirm, onCancel }
      */
     alert(message, title = 'Thiên Đạo Thông Báo') {
         return new Promise((resolve) => {
@@ -87,15 +91,17 @@ export class UISystem {
     showModal({ title, message, icon = 'ph-info', confirmText = 'LĨNH CHỈ', cancelText = 'BÃI BÃI', showCancel = true, onConfirm, onCancel }) {
         this.modalTitle.textContent = title;
         this.modalMessage.textContent = message;
-        this.modalIcon.className = `ph ${icon} text-4xl text-qi-blue mb-4`;
+        this.modalIcon.className = `ph ${icon} text-5xl text-cultivation-gold mb-4 animate-bounce-subtle`;
         this.modalBtnConfirm.textContent = confirmText;
         this.modalBtnCancel.textContent = cancelText;
         this.modalBtnCancel.style.display = showCancel ? 'block' : 'none';
 
         this.modalOverlay.classList.remove('hidden');
+        this.modalOverlay.classList.add('flex');
 
         const cleanup = () => {
             this.modalOverlay.classList.add('hidden');
+            this.modalOverlay.classList.remove('flex');
             this.modalBtnConfirm.onclick = null;
             this.modalBtnCancel.onclick = null;
         };
@@ -117,8 +123,11 @@ export class UISystem {
         
         if (show) {
             this.loadingOverlay.classList.remove('hidden');
+            this.loadingOverlay.classList.add('flex');
         } else {
             this.loadingOverlay.classList.add('hidden');
+            this.loadingOverlay.classList.remove('flex');
         }
     }
 }
+

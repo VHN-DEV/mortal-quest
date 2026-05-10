@@ -29,6 +29,7 @@ export const ASSETS = {
         forest: 'https://cdn.pixabay.com/photo/2023/06/15/15/55/forest-8065842_1280.jpg',
         cave: 'https://cdn.pixabay.com/photo/2023/03/16/16/32/cave-7857105_1280.jpg',
         sect: '/assets/images/sect.png',
+        cultivation: '/assets/images/cultivation_bg.png',
     },
 
     // Sự kiện & Kỳ ngộ

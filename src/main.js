@@ -54,7 +54,6 @@ const elTuViText = document.getElementById('tu-vi-text');
 const elPerSec = document.getElementById('tu-vi-per-sec');
 const btnCultivate = document.getElementById('cultivate-btn');
 const btnBreakthrough = document.getElementById('breakthrough-btn');
-const elName = document.getElementById('player-name');
 
 // Map
 const viewWorlds = document.getElementById('map-world-view');
@@ -183,6 +182,10 @@ const btnMountainRetreat = document.getElementById('btn-mountain-retreat');
 
 // Initialization
 function init() {
+    // Initialize UI first so other systems can use it
+    ui = new UISystem();
+    window.ui = ui;
+
     player = new Player();
     const savedData = SaveSystem.load();
     
@@ -196,13 +199,11 @@ function init() {
         gardenSystem = new GardenSystem(player, ui);
         mountainSystem = new MountainSystem(player, ui);
         
-        elPlayerNameHeader.textContent = player.name;
-        elHeaderPortrait.src = ASSETS.portraits.player;
-        document.getElementById('main-player-portrait').src = ASSETS.portraits.player;
+        if (elPlayerNameHeader) elPlayerNameHeader.textContent = player.name;
+        if (elHeaderPortrait) elHeaderPortrait.src = ASSETS.portraits.player;
+        const mainPortrait = document.getElementById('main-player-portrait');
+        if (mainPortrait) mainPortrait.src = ASSETS.portraits.player;
     }
-    
-    ui = new UISystem();
-    window.ui = ui; // Expose to window for console access
     
     update();
 }
@@ -359,12 +360,25 @@ function startExploration(locId) {
     if (loc.special === 'mountain') btnEnterMountain.classList.remove('hidden');
     else btnEnterMountain.classList.add('hidden');
 
+    // Smooth scroll to top of exploration view
+    viewExplore.scrollTop = 0;
     renderExplore();
 }
 
 function updateExplorationUI() {
     elExploreProgress.textContent = `Tiến độ: ${Math.floor(explorationProgress)}%`;
     elExploreBar.style.width = `${explorationProgress}%`;
+}
+
+function renderExplore() {
+    const loc = getLocationById(currentWorldId, currentLocId);
+    if (!loc) return;
+    
+    // Update background if location has one
+    const bgUrl = loc.image || ASSETS.backgrounds[loc.id] || ASSETS.backgrounds.nhan_gioi;
+    viewExplore.style.backgroundImage = `url('${bgUrl}')`;
+    viewExplore.style.backgroundSize = 'cover';
+    viewExplore.style.backgroundPosition = 'center';
 }
 
 btnMove.onclick = () => {
@@ -1071,8 +1085,6 @@ window.game.doMission = (id) => {
         player.sectContribution += mission.reward.contribution || 0;
         if (mission.reward.lingShi) player.lingShi += mission.reward.lingShi;
         if (mission.reward.tuVi) player.tuVi += mission.reward.tuVi;
-        if (mission.reward.lingShi) player.lingShi += mission.reward.lingShi;
-        if (mission.reward.tuVi) player.tuVi += mission.reward.tuVi;
         ui.toast(`Hoàn thành: ${mission.name}!`, "success");
         renderSects();
     } else {
@@ -1281,10 +1293,28 @@ function initiateBattle(enemy) {
 navButtons.forEach(btn => {
     btn.addEventListener('click', () => {
         const targetId = btn.id.replace('nav-', 'screen-');
-        screens.forEach(s => s.classList.add('hidden'));
-        document.getElementById(targetId).classList.remove('hidden');
-        navButtons.forEach(b => b.className = 'nav-item flex flex-col items-center flex-grow py-1 text-gray-500 transition-all');
-        btn.className = 'nav-item flex flex-col items-center flex-grow py-1 text-cultivation-gold transition-all';
+        const targetScreen = document.getElementById(targetId);
+        
+        if (!targetScreen) {
+            console.error(`Thất bại: Không tìm thấy màn hình ${targetId}`);
+            return;
+        }
+
+        screens.forEach(s => {
+            s.classList.add('hidden');
+            s.classList.remove('animate-fade-in');
+        });
+        
+        targetScreen.classList.remove('hidden');
+        targetScreen.classList.add('animate-fade-in');
+        
+        navButtons.forEach(b => {
+            b.classList.remove('text-cultivation-gold', 'active');
+            b.classList.add('text-gray-500');
+        });
+        
+        btn.classList.add('text-cultivation-gold', 'active');
+        btn.classList.remove('text-gray-500');
 
         if (targetId === 'screen-adventure') { renderWorldList(); viewWorlds.classList.remove('hidden'); viewLocations.classList.add('hidden'); viewExplore.classList.add('hidden'); }
         if (targetId === 'screen-character') renderCharacter();
@@ -1296,11 +1326,19 @@ navButtons.forEach(btn => {
 btnBackToWorlds.onclick = () => { viewLocations.classList.add('hidden'); viewWorlds.classList.remove('hidden'); };
 btnBackToLocs.onclick = () => { viewExplore.classList.add('hidden'); viewLocations.classList.remove('hidden'); };
 
-btnCultivate.addEventListener('click', (e) => { player.cultivate(); createClickParticle(e.clientX, e.clientY); });
+btnCultivate.addEventListener('click', (e) => { 
+    if (player.cultivate()) {
+        createClickParticle(e.clientX, e.clientY); 
+        // Optional: Add a subtle text popup or sound
+    } else {
+        ui.toast("Kiệt sức rồi, hãy nghỉ ngơi một chút!", "warning");
+    }
+});
 btnBreakthrough.addEventListener('click', async () => { 
     if (player.breakthrough()) { 
-        ui.alert('Chúc mừng Đạo hữu đã đột phá thành công, thực lực đại tăng!', 'Xung Kích Thành Công');
+        ui.alert('Chúc mừng Đạo hữu đã đột phá thành công, thực lực đại tăng!', 'Thiên Đạo Chúc Phúc');
         SaveSystem.save(player.save()); 
+        render(); // Refresh UI
     } 
 });
 
