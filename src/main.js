@@ -58,6 +58,7 @@ const elStaminaBar = document.getElementById('explore-stamina-bar');
 const elManaBar = document.getElementById('explore-mana-bar');
 const btnMove = document.getElementById('btn-move');
 const btnEnterShop = document.getElementById('btn-enter-shop');
+const btnEnterSect = document.getElementById('btn-enter-sect');
 const btnBackToWorlds = document.getElementById('back-to-worlds');
 const btnBackToLocs = document.getElementById('back-to-locations');
 
@@ -91,6 +92,10 @@ const elShopLingShi = document.getElementById('shop-ling-shi');
 const btnShopTabBuy = document.getElementById('shop-tab-buy');
 const btnShopTabSell = document.getElementById('shop-tab-sell');
 const btnCloseShop = document.getElementById('close-shop-btn');
+
+// Sect Overlay
+const overlaySects = document.getElementById('sects-overlay');
+const btnCloseSects = document.getElementById('close-sects-btn');
 
 // Inventory
 const elInventoryGrid = document.getElementById('inventory-grid');
@@ -243,6 +248,13 @@ function startExploration(locId) {
     } else {
         btnEnterShop.classList.add('hidden');
     }
+
+    // Check if this is a sect location
+    if (SECTS[loc.id]) {
+        btnEnterSect.classList.remove('hidden');
+    } else {
+        btnEnterSect.classList.add('hidden');
+    }
 }
 
 function updateExplorationUI() {
@@ -292,6 +304,13 @@ btnEnterShop.onclick = () => {
 };
 
 btnCloseShop.onclick = () => overlayShop.classList.add('hidden');
+
+btnEnterSect.onclick = () => {
+    overlaySects.classList.remove('hidden');
+    renderSects();
+};
+
+btnCloseSects.onclick = () => overlaySects.classList.add('hidden');
 
 function renderShop() {
     elShopLingShi.textContent = Math.floor(player.lingShi);
@@ -651,7 +670,6 @@ navButtons.forEach(btn => {
         if (targetId === 'screen-character') renderCharacter();
         if (targetId === 'screen-inventory') renderInventory();
         if (targetId === 'screen-alchemy') renderAlchemy();
-        if (targetId === 'screen-sects') renderSects();
     });
 });
 

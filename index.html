@@ -110,6 +110,7 @@
                             <div id="explore-actions" class="grid grid-cols-2 gap-4">
                                 <button id="btn-move" class="py-4 bg-qi-blue text-black font-bold rounded-xl active:scale-95 transition-all">TIẾN BƯỚC</button>
                                 <button id="btn-enter-shop" class="py-4 bg-cultivation-gold text-black font-bold rounded-xl active:scale-95 transition-all hidden">VÀO CỬA HÀNG</button>
+                                <button id="btn-enter-sect" class="py-4 bg-qi-purple text-white font-bold rounded-xl active:scale-95 transition-all hidden">VÀO TÔNG MÔN</button>
                                 <button id="btn-leave-loc" class="py-4 bg-white/10 text-white rounded-xl active:scale-95 transition-all">QUAY VỀ</button>
                             </div>
                             <div class="bg-black/40 p-2 rounded-lg border border-white/5">
@@ -205,10 +206,15 @@
                 </div>
             </div>
 
-            <!-- Tab 6: Tông Môn (NEW) -->
-            <div id="screen-sects" class="screen hidden flex flex-col h-full p-4 overflow-hidden">
-                <h2 class="text-2xl font-cinzel text-cultivation-gold mb-6 text-center">Tông Môn</h2>
-                <div id="sects-view" class="flex-grow overflow-y-auto space-y-4">
+            <!-- Sect Overlay (Previously Tab 6) -->
+            <div id="sects-overlay" class="fixed inset-0 bg-black/95 z-[110] hidden flex flex-col">
+                <div class="p-4 border-b border-white/10 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <button id="close-sects-btn" class="text-qi-blue"><i class="ph ph-arrow-left text-2xl"></i></button>
+                        <h2 class="text-xl font-cinzel text-cultivation-gold">Tông Môn</h2>
+                    </div>
+                </div>
+                <div id="sects-view" class="flex-grow overflow-y-auto p-4 space-y-4">
                     <!-- Sects list or Current Sect Dashboard -->
                 </div>
             </div>
@@ -229,10 +235,7 @@
                 <i class="ph ph-user text-xl"></i>
                 <span class="text-[8px] mt-1 font-cinzel">Nhân Vật</span>
             </button>
-            <button id="nav-sects" class="nav-item flex flex-col items-center flex-grow py-1 text-gray-500 transition-all">
-                <i class="ph ph-castle text-xl"></i>
-                <span class="text-[8px] mt-1 font-cinzel">Tông Môn</span>
-            </button>
+
             <button id="nav-alchemy" class="nav-item flex flex-col items-center flex-grow py-1 text-gray-500 transition-all">
                 <i class="ph ph-flask text-xl"></i>
                 <span class="text-[8px] mt-1 font-cinzel">Lò Luyện</span>
