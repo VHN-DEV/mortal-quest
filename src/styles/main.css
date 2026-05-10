@@ -1,4 +1,15 @@
 @import "tailwindcss";
+@import "@fontsource/eb-garamond/400.css";
+@import "@fontsource/eb-garamond/700.css";
+@import "@fontsource/eb-garamond/800.css";
+@import "@fontsource/charm/400.css";
+@import "@fontsource/charm/700.css";
+@import "@fontsource/noto-serif/400.css";
+@import "@fontsource/noto-serif/700.css";
+@import "@fontsource/noto-serif/400-italic.css";
+@import "@phosphor-icons/web/regular";
+@import "@phosphor-icons/web/fill";
+@import "@phosphor-icons/web/bold";
 
 @theme {
   --color-cultivation-dark: #0d1117;
