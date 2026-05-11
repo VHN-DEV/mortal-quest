@@ -88,6 +88,25 @@ export class Game {
         if (btnReset) {
             btnReset.onclick = () => this.resetGame();
         }
+
+        const focusMap = {
+            'focus-tuvi': 'tuvi',
+            'focus-body': 'body',
+            'focus-soul': 'soul'
+        };
+        Object.entries(focusMap).forEach(([id, focus]) => {
+            const btn = document.getElementById(id);
+            if (btn) btn.onclick = () => this.setCultivationFocus(focus);
+        });
+
+        const cultivateBtn = document.getElementById('cultivate-btn');
+        if (cultivateBtn) cultivateBtn.onclick = () => this.cultivate();
+
+        const breakthroughBtn = document.getElementById('breakthrough-btn');
+        if (breakthroughBtn) breakthroughBtn.onclick = () => this.breakthrough();
+
+        const autoCultivate = document.getElementById('auto-cultivate-toggle');
+        if (autoCultivate) autoCultivate.onchange = (e) => this.toggleAutoCultivate(e.target.checked);
     }
 
     initNavigation() {
@@ -297,6 +316,39 @@ export class Game {
         state.player.hp = Math.floor(state.player.maxHp * 0.1);
         state.ui.toast("Bạn đã kiệt sức và ngất đi...", "error");
         this.refreshUI();
+    }
+
+    setCultivationFocus(focus) {
+        if (!state.player || !['tuvi', 'body', 'soul'].includes(focus)) return;
+        state.player.cultivationFocus = focus;
+        this.refreshUI();
+    }
+
+    cultivate() {
+        if (!state.player) return;
+        const result = state.player.cultivate();
+        if (result && result.msg) state.ui.toast(result.msg, result.success ? 'success' : 'error');
+        this.refreshUI();
+    }
+
+    breakthrough() {
+        if (!state.player) return;
+        const focus = state.player.cultivationFocus || 'tuvi';
+        const result = state.player.breakthrough(focus);
+        if (result && result.msg) state.ui.toast(result.msg, result.success ? 'success' : 'error');
+        this.refreshUI();
+    }
+
+    toggleAutoCultivate(enabled) {
+        if (!state.player) return;
+        if (enabled) {
+            if (!state.autoCultivateInterval) {
+                state.autoCultivateInterval = setInterval(() => this.cultivate(), 1200);
+            }
+        } else if (state.autoCultivateInterval) {
+            clearInterval(state.autoCultivateInterval);
+            state.autoCultivateInterval = null;
+        }
     }
 
     // Các hàm helper để gọi từ HTML (window.game.xxx)
