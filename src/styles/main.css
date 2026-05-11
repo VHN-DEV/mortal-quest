@@ -93,7 +93,7 @@ body {
     max-width: none;
     border: none;
     display: flex;
-    flex-direction: col;
+    flex-direction: column;
   }
   
   header {
@@ -372,6 +372,7 @@ button:active {
 
 .nav-item {
     position: relative;
+    cursor: pointer;
 }
 
 .nav-item.active::after {

@@ -3,6 +3,7 @@ import { Inventory } from './inventory.js';
 import { getItemById } from '../configs/item-data.js';
 import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_QUALITIES } from '../configs/technique-data.js';
 import { getPhysiqueById, getPhysiqueAwakenBonus, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../configs/physique-data.js';
+import { ARTIFACT_SETS } from '../configs/artifact-data.js';
 
 export class Player {
     constructor() {
@@ -706,7 +707,6 @@ export class Player {
     }
 
     applySetBonuses(equippedIds) {
-        const { ARTIFACT_SETS } = require('../configs/artifact-data.js');
         if (!ARTIFACT_SETS) return;
 
         Object.values(ARTIFACT_SETS).forEach(set => {
