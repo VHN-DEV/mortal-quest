@@ -29,6 +29,8 @@ export class BattleScreen {
         this.btnDefend = document.getElementById('btn-defend');
         this.btnSkill = document.getElementById('btn-skill');
         this.btnFlame = document.getElementById('btn-flame');
+        this.btnSecret = document.getElementById('btn-secret');
+        this.secretCursor = 0;
     }
 
     initEvents() {
@@ -36,11 +38,19 @@ export class BattleScreen {
         if (this.btnDefend) this.btnDefend.onclick = () => this.handleAction('defend');
         if (this.btnSkill) this.btnSkill.onclick = () => this.handleAction('skill');
         if (this.btnFlame) this.btnFlame.onclick = () => this.handleAction('flame');
+        if (this.btnSecret) this.btnSecret.onclick = () => {
+            const secrets = (state.player?.equippedSecretTechniqueIds || []).filter(Boolean);
+            if (secrets.length === 0) return;
+            const id = secrets[this.secretCursor % secrets.length];
+            this.handleAction('secret', id);
+            this.secretCursor = (this.secretCursor + 1) % secrets.length;
+            this.updateSecretButton();
+        };
     }
 
-    handleAction(type) {
+    handleAction(type, payload = null) {
         if (state.currentCombat) {
-            state.currentCombat.doAction(type);
+            state.currentCombat.doAction(type, payload);
         }
     }
 
@@ -57,6 +67,7 @@ export class BattleScreen {
                 this.updateHPs();
                 this.logEl.innerHTML = '';
                 this.checkFlameButton();
+                this.updateSecretButton();
                 break;
             case 'log':
                 this.updateLog(combat.log);
@@ -103,6 +114,19 @@ export class BattleScreen {
         } else {
             this.btnFlame.classList.add('hidden');
         }
+    }
+
+    updateSecretButton() {
+        if (!this.btnSecret) return;
+        const secrets = (state.player?.equippedSecretTechniqueIds || []).filter(Boolean);
+        if (secrets.length === 0) {
+            this.btnSecret.classList.add('hidden');
+            return;
+        }
+        this.btnSecret.classList.remove('hidden');
+        const current = secrets[this.secretCursor % secrets.length];
+        this.btnSecret.textContent = `BÍ PHÁP (${this.secretCursor + 1}/${secrets.length})`;
+        this.btnSecret.title = `Thi triển: ${current}`;
     }
 
     close() {

@@ -74,7 +74,7 @@ export class CombatEngine {
     }
 
     // Actions
-    doAction(type) {
+    doAction(type, payload = null) {
         if (this.turn !== 0 || !this.isActive) return;
 
         this.playerDefending = false;
@@ -90,7 +90,7 @@ export class CombatEngine {
                 this.playerSkill();
                 break;
             case 'secret':
-                this.playerSecretTechnique(arguments[1]);
+                this.playerSecretTechnique(payload);
                 break;
             case 'flame':
                 this.playerFlameAttack();
@@ -265,8 +265,19 @@ export class CombatEngine {
         if (!this.isActive) return;
 
         this.triggerArtifacts('defense');
-
         let damage = Math.max(1, this.enemy.atk - Math.floor(this.player.def / 2));
+        const speedType = this.enemy.spd > this.player.spd * 1.2;
+        const bruteType = this.enemy.atk > this.player.atk * 1.2;
+
+        if (speedType && Math.random() < 0.3) {
+            const truePart = Math.floor(this.enemy.atk * 0.3);
+            const normalPart = Math.max(1, this.enemy.atk - Math.floor(this.player.def * 0.35));
+            damage = truePart + normalPart;
+            this.addLog(`${this.enemy.name} thi triển thân pháp, xuyên qua phòng ngự!`);
+        } else if (bruteType && Math.random() < 0.25) {
+            damage = Math.floor(damage * 1.4);
+            this.addLog(`${this.enemy.name} vung đòn bạo kích hung mãnh!`);
+        }
         if (this.playerDefending) {
             damage = Math.floor(damage * 0.3);
             this.playerDefending = false;
