@@ -2,7 +2,19 @@
  * Cấu hình toàn bộ tài nguyên hình ảnh của game.
  * Bạn có thể thay đổi các link này để cập nhật hình ảnh mới.
  */
-const getAssetUrl = (name, type = 'images', ext = 'png') => {
+// Import all location images dynamically so Vite bundles them
+const locationImages = import.meta.glob('../assets/images/locations/*.png', { eager: true, query: '?url', import: 'default' });
+
+export const getAssetUrl = (name, type = 'images', ext = 'png') => {
+    // If it's a location image, try to get it from the globbed map
+    if (name.startsWith('locations/')) {
+        const locPath = `../assets/images/${name}.${ext}`;
+        if (locationImages[locPath]) {
+            return locationImages[locPath];
+        }
+    }
+    
+    // Fallback to the standard URL construction for others
     return new URL(`../assets/${type}/${name}.${ext}`, import.meta.url).href;
 };
 

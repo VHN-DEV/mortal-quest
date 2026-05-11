@@ -441,13 +441,13 @@ export const ITEMS = {
     'chu_sa_muc': { id: 'chu_sa_muc', name: 'Chu Sa Mực', type: 'material', price: 20, description: 'Mực chu sa dùng để vẽ phù.' },
 
     // Khôi Lỗi
-    'khoi_loi_item': { 
-        id: 'khoi_loi_item', 
-        name: 'Khôi Lỗi', 
-        type: 'puppet', 
-        icon: '🤖', 
-        price: 1000, 
-        description: 'Một con khôi lỗi cơ quan thuật.' 
+    'khoi_loi_item': {
+        id: 'khoi_loi_item',
+        name: 'Khôi Lỗi',
+        type: 'puppet',
+        icon: '🤖',
+        price: 1000,
+        description: 'Một con khôi lỗi cơ quan thuật.'
     },
     'linh_moc_phu': {
         id: 'linh_moc_phu',

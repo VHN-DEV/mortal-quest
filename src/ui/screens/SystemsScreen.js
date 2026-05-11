@@ -250,9 +250,9 @@ export class SystemsScreen {
         if (this.btnShopTabBuy && this.btnShopTabSell) {
             if (state.views.shop === 'buy') {
                 this.btnShopTabBuy.className = "flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold text-xs";
-                this.btnShopTabSell.className = "flex-grow py-3 text-gray-500 text-xs";
+                this.btnShopTabSell.className = "flex-grow py-3 text-gray-500 border-b-2 border-transparent text-xs";
             } else {
-                this.btnShopTabBuy.className = "flex-grow py-3 text-gray-500 text-xs";
+                this.btnShopTabBuy.className = "flex-grow py-3 text-gray-500 border-b-2 border-transparent text-xs";
                 this.btnShopTabSell.className = "flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold text-xs";
             }
         }

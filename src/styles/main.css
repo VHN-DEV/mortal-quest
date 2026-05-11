@@ -253,11 +253,15 @@ body {
 
 .custom-scroll-x {
   overflow-x: auto !important;
+  overflow-y: hidden !important;
   display: flex !important;
   flex-wrap: nowrap !important;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x;
   width: 100%;
+  min-height: 52px; /* Fixed height to prevent jitter */
+  height: 52px;
+  align-items: center;
 }
 
 .custom-scroll-x::-webkit-scrollbar {
