@@ -83,6 +83,14 @@ export class Inventory {
             if (es) {
                 es.absorbQi(effect.qiType, effect.amount, effect.purity || 'TINH_THUAN');
             }
+        } else if (effect.type === 'learn_recipe') {
+            if (!this.player.knownRecipes.includes(effect.value)) {
+                this.player.knownRecipes.push(effect.value);
+            }
+        } else if (effect.type === 'learn_talisman_recipe') {
+            if (!this.player.knownTalismanRecipes.includes(effect.value)) {
+                this.player.knownTalismanRecipes.push(effect.value);
+            }
         }
     }
 

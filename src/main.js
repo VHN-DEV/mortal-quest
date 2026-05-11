@@ -73,6 +73,10 @@ const elRealm = document.getElementById('current-realm');
 const elProgress = document.getElementById('tu-vi-progress');
 const elTuViText = document.getElementById('tu-vi-text');
 const elPerSec = document.getElementById('tu-vi-per-sec');
+const elBodyProgress = document.getElementById('body-progress');
+const elBodyText = document.getElementById('body-text');
+const elSoulProgress = document.getElementById('soul-progress');
+const elSoulText = document.getElementById('soul-text');
 const btnCultivate = document.getElementById('cultivate-btn');
 const elAuraGlow = document.getElementById('aura-glow');
 const elAuraBorder = document.getElementById('aura-border');
@@ -89,19 +93,20 @@ const elLocList = document.getElementById('location-list');
 const elCurrentWorldName = document.getElementById('current-world-name');
 const elCurrentLocName = document.getElementById('current-location-name');
 const elExploreEvent = document.getElementById('explore-event-display');
+const elEventIcon = document.getElementById('event-icon');
+const elEventText = document.getElementById('event-text');
 const elExploreBar = document.getElementById('explore-bar');
 const elExploreProgress = document.getElementById('explore-progress');
 const elStaminaBar = document.getElementById('explore-stamina-bar');
 const elManaBar = document.getElementById('explore-mana-bar');
 const btnMove = document.getElementById('btn-move');
-const btnEnterShop = document.getElementById('btn-enter-shop');
-const btnEnterSect = document.getElementById('btn-enter-sect');
-const btnEnterGuild = document.getElementById('btn-enter-guild');
-const btnEnterTower = document.getElementById('btn-enter-tower');
-const btnEnterMountain = document.getElementById('btn-enter-mountain');
-const btnBackToWorlds = document.getElementById('back-to-worlds');
 const btnBackToLocs = document.getElementById('back-to-locations');
+const btnBackToWorlds = document.getElementById('back-to-worlds');
 const btnLeaveLoc = document.getElementById('btn-leave-loc');
+const elLocSpecialActions = document.getElementById('loc-special-actions');
+const elExploreBg = document.getElementById('explore-bg');
+const elCurrentWorldNameSub = document.getElementById('current-world-name-sub');
+const elEnvPurityTag = document.getElementById('env-purity-tag');
 
 // Character Tab
 const elCharHp = document.getElementById('char-hp');
@@ -417,6 +422,16 @@ async function handleSeclusion() {
     const focus = await ui.promptOptions('Chọn Tâm Điểm Bế Quan', options);
     if (!focus) return;
 
+    // Check if player has a technique for the chosen focus
+    const hasTech = (focus === 'tuvi' && player.mainTechniqueId) || 
+                    (focus === 'body' && player.mainBodyTechniqueId) || 
+                    (focus === 'soul' && player.mainSoulTechniqueId);
+
+    if (!hasTech) {
+        ui.alert(`Ngươi chưa có công pháp phù hợp để bế quan theo hướng này! Hãy tìm mua công pháp tại Vạn Bảo Các hoặc gia nhập Tông Môn.`, 'Thiếu Công Pháp');
+        return;
+    }
+
     const timeOptions = [
         { label: 'Bế Quan 7 Ngày', value: 7 * 12 },
         { label: 'Bế Quan 1 Tháng', value: 30 * 12 },
@@ -562,9 +577,9 @@ function render() {
     const realm = player.getCurrentRealm();
     const progress = (player.tuVi / realm.expRequired) * 100;
 
-    elRealm.textContent = realm.name;
-    elProgress.style.width = `${Math.min(100, progress)}%`;
-    elTuViText.textContent = `${Math.floor(player.tuVi).toLocaleString()} / ${realm.expRequired.toLocaleString()}`;
+    if (elRealm) elRealm.textContent = realm.name;
+    if (elProgress) elProgress.style.width = `${Math.min(100, progress)}%`;
+    if (elTuViText) elTuViText.textContent = `${Math.floor(player.tuVi).toLocaleString()} / ${realm.expRequired.toLocaleString()}`;
 
     // Calculate final TVPS with seasonal bonus
     let tvps = player.tuViPerSecond;
@@ -576,22 +591,35 @@ function render() {
         }
     }
 
-    elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
-    elLingShiText.textContent = player.getFormattedLingShi();
+    if (elPerSec) elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
+    if (elLingShiText) elLingShiText.textContent = player.getFormattedLingShi();
 
-    const breakthroughCheck = player.canBreakthrough('tuvi');
-    btnBreakthrough.classList.remove('hidden');
-    btnBreakthrough.disabled = !breakthroughCheck.can;
-    if (breakthroughCheck.can) {
-        btnBreakthrough.classList.add('animate-pulse-gold');
-        btnBreakthrough.style.opacity = '1';
-        btnBreakthrough.style.filter = 'none';
-        btnBreakthrough.style.cursor = 'pointer';
-    } else {
-        btnBreakthrough.classList.remove('animate-pulse-gold');
-        btnBreakthrough.style.opacity = '0.3';
-        btnBreakthrough.style.filter = 'grayscale(0.5)';
-        btnBreakthrough.style.cursor = 'not-allowed';
+    // Body & Soul Progress
+    const bodyRealm = player.getCurrentRealm('body');
+    const soulRealm = player.getCurrentRealm('soul');
+    const bodyProgress = (player.bodyExp / bodyRealm.expRequired) * 100;
+    const soulProgress = (player.soulExp / soulRealm.expRequired) * 100;
+
+    if (elBodyProgress) elBodyProgress.style.width = `${Math.min(100, bodyProgress)}%`;
+    if (elBodyText) elBodyText.textContent = `${Math.floor(bodyProgress)}%`;
+    if (elSoulProgress) elSoulProgress.style.width = `${Math.min(100, soulProgress)}%`;
+    if (elSoulText) elSoulText.textContent = `${Math.floor(soulProgress)}%`;
+
+    if (btnBreakthrough) {
+        const breakthroughCheck = player.canBreakthrough('tuvi');
+        btnBreakthrough.classList.remove('hidden');
+        btnBreakthrough.disabled = !breakthroughCheck.can;
+        if (breakthroughCheck.can) {
+            btnBreakthrough.classList.add('animate-pulse-gold');
+            btnBreakthrough.style.opacity = '1';
+            btnBreakthrough.style.filter = 'none';
+            btnBreakthrough.style.cursor = 'pointer';
+        } else {
+            btnBreakthrough.classList.remove('animate-pulse-gold');
+            btnBreakthrough.style.opacity = '0.3';
+            btnBreakthrough.style.filter = 'grayscale(0.5)';
+            btnBreakthrough.style.cursor = 'not-allowed';
+        }
     }
 
     if (currentCombat) updateBattleUI();
@@ -657,13 +685,28 @@ function renderWorldList() {
         const w = worlds[id];
         const locked = player.realmId < w.minRealm;
         const el = document.createElement('div');
-        el.className = `p-4 border rounded-xl bg-black/40 cursor-pointer transition-all ${locked ? 'opacity-50 grayscale' : 'hover:border-qi-purple border-gray-800'}`;
+        el.className = `group relative overflow-hidden p-6 rounded-[2rem] border transition-all duration-500 active:scale-[0.98] ${locked ? 'bg-black/20 border-white/5 opacity-60' : 'bg-qi-ink/40 border-white/10 hover:border-qi-blue/50 hover:bg-black/60 shadow-xl'}`;
+        
         el.innerHTML = `
-            <div class="flex justify-between items-center">
-                <span class="text-xl font-bold font-ancient text-white">${w.name}</span>
-                <span class="text-xs ${locked ? 'text-red-500' : 'text-qi-blue'}">${locked ? 'Cần: ' + getRealmById(w.minRealm).name : 'Đã mở'}</span>
+            <!-- Decor -->
+            <div class="absolute -top-10 -right-10 w-24 h-24 bg-qi-blue/5 rounded-full blur-2xl group-hover:bg-qi-blue/20 transition-all"></div>
+            
+            <div class="relative z-10 flex flex-col space-y-3">
+                <div class="flex justify-between items-start">
+                    <div class="space-y-1">
+                        <span class="text-2xl font-charm text-white group-hover:text-qi-blue transition-colors">${w.name}</span>
+                        <div class="text-[9px] text-gray-500 font-ancient tracking-[0.2em] uppercase opacity-60">Cõi Giới</div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest ${locked ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-qi-blue/10 text-qi-blue border border-qi-blue/20'}">
+                        ${locked ? '<i class="ph ph-lock mr-1"></i> ' + getRealmById(w.minRealm).name : '<i class="ph ph-check-circle mr-1"></i> Đã mở'}
+                    </span>
+                </div>
+                <p class="text-xs text-gray-400 font-ancient leading-relaxed opacity-80">${w.description}</p>
+                <div class="flex items-center space-x-2 pt-2 text-[9px] text-gray-600 font-ancient uppercase tracking-widest">
+                    <i class="ph ph-map-trifold"></i>
+                    <span>${w.locations ? w.locations.length : 0} Địa điểm khám phá</span>
+                </div>
             </div>
-            <p class="text-xs text-gray-500 mt-2">${w.description}</p>
         `;
         if (!locked) el.onclick = () => selectWorld(id);
         elWorldList.appendChild(el);
@@ -686,13 +729,24 @@ function renderLocationList() {
     w.locations.forEach(loc => {
         const locked = player.realmId < loc.minRealm;
         const el = document.createElement('div');
-        el.className = `p-4 border rounded-xl bg-black/40 cursor-pointer transition-all ${locked ? 'opacity-50 grayscale' : 'hover:border-qi-purple border-gray-800'}`;
+        el.className = `group relative overflow-hidden p-5 rounded-2xl border transition-all active:scale-[0.98] ${locked ? 'bg-black/20 border-white/5 opacity-60 grayscale' : 'bg-white/[0.02] border-white/5 hover:border-qi-blue/30 hover:bg-white/[0.05]'}`;
+        
         el.innerHTML = `
-            <div class="flex justify-between items-center">
-                <span class="text-lg font-bold text-white">${loc.name}</span>
-                <span class="text-[10px] px-2 py-0.5 rounded border border-red-900/50 text-red-500 uppercase">${loc.danger}</span>
+            <div class="relative z-10 flex justify-between items-center">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-lg font-bold text-white group-hover:text-qi-blue transition-colors">${loc.name}</span>
+                        <span class="text-[8px] px-2 py-0.5 rounded-full bg-black/40 border border-white/10 text-gray-500 uppercase tracking-widest">${loc.danger}</span>
+                    </div>
+                    <p class="text-[11px] text-gray-500 font-ancient leading-tight max-w-xs">${loc.description}</p>
+                </div>
+                <div class="flex flex-col items-end">
+                    ${locked ? 
+                        `<span class="text-[8px] text-red-500 uppercase font-bold tracking-widest">Khóa</span>` : 
+                        `<i class="ph ph-caret-right text-qi-blue opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0"></i>`
+                    }
+                </div>
             </div>
-            <p class="text-[10px] text-gray-500 mt-1">${loc.description}</p>
         `;
         if (!locked) el.onclick = () => startExploration(loc.id);
         elLocList.appendChild(el);
@@ -724,9 +778,10 @@ function startExploration(locId) {
     ui.toggleOverlay(viewLocations, false);
     ui.toggleOverlay(viewExplore, true);
     updateExplorationUI();
-    elExploreEvent.textContent = 'Bạn đã tới địa điểm.';
+    if (elEventText) elEventText.textContent = 'Bạn đã tới địa điểm.';
+    if (elEventIcon) elEventIcon.textContent = '📍';
 
-    // Set time flow for this location (default 1.0)
+    // Set time flow for this location
     if (timeSystem) {
         timeSystem.timeMultiplier = loc.timeRate || 1.0;
         if (timeSystem.timeMultiplier !== 1.0) {
@@ -734,24 +789,86 @@ function startExploration(locId) {
         }
     }
 
-    // Shop
-    ui.toggleOverlay(btnEnterShop, loc.id === 'van_bao_cac');
+    renderSpecialActions(loc);
 
-    // Sect
-    ui.toggleOverlay(btnEnterSect, !!SECTS[loc.id]);
-
-    // Guild
-    ui.toggleOverlay(btnEnterGuild, loc.special === 'guild');
-
-    // Tower
-    ui.toggleOverlay(btnEnterTower, loc.special === 'tower');
-
-    // Mountain
-    ui.toggleOverlay(btnEnterMountain, loc.special === 'mountain');
-
-    // Smooth scroll to top of exploration view
+    // Smooth scroll to top
     viewExplore.scrollTop = 0;
     renderExplore();
+}
+
+function renderSpecialActions(loc) {
+    if (!elLocSpecialActions) return;
+    elLocSpecialActions.innerHTML = '';
+    let hasSpecial = false;
+
+    // Vạn Bảo Các special case
+    if (loc.id === 'van_bao_cac') {
+        hasSpecial = true;
+        elLocSpecialActions.innerHTML = `
+            <button onclick="window.game.openShop('buy')" class="py-3 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
+                <i class="ph ph-shopping-cart text-lg mb-1"></i>MUA ĐỒ
+            </button>
+            <button onclick="window.game.openShop('sell')" class="py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
+                <i class="ph ph-currency-circle-dollar text-lg mb-1"></i>BÁN ĐỒ
+            </button>
+            <button onclick="window.game.openAuction()" class="col-span-2 py-3 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                <i class="ph ph-hammer text-lg"></i><span>ĐẤU GIÁ</span>
+            </button>
+        `;
+    } 
+    // Sects
+    else if (SECTS[loc.id]) {
+        hasSpecial = true;
+        elLocSpecialActions.innerHTML = `
+            <button onclick="window.game.openSect()" class="col-span-2 py-4 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                <i class="ph ph-castle-turret text-lg"></i><span>VÀO TÔNG MÔN</span>
+            </button>
+        `;
+    }
+    // Guild
+    else if (loc.special === 'guild') {
+        hasSpecial = true;
+        elLocSpecialActions.innerHTML = `
+            <button onclick="window.game.openGuild()" class="col-span-2 py-4 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                <i class="ph ph-users text-lg"></i><span>VÀO CÔNG HỘI</span>
+            </button>
+        `;
+    }
+    // Tower
+    else if (loc.special === 'tower') {
+        hasSpecial = true;
+        elLocSpecialActions.innerHTML = `
+            <button onclick="window.game.openTower()" class="col-span-2 py-4 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                <i class="ph ph-tower text-lg"></i><span>VÀO ĐAN THÁP</span>
+            </button>
+        `;
+    }
+    // Mountain
+    else if (loc.special === 'mountain') {
+        hasSpecial = true;
+        elLocSpecialActions.innerHTML = `
+            <button onclick="window.game.openMountain()" class="col-span-2 py-4 bg-red-900/20 border border-red-500/30 rounded-xl text-red-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                <i class="ph ph-mountains text-lg"></i><span>VÀO ĐẠI SƠN</span>
+            </button>
+        `;
+    }
+
+    ui.toggleOverlay(elLocSpecialActions, hasSpecial);
+}
+
+function updateEventDisplay(text, icon = '📜') {
+    if (elEventText) elEventText.textContent = text;
+    if (elEventIcon) {
+        elEventIcon.textContent = icon;
+        elEventIcon.classList.remove('animate-bounce-subtle');
+        void elEventIcon.offsetWidth;
+        elEventIcon.classList.add('animate-bounce-subtle');
+    }
+    if (elExploreEvent) {
+        elExploreEvent.classList.remove('animate-fade-in');
+        void elExploreEvent.offsetWidth; // Trigger reflow
+        elExploreEvent.classList.add('animate-fade-in');
+    }
 }
 
 function updateExplorationUI() {
@@ -765,9 +882,19 @@ function renderExplore() {
 
     // Update background if location has one
     const bgUrl = loc.image || ASSETS.backgrounds[loc.id] || ASSETS.backgrounds.nhan_gioi;
-    viewExplore.style.backgroundImage = `url('${bgUrl}')`;
-    viewExplore.style.backgroundSize = 'cover';
-    viewExplore.style.backgroundPosition = 'center';
+    if (elExploreBg) {
+        elExploreBg.style.backgroundImage = `url('${bgUrl}')`;
+    } else {
+        viewExplore.style.backgroundImage = `url('${bgUrl}')`;
+        viewExplore.style.backgroundSize = 'cover';
+        viewExplore.style.backgroundPosition = 'center';
+    }
+
+    if (elCurrentWorldNameSub) {
+        const world = getWorlds()[currentWorldId];
+        elCurrentWorldNameSub.textContent = world ? world.name : 'Vô Danh Giới';
+    }
+
     renderEnergy();
 }
 
@@ -794,12 +921,12 @@ btnMove.onclick = () => {
     const event = getRandomEvent(probs);
 
     if (event) {
-        elExploreEvent.textContent = event.description;
+        updateEventDisplay(event.description, event.icon || '📜');
         if (event.type === 'loot') {
             const resultMsg = event.result(player);
             const droppedShi = Math.floor(Math.random() * 10 * player.realmId);
             player.lingShi += droppedShi;
-            setTimeout(() => { elExploreEvent.textContent = resultMsg + ` (+${droppedShi} LT)`; }, 1000);
+            setTimeout(() => { updateEventDisplay(resultMsg + ` (+${droppedShi} LT)`, '🎁'); }, 1000);
         } else if (event.type === 'npc') {
             setTimeout(() => { 
                 ui.toggleOverlay(overlayNPC, true);
@@ -812,7 +939,7 @@ btnMove.onclick = () => {
             setTimeout(() => { startBattle(currentWorldId, currentLocId); }, 1000);
         }
     } else {
-        elExploreEvent.textContent = 'Một chặng đường yên tĩnh.';
+        updateEventDisplay('Một chặng đường yên tĩnh.', '🚶');
     }
 
     if (explorationProgress >= 100) {
@@ -824,87 +951,107 @@ btnMove.onclick = () => {
     }
 };
 
-// --- SHOP ---
-btnEnterShop.onclick = () => {
+// --- LOCATION ACTIONS ---
+function openShop(view = 'buy') {
+    shopView = view;
     ui.showLoading(true, "Đang Bước Vào Vạn Bảo Thiên Các...");
     setTimeout(() => {
         ui.showLoading(false);
         ui.toggleOverlay(overlayShop, true);
         renderShop();
     }, 800);
-};
+}
 
-btnCloseShop.onclick = () => ui.toggleOverlay(overlayShop, false);
-
-btnEnterSect.onclick = () => {
+function openSect() {
     ui.showLoading(true, "Đang Bước Vào Tông Môn Thánh Địa...");
     setTimeout(() => {
         ui.showLoading(false);
         ui.toggleOverlay(overlaySects, true);
         renderSects();
     }, 800);
-};
+}
 
-btnEnterGuild.onclick = () => {
+function openGuild() {
     ui.showLoading(true, "Đang Bước Vào Công Hội Luyện Dược Sư...");
     setTimeout(() => {
         ui.showLoading(false);
         ui.toggleOverlay(overlayGuild, true);
         renderGuild();
     }, 800);
-};
+}
 
-btnCloseGuild.onclick = () => ui.toggleOverlay(overlayGuild, false);
-
-btnEnterTower.onclick = () => {
+function openTower() {
     ui.showLoading(true, "Đang Tiến Vào Thánh Địa Đan Tháp...");
     setTimeout(() => {
         ui.showLoading(false);
         ui.toggleOverlay(overlayTower, true);
         renderTower();
     }, 800);
-};
+}
 
-btnCloseTower.onclick = () => ui.toggleOverlay(overlayTower, false);
-
-btnEnterMountain.onclick = () => {
+function openMountain() {
     ui.showLoading(true, "Đang Tiến Vào Thập Vạn Đại Sơn...");
     setTimeout(() => {
         ui.showLoading(false);
         ui.toggleOverlay(overlayMountain, true);
-        mountainSystem.start();
+        if (mountainSystem) mountainSystem.start();
         renderMountain();
     }, 1200);
-};
+}
 
-btnCloseMountain.onclick = () => {
-    mountainSystem.stop();
-    ui.toggleOverlay(overlayMountain, false);
-};
+function openAuction() {
+    ui.toast("Vạn Bảo Thiên Các hiện chưa mở cuộc đấu giá nào. Hãy quay lại sau!", "info");
+}
 
-btnMountainDeeper.onclick = () => {
-    mountainSystem.moveDeeper();
-    renderMountain();
-};
+if (btnCloseShop) btnCloseShop.onclick = () => ui.toggleOverlay(overlayShop, false);
+if (btnCloseGuild) btnCloseGuild.onclick = () => ui.toggleOverlay(overlayGuild, false);
+if (btnCloseTower) btnCloseTower.onclick = () => ui.toggleOverlay(overlayTower, false);
 
-btnMountainRetreat.onclick = () => {
-    mountainSystem.retreat();
-    renderMountain();
-};
+if (btnCloseMountain) {
+    btnCloseMountain.onclick = () => {
+        if (mountainSystem) mountainSystem.stop();
+        ui.toggleOverlay(overlayMountain, false);
+    };
+}
 
-btnBackToLocs.onclick = () => {
-    ui.toggleOverlay(viewExplore, false);
-    ui.toggleOverlay(viewLocations, true);
-    if (timeSystem) timeSystem.timeMultiplier = 1.0;
-};
+if (btnMountainDeeper) {
+    btnMountainDeeper.onclick = () => {
+        if (mountainSystem) mountainSystem.moveDeeper();
+        renderMountain();
+    };
+}
 
-btnLeaveLoc.onclick = () => {
-    ui.toggleOverlay(viewExplore, false);
-    ui.toggleOverlay(viewLocations, true);
-    if (timeSystem) timeSystem.timeMultiplier = 1.0;
-};
+if (btnMountainRetreat) {
+    btnMountainRetreat.onclick = () => {
+        if (mountainSystem) mountainSystem.retreat();
+        renderMountain();
+    };
+}
 
-btnCloseSects.onclick = () => ui.toggleOverlay(overlaySects, false);
+if (btnBackToLocs) {
+    btnBackToLocs.onclick = () => {
+        ui.toggleOverlay(viewExplore, false);
+        ui.toggleOverlay(viewLocations, true);
+        if (timeSystem) timeSystem.timeMultiplier = 1.0;
+    };
+}
+
+if (btnBackToWorlds) {
+    btnBackToWorlds.onclick = () => {
+        ui.toggleOverlay(viewLocations, false);
+        ui.toggleOverlay(viewWorlds, true);
+    };
+}
+
+if (btnLeaveLoc) {
+    btnLeaveLoc.onclick = () => {
+        ui.toggleOverlay(viewExplore, false);
+        ui.toggleOverlay(viewLocations, true);
+        if (timeSystem) timeSystem.timeMultiplier = 1.0;
+    };
+}
+
+if (btnCloseSects) btnCloseSects.onclick = () => ui.toggleOverlay(overlaySects, false);
 
 function renderShop() {
     elShopLingShi.textContent = player.getFormattedLingShi();
@@ -1031,84 +1178,6 @@ function renderShopSell() {
     });
 }
 
-window.game = {
-    buyItem: (id) => {
-        const res = shopSystem.buyItem(id, 1);
-        ui.toast(res.msg, res.success ? 'success' : 'error');
-        renderShopBuy();
-        elShopLingShi.textContent = Math.floor(player.lingShi);
-    },
-    showPlantMenu: async (index) => {
-        // Simple plant for now
-        if (player.inventory.hasItem('seed_linh_thao')) {
-            gardenSystem.plant(index, 'seed_linh_thao');
-            player.inventory.removeItem('seed_linh_thao', 1);
-            renderAlchemy();
-        } else {
-            ui.toast("Bạn không có hạt giống nào!", "error");
-        }
-    },
-    harvest: (index) => {
-        if (gardenSystem.harvest(index)) {
-            ui.toast("Đã thu hoạch linh thảo!", "success");
-            renderAlchemy();
-            renderInventory();
-        }
-    },
-    craft: async (id) => {
-        const res = await alchemySystem.craft(id);
-        if (res.msg) ui.toast(res.msg, res.success ? 'success' : 'error');
-        renderAlchemy();
-        renderInventory();
-    },
-    doCraft: (id) => {
-        const res = craftingSystem.craft(id);
-        ui.toast(res.msg, res.success ? 'success' : 'error');
-        renderCharacter();
-        renderInventory();
-    },
-    removeFromParty: (npcId) => {
-        if (player.removeFromParty(npcId)) {
-            ui.toast("Đồng hành đã rời đội.", "info");
-            renderCharacter();
-        }
-    },
-    hatchBeast: (eggId) => {
-        const res = beastSystem.hatch(eggId);
-        ui.toast(res.msg, res.success ? 'success' : 'error');
-        renderBeast();
-        refreshUI();
-    },
-    feedBeast: (uniqueId) => {
-        // Find best food available
-        const foods = player.inventory.items.filter(i => getItemById(i.id).type === 'beast_food');
-        if (foods.length === 0) {
-            ui.toast("Bạn không có thức ăn linh thú!", "error");
-            return;
-        }
-        const res = beastSystem.feed(uniqueId, foods[0].id);
-        ui.toast(res.msg, res.success ? 'success' : 'error');
-        renderBeast();
-        refreshUI();
-    },
-    openCrafting: (type) => {
-        const screens = document.querySelectorAll('.screen');
-        const navButtons = document.querySelectorAll('.nav-item');
-        
-        screens.forEach(s => s.classList.add('hidden'));
-        const target = document.getElementById(`screen-${type}`);
-        if (target) {
-            target.classList.remove('hidden');
-            target.classList.add('animate-fade-in');
-            if (type === 'alchemy') renderAlchemy();
-            if (type === 'talisman') renderTalisman();
-            if (type === 'smithing') renderSmithing();
-            if (type === 'formation') renderFormation();
-            if (type === 'corpse') renderCorpse();
-            if (type === 'beast') renderBeast();
-        }
-    }
-};
 
 btnShopTabBuy.onclick = () => { shopView = 'buy'; btnShopTabBuy.className = 'flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold'; btnShopTabSell.className = 'flex-grow py-3 text-gray-500'; renderShop(); };
 btnShopTabSell.onclick = () => { shopView = 'sell'; btnShopTabSell.className = 'flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold'; btnShopTabBuy.className = 'flex-grow py-3 text-gray-500'; renderShop(); };
@@ -1217,11 +1286,11 @@ function initGameSystems(player, savedData = null) {
 // --- CHARACTER & EQUIPMENT ---
 function renderCharacter() {
     if (!player) return;
-    elCharHp.textContent = `${Math.floor(player.hp)} / ${Math.floor(player.maxHp)}`;
-    elCharAtk.textContent = Math.floor(player.atk);
-    elCharDef.textContent = Math.floor(player.def);
-    elCharSpd.textContent = Math.floor(player.spd);
-    elCharMana.textContent = `${Math.floor(player.mana)} / ${Math.floor(player.maxMana)}`;
+    if (elCharHp) elCharHp.textContent = `${Math.floor(player.hp)} / ${Math.floor(player.maxHp)}`;
+    if (elCharAtk) elCharAtk.textContent = Math.floor(player.atk);
+    if (elCharDef) elCharDef.textContent = Math.floor(player.def);
+    if (elCharSpd) elCharSpd.textContent = Math.floor(player.spd);
+    if (elCharMana) elCharMana.textContent = `${Math.floor(player.mana)} / ${Math.floor(player.maxMana)}`;
     if (elCharAge) elCharAge.textContent = `${Math.floor(player.age)} / ${player.maxAge}`;
 
     // Detailed Realms
@@ -1229,17 +1298,26 @@ function renderCharacter() {
     const bodyRealm = player.getCurrentRealm('body');
     const soulRealm = player.getCurrentRealm('soul');
 
-    document.getElementById('char-realm-tuvi').textContent = tuviRealm.name;
-    document.getElementById('char-realm-body').textContent = bodyRealm.name;
-    document.getElementById('char-realm-soul').textContent = soulRealm.name;
+    const elCharRealmTuvi = document.getElementById('char-realm-tuvi');
+    const elCharRealmBody = document.getElementById('char-realm-body');
+    const elCharRealmSoul = document.getElementById('char-realm-soul');
+    if (elCharRealmTuvi) elCharRealmTuvi.textContent = tuviRealm.name;
+    if (elCharRealmBody) elCharRealmBody.textContent = bodyRealm.name;
+    if (elCharRealmSoul) elCharRealmSoul.textContent = soulRealm.name;
 
-    document.getElementById('char-progress-tuvi').style.width = `${Math.min(100, (player.tuVi / tuviRealm.expRequired) * 100)}%`;
-    document.getElementById('char-progress-body').style.width = `${Math.min(100, (player.bodyExp / bodyRealm.expRequired) * 100)}%`;
-    document.getElementById('char-progress-soul').style.width = `${Math.min(100, (player.soulExp / soulRealm.expRequired) * 100)}%`;
+    const elCharProgTuvi = document.getElementById('char-progress-tuvi');
+    const elCharProgBody = document.getElementById('char-progress-body');
+    const elCharProgSoul = document.getElementById('char-progress-soul');
+    if (elCharProgTuvi) elCharProgTuvi.style.width = `${Math.min(100, (player.tuVi / tuviRealm.expRequired) * 100)}%`;
+    if (elCharProgBody) elCharProgBody.style.width = `${Math.min(100, (player.bodyExp / bodyRealm.expRequired) * 100)}%`;
+    if (elCharProgSoul) elCharProgSoul.style.width = `${Math.min(100, (player.soulExp / soulRealm.expRequired) * 100)}%`;
 
-    document.getElementById('char-exp-tuvi').textContent = `${Math.floor(player.tuVi).toLocaleString()} / ${tuviRealm.expRequired.toLocaleString()}`;
-    document.getElementById('char-exp-body').textContent = `${Math.floor(player.bodyExp).toLocaleString()} / ${bodyRealm.expRequired.toLocaleString()}`;
-    document.getElementById('char-exp-soul').textContent = `${Math.floor(player.soulExp).toLocaleString()} / ${soulRealm.expRequired.toLocaleString()}`;
+    const elCharExpTuvi = document.getElementById('char-exp-tuvi');
+    const elCharExpBody = document.getElementById('char-exp-body');
+    const elCharExpSoul = document.getElementById('char-exp-soul');
+    if (elCharExpTuvi) elCharExpTuvi.textContent = `${Math.floor(player.tuVi).toLocaleString()} / ${tuviRealm.expRequired.toLocaleString()}`;
+    if (elCharExpBody) elCharExpBody.textContent = `${Math.floor(player.bodyExp).toLocaleString()} / ${bodyRealm.expRequired.toLocaleString()}`;
+    if (elCharExpSoul) elCharExpSoul.textContent = `${Math.floor(player.soulExp).toLocaleString()} / ${soulRealm.expRequired.toLocaleString()}`;
 
     // Highlight BT buttons if ready
     document.querySelectorAll('.btn-bt-type').forEach(btn => {
@@ -1356,37 +1434,31 @@ function renderCharacter() {
 function renderEnergy() {
     if (!player) return;
 
-    // 1. Render Environmental Qi (Adventure Screen)
     const elEnvList = document.getElementById('env-energy-list');
     const elEnvPurity = document.getElementById('env-purity-tag');
     if (elEnvList && currentLocId) {
         const loc = getLocationById(currentWorldId, currentLocId);
         if (loc && loc.energies) {
-            // Update purity tag based on the first energy (usually the primary one)
             if (elEnvPurity && loc.energies.length > 0) {
                 const purityId = loc.energies[0].purity || 'TINH_THUAN';
                 const purity = energySystem.getPurity(purityId);
                 elEnvPurity.textContent = purity.name;
             }
+            
             elEnvList.innerHTML = loc.energies.map(e => {
                 const type = energySystem.getEnergyType(e.type);
                 return `
-                    <div class="flex items-center space-x-2 p-1.5 bg-white/5 rounded-lg border border-white/5">
-                        <span class="text-xs">${type.icon}</span>
-                        <div class="flex-grow">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[8px] text-gray-300 font-ancient">${type.name}</span>
-                                <span class="text-[8px] text-qi-blue font-mono">${e.concentration}%</span>
-                            </div>
-                            <div class="h-0.5 w-full bg-gray-800 rounded-full mt-0.5">
-                                <div class="h-full bg-qi-blue" style="width: ${e.concentration}%"></div>
-                            </div>
+                    <div class="flex flex-col items-center space-y-1">
+                        <span class="text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]">${type.icon}</span>
+                        <div class="flex flex-col items-center">
+                            <span class="text-[9px] text-white font-mono font-bold">${e.concentration}%</span>
+                            <span class="text-[7px] text-gray-500 font-ancient uppercase tracking-widest">${type.name}</span>
                         </div>
                     </div>
                 `;
             }).join('');
         } else {
-            elEnvList.innerHTML = '<div class="col-span-2 text-[8px] text-gray-600 italic">Môi trường thái bình, không có khí tức đặc biệt.</div>';
+            elEnvList.innerHTML = '';
         }
     }
 
@@ -1424,8 +1496,8 @@ function renderEnergy() {
 // --- INVENTORY ---
 function renderInventory() {
     if (!player) return;
-    elInventoryGrid.innerHTML = '';
-    elInventoryCapacity.textContent = `${player.inventory.items.length}/${player.inventory.maxSlots}`;
+    if (elInventoryGrid) elInventoryGrid.innerHTML = '';
+    if (elInventoryCapacity) elInventoryCapacity.textContent = `${player.inventory.items.length}/${player.inventory.maxSlots}`;
     player.inventory.items.forEach(item => {
         const itemData = getItemById(item.id);
         if (!itemData) return;
@@ -1482,10 +1554,18 @@ function selectItem(id) {
     const displayQuality = (playerItem && playerItem.metadata && playerItem.metadata.quality) ? playerItem.metadata.quality : itemData.quality;
     
     const qClass = getQualityClass(displayQuality);
-    elDetailIcon.textContent = itemData.icon;
-    elDetailIcon.className = `text-3xl mr-3 bg-black/40 p-2 rounded-lg border border-${qClass}/50`;
-    elDetailName.textContent = itemData.name;
-    elDetailName.className = `font-bold quality-${qClass}`;
+    
+    // Render icon as text (emoji)
+    if (elDetailIcon) {
+        elDetailIcon.textContent = itemData.icon;
+        // Reset and set classes correctly
+        elDetailIcon.className = `text-4xl relative z-10`;
+    }
+
+    if (elDetailName) {
+        elDetailName.textContent = itemData.name;
+        elDetailName.className = `text-xl font-bold text-white font-ancient mb-1 quality-${qClass}`;
+    }
     elDetailType.textContent = `${displayQuality} phẩm | ${itemData.type}`;
     elDetailDesc.textContent = itemData.description;
 
@@ -1703,20 +1783,6 @@ function renderGuild() {
     });
 }
 
-window.game.guildCertify = async (lvl) => {
-    const res = await guildSystem.certify(lvl);
-    if (res) renderGuild();
-};
-
-window.game.guildMission = (id) => {
-    const res = guildSystem.completeMission(id);
-    if (res) renderGuild();
-};
-
-window.game.guildRent = (id) => {
-    const res = guildSystem.rentRoom(id);
-    if (res) renderGuild();
-};
 
 // --- TOWER ---
 function renderTower() {
@@ -1821,27 +1887,7 @@ function renderSects() {
     }
 }
 
-window.game.joinSect = (id) => {
-    player.sectId = id;
-    player.calculateStats();
-    ui.toast(`Bạn đã gia nhập ${getSectById(id).name}!`, "success", 5000);
-    renderSects();
-};
 
-window.game.doMission = (id) => {
-    const sect = getSectById(player.sectId);
-    const mission = sect.missions.find(m => m.id === id);
-    if (player.stamina >= mission.stamina) {
-        player.stamina -= mission.stamina;
-        player.sectContribution += mission.reward.contribution || 0;
-        if (mission.reward.lingShi) player.lingShi += mission.reward.lingShi;
-        if (mission.reward.tuVi) player.tuVi += mission.reward.tuVi;
-        ui.toast(`Hoàn thành: ${mission.name}!`, "success");
-        refreshUI();
-    } else {
-        ui.toast("Không đủ thể lực!", "warning");
-    }
-};
 
 // --- TALISMAN SYSTEM ---
 function renderTalisman() {
@@ -1901,12 +1947,6 @@ function renderTalisman() {
     });
 }
 
-window.game.drawTalisman = (id) => {
-    const res = talismanSystem.draw(id);
-    ui.toast(res.msg, res.success ? 'success' : 'error');
-    renderTalisman();
-    refreshUI();
-};
 
 // --- SMITHING SYSTEM ---
 function renderSmithing() {
@@ -2106,18 +2146,6 @@ function renderFormation() {
     });
 }
 
-window.game.toggleFormation = (id) => {
-    const isActive = player.activeFormations.some(af => af.id === id);
-    let res;
-    if (isActive) {
-        res = formationSystem.deactivateFormation(id);
-    } else {
-        res = formationSystem.activateFormation(id);
-    }
-    ui.toast(res.msg, res.success ? 'success' : 'error');
-    renderFormation();
-    refreshUI();
-};
 
 function renderCorpse() {
     const el = document.getElementById('corpse-list');
@@ -2125,12 +2153,6 @@ function renderCorpse() {
     el.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Cấm thuật Luyện Thi yêu cầu tu vi Ma Đạo.</div>';
 }
 
-window.game.forgeItem = (id) => {
-    const res = smithingSystem.forge(id);
-    ui.toast(res.msg, res.success ? 'success' : 'error');
-    renderSmithing();
-    refreshUI();
-};
 
 // --- NPC & COMBAT ---
 function openNPCInteraction() {
@@ -2224,10 +2246,6 @@ btnNpcLeave.onclick = () => {
     currentNPC = null;
 };
 
-window.removeFromParty = (id) => {
-    player.party = player.party.filter(p => p.id !== id);
-    renderCharacter();
-};
 
 function renderNPC() {
     if (!currentNPC) return;
@@ -2257,36 +2275,6 @@ function renderNPC() {
     }
 }
 
-window.game.handleStoryChoice = (idx) => {
-    if (!currentNPC || !currentNPC.storyArcId) return;
-
-    const arc = NPC_STORIES[currentNPC.storyArcId];
-    const step = arc.steps.find(s => s.id === currentNPC.storyStep);
-    const option = step.options[idx];
-
-    if (option.karma) player.karma += option.karma;
-    if (option.relation) currentNPC.relationship += option.relation;
-    if (option.reward) {
-        if (option.reward.tuVi) player.tuVi += option.reward.tuVi;
-        if (option.reward.items) {
-            option.reward.items.forEach(id => player.inventory.addItem(id, 1));
-        }
-    }
-
-    if (option.next === 'complete') {
-        currentNPC.storyStep = 0;
-        ui.toast("Bạn đã hoàn thành chuỗi cốt truyện của NPC này!", "success", 5000);
-    } else if (option.next === 'betrayed') {
-        currentNPC.storyStep = 0;
-        currentNPC.relationship = -100;
-        ui.toast("Bạn đã phản bội NPC!", "error", 5000);
-    } else {
-        currentNPC.storyStep = option.next;
-    }
-
-    refreshUI();
-    renderNPC();
-};
 
 function startBattleWithNPC(npc) {
     const enemyData = { name: npc.name, img: npc.portrait, statMult: 1.2 };
@@ -2884,3 +2872,171 @@ function handleCreationStart() {
 window.renderCreationScreen = renderCreationScreen;
 window.handleCreationStart = handleCreationStart;
 window.creationSystem = creationSystem;
+
+// Game actions
+window.game = {
+    openShop,
+    openSect,
+    openGuild,
+    openTower,
+    openMountain,
+    openAuction,
+    buyItem: (id) => {
+        const res = shopSystem.buyItem(id, 1);
+        ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderShopBuy();
+        elShopLingShi.textContent = Math.floor(player.lingShi);
+    },
+    showPlantMenu: async (index) => {
+        if (player.inventory.hasItem('seed_linh_thao')) {
+            gardenSystem.plant(index, 'seed_linh_thao');
+            player.inventory.removeItem('seed_linh_thao', 1);
+            renderAlchemy();
+        } else {
+            ui.toast("Bạn không có hạt giống nào!", "error");
+        }
+    },
+    harvest: (index) => {
+        if (gardenSystem.harvest(index)) {
+            ui.toast("Đã thu hoạch linh thảo!", "success");
+            renderAlchemy();
+            renderInventory();
+        }
+    },
+    craft: async (id) => {
+        const res = await alchemySystem.craft(id);
+        if (res.msg) ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderAlchemy();
+        renderInventory();
+    },
+    doCraft: (id) => {
+        const res = craftingSystem.craft(id);
+        ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderCharacter();
+        renderInventory();
+    },
+    removeFromParty: (npcId) => {
+        if (player.removeFromParty(npcId)) {
+            ui.toast("Đồng hành đã rời đội.", "info");
+            renderCharacter();
+        }
+    },
+    hatchBeast: (eggId) => {
+        const res = beastSystem.hatch(eggId);
+        ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderBeast();
+        refreshUI();
+    },
+    feedBeast: (uniqueId) => {
+        const foods = player.inventory.items.filter(i => getItemById(i.id).type === 'beast_food');
+        if (foods.length === 0) {
+            ui.toast("Bạn không có thức ăn linh thú!", "error");
+            return;
+        }
+        const res = beastSystem.feed(uniqueId, foods[0].id);
+        ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderBeast();
+        refreshUI();
+    },
+    openCrafting: (type) => {
+        const screens = document.querySelectorAll('.screen');
+        screens.forEach(s => s.classList.add('hidden'));
+        const target = document.getElementById(`screen-${type}`);
+        if (target) {
+            target.classList.remove('hidden');
+            target.classList.add('animate-fade-in');
+            if (type === 'alchemy') renderAlchemy();
+            if (type === 'talisman') renderTalisman();
+            if (type === 'smithing') renderSmithing();
+            if (type === 'formation') renderFormation();
+            if (type === 'corpse') renderCorpse();
+            if (type === 'beast') renderBeast();
+        }
+    },
+    guildCertify: async (lvl) => {
+        const res = await guildSystem.certify(lvl);
+        if (res) renderGuild();
+    },
+    guildMission: (id) => {
+        const res = guildSystem.completeMission(id);
+        if (res) renderGuild();
+    },
+    guildRent: (id) => {
+        const res = guildSystem.rentRoom(id);
+        if (res) renderGuild();
+    },
+    joinSect: (id) => {
+        player.sectId = id;
+        player.calculateStats();
+        ui.toast(`Bạn đã gia nhập ${getSectById(id).name}!`, "success", 5000);
+        renderSects();
+    },
+    doMission: (id) => {
+        const sect = getSectById(player.sectId);
+        const mission = sect.missions.find(m => m.id === id);
+        if (player.stamina >= mission.stamina) {
+            player.stamina -= mission.stamina;
+            player.sectContribution += mission.reward.contribution || 0;
+            if (mission.reward.lingShi) player.lingShi += mission.reward.lingShi;
+            if (mission.reward.tuVi) player.tuVi += mission.reward.tuVi;
+            ui.toast(`Hoàn thành: ${mission.name}!`, "success");
+            refreshUI();
+        } else {
+            ui.toast("Không đủ thể lực!", "warning");
+        }
+    },
+    drawTalisman: (id) => {
+        const res = talismanSystem.draw(id);
+        ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderTalisman();
+        refreshUI();
+    },
+    toggleFormation: (id) => {
+        const isActive = player.activeFormations.some(af => af.id === id);
+        let res;
+        if (isActive) {
+            res = formationSystem.deactivateFormation(id);
+        } else {
+            res = formationSystem.activateFormation(id);
+        }
+        ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderFormation();
+        refreshUI();
+    },
+    forgeItem: (id) => {
+        const res = smithingSystem.forge(id);
+        ui.toast(res.msg, res.success ? 'success' : 'error');
+        renderSmithing();
+        refreshUI();
+    },
+    handleStoryChoice: (idx) => {
+        if (!currentNPC || !currentNPC.storyArcId) return;
+
+        const arc = NPC_STORIES[currentNPC.storyArcId];
+        const step = arc.steps.find(s => s.id === currentNPC.storyStep);
+        const option = step.options[idx];
+
+        if (option.karma) player.karma += option.karma;
+        if (option.relation) currentNPC.relationship += option.relation;
+        if (option.reward) {
+            if (option.reward.tuVi) player.tuVi += option.reward.tuVi;
+            if (option.reward.items) {
+                option.reward.items.forEach(id => player.inventory.addItem(id, 1));
+            }
+        }
+
+        if (option.next === 'complete') {
+            currentNPC.storyStep = 0;
+            ui.toast("Bạn đã hoàn thành chuỗi cốt truyện của NPC này!", "success", 5000);
+        } else if (option.next === 'betrayed') {
+            currentNPC.storyStep = 0;
+            currentNPC.relationship = -100;
+            ui.toast("Bạn đã phản bội NPC!", "error", 5000);
+        } else {
+            currentNPC.storyStep = option.next;
+        }
+
+        refreshUI();
+        renderNPC();
+    }
+};

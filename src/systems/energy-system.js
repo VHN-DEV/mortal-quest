@@ -1,5 +1,5 @@
 import { ENERGY_TYPES, QI_PURITY, QI_CONFLICTS, getEnergyTypeById } from '../configs/energy-data.js';
-import { getLocationById, getWorldById } from '../configs/map-data.js';
+import { getLocationById } from '../configs/map-data.js';
 import { getRealmById } from '../configs/realm-data.js';
 
 /**
@@ -93,9 +93,9 @@ export class EnergySystem {
 
         this.player.qiAccumulated[typeId].amount += actualGain;
 
-        // 5. Thăng tiến Tu Vi (nếu là loại khí tu luyện)
+        // 5. Thăng tiến Tu Vi (Chỉ khi có công pháp để luyện hóa khí môi trường)
         const cultivationMult = this.getCultivationMultiplier(typeId);
-        if (cultivationMult > 0) {
+        if (cultivationMult > 0 && this.player.mainTechniqueId) {
             this.player.tuVi += actualGain * cultivationMult;
         }
 

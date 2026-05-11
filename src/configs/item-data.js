@@ -773,6 +773,36 @@ export const ITEMS = {
         price: 15000,
         techniqueId: 'u_minh_huy_ngan',
         description: 'Bí pháp Thần Thức trung cấp, tu luyện linh hồn.'
+    },
+    'recipe_ngung_khi': {
+        id: 'recipe_ngung_khi',
+        name: 'Đan Phương: Ngưng Khí Đan',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 500,
+        description: 'Ghi chép cách luyện chế Ngưng Khí Đan.',
+        effect: { type: 'learn_recipe', value: 'ngung_khi_dan' }
+    },
+    'recipe_bo_nguyen': {
+        id: 'recipe_bo_nguyen',
+        name: 'Đan Phương: Bổ Nguyên Đan',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 1500,
+        description: 'Ghi chép cách luyện chế Bổ Nguyên Đan.',
+        effect: { type: 'learn_recipe', value: 'bo_nguyen_dan' }
+    },
+    'recipe_hoa_cau_phu': {
+        id: 'recipe_hoa_cau_phu',
+        name: 'Phù Đồ: Hỏa Cầu Phù',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Phàm',
+        price: 300,
+        description: 'Ghi chép cách vẽ Hỏa Cầu Phù.',
+        effect: { type: 'learn_talisman_recipe', value: 'hoa_cau_phu' }
     }
 };
 

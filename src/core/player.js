@@ -77,7 +77,7 @@ export class Player {
         this.currentCauldron = 'pham_lu';
         this.currentFlame = 'linh_hoa';
         this.danPoison = 0;
-        this.knownRecipes = ['ngung_khi_dan'];
+        this.knownRecipes = [];
         this.alchemyReputation = 0;
         this.currentAlchemyRoom = null;
         this.gardenPlots = [null, null, null]; // 3 initial plots
@@ -87,7 +87,7 @@ export class Player {
         this.talismanLevel = 1;
         this.talismanExp = 0;
         this.currentTalismanPen = 'truc_phu_but';
-        this.knownTalismanRecipes = ['hoa_cau_phu'];
+        this.knownTalismanRecipes = [];
         
         // Alchemy Expanded
         this.currentCauldron = 'pham_lu';
@@ -284,7 +284,11 @@ export class Player {
             }
         }
 
-        return { can: exp >= realm.expRequired, reason: exp < realm.expRequired ? "Chưa đủ tích lũy." : "" };
+        return { 
+            can: exp >= realm.expRequired, 
+            reason: exp < realm.expRequired ? "Chưa đủ tích lũy." : "",
+            expRequired: realm.expRequired
+        };
     }
 
     getStability() {
@@ -316,9 +320,16 @@ export class Player {
                 return { success: false, msg: isForced ? "Thiên Đạo cưỡng ép đột phá thất bại! Kinh mạch đứt đoạn, tu vi tổn thất nặng nề!" : "Tẩu hỏa nhập ma! Linh lực bạo tẩu làm tổn thương kinh mạch." };
             }
 
-            if (type === 'tuvi') this.realmId++;
-            else if (type === 'body') this.bodyRealmId++;
-            else if (type === 'soul') this.soulRealmId++;
+            if (type === 'tuvi') {
+                this.tuVi -= check.expRequired;
+                this.realmId++;
+            } else if (type === 'body') {
+                this.bodyExp -= check.expRequired;
+                this.bodyRealmId++;
+            } else if (type === 'soul') {
+                this.soulExp -= check.expRequired;
+                this.soulRealmId++;
+            }
             
             this.calculateStats();
             return { success: true, msg: isForced ? "Thiên Đạo cưỡng ép đột phá thành công! Ngươi may mắn thoát khỏi một kiếp." : "Đột phá thành công!" };
