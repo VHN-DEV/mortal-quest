@@ -11,6 +11,10 @@ export class CombatEngine {
         this.log = [];
         this.isActive = true;
         this.playerDefending = false;
+        this.status = {
+            player: { stun: 0 },
+            enemy: { burn: 0, burnPower: 0, stun: 0 }
+        };
     }
 
     start() {
@@ -28,13 +32,44 @@ export class CombatEngine {
     nextTurn() {
         if (!this.isActive) return;
 
+        this.processTurnStatus();
+        if (!this.isActive) return;
+
         if (this.turn === 0) {
+            if (this.status.player.stun > 0) {
+                this.status.player.stun--;
+                this.addLog("Bạn bị choáng, không thể hành động!");
+                this.turn = 1;
+                this.nextTurn();
+                return;
+            }
             this.addLog("Đến lượt của bạn. Hãy chọn hành động!");
             this.onUpdate('player-turn-start');
         } else {
+            if (this.status.enemy.stun > 0) {
+                this.status.enemy.stun--;
+                this.addLog(`${this.enemy.name} bị choáng, bỏ lượt!`);
+                this.turn = 0;
+                this.nextTurn();
+                return;
+            }
             this.addLog(`Lượt của ${this.enemy.name}...`);
             this.onUpdate('player-turn-end');
             setTimeout(() => this.enemyAttack(), 1500);
+        }
+    }
+
+    processTurnStatus() {
+        if (this.status.enemy.burn > 0 && this.enemy.hp > 0) {
+            const burnDmg = Math.max(1, Math.floor(this.status.enemy.burnPower));
+            this.enemy.hp -= burnDmg;
+            this.status.enemy.burn--;
+            this.addLog(`${this.enemy.name} bị Dị Hỏa thiêu đốt: -${burnDmg} HP.`);
+            this.onUpdate('damage', { target: 'enemy', value: burnDmg, crit: false });
+            if (this.enemy.hp <= 0) {
+                this.enemy.hp = 0;
+                this.win();
+            }
         }
     }
 
@@ -150,7 +185,10 @@ export class CombatEngine {
         this.player.mana -= manaCost;
         const damage = Math.floor(this.player.atk * flame.power * 1.5);
         this.enemy.hp -= damage;
+        this.status.enemy.burn = Math.max(this.status.enemy.burn, 2);
+        this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, this.player.atk * 0.2 * flame.power);
         this.addLog(`Bạn dẫn động ${flame.name} thi triển Hỏa Công gây ${damage} sát thương cực lớn!`);
+        this.addLog(`${this.enemy.name} rơi vào trạng thái THIÊU ĐỐT!`);
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
 
         if (this.enemy.hp <= 0) {
