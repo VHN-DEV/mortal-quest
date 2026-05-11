@@ -51,6 +51,12 @@ window.renderMainStats = () => {
     const elTuViText = document.getElementById('tu-vi-text');
     const elPerSec = document.getElementById('tu-vi-per-sec');
     const elLingShiText = document.getElementById('ling-shi-text');
+    const elBodyProgress = document.getElementById('body-progress');
+    const elBodyText = document.getElementById('body-text');
+    const elSoulProgress = document.getElementById('soul-progress');
+    const elSoulText = document.getElementById('soul-text');
+    const elBtnBreakthrough = document.getElementById('breakthrough-btn');
+    const elBtnCultivateText = document.getElementById('cultivate-btn-text');
 
     if (elRealm) elRealm.textContent = realm.name;
     if (elProgress) elProgress.style.width = `${Math.min(100, progress)}%`;
@@ -64,6 +70,42 @@ window.renderMainStats = () => {
 
     if (elPerSec) elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
     if (elLingShiText) elLingShiText.innerHTML = player.getFormattedLingShi();
+
+    const bodyRealm = player.getCurrentRealm('body');
+    const soulRealm = player.getCurrentRealm('soul');
+    const bodyPercent = Math.min(100, (player.bodyExp / bodyRealm.expRequired) * 100);
+    const soulPercent = Math.min(100, (player.soulExp / soulRealm.expRequired) * 100);
+    if (elBodyProgress) elBodyProgress.style.width = `${bodyPercent}%`;
+    if (elSoulProgress) elSoulProgress.style.width = `${soulPercent}%`;
+    if (elBodyText) elBodyText.textContent = `${Math.floor(bodyPercent)}%`;
+    if (elSoulText) elSoulText.textContent = `${Math.floor(soulPercent)}%`;
+
+    const focus = player.cultivationFocus || 'tuvi';
+    const focusMap = {
+        tuvi: { id: 'focus-tuvi', label: 'THU NẠP LINH KHÍ', icon: 'ph-sparkle' },
+        body: { id: 'focus-body', label: 'RÈN LUYỆN NHỤC THÂN', icon: 'ph-fire' },
+        soul: { id: 'focus-soul', label: 'TÔI LUYỆN THẦN THỨC', icon: 'ph-brain' }
+    };
+    Object.entries(focusMap).forEach(([key, data]) => {
+        const btn = document.getElementById(data.id);
+        if (!btn) return;
+        const active = key === focus;
+        const activeClass = key === 'tuvi'
+            ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30 focus-tuvi'
+            : key === 'body'
+                ? 'bg-red-500/20 text-red-400 border border-red-500/30 focus-body'
+                : 'bg-qi-purple/20 text-qi-purple border border-qi-purple/30 focus-soul';
+        btn.className = `flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all ${active ? activeClass : 'text-gray-500 border border-transparent hover:text-white'}`;
+    });
+    if (elBtnCultivateText) {
+        const cfg = focusMap[focus];
+        elBtnCultivateText.innerHTML = `<i class="ph ${cfg.icon} mr-2"></i>${cfg.label}`;
+    }
+    if (elBtnBreakthrough) {
+        const check = player.canBreakthrough(focus);
+        elBtnBreakthrough.disabled = !check.can;
+        elBtnBreakthrough.title = check.can ? '' : (check.reason || 'Chưa đủ điều kiện');
+    }
     
     renderTimeHUD();
 };

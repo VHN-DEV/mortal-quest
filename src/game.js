@@ -88,6 +88,54 @@ export class Game {
         if (btnReset) {
             btnReset.onclick = () => this.resetGame();
         }
+
+        const focusMap = {
+            'focus-tuvi': 'tuvi',
+            'focus-body': 'body',
+            'focus-soul': 'soul'
+        };
+        Object.entries(focusMap).forEach(([id, focus]) => {
+            const btn = document.getElementById(id);
+            if (btn) btn.onclick = () => this.setCultivationFocus(focus);
+        });
+
+        const cultivateBtn = document.getElementById('cultivate-btn');
+        if (cultivateBtn) cultivateBtn.onclick = () => this.cultivate();
+
+        const breakthroughBtn = document.getElementById('breakthrough-btn');
+        if (breakthroughBtn) breakthroughBtn.onclick = () => this.breakthrough();
+
+        const autoCultivate = document.getElementById('auto-cultivate-toggle');
+        if (autoCultivate) autoCultivate.onchange = (e) => this.toggleAutoCultivate(e.target.checked);
+
+        const seclusionBtn = document.getElementById('seclusion-btn');
+        if (seclusionBtn) seclusionBtn.onclick = () => this.enterSeclusion();
+
+        this.bindPlaceholderButtons();
+    }
+
+    bindPlaceholderButtons() {
+        const placeholderBinds = {
+            'tech-tab-cultivation': 'Mục Công Pháp đang được hoàn thiện giao diện mới.',
+            'tech-tab-secret': 'Mục Bí Pháp đang được hoàn thiện giao diện mới.',
+            'tech-back-btn': 'Trang chi tiết công pháp tạm thời chưa khả dụng.',
+            'btn-npc-talk': 'Tương tác hội thoại NPC đang được bảo trì.',
+            'btn-npc-gift': 'Tính năng tặng quà NPC đang được phát triển.',
+            'btn-npc-party': 'Tính năng mời NPC vào đội đang được phát triển.',
+            'btn-npc-dual': 'Tính năng luận bàn với NPC đang được phát triển.',
+            'btn-npc-trade': 'Tính năng giao dịch NPC đang được phát triển.',
+            'btn-npc-attack': 'Tính năng khiêu chiến NPC đang được phát triển.',
+            'btn-npc-leave': 'Tính năng NPC hiện chưa mở.',
+            'btn-reroll-destiny': 'Tính năng quay lại Thiên Mệnh đang được phát triển.',
+            'btn-confirm-destiny': 'Tính năng xác nhận Thiên Mệnh đang được phát triển.'
+        };
+
+        Object.entries(placeholderBinds).forEach(([id, msg]) => {
+            const btn = document.getElementById(id);
+            if (btn && !btn.onclick) {
+                btn.onclick = () => state.ui.toast(msg, 'info');
+            }
+        });
     }
 
     initNavigation() {
@@ -297,6 +345,44 @@ export class Game {
         state.player.hp = Math.floor(state.player.maxHp * 0.1);
         state.ui.toast("Bạn đã kiệt sức và ngất đi...", "error");
         this.refreshUI();
+    }
+
+    setCultivationFocus(focus) {
+        if (!state.player || !['tuvi', 'body', 'soul'].includes(focus)) return;
+        state.player.cultivationFocus = focus;
+        this.refreshUI();
+    }
+
+    cultivate() {
+        if (!state.player) return;
+        const result = state.player.cultivate();
+        const message = result?.msg || result?.reason;
+        if (message) state.ui.toast(message, result.success ? 'success' : 'error');
+        this.refreshUI();
+    }
+
+    breakthrough() {
+        if (!state.player) return;
+        const focus = state.player.cultivationFocus || 'tuvi';
+        const result = state.player.breakthrough(focus);
+        if (result && result.msg) state.ui.toast(result.msg, result.success ? 'success' : 'error');
+        this.refreshUI();
+    }
+
+    toggleAutoCultivate(enabled) {
+        if (!state.player) return;
+        if (enabled) {
+            if (!state.autoCultivateInterval) {
+                state.autoCultivateInterval = setInterval(() => this.cultivate(), 1200);
+            }
+        } else if (state.autoCultivateInterval) {
+            clearInterval(state.autoCultivateInterval);
+            state.autoCultivateInterval = null;
+        }
+    }
+
+    enterSeclusion() {
+        state.ui.toast("Tính năng Bế Quan đang được hoàn thiện. Hiện tại hãy dùng Tu luyện thường hoặc Auto.", "info");
     }
 
     // Các hàm helper để gọi từ HTML (window.game.xxx)

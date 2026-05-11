@@ -322,23 +322,20 @@ export class Player {
         this.lastUpdate = Date.now();
 
         // Independent progression for all three paths
-        // The focused path gets full exp, while others get 20%
+        // Focused path gets full exp; non-focused paths only get 20% if they have their own technique.
         const focus = this.cultivationFocus || 'tuvi';
-        
-        // Check if has technique for the focused path to gain exp
-        const hasTech = (focus === 'tuvi' && this.mainTechniqueId) || 
-                        (focus === 'body' && this.mainBodyTechniqueId) || 
-                        (focus === 'soul' && this.mainSoulTechniqueId);
 
-        if (hasTech) {
-            const tuViGain = this.tuViPerSecond * (focus === 'tuvi' ? 1.0 : 0.2) * multiplier * delta;
-            const bodyGain = this.bodyExpPerSecond * (focus === 'body' ? 1.0 : 0.2) * multiplier * delta;
-            const soulGain = this.soulExpPerSecond * (focus === 'soul' ? 1.0 : 0.2) * multiplier * delta;
+        const hasTuviTech = !!this.mainTechniqueId;
+        const hasBodyTech = !!this.mainBodyTechniqueId;
+        const hasSoulTech = !!this.mainSoulTechniqueId;
 
-            this.tuVi += tuViGain;
-            this.bodyExp += bodyGain;
-            this.soulExp += soulGain;
-        }
+        const tuViGain = hasTuviTech ? this.tuViPerSecond * (focus === 'tuvi' ? 1.0 : 0.2) * multiplier * delta : 0;
+        const bodyGain = hasBodyTech ? this.bodyExpPerSecond * (focus === 'body' ? 1.0 : 0.2) * multiplier * delta : 0;
+        const soulGain = hasSoulTech ? this.soulExpPerSecond * (focus === 'soul' ? 1.0 : 0.2) * multiplier * delta : 0;
+
+        this.tuVi += tuViGain;
+        this.bodyExp += bodyGain;
+        this.soulExp += soulGain;
         
         // Forced Breakthrough Check (Heavenly Dao)
         // If exp exceeds 150% of required, force breakthrough with higher risk
@@ -407,8 +404,16 @@ export class Player {
             return { success: false, reason: "Ngươi chưa có công pháp phù hợp để dẫn dắt linh lực!" };
         }
 
-        if (this.stamina >= 1) {
-            this.stamina -= 1;
+        const costs = {
+            tuvi: { stamina: 1, mana: 0 },
+            body: { stamina: 2, mana: 0 },
+            soul: { stamina: 0.5, mana: 5 }
+        };
+        const cost = costs[focus] || costs.tuvi;
+
+        if (this.stamina >= cost.stamina && this.mana >= cost.mana) {
+            this.stamina -= cost.stamina;
+            this.mana -= cost.mana;
             
             // Influence of Spiritual Root (1.0 to 3.0x)
             const rootMult = (this.spiritualRoot && this.spiritualRoot.multiplier) ? this.spiritualRoot.multiplier : 1.0;
@@ -429,9 +434,9 @@ export class Player {
                 const gain = this.soulExpPerSecond * 12 * totalMult;
                 this.soulExp += gain;
             }
-            return { success: true };
+            return { success: true, msg: "Tu luyện thành công." };
         }
-        return { success: false, reason: "Kiệt sức rồi, hãy nghỉ ngơi một chút!" };
+        return { success: false, reason: `Không đủ tiêu hao để tu luyện (${cost.stamina} thể lực, ${cost.mana} linh lực).` };
     }
 
     canBreakthrough(type = 'tuvi') {
@@ -819,7 +824,7 @@ export class Player {
             return true;
         }
 
-        const slot = item.type; 
+        const slot = this.getEquipSlotForItemType(item.type);
         if (this.equipment.hasOwnProperty(slot)) {
             // Check requirement (Realm)
             if (item.tier) {
@@ -843,6 +848,16 @@ export class Player {
             return true;
         }
         return false;
+    }
+
+    getEquipSlotForItemType(itemType) {
+        const legacyMap = {
+            weapon: 'attackArtifact',
+            armor: 'defenseArtifact',
+            treasure: 'supportArtifact',
+            accessory: 'soulArtifact'
+        };
+        return legacyMap[itemType] || itemType;
     }
 
     recognizeArtifact(slot) {
@@ -1068,7 +1083,7 @@ export class Player {
         };
 
         this.buffs = data.buffs || [];
-        this.unlockedProfessions = data.unlockedProfessions || ['beast', 'insect']; // Default for migration, can be adjusted
+        this.unlockedProfessions = Array.isArray(data.unlockedProfessions) ? data.unlockedProfessions : [];
         this.insectLevel = data.insectLevel || 1;
         this.insectExp = data.insectExp || 0;
         
