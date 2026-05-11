@@ -107,6 +107,9 @@ export class Game {
 
         const autoCultivate = document.getElementById('auto-cultivate-toggle');
         if (autoCultivate) autoCultivate.onchange = (e) => this.toggleAutoCultivate(e.target.checked);
+
+        const seclusionBtn = document.getElementById('seclusion-btn');
+        if (seclusionBtn) seclusionBtn.onclick = () => this.enterSeclusion();
     }
 
     initNavigation() {
@@ -349,6 +352,10 @@ export class Game {
             clearInterval(state.autoCultivateInterval);
             state.autoCultivateInterval = null;
         }
+    }
+
+    enterSeclusion() {
+        state.ui.toast("Tính năng Bế Quan đang được hoàn thiện. Hiện tại hãy dùng Tu luyện thường hoặc Auto.", "info");
     }
 
     // Các hàm helper để gọi từ HTML (window.game.xxx)
