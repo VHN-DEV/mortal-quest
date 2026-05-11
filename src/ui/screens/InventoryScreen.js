@@ -80,7 +80,7 @@ export class InventoryScreen {
             this.btnEquipItem.onclick = () => {
                 if (!state.selectedItemId) return;
                 const itemData = getItemById(state.selectedItemId);
-                
+
                 if (itemData.type === 'formation') {
                     const res = state.systems.formation.activateFormation(state.selectedItemId);
                     state.ui.toast(res.msg, res.success ? 'success' : 'error');
@@ -99,7 +99,7 @@ export class InventoryScreen {
 
     render() {
         if (!state.player) return;
-        
+
         if (this.elInventoryGrid) this.elInventoryGrid.innerHTML = '';
         if (this.elInventoryCapacity) {
             const weight = state.player.inventory.getTotalWeight().toFixed(2);
@@ -109,10 +109,10 @@ export class InventoryScreen {
         state.player.inventory.items.forEach(item => {
             const itemData = getItemById(item.id);
             if (!itemData) return;
-            
+
             const displayQuality = (item.metadata && item.metadata.quality) ? item.metadata.quality : itemData.quality;
             const qClass = this.getQualityClass(displayQuality);
-            
+
             const el = document.createElement('div');
             el.className = `p-2 border rounded-lg bg-black/20 flex flex-col items-center cursor-pointer transition-all border-${qClass}/30 ${state.selectedItemId === item.id ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'}`;
             el.innerHTML = `
@@ -131,7 +131,7 @@ export class InventoryScreen {
             const type = slot.dataset.slot;
             const itemId = state.player.equipment[type];
             slot.innerHTML = '';
-            
+
             const classesToRemove = Array.from(slot.classList).filter(c => c.startsWith('border-') && c !== 'border-white/20');
             slot.classList.remove(...classesToRemove);
 
@@ -159,17 +159,17 @@ export class InventoryScreen {
         state.selectedItemId = id;
         const itemData = getItemById(id);
         if (!itemData) return;
-        
+
         const playerItem = state.player.inventory.items.find(i => i.id === id);
         const displayQuality = (playerItem && playerItem.metadata && playerItem.metadata.quality) ? playerItem.metadata.quality : itemData.quality;
         const qClass = this.getQualityClass(displayQuality);
-        
+
         if (this.elDetailIcon) this.elDetailIcon.textContent = itemData.icon;
         if (this.elDetailName) {
             this.elDetailName.textContent = itemData.name;
             this.elDetailName.className = `text-xl font-bold text-white font-ancient mb-1 quality-${qClass}`;
         }
-        
+
         const typeNames = {
             'spirit_stone': 'Linh Thạch',
             'consumable': 'Vật Phẩm Tiêu Hao',
@@ -181,9 +181,9 @@ export class InventoryScreen {
             'formation': 'Trận Pháp',
             'puppet': 'Khôi Lỗi'
         };
-        
+
         this.elDetailType.textContent = `${displayQuality} Phẩm | ${typeNames[itemData.type] || itemData.type}`;
-        
+
         let desc = itemData.description;
         if (itemData.type === 'puppet' && playerItem && playerItem.metadata) {
             desc = `${playerItem.metadata.name}\n${desc}\nĐộ bền: ${playerItem.metadata.durability}/${playerItem.metadata.maxDurability}`;
@@ -206,9 +206,9 @@ export class InventoryScreen {
 
         this.btnUseItem.style.display = (['consumable', 'book', 'spirit_stone'].includes(itemData.type)) ? 'block' : 'none';
         if (itemData.type === 'spirit_stone') {
-            this.btnUseItem.textContent = 'HẤP THỤ';
+            this.btnUseItem.textContent = 'LUYỆN HÓA';
         } else {
-            this.btnUseItem.textContent = (itemData.type === 'book') ? 'HỌC TẬP' : 'SỬ DỤNG';
+            this.btnUseItem.textContent = (itemData.type === 'book') ? 'LĨNH NGỘ' : 'SỬ DỤNG';
         }
 
         const equippable = ['weapon', 'armor', 'accessory', 'treasure'].includes(itemData.type);
