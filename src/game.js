@@ -110,6 +110,32 @@ export class Game {
 
         const seclusionBtn = document.getElementById('seclusion-btn');
         if (seclusionBtn) seclusionBtn.onclick = () => this.enterSeclusion();
+
+        this.bindPlaceholderButtons();
+    }
+
+    bindPlaceholderButtons() {
+        const placeholderBinds = {
+            'tech-tab-cultivation': 'Mục Công Pháp đang được hoàn thiện giao diện mới.',
+            'tech-tab-secret': 'Mục Bí Pháp đang được hoàn thiện giao diện mới.',
+            'tech-back-btn': 'Trang chi tiết công pháp tạm thời chưa khả dụng.',
+            'btn-npc-talk': 'Tương tác hội thoại NPC đang được bảo trì.',
+            'btn-npc-gift': 'Tính năng tặng quà NPC đang được phát triển.',
+            'btn-npc-party': 'Tính năng mời NPC vào đội đang được phát triển.',
+            'btn-npc-dual': 'Tính năng luận bàn với NPC đang được phát triển.',
+            'btn-npc-trade': 'Tính năng giao dịch NPC đang được phát triển.',
+            'btn-npc-attack': 'Tính năng khiêu chiến NPC đang được phát triển.',
+            'btn-npc-leave': 'Tính năng NPC hiện chưa mở.',
+            'btn-reroll-destiny': 'Tính năng quay lại Thiên Mệnh đang được phát triển.',
+            'btn-confirm-destiny': 'Tính năng xác nhận Thiên Mệnh đang được phát triển.'
+        };
+
+        Object.entries(placeholderBinds).forEach(([id, msg]) => {
+            const btn = document.getElementById(id);
+            if (btn && !btn.onclick) {
+                btn.onclick = () => state.ui.toast(msg, 'info');
+            }
+        });
     }
 
     initNavigation() {
