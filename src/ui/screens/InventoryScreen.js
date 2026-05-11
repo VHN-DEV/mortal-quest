@@ -142,13 +142,32 @@ export class InventoryScreen {
                     slot.classList.remove('border-white/20');
                     slot.classList.add(`border-${qClass}/50`);
                     slot.innerHTML = `<span class="text-xl">${item.icon}</span>`;
-                    slot.onclick = () => {
-                        if (state.player.unequip(type)) window.game.refreshUI();
+                    slot.onclick = (e) => {
+                        e.stopPropagation();
+                        const isArtifact = type.includes('Artifact');
+                        if (isArtifact) {
+                            if (window.game.screens.treasure) {
+                                window.game.screens.treasure.open(type);
+                            }
+                        } else {
+                            if (state.player.unequip(type)) window.game.refreshUI();
+                        }
                     };
                 }
             } else {
                 slot.classList.add('border-white/20');
-                const icons = { head: 'ph-crown', shoes: 'ph-sneaker', necklace: 'ph-diamond', artifact: 'ph-magic-wand', weapon: 'ph-sword', armor: 'ph-coat-hanger', accessory: 'ph-ring', treasure: 'ph-sparkle' };
+                const icons = { 
+                    head: 'ph-crown', 
+                    shoes: 'ph-sneaker', 
+                    necklace: 'ph-diamond', 
+                    attackArtifact: 'ph-sword', 
+                    defenseArtifact: 'ph-shield', 
+                    flightArtifact: 'ph-wind', 
+                    spaceArtifact: 'ph-backpack', 
+                    formationArtifact: 'ph-circles-three', 
+                    supportArtifact: 'ph-sparkle', 
+                    soulArtifact: 'ph-ghost' 
+                };
                 slot.innerHTML = `<i class="ph ${icons[type] || 'ph-question'} text-gray-400"></i>`;
                 slot.onclick = null;
             }
@@ -179,12 +198,22 @@ export class InventoryScreen {
             'accessory': 'Trang Sức',
             'treasure': 'Thiên Tài Địa Bảo',
             'formation': 'Trận Pháp',
-            'puppet': 'Khôi Lỗi'
+            'puppet': 'Khôi Lỗi',
+            // Artifact types
+            'attackArtifact': 'Pháp Bảo Chủ Chiến',
+            'defenseArtifact': 'Pháp Bảo Hộ Thân',
+            'flightArtifact': 'Phi Hành Pháp Bảo',
+            'spaceArtifact': 'Không Gian Pháp Bảo',
+            'formationArtifact': 'Trận Đạo Pháp Bảo',
+            'supportArtifact': 'Phụ Trợ Pháp Bảo',
+            'soulArtifact': 'Hồn Đạo Pháp Bảo'
         };
 
         this.elDetailType.textContent = `${displayQuality} Phẩm | ${typeNames[itemData.type] || itemData.type}`;
 
         let desc = itemData.description;
+        
+        // Puppet specific
         if (itemData.type === 'puppet' && playerItem && playerItem.metadata) {
             desc = `${playerItem.metadata.name}\n${desc}\nĐộ bền: ${playerItem.metadata.durability}/${playerItem.metadata.maxDurability}`;
             if (playerItem.metadata.stats) {
@@ -192,6 +221,31 @@ export class InventoryScreen {
                 desc += `\nHP: ${stats.hp} | ATK: ${stats.atk} | DEF: ${stats.def}`;
             }
         }
+        
+        // Artifact specific
+        const isArtifact = itemData.type.includes('Artifact');
+        if (isArtifact) {
+            const meta = playerItem.metadata || {};
+            const tier = itemData.tier || 'PHAM_KHI';
+            const level = meta.level || 1;
+            const spirit = meta.spirit || 0;
+            const durability = meta.durability || 100;
+            const isBound = meta.isBound || state.player.recognizedItems?.includes(id);
+
+            desc += `\n\n--- THÔNG TIN PHÁP BẢO ---`;
+            desc += `\nCấp bậc: ${level}`;
+            desc += `\nLinh tính: ${spirit.toFixed(1)} / ${level * 500}`;
+            desc += `\nĐộ bền: ${durability}%`;
+            desc += `\nNhận chủ: ${isBound ? 'ĐÃ NHẬN CHỦ' : 'CHƯA NHẬN CHỦ'}`;
+            
+            if (itemData.stats) {
+                desc += `\n\n[CHỈ SỐ]`;
+                Object.entries(itemData.stats).forEach(([key, val]) => {
+                    desc += `\n- ${key}: +${val}`;
+                });
+            }
+        }
+
         this.elDetailDesc.textContent = desc;
 
         // Show/Hide Quantity Container
@@ -211,7 +265,10 @@ export class InventoryScreen {
             this.btnUseItem.textContent = (itemData.type === 'book') ? 'LĨNH NGỘ' : 'SỬ DỤNG';
         }
 
-        const equippable = ['weapon', 'armor', 'accessory', 'treasure'].includes(itemData.type);
+        const equippable = ['weapon', 'armor', 'accessory', 'treasure', 
+                            'attackArtifact', 'defenseArtifact', 'flightArtifact', 
+                            'spaceArtifact', 'formationArtifact', 'supportArtifact', 'soulArtifact'
+                           ].includes(itemData.type);
         this.btnEquipItem.style.display = equippable ? 'block' : 'none';
 
         state.ui.toggleOverlay(this.elItemDetail, true);
@@ -219,7 +276,11 @@ export class InventoryScreen {
     }
 
     getQualityClass(quality) {
-        const map = { 'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than' };
+        const map = { 
+            'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than',
+            // New qualities
+            'Tàn Khuyết': 'pham', 'Thường': 'hoang', 'Tinh Phẩm': 'huyen', 'Hoàn Mỹ': 'dia', 'Cực Phẩm': 'thien', 'Truyền Thuyết': 'tien', 'Thần Thoại': 'than'
+        };
         return map[quality] || 'pham';
     }
 }

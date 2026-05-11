@@ -48,16 +48,34 @@ export class CharacterScreen {
         // Lists
         this.elCharPartyList = document.getElementById('char-party-list');
         this.elFormationList = document.getElementById('active-formations-list');
+        this.elCharAdvancedStats = document.getElementById('char-advanced-stats');
     }
 
     render() {
         if (!state.player) return;
 
         // Render basic stats
+        // Render basic stats with Base (+ Bonus) format
         if (this.elCharHp) this.elCharHp.textContent = `${Math.floor(state.player.hp)} / ${Math.floor(state.player.maxHp)}`;
-        if (this.elCharAtk) this.elCharAtk.textContent = Math.floor(state.player.atk);
-        if (this.elCharDef) this.elCharDef.textContent = Math.floor(state.player.def);
-        if (this.elCharSpd) this.elCharSpd.textContent = Math.floor(state.player.spd);
+        
+        if (this.elCharAtk) {
+            const base = Math.floor(state.player.baseStats.atk);
+            const bonus = Math.floor(state.player.bonusStats.atk);
+            this.elCharAtk.innerHTML = `${base} <span class="text-[8px] opacity-60 ml-1">(+${bonus})</span>`;
+        }
+        
+        if (this.elCharDef) {
+            const base = Math.floor(state.player.baseStats.def);
+            const bonus = Math.floor(state.player.bonusStats.def);
+            this.elCharDef.innerHTML = `${base} <span class="text-[8px] opacity-60 ml-1">(+${bonus})</span>`;
+        }
+        
+        if (this.elCharSpd) {
+            const base = Math.floor(state.player.baseStats.spd);
+            const bonus = Math.floor(state.player.bonusStats.spd);
+            this.elCharSpd.innerHTML = `${base} <span class="text-[8px] opacity-60 ml-1">(+${bonus})</span>`;
+        }
+
         if (this.elCharMana) this.elCharMana.textContent = `${Math.floor(state.player.mana)} / ${Math.floor(state.player.maxMana)}`;
         if (this.elCharAge) this.elCharAge.textContent = `${Math.floor(state.player.age)} / ${state.player.maxAge}`;
 
@@ -123,8 +141,44 @@ export class CharacterScreen {
         // Formations
         this.renderFormations();
         
+        // Advanced Stats
+        this.renderAdvancedStats();
+        
         // Energy (Qi)
         if (typeof window.game.renderEnergy === 'function') window.game.renderEnergy();
+    }
+
+    renderAdvancedStats() {
+        if (!this.elCharAdvancedStats || !state.player.advancedStats) return;
+        
+        const stats = state.player.advancedStats;
+        const labels = {
+            pierce: 'Xuyên Giáp',
+            soulPierce: 'Xuyên Hồn',
+            critRate: 'Bạo Kích',
+            critDmg: 'Sát Thương Bạo',
+            lifeSteal: 'Hút Máu',
+            soulRepress: 'Trấn Áp',
+            daoVun: 'Đạo Vận',
+            murderQi: 'Hung Sát'
+        };
+
+        this.elCharAdvancedStats.innerHTML = Object.entries(labels).map(([key, label]) => {
+            const val = stats[key];
+            if (val === 0 || val === 1.0) return ''; // Hide empty stats
+            
+            let displayVal = val;
+            if (['critRate', 'critDmg', 'pierce', 'soulPierce', 'lifeSteal'].includes(key)) {
+                displayVal = (val * 100).toFixed(1) + '%';
+            }
+
+            return `
+                <div class="flex justify-between items-center border-b border-white/5 py-1">
+                    <span class="text-gray-500">${label}:</span>
+                    <span class="text-white font-mono">${displayVal}</span>
+                </div>
+            `;
+        }).join('');
     }
 
     renderTechniqueInfo(element, techId) {

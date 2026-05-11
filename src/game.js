@@ -14,6 +14,7 @@ import { CharacterScreen } from './ui/screens/CharacterScreen.js';
 import { SystemsScreen } from './ui/screens/SystemsScreen.js';
 import { BattleScreen } from './ui/screens/BattleScreen.js';
 import { SpiritStoneUI } from './ui/spirit-stone-ui.js';
+import { TreasureScreen } from './ui/screens/TreasureScreen.js';
 
 // Import Systems
 import { ShopSystem } from './systems/shop-system.js';
@@ -35,6 +36,7 @@ import { CreationSystem } from './systems/creation-system.js';
 import { EnergySystem } from './systems/energy-system.js';
 import { SpiritStoneSystem } from './systems/spirit-stone-system.js';
 import { PuppetSystem } from './systems/puppet-system.js';
+import { TreasureSystem } from './systems/treasure-system.js';
 
 export class Game {
     constructor() {
@@ -56,6 +58,7 @@ export class Game {
         this.screens.systems = new SystemsScreen();
         this.screens.battle = new BattleScreen();
         this.screens.spiritStone = new SpiritStoneUI();
+        this.screens.treasure = new TreasureScreen();
 
         // 3. Khởi tạo Creation System (cho màn hình mới)
         state.systems.creation = new CreationSystem();
@@ -193,7 +196,8 @@ export class Game {
             energy: new EnergySystem(player, state.ui),
             technique: new TechniqueSystem(player),
             spiritStone: new SpiritStoneSystem(player, state.ui),
-            puppet: new PuppetSystem(player, state.ui)
+            puppet: new PuppetSystem(player, state.ui),
+            treasure: new TreasureSystem(player, state.ui)
         });
 
         if (savedData && savedData.time) {

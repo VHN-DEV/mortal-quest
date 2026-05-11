@@ -64,9 +64,18 @@ export class CombatEngine {
     }
 
     playerAttack() {
-        const damage = Math.max(1, this.player.atk - Math.floor(this.enemy.def / 2));
-        const crit = Math.random() > 0.9;
-        const finalDamage = crit ? damage * 2 : damage;
+        this.triggerArtifacts('attack');
+        
+        const pierce = this.player.advancedStats.pierce || 0;
+        const effectiveEnemyDef = Math.floor(this.enemy.def * (1 - pierce));
+        
+        const damage = Math.max(1, this.player.atk - Math.floor(effectiveEnemyDef / 2));
+        
+        const critRate = this.player.advancedStats.critRate || 0.05;
+        const crit = Math.random() < critRate;
+        
+        const critDmg = this.player.advancedStats.critDmg || 2.0;
+        const finalDamage = crit ? Math.floor(damage * critDmg) : damage;
         
         this.enemy.hp -= finalDamage;
         this.addLog(`Bạn tấn công gây ${finalDamage} sát thương${crit ? " (BẠO KÍCH!)" : ""}.`);
@@ -198,6 +207,8 @@ export class CombatEngine {
     enemyAttack() {
         if (!this.isActive) return;
 
+        this.triggerArtifacts('defense');
+
         let damage = Math.max(1, this.enemy.atk - Math.floor(this.player.def / 2));
         if (this.playerDefending) {
             damage = Math.floor(damage * 0.3);
@@ -215,6 +226,41 @@ export class CombatEngine {
             this.turn = 0;
             this.nextTurn();
         }
+    }
+
+    triggerArtifacts(phase) {
+        Object.entries(this.player.equipment).forEach(([slot, itemId]) => {
+            if (!itemId || !slot.includes('Artifact')) return;
+            
+            const item = (typeof getItemById === 'function') ? getItemById(itemId) : null;
+            if (!item || !item.stats) return;
+
+            // Mana consumption
+            const cost = item.stats.costMana || 0;
+            if (cost > 0) {
+                if (this.player.mana >= cost) {
+                    this.player.mana -= cost;
+                } else {
+                    // Penalty: Artifact is less effective
+                    this.addLog(`Không đủ Linh Lực, [${item.name}] mất hiệu lực!`);
+                }
+            }
+
+            // Durability loss
+            if (Math.random() > 0.95) {
+                if (!this.player.equipmentMetadata[slot]) {
+                    this.player.equipmentMetadata[slot] = { spirit: 0, level: 1, durability: 100 };
+                }
+                const meta = this.player.equipmentMetadata[slot];
+                meta.durability = Math.max(0, meta.durability - 1);
+                if (meta.durability === 0) {
+                    this.addLog(`[${item.name}] đã bị hỏng!`);
+                }
+            }
+        });
+        
+        // Ensure stats are updated if durability changed
+        this.player.calculateStats();
     }
 
     win() {

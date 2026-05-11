@@ -28,7 +28,14 @@ export class Player {
         this.soulExp = 0;
         this.cultivationFocus = 'tuvi'; // 'tuvi', 'body', 'soul'
         
-        // Base Stats
+        // Base Stats (Stored for UI display "Base (+Bonus)")
+        this.baseStats = {
+            atk: 10, def: 5, spd: 10, maxHp: 100, maxMana: 50, stamina: 100
+        };
+        this.bonusStats = {
+            atk: 0, def: 0, spd: 0, maxHp: 0, maxMana: 0, tuViSpeed: 1, bodyExpSpeed: 1, soulExpSpeed: 1
+        };
+        
         this.maxHp = 100;
         this.hp = 100;
         this.maxMana = 50;
@@ -47,16 +54,22 @@ export class Player {
         this.mainBodyTechniqueId = null;
         this.mainSoulTechniqueId = null;
         
-        // Equipment slots
+        // Equipment slots (Expanded for Artifact System)
         this.equipment = {
             head: null,
             necklace: null,
-            weapon: null,    // itemId
+            weapon: null,    
             armor: null,
             accessory: null,
-            artifact: null,
-            treasure: null,
-            shoes: null
+            shoes: null,
+            // Artifacts
+            attackArtifact: null,   // Pháp bảo chủ chiến
+            defenseArtifact: null,  // Pháp bảo hộ thân
+            flightArtifact: null,   // Phi hành pháp bảo
+            spaceArtifact: null,    // Không gian pháp bảo
+            formationArtifact: null, // Trận đạo pháp bảo
+            supportArtifact: null,  // Phụ trợ pháp bảo
+            soulArtifact: null      // Hồn đạo pháp bảo
         };
         
         this.inventory = new Inventory(this);
@@ -157,6 +170,23 @@ export class Player {
         // --- Energy (Qi) System ---
         this.qiAccumulated = {}; // { [qiId]: { amount: 0, purity: 'TINH_THUAN' } }
         this.currentEnvironmentalQi = null; // { type, concentration, purity }
+
+        // --- Advanced Stats (Artifacts) ---
+        this.advancedStats = {
+            pierce: 0,
+            soulPierce: 0,
+            critRate: 0.05, 
+            critDmg: 1.5,   
+            fireDmg: 1.0,   
+            qiAbsorb: 1.0,  
+            lifeSteal: 0,
+            soulRepress: 0,
+            daoVun: 0,
+            murderQi: 0
+        };
+
+        this.equipmentMetadata = {}; // { [slot]: { spirit, level, durability, extraStat: { type, value } } }
+        this.recognizedItems = [];
     }
 
     get lingShi() {
@@ -472,29 +502,129 @@ export class Player {
     }
 
     calculateStats() {
-        // Base stats from realm
         const realmLevel = this.realmId;
         const bodyLevel = this.bodyRealmId;
         const soulLevel = this.soulRealmId;
 
-        // Base rates are 0. MUST have technique to cultivate.
         this.tuViPerSecond = 0;
         this.bodyExpPerSecond = 0;
         this.soulExpPerSecond = 0;
 
-        // Apply technique bonuses
-        // ... (existing code for techniques usually comes here or after)
-
-        // TU VI level increases ALL base stats significantly
+        // 1. Calculate BASE STATS (from Realms)
         const realmMult = Math.pow(1.8, realmLevel - 1);
         
-        this.maxMana = 50 * realmMult;
-        this.maxHp = 100 * realmMult;
-        this.atk = 10 * realmMult;
-        this.def = 5 * realmMult;
-        this.spd = 15 + (realmLevel * 5);
+        this.baseStats.maxMana = 50 * realmMult;
+        this.baseStats.maxHp = 100 * realmMult;
+        this.baseStats.atk = 10 * realmMult;
+        this.baseStats.def = 5 * realmMult;
+        this.baseStats.spd = 15 + (realmLevel * 5);
 
-        // Apply Buffs to Stats
+        // Body Realm adds to HP and Def
+        this.baseStats.maxHp += 50 * (bodyLevel - 1) * Math.sqrt(realmLevel);
+        this.baseStats.def += 10 * (bodyLevel - 1) * Math.sqrt(realmLevel);
+        
+        // Soul Realm adds to Mana and Spd
+        this.baseStats.maxMana += 30 * (soulLevel - 1) * Math.sqrt(realmLevel);
+        this.baseStats.spd += 5 * (soulLevel - 1);
+
+        // 2. Initialize BONUS & ADVANCED STATS
+        this.bonusStats = {
+            atk: 0, def: 0, spd: 0, maxHp: 0, maxMana: 0,
+            tuViSpeed: 1, bodyExpSpeed: 1, soulExpSpeed: 1
+        };
+        
+        this.advancedStats = {
+            pierce: 0, soulPierce: 0, critRate: 0.05, critDmg: 1.5,
+            fireDmg: 1.0, qiAbsorb: 1.0, lifeSteal: 0,
+            soulRepress: 0, daoVun: 0, murderQi: 0
+        };
+
+        // Apply Destiny Bonuses to Base or Bonus? Let's add to Base
+        if (this.destinyStats) {
+            if (this.destinyStats.atk) this.baseStats.atk += this.destinyStats.atk;
+            if (this.destinyStats.def) this.baseStats.def += this.destinyStats.def;
+            if (this.destinyStats.maxHp) this.baseStats.maxHp += this.destinyStats.maxHp;
+        }
+
+        // Apply technique bonuses (These usually affect rates and add flat/scaled bonuses)
+        this.applyTechniqueToStats('tuvi', this.mainTechniqueId);
+        this.applyTechniqueToStats('body', this.mainBodyTechniqueId);
+        this.applyTechniqueToStats('soul', this.mainSoulTechniqueId);
+
+        // 3. Apply EQUIPMENT & ARTIFACT BONUSES
+        const equippedIds = [];
+        Object.values(this.equipment).forEach(itemId => {
+            if (!itemId) return;
+            equippedIds.push(itemId);
+            const item = getItemById(itemId);
+            if (!item || !item.stats) return;
+
+            // Check if artifact is recognized
+            // For life-bound items, they are always recognized. For others, check recognizedItems list.
+            const isLifeBound = item.isLifeBound === true;
+            const isRecognized = isLifeBound || (this.recognizedItems && this.recognizedItems.includes(itemId)) || item.isRecognized !== false;
+            
+            const mult = isRecognized ? 1.0 : 0.3; // 70% penalty if not recognized
+
+            if (item.stats.atk) this.bonusStats.atk += item.stats.atk * mult;
+            if (item.stats.def) this.bonusStats.def += item.stats.def * mult;
+            if (item.stats.spd) this.bonusStats.spd += item.stats.spd * mult;
+            if (item.stats.hp) this.bonusStats.maxHp += item.stats.hp * mult;
+            if (item.stats.mana) this.bonusStats.maxMana += item.stats.mana * mult;
+            if (item.stats.tuViSpeed) this.bonusStats.tuViSpeed *= item.stats.tuViSpeed;
+            if (item.stats.bodyExpSpeed) this.bonusStats.bodyExpSpeed *= item.stats.bodyExpSpeed;
+            if (item.stats.soulExpSpeed) this.bonusStats.soulExpSpeed *= item.stats.soulExpSpeed;
+            
+            // Advanced Stats from items
+            if (item.stats.pierce) this.advancedStats.pierce += item.stats.pierce * mult;
+            if (item.stats.soulPierce) this.advancedStats.soulPierce += item.stats.soulPierce * mult;
+            if (item.stats.critRate) this.advancedStats.critRate += item.stats.critRate * mult;
+            if (item.stats.critDmg) this.advancedStats.critDmg += item.stats.critDmg * mult;
+            if (item.stats.fireDmg) this.advancedStats.fireDmg *= (1 + item.stats.fireDmg * mult);
+            if (item.stats.qiAbsorb) this.advancedStats.qiAbsorb *= (1 + item.stats.qiAbsorb * mult);
+            if (item.stats.lifeSteal) this.advancedStats.lifeSteal += item.stats.lifeSteal * mult;
+            if (item.stats.soulRepress) this.advancedStats.soulRepress += item.stats.soulRepress * mult;
+            if (item.stats.daoVun) this.advancedStats.daoVun += item.stats.daoVun * mult;
+            if (item.stats.murderQi) this.advancedStats.murderQi += item.stats.murderQi * mult;
+
+            // Apply EXTRA STATS from metadata
+            if (this.equipmentMetadata && this.equipmentMetadata[slot]) {
+                const meta = this.equipmentMetadata[slot];
+                if (meta.extraStat) {
+                    const { type, value } = meta.extraStat;
+                    if (this.advancedStats.hasOwnProperty(type)) {
+                        this.advancedStats[type] += value;
+                    } else if (this.bonusStats.hasOwnProperty(type)) {
+                        this.bonusStats[type] += value;
+                    }
+                }
+                
+                // Durability penalty
+                if (meta.durability < 20) {
+                    mult *= 0.5; // Additional 50% penalty if artifact is broken
+                }
+            }
+        });
+
+        // 3.5 Apply SET BONUSES
+        this.applySetBonuses(equippedIds);
+
+        // 4. Combine BASE and BONUS for final values
+        this.maxHp = this.baseStats.maxHp + this.bonusStats.maxHp;
+        this.maxMana = this.baseStats.maxMana + this.bonusStats.maxMana;
+        this.atk = this.baseStats.atk + this.bonusStats.atk;
+        this.def = this.baseStats.def + this.bonusStats.def;
+        this.spd = this.baseStats.spd + this.bonusStats.spd;
+
+        // Apply Sect bonuses (Multiplier on total)
+        if (this.sectId) {
+            this.atk *= 1.1;
+            this.def *= 1.1;
+            this.maxHp *= 1.1;
+            this.tuViPerSecond *= 1.05;
+        }
+
+        // Apply Buffs to final stats
         if (this.buffs) {
             this.buffs.forEach(b => {
                 if (b.stat === 'atk') this.atk *= b.value;
@@ -502,36 +632,16 @@ export class Player {
                 if (b.stat === 'spd') this.spd *= b.value;
                 if (b.stat === 'maxHp') this.maxHp *= b.value;
                 if (b.stat === 'maxMana') this.maxMana *= b.value;
+                if (b.stat === 'tu_vi_speed') this.tuViPerSecond *= b.value;
+                if (b.stat === 'body_speed') this.bodyExpPerSecond *= b.value;
+                if (b.stat === 'soul_speed') this.soulExpPerSecond *= b.value;
             });
         }
 
-        // Body Realm adds to HP and Def
-        this.maxHp += 50 * (bodyLevel - 1) * Math.sqrt(realmLevel);
-        this.def += 10 * (bodyLevel - 1) * Math.sqrt(realmLevel);
-        
-        // Soul Realm adds to Mana and Spd
-        this.maxMana += 30 * (soulLevel - 1) * Math.sqrt(realmLevel);
-        this.spd += 5 * (soulLevel - 1);
-
-        // Apply Destiny Bonuses
-        if (this.destinyStats) {
-            if (this.destinyStats.atk) this.atk += this.destinyStats.atk;
-            if (this.destinyStats.def) this.def += this.destinyStats.def;
-            if (this.destinyStats.maxHp) this.maxHp += this.destinyStats.maxHp;
-        }
-
-        // Process Techniques for each path
-        this.applyTechniqueToStats('tuvi', this.mainTechniqueId);
-        this.applyTechniqueToStats('body', this.mainBodyTechniqueId);
-        this.applyTechniqueToStats('soul', this.mainSoulTechniqueId);
-
-        // Add Sect bonuses
-        if (this.sectId) {
-            this.atk *= 1.1;
-            this.def *= 1.1;
-            this.maxHp *= 1.1;
-            this.tuViPerSecond *= 1.05;
-        }
+        // Final application of artifact rate bonuses
+        this.tuViPerSecond *= this.bonusStats.tuViSpeed;
+        this.bodyExpPerSecond *= this.bonusStats.bodyExpSpeed;
+        this.soulExpPerSecond *= this.bonusStats.soulExpSpeed;
 
         // Add Active Formations Bonus
         this.activeFormations.forEach(f => {
@@ -546,21 +656,33 @@ export class Player {
             this.maxHp += energyBonuses.hp || 0;
             this.maxMana += energyBonuses.mana || 0;
             this.spd += energyBonuses.spd || 0;
-            // Soul/Thần thức bonus logic would go here if soul is tracked separately
         }
         
-        // Ensure current HP/Mana don't exceed max
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);
+    }
 
-        // Final Buff pass for rates
-        if (this.buffs) {
-            this.buffs.forEach(b => {
-                if (b.stat === 'tu_vi_speed') this.tuViPerSecond *= b.value;
-                if (b.stat === 'body_speed') this.bodyExpPerSecond *= b.value;
-                if (b.stat === 'soul_speed') this.soulExpPerSecond *= b.value;
-            });
-        }
+    applySetBonuses(equippedIds) {
+        const { ARTIFACT_SETS } = require('../configs/artifact-data.js');
+        if (!ARTIFACT_SETS) return;
+
+        Object.values(ARTIFACT_SETS).forEach(set => {
+            const count = set.items.filter(id => equippedIds.includes(id)).length;
+            if (count > 0) {
+                // Apply bonuses for this count
+                set.bonuses.forEach(bonus => {
+                    if (count >= bonus.count) {
+                        if (bonus.stats) {
+                            if (bonus.stats.atk) this.bonusStats.atk += this.baseStats.atk * bonus.stats.atk;
+                            if (bonus.stats.def) this.bonusStats.def += this.baseStats.def * bonus.stats.def;
+                            if (bonus.stats.spd) this.bonusStats.spd += this.baseStats.spd * bonus.stats.spd;
+                            if (bonus.stats.pierce) this.advancedStats.pierce += bonus.stats.pierce;
+                            // Add more as needed
+                        }
+                    }
+                });
+            }
+        });
     }
 
     applyTechniqueToStats(path, techId) {
@@ -654,8 +776,20 @@ export class Player {
             return true;
         }
 
-        const slot = item.type; // weapon, armor, accessory, treasure
+        const slot = item.type; 
         if (this.equipment.hasOwnProperty(slot)) {
+            // Check requirement (Realm)
+            if (item.tier) {
+                const { ARTIFACT_TIERS } = require('../configs/artifact-data.js');
+                const tierInfo = ARTIFACT_TIERS[item.tier];
+                if (tierInfo && this.realmId < (tierInfo.id * 4 - 3)) { // Simple heuristic: each tier is ~4 realms
+                    // Actually, let's just check the name/id mapping if needed, 
+                    // but for now a simple check:
+                    if (item.tier === 'PHAP_KHI' && this.realmId < 1) return false; // Luyện Khí 1
+                    if (item.tier === 'LINH_KHI' && this.realmId < 10) return false; // Trúc Cơ 1 (9+1)
+                }
+            }
+
             if (this.equipment[slot]) {
                 if (this.inventory.items.length >= this.inventory.maxSlots) return false;
                 this.inventory.addItem(this.equipment[slot], 1);
@@ -666,6 +800,41 @@ export class Player {
             return true;
         }
         return false;
+    }
+
+    recognizeArtifact(slot) {
+        const itemId = this.equipment[slot];
+        if (!itemId) return { success: false, msg: "Không có pháp bảo ở ô này!" };
+        
+        // This is tricky because we don't store individual item instances with state in the equipment object yet.
+        // We'll need a way to track if the *equipped* item is recognized.
+        // For now, let's assume if it's in equipment, we can "recognize" it.
+        // In a real system, we'd need to update the item metadata in inventory OR a separate equipment state.
+        
+        if (this.hp < this.maxHp * 0.5) return { success: false, msg: "Trạng thái suy kiệt, không thể hiến tế tinh huyết!" };
+        
+        this.hp -= this.maxHp * 0.3; // Cost 30% HP
+        this.mana = 0; // Drain all mana
+        
+        // Mark as recognized - we'll need to store this in a persistent way.
+        // For this demo, let's add a list of recognized items to player.
+        if (!this.recognizedItems) this.recognizedItems = [];
+        if (!this.recognizedItems.includes(itemId)) this.recognizedItems.push(itemId);
+        
+        this.calculateStats();
+        return { success: true, msg: "Nhận chủ thành công! Cảm nhận được sự liên kết tâm linh với pháp bảo." };
+    }
+
+    repairArtifact(slot) {
+        const itemId = this.equipment[slot];
+        if (!itemId) return { success: false, msg: "Không có pháp bảo ở ô này!" };
+        
+        const cost = 500; // Fixed cost for now
+        if (this.lingShi < cost) return { success: false, msg: "Không đủ Linh Thạch để sửa chữa!" };
+        
+        this.spendLingShi(cost);
+        // Durability logic would go here if we tracked instance state
+        return { success: true, msg: "Sửa chữa hoàn tất! Linh tính của pháp bảo đã khôi phục." };
     }
 
     unequip(slot) {
@@ -763,6 +932,8 @@ export class Player {
         this.bodyExp = data.bodyExp || 0;
         this.soulRealmId = data.soulRealmId || 1;
         this.soulExp = data.soulExp || 0;
+        this.baseStats = data.baseStats || { atk: 10, def: 5, spd: 10, maxHp: 100, maxMana: 50, stamina: 100 };
+        this.bonusStats = data.bonusStats || { atk: 0, def: 0, spd: 0, maxHp: 0, maxMana: 0, tuViSpeed: 1, bodyExpSpeed: 1, soulExpSpeed: 1 };
         this.cultivationFocus = data.cultivationFocus || 'tuvi';
 
         this.hp = data.hp || 100;
@@ -897,6 +1068,9 @@ export class Player {
             knownRecipes: this.knownRecipes,
             ownedFlames: this.ownedFlames,
             ownedCauldrons: this.ownedCauldrons,
+            baseStats: this.baseStats,
+            bonusStats: this.bonusStats,
+            unlockedProfessions: this.unlockedProfessions,
             alchemyReputation: this.alchemyReputation,
             currentAlchemyRoom: this.currentAlchemyRoom,
             gardenPlots: this.gardenPlots,
@@ -933,7 +1107,6 @@ export class Player {
             qiAccumulated: this.qiAccumulated,
             currentEnvironmentalQi: this.currentEnvironmentalQi,
             spiritStoneSettings: this.spiritStoneSettings,
-            unlockedProfessions: this.unlockedProfessions,
             insectLevel: this.insectLevel,
             insectExp: this.insectExp
         };
