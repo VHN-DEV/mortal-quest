@@ -283,5 +283,44 @@ export class UISystem {
         document.body.appendChild(p);
         setTimeout(() => p.remove(), 2000);
     }
+
+    /**
+     * Switch between main screens
+     */
+    switchScreen(screenId, btn) {
+        const screens = document.querySelectorAll('.screen');
+        const navButtons = document.querySelectorAll('.nav-item');
+        
+        screens.forEach(s => {
+            s.classList.add('hidden');
+            s.classList.remove('flex');
+        });
+        const targetScreen = document.getElementById(screenId);
+        if (targetScreen) {
+            targetScreen.classList.remove('hidden');
+            targetScreen.classList.add('flex');
+        }
+
+        navButtons.forEach(b => {
+            b.classList.remove('text-cultivation-gold', 'active');
+            b.classList.add('text-gray-500');
+        });
+
+        if (btn) {
+            btn.classList.add('text-cultivation-gold', 'active');
+            btn.classList.remove('text-gray-500');
+        }
+
+        // Specific screen refresh logic
+        if (screenId === 'screen-main') {
+            if (typeof window.renderMainStats === 'function') window.renderMainStats();
+        } else if (screenId === 'screen-character') {
+            if (window.game && window.game.screens.character) window.game.screens.character.render();
+        } else if (screenId === 'screen-inventory') {
+            if (window.game && window.game.screens.inventory) window.game.screens.inventory.render();
+        } else if (screenId === 'screen-adventure') {
+            if (window.game && window.game.screens.map) window.game.screens.map.renderWorldList();
+        }
+    }
 }
 
