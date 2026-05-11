@@ -819,7 +819,7 @@ export class Player {
             return true;
         }
 
-        const slot = item.type; 
+        const slot = this.getEquipSlotForItemType(item.type);
         if (this.equipment.hasOwnProperty(slot)) {
             // Check requirement (Realm)
             if (item.tier) {
@@ -843,6 +843,16 @@ export class Player {
             return true;
         }
         return false;
+    }
+
+    getEquipSlotForItemType(itemType) {
+        const legacyMap = {
+            weapon: 'attackArtifact',
+            armor: 'defenseArtifact',
+            treasure: 'supportArtifact',
+            accessory: 'soulArtifact'
+        };
+        return legacyMap[itemType] || itemType;
     }
 
     recognizeArtifact(slot) {

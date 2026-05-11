@@ -265,10 +265,10 @@ export class InventoryScreen {
             this.btnUseItem.textContent = (itemData.type === 'book') ? 'LĨNH NGỘ' : 'SỬ DỤNG';
         }
 
-        const equippable = ['weapon', 'armor', 'accessory', 'treasure', 
-                            'attackArtifact', 'defenseArtifact', 'flightArtifact', 
-                            'spaceArtifact', 'formationArtifact', 'supportArtifact', 'soulArtifact'
-                           ].includes(itemData.type);
+        const mappedSlot = state.player.getEquipSlotForItemType
+            ? state.player.getEquipSlotForItemType(itemData.type)
+            : itemData.type;
+        const equippable = Object.prototype.hasOwnProperty.call(state.player.equipment, mappedSlot);
         this.btnEquipItem.style.display = equippable ? 'block' : 'none';
 
         state.ui.toggleOverlay(this.elItemDetail, true);
