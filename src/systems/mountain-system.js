@@ -48,16 +48,26 @@ export class MountainSystem {
     }
 
     triggerLayerEvent(layer) {
+        const luck = this.player.luck || 50;
+        const karma = this.player.karma || 0;
+        const fateBias = Math.max(-0.25, Math.min(0.25, (luck - 50) / 200 + karma / 4000));
+
         const layerEvents = MOUNTAIN_EVENTS.filter(e => e.layer === 'any' || e.layer === layer.id);
         const rolled = layerEvents.find(e => Math.random() < e.chance);
         if (rolled) {
             if (rolled.type === 'hazard') {
-                this.player.mountainSurvival.toxicity = Math.min(100, this.player.mountainSurvival.toxicity + 12);
-                this.ui.toast(`${rolled.name}! Độc tính tăng mạnh.`, "error");
+                const avoid = Math.random() < (0.2 + fateBias);
+                if (avoid) {
+                    this.ui.toast(`${rolled.name}! Ngươi tránh được phần lớn độc chướng nhờ cảm ứng linh giác.`, "warning");
+                } else {
+                    this.player.mountainSurvival.toxicity = Math.min(100, this.player.mountainSurvival.toxicity + 12);
+                    this.ui.toast(`${rolled.name}! Độc tính tăng mạnh.`, "error");
+                }
             } else if (rolled.type === 'treasure') {
-                const gain = Math.max(20, Math.floor(this.player.realmId * 2));
+                const jackpot = Math.random() < (0.15 + fateBias);
+                const gain = jackpot ? Math.max(60, Math.floor(this.player.realmId * 5)) : Math.max(20, Math.floor(this.player.realmId * 2));
                 this.player.addLingShi(gain);
-                this.ui.toast(`${rolled.name}! Thu được ${gain} Linh Thạch.`, "success");
+                this.ui.toast(`${rolled.name}! ${jackpot ? 'Cơ duyên đại cát, ' : ''}thu được ${gain} Linh Thạch.`, "success");
             } else if (rolled.type === 'weather') {
                 this.player.mountainSurvival.oxygen = Math.max(0, this.player.mountainSurvival.oxygen - 15);
                 this.ui.toast(`${rolled.name}! Không khí loãng đi nhanh chóng.`, "warning");

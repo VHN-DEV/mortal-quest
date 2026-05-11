@@ -1,5 +1,6 @@
 import { state } from '../../state.js';
 import { getFlameById } from '../../configs/alchemy-data.js';
+import { getSecretTechniqueById } from '../../configs/technique-data.js';
 
 /**
  * Quản lý giao diện và logic của màn hình Chiến Đấu.
@@ -31,6 +32,7 @@ export class BattleScreen {
         this.btnFlame = document.getElementById('btn-flame');
         this.btnSecret = document.getElementById('btn-secret');
         this.secretCursor = 0;
+        this.secretList = document.getElementById('battle-secret-list');
     }
 
     initEvents() {
@@ -38,14 +40,7 @@ export class BattleScreen {
         if (this.btnDefend) this.btnDefend.onclick = () => this.handleAction('defend');
         if (this.btnSkill) this.btnSkill.onclick = () => this.handleAction('skill');
         if (this.btnFlame) this.btnFlame.onclick = () => this.handleAction('flame');
-        if (this.btnSecret) this.btnSecret.onclick = () => {
-            const secrets = (state.player?.equippedSecretTechniqueIds || []).filter(Boolean);
-            if (secrets.length === 0) return;
-            const id = secrets[this.secretCursor % secrets.length];
-            this.handleAction('secret', id);
-            this.secretCursor = (this.secretCursor + 1) % secrets.length;
-            this.updateSecretButton();
-        };
+        if (this.btnSecret) this.btnSecret.onclick = () => this.toggleSecretList();
     }
 
     handleAction(type, payload = null) {
@@ -78,9 +73,11 @@ export class BattleScreen {
                 break;
             case 'player-turn-start':
                 this.actionContainer.classList.remove('hidden');
+                this.hideSecretList();
                 break;
             case 'player-turn-end':
                 this.actionContainer.classList.add('hidden');
+                this.hideSecretList();
                 break;
             case 'end':
                 this.actionContainer.classList.add('hidden');
@@ -124,9 +121,41 @@ export class BattleScreen {
             return;
         }
         this.btnSecret.classList.remove('hidden');
-        const current = secrets[this.secretCursor % secrets.length];
-        this.btnSecret.textContent = `BÍ PHÁP (${this.secretCursor + 1}/${secrets.length})`;
-        this.btnSecret.title = `Thi triển: ${current}`;
+        this.btnSecret.textContent = `BÍ PHÁP (${secrets.length})`;
+        this.btnSecret.title = `Mở danh sách bí pháp đã trang bị`;
+    }
+
+    toggleSecretList() {
+        if (!this.secretList) return;
+        const secrets = (state.player?.equippedSecretTechniqueIds || []).filter(Boolean);
+        if (secrets.length === 0) return;
+        const hidden = this.secretList.classList.contains('hidden');
+        if (!hidden) {
+            this.hideSecretList();
+            return;
+        }
+        const now = Date.now();
+        this.secretList.innerHTML = secrets.map((id) => {
+            const cd = state.player.secretTechniqueCooldowns?.[id] || 0;
+            const item = getSecretTechniqueById(id);
+            const name = item?.name || id;
+            const remainMs = (item?.cooldown || 0) * 1000 - (now - cd);
+            const remain = Math.max(0, Math.ceil(remainMs / 1000));
+            const disabled = remain > 0;
+            return `<button data-secret-id="${id}" ${disabled ? 'disabled' : ''} class="w-full text-left px-2 py-1 rounded border border-white/10 ${disabled ? 'opacity-50' : 'hover:bg-white/10'} text-[10px]">${name}${disabled ? ` (CD: ${remain}s)` : ''}</button>`;
+        }).join('');
+        this.secretList.querySelectorAll('button[data-secret-id]').forEach(btn => {
+            btn.onclick = () => {
+                const id = btn.dataset.secretId;
+                this.handleAction('secret', id);
+                this.hideSecretList();
+            };
+        });
+        this.secretList.classList.remove('hidden');
+    }
+
+    hideSecretList() {
+        if (this.secretList) this.secretList.classList.add('hidden');
     }
 
     close() {

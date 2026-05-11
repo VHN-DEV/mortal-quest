@@ -11,10 +11,18 @@ export class CombatEngine {
         this.log = [];
         this.isActive = true;
         this.playerDefending = false;
+        this.enemyArchetype = this.getEnemyArchetype();
         this.status = {
             player: { stun: 0 },
             enemy: { burn: 0, burnPower: 0, stun: 0 }
         };
+    }
+
+    getEnemyArchetype() {
+        if (this.enemy.spd >= this.enemy.atk * 0.9 && this.enemy.spd > this.enemy.def) return 'ASSASSIN';
+        if (this.enemy.def >= this.enemy.atk * 0.8 && this.enemy.def > this.enemy.spd) return 'TANK';
+        if (this.enemy.atk >= this.enemy.def * 1.2) return 'BERSERKER';
+        return 'BALANCED';
     }
 
     start() {
@@ -266,17 +274,18 @@ export class CombatEngine {
 
         this.triggerArtifacts('defense');
         let damage = Math.max(1, this.enemy.atk - Math.floor(this.player.def / 2));
-        const speedType = this.enemy.spd > this.player.spd * 1.2;
-        const bruteType = this.enemy.atk > this.player.atk * 1.2;
-
-        if (speedType && Math.random() < 0.3) {
+        if (this.enemyArchetype === 'ASSASSIN' && Math.random() < 0.35) {
             const truePart = Math.floor(this.enemy.atk * 0.3);
             const normalPart = Math.max(1, this.enemy.atk - Math.floor(this.player.def * 0.35));
             damage = truePart + normalPart;
             this.addLog(`${this.enemy.name} thi triển thân pháp, xuyên qua phòng ngự!`);
-        } else if (bruteType && Math.random() < 0.25) {
+            if (Math.random() < 0.15) this.status.player.stun = Math.max(this.status.player.stun, 1);
+        } else if (this.enemyArchetype === 'BERSERKER' && Math.random() < 0.25) {
             damage = Math.floor(damage * 1.4);
             this.addLog(`${this.enemy.name} vung đòn bạo kích hung mãnh!`);
+        } else if (this.enemyArchetype === 'TANK' && Math.random() < 0.3) {
+            this.enemy.def = Math.floor(this.enemy.def * 1.1);
+            this.addLog(`${this.enemy.name} vận giáp khí, phòng ngự gia tăng!`);
         }
         if (this.playerDefending) {
             damage = Math.floor(damage * 0.3);
