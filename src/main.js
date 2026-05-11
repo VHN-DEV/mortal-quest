@@ -93,7 +93,6 @@ const elLocList = document.getElementById('location-list');
 const elCurrentWorldName = document.getElementById('current-world-name');
 const elCurrentLocName = document.getElementById('current-location-name');
 const elExploreEvent = document.getElementById('explore-event-display');
-const elEventIcon = document.getElementById('event-icon');
 const elEventText = document.getElementById('event-text');
 const elExploreBar = document.getElementById('explore-bar');
 const elExploreProgress = document.getElementById('explore-progress');
@@ -235,9 +234,12 @@ function init() {
     if (!savedData) {
         ui.toggleOverlay(document.getElementById('screen-creation'), true);
         ui.toggleOverlay(document.getElementById('screen-main'), false);
-        document.querySelector('header').classList.add('hidden');
-        document.getElementById('time-hud').classList.add('hidden');
-        document.querySelector('nav').classList.add('hidden');
+        const header = document.querySelector('header');
+        const timeHud = document.getElementById('time-hud');
+        const nav = document.querySelector('nav');
+        if (header) header.classList.add('hidden');
+        if (timeHud) timeHud.classList.add('hidden');
+        if (nav) nav.classList.add('hidden');
         renderCreationScreen();
     } else {
         player = new Player();
@@ -245,9 +247,12 @@ function init() {
         initGameSystems(player, savedData);
         ui.toggleOverlay(document.getElementById('screen-creation'), false);
         ui.toggleOverlay(document.getElementById('screen-main'), true);
-        document.querySelector('header').classList.remove('hidden');
-        document.getElementById('time-hud').classList.remove('hidden');
-        document.querySelector('nav').classList.remove('hidden');
+        const header = document.querySelector('header');
+        const timeHud = document.getElementById('time-hud');
+        const nav = document.querySelector('nav');
+        if (header) header.classList.remove('hidden');
+        if (timeHud) timeHud.classList.remove('hidden');
+        if (nav) nav.classList.remove('hidden');
     }
 
     // Auto-save every 30 seconds
@@ -779,7 +784,6 @@ function startExploration(locId) {
     ui.toggleOverlay(viewExplore, true);
     updateExplorationUI();
     if (elEventText) elEventText.textContent = 'Bạn đã tới địa điểm.';
-    if (elEventIcon) elEventIcon.textContent = '📍';
 
     // Set time flow for this location
     if (timeSystem) {
@@ -856,14 +860,8 @@ function renderSpecialActions(loc) {
     ui.toggleOverlay(elLocSpecialActions, hasSpecial);
 }
 
-function updateEventDisplay(text, icon = '📜') {
+function updateEventDisplay(text) {
     if (elEventText) elEventText.textContent = text;
-    if (elEventIcon) {
-        elEventIcon.textContent = icon;
-        elEventIcon.classList.remove('animate-bounce-subtle');
-        void elEventIcon.offsetWidth;
-        elEventIcon.classList.add('animate-bounce-subtle');
-    }
     if (elExploreEvent) {
         elExploreEvent.classList.remove('animate-fade-in');
         void elExploreEvent.offsetWidth; // Trigger reflow
@@ -881,14 +879,24 @@ function renderExplore() {
     if (!loc) return;
 
     // Update background if location has one
-    const bgUrl = loc.image || ASSETS.backgrounds[loc.id] || ASSETS.backgrounds.nhan_gioi;
-    if (elExploreBg) {
-        elExploreBg.style.backgroundImage = `url('${bgUrl}')`;
-    } else {
-        viewExplore.style.backgroundImage = `url('${bgUrl}')`;
-        viewExplore.style.backgroundSize = 'cover';
-        viewExplore.style.backgroundPosition = 'center';
-    }
+    const defaultBg = ASSETS.backgrounds.cultivation;
+    const bgUrl = loc.image || ASSETS.backgrounds[loc.id] || defaultBg;
+    
+    const setBg = (url) => {
+        if (elExploreBg) {
+            elExploreBg.style.backgroundImage = `url('${url}')`;
+        } else {
+            viewExplore.style.backgroundImage = `url('${url}')`;
+            viewExplore.style.backgroundSize = 'cover';
+            viewExplore.style.backgroundPosition = 'center';
+        }
+    };
+
+    // Try loading the background image, fallback if fails
+    const img = new Image();
+    img.onload = () => setBg(bgUrl);
+    img.onerror = () => setBg(defaultBg);
+    img.src = bgUrl;
 
     if (elCurrentWorldNameSub) {
         const world = getWorlds()[currentWorldId];
@@ -1271,14 +1279,18 @@ function initGameSystems(player, savedData = null) {
     const mainPortrait = document.getElementById('main-player-portrait');
     if (mainPortrait) mainPortrait.src = ASSETS.portraits.player;
 
-    // Restore location
+    // Restore location context but don't force overlay on startup
     if (player.currentWorldId) {
         currentWorldId = player.currentWorldId;
+        renderWorldList();
         if (player.currentLocId) {
             currentLocId = player.currentLocId;
-            startExploration(currentLocId);
-        } else {
-            renderWorldList();
+            const loc = getLocationById(currentLocId);
+            if (loc) {
+                // Just update internal state, don't trigger UI overlay yet
+                // This prevents the "stuck" feeling on startup
+                updateExplorationUI(); 
+            }
         }
     }
 }
