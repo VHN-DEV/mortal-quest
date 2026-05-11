@@ -11,7 +11,23 @@
 // 10. Đạo Khí
 
 export const ITEMS = {
+    // Hạt giống
+    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Hạt Giống Linh Thảo', type: 'consumable', icon: '🌱', quality: 'Phàm', price: 10, description: 'Hạt giống linh thảo sơ cấp.' },
+    'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Hạt Giống Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh', price: 150, description: 'Hạt giống linh thảo hỏa hệ.' },
+    'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Hạt Giống Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh', price: 150, description: 'Hạt giống linh thảo băng hệ.' },
+    'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Hạt Giống U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Huyền', price: 300, description: 'Hạt giống linh thảo âm hệ.' },
+
     // Tiêu hao
+    'tich_coc_dan': {
+        id: 'tich_coc_dan',
+        name: 'Tịch Cốc Đan',
+        type: 'consumable',
+        icon: '💊',
+        quality: 'Phàm',
+        price: 30,
+        description: 'Đan dược giúp tu sĩ không cần ăn uống, tập trung bế quan. Tăng nhẹ tốc độ tu luyện trong 1 giờ.',
+        effect: { type: 'buff', stat: 'tu_vi_speed', value: 1.1, duration: 3600 }
+    },
     'ngung_khi_dan': {
         id: 'ngung_khi_dan',
         name: 'Ngưng Khí Đan',
@@ -39,6 +55,33 @@ export const ITEMS = {
         quality: 'Huyền',
         price: 100,
         description: 'Linh thảo có dược tính ổn định, thích hợp luyện đan bậc trung.'
+    },
+    'hoa_diem_thao': {
+        id: 'hoa_diem_thao',
+        name: 'Hỏa Diễm Thảo',
+        type: 'material',
+        icon: '🔥',
+        quality: 'Linh',
+        price: 250,
+        description: 'Thảo dược nóng rực, sinh trưởng ở nơi có hỏa khí nồng đậm.'
+    },
+    'han_tuy_hoa': {
+        id: 'han_tuy_hoa',
+        name: 'Hàn Tủy Hoa',
+        type: 'material',
+        icon: '❄️',
+        quality: 'Linh',
+        price: 250,
+        description: 'Hoa trắng như tuyết, mang theo hàn khí thấu xương.'
+    },
+    'u_minh_hoa': {
+        id: 'u_minh_hoa',
+        name: 'U Minh Hoa',
+        type: 'material',
+        icon: '💀',
+        quality: 'Huyền',
+        price: 500,
+        description: 'Hoa mọc nơi âm khí nồng đậm, u tối.'
     },
     'truc_co_dan': {
         id: 'truc_co_dan',
@@ -173,38 +216,120 @@ export const ITEMS = {
     'ling_thach_ha': {
         id: 'ling_thach_ha',
         name: 'Hạ Phẩm Linh Thạch',
-        type: 'currency',
+        type: 'spirit_stone',
+        grade: 'HA',
+        attribute: 'NORMAL',
         icon: '💎',
         quality: 'Phàm',
         price: 1,
+        weight: 0.01,
         description: 'Linh thạch phổ thông nhất, dùng cho giao dịch và tu luyện sơ cấp.'
     },
     'ling_thach_trung': {
         id: 'ling_thach_trung',
         name: 'Trung Phẩm Linh Thạch',
-        type: 'currency',
+        type: 'spirit_stone',
+        grade: 'TRUNG',
+        attribute: 'NORMAL',
         icon: '💠',
         quality: 'Huyền',
         price: 100,
+        weight: 0.02,
         description: 'Linh khí tinh thuần, 1 viên tương đương 100 Hạ Phẩm.'
     },
     'ling_thach_thuong': {
         id: 'ling_thach_thuong',
         name: 'Thượng Phẩm Linh Thạch',
-        type: 'currency',
+        type: 'spirit_stone',
+        grade: 'THUONG',
+        attribute: 'NORMAL',
         icon: '🔮',
         quality: 'Thiên',
         price: 10000,
+        weight: 0.05,
         description: 'Linh lực đậm đặc, dùng trong các giao dịch đấu giá hoặc đột phá.'
     },
     'ling_thach_cuc': {
         id: 'ling_thach_cuc',
         name: 'Cực Phẩm Linh Thạch',
-        type: 'currency',
+        type: 'spirit_stone',
+        grade: 'CUC',
+        attribute: 'NORMAL',
         icon: '🌌',
         quality: 'Thần',
         price: 1000000,
+        weight: 0.1,
         description: 'Cực kỳ hiếm thấy, chứa đựng linh lực hóa lỏng vô tận.'
+    },
+    'hoa_linh_thach': {
+        id: 'hoa_linh_thach',
+        name: 'Hỏa Linh Thạch',
+        type: 'spirit_stone',
+        grade: 'HA', // Default to HA, can be changed via metadata
+        attribute: 'FIRE',
+        icon: '🔥',
+        quality: 'Phàm',
+        price: 5,
+        weight: 0.01,
+        description: 'Chứa hỏa linh khí, phù hợp cho hỏa tu và luyện đan.'
+    },
+    'bang_linh_thach': {
+        id: 'bang_linh_thach',
+        name: 'Băng Linh Thạch',
+        type: 'spirit_stone',
+        grade: 'HA',
+        attribute: 'ICE',
+        icon: '❄️',
+        quality: 'Phàm',
+        price: 5,
+        weight: 0.01,
+        description: 'Tỏa ra hàn khí lạnh thấu xương, phù hợp cho băng tu.'
+    },
+    'loi_linh_thach': {
+        id: 'loi_linh_thach',
+        name: 'Lôi Linh Thạch',
+        type: 'spirit_stone',
+        grade: 'HA',
+        attribute: 'LIGHTNING',
+        icon: '⚡',
+        quality: 'Phàm',
+        price: 8,
+        weight: 0.01,
+        description: 'Chứa lôi điện chi lực, cực kỳ bạo liệt.'
+    },
+    'moc_linh_thach': {
+        id: 'moc_linh_thach',
+        name: 'Mộc Linh Thạch',
+        type: 'spirit_stone',
+        grade: 'HA',
+        attribute: 'WOOD',
+        icon: '🌿',
+        quality: 'Phàm',
+        price: 5,
+        weight: 0.01,
+        description: 'Chứa sinh mệnh tinh hoa, hỗ trợ hồi phục và trồng trọt.'
+    },
+    'ma_linh_thach': {
+        id: 'ma_linh_thach',
+        name: 'Ma Linh Thạch',
+        type: 'spirit_stone',
+        grade: 'HA',
+        attribute: 'DEMON',
+        icon: '🌑',
+        quality: 'Phàm',
+        price: 10,
+        weight: 0.01,
+        description: 'Chứa ma khí loãng, dùng cho ma tu hoặc các tà thuật.'
+    },
+    'phe_thach': {
+        id: 'phe_thach',
+        name: 'Phế Linh Thạch',
+        type: 'material',
+        icon: '🪨',
+        quality: 'Phàm',
+        price: 0.1,
+        weight: 0.01,
+        description: 'Linh thạch đã bị hút cạn linh khí, chỉ còn là đá vụn.'
     },
 
     // --- SPECIAL ENERGY SOURCES ---
@@ -312,14 +437,17 @@ export const ITEMS = {
     },
 
     // --- TALISMAN PAPERS (GIẤY PHÙ) ---
-    'hoang_chi_phu': {
-        id: 'hoang_chi_phu',
-        name: 'Hoàng Chỉ Phù',
-        type: 'talisman_paper',
-        icon: '📄',
-        quality: 'Phàm',
-        price: 10,
-        description: 'Giấy phù phổ thông, dùng cho phù lục sơ cấp.'
+    'hoang_chi_phu': { id: 'hoang_chi_phu', name: 'Hoàng Chỉ Phù', type: 'material', price: 10, description: 'Giấy phù vàng cơ bản.' },
+    'chu_sa_muc': { id: 'chu_sa_muc', name: 'Chu Sa Mực', type: 'material', price: 20, description: 'Mực chu sa dùng để vẽ phù.' },
+
+    // Khôi Lỗi
+    'khoi_loi_item': { 
+        id: 'khoi_loi_item', 
+        name: 'Khôi Lỗi', 
+        type: 'puppet', 
+        icon: '🤖', 
+        price: 1000, 
+        description: 'Một con khôi lỗi cơ quan thuật.' 
     },
     'linh_moc_phu': {
         id: 'linh_moc_phu',

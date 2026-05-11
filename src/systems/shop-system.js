@@ -69,7 +69,7 @@ export class ShopSystem {
         
         // Execute transaction
         this.player.inventory.removeItem(itemId, quantity);
-        this.player.lingShi += sellPrice;
+        this.player.addLingShi(sellPrice);
 
         return { success: true, msg: `Đã bán ${quantity}x ${itemData.name}, nhận được ${sellPrice} Linh Thạch!` };
     }

@@ -13,6 +13,7 @@ import { InventoryScreen } from './ui/screens/InventoryScreen.js';
 import { CharacterScreen } from './ui/screens/CharacterScreen.js';
 import { SystemsScreen } from './ui/screens/SystemsScreen.js';
 import { BattleScreen } from './ui/screens/BattleScreen.js';
+import { SpiritStoneUI } from './ui/spirit-stone-ui.js';
 
 // Import Systems
 import { ShopSystem } from './systems/shop-system.js';
@@ -27,9 +28,12 @@ import { TalismanSystem } from './systems/talisman-system.js';
 import { SmithingSystem } from './systems/smithing-system.js';
 import { BeastSystem } from './systems/beast-system.js';
 import { CorpseSystem } from './systems/corpse-system.js';
+import { CREATION_ORIGINS } from './configs/creation-data.js';
 import { TechniqueSystem } from './systems/technique-system.js';
 import { CreationSystem } from './systems/creation-system.js';
 import { EnergySystem } from './systems/energy-system.js';
+import { SpiritStoneSystem } from './systems/spirit-stone-system.js';
+import { PuppetSystem } from './systems/puppet-system.js';
 
 export class Game {
     constructor() {
@@ -50,6 +54,7 @@ export class Game {
         this.screens.character = new CharacterScreen();
         this.screens.systems = new SystemsScreen();
         this.screens.battle = new BattleScreen();
+        this.screens.spiritStone = new SpiritStoneUI();
 
         // 3. Khởi tạo Creation System (cho màn hình mới)
         state.systems.creation = new CreationSystem();
@@ -185,7 +190,9 @@ export class Game {
             beast: new BeastSystem(player, state.ui),
             corpse: new CorpseSystem(player, state.ui),
             energy: new EnergySystem(player, state.ui),
-            technique: new TechniqueSystem(player)
+            technique: new TechniqueSystem(player),
+            spiritStone: new SpiritStoneSystem(player, state.ui),
+            puppet: new PuppetSystem(player, state.ui)
         });
 
         if (savedData && savedData.time) {
@@ -254,6 +261,9 @@ export class Game {
         if (this.screens.systems) {
             this.screens.systems.renderAlchemy();
             this.screens.systems.renderShop();
+        }
+        if (this.screens.spiritStone) {
+            this.screens.spiritStone.render();
         }
     }
 
@@ -354,8 +364,111 @@ export class Game {
     }
 
     showPlantMenu(index) {
-        // ... Logic chọn hạt giống
-        state.ui.toast("Menu gieo hạt đang được chuẩn bị...", "info");
+        const seeds = state.player.inventory.items.filter(i => i.id.startsWith('seed_'));
+        const menu = document.getElementById('garden-menu-content');
+        const title = document.getElementById('garden-menu-title');
+        const subtitle = document.getElementById('garden-menu-subtitle');
+        
+        if (!menu || !title || !subtitle) return;
+
+        title.textContent = 'Gieo Hạt Linh Thảo';
+        subtitle.textContent = `Ô đất số ${index + 1}`;
+        menu.innerHTML = '';
+        
+        if (seeds.length === 0) {
+            menu.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Túi đồ không có hạt giống nào...</div>';
+        } else {
+            seeds.forEach(seed => {
+                const itemData = getItemById(seed.id);
+                const el = document.createElement('div');
+                el.className = 'p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between hover:bg-white/10 cursor-pointer transition-all';
+                el.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">${itemData.icon || '🌱'}</span>
+                        <div>
+                            <div class="text-xs font-bold text-white">${itemData.name}</div>
+                            <div class="text-[9px] text-gray-500 uppercase tracking-tighter">Số lượng: ${seed.quantity}</div>
+                        </div>
+                    </div>
+                    <button class="px-4 py-2 bg-qi-jade/20 text-qi-jade text-[10px] font-bold rounded-xl border border-qi-jade/20">CHỌN</button>
+                `;
+                el.onclick = () => {
+                    const res = state.systems.garden.plant(index, seed.id);
+                    state.ui.toast(res.msg, res.success ? 'success' : 'error');
+                    state.ui.toggleOverlay('garden-menu-overlay', false);
+                    this.refreshUI();
+                };
+                menu.appendChild(el);
+            });
+        }
+        state.ui.toggleOverlay('garden-menu-overlay', true);
+    }
+
+    showFieldMenu(index) {
+        const plot = state.player.gardenPlots[index];
+        const menu = document.getElementById('garden-menu-content');
+        const title = document.getElementById('garden-menu-title');
+        const subtitle = document.getElementById('garden-menu-subtitle');
+        
+        if (!menu || !title || !subtitle) return;
+
+        title.textContent = 'Quản Lý Linh Điền';
+        subtitle.textContent = `Ô đất số ${index + 1}`;
+        menu.innerHTML = '';
+
+        // Upgrade Section
+        const grades = Object.keys(FIELD_GRADES);
+        const curGradeIdx = grades.indexOf(plot.grade);
+        if (curGradeIdx < grades.length - 1) {
+            const nextGrade = grades[curGradeIdx + 1];
+            const gInfo = FIELD_GRADES[nextGrade];
+            const upEl = document.createElement('div');
+            upEl.className = 'p-5 bg-gradient-to-r from-qi-jade/10 to-transparent border border-qi-jade/20 rounded-3xl space-y-3';
+            upEl.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <h4 class="text-xs font-bold text-qi-jade uppercase">Nâng cấp phẩm cấp</h4>
+                    <span class="text-[10px] font-mono text-white">${gInfo.cost} LT</span>
+                </div>
+                <p class="text-[9px] text-gray-500">Nâng cấp lên ${gInfo.name} để tăng tốc độ sinh trưởng (${gInfo.speedMult}x).</p>
+                <button class="w-full py-2.5 bg-qi-jade text-black text-[10px] font-bold rounded-xl active:scale-95 transition-all" onclick="window.game.upgradeField(${index})">NÂNG CẤP NGAY</button>
+            `;
+            menu.appendChild(upEl);
+        }
+
+        // Attribute Section
+        const attrTitle = document.createElement('h4');
+        attrTitle.className = 'text-[9px] text-gray-500 uppercase font-bold px-2 mt-4';
+        attrTitle.textContent = 'Thay đổi thuộc tính (500 LT)';
+        menu.appendChild(attrTitle);
+
+        const attrGrid = document.createElement('div');
+        attrGrid.className = 'grid grid-cols-2 gap-2';
+        Object.values(FIELD_ATTRIBUTES).forEach(attr => {
+            const isCurrent = plot.attribute === attr.id;
+            const btn = document.createElement('button');
+            btn.className = `p-3 rounded-2xl border text-[10px] font-bold flex items-center justify-center space-x-2 transition-all ${isCurrent ? 'bg-white/10 border-white/40 text-white' : 'bg-white/5 border-white/5 text-gray-500 hover:bg-white/10'}`;
+            btn.innerHTML = `<span>${attr.icon}</span> <span>${attr.name}</span>`;
+            btn.onclick = () => {
+                if (isCurrent) return;
+                const res = state.systems.garden.setAttribute(index, attr.id);
+                state.ui.toast(res.msg, res.success ? 'success' : 'error');
+                if (res.success) this.showFieldMenu(index);
+                this.refreshUI();
+            };
+            attrGrid.appendChild(btn);
+        });
+        menu.appendChild(attrGrid);
+
+        state.ui.toggleOverlay('garden-menu-overlay', true);
+    }
+
+    upgradeField(index) {
+        if (state.systems.garden) {
+            const res = state.systems.garden.upgradeField(index);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success) this.showFieldMenu(index);
+            this.refreshUI();
+        }
     }
 
     buyItem(id) {
@@ -420,6 +533,14 @@ export class Game {
         }
     }
 
+    craftPuppet(recipeId) {
+        if (state.systems.puppet) {
+            const res = state.systems.puppet.craft(recipeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
     guildCertify(level) {
         if (state.systems.guild) {
             const res = state.systems.guild.certify(level);
@@ -446,6 +567,11 @@ export class Game {
     selectCreationOrigin(id) {
         if (state.systems.creation) {
             state.systems.creation.selectedOrigin = id;
+            // Sync starting resources from origin
+            const origin = CREATION_ORIGINS[id];
+            if (origin) {
+                state.systems.creation.startingLingShi = origin.resources.lingShi;
+            }
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }
@@ -467,6 +593,17 @@ export class Game {
             } else if (mode === 'special') {
                 // ... logic for special scenarios if needed
             }
+            // Ensure starting resources are synced with mode defaults if needed
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    adjustStartingLingShi(amount) {
+        if (state.systems.creation) {
+            state.systems.creation.startingLingShi += amount;
+            // Limit minimum to -10,000 (huge debt) and maximum to 1,000,000
+            state.systems.creation.startingLingShi = Math.max(-10000, Math.min(1000000, state.systems.creation.startingLingShi));
+            state.systems.creation.calculatePoints();
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }

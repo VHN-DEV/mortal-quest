@@ -44,24 +44,44 @@ export class Inventory {
         return item && item.quantity >= quantity;
     }
 
-    useItem(itemId) {
+    useItem(itemId, quantity = 1) {
         const itemData = getItemById(itemId);
         if (!itemData) return false;
 
         const index = this.items.findIndex(i => i.id === itemId);
-        if (index === -1 || this.items[index].quantity <= 0) return false;
+        if (index === -1 || this.items[index].quantity < quantity) return false;
 
         if (itemData.type === 'consumable' && itemData.effect) {
-            this.applyEffect(itemData.effect);
-            this.removeItem(itemId, 1);
+            for (let i = 0; i < quantity; i++) {
+                this.applyEffect(itemData.effect);
+            }
+            this.removeItem(itemId, quantity);
             return true;
         } else if (itemData.type === 'book' && itemData.techniqueId) {
+            // Sách thì thường dùng từng cuốn một
             if (this.player.learnTechnique(itemData.techniqueId)) {
                 this.removeItem(itemId, 1);
                 return true;
             }
+        } else if (itemData.type === 'spirit_stone') {
+            const ss = state.systems.spiritStone;
+            if (ss) {
+                const res = ss.absorb(itemId, quantity);
+                return res.success;
+            }
         }
         return false;
+    }
+
+    getTotalWeight() {
+        let total = 0;
+        this.items.forEach(i => {
+            const data = getItemById(i.id);
+            if (data && data.weight) {
+                total += data.weight * i.quantity;
+            }
+        });
+        return total;
     }
 
     applyEffect(effect) {
@@ -100,6 +120,13 @@ export class Inventory {
                 this.player.ownedFlames.push(effect.value);
                 this.player.currentFlame = effect.value; // Auto switch to better flame
             }
+        } else if (effect.type === 'buff') {
+            this.player.addBuff({
+                id: effect.id || 'temp_buff',
+                stat: effect.stat,
+                value: effect.value,
+                duration: (effect.duration || 3600) * 1000 // duration is in seconds in item-data
+            });
         }
     }
 

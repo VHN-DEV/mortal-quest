@@ -14,6 +14,7 @@ export class CreationSystem {
         this.selectedOrigin = 'tan_tu';
         this.selectedTraits = [];
         this.playerName = "Phàm Nhân";
+        this.startingLingShi = 0;
     }
 
     calculatePoints() {
@@ -32,6 +33,11 @@ export class CreationSystem {
         this.selectedTraits.forEach(traitId => {
             total -= CREATION_TRAITS[traitId].cost;
         });
+
+        // Starting Ling Shi cost (1 point per 100 Ling Shi, if positive)
+        if (this.startingLingShi > 0) {
+            total -= Math.floor(this.startingLingShi / 100);
+        }
         
         this.points = total;
         return total;
@@ -67,6 +73,7 @@ export class CreationSystem {
         this.selectedPhysique = scenario.setup.physique;
         this.selectedOrigin = scenario.setup.origin;
         this.selectedTraits = [...scenario.setup.traits];
+        this.startingLingShi = CREATION_ORIGINS[this.selectedOrigin].resources.lingShi;
         this.calculatePoints();
     }
 
@@ -82,6 +89,7 @@ export class CreationSystem {
         
         const originKeys = Object.keys(CREATION_ORIGINS);
         this.selectedOrigin = originKeys[Math.floor(Math.random() * originKeys.length)];
+        this.startingLingShi = CREATION_ORIGINS[this.selectedOrigin].resources.lingShi;
         
         // Random traits
         const traitKeys = Object.keys(CREATION_TRAITS);
@@ -121,7 +129,7 @@ export class CreationSystem {
         };
         
         // Apply Origin resources
-        player.lingShi = origin.resources.lingShi;
+        player.addLingShi(this.startingLingShi);
         origin.resources.items.forEach(itemId => player.inventory.addItem(itemId, 1));
         if (origin.resources.karma) player.karma = origin.resources.karma;
         

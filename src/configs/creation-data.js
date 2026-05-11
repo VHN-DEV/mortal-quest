@@ -24,6 +24,8 @@ export const CREATION_PHYSIQUES = {
 
 export const CREATION_ORIGINS = {
     'tan_tu': { id: 'tan_tu', name: 'Tán Tu', cost: 0, desc: 'Tự do tự tại, không có tài nguyên khởi đầu.', resources: { lingShi: 0, items: [] } },
+    'vo_gia_cu': { id: 'vo_gia_cu', name: 'Vô Gia Cư', cost: -10, desc: 'Không nơi nương tựa, bắt đầu với hai bàn tay trắng.', resources: { lingShi: 0, items: [] } },
+    'no_nan': { id: 'no_nan', name: 'Nợ Nần Chồng Chất', cost: -30, desc: 'Gánh trên vai món nợ lớn của gia tộc.', resources: { lingShi: -2000, items: [] } },
     'gia_toc': { id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 30, desc: 'Sinh ra trong gia tộc, có sẵn linh thạch và công pháp.', resources: { lingShi: 500, items: ['truong_sinh_quyet_book'] } },
     'tong_mon': { id: 'tong_mon', name: 'Đệ Tử Tông Môn', cost: 50, desc: 'Được tông môn che chở, có pháp bảo phòng thân.', resources: { lingShi: 200, items: ['phi_kiem_go', 'ao_bo_so_cap'] } },
     'ma_dao': { id: 'ma_dao', name: 'Hậu Nhân Ma Đạo', cost: 20, desc: 'Công pháp bá đạo nhưng bị chính đạo truy quét.', resources: { lingShi: 300, items: ['huyet_don_thuat_book'], karma: -50 } },

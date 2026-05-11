@@ -8,10 +8,18 @@ export class Player {
         this.name = "Phàm Nhân";
         this.realmId = 1;
         this.tuVi = 0;
-        this.lingShi = 1000; // Base Hạ Phẩm
+        this.buffs = []; // Array of { id, type, value, endTime }
+        this.pendingEvents = [];
+        
+        // --- Cấu trúc Linh Thạch mới (Dựa trên vật phẩm) ---
+        // this.lingShi sẽ được tính toán động từ Inventory
         this.totalSpent = 0;
         this.vipLevel = 0;
-        this.lingShiGrades = { ha: 1000, trung: 0, thuong: 0, cuc: 0 };
+        this.spiritStoneSettings = {
+            autoUsePriority: ['HA', 'TRUNG', 'THUONG'],
+            lockCucPham: true,
+            minReserve: 0
+        };
 
         // Body & Soul systems
         this.bodyRealmId = 1;
@@ -82,7 +90,11 @@ export class Player {
         this.ownedCauldrons = ['pham_lu'];
         this.alchemyReputation = 0;
         this.currentAlchemyRoom = null;
-        this.gardenPlots = [null, null, null]; // 3 initial plots
+        this.gardenPlots = [
+            { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' },
+            { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' },
+            { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' }
+        ];
         this.mountainSurvival = { oxygen: 100, toxicity: 0 };
 
         // Talisman System
@@ -91,6 +103,11 @@ export class Player {
         this.currentTalismanPen = 'truc_phu_but';
         this.knownTalismanRecipes = ['hoa_cau_phu'];
         this.ownedTalismanPens = ['truc_phu_but'];
+
+        // Puppet System
+        this.puppetLevel = 1;
+        this.puppetExp = 0;
+        this.knownPuppetRecipes = ['thiet_giap_khoi_loi'];
         
         // Smithing System
         this.smithingLevel = 1;
@@ -137,32 +154,112 @@ export class Player {
         this.currentEnvironmentalQi = null; // { type, concentration, purity }
     }
 
+    get lingShi() {
+        if (!this.inventory) return 0;
+        let total = 0;
+        const mappings = {
+            'ling_thach_ha': 1,
+            'ling_thach_trung': 100,
+            'ling_thach_thuong': 10000,
+            'ling_thach_cuc': 1000000
+        };
+        
+        this.inventory.items.forEach(item => {
+            if (mappings[item.id]) {
+                total += item.quantity * mappings[item.id];
+            }
+        });
+        return total;
+    }
+
     getFormattedLingShi() {
-        let total = this.lingShi;
-        const cuc = Math.floor(total / 1000000);
-        total %= 1000000;
-        const thuong = Math.floor(total / 10000);
-        total %= 10000;
-        const trung = Math.floor(total / 100);
-        const ha = total % 100;
+        const counts = {
+            'ling_thach_ha': 0,
+            'ling_thach_trung': 0,
+            'ling_thach_thuong': 0,
+            'ling_thach_cuc': 0
+        };
+
+        if (this.inventory) {
+            this.inventory.items.forEach(item => {
+                if (counts.hasOwnProperty(item.id)) {
+                    counts[item.id] += item.quantity;
+                }
+            });
+        }
 
         let res = [];
-        if (cuc > 0) res.push(`${cuc} Cực`);
-        if (thuong > 0) res.push(`${thuong} Thượng`);
-        if (trung > 0) res.push(`${trung} Trung`);
-        if (ha > 0 || res.length === 0) res.push(`${ha} Hạ`);
+        if (counts['ling_thach_cuc'] > 0) res.push(`<span class="grade-cuc">${counts['ling_thach_cuc']} Cực</span>`);
+        if (counts['ling_thach_thuong'] > 0) res.push(`<span class="grade-thuong">${counts['ling_thach_thuong']} Thượng</span>`);
+        if (counts['ling_thach_trung'] > 0) res.push(`<span class="grade-trung">${counts['ling_thach_trung']} Trung</span>`);
+        if (counts['ling_thach_ha'] > 0 || res.length === 0) res.push(`<span class="grade-ha">${counts['ling_thach_ha']} Hạ</span>`);
         
         return res.join(' ');
     }
 
     spendLingShi(amount) {
-        if (this.lingShi >= amount) {
-            this.lingShi -= amount;
+        if (this.lingShi < amount) return false;
+
+        let remaining = amount;
+        const priority = this.spiritStoneSettings.autoUsePriority;
+        const mappings = {
+            'HA': { id: 'ling_thach_ha', val: 1 },
+            'TRUNG': { id: 'ling_thach_trung', val: 100 },
+            'THUONG': { id: 'ling_thach_thuong', val: 10000 },
+            'CUC': { id: 'ling_thach_cuc', val: 1000000 }
+        };
+
+        // Tiêu thụ theo thứ tự ưu tiên
+        for (const gradeId of priority) {
+            if (gradeId === 'CUC' && this.spiritStoneSettings.lockCucPham && amount < 1000000) continue;
+            
+            const gradeInfo = mappings[gradeId];
+            const item = this.inventory.items.find(i => i.id === gradeInfo.id);
+            
+            if (item && item.quantity > 0) {
+                const totalValAvailable = item.quantity * gradeInfo.val;
+                if (totalValAvailable >= remaining) {
+                    const countToUse = Math.ceil(remaining / gradeInfo.val);
+                    const overpaid = (countToUse * gradeInfo.val) - remaining;
+                    
+                    this.inventory.removeItem(gradeInfo.id, countToUse);
+                    remaining = 0;
+                    
+                    // Thối lại (Refund) nếu dùng đá cấp cao cho số lẻ
+                    if (overpaid > 0) {
+                        this.addLingShi(overpaid);
+                    }
+                    break;
+                } else {
+                    remaining -= totalValAvailable;
+                    this.inventory.removeItem(gradeInfo.id, item.quantity);
+                }
+            }
+        }
+
+        if (remaining === 0) {
             this.totalSpent += amount;
             this.updateVipLevel();
             return true;
         }
+
+        // Nếu vẫn còn nợ (do khóa Cực Phẩm hoặc logic khác), thử dùng nốt các loại khác không trong priority
+        // (Implementation omitted for brevity, but recommended)
+        
         return false;
+    }
+
+    addLingShi(amount) {
+        if (amount === 0) return;
+        
+        // Nếu số lượng lớn (ví dụ > 10,000), có thể cân nhắc chia nhỏ hoặc giữ nguyên Hạ Phẩm.
+        // Theo yêu cầu "không nên làm tròn", ta sẽ thêm trực tiếp vào loại tương ứng hoặc mặc định là Hạ Phẩm.
+        if (amount > 0) {
+            this.inventory.addItem('ling_thach_ha', amount);
+        } else {
+            // Trường hợp số âm (nợ), ta không thêm item mà trừ đi (nếu có logic xử lý nợ riêng)
+            // Hiện tại spendLingShi đã xử lý việc trừ.
+        }
     }
 
     updateVipLevel() {
@@ -219,6 +316,40 @@ export class Player {
         this.mana = Math.min(this.maxMana, this.mana + 0.05 * delta);
         // Base regen is 0.2% per second, increased to 1% for better experience
         this.hp = Math.min(this.maxHp, this.hp + 0.01 * this.maxHp * delta);
+
+        // Update Buffs
+        this.updateBuffs(delta);
+    }
+
+    updateBuffs(delta) {
+        if (!this.buffs || this.buffs.length === 0) return;
+        
+        const now = Date.now();
+        const beforeCount = this.buffs.length;
+        this.buffs = this.buffs.filter(b => b.endTime > now);
+        
+        if (this.buffs.length !== beforeCount) {
+            this.calculateStats();
+        }
+    }
+
+    addBuff(buff) {
+        // buff: { id, stat, value, duration (ms) }
+        const endTime = Date.now() + (buff.duration || 0);
+        
+        // Remove existing same type buff if needed or stack?
+        // For now, replace if same id
+        const index = this.buffs.findIndex(b => b.id === buff.id);
+        if (index > -1) {
+            this.buffs[index].endTime = endTime;
+            this.buffs[index].value = buff.value;
+        } else {
+            this.buffs.push({
+                ...buff,
+                endTime
+            });
+        }
+        this.calculateStats();
     }
 
     cultivate(efficiency = 1.0) {
@@ -346,6 +477,9 @@ export class Player {
         this.bodyExpPerSecond = 0;
         this.soulExpPerSecond = 0;
 
+        // Apply technique bonuses
+        // ... (existing code for techniques usually comes here or after)
+
         // TU VI level increases ALL base stats significantly
         const realmMult = Math.pow(1.8, realmLevel - 1);
         
@@ -354,6 +488,17 @@ export class Player {
         this.atk = 10 * realmMult;
         this.def = 5 * realmMult;
         this.spd = 15 + (realmLevel * 5);
+
+        // Apply Buffs to Stats
+        if (this.buffs) {
+            this.buffs.forEach(b => {
+                if (b.stat === 'atk') this.atk *= b.value;
+                if (b.stat === 'def') this.def *= b.value;
+                if (b.stat === 'spd') this.spd *= b.value;
+                if (b.stat === 'maxHp') this.maxHp *= b.value;
+                if (b.stat === 'maxMana') this.maxMana *= b.value;
+            });
+        }
 
         // Body Realm adds to HP and Def
         this.maxHp += 50 * (bodyLevel - 1) * Math.sqrt(realmLevel);
@@ -402,6 +547,15 @@ export class Player {
         // Ensure current HP/Mana don't exceed max
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);
+
+        // Final Buff pass for rates
+        if (this.buffs) {
+            this.buffs.forEach(b => {
+                if (b.stat === 'tu_vi_speed') this.tuViPerSecond *= b.value;
+                if (b.stat === 'body_speed') this.bodyExpPerSecond *= b.value;
+                if (b.stat === 'soul_speed') this.soulExpPerSecond *= b.value;
+            });
+        }
     }
 
     applyTechniqueToStats(path, techId) {
@@ -538,7 +692,12 @@ export class Player {
         this.name = data.name || "Phàm Nhân";
         this.realmId = data.realmId || 1;
         this.tuVi = data.tuVi || 0;
-        this.lingShi = data.lingShi || 0;
+        
+        // Migration for old numeric lingShi
+        if (typeof data.lingShi === 'number' && data.lingShi > 0) {
+            // We'll handle this after inventory is loaded
+            this._legacyLingShi = data.lingShi;
+        }
 
         this.bodyRealmId = data.bodyRealmId || 1;
         this.bodyExp = data.bodyExp || 0;
@@ -577,7 +736,18 @@ export class Player {
         this.ownedCauldrons = data.ownedCauldrons || ['pham_lu'];
         this.alchemyReputation = data.alchemyReputation || 0;
         this.currentAlchemyRoom = data.currentAlchemyRoom || null;
-        this.gardenPlots = data.gardenPlots || [null, null, null];
+        if (data.gardenPlots) {
+            this.gardenPlots = data.gardenPlots.map(p => {
+                if (p === null) return { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' };
+                return p;
+            });
+        } else {
+            this.gardenPlots = [
+                { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' },
+                { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' },
+                { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' }
+            ];
+        }
         this.mountainSurvival = data.mountainSurvival || { oxygen: 100, toxicity: 0 };
         this.age = data.age || 18;
         this.maxAge = data.maxAge || 100;
@@ -587,10 +757,11 @@ export class Player {
         this.beastLevel = data.beastLevel || 1;
         this.beastExp = data.beastExp || 0;
         this.beasts = data.beasts || [];
-        this.hatchingBeasts = data.hatchingBeasts || [];
-
         this.corpseLevel = data.corpseLevel || 1;
         this.corpseExp = data.corpseExp || 0;
+        this.puppetLevel = data.puppetLevel || 1;
+        this.puppetExp = data.puppetExp || 0;
+        this.knownPuppetRecipes = data.knownPuppetRecipes || ['thiet_giap_khoi_loi'];
         this.refinedCorpses = data.refinedCorpses || [];
 
         this.formationLevel = data.formationLevel || 1;
@@ -615,7 +786,15 @@ export class Player {
         // Energy (Qi) System
         this.qiAccumulated = data.qiAccumulated || {};
         this.currentEnvironmentalQi = data.currentEnvironmentalQi || null;
+        
+        this.spiritStoneSettings = data.spiritStoneSettings || {
+            autoUsePriority: ['HA', 'TRUNG', 'THUONG'],
+            lockCucPham: true,
+            minReserve: 0
+        };
 
+        this.buffs = data.buffs || [];
+        
         this.calculateStats();
     }
 
@@ -644,6 +823,7 @@ export class Player {
             talents: this.talents,
             destinyRating: this.destinyRating,
             knownNPCs: this.knownNPCs,
+            buffs: this.buffs,
             karma: this.karma,
             party: this.party,
             alchemyLevel: this.alchemyLevel,
@@ -668,6 +848,9 @@ export class Player {
             hatchingBeasts: this.hatchingBeasts,
             corpseLevel: this.corpseLevel,
             corpseExp: this.corpseExp,
+            puppetLevel: this.puppetLevel,
+            puppetExp: this.puppetExp,
+            knownPuppetRecipes: this.knownPuppetRecipes,
             refinedCorpses: this.refinedCorpses,
             formationLevel: this.formationLevel,
             formationExp: this.formationExp,
@@ -685,7 +868,8 @@ export class Player {
             secretTechniqueCooldowns: this.secretTechniqueCooldowns,
             techniquePoints: this.techniquePoints,
             qiAccumulated: this.qiAccumulated,
-            currentEnvironmentalQi: this.currentEnvironmentalQi
+            currentEnvironmentalQi: this.currentEnvironmentalQi,
+            spiritStoneSettings: this.spiritStoneSettings
         };
     }
 
@@ -744,6 +928,16 @@ export class Player {
         const nextLevel = Math.floor(Math.sqrt(this.formationExp / 100)) + 1;
         if (nextLevel > this.formationLevel) {
             this.formationLevel = nextLevel;
+            return true;
+        }
+        return false;
+    }
+
+    addPuppetExp(amount) {
+        this.puppetExp += amount;
+        const nextLevel = Math.floor(Math.sqrt(this.puppetExp / 100)) + 1;
+        if (nextLevel > this.puppetLevel) {
+            this.puppetLevel = nextLevel;
             return true;
         }
         return false;

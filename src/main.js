@@ -63,7 +63,7 @@ window.renderMainStats = () => {
     }
 
     if (elPerSec) elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
-    if (elLingShiText) elLingShiText.textContent = player.getFormattedLingShi();
+    if (elLingShiText) elLingShiText.innerHTML = player.getFormattedLingShi();
     
     renderTimeHUD();
 };
@@ -128,6 +128,21 @@ window.renderCreationScreen = () => {
     }
 
     if (elPointsContainer) elPointsContainer.classList.toggle('hidden', sys.mode !== 'custom');
+    
+    // Starting Resources Panel (Custom only)
+    const elResourcesPanel = document.getElementById('creation-resources-panel');
+    if (elResourcesPanel) elResourcesPanel.classList.toggle('hidden', sys.mode !== 'custom');
+    
+    const elLingShiInput = document.getElementById('creation-lingshi-input');
+    if (elLingShiInput) {
+        elLingShiInput.value = sys.startingLingShi;
+        elLingShiInput.onchange = (e) => {
+            const val = parseInt(e.target.value) || 0;
+            sys.startingLingShi = val;
+            sys.calculatePoints();
+            window.renderCreationScreen();
+        };
+    }
     
     if (elPoints) {
         elPoints.textContent = sys.points;

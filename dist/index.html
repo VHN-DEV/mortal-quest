@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-DFwnuBBF.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-C0GauA0V.css">
+  <script type="module" crossorigin src="./assets/index-Nt-GCz0l.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Cj1mc0bE.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-1.5 bg-black/40 px-3 py-1 rounded-full border border-white/5">
+                <div id="header-lingshi-container" class="flex items-center space-x-1.5 bg-black/40 px-3 py-1 rounded-full border border-white/5 cursor-pointer hover:border-cultivation-gold/50 transition-all active:scale-95">
                     <span class="text-xs text-cultivation-gold font-bold">LT:</span>
                     <span id="ling-shi-text" class="text-xs font-mono text-white">100</span>
                 </div>
@@ -141,6 +141,27 @@
                                     class="text-[10px] md:text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">
                                     Xuất Thân</h3>
                                 <div id="creation-origins-list" class="space-y-2 md:space-y-3"></div>
+                            </section>
+
+                            <!-- Starting Resources (Custom Mode only) -->
+                            <section id="creation-resources-panel" class="space-y-4 hidden">
+                                <h3
+                                    class="text-[10px] md:text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">
+                                    Tài Nguyên Khởi Đầu</h3>
+                                <div class="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <label class="text-[9px] text-gray-400 uppercase tracking-widest">Linh Thạch (Hạ)</label>
+                                        <div class="flex items-center space-x-2">
+                                            <button onclick="window.game.adjustStartingLingShi(-100)" class="w-8 h-8 bg-black/40 border border-white/10 rounded-lg flex items-center justify-center hover:bg-qi-blue/20 transition-all">-</button>
+                                            <div class="relative">
+                                                <input id="creation-lingshi-input" type="number" value="0" class="w-24 bg-black/60 border border-white/10 rounded-lg p-1 pr-6 text-center text-xs text-qi-blue outline-none">
+                                                <span class="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] text-gray-500">Hạ</span>
+                                            </div>
+                                            <button onclick="window.game.adjustStartingLingShi(100)" class="w-8 h-8 bg-black/40 border border-white/10 rounded-lg flex items-center justify-center hover:bg-qi-blue/20 transition-all">+</button>
+                                        </div>
+                                    </div>
+                                    <p class="text-[8px] text-gray-500 italic">"Mỗi 100 Linh Thạch tiêu tốn 1 điểm Tiên Duyên."</p>
+                                </div>
                             </section>
 
                             <!-- Traits -->
@@ -818,12 +839,26 @@
                             </div>
                         </div>
 
-                        <div class="bg-white/[0.03] p-6 rounded-3xl border border-white/5 mb-8 relative z-10">
+                        <div class="bg-white/[0.03] p-6 rounded-3xl border border-white/5 mb-6 relative z-10">
                             <p id="detail-desc" class="text-sm text-gray-400 italic leading-relaxed text-center mb-4">
                             </p>
                             <div id="detail-stats"
                                 class="space-y-2 border-t border-white/5 pt-4 text-[11px] font-mono text-qi-purple/90">
                                 <!-- Stats injected here -->
+                            </div>
+                        </div>
+
+                        <!-- Quantity Selector (NEW) -->
+                        <div id="detail-quantity-container" class="mb-6 relative z-10 hidden">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-[9px] text-gray-500 uppercase tracking-widest">Số lượng</span>
+                                <span id="detail-max-quantity" class="text-[9px] text-qi-blue font-mono">Tối đa: 0</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button id="detail-qty-minus" class="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-qi-blue/10 transition-all text-gray-400">-</button>
+                                <input id="detail-quantity-input" type="number" value="1" min="1" class="flex-grow bg-black/40 border border-white/10 rounded-xl py-2 text-center text-qi-blue text-sm outline-none font-mono">
+                                <button id="detail-qty-plus" class="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-qi-blue/10 transition-all text-gray-400">+</button>
+                                <button id="detail-qty-max" class="px-3 py-2 bg-qi-blue/10 text-qi-blue text-[9px] font-bold rounded-xl border border-qi-blue/20 active:scale-95 transition-all">MAX</button>
                             </div>
                         </div>
 
@@ -933,6 +968,27 @@
                                 <p id="hub-formation-level"
                                     class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Trận
                                     Pháp Sư</p>
+                            </div>
+                            <i class="ph ph-caret-right text-gray-600"></i>
+                        </div>
+                    </div>
+
+                    <!-- Puppet Card (NEW) -->
+                    <div onclick="window.game.openCrafting('puppet')"
+                        class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+                        <div
+                            class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">
+                            🤖</div>
+                        <div class="flex items-center space-x-4">
+                            <div
+                                class="w-14 h-14 bg-qi-blue/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(79,209,197,0.2)]">
+                                🤖</div>
+                            <div class="flex-grow">
+                                <h3 class="text-xl font-ancient text-white group-hover:text-qi-blue transition-colors">
+                                    Khôi Lỗi</h3>
+                                <p id="hub-puppet-level"
+                                    class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Khôi Lỗi Sư
+                                </p>
                             </div>
                             <i class="ph ph-caret-right text-gray-600"></i>
                         </div>
@@ -1142,6 +1198,29 @@
                 <div id="beast-list-view" class="flex-grow overflow-y-auto space-y-4 custom-scroll pb-10">
                 </div>
                 <div id="beast-hatch-view" class="hidden flex-grow overflow-y-auto space-y-4 custom-scroll pb-10"></div>
+            </div>
+
+            <!-- Tab: Khôi Lỗi (Puppet - NEW) -->
+            <div id="screen-puppet" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-charm text-qi-blue">Khôi Lỗi Đường</h2>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Cơ Quan Diệu Pháp</p>
+                    </div>
+                    <div class="text-right">
+                        <div id="puppet-level-text"
+                            class="text-[9px] font-ancient text-cultivation-gold uppercase tracking-widest">
+                            Khôi Lỗi Sư</div>
+                        <div class="w-24 h-1 bg-white/5 rounded-full mt-1.5 overflow-hidden border border-white/5">
+                            <div id="puppet-exp-bar"
+                                class="h-full bg-gradient-to-r from-qi-blue to-qi-purple shadow-[0_0_5px_rgba(79,209,197,0.5)]"
+                                style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="puppet-list" class="flex-grow overflow-y-auto space-y-4 custom-scroll pb-10">
+                    <!-- Puppet recipes will be here -->
+                </div>
             </div>
 
             <!-- Tab: Công Pháp & Bí Pháp (NEW) -->
@@ -1484,6 +1563,19 @@
         </div>
     </div>
 
+    <div id="garden-menu-overlay" class="hidden overlay-full z-[400] flex items-center justify-center bg-black/80 p-6">
+        <div class="w-full max-w-xs bg-[#0a0a0a] border border-white/10 rounded-[32px] p-6 shadow-2xl space-y-6">
+            <div class="text-center">
+                <h3 id="garden-menu-title" class="text-2xl font-ancient text-cultivation-gold">Quản Lý Linh Điền</h3>
+                <p id="garden-menu-subtitle" class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Cải Tạo & Nâng Cấp</p>
+            </div>
+            <div id="garden-menu-content" class="space-y-4 max-h-[60vh] overflow-y-auto custom-scroll pr-2">
+                <!-- Content dynamic -->
+            </div>
+            <button onclick="ui.toggleOverlay('garden-menu-overlay', false)" class="w-full py-3 bg-white/5 text-gray-400 text-xs font-bold rounded-2xl border border-white/10">ĐÓNG</button>
+        </div>
+    </div>
+
     <div id="battle-overlay" class="hidden overlay-full z-[200] bg-black">
         <div class="h-1/3 relative"><img id="enemy-img" src="" class="w-full h-full object-cover opacity-50">
             <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
@@ -1656,6 +1748,83 @@
 
     </div>
 
+    <!-- Spirit Stone Management Overlay -->
+    <div id="spirit-stone-overlay" class="hidden fixed inset-0 z-[150] flex items-center justify-center p-6">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
+        <div class="relative w-full max-w-md bg-qi-ink border border-cultivation-gold/30 rounded-[2.5rem] flex flex-col max-h-[85vh] shadow-[0_0_50px_rgba(212,175,55,0.2)] overflow-hidden">
+            <!-- Header -->
+            <div class="p-6 border-b border-white/5 flex justify-between items-center bg-cultivation-gold/5">
+                <h3 class="text-xl font-ancient text-cultivation-gold uppercase tracking-widest">Linh Thạch Các</h3>
+                <button id="close-spirit-stone-btn" class="text-gray-500 hover:text-white transition-all">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-grow overflow-y-auto p-6 space-y-8 custom-scrollbar">
+                <!-- Current Balance -->
+                <div class="bg-black/40 p-4 rounded-2xl border border-white/5 text-center">
+                    <h4 class="text-[10px] text-gray-500 uppercase tracking-widest mb-2">Số Dư Hiện Tại</h4>
+                    <div id="spirit-stone-balance" class="text-lg font-mono text-white flex flex-wrap justify-center gap-2">
+                        <!-- Dynamic balance display -->
+                    </div>
+                </div>
+
+                <!-- Conversion Section -->
+                <section class="space-y-4">
+                    <h4 class="text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">Chuyển Đổi Linh Thạch</h4>
+                    <div class="grid grid-cols-1 gap-3">
+                        <!-- Merge -->
+                        <div class="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">Ghép (100 -> 1)</span>
+                                <div class="flex space-x-1">
+                                    <button onclick="game.systems.spiritStone.merge('HA', 100)" class="px-3 py-1 bg-qi-blue/20 text-qi-blue rounded-lg text-[10px] border border-qi-blue/30 hover:bg-qi-blue/30">Ghép Hạ</button>
+                                    <button onclick="game.systems.spiritStone.merge('TRUNG', 100)" class="px-3 py-1 bg-qi-purple/20 text-qi-purple rounded-lg text-[10px] border border-qi-purple/30 hover:bg-qi-purple/30">Ghép Trung</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Split -->
+                        <div class="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">Tách (1 -> 100)</span>
+                                <div class="flex space-x-1">
+                                    <button onclick="game.systems.spiritStone.split('TRUNG', 1)" class="px-3 py-1 bg-qi-blue/10 text-gray-300 rounded-lg text-[10px] border border-white/10 hover:bg-white/10">Tách Trung</button>
+                                    <button onclick="game.systems.spiritStone.split('THUONG', 1)" class="px-3 py-1 bg-qi-blue/10 text-gray-300 rounded-lg text-[10px] border border-white/10 hover:bg-white/10">Tách Thượng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section class="space-y-4">
+                    <h4 class="text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">Thiết Lập Tiêu Hao</h4>
+                    <div class="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/10">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400">Khóa Cực Phẩm</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="ss-lock-cuc" class="sr-only peer">
+                                <div class="w-8 h-4 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-qi-purple"></div>
+                            </label>
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-white/5">
+                            <span class="text-xs text-gray-400">Tự dùng Hạ Phẩm trước</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="ss-auto-low" class="sr-only peer" checked>
+                                <div class="w-8 h-4 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-qi-blue"></div>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <div class="p-6 border-t border-white/5 text-center">
+                <p class="text-[9px] text-gray-500 italic">"Linh thạch là căn cơ của giới tu hành, hãy cẩn thận bảo quản."</p>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

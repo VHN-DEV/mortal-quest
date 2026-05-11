@@ -64,10 +64,8 @@ export class FormationSystem {
             const active = this.player.activeFormations[i];
             const formation = this.formations[active.id];
             
-            const totalCost = formation.costPerTick * minutes;
-            if (this.player.lingShi >= totalCost) {
-                this.player.lingShi -= totalCost;
-            } else {
+            const totalCost = Math.ceil(formation.costPerTick * minutes);
+            if (!this.player.spendLingShi(totalCost)) {
                 this.player.activeFormations.splice(i, 1);
                 if (this.ui) this.ui.toast(`${active.name} đã sụp đổ do thiếu Linh Thạch!`, 'error');
             }

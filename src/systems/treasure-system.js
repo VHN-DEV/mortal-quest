@@ -43,12 +43,11 @@ export class TreasureSystem {
         }
 
         const cost = amount * 10; // 10 Linh thạch mỗi điểm linh tính
-        if (this.player.lingShi < cost) {
+        if (this.player.spendLingShi(cost)) {
+            playerItem.spiritPoints = (playerItem.spiritPoints || 0) + amount;
+        } else {
             return { success: false, msg: 'Không đủ Linh Thạch để nuôi dưỡng.' };
         }
-
-        this.player.lingShi -= cost;
-        playerItem.spiritPoints = (playerItem.spiritPoints || 0) + amount;
 
         // Kiểm tra sinh Khí Linh
         if (playerItem.spiritPoints >= 1000 && !playerItem.hasSpirit) {

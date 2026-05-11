@@ -30,7 +30,10 @@ export class GuildSystem {
         );
 
         if (confirm) {
-            this.player.lingShi -= cert.requirements.fee;
+            if (!this.player.spendLingShi(cert.requirements.fee)) {
+                this.ui.toast("Không đủ Linh Thạch!", "error");
+                return;
+            }
             
             // Check inventory for task items
             const items = this.player.inventory.items.filter(i => i.id === cert.task.targetId);
@@ -45,7 +48,7 @@ export class GuildSystem {
                     this.player.inventory.removeItem(cert.task.targetId, 1);
                 }
                 this.player.alchemyReputation += cert.reward.reputation;
-                this.player.lingShi += cert.reward.lingShi;
+                this.player.addLingShi(cert.reward.lingShi);
                 this.ui.alert(`Chúc mừng! Bạn đã nhận được danh hiệu: ${cert.reward.title}`, "KHẢO HẠCH THÀNH CÔNG");
                 return true;
             } else {
@@ -73,7 +76,7 @@ export class GuildSystem {
             for (let i = 0; i < mission.quantity; i++) {
                 this.player.inventory.removeItem(mission.targetId, 1);
             }
-            this.player.lingShi += mission.rewards.lingShi;
+            this.player.addLingShi(mission.rewards.lingShi);
             this.player.alchemyReputation += mission.rewards.reputation;
             if (mission.rewards.items) {
                 mission.rewards.items.forEach(id => this.player.inventory.addItem(id, 1));
@@ -91,8 +94,7 @@ export class GuildSystem {
      */
     rentRoom(roomId) {
         const room = ALCHEMY_ROOMS.find(r => r.id === roomId);
-        if (this.player.lingShi >= room.fee) {
-            this.player.lingShi -= room.fee;
+        if (this.player.spendLingShi(room.fee)) {
             this.player.currentAlchemyRoom = room.id;
             this.ui.toast(`Đã thuê ${room.name}!`, "success");
             return true;

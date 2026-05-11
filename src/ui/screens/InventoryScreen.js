@@ -22,6 +22,14 @@ export class InventoryScreen {
         this.btnUseItem = document.getElementById('btn-use-item');
         this.btnEquipItem = document.getElementById('btn-equip-item');
         this.equipmentSlots = document.querySelectorAll('.equipment-slot');
+
+        // Quantity Selector Elements
+        this.elQtyContainer = document.getElementById('detail-quantity-container');
+        this.elQtyInput = document.getElementById('detail-quantity-input');
+        this.elQtyMaxText = document.getElementById('detail-max-quantity');
+        this.btnQtyMinus = document.getElementById('detail-qty-minus');
+        this.btnQtyPlus = document.getElementById('detail-qty-plus');
+        this.btnQtyMax = document.getElementById('detail-qty-max');
     }
 
     initEvents() {
@@ -34,13 +42,37 @@ export class InventoryScreen {
 
         if (this.btnUseItem) {
             this.btnUseItem.onclick = () => {
-                if (state.selectedItemId && state.player.inventory.useItem(state.selectedItemId)) {
+                const qty = parseInt(this.elQtyInput.value) || 1;
+                if (state.selectedItemId && state.player.inventory.useItem(state.selectedItemId, qty)) {
                     if (!state.player.inventory.items.find(i => i.id === state.selectedItemId)) {
                         state.selectedItemId = null;
                         state.ui.toggleOverlay(this.elItemDetail, false);
                     }
                     window.game.refreshUI();
                 }
+            };
+        }
+
+        if (this.btnQtyMinus) {
+            this.btnQtyMinus.onclick = () => {
+                const val = Math.max(1, (parseInt(this.elQtyInput.value) || 1) - 1);
+                this.elQtyInput.value = val;
+            };
+        }
+
+        if (this.btnQtyPlus) {
+            this.btnQtyPlus.onclick = () => {
+                const item = state.player.inventory.items.find(i => i.id === state.selectedItemId);
+                if (!item) return;
+                const val = Math.min(item.quantity, (parseInt(this.elQtyInput.value) || 1) + 1);
+                this.elQtyInput.value = val;
+            };
+        }
+
+        if (this.btnQtyMax) {
+            this.btnQtyMax.onclick = () => {
+                const item = state.player.inventory.items.find(i => i.id === state.selectedItemId);
+                if (item) this.elQtyInput.value = item.quantity;
             };
         }
 
@@ -70,7 +102,8 @@ export class InventoryScreen {
         
         if (this.elInventoryGrid) this.elInventoryGrid.innerHTML = '';
         if (this.elInventoryCapacity) {
-            this.elInventoryCapacity.textContent = `${state.player.inventory.items.length}/${state.player.inventory.maxSlots}`;
+            const weight = state.player.inventory.getTotalWeight().toFixed(2);
+            this.elInventoryCapacity.textContent = `${state.player.inventory.items.length}/${state.player.inventory.maxSlots} | ${weight}kg`;
         }
 
         state.player.inventory.items.forEach(item => {
@@ -137,10 +170,47 @@ export class InventoryScreen {
             this.elDetailName.className = `text-xl font-bold text-white font-ancient mb-1 quality-${qClass}`;
         }
         
-        this.elDetailType.textContent = `${displayQuality} phẩm | ${itemData.type}`;
-        this.elDetailDesc.textContent = itemData.description;
+        const typeNames = {
+            'spirit_stone': 'Linh Thạch',
+            'consumable': 'Vật Phẩm Tiêu Hao',
+            'book': 'Bí Tịch / Công Pháp',
+            'weapon': 'Pháp Bảo / Vũ Khí',
+            'armor': 'Pháp Y / Giáp',
+            'accessory': 'Trang Sức',
+            'treasure': 'Thiên Tài Địa Bảo',
+            'formation': 'Trận Pháp',
+            'puppet': 'Khôi Lỗi'
+        };
+        
+        this.elDetailType.textContent = `${displayQuality} Phẩm | ${typeNames[itemData.type] || itemData.type}`;
+        
+        let desc = itemData.description;
+        if (itemData.type === 'puppet' && playerItem && playerItem.metadata) {
+            desc = `${playerItem.metadata.name}\n${desc}\nĐộ bền: ${playerItem.metadata.durability}/${playerItem.metadata.maxDurability}`;
+            if (playerItem.metadata.stats) {
+                const stats = playerItem.metadata.stats;
+                desc += `\nHP: ${stats.hp} | ATK: ${stats.atk} | DEF: ${stats.def}`;
+            }
+        }
+        this.elDetailDesc.textContent = desc;
 
-        this.btnUseItem.style.display = (itemData.type === 'consumable' || itemData.type === 'book') ? 'block' : 'none';
+        // Show/Hide Quantity Container
+        const isStackable = ['spirit_stone', 'consumable'].includes(itemData.type);
+        if (this.elQtyContainer) {
+            this.elQtyContainer.classList.toggle('hidden', !isStackable);
+            if (isStackable && playerItem) {
+                this.elQtyInput.value = 1;
+                this.elQtyMaxText.textContent = `Tối đa: ${playerItem.quantity}`;
+            }
+        }
+
+        this.btnUseItem.style.display = (['consumable', 'book', 'spirit_stone'].includes(itemData.type)) ? 'block' : 'none';
+        if (itemData.type === 'spirit_stone') {
+            this.btnUseItem.textContent = 'HẤP THỤ';
+        } else {
+            this.btnUseItem.textContent = (itemData.type === 'book') ? 'HỌC TẬP' : 'SỬ DỤNG';
+        }
+
         const equippable = ['weapon', 'armor', 'accessory', 'treasure'].includes(itemData.type);
         this.btnEquipItem.style.display = equippable ? 'block' : 'none';
 

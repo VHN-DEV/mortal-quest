@@ -24,7 +24,8 @@ class GameState {
             corpse: null,
             technique: null,
             creation: null,
-            energy: null
+            energy: null,
+            puppet: null
         };
 
         // Trạng thái hiện tại

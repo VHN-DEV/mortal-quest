@@ -202,7 +202,7 @@ export class MapScreen {
             if (event.type === 'loot') {
                 const resultMsg = event.result(state.player);
                 const droppedShi = Math.floor(Math.random() * 10 * state.player.realmId);
-                state.player.lingShi += droppedShi;
+                state.player.addLingShi(droppedShi);
                 setTimeout(() => { this.updateEventDisplay(resultMsg + ` (+${droppedShi} LT)`, '🎁'); }, 1000);
             } else if (event.type === 'npc') {
                 setTimeout(() => { 
