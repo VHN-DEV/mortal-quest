@@ -701,18 +701,27 @@ export class SystemsScreen {
             }
         });
 
-        const target = document.getElementById(`screen-${type}`);
+        // Special handling for insect (it uses screen-beast but different tab)
+        let screenType = type;
+        if (type === 'insect') {
+            screenType = 'beast';
+            state.views.beast = 'insect';
+        } else if (type === 'beast') {
+            state.views.beast = 'beast';
+        }
+
+        const target = document.getElementById(`screen-${screenType}`);
         if (target) {
             target.classList.remove('hidden');
             target.classList.add('flex');
             
-            if (type === 'alchemy') this.renderAlchemy();
-            if (type === 'talisman') this.renderTalisman();
-            if (type === 'smithing') this.renderSmithing();
-            if (type === 'formation') this.renderFormation();
-            if (type === 'corpse') this.renderCorpse();
-            if (type === 'beast') this.renderBeast();
-            if (type === 'puppet') this.renderPuppet();
+            if (screenType === 'alchemy') this.renderAlchemy();
+            if (screenType === 'talisman') this.renderTalisman();
+            if (screenType === 'smithing') this.renderSmithing();
+            if (screenType === 'formation') this.renderFormation();
+            if (screenType === 'corpse') this.renderCorpse();
+            if (screenType === 'beast') this.renderBeast();
+            if (screenType === 'puppet') this.renderPuppet();
         }
     }
 
@@ -840,30 +849,56 @@ export class SystemsScreen {
         if (!state.player) return;
         const viewList = document.getElementById('beast-list-view');
         const viewHatch = document.getElementById('beast-hatch-view');
-        const tabList = document.getElementById('beast-tab-list');
+        const tabBeast = document.getElementById('beast-tab-beast');
+        const tabInsect = document.getElementById('beast-tab-insect');
         const tabHatch = document.getElementById('beast-tab-hatch');
 
-        if (!state.views.beast) state.views.beast = 'list';
+        if (!state.views.beast) state.views.beast = 'beast';
 
-        if (state.views.beast === 'list') {
-            viewList.classList.remove('hidden');
-            viewHatch.classList.add('hidden');
-            tabList.classList.add('bg-qi-jade/10', 'text-qi-jade', 'border-qi-jade/20');
-            tabHatch.classList.remove('bg-qi-jade/10', 'text-qi-jade', 'border-qi-jade/20');
+        // Update Views Visibility
+        if (state.views.beast === 'hatch') {
+            if (viewList) viewList.classList.add('hidden');
+            if (viewHatch) viewHatch.classList.remove('hidden');
         } else {
-            viewList.classList.add('hidden');
-            viewHatch.classList.remove('hidden');
-            tabList.classList.remove('bg-qi-jade/10', 'text-qi-jade', 'border-qi-jade/20');
-            tabHatch.classList.add('bg-qi-jade/10', 'text-qi-jade', 'border-qi-jade/20');
+            if (viewList) viewList.classList.remove('hidden');
+            if (viewHatch) viewHatch.classList.add('hidden');
         }
 
-        // List View
-        if (viewList) {
+        // Update Tab Styles
+        const activeClass = ['bg-qi-jade/10', 'text-qi-jade', 'border-qi-jade/20'];
+        const inactiveClass = ['bg-transparent', 'text-gray-500', 'border-transparent'];
+
+        [tabBeast, tabInsect, tabHatch].forEach(tab => {
+            if (tab) {
+                tab.classList.remove(...activeClass, ...inactiveClass);
+                const isActive = (tab === tabBeast && state.views.beast === 'beast') ||
+                                 (tab === tabInsect && state.views.beast === 'insect') ||
+                                 (tab === tabHatch && state.views.beast === 'hatch');
+                tab.classList.add(...(isActive ? activeClass : inactiveClass));
+            }
+        });
+
+        // List View Rendering
+        if (viewList && state.views.beast !== 'hatch') {
             viewList.innerHTML = '';
-            if (state.player.beasts.length === 0) {
-                viewList.innerHTML = '<div class="text-center py-10 text-gray-600 italic">Ngươi chưa có linh thú nào...</div>';
+            
+            // Filter beasts based on tab
+            const filteredBeasts = state.player.beasts.filter(beast => {
+                const data = BEASTS[beast.id];
+                if (!data) return false;
+                if (state.views.beast === 'beast') {
+                    return [BEAST_TYPES.LINH_THU, BEAST_TYPES.DI_THU, BEAST_TYPES.THAN_THU].includes(data.type);
+                } else if (state.views.beast === 'insect') {
+                    return [BEAST_TYPES.LINH_TRUNG, BEAST_TYPES.KY_TRUNG].includes(data.type);
+                }
+                return true;
+            });
+
+            if (filteredBeasts.length === 0) {
+                const typeName = state.views.beast === 'beast' ? 'linh thú' : 'kỳ trùng';
+                viewList.innerHTML = `<div class="text-center py-10 text-gray-600 italic">Ngươi chưa có ${typeName} nào...</div>`;
             } else {
-                state.player.beasts.forEach(beast => {
+                filteredBeasts.forEach(beast => {
                     const data = BEASTS[beast.id];
                     const lvlInfo = getBeastLevelInfo(beast.level);
                     const blood = BLOODLINES[beast.bloodline];
@@ -889,7 +924,7 @@ export class SystemsScreen {
         }
 
         // Hatch View
-        if (viewHatch) {
+        if (viewHatch && state.views.beast === 'hatch') {
             viewHatch.innerHTML = '';
             const eggs = state.player.inventory.items.filter(i => getItemById(i.id).type === 'beast_egg');
             if (eggs.length === 0) {
@@ -915,7 +950,8 @@ export class SystemsScreen {
         }
 
         // Events
-        if (tabList) tabList.onclick = () => { state.views.beast = 'list'; this.renderBeast(); };
+        if (tabBeast) tabBeast.onclick = () => { state.views.beast = 'beast'; this.renderBeast(); };
+        if (tabInsect) tabInsect.onclick = () => { state.views.beast = 'insect'; this.renderBeast(); };
         if (tabHatch) tabHatch.onclick = () => { state.views.beast = 'hatch'; this.renderBeast(); };
     }
 

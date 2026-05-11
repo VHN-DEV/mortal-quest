@@ -40,7 +40,7 @@ class GameState {
         this.views = {
             shop: 'buy',
             alchemy: 'recipes',
-            beast: 'list',
+            beast: 'beast',
             tech: 'cultivation'
         };
 
