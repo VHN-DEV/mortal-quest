@@ -20,6 +20,7 @@ import { ShopSystem } from './systems/shop-system.js';
 import { AlchemySystem } from './systems/alchemy-system.js';
 import { GuildSystem } from './systems/guild-system.js';
 import { GardenSystem } from './systems/garden-system.js';
+import { FIELD_GRADES, FIELD_ATTRIBUTES } from './configs/garden-data.js';
 import { MountainSystem } from './systems/mountain-system.js';
 import { TimeSystem } from './systems/time-system.js';
 import { CraftingSystem } from './systems/crafting-system.js';
@@ -536,6 +537,46 @@ export class Game {
     craftPuppet(recipeId) {
         if (state.systems.puppet) {
             const res = state.systems.puppet.craft(recipeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    drawTalisman(recipeId) {
+        if (state.systems.talisman) {
+            const res = state.systems.talisman.draw(recipeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    activateFormation(diagramId) {
+        if (state.systems.formation) {
+            const res = state.systems.formation.activateFormation(diagramId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    deactivateFormation(diagramId) {
+        if (state.systems.formation) {
+            const res = state.systems.formation.deactivateFormation(diagramId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    hatchBeast(eggId) {
+        if (state.systems.beast) {
+            const res = state.systems.beast.hatch(eggId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    feedBeast(uniqueId, foodId) {
+        if (state.systems.beast) {
+            const res = state.systems.beast.feed(uniqueId, foodId);
             state.ui.toast(res.msg, res.success ? 'success' : 'error');
             this.refreshUI();
         }

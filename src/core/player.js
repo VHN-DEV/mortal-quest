@@ -687,6 +687,50 @@ export class Player {
         return false;
     }
 
+    addTalismanExp(amount) {
+        this.talismanExp += amount;
+        const nextLevelExp = this.talismanLevel * 100 * Math.pow(1.5, this.talismanLevel - 1);
+        if (this.talismanExp >= nextLevelExp) {
+            this.talismanExp -= nextLevelExp;
+            this.talismanLevel++;
+            return true;
+        }
+        return false;
+    }
+
+    addBeastExp(amount) {
+        this.beastExp += amount;
+        const nextLevelExp = this.beastLevel * 100 * Math.pow(1.5, this.beastLevel - 1);
+        if (this.beastExp >= nextLevelExp) {
+            this.beastExp -= nextLevelExp;
+            this.beastLevel++;
+            return true;
+        }
+        return false;
+    }
+
+    addSmithingExp(amount) {
+        this.smithingExp += amount;
+        const nextLevelExp = this.smithingLevel * 100 * Math.pow(1.5, this.smithingLevel - 1);
+        if (this.smithingExp >= nextLevelExp) {
+            this.smithingExp -= nextLevelExp;
+            this.smithingLevel++;
+            return true;
+        }
+        return false;
+    }
+
+    addPuppetExp(amount) {
+        this.puppetExp += amount;
+        const nextLevelExp = this.puppetLevel * 100 * Math.pow(1.5, this.puppetLevel - 1);
+        if (this.puppetExp >= nextLevelExp) {
+            this.puppetExp -= nextLevelExp;
+            this.puppetLevel++;
+            return true;
+        }
+        return false;
+    }
+
     load(data) {
         if (!data) return;
         this.name = data.name || "Phàm Nhân";

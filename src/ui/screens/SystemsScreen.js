@@ -13,6 +13,8 @@ import { getRealmById } from '../../configs/realm-data.js';
 import { SHOPS } from '../../configs/shop-data.js';
 import { ASSETS } from '../../configs/asset-data.js';
 import { PUPPET_RECIPES, PUPPET_GRADES } from '../../configs/puppet-data.js';
+import { TALISMAN_RECIPES, getTalismanLevelInfo } from '../../configs/talisman-data.js';
+import { BEASTS, BEAST_TYPES, BLOODLINES, getBeastLevelInfo } from '../../configs/beast-data.js';
 
 
 /**
@@ -83,12 +85,24 @@ export class SystemsScreen {
     renderAlchemy() {
         if (!state.player) return;
         
+        const toolsContainer = document.getElementById('alchemy-tools-container');
+
         if (state.views.alchemy === 'recipes') {
             this.viewAlchemyRecipes.classList.remove('hidden');
             this.viewAlchemyGarden.classList.add('hidden');
+            if (toolsContainer) toolsContainer.classList.remove('hidden');
+            
+            // Tab styles
+            if (this.btnAlchemyTabRecipes) this.btnAlchemyTabRecipes.className = "flex-grow py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all";
+            if (this.btnAlchemyTabGarden) this.btnAlchemyTabGarden.className = "flex-grow py-3 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all";
         } else {
             this.viewAlchemyRecipes.classList.add('hidden');
             this.viewAlchemyGarden.classList.remove('hidden');
+            if (toolsContainer) toolsContainer.classList.add('hidden');
+
+            // Tab styles
+            if (this.btnAlchemyTabRecipes) this.btnAlchemyTabRecipes.className = "flex-grow py-3 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all";
+            if (this.btnAlchemyTabGarden) this.btnAlchemyTabGarden.className = "flex-grow py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all";
         }
 
         const lvlInfo = getAlchemyLevelInfo(state.player.alchemyLevel);
@@ -664,7 +678,7 @@ export class SystemsScreen {
 
     openCrafting(type) {
         // Toggle specific crafting sub-screens
-        const craftingScreens = ['screen-alchemy', 'screen-talisman', 'screen-smithing', 'screen-formation', 'screen-corpse', 'screen-beast', 'screen-puppet'];
+        const craftingScreens = ['screen-crafting-hub', 'screen-alchemy', 'screen-talisman', 'screen-smithing', 'screen-formation', 'screen-corpse', 'screen-beast', 'screen-puppet'];
         craftingScreens.forEach(id => {
             const el = document.getElementById(id);
             if (el) {
@@ -675,10 +689,33 @@ export class SystemsScreen {
 
         const target = document.getElementById(`screen-${type}`);
         if (target) {
-            state.ui.toggleOverlay(target, true);
+            target.classList.remove('hidden');
+            target.classList.add('flex');
+            
             if (type === 'alchemy') this.renderAlchemy();
+            if (type === 'talisman') this.renderTalisman();
             if (type === 'smithing') this.renderSmithing();
+            if (type === 'formation') this.renderFormation();
+            if (type === 'corpse') this.renderCorpse();
+            if (type === 'beast') this.renderBeast();
             if (type === 'puppet') this.renderPuppet();
+        }
+    }
+
+    openCraftingHub() {
+        const craftingScreens = ['screen-alchemy', 'screen-talisman', 'screen-smithing', 'screen-formation', 'screen-corpse', 'screen-beast', 'screen-puppet'];
+        craftingScreens.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            }
+        });
+
+        const hub = document.getElementById('screen-crafting-hub');
+        if (hub) {
+            hub.classList.remove('hidden');
+            hub.classList.add('flex');
         }
     }
 
@@ -738,6 +775,212 @@ export class SystemsScreen {
                 `;
                 view.appendChild(el);
             });
+        }
+    }
+
+    renderTalisman() {
+        if (!state.player) return;
+        const lvlInfo = getTalismanLevelInfo(state.player.talismanLevel);
+        const elLvl = document.getElementById('talisman-level-text');
+        const elBar = document.getElementById('talisman-exp-bar');
+        const view = document.getElementById('talisman-recipes');
+
+        if (elLvl) elLvl.textContent = lvlInfo.name;
+        if (elBar) {
+            const nextLevelExp = state.player.talismanLevel * 100 * Math.pow(1.5, state.player.talismanLevel - 1);
+            elBar.style.width = `${(state.player.talismanExp / nextLevelExp) * 100}%`;
+        }
+
+        if (view) {
+            view.innerHTML = '';
+            Object.values(TALISMAN_RECIPES).forEach(recipe => {
+                const el = document.createElement('div');
+                el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3';
+
+                let materialsHTML = '';
+                recipe.materials.forEach(mat => {
+                    const matItem = getItemById(mat.id);
+                    const count = state.player.inventory.hasItem(mat.id) ? state.player.inventory.items.find(i => i.id === mat.id).quantity : 0;
+                    materialsHTML += `<div class="text-[9px] ${count >= mat.quantity ? 'text-gray-400' : 'text-red-500'}">${matItem.name} x${mat.quantity} (${count})</div>`;
+                });
+
+                const locked = state.player.talismanLevel < recipe.level;
+
+                el.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-bold text-qi-blue">${recipe.name}</h4>
+                        ${locked ?
+                            `<span class="text-[8px] text-red-500 uppercase">Cần Cấp ${recipe.level}</span>` :
+                            `<button class="px-3 py-1 bg-qi-blue/10 text-qi-blue text-[10px] rounded border border-qi-blue/20" onclick="window.game.drawTalisman('${recipe.id}')">VẼ PHÙ</button>`
+                        }
+                    </div>
+                    <div class="grid grid-cols-2 gap-1 mb-2">${materialsHTML}</div>
+                    <div class="text-[8px] text-gray-500 italic">Mana: ${recipe.manaCost} | Stamina: ${recipe.staminaCost}</div>
+                `;
+                view.appendChild(el);
+            });
+        }
+    }
+
+    renderBeast() {
+        if (!state.player) return;
+        const viewList = document.getElementById('beast-list-view');
+        const viewHatch = document.getElementById('beast-hatch-view');
+        const tabList = document.getElementById('beast-tab-list');
+        const tabHatch = document.getElementById('beast-tab-hatch');
+
+        if (!state.views.beast) state.views.beast = 'list';
+
+        if (state.views.beast === 'list') {
+            viewList.classList.remove('hidden');
+            viewHatch.classList.add('hidden');
+            tabList.classList.add('bg-qi-jade/10', 'text-qi-jade', 'border-qi-jade/20');
+            tabHatch.classList.remove('bg-qi-jade/10', 'text-qi-jade', 'border-qi-jade/20');
+        } else {
+            viewList.classList.add('hidden');
+            viewHatch.classList.remove('hidden');
+            tabList.classList.remove('bg-qi-jade/10', 'text-qi-jade', 'border-qi-jade/20');
+            tabHatch.classList.add('bg-qi-jade/10', 'text-qi-jade', 'border-qi-jade/20');
+        }
+
+        // List View
+        if (viewList) {
+            viewList.innerHTML = '';
+            if (state.player.beasts.length === 0) {
+                viewList.innerHTML = '<div class="text-center py-10 text-gray-600 italic">Ngươi chưa có linh thú nào...</div>';
+            } else {
+                state.player.beasts.forEach(beast => {
+                    const data = BEASTS[beast.id];
+                    const lvlInfo = getBeastLevelInfo(beast.level);
+                    const blood = BLOODLINES[beast.bloodline];
+                    
+                    const el = document.createElement('div');
+                    el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] flex items-center space-x-4';
+                    el.innerHTML = `
+                        <div class="text-4xl">${data?.icon || '🐾'}</div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-white">${beast.name}</h4>
+                                <span class="text-[9px] font-bold" style="color: ${blood.color}">${blood.name}</span>
+                            </div>
+                            <div class="text-[9px] text-gray-500 mt-0.5">Cấp ${beast.level} (${lvlInfo.name})</div>
+                            <div class="w-full h-1 bg-white/5 rounded-full mt-1 overflow-hidden">
+                                <div class="h-full bg-qi-jade" style="width: ${(beast.exp / lvlInfo.expRequired) * 100}%"></div>
+                            </div>
+                        </div>
+                    `;
+                    viewList.appendChild(el);
+                });
+            }
+        }
+
+        // Hatch View
+        if (viewHatch) {
+            viewHatch.innerHTML = '';
+            const eggs = state.player.inventory.items.filter(i => getItemById(i.id).type === 'beast_egg');
+            if (eggs.length === 0) {
+                viewHatch.innerHTML = '<div class="text-center py-10 text-gray-600 italic">Ngươi không có trứng linh thú nào...</div>';
+            } else {
+                eggs.forEach(egg => {
+                    const item = getItemById(egg.id);
+                    const el = document.createElement('div');
+                    el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] flex justify-between items-center';
+                    el.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <div class="text-2xl">${item.icon}</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">${item.name}</h4>
+                                <p class="text-[9px] text-gray-500">Số lượng: ${egg.quantity}</p>
+                            </div>
+                        </div>
+                        <button class="px-4 py-2 bg-qi-jade/10 text-qi-jade text-[10px] rounded-xl border border-qi-jade/20" onclick="window.game.hatchBeast('${egg.id}')">ẤP NỞ</button>
+                    `;
+                    viewHatch.appendChild(el);
+                });
+            }
+        }
+
+        // Events
+        if (tabList) tabList.onclick = () => { state.views.beast = 'list'; this.renderBeast(); };
+        if (tabHatch) tabHatch.onclick = () => { state.views.beast = 'hatch'; this.renderBeast(); };
+    }
+
+    renderFormation() {
+        if (!state.player) return;
+        const view = document.getElementById('formation-list');
+        if (!view) return;
+
+        view.innerHTML = '';
+        
+        // Active Formations
+        if (state.player.activeFormations.length > 0) {
+            const activeHeader = document.createElement('h3');
+            activeHeader.className = 'text-[10px] text-gray-500 uppercase tracking-widest mb-2';
+            activeHeader.textContent = 'Trận Pháp Đang Hoạt Động';
+            view.appendChild(activeHeader);
+
+            state.player.activeFormations.forEach(af => {
+                const el = document.createElement('div');
+                el.className = 'p-4 border border-qi-purple/30 rounded-2xl bg-qi-purple/5 mb-4 flex justify-between items-center';
+                el.innerHTML = `
+                    <div>
+                        <h4 class="font-bold text-qi-purple">${af.name}</h4>
+                        <p class="text-[9px] text-gray-500 mt-1">Đang kích hoạt...</p>
+                    </div>
+                    <button class="px-4 py-2 bg-red-500/10 text-red-500 text-[10px] rounded-xl border border-red-500/20" onclick="window.game.deactivateFormation('${af.id}')">THU HỒI</button>
+                `;
+                view.appendChild(el);
+            });
+        }
+
+        // Diagrams in Inventory
+        const diagrams = state.player.inventory.items.filter(i => getItemById(i.id).type === 'formation_diagram');
+        const diagramHeader = document.createElement('h3');
+        diagramHeader.className = 'text-[10px] text-gray-500 uppercase tracking-widest mt-6 mb-2';
+        diagramHeader.textContent = 'Trận Đồ Trong Túi';
+        view.appendChild(diagramHeader);
+
+        if (diagrams.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'text-center py-6 text-gray-700 italic text-xs';
+            empty.textContent = 'Trống rỗng...';
+            view.appendChild(empty);
+        } else {
+            diagrams.forEach(d => {
+                const item = getItemById(d.id);
+                const isActive = state.player.activeFormations.some(af => af.id === d.id);
+                const el = document.createElement('div');
+                el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 flex justify-between items-center';
+                el.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="text-2xl">📜</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">${item.name}</h4>
+                            <p class="text-[9px] text-gray-500">${item.description || ''}</p>
+                        </div>
+                    </div>
+                    ${isActive ? 
+                        '<span class="text-[9px] text-qi-purple font-bold">ĐÃ KÍCH HOẠT</span>' :
+                        `<button class="px-4 py-2 bg-qi-purple/10 text-qi-purple text-[10px] rounded-xl border border-qi-purple/20" onclick="window.game.activateFormation('${d.id}')">KÍCH HOẠT</button>`
+                    }
+                `;
+                view.appendChild(el);
+            });
+        }
+    }
+
+    renderCorpse() {
+        const view = document.getElementById('corpse-list');
+        if (view) {
+            view.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                    <div class="text-6xl opacity-20">⚰️</div>
+                    <div class="space-y-2">
+                        <h3 class="text-lg font-ancient text-gray-500">Luyện Thi Đại Pháp</h3>
+                        <p class="text-xs text-gray-600 italic max-w-[200px]">Tính năng đang được Thiên Đạo hoàn thiện, hãy quay lại sau.</p>
+                    </div>
+                </div>
+            `;
         }
     }
 }

@@ -711,10 +711,15 @@
 
             <!-- Tab 4: Lò Luyện (Crafting - NEW) -->
             <div id="screen-alchemy" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <h2 class="text-3xl font-charm text-cultivation-gold">Luyện Đan Các</h2>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Vạn Dược Quy Nguyên</p>
+                <div class="flex justify-between items-start mb-8">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                            <i class="ph ph-caret-left text-xl text-cultivation-gold"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-3xl font-charm text-cultivation-gold">Luyện Đan Các</h2>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Vạn Dược Quy Nguyên</p>
+                        </div>
                     </div>
                     <div class="text-right">
                         <div id="alchemy-level-text"
@@ -737,7 +742,7 @@
                         Điền</button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 mb-6">
+                <div id="alchemy-tools-container" class="grid grid-cols-2 gap-4 mb-6">
                     <div class="bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center space-x-3">
                         <div class="text-2xl">🏺</div>
                         <div>
@@ -1039,11 +1044,15 @@
 
             <!-- Tab: Phù Lục (Talisman - NEW) -->
             <div id="screen-talisman" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <h2 class="text-3xl font-charm text-qi-blue">Phù Đạo Các</h2>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Một Niệm Thành
-                            Phù</p>
+                <div class="flex justify-between items-start mb-8">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                            <i class="ph ph-caret-left text-xl text-qi-blue"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-3xl font-charm text-qi-blue">Phù Đạo Các</h2>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Một Niệm Thành Phù</p>
+                        </div>
                     </div>
                     <div class="text-right">
                         <div id="talisman-level-text"
@@ -1074,11 +1083,15 @@
 
             <!-- Tab: Luyện Khí (Smithing - NEW) -->
             <div id="screen-smithing" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <h2 class="text-3xl font-charm text-red-500">Luyện Khí Điện</h2>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Đúc Linh Thành
-                            Khí</p>
+                <div class="flex justify-between items-start mb-8">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                            <i class="ph ph-caret-left text-xl text-red-500"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-3xl font-charm text-red-500">Luyện Khí Điện</h2>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Đúc Linh Thành Khí</p>
+                        </div>
                     </div>
                     <div class="text-right">
                         <div id="smithing-level-text"
@@ -1118,11 +1131,15 @@
 
             <!-- Tab: Trận Pháp (Formation - NEW) -->
             <div id="screen-formation" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <h2 class="text-3xl font-charm text-qi-purple">Trận Pháp Đường</h2>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Nghịch Chuyển
-                            Càn Khôn</p>
+                <div class="flex justify-between items-start mb-8">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                            <i class="ph ph-caret-left text-xl text-qi-purple"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-3xl font-charm text-qi-purple">Trận Pháp Đường</h2>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Nghịch Chuyển Càn Khôn</p>
+                        </div>
                     </div>
                     <div class="text-right">
                         <div id="formation-level-text"
@@ -1142,11 +1159,15 @@
 
             <!-- Tab: Luyện Thi (Corpse - NEW) -->
             <div id="screen-corpse" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <h2 class="text-3xl font-charm text-red-700">Thi Luyện Điện</h2>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Khống Thi Ngự
-                            Quỷ</p>
+                <div class="flex justify-between items-start mb-8">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                            <i class="ph ph-caret-left text-xl text-red-700"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-3xl font-charm text-red-700">Thi Luyện Điện</h2>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Khống Thi Ngự Quỷ</p>
+                        </div>
                     </div>
                     <div class="text-right">
                         <div id="corpse-level-text"
@@ -1166,11 +1187,15 @@
 
             <!-- Tab: Linh Thú & Kỳ Trùng (Beast - NEW) -->
             <div id="screen-beast" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <h2 class="text-3xl font-charm text-cultivation-gold">Vạn Thú Viên</h2>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Ngự Thú Phục
-                            Trùng</p>
+                <div class="flex justify-between items-start mb-8">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                            <i class="ph ph-caret-left text-xl text-qi-jade"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-3xl font-charm text-cultivation-gold">Vạn Thú Viên</h2>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Ngự Thú Phục Trùng</p>
+                        </div>
                     </div>
                     <div class="text-right">
                         <div id="beast-level-text"
@@ -1200,10 +1225,15 @@
 
             <!-- Tab: Khôi Lỗi (Puppet - NEW) -->
             <div id="screen-puppet" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <h2 class="text-3xl font-charm text-qi-blue">Khôi Lỗi Đường</h2>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Cơ Quan Diệu Pháp</p>
+                <div class="flex justify-between items-start mb-8">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                            <i class="ph ph-caret-left text-xl text-qi-blue"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-3xl font-charm text-qi-blue">Khôi Lỗi Đường</h2>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Cơ Quan Diệu Pháp</p>
+                        </div>
                     </div>
                     <div class="text-right">
                         <div id="puppet-level-text"
