@@ -1,4 +1,5 @@
 import { MOUNTAIN_LAYERS, MOUNTAIN_BEASTS, MOUNTAIN_EVENTS } from '../configs/mountain-data.js';
+import { state } from '../state.js';
 
 export class MountainSystem {
     constructor(player, ui) {
@@ -6,11 +7,13 @@ export class MountainSystem {
         this.ui = ui;
         this.currentLayer = 'ngoai_vi';
         this.isActive = false;
+        this.eventCooldown = 0;
     }
 
     start() {
         this.isActive = true;
         this.player.mountainSurvival = { oxygen: 100, toxicity: 0 };
+        this.eventCooldown = 8;
     }
 
     stop() {
@@ -35,6 +38,40 @@ export class MountainSystem {
         if (this.player.mountainSurvival.toxicity >= 100) {
             this.player.hp -= 2 * delta;
             this.player.mountainSurvival.toxicity = 100;
+        }
+
+        this.eventCooldown -= delta;
+        if (this.eventCooldown <= 0) {
+            this.triggerLayerEvent(layer);
+            this.eventCooldown = 8 + Math.random() * 7;
+        }
+    }
+
+    triggerLayerEvent(layer) {
+        const layerEvents = MOUNTAIN_EVENTS.filter(e => e.layer === 'any' || e.layer === layer.id);
+        const rolled = layerEvents.find(e => Math.random() < e.chance);
+        if (rolled) {
+            if (rolled.type === 'hazard') {
+                this.player.mountainSurvival.toxicity = Math.min(100, this.player.mountainSurvival.toxicity + 12);
+                this.ui.toast(`${rolled.name}! Độc tính tăng mạnh.`, "error");
+            } else if (rolled.type === 'treasure') {
+                const gain = Math.max(20, Math.floor(this.player.realmId * 2));
+                this.player.addLingShi(gain);
+                this.ui.toast(`${rolled.name}! Thu được ${gain} Linh Thạch.`, "success");
+            } else if (rolled.type === 'weather') {
+                this.player.mountainSurvival.oxygen = Math.max(0, this.player.mountainSurvival.oxygen - 15);
+                this.ui.toast(`${rolled.name}! Không khí loãng đi nhanh chóng.`, "warning");
+            }
+            return;
+        }
+
+        const layerBeasts = MOUNTAIN_BEASTS.filter(b => b.layer === layer.id);
+        if (layerBeasts.length > 0 && Math.random() < 0.2) {
+            const beast = layerBeasts[Math.floor(Math.random() * layerBeasts.length)];
+            this.ui.toast(`Yêu thú xuất hiện: ${beast.name} ${beast.icon}`, "warning");
+            if (window?.game?.startBattle) {
+                window.game.startBattle(state.currentWorldId, state.currentLocId);
+            }
         }
     }
 

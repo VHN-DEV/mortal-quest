@@ -113,6 +113,13 @@ export class CombatEngine {
     }
 
     playerSkill() {
+        const equippedSecrets = this.player.equippedSecretTechniqueIds || [];
+        const usableSecret = equippedSecrets.find(id => id);
+        if (usableSecret) {
+            this.playerSecretTechnique(usableSecret);
+            return;
+        }
+
         const damage = Math.floor(this.player.atk * 1.8);
         this.enemy.hp -= damage;
         this.addLog(`Bạn thi triển Linh Thuật gây ${damage} sát thương!`);
@@ -170,6 +177,18 @@ export class CombatEngine {
 
         // Apply cost
         if (secretData.cost) {
+            if (secretData.cost.hp && this.player.hp < this.player.maxHp * secretData.cost.hp) {
+                this.addLog("Khí huyết không đủ để thi triển bí pháp!");
+                return;
+            }
+            if (secretData.cost.mana && this.player.mana < secretData.cost.mana) {
+                this.addLog("Linh lực không đủ để thi triển bí pháp!");
+                return;
+            }
+            if (secretData.cost.lifespan && this.player.age + secretData.cost.lifespan > this.player.maxAge) {
+                this.addLog("Thọ nguyên không đủ để thi triển bí pháp này!");
+                return;
+            }
             if (secretData.cost.hp) this.player.hp -= Math.floor(this.player.maxHp * secretData.cost.hp);
             if (secretData.cost.mana) this.player.mana -= secretData.cost.mana;
             if (secretData.cost.lifespan) this.player.age += secretData.cost.lifespan;
