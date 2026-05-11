@@ -76,6 +76,7 @@ export class BattleScreen {
                 this.updateHPs();
                 this.logEl.innerHTML = '';
                 this.checkFlameButton();
+                this.updateProfessionButtons();
                 this.updateSecretButton();
                 break;
             case 'log':
@@ -87,6 +88,7 @@ export class BattleScreen {
                 break;
             case 'player-turn-start':
                 this.actionContainer.classList.remove('hidden');
+                this.updateProfessionButtons();
                 this.hideSecretList();
                 break;
             case 'player-turn-end':
@@ -125,6 +127,22 @@ export class BattleScreen {
         } else {
             this.btnFlame.classList.add('hidden');
         }
+    }
+
+    updateProfessionButtons() {
+        const unlocked = new Set(state.player?.unlockedProfessions || []);
+        const mapping = [
+            ['talisman', this.btnTalisman],
+            ['beast', this.btnBeast],
+            ['formation', this.btnFormation],
+            ['puppet', this.btnPuppet],
+            ['corpse', this.btnCorpse],
+            ['insect', this.btnInsect]
+        ];
+        mapping.forEach(([profession, button]) => {
+            if (!button) return;
+            button.classList.toggle('hidden', !unlocked.has(profession));
+        });
     }
 
     updateSecretButton() {
