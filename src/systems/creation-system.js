@@ -121,11 +121,13 @@ export class CreationSystem {
             color: this.getRootColor(this.selectedRoot)
         };
         
-        // Apply Physique
+        // Apply Physique (New System)
         player.physique = {
             id: phys.id,
-            name: phys.name,
-            desc: phys.desc
+            stage: 'SO_KHAI',
+            exp: 0,
+            awakened: true, // Default to awakened for starting physiques unless specified
+            phenomenonActive: false
         };
         
         // Apply Origin resources
@@ -134,8 +136,8 @@ export class CreationSystem {
         origin.resources.items.forEach(itemId => player.inventory.addItem(itemId, 1));
         if (origin.resources.karma) player.karma = origin.resources.karma;
         
-        // Apply Traits & Bonuses
-        const combinedBonus = { ...root.bonus, ...phys.bonus };
+        // Apply Traits & Bonuses (Root & Traits only, Physique handled by calculateStats)
+        const combinedBonus = { ...root.bonus };
         this.selectedTraits.forEach(traitId => {
             const trait = CREATION_TRAITS[traitId];
             player.talents.push({ id: trait.id, name: trait.name });
@@ -149,14 +151,19 @@ export class CreationSystem {
         });
         
         // Finalize base stats
+        // Note: player.calculateStats() will be called which incorporates these combinedBonus if we apply them correctly.
+        // Actually, player.calculateStats() is better suited to handle everything.
+        // But for now, let's keep the traits/root applying to the base as it was.
+        
         if (combinedBonus.tvps) player.tuViPerSecond *= combinedBonus.tvps;
-        if (combinedBonus.maxHp) player.maxHp += combinedBonus.maxHp;
-        if (combinedBonus.atk) player.atk += combinedBonus.atk;
-        if (combinedBonus.def) player.def += combinedBonus.def;
-        if (combinedBonus.spd) player.spd += combinedBonus.spd;
-        if (combinedBonus.mana) player.maxMana += combinedBonus.mana;
+        if (combinedBonus.maxHp) player.baseStats.maxHp += combinedBonus.maxHp;
+        if (combinedBonus.atk) player.baseStats.atk += combinedBonus.atk;
+        if (combinedBonus.def) player.baseStats.def += combinedBonus.def;
+        if (combinedBonus.spd) player.baseStats.spd += combinedBonus.spd;
+        if (combinedBonus.mana) player.baseStats.maxMana += combinedBonus.mana;
         if (combinedBonus.luck) player.luck += combinedBonus.luck;
         
+        player.calculateStats();
         player.hp = player.maxHp;
         player.mana = player.maxMana;
         

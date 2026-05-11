@@ -1,6 +1,7 @@
 import { state } from '../../state.js';
 import { getSectById } from '../../configs/sect-data.js';
 import { getTechniqueById } from '../../configs/technique-data.js';
+import { getPhysiqueById, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../../configs/physique-data.js';
 
 /**
  * Quản lý giao diện chỉ số nhân vật, cảnh giới và các thông tin liên quan.
@@ -126,7 +127,28 @@ export class CharacterScreen {
             this.elRoot.style.color = state.player.spiritualRoot.color;
         }
         if (this.elPhysique) {
-            this.elPhysique.textContent = state.player.physique ? state.player.physique.name : "Không";
+            const phys = state.player.physique;
+            if (phys && phys.id) {
+                const physData = getPhysiqueById(phys.id);
+                const grade = PHYSIQUE_GRADES[physData.grade];
+                const stage = PHYSIQUE_STAGES[phys.stage];
+                
+                let text = `<span style="color: ${grade.color}">${physData.name}</span>`;
+                if (physData.grade !== 'PHAM') {
+                    text += ` <span class="text-[8px] opacity-60">[${stage.name}]</span>`;
+                }
+                
+                if (!phys.awakened) {
+                    text += ` <span class="text-[8px] text-red-500 font-bold">(CHƯA THỨC TỈNH)</span>`;
+                } else if (phys.phenomenonActive && physData.phenomenon) {
+                    text += ` <i class="ph ph-sparkle text-cultivation-gold text-[8px]" title="Dị tượng: ${physData.phenomenon}"></i>`;
+                }
+                
+                this.elPhysique.innerHTML = text;
+                this.elPhysique.title = physData.desc;
+            } else {
+                this.elPhysique.textContent = "Không";
+            }
         }
         if (this.elLuck) this.elLuck.textContent = state.player.luck;
 

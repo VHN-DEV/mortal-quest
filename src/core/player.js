@@ -2,6 +2,7 @@ import { getRealmById } from '../configs/realm-data.js';
 import { Inventory } from './inventory.js';
 import { getItemById } from '../configs/item-data.js';
 import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_QUALITIES } from '../configs/technique-data.js';
+import { getPhysiqueById, getPhysiqueAwakenBonus, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../configs/physique-data.js';
 
 export class Player {
     constructor() {
@@ -81,7 +82,13 @@ export class Player {
 
         // Destiny properties
         this.spiritualRoot = null;
-        this.physique = null;
+        this.physique = {
+            id: 'binh_thuong',
+            stage: 'SO_KHAI',
+            exp: 0,
+            awakened: true,
+            phenomenonActive: false
+        };
         this.origin = null;
         this.luck = 50;
         this.talents = [];
@@ -544,6 +551,42 @@ export class Player {
             if (this.destinyStats.atk) this.baseStats.atk += this.destinyStats.atk;
             if (this.destinyStats.def) this.baseStats.def += this.destinyStats.def;
             if (this.destinyStats.maxHp) this.baseStats.maxHp += this.destinyStats.maxHp;
+        }
+
+        // 2.5 Apply PHYSIQUE BONUSES
+        if (this.physique && this.physique.id) {
+            const physBonus = getPhysiqueAwakenBonus(this.physique.id, this.physique.stage);
+            const physData = getPhysiqueById(this.physique.id);
+
+            // Apply flat bonuses to Base Stats
+            if (physBonus.atk) this.baseStats.atk += physBonus.atk;
+            if (physBonus.def) this.baseStats.def += physBonus.def;
+            if (physBonus.maxHp) this.baseStats.maxHp += physBonus.maxHp;
+            if (physBonus.maxMana) this.baseStats.maxMana += physBonus.maxMana;
+            if (physBonus.spd) this.baseStats.spd += physBonus.spd;
+            if (physBonus.luck) this.luck += physBonus.luck;
+
+            // Apply rate bonuses to Bonus Stats
+            if (physBonus.tvps) this.bonusStats.tuViSpeed *= physBonus.tvps;
+            if (physBonus.bodyExpSpeed) this.bonusStats.bodyExpSpeed *= physBonus.bodyExpSpeed;
+            if (physBonus.soulExpSpeed) this.bonusStats.soulExpSpeed *= physBonus.soulExpSpeed;
+
+            // Apply Advanced Stats
+            if (physBonus.fireDmg) this.advancedStats.fireDmg *= physBonus.fireDmg;
+            if (physBonus.qiAbsorb) this.advancedStats.qiAbsorb *= physBonus.qiAbsorb;
+            if (physBonus.critRate) this.advancedStats.critRate += physBonus.critRate;
+            if (physBonus.critDmg) this.advancedStats.critDmg += physBonus.critDmg;
+            if (physBonus.pierce) this.advancedStats.pierce += physBonus.pierce;
+            if (physBonus.soulPierce) this.advancedStats.soulPierce += physBonus.soulPierce;
+            if (physBonus.lifeSteal) this.advancedStats.lifeSteal += physBonus.lifeSteal;
+            if (physBonus.daoVun) this.advancedStats.daoVun += physBonus.daoVun;
+            if (physBonus.murderQi) this.advancedStats.murderQi += physBonus.murderQi;
+
+            // Handle non-awakened penalty (if applicable)
+            if (physData.needAwaken && !this.physique.awakened) {
+                this.bonusStats.tuViSpeed *= 0.1; // 90% penalty if not awakened
+                this.advancedStats.qiAbsorb *= 0.1;
+            }
         }
 
         // Apply technique bonuses (These usually affect rates and add flat/scaled bonuses)
@@ -1330,5 +1373,62 @@ export class Player {
             return true;
         }
         return false;
+    }
+
+    // --- Physique Methods ---
+    
+    awakePhysique() {
+        if (!this.physique || this.physique.awakened) return { success: false, msg: "Thể chất đã thức tỉnh hoặc không tồn tại." };
+        
+        const physData = getPhysiqueById(this.physique.id);
+        if (!physData.needAwaken) return { success: false, msg: "Thể chất này không cần thức tỉnh đặc biệt." };
+
+        // Requirements could be added here (e.g., item, realm)
+        this.physique.awakened = true;
+        this.physique.phenomenonActive = true;
+        
+        this.calculateStats();
+        return { 
+            success: true, 
+            msg: `Thức tỉnh thành công: ${physData.name}!`, 
+            phenomenon: physData.phenomenon 
+        };
+    }
+
+    evolvePhysique() {
+        const physData = getPhysiqueById(this.physique.id);
+        if (!physData.evolution) return { success: false, msg: "Thể chất này đã đạt đến giới hạn, không thể tiến hóa." };
+
+        const nextPhysId = physData.evolution;
+        const nextPhysData = getPhysiqueById(nextPhysId);
+
+        // Evolution logic: Usually requires "Viên Mãn" or "Hoàn Mỹ" stage
+        if (this.physique.stage !== 'VIEN_MAN' && this.physique.stage !== 'HOAN_MY') {
+            return { success: false, msg: "Cần đạt đến cảnh giới Viên Mãn mới có thể tiến hóa thể chất." };
+        }
+
+        this.physique.id = nextPhysId;
+        this.physique.stage = 'SO_KHAI'; // Reset stage for new physique
+        
+        this.calculateStats();
+        return { success: true, msg: `Thể chất đã tiến hóa thành: ${nextPhysData.name}!` };
+    }
+
+    gainPhysiqueExp(amount) {
+        if (!this.physique) return;
+        this.physique.exp += amount;
+        
+        // Simple level up logic for stages
+        const stageOrder = ['SO_KHAI', 'TIEU_THANH', 'DAI_THANH', 'VIEN_MAN', 'HOAN_MY'];
+        const currentIndex = stageOrder.indexOf(this.physique.stage);
+        
+        const expRequired = 1000 * Math.pow(5, currentIndex);
+        if (this.physique.exp >= expRequired && currentIndex < stageOrder.length - 1) {
+            this.physique.exp -= expRequired;
+            this.physique.stage = stageOrder[currentIndex + 1];
+            this.calculateStats();
+            return { leveledUp: true, newStage: this.physique.stage };
+        }
+        return { leveledUp: false };
     }
 }

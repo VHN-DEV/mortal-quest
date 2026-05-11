@@ -14,12 +14,14 @@ export const CREATION_ROOTS = {
 };
 
 export const CREATION_PHYSIQUES = {
-    'hoang_co_thanh_the': { id: 'hoang_co_thanh_the', name: 'Hoang Cổ Thánh Thể', cost: 150, desc: 'Thân thể mạnh nhất thế gian. HP và Phòng thủ cực cao.', bonus: { maxHp: 1000, def: 50, atk: 20 } },
-    'tien_thien_dao_the': { id: 'tien_thien_dao_the', name: 'Tiên Thiên Đạo Thể', cost: 120, desc: 'Gần gũi đại đạo. Tăng mạnh tốc độ tu luyện và thần thức.', bonus: { tvps: 3.0, mana: 200 } },
-    'thai_am_chi_the': { id: 'thai_am_chi_the', name: 'Thái Âm Chi Thể', cost: 80, desc: 'Hàn khí bẩm sinh. Phù hợp công pháp băng hệ.', bonus: { mana: 150, spd: 15 } },
-    'phe_linh_ma_the': { id: 'phe_linh_ma_the', name: 'Phệ Linh Ma Thể', cost: 100, desc: 'Thôn phệ linh lực vạn vật. Tốc độ tu luyện nhanh nhưng dễ tẩu hỏa.', bonus: { tvps: 3.5, hp: -20 } },
-    'long_huyet_chi_the': { id: 'long_huyet_chi_the', name: 'Long Huyết Chi Thể', cost: 90, desc: 'Mang trong mình dòng máu chân long.', bonus: { atk: 60, maxHp: 300 } },
-    'binh_thuong': { id: 'binh_thuong', name: 'Phàm Thể', cost: 0, desc: 'Cơ thể bình thường của con người.', bonus: {} }
+    'hoang_co_thanh_the': { id: 'hoang_co_thanh_the', name: 'Hoang Cổ Thánh Thể', cost: 150, desc: 'Thân thể mạnh nhất thế gian. HP và Phòng thủ cực cao.' },
+    'tien_thien_dao_the': { id: 'tien_thien_dao_the', name: 'Tiên Thiên Đạo Thể', cost: 120, desc: 'Gần gũi đại đạo. Tăng mạnh tốc độ tu luyện và thần thức.' },
+    'thai_duong_thanh_the': { id: 'thai_duong_thanh_the', name: 'Thái Dương Thánh Thể', cost: 100, desc: 'Mang trong mình sức mạnh của mặt trời. Phù hợp hỏa hệ.' },
+    'thien_ma_the': { id: 'thien_ma_the', name: 'Thiên Ma Thể', cost: 90, desc: 'Ma khí bẩm sinh, chiến lực tăng mạnh.' },
+    'thai_hu_hon_the': { id: 'thai_hu_hon_the', name: 'Thái Hư Hồn Thể', cost: 80, desc: 'Linh hồn cường đại, thần thức vô biên.' },
+    'loi_linh_the': { id: 'loi_linh_the', name: 'Lôi Linh Thể', cost: 60, desc: 'Sát thương lôi cực mạnh.' },
+    'kim_cuong_bao_the': { id: 'kim_cuong_bao_the', name: 'Kim Cương Bảo Thể', cost: 50, desc: 'Phòng ngự cực mạnh.' },
+    'binh_thuong': { id: 'binh_thuong', name: 'Phàm Thể', cost: 0, desc: 'Cơ thể bình thường của con người.' }
 };
 
 export const CREATION_ORIGINS = {
