@@ -116,6 +116,15 @@ export class CombatEngine {
             case 'formation':
                 this.playerActivateFormation();
                 break;
+            case 'puppet':
+                this.playerSummonPuppet();
+                break;
+            case 'corpse':
+                this.playerSummonCorpse();
+                break;
+            case 'insect':
+                this.playerSummonInsect();
+                break;
         }
     }
 
@@ -282,6 +291,48 @@ export class CombatEngine {
         this.enemy.hp -= dmg;
         this.addLog(`Bạn bố trí trận pháp áp chế chiến trường, gây ${dmg} sát thương.`);
         this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
+        this.endPlayerTurn();
+    }
+
+    playerSummonPuppet() {
+        const puppet = this.player.inventory.items.find(i => i.id === 'khoi_loi_item');
+        if (!puppet) {
+            this.addLog("Chưa có khôi lỗi để triệu hồi chiến đấu!");
+            return;
+        }
+        const qualityBonus = puppet.metadata?.quality === 'Tiên Phẩm' ? 1.5 : puppet.metadata?.quality === 'Hoàn Mỹ' ? 1.3 : 1.0;
+        const dmg = Math.max(1, Math.floor(this.player.atk * 0.9 * qualityBonus + (this.player.puppetLevel || 1) * 15));
+        this.enemy.hp -= dmg;
+        this.addLog(`Khôi lỗi xuất trận, cơ quan liên kích gây ${dmg} sát thương!`);
+        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
+        this.endPlayerTurn();
+    }
+
+    playerSummonCorpse() {
+        const corpse = this.player.refinedCorpses?.[0];
+        if (!corpse) {
+            this.addLog("Không có thi khôi đã luyện để triệu hồi!");
+            return;
+        }
+        const dmg = Math.max(1, Math.floor((corpse.stats?.atk || this.player.atk * 0.6) * 0.8 + (this.player.corpseLevel || 1) * 12));
+        this.enemy.hp -= dmg;
+        this.addLog(`Thi khôi ${corpse.name} hung mãnh công kích gây ${dmg} sát thương!`);
+        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
+        if (Math.random() < 0.2) {
+            this.status.enemy.stun = Math.max(this.status.enemy.stun, 1);
+            this.addLog(`${this.enemy.name} bị thi khí trấn áp, choáng 1 lượt!`);
+        }
+        this.endPlayerTurn();
+    }
+
+    playerSummonInsect() {
+        const lvl = this.player.insectLevel || 1;
+        const swarmDmg = Math.max(1, Math.floor(this.player.atk * 0.5 + lvl * 20));
+        this.enemy.hp -= swarmDmg;
+        this.addLog(`Kỳ trùng bầy đàn cắn xé gây ${swarmDmg} sát thương!`);
+        this.onUpdate('damage', { target: 'enemy', value: swarmDmg, crit: false });
+        this.status.enemy.burn = Math.max(this.status.enemy.burn, 1);
+        this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, lvl * 8);
         this.endPlayerTurn();
     }
 
