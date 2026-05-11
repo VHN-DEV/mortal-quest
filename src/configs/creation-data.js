@@ -23,13 +23,13 @@ export const CREATION_PHYSIQUES = {
 };
 
 export const CREATION_ORIGINS = {
-    'tan_tu': { id: 'tan_tu', name: 'Tán Tu', cost: 0, desc: 'Tự do tự tại, không có tài nguyên khởi đầu.', resources: { lingShi: 0, items: [] } },
-    'vo_gia_cu': { id: 'vo_gia_cu', name: 'Vô Gia Cư', cost: -10, desc: 'Không nơi nương tựa, bắt đầu với hai bàn tay trắng.', resources: { lingShi: 0, items: [] } },
-    'no_nan': { id: 'no_nan', name: 'Nợ Nần Chồng Chất', cost: -30, desc: 'Gánh trên vai món nợ lớn của gia tộc.', resources: { lingShi: -2000, items: [] } },
-    'gia_toc': { id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 30, desc: 'Sinh ra trong gia tộc, có sẵn linh thạch và công pháp.', resources: { lingShi: 500, items: ['truong_sinh_quyet_book'] } },
-    'tong_mon': { id: 'tong_mon', name: 'Đệ Tử Tông Môn', cost: 50, desc: 'Được tông môn che chở, có pháp bảo phòng thân.', resources: { lingShi: 200, items: ['phi_kiem_go', 'ao_bo_so_cap'] } },
-    'ma_dao': { id: 'ma_dao', name: 'Hậu Nhân Ma Đạo', cost: 20, desc: 'Công pháp bá đạo nhưng bị chính đạo truy quét.', resources: { lingShi: 300, items: ['huyet_don_thuat_book'], karma: -50 } },
-    'dai_gia_toc': { id: 'dai_gia_toc', name: 'Đại Thế Gia', cost: 80, desc: 'Con cháu thế gia danh tiếng, tài lực dồi dào.', resources: { lingShi: 5000, items: ['ngung_khi_dan', 'ngung_khi_dan'] } }
+    'tan_tu': { id: 'tan_tu', name: 'Tán Tu', cost: 0, desc: 'Tự do tự tại, không có tài nguyên khởi đầu.', resources: { lingShi: 0, items: [] }, monthlyResources: { lingShi: 0 } },
+    'vo_gia_cu': { id: 'vo_gia_cu', name: 'Vô Gia Cư', cost: -10, desc: 'Không nơi nương tựa, bắt đầu với hai bàn tay trắng.', resources: { lingShi: 0, items: [] }, monthlyResources: { lingShi: 0 } },
+    'no_nan': { id: 'no_nan', name: 'Nợ Nần Chồng Chất', cost: -30, desc: 'Gánh trên vai món nợ lớn của gia tộc.', resources: { lingShi: -2000, items: [] }, monthlyResources: { lingShi: 0 } },
+    'gia_toc': { id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 30, desc: 'Sinh ra trong gia tộc, có sẵn linh thạch và công pháp. Hàng tháng nhận bổng lộc gia tộc.', resources: { lingShi: 500, items: ['truong_sinh_quyet_book'] }, monthlyResources: { lingShi: 100 } },
+    'tong_mon': { id: 'tong_mon', name: 'Đệ Tử Tông Môn', cost: 50, desc: 'Được tông môn che chở, có pháp bảo phòng thân. Hàng tháng nhận bổng lộc tông môn.', resources: { lingShi: 200, items: ['phi_kiem_go', 'ao_bo_so_cap'] }, monthlyResources: { lingShi: 50 } },
+    'ma_dao': { id: 'ma_dao', name: 'Hậu Nhân Ma Đạo', cost: 20, desc: 'Công pháp bá đạo nhưng bị chính đạo truy quét.', resources: { lingShi: 300, items: ['huyet_don_thuat_book'], karma: -50 }, monthlyResources: { lingShi: 0 } },
+    'dai_gia_toc': { id: 'dai_gia_toc', name: 'Đại Thế Gia', cost: 80, desc: 'Con cháu thế gia danh tiếng, tài lực dồi dào. Hàng tháng nhận bổng lộc cực lớn.', resources: { lingShi: 5000, items: ['ngung_khi_dan', 'ngung_khi_dan'] }, monthlyResources: { lingShi: 1000 } }
 };
 
 export const CREATION_TRAITS = {

@@ -107,6 +107,15 @@ export class TimeSystem {
 
     onMonthChanged() {
         this.ui.toast(`Tháng mới đã đến: Tháng ${this.getMonth()}`, "info");
+
+        // Monthly resources from Origin (Family/Sect)
+        if (this.player.origin && this.player.origin.monthlyResources) {
+            const monthly = this.player.origin.monthlyResources;
+            if (monthly.lingShi > 0) {
+                this.player.addLingShi(monthly.lingShi);
+                this.ui.toast(`Nhận bổng lộc hàng tháng từ ${this.player.origin.name}: +${monthly.lingShi} Linh Thạch`, "success");
+            }
+        }
     }
 
     onYearChanged() {

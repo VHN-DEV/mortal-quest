@@ -129,6 +129,7 @@ export class CreationSystem {
         };
         
         // Apply Origin resources
+        player.origin = origin;
         player.addLingShi(this.startingLingShi);
         origin.resources.items.forEach(itemId => player.inventory.addItem(itemId, 1));
         if (origin.resources.karma) player.karma = origin.resources.karma;
