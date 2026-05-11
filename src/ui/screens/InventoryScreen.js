@@ -49,6 +49,8 @@ export class InventoryScreen {
                         state.ui.toggleOverlay(this.elItemDetail, false);
                     }
                     window.game.refreshUI();
+                } else if (state.selectedItemId) {
+                    state.ui.toast('Không thể luyện hóa/sử dụng vật phẩm này lúc này.', 'error');
                 }
             };
         }

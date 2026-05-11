@@ -1,4 +1,5 @@
 import { getItemById } from '../configs/item-data.js';
+import { state } from '../state.js';
 
 export class Inventory {
     constructor(player) {
