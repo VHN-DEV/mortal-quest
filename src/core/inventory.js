@@ -87,9 +87,18 @@ export class Inventory {
             if (!this.player.knownRecipes.includes(effect.value)) {
                 this.player.knownRecipes.push(effect.value);
             }
+        } else if (effect.type === 'learn_smithing_recipe') {
+            if (!this.player.knownSmithingRecipes.includes(effect.value)) {
+                this.player.knownSmithingRecipes.push(effect.value);
+            }
         } else if (effect.type === 'learn_talisman_recipe') {
             if (!this.player.knownTalismanRecipes.includes(effect.value)) {
                 this.player.knownTalismanRecipes.push(effect.value);
+            }
+        } else if (effect.type === 'refine_flame') {
+            if (!this.player.ownedFlames.includes(effect.value)) {
+                this.player.ownedFlames.push(effect.value);
+                this.player.currentFlame = effect.value; // Auto switch to better flame
             }
         }
     }

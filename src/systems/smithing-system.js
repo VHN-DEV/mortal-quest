@@ -1,5 +1,6 @@
 import { SMITHING_RECIPES, getSmithingLevelInfo } from '../configs/smithing-data.js';
 import { getItemById } from '../configs/item-data.js';
+import { getFlameById } from '../configs/alchemy-data.js';
 
 export class SmithingSystem {
     constructor(player, ui) {
@@ -10,6 +11,11 @@ export class SmithingSystem {
     forge(recipeId) {
         const recipe = SMITHING_RECIPES[recipeId];
         if (!recipe) return { success: false, msg: 'Bản thiết kế không tồn tại!' };
+
+        // Check ownership
+        if (!this.player.knownSmithingRecipes.includes(recipeId)) {
+            return { success: false, msg: 'Ngươi chưa có bản vẽ của vật phẩm này!' };
+        }
 
         if (this.player.smithingLevel < recipe.level) {
             return { success: false, msg: `Cần cấp Luyện Khí Sư ${recipe.level} để rèn vật phẩm này!` };
@@ -37,8 +43,11 @@ export class SmithingSystem {
         // Bonus from Smithing Tool (if any)
         if (this.player.smithingTool === 'luyen_khi_dai') successRate += 0.1;
         
-        // Bonus from fire power (if using a better flame)
-        if (this.player.currentFlame === 'thanh_lien_hoa') successRate += 0.05;
+        // Bonus from flame power
+        const flame = getFlameById(this.player.currentFlame || 'linh_hoa');
+        if (flame && flame.type === 'di_hoa') {
+            successRate += (flame.power * 0.05); // Each power level adds 5%
+        }
 
         const roll = Math.random();
         if (roll <= successRate) {

@@ -1,4 +1,5 @@
 import { getSecretTechniqueById } from '../configs/technique-data.js';
+import { getFlameById } from '../configs/alchemy-data.js';
 
 export class CombatEngine {
     constructor(player, enemy, onUpdate, onEnd) {
@@ -56,6 +57,9 @@ export class CombatEngine {
             case 'secret':
                 this.playerSecretTechnique(arguments[1]);
                 break;
+            case 'flame':
+                this.playerFlameAttack();
+                break;
         }
     }
 
@@ -103,6 +107,34 @@ export class CombatEngine {
         const damage = Math.floor(this.player.atk * 1.8);
         this.enemy.hp -= damage;
         this.addLog(`Bạn thi triển Linh Thuật gây ${damage} sát thương!`);
+        this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
+
+        if (this.enemy.hp <= 0) {
+            this.enemy.hp = 0;
+            this.win();
+        } else {
+            this.turn = 1;
+            this.nextTurn();
+        }
+    }
+
+    playerFlameAttack() {
+        const flame = getFlameById(this.player.currentFlame || 'linh_hoa');
+        if (!flame || flame.type !== 'di_hoa') {
+            this.addLog("Ngươi chưa có Dị Hỏa để thi triển chiêu này!");
+            return;
+        }
+
+        const manaCost = 20;
+        if (this.player.mana < manaCost) {
+            this.addLog("Không đủ Linh Lực để dẫn động Dị Hỏa!");
+            return;
+        }
+
+        this.player.mana -= manaCost;
+        const damage = Math.floor(this.player.atk * flame.power * 1.5);
+        this.enemy.hp -= damage;
+        this.addLog(`Bạn dẫn động ${flame.name} thi triển Hỏa Công gây ${damage} sát thương cực lớn!`);
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
 
         if (this.enemy.hp <= 0) {

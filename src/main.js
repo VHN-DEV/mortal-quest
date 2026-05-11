@@ -82,14 +82,6 @@ window.renderCreationScreen = () => {
     // ... Thêm logic render creation khác nếu cần
 };
 
-// Start Battle bridge
-window.startBattle = (worldId, locId) => {
-    const loc = getLocationById(worldId, locId);
-    const enemy = EnemyGenerator.generate(loc.dangerLevel || 1);
-    state.currentCombat = new CombatEngine(state.player, enemy, state.ui);
-    state.currentCombat.start();
-};
-
 // Global error handler
 window.onerror = function (msg, url, lineNo, columnNo, error) {
     console.error('Thiên Cơ Hỗn Loạn:', msg, '\nTại:', url, ':', lineNo, ':', columnNo, '\nChi tiết:', error);

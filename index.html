@@ -716,6 +716,23 @@
                         Điền</button>
                 </div>
 
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center space-x-3">
+                        <div class="text-2xl">🏺</div>
+                        <div>
+                            <h4 class="text-[9px] text-gray-500 uppercase">Đan Lư</h4>
+                            <p id="alchemy-cauldron-name" class="text-[10px] font-bold text-white italic">Phàm Lư</p>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center space-x-3">
+                        <div class="text-2xl">🔥</div>
+                        <div>
+                            <h4 class="text-[9px] text-gray-500 uppercase">Linh Hỏa</h4>
+                            <p id="alchemy-flame-name" class="text-[10px] font-bold text-white italic">Linh Hỏa</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="alchemy-recipes-view" class="flex-grow overflow-y-auto space-y-4 pr-1"></div>
                 <div id="alchemy-garden-view" class="flex-grow overflow-y-auto space-y-4 hidden pr-1">
                     <div id="garden-plots" class="grid grid-cols-1 gap-4"></div>
@@ -1489,13 +1506,20 @@
                 <div id="battle-player-hp" class="h-full bg-qi-blue transition-all duration-300" style="width: 100%">
                 </div>
             </div>
-            <div id="battle-actions" class="grid grid-cols-3 gap-2 hidden"><button id="btn-attack"
+            <div id="battle-actions" class="grid grid-cols-2 gap-2 hidden">
+                <button id="btn-attack"
                     class="py-3 bg-white/5 border border-white/20 rounded-lg text-xs font-bold hover:bg-white/10 active:scale-95 transition-all">TẤN
-                    CÔNG</button><button id="btn-defend"
+                    CÔNG</button>
+                <button id="btn-defend"
                     class="py-3 bg-white/5 border border-white/20 rounded-lg text-xs font-bold hover:bg-white/10 active:scale-95 transition-all">PHÒNG
-                    THỦ</button><button id="btn-skill"
+                    THỦ</button>
+                <button id="btn-skill"
                     class="py-3 bg-qi-purple/20 border border-qi-purple/40 rounded-lg text-xs font-bold text-qi-purple active:scale-95 transition-all">TUYỆT
-                    KỸ</button></div>
+                    KỸ</button>
+                <button id="btn-flame"
+                    class="py-3 bg-red-900/40 border border-red-500/40 rounded-lg text-xs font-bold text-red-400 active:scale-95 transition-all hidden">DỊ
+                    HỎA</button>
+            </div>
         </div>
     </div>
 

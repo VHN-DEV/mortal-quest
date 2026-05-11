@@ -774,35 +774,83 @@ export const ITEMS = {
         techniqueId: 'u_minh_huy_ngan',
         description: 'Bí pháp Thần Thức trung cấp, tu luyện linh hồn.'
     },
-    'recipe_ngung_khi': {
-        id: 'recipe_ngung_khi',
-        name: 'Đan Phương: Ngưng Khí Đan',
-        type: 'consumable',
-        icon: '📜',
-        quality: 'Hoàng',
-        price: 500,
-        description: 'Ghi chép cách luyện chế Ngưng Khí Đan.',
-        effect: { type: 'learn_recipe', value: 'ngung_khi_dan' }
-    },
-    'recipe_bo_nguyen': {
-        id: 'recipe_bo_nguyen',
-        name: 'Đan Phương: Bổ Nguyên Đan',
+    'recipe_than_tam': {
+        id: 'recipe_than_tam',
+        name: 'Đan Phương: Thanh Tâm Đan',
         type: 'consumable',
         icon: '📜',
         quality: 'Huyền',
-        price: 1500,
-        description: 'Ghi chép cách luyện chế Bổ Nguyên Đan.',
-        effect: { type: 'learn_recipe', value: 'bo_nguyen_dan' }
+        price: 2500,
+        description: 'Ghi chép cách luyện chế Thanh Tâm Đan.',
+        effect: { type: 'learn_recipe', value: 'than_tam_dan' }
     },
-    'recipe_hoa_cau_phu': {
-        id: 'recipe_hoa_cau_phu',
-        name: 'Phù Đồ: Hỏa Cầu Phù',
+    'recipe_truc_co': {
+        id: 'recipe_truc_co',
+        name: 'Đan Phương: Trúc Cơ Đan',
         type: 'consumable',
         icon: '📜',
-        quality: 'Phàm',
-        price: 300,
-        description: 'Ghi chép cách vẽ Hỏa Cầu Phù.',
-        effect: { type: 'learn_talisman_recipe', value: 'hoa_cau_phu' }
+        quality: 'Địa',
+        price: 15000,
+        description: 'Ghi chép cách luyện chế Trúc Cơ Đan cực kỳ quý giá.',
+        effect: { type: 'learn_recipe', value: 'truc_co_dan' }
+    },
+    'bp_tinh_ha': {
+        id: 'bp_tinh_ha',
+        name: 'Bản Vẽ: Tinh Hà Phi Kiếm',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 8000,
+        description: 'Ghi chép phương pháp rèn Tinh Hà Phi Kiếm.',
+        effect: { type: 'learn_smithing_recipe', value: 'phi_kiem_tinh_ha' }
+    },
+    'bp_long_lan': {
+        id: 'bp_long_lan',
+        name: 'Bản Vẽ: Long Lân Giáp',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Địa',
+        price: 25000,
+        description: 'Bản vẽ rèn Long Lân Giáp phòng ngự kinh người.',
+        effect: { type: 'learn_smithing_recipe', value: 'long_lan_giap' }
+    },
+    'dia_lu_item': {
+        id: 'dia_lu_item',
+        name: 'Địa Long Phần Thiên Lư',
+        type: 'cauldron',
+        icon: '🏺',
+        quality: 'Địa',
+        price: 35000,
+        description: 'Chứa đựng tinh hoa chi lực của địa long, khống hỏa cực tốt.'
+    },
+    'thien_lu_item': {
+        id: 'thien_lu_item',
+        name: 'Thiên Cực Thái Hư Lư',
+        type: 'cauldron',
+        icon: '🏺',
+        quality: 'Thiên',
+        price: 150000,
+        description: 'Lò luyện đỉnh cấp, ổn định hỏa lực đến mức hoàn mỹ.'
+    },
+    'van_lac_tam_viem_seed': {
+        id: 'van_lac_tam_viem_seed',
+        name: 'Vẫn Lạc Tâm Viêm (Chủng)',
+        type: 'consumable',
+        icon: '🔥',
+        quality: 'Địa',
+        price: 120000,
+        description: 'Hỏa chủng của Vẫn Lạc Tâm Viêm, tăng mạnh hiệu suất luyện đan.',
+        effect: { type: 'refine_flame', value: 'van_lac_tam_viem' }
+    },
+    'tinh_lien_yeu_hoa_seed': {
+        id: 'tinh_lien_yeu_hoa_seed',
+        name: 'Tịnh Liên Yêu Hỏa (Chủng)',
+        type: 'consumable',
+        icon: '🔥',
+        quality: 'Thiên',
+        price: 800000,
+        description: 'Yêu hỏa thần bí có khả năng tịnh hóa vạn vật.',
+        effect: { type: 'refine_flame', value: 'tinh_lien_yeu_hoa' }
     }
 };
 

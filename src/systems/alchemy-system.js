@@ -83,6 +83,11 @@ export class AlchemySystem {
         const recipe = getRecipeById(recipeId);
         if (!recipe) return { success: false, msg: 'Đan phương không tồn tại!' };
 
+        // Check if player knows the recipe
+        if (!this.player.knownRecipes.includes(recipeId)) {
+            return { success: false, msg: 'Ngươi chưa có đan phương của loại đan dược này!' };
+        }
+
         // Check level
         if (this.player.alchemyLevel < recipe.level) {
             return { success: false, msg: 'Cấp bậc luyện dược sư chưa đủ!' };

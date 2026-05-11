@@ -3,12 +3,16 @@ import { Player } from './core/player.js';
 import { SaveSystem } from './core/save-system.js';
 import { UISystem } from './ui/ui-system.js';
 import { ASSETS } from './configs/asset-data.js';
+import { EnemyGenerator } from './core/enemy.js';
+import { getLocationById } from './configs/map-data.js';
+import { CombatEngine } from './core/combat-engine.js';
 
 // Import Screens
 import { MapScreen } from './ui/screens/MapScreen.js';
 import { InventoryScreen } from './ui/screens/InventoryScreen.js';
 import { CharacterScreen } from './ui/screens/CharacterScreen.js';
 import { SystemsScreen } from './ui/screens/SystemsScreen.js';
+import { BattleScreen } from './ui/screens/BattleScreen.js';
 
 // Import Systems
 import { ShopSystem } from './systems/shop-system.js';
@@ -45,6 +49,7 @@ export class Game {
         this.screens.inventory = new InventoryScreen();
         this.screens.character = new CharacterScreen();
         this.screens.systems = new SystemsScreen();
+        this.screens.battle = new BattleScreen();
 
         // 3. Khởi tạo Creation System (cho màn hình mới)
         state.systems.creation = new CreationSystem();
@@ -304,7 +309,21 @@ export class Game {
     }
 
     startBattle(worldId, locId) {
-        if (window.startBattle) window.startBattle(worldId, locId);
+        const loc = getLocationById(worldId, locId);
+        const enemy = EnemyGenerator.generate(loc.dangerLevel || 1);
+        
+        state.currentCombat = new CombatEngine(
+            state.player, 
+            enemy, 
+            (type, data) => this.screens.battle.render(type, data),
+            (result) => {
+                this.screens.battle.close();
+                this.refreshUI();
+            }
+        );
+        
+        this.screens.battle.render('start');
+        state.currentCombat.start();
     }
 
     openCrafting(type) {
@@ -341,42 +360,18 @@ export class Game {
         state.ui.toast('Đấu giá trường chưa mở cửa!', 'warning');
     }
 
-    craft(recipeId) {
-        // Alchemy logic
-        state.ui.toast('Đang luyện chế...', 'info');
-        setTimeout(() => {
-            const success = Math.random() > 0.1;
-            if (success) state.ui.toast('Luyện chế thành công!', 'success');
-            else state.ui.toast('Luyện chế thất bại, đan lô nổ tung!', 'error');
+    forge(recipeId) {
+        if (state.systems.smithing) {
+            const res = state.systems.smithing.forge(recipeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
             this.refreshUI();
-        }, 1000);
-    }
-
-    harvest(index) {
-        state.ui.toast('Thu hoạch thành công!', 'success');
-        this.refreshUI();
-    }
-
-    showPlantMenu(index) {
-        state.ui.toast('Chọn hạt giống...', 'info');
-    }
-
-    guildCertify(level) {
-        state.ui.toast(`Khảo hạch cấp ${level} bắt đầu...`, 'info');
-    }
-
-    buyItem(id) {
-        if (state.systems.shop.buyItem(id)) {
-            state.ui.toast('Mua thành công!', 'success');
-            this.refreshUI();
-        } else {
-            state.ui.toast('Không đủ Linh Thạch!', 'error');
         }
     }
 
-    sellItem(id, qty) {
-        if (state.systems.shop.sellItem(id, qty)) {
-            state.ui.toast('Bán thành công!', 'success');
+    guildCertify(level) {
+        if (state.systems.guild) {
+            const res = state.systems.guild.certify(level);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
             this.refreshUI();
         }
     }

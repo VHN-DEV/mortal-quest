@@ -77,7 +77,9 @@ export class Player {
         this.currentCauldron = 'pham_lu';
         this.currentFlame = 'linh_hoa';
         this.danPoison = 0;
-        this.knownRecipes = [];
+        this.knownRecipes = ['ngung_khi_dan']; // Start with basic recipe
+        this.ownedFlames = ['linh_hoa'];
+        this.ownedCauldrons = ['pham_lu'];
         this.alchemyReputation = 0;
         this.currentAlchemyRoom = null;
         this.gardenPlots = [null, null, null]; // 3 initial plots
@@ -87,19 +89,15 @@ export class Player {
         this.talismanLevel = 1;
         this.talismanExp = 0;
         this.currentTalismanPen = 'truc_phu_but';
-        this.knownTalismanRecipes = [];
+        this.knownTalismanRecipes = ['hoa_cau_phu'];
+        this.ownedTalismanPens = ['truc_phu_but'];
         
-        // Alchemy Expanded
-        this.currentCauldron = 'pham_lu';
-        this.currentFlame = 'linh_hoa';
-        this.knownAlchemyTechniques = {};
-        this.alchemyExp = 0;
-        this.alchemyLevel = 1;
-
         // Smithing System
         this.smithingLevel = 1;
         this.smithingExp = 0;
         this.smithingTool = null;
+        this.knownSmithingRecipes = [];
+        this.ownedSmithingTools = [];
         this.lifeBoundTreasureId = null;
         this.age = 18;
         this.maxAge = 100; // Base human lifespan
@@ -467,17 +465,32 @@ export class Player {
 
         // Specialized Profession Tools
         if (item.type === 'cauldron') {
+            if (this.currentCauldron) {
+                const oldItem = getItemById(this.currentCauldron);
+                if (oldItem) this.inventory.addItem(this.currentCauldron, 1);
+            }
             this.currentCauldron = itemId;
+            if (!this.ownedCauldrons.includes(itemId)) this.ownedCauldrons.push(itemId);
             this.inventory.removeItem(itemId, 1);
             return true;
         }
         if (item.type === 'talisman_pen') {
+            if (this.currentTalismanPen) {
+                const oldItem = getItemById(this.currentTalismanPen);
+                if (oldItem) this.inventory.addItem(this.currentTalismanPen, 1);
+            }
             this.currentTalismanPen = itemId;
+            if (!this.ownedTalismanPens.includes(itemId)) this.ownedTalismanPens.push(itemId);
             this.inventory.removeItem(itemId, 1);
             return true;
         }
         if (item.type === 'smithing_tool') {
+            if (this.smithingTool) {
+                const oldItem = getItemById(this.smithingTool);
+                if (oldItem) this.inventory.addItem(this.smithingTool, 1);
+            }
             this.smithingTool = itemId;
+            if (!this.ownedSmithingTools.includes(itemId)) this.ownedSmithingTools.push(itemId);
             this.inventory.removeItem(itemId, 1);
             return true;
         }
@@ -560,6 +573,8 @@ export class Player {
         this.currentFlame = data.currentFlame || 'linh_hoa';
         this.danPoison = data.danPoison || 0;
         this.knownRecipes = data.knownRecipes || ['ngung_khi_dan'];
+        this.ownedFlames = data.ownedFlames || ['linh_hoa'];
+        this.ownedCauldrons = data.ownedCauldrons || ['pham_lu'];
         this.alchemyReputation = data.alchemyReputation || 0;
         this.currentAlchemyRoom = data.currentAlchemyRoom || null;
         this.gardenPlots = data.gardenPlots || [null, null, null];
@@ -580,6 +595,16 @@ export class Player {
 
         this.formationLevel = data.formationLevel || 1;
         this.formationExp = data.formationExp || 0;
+
+        this.smithingLevel = data.smithingLevel || 1;
+        this.smithingExp = data.smithingExp || 0;
+        this.smithingTool = data.smithingTool || null;
+        this.knownSmithingRecipes = data.knownSmithingRecipes || [];
+        this.ownedSmithingTools = data.ownedSmithingTools || [];
+
+        this.currentTalismanPen = data.currentTalismanPen || 'truc_phu_but';
+        this.knownTalismanRecipes = data.knownTalismanRecipes || ['hoa_cau_phu'];
+        this.ownedTalismanPens = data.ownedTalismanPens || ['truc_phu_but'];
         
         this.mainTechniqueId = data.mainTechniqueId || null;
         this.learnedTechniques = data.learnedTechniques || [];
@@ -627,6 +652,8 @@ export class Player {
             currentFlame: this.currentFlame,
             danPoison: this.danPoison,
             knownRecipes: this.knownRecipes,
+            ownedFlames: this.ownedFlames,
+            ownedCauldrons: this.ownedCauldrons,
             alchemyReputation: this.alchemyReputation,
             currentAlchemyRoom: this.currentAlchemyRoom,
             gardenPlots: this.gardenPlots,
@@ -644,6 +671,14 @@ export class Player {
             refinedCorpses: this.refinedCorpses,
             formationLevel: this.formationLevel,
             formationExp: this.formationExp,
+            smithingLevel: this.smithingLevel,
+            smithingExp: this.smithingExp,
+            smithingTool: this.smithingTool,
+            knownSmithingRecipes: this.knownSmithingRecipes,
+            ownedSmithingTools: this.ownedSmithingTools,
+            currentTalismanPen: this.currentTalismanPen,
+            knownTalismanRecipes: this.knownTalismanRecipes,
+            ownedTalismanPens: this.ownedTalismanPens,
             mainTechniqueId: this.mainTechniqueId,
             learnedTechniques: this.learnedTechniques,
             equippedSecretTechniqueIds: this.equippedSecretTechniqueIds,

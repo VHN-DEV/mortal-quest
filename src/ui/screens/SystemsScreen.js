@@ -1,6 +1,7 @@
 import { state } from '../../state.js';
 import { getItemById } from '../../configs/item-data.js';
-import { ALCHEMY_RECIPES, getAlchemyLevelInfo } from '../../configs/alchemy-data.js';
+import { ALCHEMY_RECIPES, getAlchemyLevelInfo, getFlameById, getCauldronById } from '../../configs/alchemy-data.js';
+import { SMITHING_RECIPES, getSmithingLevelInfo } from '../../configs/smithing-data.js';
 import { SEEDS } from '../../configs/garden-data.js';
 import { ALCHEMY_CERTIFICATIONS, GUILD_MISSIONS, ALCHEMY_ROOMS } from '../../configs/guild-data.js';
 import { TOWER_LEVELS } from '../../configs/tower-data.js';
@@ -66,11 +67,23 @@ export class SystemsScreen {
         } else {
             this.renderGarden();
         }
+
+        const cauldronName = document.getElementById('alchemy-cauldron-name');
+        const flameName = document.getElementById('alchemy-flame-name');
+        if (cauldronName) cauldronName.textContent = getCauldronById(state.player.currentCauldron)?.name || 'Phàm Lư';
+        if (flameName) flameName.textContent = getFlameById(state.player.currentFlame)?.name || 'Linh Hỏa';
     }
 
     renderRecipes() {
         this.viewAlchemyRecipes.innerHTML = '';
-        ALCHEMY_RECIPES.forEach(recipe => {
+        const known = ALCHEMY_RECIPES.filter(r => state.player.knownRecipes.includes(r.id));
+        
+        if (known.length === 0) {
+            this.viewAlchemyRecipes.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa học được đan phương nào...</div>';
+            return;
+        }
+
+        known.forEach(recipe => {
             const resultItem = getItemById(recipe.resultId);
             if (!resultItem) return;
             const qClass = this.getQualityClass(resultItem.quality);
@@ -215,6 +228,62 @@ export class SystemsScreen {
         return map[quality] || 'pham';
     }
 
+    renderSmithing() {
+        const view = document.getElementById('smithing-recipes');
+        if (!view) return;
+        view.innerHTML = '';
+
+        const toolName = document.getElementById('smithing-tool-name');
+        const flameName = document.getElementById('smithing-flame-name');
+        if (toolName) toolName.textContent = state.player.smithingTool ? getItemById(state.player.smithingTool)?.name : 'Chưa có';
+        if (flameName) flameName.textContent = getFlameById(state.player.currentFlame)?.name || 'Linh Hỏa Cơ Bản';
+
+        const lvlInfo = getSmithingLevelInfo(state.player.smithingLevel);
+        const lvlText = document.getElementById('smithing-level-text');
+        if (lvlText) lvlText.textContent = lvlInfo.name;
+
+        const recipes = Object.values(SMITHING_RECIPES).filter(r => state.player.knownSmithingRecipes.includes(r.id));
+        
+        if (recipes.length === 0) {
+            view.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa học được bản vẽ nào...</div>';
+            return;
+        }
+
+        recipes.forEach(recipe => {
+            const item = getItemById(recipe.id);
+            if (!item) return;
+            const qClass = this.getQualityClass(item.quality);
+            const el = document.createElement('div');
+            el.className = 'p-4 border border-gray-800 rounded-2xl bg-white/5 space-y-3';
+
+            let materialsHTML = '';
+            recipe.materials.forEach(mat => {
+                const matItem = getItemById(mat.id);
+                const count = state.player.inventory.items.find(i => i.id === mat.id)?.quantity || 0;
+                const enough = count >= mat.quantity;
+                materialsHTML += `<div class="text-[10px] ${enough ? 'text-gray-400' : 'text-red-500'}">${matItem?.name || mat.id}: ${count}/${mat.quantity}</div>`;
+            });
+
+            const locked = state.player.smithingLevel < recipe.level;
+
+            el.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <span class="text-xl mr-2">${item.icon}</span>
+                        <span class="font-bold quality-${qClass} font-ancient">${item.name}</span>
+                    </div>
+                    ${locked ?
+                        `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
+                        `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg" onclick="window.game.forge('${recipe.id}')">RÈN ĐÚC</button>`
+                    }
+                </div>
+                <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
+                <div class="text-[9px] text-gray-500 italic">Thể lực: ${recipe.staminaCost} | Linh lực: ${recipe.manaCost}</div>
+            `;
+            view.appendChild(el);
+        });
+    }
+
     openCrafting(type) {
         // Toggle specific crafting sub-screens
         const craftingScreens = ['screen-alchemy', 'screen-talisman', 'screen-smithing', 'screen-formation', 'screen-corpse', 'screen-beast'];
@@ -230,6 +299,7 @@ export class SystemsScreen {
         if (target) {
             state.ui.toggleOverlay(target, true);
             if (type === 'alchemy') this.renderAlchemy();
+            if (type === 'smithing') this.renderSmithing();
         }
     }
 }

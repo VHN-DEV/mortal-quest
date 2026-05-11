@@ -54,9 +54,20 @@ export const SHOPS = {
                 { id: 'luyen_khi_dai', stock: 1, minVip: 1 }
             ],
             'bi_tich': [
-                { id: 'recipe_ngung_khi', stock: 1 },
-                { id: 'recipe_bo_nguyen', stock: 1, minVip: 1 },
-                { id: 'recipe_hoa_cau_phu', stock: 1 }
+                { id: 'recipe_than_tam', stock: 1 },
+                { id: 'recipe_truc_co', stock: 1, minVip: 2 },
+                { id: 'bp_tinh_ha', stock: 1, minVip: 1 },
+                { id: 'bp_long_lan', stock: 1, minVip: 3 },
+                { id: 'van_lac_tam_viem_seed', stock: 1, minVip: 4 },
+                { id: 'tinh_lien_yeu_hoa_seed', stock: 1, minVip: 5 }
+            ],
+            'phap_bao': [
+                { id: 'phi_kiem_go', stock: 5 },
+                { id: 'ao_bo_so_cap', stock: 5 },
+                { id: 'thanh_hong_kiem', stock: 1, minVip: 1 },
+                { id: 'huyen_lu_item', stock: 1, minVip: 1 },
+                { id: 'dia_lu_item', stock: 1, minVip: 3 },
+                { id: 'thien_lu_item', stock: 1, minVip: 5 }
             ]
         }
     }
