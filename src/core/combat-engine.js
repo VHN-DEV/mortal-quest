@@ -1,5 +1,6 @@
 import { getSecretTechniqueById } from '../configs/technique-data.js';
 import { getFlameById } from '../configs/alchemy-data.js';
+import { getItemById } from '../configs/item-data.js';
 
 export class CombatEngine {
     constructor(player, enemy, onUpdate, onEnd) {
@@ -103,6 +104,28 @@ export class CombatEngine {
             case 'flame':
                 this.playerFlameAttack();
                 break;
+            case 'potion':
+                this.playerUsePotion();
+                break;
+            case 'talisman':
+                this.playerUseTalisman();
+                break;
+            case 'beast':
+                this.playerSummonBeast();
+                break;
+            case 'formation':
+                this.playerActivateFormation();
+                break;
+        }
+    }
+
+    endPlayerTurn() {
+        if (this.enemy.hp <= 0) {
+            this.enemy.hp = 0;
+            this.win();
+        } else {
+            this.turn = 1;
+            this.nextTurn();
         }
     }
 
@@ -139,13 +162,7 @@ export class CombatEngine {
             this.addLog(`Liên kích tổ đội gây thêm ${bonus} sát thương!`);
         }
         
-        if (this.enemy.hp <= 0) {
-            this.enemy.hp = 0;
-            this.win();
-        } else {
-            this.turn = 1;
-            this.nextTurn();
-        }
+        this.endPlayerTurn();
     }
 
     playerDefend() {
@@ -199,13 +216,73 @@ export class CombatEngine {
         this.addLog(`${this.enemy.name} rơi vào trạng thái THIÊU ĐỐT!`);
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
 
-        if (this.enemy.hp <= 0) {
-            this.enemy.hp = 0;
-            this.win();
-        } else {
-            this.turn = 1;
-            this.nextTurn();
+        this.endPlayerTurn();
+    }
+
+    playerUsePotion() {
+        const potion = this.player.inventory.items.find(i => {
+            const d = getItemById(i.id);
+            return d?.type === 'consumable' && (d.effect?.type === 'heal' || d.effect?.type === 'mana');
+        });
+        if (!potion) {
+            this.addLog("Không có đan dược hồi phục để sử dụng!");
+            return;
         }
+        this.player.inventory.useItem(potion.id, 1);
+        this.addLog(`Bạn dùng ${getItemById(potion.id)?.name || 'đan dược'}, điều tức hồi phục.`);
+        this.endPlayerTurn();
+    }
+
+    playerUseTalisman() {
+        const talisman = this.player.inventory.items.find(i => getItemById(i.id)?.type === 'talisman');
+        if (!talisman) {
+            this.addLog("Không có phù lục khả dụng!");
+            return;
+        }
+        const data = getItemById(talisman.id);
+        this.player.inventory.removeItem(talisman.id, 1);
+        if (data.effect?.type === 'damage') {
+            const dmg = data.effect.value || 120;
+            this.enemy.hp -= dmg;
+            this.addLog(`Bạn kích hoạt ${data.name}, gây ${dmg} sát thương.`);
+            this.onUpdate('damage', { target: 'enemy', value: dmg, crit: true });
+        } else if (data.effect?.type === 'buff' && data.effect.stat === 'def') {
+            this.player.def += data.effect.value || 60;
+            this.addLog(`${data.name} bảo hộ thân thể, phòng ngự tăng tạm thời!`);
+        } else if (data.effect?.type === 'escape') {
+            this.addLog(`Bạn dùng ${data.name} thoát chiến.`);
+            this.isActive = false;
+            this.onEnd('escape');
+            return;
+        }
+        this.endPlayerTurn();
+    }
+
+    playerSummonBeast() {
+        const beast = this.player.spiritBeasts?.[0];
+        if (!beast) {
+            this.addLog("Chưa có linh thú chiến đấu để triệu hồi!");
+            return;
+        }
+        const dmg = Math.max(1, Math.floor((beast.stats?.atk || this.player.atk * 0.4) * 0.7));
+        this.enemy.hp -= dmg;
+        this.addLog(`Linh thú ${beast.name} xuất chiến, gây ${dmg} sát thương!`);
+        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
+        this.endPlayerTurn();
+    }
+
+    playerActivateFormation() {
+        const cost = 15;
+        if (this.player.mana < cost) {
+            this.addLog("Không đủ linh lực để khởi động trận pháp!");
+            return;
+        }
+        this.player.mana -= cost;
+        const dmg = Math.max(1, Math.floor(this.player.atk * 1.2));
+        this.enemy.hp -= dmg;
+        this.addLog(`Bạn bố trí trận pháp áp chế chiến trường, gây ${dmg} sát thương.`);
+        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
+        this.endPlayerTurn();
     }
 
     playerSecretTechnique(secretId) {

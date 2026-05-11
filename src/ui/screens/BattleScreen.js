@@ -31,6 +31,10 @@ export class BattleScreen {
         this.btnSkill = document.getElementById('btn-skill');
         this.btnFlame = document.getElementById('btn-flame');
         this.btnSecret = document.getElementById('btn-secret');
+        this.btnPotion = document.getElementById('btn-potion');
+        this.btnTalisman = document.getElementById('btn-talisman');
+        this.btnBeast = document.getElementById('btn-beast');
+        this.btnFormation = document.getElementById('btn-formation');
         this.secretCursor = 0;
         this.secretList = document.getElementById('battle-secret-list');
     }
@@ -40,6 +44,10 @@ export class BattleScreen {
         if (this.btnDefend) this.btnDefend.onclick = () => this.handleAction('defend');
         if (this.btnSkill) this.btnSkill.onclick = () => this.handleAction('skill');
         if (this.btnFlame) this.btnFlame.onclick = () => this.handleAction('flame');
+        if (this.btnPotion) this.btnPotion.onclick = () => this.handleAction('potion');
+        if (this.btnTalisman) this.btnTalisman.onclick = () => this.handleAction('talisman');
+        if (this.btnBeast) this.btnBeast.onclick = () => this.handleAction('beast');
+        if (this.btnFormation) this.btnFormation.onclick = () => this.handleAction('formation');
         if (this.btnSecret) this.btnSecret.onclick = () => this.toggleSecretList();
     }
 
