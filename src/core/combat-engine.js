@@ -243,6 +243,10 @@ export class CombatEngine {
     }
 
     playerUseTalisman() {
+        if (!this.player.unlockedProfessions?.includes('talisman')) {
+            this.addLog("Chưa lĩnh hội bí pháp Phù Lục, không thể dùng phù trong chiến đấu!");
+            return;
+        }
         const talisman = this.player.inventory.items.find(i => getItemById(i.id)?.type === 'talisman');
         if (!talisman) {
             this.addLog("Không có phù lục khả dụng!");
@@ -268,6 +272,10 @@ export class CombatEngine {
     }
 
     playerSummonBeast() {
+        if (!this.player.unlockedProfessions?.includes('beast')) {
+            this.addLog("Chưa mở khóa Ngự Thú nên không thể triệu hồi linh thú!");
+            return;
+        }
         const beast = this.player.spiritBeasts?.[0];
         if (!beast) {
             this.addLog("Chưa có linh thú chiến đấu để triệu hồi!");
@@ -281,6 +289,10 @@ export class CombatEngine {
     }
 
     playerActivateFormation() {
+        if (!this.player.unlockedProfessions?.includes('formation')) {
+            this.addLog("Chưa lĩnh hội Trận Đạo, không thể triển khai trận pháp!");
+            return;
+        }
         const cost = 15;
         if (this.player.mana < cost) {
             this.addLog("Không đủ linh lực để khởi động trận pháp!");
@@ -295,6 +307,10 @@ export class CombatEngine {
     }
 
     playerSummonPuppet() {
+        if (!this.player.unlockedProfessions?.includes('puppet')) {
+            this.addLog("Chưa mở khóa Khôi Lỗi Thuật!");
+            return;
+        }
         const puppet = this.player.inventory.items.find(i => i.id === 'khoi_loi_item');
         if (!puppet) {
             this.addLog("Chưa có khôi lỗi để triệu hồi chiến đấu!");
@@ -309,6 +325,10 @@ export class CombatEngine {
     }
 
     playerSummonCorpse() {
+        if (!this.player.unlockedProfessions?.includes('corpse')) {
+            this.addLog("Chưa mở khóa Luyện Thi Thuật!");
+            return;
+        }
         const corpse = this.player.refinedCorpses?.[0];
         if (!corpse) {
             this.addLog("Không có thi khôi đã luyện để triệu hồi!");
@@ -326,6 +346,10 @@ export class CombatEngine {
     }
 
     playerSummonInsect() {
+        if (!this.player.unlockedProfessions?.includes('insect')) {
+            this.addLog("Chưa mở khóa Ngự Trùng Thuật!");
+            return;
+        }
         const lvl = this.player.insectLevel || 1;
         const swarmDmg = Math.max(1, Math.floor(this.player.atk * 0.5 + lvl * 20));
         this.enemy.hp -= swarmDmg;

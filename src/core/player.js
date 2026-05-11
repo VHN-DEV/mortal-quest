@@ -1083,7 +1083,7 @@ export class Player {
         };
 
         this.buffs = data.buffs || [];
-        this.unlockedProfessions = data.unlockedProfessions || ['beast', 'insect']; // Default for migration, can be adjusted
+        this.unlockedProfessions = Array.isArray(data.unlockedProfessions) ? data.unlockedProfessions : [];
         this.insectLevel = data.insectLevel || 1;
         this.insectExp = data.insectExp || 0;
         
