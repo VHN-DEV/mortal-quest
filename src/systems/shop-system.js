@@ -20,8 +20,10 @@ export class ShopSystem {
         // Check VIP requirement
         const section = SHOPS[this.currentShopId].sections[this.currentSection];
         const shopItem = section.find(i => i.id === itemId);
+        if (!shopItem) return { success: false, msg: 'Vật phẩm không có sẵn trong cửa hàng này!' };
         
-        if (shopItem.minVip && this.player.vipLevel < shopItem.minVip) {
+        const playerVip = this.player.vipLevel || 0;
+        if (shopItem.minVip && playerVip < shopItem.minVip) {
             return { success: false, msg: `Cần cấp độ khách quý VIP ${shopItem.minVip} để mua vật phẩm này!` };
         }
 

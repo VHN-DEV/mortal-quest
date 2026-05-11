@@ -54,8 +54,11 @@ export const SHOPS = {
                 { id: 'luyen_khi_dai', stock: 1, minVip: 1 }
             ],
             'bi_tich': [
+                { id: 'recipe_ngung_khi', stock: 5 },
                 { id: 'recipe_than_tam', stock: 1 },
                 { id: 'recipe_truc_co', stock: 1, minVip: 2 },
+                { id: 'recipe_phi_kiem_tinh_ha', stock: 1, minVip: 1 },
+                { id: 'recipe_long_lan_giap', stock: 1, minVip: 2 },
                 { id: 'bp_tinh_ha', stock: 1, minVip: 1 },
                 { id: 'bp_long_lan', stock: 1, minVip: 3 },
                 { id: 'van_lac_tam_viem_seed', stock: 1, minVip: 4 },

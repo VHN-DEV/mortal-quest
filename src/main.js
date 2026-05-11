@@ -64,22 +64,157 @@ window.renderMainStats = () => {
 
     if (elPerSec) elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
     if (elLingShiText) elLingShiText.textContent = player.getFormattedLingShi();
+    
+    renderTimeHUD();
+};
+
+window.renderTimeHUD = () => {
+    if (!state.systems.time) return;
+    
+    const t = state.systems.time.getFormattedTime();
+    
+    const elHour = document.getElementById('time-hour');
+    const elPeriod = document.getElementById('time-period');
+    const elSeason = document.getElementById('time-season');
+    const elDate = document.getElementById('time-date');
+    const elPhenomenon = document.getElementById('time-phenomenon');
+    
+    if (elHour) elHour.textContent = t.hourName;
+    if (elPeriod) elPeriod.textContent = `(${t.period === 'Day' ? 'Ban Ngày' : 'Ban Đêm'})`;
+    if (elSeason) {
+        elSeason.textContent = t.seasonName;
+        elSeason.style.color = t.seasonColor;
+        elSeason.style.borderColor = `${t.seasonColor}4d`; // 30% opacity hex
+    }
+    if (elDate) elDate.textContent = `Ngày ${t.day} Tháng ${t.month} Năm ${t.year}`;
+    
+    if (elPhenomenon) {
+        if (t.phenomenon) {
+            elPhenomenon.textContent = t.phenomenon;
+            elPhenomenon.classList.remove('hidden');
+        } else {
+            elPhenomenon.classList.add('hidden');
+        }
+    }
 };
 
 window.renderCreationScreen = () => {
-    const elRoots = document.getElementById('creation-roots');
-    const elPhysiques = document.getElementById('creation-physiques');
-    const elOrigins = document.getElementById('creation-origins');
+    const sys = state.systems.creation;
+    if (!sys) return;
+
+    const elRoots = document.getElementById('creation-roots-grid');
+    const elPhysiques = document.getElementById('creation-physiques-list');
+    const elOrigins = document.getElementById('creation-origins-list');
+    const elTraits = document.getElementById('creation-traits-grid');
+    const elPoints = document.getElementById('creation-points-value');
+    const elPointsContainer = document.getElementById('creation-points-container');
     
-    if (elRoots) {
-        elRoots.innerHTML = CREATION_ROOTS.map(r => `
-            <button onclick="window.game.selectCreationRoot('${r.id}')" id="root-${r.id}" class="p-4 bg-white/5 border border-white/10 rounded-xl hover:border-qi-blue transition-all">
-                <div class="text-qi-blue font-bold">${r.name}</div>
-                <div class="text-[9px] text-gray-500">${r.desc}</div>
-            </button>
-        `).join('');
+    // Mode Buttons
+    const btnRandom = document.getElementById('creation-mode-random');
+    const btnCustom = document.getElementById('creation-mode-custom');
+    const btnSpecial = document.getElementById('creation-mode-special');
+
+    if (btnRandom) {
+        btnRandom.onclick = () => window.game.selectCreationMode('random');
+        btnRandom.className = `flex-grow py-3 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all ${sys.mode === 'random' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500'}`;
     }
-    // ... Thêm logic render creation khác nếu cần
+    if (btnCustom) {
+        btnCustom.onclick = () => window.game.selectCreationMode('custom');
+        btnCustom.className = `flex-grow py-3 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all ${sys.mode === 'custom' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500'}`;
+    }
+    if (btnSpecial) {
+        btnSpecial.onclick = () => window.game.selectCreationMode('special');
+        btnSpecial.className = `flex-grow py-3 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all ${sys.mode === 'special' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500'}`;
+    }
+
+    if (elPointsContainer) elPointsContainer.classList.toggle('hidden', sys.mode !== 'custom');
+    
+    if (elPoints) {
+        elPoints.textContent = sys.points;
+        elPoints.className = `text-xl md:text-2xl font-bold font-mono ${sys.points < 0 ? 'text-red-500' : 'text-qi-blue'}`;
+    }
+
+    if (elRoots) {
+        elRoots.innerHTML = Object.values(CREATION_ROOTS).map(r => {
+            const active = sys.selectedRoot === r.id;
+            return `
+                <button onclick="window.game.selectCreationRoot('${r.id}')" 
+                    class="p-4 bg-white/5 border ${active ? 'border-qi-blue bg-qi-blue/10' : 'border-white/10'} rounded-xl hover:border-qi-blue transition-all text-left">
+                    <div class="${active ? 'text-qi-blue' : 'text-gray-300'} font-bold text-xs">${r.name}</div>
+                    <div class="text-[8px] text-gray-500 mt-1">${r.desc}</div>
+                    <div class="text-[8px] text-cultivation-gold mt-1">Hao phí: ${r.cost}</div>
+                </button>
+            `;
+        }).join('');
+    }
+
+    if (elPhysiques) {
+        elPhysiques.innerHTML = Object.values(CREATION_PHYSIQUES).map(p => {
+            const active = sys.selectedPhysique === p.id;
+            return `
+                <button onclick="window.game.selectCreationPhysique('${p.id}')" 
+                    class="w-full p-4 bg-white/5 border ${active ? 'border-qi-purple bg-qi-purple/10' : 'border-white/10'} rounded-xl hover:border-qi-purple transition-all text-left flex justify-between items-center">
+                    <div>
+                        <div class="${active ? 'text-qi-purple' : 'text-gray-300'} font-bold text-xs">${p.name}</div>
+                        <div class="text-[8px] text-gray-500 mt-1">${p.desc}</div>
+                    </div>
+                    <div class="text-[8px] text-cultivation-gold">Hao phí: ${p.cost}</div>
+                </button>
+            `;
+        }).join('');
+    }
+
+    if (elOrigins) {
+        elOrigins.innerHTML = Object.values(CREATION_ORIGINS).map(o => {
+            const active = sys.selectedOrigin === o.id;
+            return `
+                <button onclick="window.game.selectCreationOrigin('${o.id}')" 
+                    class="w-full p-4 bg-white/5 border ${active ? 'border-qi-blue bg-qi-blue/10' : 'border-white/10'} rounded-xl hover:border-qi-blue transition-all text-left flex justify-between items-center">
+                    <div>
+                        <div class="${active ? 'text-qi-blue' : 'text-gray-300'} font-bold text-xs">${o.name}</div>
+                        <div class="text-[8px] text-gray-500 mt-1">${o.desc}</div>
+                    </div>
+                    <div class="text-[8px] text-cultivation-gold">Hao phí: ${o.cost}</div>
+                </button>
+            `;
+        }).join('');
+    }
+
+    if (elTraits) {
+        elTraits.innerHTML = Object.values(CREATION_TRAITS).map(t => {
+            const active = sys.selectedTraits.includes(t.id);
+            return `
+                <button onclick="window.game.toggleCreationTrait('${t.id}')" 
+                    class="p-3 bg-white/5 border ${active ? 'border-qi-jade bg-qi-jade/10' : 'border-white/10'} rounded-xl hover:border-qi-jade transition-all text-left">
+                    <div class="${active ? 'text-qi-jade' : 'text-gray-300'} font-bold text-[10px]">${t.name}</div>
+                    <div class="text-[8px] text-gray-500 mt-1">${t.desc}</div>
+                    <div class="text-[8px] text-cultivation-gold mt-1">Hao phí: ${t.cost}</div>
+                </button>
+            `;
+        }).join('');
+    }
+
+    // Binds for fixed buttons
+    const btnStart = document.getElementById('creation-start-btn');
+    if (btnStart) {
+        btnStart.onclick = () => window.game.startCreationGame();
+        btnStart.disabled = sys.points < 0;
+        btnStart.style.opacity = sys.points < 0 ? '0.5' : '1';
+    }
+
+    const btnGuide = document.getElementById('btn-open-guide');
+    if (btnGuide) {
+        btnGuide.onclick = () => {
+            const guide = document.getElementById('guide-overlay');
+            if (guide) guide.classList.remove('hidden');
+        };
+    }
+
+    const btnCloseGuide = document.getElementById('btn-close-guide');
+    const btnGuideGotIt = document.getElementById('btn-guide-got-it');
+    const guideOverlay = document.getElementById('guide-overlay');
+    if (btnCloseGuide && guideOverlay) btnCloseGuide.onclick = () => guideOverlay.classList.add('hidden');
+    if (btnGuideGotIt && guideOverlay) btnGuideGotIt.onclick = () => guideOverlay.classList.add('hidden');
 };
 
 // Global error handler

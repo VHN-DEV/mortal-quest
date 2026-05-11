@@ -66,11 +66,19 @@ export class Game {
         // 5. Vòng lặp game
         this.startLoop();
 
-        // 6. Navigation
+        // 6. Navigation & Global Events
         this.initNavigation();
+        this.initGlobalEvents();
 
         // 7. Tự động lưu
         setInterval(() => this.saveGame(), 30000);
+    }
+
+    initGlobalEvents() {
+        const btnReset = document.getElementById('reset-game-btn');
+        if (btnReset) {
+            btnReset.onclick = () => this.resetGame();
+        }
     }
 
     initNavigation() {
@@ -98,6 +106,36 @@ export class Game {
                 state.ui.switchScreen('screen-character', btnChar);
             };
         }
+
+        this.initOverlayButtons();
+    }
+
+    initOverlayButtons() {
+        const closeButtons = {
+            'close-shop-btn': 'shop-overlay',
+            'close-guild-btn': 'guild-overlay',
+            'close-mountain-btn': 'mountain-overlay',
+            'close-tower-btn': 'tower-overlay',
+            'close-sects-btn': 'sects-overlay',
+            'close-stats-btn': 'stats-modal'
+        };
+
+        Object.entries(closeButtons).forEach(([btnId, overlayId]) => {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.onclick = () => {
+                    const overlay = document.getElementById(overlayId);
+                    if (overlay) state.ui.toggleOverlay(overlay, false);
+                };
+            }
+        });
+
+        // Mountain buttons
+        const btnDeeper = document.getElementById('btn-mountain-deeper');
+        if (btnDeeper) btnDeeper.onclick = () => this.mountainDeeper();
+        
+        const btnRetreat = document.getElementById('btn-mountain-retreat');
+        if (btnRetreat) btnRetreat.onclick = () => this.mountainRetreat();
     }
 
     showCreationScreen() {
@@ -229,6 +267,16 @@ export class Game {
         }
     }
 
+    resetGame() {
+        state.ui.confirm("Bạn có chắc chắn muốn xóa hết tu vi để bắt đầu lại từ đầu? Hành động này không thể hoàn tác!", "Xác Nhận Luân Hồi")
+            .then(confirmed => {
+                if (confirmed) {
+                    SaveSystem.clear();
+                    location.reload();
+                }
+            });
+    }
+
     handleDeath() {
         // Logic hồi sinh
         state.player.hp = Math.floor(state.player.maxHp * 0.1);
@@ -241,33 +289,51 @@ export class Game {
         if (state.systems.shop) {
             state.views.shop = view || 'buy';
             state.ui.toggleOverlay(document.getElementById('shop-overlay'), true);
-            if (typeof window.renderShop === 'function') window.renderShop();
+            if (this.screens.systems) this.screens.systems.renderShop();
         }
     }
     
     openSect() { 
         state.ui.toggleOverlay(document.getElementById('sects-overlay'), true);
-        if (typeof window.renderSects === 'function') window.renderSects();
+        if (this.screens.systems) this.screens.systems.renderSects();
     }
     
     openGuild() { 
         state.ui.toggleOverlay(document.getElementById('guild-overlay'), true);
-        if (typeof window.renderGuild === 'function') window.renderGuild();
+        if (this.screens.systems) this.screens.systems.renderGuild();
     }
     
     openTower() { 
         state.ui.toggleOverlay(document.getElementById('tower-overlay'), true);
-        if (typeof window.renderTower === 'function') window.renderTower();
+        if (this.screens.systems) this.screens.systems.renderTower();
     }
     
     openMountain() { 
         state.ui.toggleOverlay(document.getElementById('mountain-overlay'), true);
         if (state.systems.mountain) state.systems.mountain.start();
-        if (typeof window.renderMountain === 'function') window.renderMountain();
+        if (this.screens.systems) this.screens.systems.renderMountain();
     }
 
     openAuction() {
         state.ui.toast("Vạn Bảo Thiên Các hiện chưa mở cuộc đấu giá nào. Hãy quay lại sau!", "info");
+    }
+
+    renderEnergy() {
+        if (this.screens.systems) this.screens.systems.renderEnergy();
+    }
+
+    mountainDeeper() {
+        if (state.systems.mountain) {
+            const success = state.systems.mountain.moveDeeper();
+            if (success) this.refreshUI();
+        }
+    }
+
+    mountainRetreat() {
+        if (state.systems.mountain) {
+            const success = state.systems.mountain.retreat();
+            if (success) this.refreshUI();
+        }
     }
 
     // Specialized actions
@@ -330,35 +396,21 @@ export class Game {
         this.screens.systems.openCrafting(type);
     }
 
-    openShop(mode = 'buy') {
-        state.views.shop = mode;
-        state.ui.switchScreen('screen-shop');
-        if (this.screens.systems) this.screens.systems.renderShop();
-    }
+
 
     openNPC() {
         state.ui.toast('Hệ thống NPC đang được bảo trì...', 'info');
     }
 
-    openSect() {
-        state.ui.switchScreen('screen-sect');
-    }
 
-    openGuild() {
-        state.ui.switchScreen('screen-guild');
-    }
 
-    openTower() {
-        state.ui.switchScreen('screen-tower');
-    }
 
-    openMountain() {
-        state.ui.switchScreen('screen-mountain');
-    }
 
-    openAuction() {
-        state.ui.toast('Đấu giá trường chưa mở cửa!', 'warning');
-    }
+
+
+
+
+
 
     forge(recipeId) {
         if (state.systems.smithing) {
@@ -373,6 +425,64 @@ export class Game {
             const res = state.systems.guild.certify(level);
             state.ui.toast(res.msg, res.success ? 'success' : 'error');
             this.refreshUI();
+        }
+    }
+
+    // --- Creation Methods ---
+    selectCreationRoot(id) {
+        if (state.systems.creation) {
+            state.systems.creation.selectedRoot = id;
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationPhysique(id) {
+        if (state.systems.creation) {
+            state.systems.creation.selectedPhysique = id;
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationOrigin(id) {
+        if (state.systems.creation) {
+            state.systems.creation.selectedOrigin = id;
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    toggleCreationTrait(id) {
+        if (state.systems.creation) {
+            state.systems.creation.toggleTrait(id);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationMode(mode) {
+        if (state.systems.creation) {
+            state.systems.creation.mode = mode;
+            if (mode === 'random') {
+                state.systems.creation.rollRandom();
+            } else if (mode === 'custom') {
+                state.systems.creation.reset();
+            } else if (mode === 'special') {
+                // ... logic for special scenarios if needed
+            }
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    startCreationGame() {
+        if (state.systems.creation) {
+            const nameInput = document.getElementById('creation-name-input');
+            if (nameInput) state.systems.creation.playerName = nameInput.value || "Phàm Nhân";
+            
+            const newPlayer = state.systems.creation.buildPlayer();
+            if (newPlayer) {
+                this.loadGame(newPlayer.save());
+                state.ui.toast("Bắt đầu hành trình tu tiên!", "success");
+            } else {
+                state.ui.toast("Không đủ điểm Thiên Duyên!", "error");
+            }
         }
     }
 }

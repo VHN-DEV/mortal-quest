@@ -851,6 +851,57 @@ export const ITEMS = {
         price: 800000,
         description: 'Yêu hỏa thần bí có khả năng tịnh hóa vạn vật.',
         effect: { type: 'refine_flame', value: 'tinh_lien_yeu_hoa' }
+    },
+    // --- RECIPES ---
+    'recipe_ngung_khi': {
+        id: 'recipe_ngung_khi',
+        name: 'Đan Phương Ngưng Khí Đan',
+        type: 'recipe',
+        quality: 'Phàm',
+        icon: '📜',
+        description: 'Ghi chép cách luyện chế Ngưng Khí Đan.',
+        price: 200,
+        recipeId: 'ngung_khi_dan'
+    },
+    'recipe_than_tam': {
+        id: 'recipe_than_tam',
+        name: 'Đan Phương Thanh Tâm Đan',
+        type: 'recipe',
+        quality: 'Hoàng',
+        icon: '📜',
+        description: 'Ghi chép cách luyện chế Thanh Tâm Đan.',
+        price: 500,
+        recipeId: 'thanh_tam_dan'
+    },
+    'recipe_truc_co': {
+        id: 'recipe_truc_co',
+        name: 'Đan Phương Trúc Cơ Đan',
+        type: 'recipe',
+        quality: 'Huyền',
+        icon: '📜',
+        description: 'Ghi chép cách luyện chế Trúc Cơ Đan cực kỳ quý giá.',
+        price: 2000,
+        recipeId: 'truc_co_dan'
+    },
+    'recipe_phi_kiem_tinh_ha': {
+        id: 'recipe_phi_kiem_tinh_ha',
+        name: 'Bản Vẽ Tinh Hà Phi Kiếm',
+        type: 'recipe',
+        quality: 'Hoàng',
+        icon: '⚒️',
+        description: 'Bản vẽ rèn đúc Tinh Hà Phi Kiếm.',
+        price: 800,
+        recipeId: 'phi_kiem_tinh_ha'
+    },
+    'recipe_long_lan_giap': {
+        id: 'recipe_long_lan_giap',
+        name: 'Bản Vẽ Long Lân Giáp',
+        type: 'recipe',
+        quality: 'Huyền',
+        icon: '⚒️',
+        description: 'Bản vẽ rèn đúc Long Lân Giáp.',
+        price: 2500,
+        recipeId: 'long_lan_giap'
     }
 };
 

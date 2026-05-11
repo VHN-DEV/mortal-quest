@@ -133,8 +133,8 @@ export class TimeSystem {
     }
 
     load(data) {
-        if (data) {
-            this.totalMinutes = data.totalMinutes || 0;
+        if (data && typeof data.totalMinutes === 'number') {
+            this.totalMinutes = data.totalMinutes;
             this.lastTickTime = Date.now();
         }
     }
