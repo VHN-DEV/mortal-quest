@@ -356,7 +356,8 @@ export class Game {
     cultivate() {
         if (!state.player) return;
         const result = state.player.cultivate();
-        if (result && result.msg) state.ui.toast(result.msg, result.success ? 'success' : 'error');
+        const message = result?.msg || result?.reason;
+        if (message) state.ui.toast(message, result.success ? 'success' : 'error');
         this.refreshUI();
     }
 
