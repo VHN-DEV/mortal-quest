@@ -55,3 +55,9 @@ export const PUPPET_RECIPES = [
         skillLevel: 3
     }
 ];
+export const getPuppetLevelInfo = (level) => {
+    const names = ["Nhập Môn Khôi Lỗi Sư", "Nhất Giai Khôi Lỗi Sư", "Nhị Giai Khôi Lỗi Sư", "Tam Giai Khôi Lỗi Sư", "Tứ Giai Khôi Lỗi Sư", "Ngũ Giai Khôi Lỗi Sư", "Lục Giai Khôi Lỗi Sư", "Thất Giai Khôi Lỗi Sư", "Bát Giai Khôi Lỗi Sư", "Cửu Giai Khôi Lỗi Sư", "Tiên Giai Khôi Lỗi Sư", "Thần Giai Khôi Lỗi Sư"];
+    return {
+        name: names[Math.min(level, names.length - 1)] || `Cấp ${level} Khôi Lỗi Sư`
+    };
+};

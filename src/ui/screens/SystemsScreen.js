@@ -710,6 +710,12 @@ export class SystemsScreen {
             state.views.beast = 'beast';
         }
 
+        // Check if unlocked
+        if (type !== 'crafting-hub' && !state.player.unlockedProfessions.includes(type)) {
+            state.ui.toast(`Ngươi cần lĩnh hội bí pháp tương ứng mới có thể bắt đầu nghề này!`, 'warning');
+            return;
+        }
+
         const target = document.getElementById(`screen-${screenType}`);
         if (target) {
             target.classList.remove('hidden');
@@ -722,6 +728,7 @@ export class SystemsScreen {
             if (screenType === 'corpse') this.renderCorpse();
             if (screenType === 'beast') this.renderBeast();
             if (screenType === 'puppet') this.renderPuppet();
+            if (screenType === 'crafting-hub') this.renderCraftingHub();
         }
     }
 
@@ -878,6 +885,19 @@ export class SystemsScreen {
             }
         });
 
+        // Update Level/Exp Display
+        const elLvl = document.getElementById('beast-level-text');
+        const elExp = document.getElementById('beast-exp-bar');
+        
+        const curLevel = state.views.beast === 'insect' ? state.player.insectLevel : state.player.beastLevel;
+        const curExp = state.views.beast === 'insect' ? state.player.insectExp : state.player.beastExp;
+        
+        if (elLvl) elLvl.textContent = `Cấp ${curLevel}`;
+        if (elExp) {
+            const nextLevelExp = curLevel * 100 * Math.pow(1.5, curLevel - 1);
+            elExp.style.width = `${(curExp / nextLevelExp) * 100}%`;
+        }
+
         // List View Rendering
         if (viewList && state.views.beast !== 'hatch') {
             viewList.innerHTML = '';
@@ -955,6 +975,63 @@ export class SystemsScreen {
         if (tabHatch) tabHatch.onclick = () => { state.views.beast = 'hatch'; this.renderBeast(); };
     }
 
+    renderCraftingHub() {
+        if (!state.player) return;
+        
+        const professions = [
+            { id: 'alchemy', key: 'alchemy', name: 'Luyện Dược Sư', level: state.player.alchemyLevel, exp: state.player.alchemyExp, getLevelInfo: getAlchemyLevelInfo },
+            { id: 'talisman', key: 'talisman', name: 'Phù Sư', level: state.player.talismanLevel, exp: state.player.talismanExp, getLevelInfo: getTalismanLevelInfo },
+            { id: 'smithing', key: 'smithing', name: 'Luyện Khí Sư', level: state.player.smithingLevel, exp: state.player.smithingExp, getLevelInfo: getSmithingLevelInfo },
+            { id: 'formation', key: 'formation', name: 'Trận Pháp Sư', level: state.player.formationLevel, exp: state.player.formationExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) },
+            { id: 'puppet', key: 'puppet', name: 'Khôi Lỗi Sư', level: state.player.puppetLevel, exp: state.player.puppetExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) },
+            { id: 'corpse', key: 'corpse', name: 'Luyện Thi Sư', level: state.player.corpseLevel, exp: state.player.corpseExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) },
+            { id: 'beast', key: 'beast', name: 'Ngự Thú Sư', level: state.player.beastLevel, exp: state.player.beastExp, getLevelInfo: getBeastLevelInfo },
+            { id: 'insect', key: 'insect', name: 'Ngự Trùng Sư', level: state.player.insectLevel, exp: state.player.insectExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) }
+        ];
+
+        professions.forEach(prof => {
+            const levelEl = document.getElementById(`hub-${prof.id}-level`);
+            const cardEl = levelEl?.closest('.hub-card');
+            
+            if (!levelEl || !cardEl) return;
+
+            const isUnlocked = state.player.unlockedProfessions.includes(prof.id);
+            
+            // Re-bind onclick to handle both locked state and opening
+            cardEl.onclick = () => window.game.openCrafting(prof.id);
+
+            const biPhapMap = {
+                'alchemy': 'Đan Đạo Chân Giải',
+                'talisman': 'Thiên Phù Bí Lục',
+                'smithing': 'Luyện Khí Đại Thừa',
+                'formation': 'Trận Pháp Tổng Cương',
+                'puppet': 'Khôi Lỗi Chế Thuật',
+                'corpse': 'Luyện Thi Thuật',
+                'beast': 'Ngự Thú Bí Quyết',
+                'insect': 'Ngự Trùng Tạp Ký'
+            };
+
+            if (isUnlocked) {
+                const lvlInfo = prof.getLevelInfo ? prof.getLevelInfo(prof.level) : { name: `Cấp ${prof.level}` };
+                const nextLevelExp = prof.level * 100 * Math.pow(1.5, prof.level - 1);
+                const progress = Math.floor((prof.exp / nextLevelExp) * 100);
+                
+                levelEl.innerHTML = `${prof.name} - ${lvlInfo.name} <span class="text-white/30 ml-2">(${progress}%)</span>`;
+                cardEl.classList.remove('opacity-40', 'grayscale');
+                cardEl.classList.add('cursor-pointer');
+            } else {
+                levelEl.innerHTML = `
+                    <div class="flex flex-col">
+                        <span class="text-red-500/60 flex items-center"><i class="ph ph-lock-key mr-1"></i> Chưa mở khóa</span>
+                        <span class="text-[7px] text-gray-600 italic mt-0.5">Cần: « ${biPhapMap[prof.id]} »</span>
+                    </div>
+                `;
+                cardEl.classList.add('opacity-40', 'grayscale');
+                cardEl.classList.remove('cursor-pointer');
+            }
+        });
+    }
+
     renderFormation() {
         if (!state.player) return;
         const view = document.getElementById('formation-list');
@@ -1020,17 +1097,113 @@ export class SystemsScreen {
     }
 
     renderCorpse() {
+        if (!state.player) return;
+
         const view = document.getElementById('corpse-list');
-        if (view) {
-            view.innerHTML = `
-                <div class="flex flex-col items-center justify-center py-20 text-center space-y-4">
-                    <div class="text-6xl opacity-20">⚰️</div>
-                    <div class="space-y-2">
-                        <h3 class="text-lg font-ancient text-gray-500">Luyện Thi Đại Pháp</h3>
-                        <p class="text-xs text-gray-600 italic max-w-[200px]">Tính năng đang được Thiên Đạo hoàn thiện, hãy quay lại sau.</p>
+        const elLvl = document.getElementById('corpse-level-text');
+        const elBar = document.getElementById('corpse-exp-bar');
+
+        if (elLvl) elLvl.textContent = getCorpseLevelInfo(state.player.corpseLevel).name;
+        if (elBar) {
+            const nextLevelExp = state.player.corpseLevel * 100 * Math.pow(1.5, state.player.corpseLevel - 1);
+            elBar.style.width = `${(state.player.corpseExp / nextLevelExp) * 100}%`;
+        }
+
+        if (!view) return;
+        view.innerHTML = '';
+
+        // Refined Corpses list (Active)
+        if (state.player.refinedCorpses.length > 0) {
+            const activeHeader = document.createElement('h3');
+            activeHeader.className = 'text-[10px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-1';
+            activeHeader.textContent = 'Thi Hài Đang Khống Chế';
+            view.appendChild(activeHeader);
+
+            state.player.refinedCorpses.forEach((corpse, idx) => {
+                const el = document.createElement('div');
+                el.className = 'p-4 border border-red-900/30 rounded-2xl bg-red-900/5 mb-4 flex items-center space-x-4';
+                el.innerHTML = `
+                    <div class="text-4xl opacity-80">🧟</div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-red-400">${corpse.name}</h4>
+                            <span class="text-[9px] px-2 py-0.5 bg-red-500/10 text-red-500 rounded border border-red-500/20 font-bold uppercase">${corpse.quality}</span>
+                        </div>
+                        <div class="text-[9px] text-gray-500 mt-1">Cấp ${corpse.level} | ATK: ${corpse.stats.atk} | HP: ${corpse.stats.hp}</div>
                     </div>
+                `;
+                view.appendChild(el);
+            });
+        }
+
+        // Available Refining Types
+        const refiningHeader = document.createElement('h3');
+        refiningHeader.className = 'text-[10px] text-gray-500 uppercase tracking-widest mt-6 mb-3 border-b border-white/5 pb-1';
+        refiningHeader.textContent = 'Bản Vẽ Luyện Thi';
+        view.appendChild(refiningHeader);
+
+        const { CORPSE_TYPES } = require('../../configs/corpse-data.js');
+        Object.values(CORPSE_TYPES).forEach(type => {
+            const el = document.createElement('div');
+            el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 space-y-3';
+            
+            let materialsHTML = '';
+            type.materials.forEach(mat => {
+                const matItem = getItemById(mat.id);
+                const count = state.player.inventory.hasItem(mat.id) ? state.player.inventory.items.find(i => i.id === mat.id).quantity : 0;
+                materialsHTML += `<div class="text-[9px] ${count >= mat.quantity ? 'text-gray-400' : 'text-red-500'}">${matItem?.name || mat.id} x${mat.quantity} (${count})</div>`;
+            });
+
+            const locked = state.player.corpseLevel < type.level;
+            const successRate = Math.floor((0.7 - (type.level * 0.1) + (state.player.corpseLevel * 0.05)) * 100);
+
+            el.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h4 class="font-ancient text-lg text-red-500">${type.name}</h4>
+                        <p class="text-[9px] text-gray-500 mt-1">${type.description}</p>
+                    </div>
+                    ${locked ?
+                        `<span class="text-[8px] text-red-500 uppercase font-bold">Cần Cấp ${type.level}</span>` :
+                        `<button class="px-4 py-2 bg-red-900/20 text-red-400 text-[10px] font-bold rounded-xl border border-red-900/30" onclick="window.game.refineCorpse('${type.id}')">LUYỆN CHẾ</button>`
+                    }
+                </div>
+                <div class="grid grid-cols-2 gap-2">${materialsHTML}</div>
+                <div class="flex justify-between items-center text-[8px] text-gray-500 italic">
+                    <span>Tỷ lệ thành công: ${successRate}%</span>
+                    <span>Phản phệ: ${(100-successRate)}%</span>
                 </div>
             `;
+            view.appendChild(el);
+        });
+    }
+    openCrafting(type) {
+        if (!state.player) return;
+        
+        // Check unlock status
+        if (!state.player.unlockedProfessions.includes(type)) {
+            state.ui.toast("Ngươi cần lĩnh hội bí pháp tương ứng mới có thể bắt đầu nghề này!", "warning");
+            return;
         }
+
+        const screenId = `screen-${type}`;
+        state.ui.switchScreen(screenId);
+        
+        // Render specific system
+        switch(type) {
+            case 'alchemy': this.renderAlchemy(); break;
+            case 'talisman': this.renderTalisman(); break;
+            case 'smithing': this.renderSmithing(); break;
+            case 'formation': this.renderFormation(); break;
+            case 'puppet': this.renderPuppet(); break;
+            case 'corpse': this.renderCorpse(); break;
+            case 'beast': this.renderBeast(); break;
+            case 'insect': state.views.beast = 'insect'; this.renderBeast(); break;
+        }
+    }
+
+    openCraftingHub() {
+        state.ui.switchScreen('screen-crafting-hub');
+        this.renderCraftingHub();
     }
 }

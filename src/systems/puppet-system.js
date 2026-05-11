@@ -28,19 +28,51 @@ export class PuppetSystem {
             this.player.inventory.removeItem(mat.id, mat.quantity);
         }
 
-        // Add Puppet item or register to active puppets
-        // For now, we'll add it as a specialized item in inventory
-        this.player.inventory.addItem('khoi_loi_item', 1, {
-            puppetId: recipe.id,
-            name: recipe.name,
-            stats: { ...recipe.stats },
-            durability: 100,
-            maxDurability: 100
-        });
+        // Success check
+        let successRate = 0.8 - (recipe.skillLevel * 0.05) + (this.player.puppetLevel * 0.05);
+        const roll = Math.random();
+        
+        if (roll <= successRate) {
+            // Quality determination
+            const qualityRoll = Math.random() + (this.player.puppetLevel * 0.05) + (this.player.soulRealmId * 0.03);
+            let quality = 'Hạ Phẩm';
+            let hasIntelligence = false;
 
-        this.player.addPuppetExp(recipe.grade === 'PHAM' ? 50 : 150);
+            if (qualityRoll > 2.3) { 
+                quality = 'Tiên Phẩm'; 
+                hasIntelligence = Math.random() < 0.2;
+            }
+            else if (qualityRoll > 1.9) { quality = 'Hoàn Mỹ'; hasIntelligence = Math.random() < 0.1; }
+            else if (qualityRoll > 1.5) { quality = 'Cực Phẩm'; }
+            else if (qualityRoll > 1.1) { quality = 'Thượng Phẩm'; }
+            else if (qualityRoll > 0.7) { quality = 'Trung Phẩm'; }
 
-        return { success: true, msg: `Luyện chế thành công: ${recipe.name}!` };
+            // Add Puppet item
+            this.player.inventory.addItem('khoi_loi_item', 1, {
+                puppetId: recipe.id,
+                name: recipe.name,
+                quality,
+                hasIntelligence,
+                stats: { ...recipe.stats },
+                durability: 100,
+                maxDurability: 100
+            });
+
+            this.player.addPuppetExp(recipe.grade === 'PHAM' ? 50 : 200);
+
+            return { 
+                success: true, 
+                msg: `Luyện chế thành công: [${quality}] ${recipe.name}!${hasIntelligence ? ' KHÔI LỖI ĐÃ SINH RA LINH TRÍ!' : ''}` 
+            };
+        } else {
+            // Failure
+            if (Math.random() < 0.15) {
+                const damage = 100 * recipe.skillLevel;
+                this.player.hp -= damage;
+                return { success: false, msg: `KHÔI LỖI PHÁT NỔ! Ngươi bị phản phệ gây ${damage} sát thương!` };
+            }
+            return { success: false, msg: 'Luyện chế thất bại! Linh cấu sụp đổ, nguyên liệu bị phá hủy.' };
+        }
     }
 
     repair(inventoryIndex) {

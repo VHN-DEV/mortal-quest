@@ -54,16 +54,23 @@ export class AlchemySystem {
         let quality = 'Hạ Phẩm';
         let danVeins = 0;
         let poisonValue = 10;
+        let isDanLinh = false;
 
-        if (qualityScore > 1.8) { quality = 'Hoàn Mỹ'; danVeins = 9; poisonValue = 0; }
-        else if (qualityScore > 1.5) { quality = 'Cực Phẩm'; danVeins = 6; poisonValue = 2; }
+        if (qualityScore > 2.5) { 
+            quality = 'Tiên Phẩm'; 
+            danVeins = 12; 
+            poisonValue = 0; 
+            isDanLinh = Math.random() < 0.1; // 10% chance for Dan Linh if score is very high
+        }
+        else if (qualityScore > 2.0) { quality = 'Hoàn Mỹ'; danVeins = 9; poisonValue = 0; }
+        else if (qualityScore > 1.6) { quality = 'Cực Phẩm'; danVeins = 6; poisonValue = 2; }
         else if (qualityScore > 1.2) { quality = 'Thượng Phẩm'; danVeins = 3; poisonValue = 5; }
         else if (qualityScore > 0.8) { quality = 'Trung Phẩm'; danVeins = 1; poisonValue = 8; }
 
         // Dan Tribulation (for level 5+ dan or High quality)
         let hasTribulation = false;
-        if (recipe.level >= 5 || quality === 'Hoàn Mỹ') {
-            hasTribulation = Math.random() < 0.2; // 20% chance
+        if (recipe.level >= 5 || quality === 'Hoàn Mỹ' || quality === 'Tiên Phẩm') {
+            hasTribulation = Math.random() < 0.3; // Increased chance
         }
 
         return {
@@ -71,9 +78,10 @@ export class AlchemySystem {
             quality,
             danVeins,
             poisonValue,
+            isDanLinh,
             hasTribulation,
             resultId: recipe.resultId,
-            msg: `Luyện đan thành công! Thu được [${quality}] ${getItemById(recipe.resultId)?.name || 'Đan dược'}.`
+            msg: `Luyện đan thành công! Thu được [${quality}] ${getItemById(recipe.resultId)?.name || 'Đan dược'}.${isDanLinh ? ' KHỞI SINH ĐAN LINH!' : ''}`
         };
     }
 

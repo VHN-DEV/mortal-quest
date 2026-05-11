@@ -68,7 +68,67 @@ export class BeastSystem {
         };
     }
 
+    evolve(beastUniqueId) {
+        const beast = this.player.beasts.find(b => b.uniqueId === beastUniqueId);
+        if (!beast) return { success: false, msg: 'Không tìm thấy linh thú!' };
+
+        const beastData = BEASTS[beast.id];
+        if (!beastData || !beastData.evolutions) return { success: false, msg: 'Linh thú này không thể tiến hóa thêm!' };
+
+        const evolution = beastData.evolutions.find(e => beast.level >= e.levelRequired);
+        if (!evolution) return { success: false, msg: 'Chưa đủ điều kiện tiến hóa!' };
+
+        // Check materials
+        for (const mat of evolution.materials) {
+            if (!this.player.inventory.hasItem(mat.id, mat.quantity)) {
+                return { success: false, msg: `Thiếu nguyên liệu tiến hóa: ${getItemById(mat.id).name}!` };
+            }
+        }
+
+        // Consume
+        evolution.materials.forEach(mat => this.player.inventory.removeItem(mat.id, mat.quantity));
+
+        // Evolution Success
+        const successRate = evolution.baseSuccessRate + (this.player.beastLevel * 0.02);
+        if (Math.random() > successRate) {
+            return { success: false, msg: 'Tiến hóa thất bại! Linh thú bị tổn thương nhẹ.' };
+        }
+
+        // Apply evolution
+        beast.id = evolution.toId;
+        beast.name = evolution.newName || BEASTS[evolution.toId].name;
+        // Boost stats
+        Object.keys(beast.stats).forEach(stat => {
+            beast.stats[stat] = Math.floor(beast.stats[stat] * evolution.statMult);
+        });
+
+        this.player.addBeastExp(1000);
+        return { success: true, msg: `Chúc mừng! ${beast.name} đã tiến hóa thành công!`, beast };
+    }
+
+    breed(beastId1, beastId2) {
+        // Simple breeding logic
+        if (beastId1 === beastId2) return { success: false, msg: "Không thể lai tạo cùng một cá thể!" };
+        
+        const beast1 = this.player.beasts.find(b => b.uniqueId === beastId1);
+        const beast2 = this.player.beasts.find(b => b.uniqueId === beastId2);
+
+        if (!beast1 || !beast2) return { success: false, msg: "Không tìm thấy linh thú!" };
+        if (beast1.level < 10 || beast2.level < 10) return { success: false, msg: "Linh thú cần đạt cấp 10 để lai tạo!" };
+
+        const cost = 1000;
+        if (this.player.lingShi < cost) return { success: false, msg: "Không đủ linh thạch lai tạo!" };
+
+        this.player.spendLingShi(cost);
+
+        // 30% chance for mutation
+        const isMutation = Math.random() < 0.3;
+        // ... (Breeding logic to create a new egg/beast)
+
+        return { success: true, msg: "Lai tạo thành công! Thu được một quả trứng biến dị." };
+    }
+
     update(delta) {
-        // Future: Handle hatching timers if we add them
+        // Handle hatching timers
     }
 }

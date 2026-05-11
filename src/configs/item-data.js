@@ -592,6 +592,25 @@ export const ITEMS = {
         price: 300,
         description: 'Nội đan của yêu thú cấp thấp, chứa tinh hoa yêu lực.'
     },
+    'yeu_dan_trung': {
+        id: 'yeu_dan_trung',
+        name: 'Yêu Đan Trung Cấp',
+        type: 'material',
+        icon: '🟠',
+        quality: 'Huyền',
+        price: 1500,
+        description: 'Nội đan của yêu thú trung cấp, chứa linh lực dồi dào.'
+    },
+    'ngung_anh_dan': {
+        id: 'ngung_anh_dan',
+        name: 'Ngưng Anh Đan',
+        type: 'consumable',
+        icon: '💎',
+        quality: 'Địa',
+        price: 50000,
+        description: 'Đan dược hỗ trợ ngưng tụ Nguyên Anh, cực kỳ quý hiếm.',
+        stats: { breakthroughRate: 0.25 }
+    },
     'yeu_huyet': {
         id: 'yeu_huyet',
         name: 'Yêu Thú Tinh Huyết',
@@ -800,6 +819,88 @@ export const ITEMS = {
         price: 50000,
         description: 'Lệnh bài cổ xưa giúp tăng khả năng thuần phục yêu thú.',
         stats: { tamingBonus: 0.2 }
+    },
+
+    // --- BÍ PHÁP NGHỀ NGHIỆP (UNLOCKS) ---
+    'bi_phap_alchemy': {
+        id: 'bi_phap_alchemy',
+        name: '« Đan Đạo Chân Giải »',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Ghi chép tinh túy của đan đạo, dùng để mở khóa nghề Luyện Đan.',
+        effect: { type: 'unlock_profession', profession: 'alchemy' }
+    },
+    'bi_phap_talisman': {
+        id: 'bi_phap_talisman',
+        name: '« Thiên Phù Bí Lục »',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Chứa đựng bí mật của phù văn, dùng để mở khóa nghề Phù Lục.',
+        effect: { type: 'unlock_profession', profession: 'talisman' }
+    },
+    'bi_phap_smithing': {
+        id: 'bi_phap_smithing',
+        name: '« Luyện Khí Tổng Cương »',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Bí tịch rèn đúc pháp bảo, dùng để mở khóa nghề Luyện Khí.',
+        effect: { type: 'unlock_profession', profession: 'smithing' }
+    },
+    'bi_phap_formation': {
+        id: 'bi_phap_formation',
+        name: '« Trận Đạo Diễn Nghĩa »',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Giải mã các trận pháp cổ đại, dùng để mở khóa nghề Trận Pháp.',
+        effect: { type: 'unlock_profession', profession: 'formation' }
+    },
+    'bi_phap_puppet': {
+        id: 'bi_phap_puppet',
+        name: '« Khôi Lỗi Chân Kinh »',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Bí thuật điều khiển rối, dùng để mở khóa nghề Khôi Lỗi.',
+        effect: { type: 'unlock_profession', profession: 'puppet' }
+    },
+    'bi_phap_corpse': {
+        id: 'bi_phap_corpse',
+        name: '« Thi Đạo Quyển Thứ »',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Tà thuật luyện chế xác chết, dùng để mở khóa nghề Luyện Thi.',
+        effect: { type: 'unlock_profession', profession: 'corpse' }
+    },
+    'bi_phap_beast': {
+        id: 'bi_phap_beast',
+        name: '« Ngự Thú Tâm Pháp »',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Tâm pháp dẫn dắt linh thú, dùng để mở khóa nghề Ngự Thú.',
+        effect: { type: 'unlock_profession', profession: 'beast' }
+    },
+    'bi_phap_insect': {
+        id: 'bi_phap_insect',
+        name: '« Vạn Trùng Bí Truyền »',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Kỹ thuật nuôi dưỡng kỳ trùng, dùng để mở khóa nghề Ngự Trùng.',
+        effect: { type: 'unlock_profession', profession: 'insect' }
     },
     // --- TECHNIQUE BOOKS ---
     'truong_xuan_book': {
@@ -1030,6 +1131,88 @@ export const ITEMS = {
         description: 'Bản vẽ rèn đúc Long Lân Giáp.',
         price: 2500,
         recipeId: 'long_lan_giap'
+    },
+
+    // --- PROFESSION MANUALS (BÍ PHÁP) ---
+    'manual_alchemy': {
+        id: 'manual_alchemy',
+        name: '« Đan Đạo Chân Giải »',
+        type: 'consumable',
+        quality: 'Huyền',
+        icon: '📔',
+        description: 'Ghi chép những kiến thức cơ bản về dược lý và cách vận hành linh hỏa. Dùng để mở khóa nghề Luyện Đan.',
+        price: 1000,
+        effect: { type: 'unlock_profession', profession: 'alchemy' }
+    },
+    'manual_talisman': {
+        id: 'manual_talisman',
+        name: '« Thiên Phù Bí Lục »',
+        type: 'consumable',
+        quality: 'Huyền',
+        icon: '📔',
+        description: 'Ghi chép về cách dẫn dắt linh lực vào ngòi bút và các ký tự phù văn cổ. Dùng để mở khóa nghề Phù Lục.',
+        price: 1000,
+        effect: { type: 'unlock_profession', profession: 'talisman' }
+    },
+    'manual_smithing': {
+        id: 'manual_smithing',
+        name: '« Luyện Khí Bí Điển »',
+        type: 'consumable',
+        quality: 'Huyền',
+        icon: '📔',
+        description: 'Ghi chép về tính chất các loại linh tài và cách tôi luyện chúng. Dùng để mở khóa nghề Luyện Khí.',
+        price: 1000,
+        effect: { type: 'unlock_profession', profession: 'smithing' }
+    },
+    'manual_formation': {
+        id: 'manual_formation',
+        name: '« Trận Pháp Cương Mục »',
+        type: 'consumable',
+        quality: 'Huyền',
+        icon: '📔',
+        description: 'Ghi chép về cách bố trí linh thạch và kết nối các điểm trận nhãn. Dùng để mở khóa nghề Trận Pháp.',
+        price: 1000,
+        effect: { type: 'unlock_profession', profession: 'formation' }
+    },
+    'manual_puppet': {
+        id: 'manual_puppet',
+        name: '« Khôi Lỗi Chân Kinh »',
+        type: 'consumable',
+        quality: 'Huyền',
+        icon: '📔',
+        description: 'Ghi chép về cách chế tác các bộ phận cơ quan và nạm linh thạch lõi. Dùng để mở khóa nghề Khôi Lỗi.',
+        price: 1000,
+        effect: { type: 'unlock_profession', profession: 'puppet' }
+    },
+    'manual_corpse': {
+        id: 'manual_corpse',
+        name: '« Luyện Thi Bí Pháp »',
+        type: 'consumable',
+        quality: 'Huyền',
+        icon: '📔',
+        description: 'Ghi chép về cách dùng âm khí để cường hóa và điều khiển thi thể. Dùng để mở khóa nghề Luyện Thi.',
+        price: 1000,
+        effect: { type: 'unlock_profession', profession: 'corpse' }
+    },
+    'manual_beast': {
+        id: 'manual_beast',
+        name: '« Vạn Thú Bí Lục »',
+        type: 'consumable',
+        quality: 'Huyền',
+        icon: '📔',
+        description: 'Ghi chép về thói quen và cách thuần hóa các loại yêu thú. Dùng để mở khóa nghề Ngự Thú.',
+        price: 1000,
+        effect: { type: 'unlock_profession', profession: 'beast' }
+    },
+    'manual_insect': {
+        id: 'manual_insect',
+        name: '« Kỳ Trùng Kinh »',
+        type: 'consumable',
+        quality: 'Huyền',
+        icon: '📔',
+        description: 'Ghi chép về các loại linh trùng kỳ lạ và cách nuôi dưỡng chúng. Dùng để mở khóa nghề Ngự Trùng.',
+        price: 1000,
+        effect: { type: 'unlock_profession', profession: 'insect' }
     }
 };
 

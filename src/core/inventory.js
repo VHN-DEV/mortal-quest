@@ -127,6 +127,19 @@ export class Inventory {
                 value: effect.value,
                 duration: (effect.duration || 3600) * 1000 // duration is in seconds in item-data
             });
+        } else if (effect.type === 'unlock_profession') {
+            if (this.player.unlockProfession(effect.profession)) {
+                state.ui.alert(`Chúc mừng! Ngươi đã lĩnh hội bí pháp và mở khóa nghề ${effect.profession === 'alchemy' ? 'Luyện Đan' : 
+                                effect.profession === 'talisman' ? 'Phù Lục' : 
+                                effect.profession === 'smithing' ? 'Luyện Khí' : 
+                                effect.profession === 'formation' ? 'Trận Pháp' : 
+                                effect.profession === 'puppet' ? 'Khôi Lỗi' : 
+                                effect.profession === 'corpse' ? 'Luyện Thi' : 
+                                effect.profession === 'beast' ? 'Ngự Thú' : 
+                                effect.profession === 'insect' ? 'Ngự Trùng' : effect.profession}!`, "Mở Khóa Nghề Nghiệp");
+            } else {
+                state.ui.toast("Ngươi đã lĩnh hội bí pháp này từ trước rồi.", "info");
+            }
         }
     }
 

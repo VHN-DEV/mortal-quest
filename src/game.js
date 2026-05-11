@@ -663,4 +663,73 @@ export class Game {
             }
         }
     }
+
+    // Bridge methods for new systems
+    drawTalisman(recipeId) {
+        if (state.systems.talisman) {
+            const res = state.systems.talisman.draw(recipeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    forge(recipeId) {
+        if (state.systems.smithing) {
+            const res = state.systems.smithing.forge(recipeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    activateFormation(diagramId) {
+        if (state.systems.formation) {
+            const res = state.systems.formation.activateFormation(diagramId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    deactivateFormation(diagramId) {
+        if (state.systems.formation) {
+            const res = state.systems.formation.deactivateFormation(diagramId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    refineCorpse(typeId) {
+        if (state.systems.corpse) {
+            const res = state.systems.corpse.refine(typeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    craftPuppet(recipeId) {
+        if (state.systems.puppet) {
+            const res = state.systems.puppet.craft(recipeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    hatchBeast(eggId) {
+        if (state.systems.beast) {
+            const res = state.systems.beast.hatch(eggId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    openCrafting(type) {
+        if (this.screens.systems) {
+            this.screens.systems.openCrafting(type);
+        }
+    }
+
+    openCraftingHub() {
+        if (this.screens.systems) {
+            this.screens.systems.openCraftingHub();
+        }
+    }
 }

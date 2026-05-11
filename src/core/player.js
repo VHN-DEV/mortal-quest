@@ -129,16 +129,21 @@ export class Player {
         this.formationLevel = 1;
         this.formationExp = 0;
 
-        // Beast System
+        // Beast & Insect System
         this.beasts = [];
         this.hatchingBeasts = [];
         this.beastLevel = 1;
         this.beastExp = 0;
+        this.insectLevel = 1;
+        this.insectExp = 0;
 
         // Corpse System
         this.corpseLevel = 1;
         this.corpseExp = 0;
         this.refinedCorpses = [];
+
+        // Unlock System
+        this.unlockedProfessions = []; // Start with empty to follow the doc.
 
         // Technique System
         this.mainTechniqueId = null;
@@ -731,6 +736,17 @@ export class Player {
         return false;
     }
 
+    addInsectExp(amount) {
+        this.insectExp += amount;
+        const nextLevelExp = this.insectLevel * 100 * Math.pow(1.5, this.insectLevel - 1);
+        if (this.insectExp >= nextLevelExp) {
+            this.insectExp -= nextLevelExp;
+            this.insectLevel++;
+            return true;
+        }
+        return false;
+    }
+
     load(data) {
         if (!data) return;
         this.name = data.name || "Phàm Nhân";
@@ -838,6 +854,9 @@ export class Player {
         };
 
         this.buffs = data.buffs || [];
+        this.unlockedProfessions = data.unlockedProfessions || ['beast', 'insect']; // Default for migration, can be adjusted
+        this.insectLevel = data.insectLevel || 1;
+        this.insectExp = data.insectExp || 0;
         
         this.calculateStats();
     }
@@ -913,15 +932,19 @@ export class Player {
             techniquePoints: this.techniquePoints,
             qiAccumulated: this.qiAccumulated,
             currentEnvironmentalQi: this.currentEnvironmentalQi,
-            spiritStoneSettings: this.spiritStoneSettings
+            spiritStoneSettings: this.spiritStoneSettings,
+            unlockedProfessions: this.unlockedProfessions,
+            insectLevel: this.insectLevel,
+            insectExp: this.insectExp
         };
     }
 
     addAlchemyExp(amount) {
         this.alchemyExp += amount;
-        const nextLevel = Math.floor(Math.sqrt(this.alchemyExp / 100)) + 1;
-        if (nextLevel > this.alchemyLevel) {
-            this.alchemyLevel = nextLevel;
+        const nextLevelExp = this.alchemyLevel * 100 * Math.pow(1.5, this.alchemyLevel - 1);
+        if (this.alchemyExp >= nextLevelExp) {
+            this.alchemyExp -= nextLevelExp;
+            this.alchemyLevel++;
             return true;
         }
         return false;
@@ -929,9 +952,10 @@ export class Player {
 
     addTalismanExp(amount) {
         this.talismanExp += amount;
-        const nextLevel = Math.floor(Math.sqrt(this.talismanExp / 100)) + 1;
-        if (nextLevel > this.talismanLevel) {
-            this.talismanLevel = nextLevel;
+        const nextLevelExp = this.talismanLevel * 100 * Math.pow(1.5, this.talismanLevel - 1);
+        if (this.talismanExp >= nextLevelExp) {
+            this.talismanExp -= nextLevelExp;
+            this.talismanLevel++;
             return true;
         }
         return false;
@@ -939,9 +963,10 @@ export class Player {
 
     addSmithingExp(amount) {
         this.smithingExp += amount;
-        const nextLevel = Math.floor(Math.sqrt(this.smithingExp / 1000)) + 1; // Smithing is harder
-        if (nextLevel > this.smithingLevel) {
-            this.smithingLevel = nextLevel;
+        const nextLevelExp = this.smithingLevel * 100 * Math.pow(1.5, this.smithingLevel - 1);
+        if (this.smithingExp >= nextLevelExp) {
+            this.smithingExp -= nextLevelExp;
+            this.smithingLevel++;
             return true;
         }
         return false;
@@ -949,9 +974,21 @@ export class Player {
 
     addBeastExp(amount) {
         this.beastExp += amount;
-        const nextLevel = Math.floor(Math.sqrt(this.beastExp / 100)) + 1;
-        if (nextLevel > this.beastLevel) {
-            this.beastLevel = nextLevel;
+        const nextLevelExp = this.beastLevel * 100 * Math.pow(1.5, this.beastLevel - 1);
+        if (this.beastExp >= nextLevelExp) {
+            this.beastExp -= nextLevelExp;
+            this.beastLevel++;
+            return true;
+        }
+        return false;
+    }
+
+    addInsectExp(amount) {
+        this.insectExp += amount;
+        const nextLevelExp = this.insectLevel * 100 * Math.pow(1.5, this.insectLevel - 1);
+        if (this.insectExp >= nextLevelExp) {
+            this.insectExp -= nextLevelExp;
+            this.insectLevel++;
             return true;
         }
         return false;
@@ -959,9 +996,10 @@ export class Player {
 
     addCorpseExp(amount) {
         this.corpseExp += amount;
-        const nextLevel = Math.floor(Math.sqrt(this.corpseExp / 100)) + 1;
-        if (nextLevel > this.corpseLevel) {
-            this.corpseLevel = nextLevel;
+        const nextLevelExp = this.corpseLevel * 100 * Math.pow(1.5, this.corpseLevel - 1);
+        if (this.corpseExp >= nextLevelExp) {
+            this.corpseExp -= nextLevelExp;
+            this.corpseLevel++;
             return true;
         }
         return false;
@@ -969,9 +1007,10 @@ export class Player {
 
     addFormationExp(amount) {
         this.formationExp += amount;
-        const nextLevel = Math.floor(Math.sqrt(this.formationExp / 100)) + 1;
-        if (nextLevel > this.formationLevel) {
-            this.formationLevel = nextLevel;
+        const nextLevelExp = this.formationLevel * 100 * Math.pow(1.5, this.formationLevel - 1);
+        if (this.formationExp >= nextLevelExp) {
+            this.formationExp -= nextLevelExp;
+            this.formationLevel++;
             return true;
         }
         return false;
@@ -979,12 +1018,72 @@ export class Player {
 
     addPuppetExp(amount) {
         this.puppetExp += amount;
-        const nextLevel = Math.floor(Math.sqrt(this.puppetExp / 100)) + 1;
-        if (nextLevel > this.puppetLevel) {
-            this.puppetLevel = nextLevel;
+        const nextLevelExp = this.puppetLevel * 100 * Math.pow(1.5, this.puppetLevel - 1);
+        if (this.puppetExp >= nextLevelExp) {
+            this.puppetExp -= nextLevelExp;
+            this.puppetLevel++;
             return true;
         }
         return false;
+    }
+
+    useItem(itemId) {
+        const item = getItemById(itemId);
+        if (!item || item.type !== 'consumable') return { success: false, msg: "Vật phẩm không thể sử dụng!" };
+
+        if (!this.inventory.hasItem(itemId, 1)) return { success: false, msg: "Không đủ vật phẩm!" };
+
+        let success = false;
+        let msg = "";
+
+        if (item.effect) {
+            const effect = item.effect;
+            switch (effect.type) {
+                case 'tu_vi':
+                    this.tuVi += effect.value;
+                    success = true;
+                    msg = `Sử dụng ${item.name}, nhận được ${effect.value} tu vi!`;
+                    break;
+                case 'buff':
+                    this.addBuff({
+                        id: item.id,
+                        stat: effect.stat,
+                        value: effect.value,
+                        duration: effect.duration * 1000
+                    });
+                    success = true;
+                    msg = `Sử dụng ${item.name}, nhận được hiệu ứng ${effect.stat}!`;
+                    break;
+                case 'heal':
+                    const healAmount = Math.floor(this.maxHp * effect.value);
+                    this.hp = Math.min(this.maxHp, this.hp + healAmount);
+                    success = true;
+                    msg = `Sử dụng ${item.name}, hồi phục ${healAmount} HP!`;
+                    break;
+                case 'restore':
+                    if (effect.hp) this.hp = Math.min(this.maxHp, this.hp + effect.hp);
+                    if (effect.mana) this.mana = Math.min(this.maxMana, this.mana + effect.mana);
+                    success = true;
+                    msg = `Sử dụng ${item.name}, hồi phục trạng thái!`;
+                    break;
+                case 'unlock_profession':
+                    if (this.unlockedProfessions.includes(effect.profession)) {
+                        return { success: false, msg: "Ngươi đã lĩnh hội nghề này rồi!" };
+                    }
+                    this.unlockedProfessions.push(effect.profession);
+                    success = true;
+                    msg = `Lĩnh hội thành công! Nghề ${effect.profession} đã được mở khóa trong Bách Nghệ Đường.`;
+                    break;
+            }
+        }
+
+        if (success) {
+            this.inventory.removeItem(itemId, 1);
+            this.calculateStats();
+            return { success, msg };
+        }
+
+        return { success: false, msg: "Không có hiệu ứng nào xảy ra..." };
     }
 
     removeFromParty(npcId) {
@@ -1047,6 +1146,14 @@ export class Player {
             else if (techData.type === 'Thần Thức') this.mainSoulTechniqueId = techId;
             
             if (typeof this.calculateStats === 'function') this.calculateStats();
+            return true;
+        }
+        return false;
+    }
+
+    unlockProfession(id) {
+        if (!this.unlockedProfessions.includes(id)) {
+            this.unlockedProfessions.push(id);
             return true;
         }
         return false;

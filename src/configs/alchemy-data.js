@@ -155,6 +155,33 @@ export const ALCHEMY_RECIPES = [
         baseSuccessRate: 0.45,
         time: 60,
         description: 'Đan dược trọng yếu để đột phá lên Trúc Cơ Cảnh.'
+    },
+    {
+        id: 'bo_nguyen_dan',
+        name: 'Bổ Nguyên Đan',
+        resultId: 'bo_nguyen_dan',
+        level: 2,
+        materials: [
+            { id: 'linh_thao_10y', quantity: 3 },
+            { id: 'yeu_huyet', quantity: 1 }
+        ],
+        baseSuccessRate: 0.65,
+        time: 20,
+        description: 'Bồi bổ nguyên khí, hồi phục HP và Mana.'
+    },
+    {
+        id: 'ngung_anh_dan',
+        name: 'Ngưng Anh Đan',
+        resultId: 'ngung_anh_dan', // Need to add this to item-data later
+        level: 5,
+        materials: [
+            { id: 'linh_thao_1000y', quantity: 1 },
+            { id: 'yeu_dan_trung', quantity: 1 }, // Need to add to item-data
+            { id: 'han_ngoc_tuy', quantity: 1 }
+        ],
+        baseSuccessRate: 0.3,
+        time: 180,
+        description: 'Đan dược hỗ trợ ngưng tụ Nguyên Anh, cực kỳ quý hiếm.'
     }
 ];
 

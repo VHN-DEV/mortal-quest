@@ -51,18 +51,36 @@ export class SmithingSystem {
 
         const roll = Math.random();
         if (roll <= successRate) {
-            // Success
-            this.player.inventory.addItem(recipe.id, 1);
+            // Quality determination
+            const qualityRoll = Math.random() + (this.player.smithingLevel * 0.05) + (this.player.soulRealmId * 0.02);
+            let quality = 'Hạ Phẩm';
+            let hasKhiLinh = false;
+
+            if (qualityRoll > 2.2) { 
+                quality = 'Tiên Phẩm'; 
+                hasKhiLinh = Math.random() < 0.15;
+            }
+            else if (qualityRoll > 1.8) { quality = 'Hoàn Mỹ'; hasKhiLinh = Math.random() < 0.05; }
+            else if (qualityRoll > 1.5) { quality = 'Cực Phẩm'; }
+            else if (qualityRoll > 1.2) { quality = 'Thượng Phẩm'; }
+            else if (qualityRoll > 0.8) { quality = 'Trung Phẩm'; }
+
+            const metadata = { quality, hasKhiLinh };
+            this.player.inventory.addItem(recipe.id, 1, metadata);
+            
             if (this.player.addSmithingExp(recipe.expGain)) {
                  const nextInfo = getSmithingLevelInfo(this.player.smithingLevel);
                  this.ui.alert(`Đẳng cấp Luyện Khí Sư tăng lên ${nextInfo.name}!`, "Rèn Thần Kỹ");
             }
-            return { success: true, msg: `Chúc mừng! Bạn đã rèn thành công [${getItemById(recipe.id).name}]!` };
+            return { 
+                success: true, 
+                msg: `Chúc mừng! Bạn đã rèn thành công [${quality}] ${getItemById(recipe.id).name}!${hasKhiLinh ? ' VẬT PHẨM ĐÃ SINH RA KHÍ LINH!' : ''}` 
+            };
         } else {
             // Failure
-            if (Math.random() < 0.1) {
-                this.ui.toast("Lò rèn nổ tung! Bạn bị thương nhẹ.", "error");
-                this.player.hp -= 30;
+            if (Math.random() < 0.1 + (recipe.level * 0.05)) {
+                this.ui.toast("Lò rèn nổ tung! Bạn bị thương phản phệ.", "error");
+                this.player.hp -= 50 * recipe.level;
             }
             return { success: false, msg: 'Rèn thất bại! Nguyên liệu đã biến thành đống sắt vụn.' };
         }

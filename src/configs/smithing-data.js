@@ -26,16 +26,37 @@ export const SMITHING_RECIPES = {
         staminaCost: 100,
         manaCost: 200,
         expGain: 1200
+    },
+    'thanh_hong_kiem': {
+        id: 'thanh_hong_kiem',
+        name: 'Thanh Hồng Kiếm',
+        level: 1,
+        materials: [
+            { id: 'huyen_thiet', quantity: 5 }
+        ],
+        baseSuccessRate: 0.8,
+        staminaCost: 20,
+        manaCost: 10,
+        expGain: 100
+    },
+    'bat_quai_kinh': {
+        id: 'bat_quai_kinh',
+        name: 'Bát Quái Kính',
+        level: 2,
+        materials: [
+            { id: 'tinh_kim', quantity: 5 },
+            { id: 'thuy_tinh', quantity: 2 }
+        ],
+        baseSuccessRate: 0.65,
+        staminaCost: 40,
+        manaCost: 50,
+        expGain: 300
     }
 };
 
 export const getSmithingLevelInfo = (level) => {
-    const levels = [
-        { name: 'Luyện Khí Sư Nhất Giai', exp: 0 },
-        { name: 'Luyện Khí Sư Nhị Giai', exp: 1000 },
-        { name: 'Luyện Khí Sư Tam Giai', exp: 5000 },
-        { name: 'Luyện Khí Sư Tứ Giai', exp: 15000 },
-        { name: 'Đại Luyện Khí Sư', exp: 50000 }
-    ];
-    return levels[level - 1] || { name: 'Thần Khí Sư', exp: 999999 };
+    const names = ["Nhập Môn Luyện Khí Sư", "Nhất Giai Luyện Khí Sư", "Nhị Giai Luyện Khí Sư", "Tam Giai Luyện Khí Sư", "Tứ Giai Luyện Khí Sư", "Ngũ Giai Luyện Khí Sư", "Lục Giai Luyện Khí Sư", "Thất Giai Luyện Khí Sư", "Bát Giai Luyện Khí Sư", "Cửu Giai Luyện Khí Sư", "Tiên Giai Luyện Khí Sư", "Thần Giai Luyện Khí Sư"];
+    return {
+        name: names[Math.min(level, names.length - 1)] || `Cấp ${level} Luyện Khí Sư`
+    };
 };

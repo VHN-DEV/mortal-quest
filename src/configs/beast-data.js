@@ -90,8 +90,9 @@ export const BEASTS = {
 };
 
 export const getBeastLevelInfo = (level) => {
+    const names = ["Ấu Thể", "Nhất Giai", "Nhị Giai", "Tam Giai", "Tứ Giai", "Ngũ Giai", "Lục Giai", "Thất Giai", "Bát Giai", "Cửu Giai", "Tiên Giai", "Thần Giai"];
     return {
-        name: level < 10 ? 'Ấu Thể' : level < 30 ? 'Trưởng Thành' : level < 60 ? 'Biến Dị' : 'Thần Hình',
-        expRequired: Math.floor(100 * Math.pow(1.2, level - 1))
+        name: names[Math.min(Math.floor(level / 10), names.length - 1)] || `Cấp ${level}`,
+        expRequired: Math.floor(100 * Math.pow(1.5, level - 1))
     };
 };

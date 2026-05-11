@@ -7,15 +7,39 @@ export class FormationSystem {
         this.formations = {
             'tran_do_tu_linh': {
                 name: 'Tụ Linh Trận',
+                level: 1,
                 effect: { tuViMult: 1.5 },
                 costPerTick: 1, // 1 Ha Linh Thach per minute
-                staminaCost: 5
+                staminaCost: 5,
+                manaCost: 20,
+                baseSuccessRate: 0.9
             },
             'tran_do_ao_anh': {
                 name: 'Ảo Ảnh Trận',
+                level: 2,
                 effect: { evasion: 0.2 },
                 costPerTick: 5,
-                staminaCost: 10
+                staminaCost: 15,
+                manaCost: 50,
+                baseSuccessRate: 0.75
+            },
+            'tran_do_sat_kiem': {
+                name: 'Sát Kiếm Trận',
+                level: 3,
+                effect: { atkBonus: 100 },
+                costPerTick: 20,
+                staminaCost: 30,
+                manaCost: 100,
+                baseSuccessRate: 0.6
+            },
+            'ho_tong_dai_tran': {
+                name: 'Hộ Tông Đại Trận',
+                level: 5,
+                effect: { defMult: 2.0 },
+                costPerTick: 100,
+                staminaCost: 100,
+                manaCost: 500,
+                baseSuccessRate: 0.4
             }
         };
     }
@@ -36,16 +60,28 @@ export class FormationSystem {
             return { success: false, msg: 'Bạn không có trận đồ này!' };
         }
 
-        if (this.player.stamina < formation.staminaCost) {
-            return { success: false, msg: 'Không đủ thể lực để bố trí trận pháp!' };
+        if (this.player.stamina < formation.staminaCost || this.player.mana < formation.manaCost) {
+            return { success: false, msg: 'Không đủ trạng thái để bố trí trận pháp!' };
         }
 
         this.player.stamina -= formation.staminaCost;
+        this.player.mana -= formation.manaCost;
+
+        // Success check
+        let successRate = formation.baseSuccessRate + (this.player.formationLevel * 0.05) + (this.player.soulRealmId * 0.02);
+        if (Math.random() > successRate) {
+            const damage = 100 * formation.level;
+            this.player.hp -= damage;
+            return { success: false, msg: `BỐ TRÍ THẤT BẠI! Trận văn phản phệ gây ${damage} sát thương!` };
+        }
+
         this.player.activeFormations.push({
             id: diagramId,
             name: formation.name,
             startTime: Date.now()
         });
+
+        this.player.addFormationExp(formation.level * 100);
 
         return { success: true, msg: `Đã kích hoạt ${formation.name}!` };
     }

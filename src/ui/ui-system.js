@@ -320,6 +320,8 @@ export class UISystem {
             if (window.game && window.game.screens.inventory) window.game.screens.inventory.render();
         } else if (screenId === 'screen-adventure') {
             if (window.game && window.game.screens.map) window.game.screens.map.renderWorldList();
+        } else if (screenId === 'screen-crafting-hub') {
+            if (window.game && window.game.screens.systems) window.game.screens.systems.renderCraftingHub();
         }
     }
 }
