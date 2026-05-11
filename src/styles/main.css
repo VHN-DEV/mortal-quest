@@ -55,13 +55,13 @@ body {
   -ms-overflow-style: none !important;
 }
 
-/* Force hide all scrollbars globally */
+/* Force hide all scrollbars globally except for specific custom ones */
 * {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
-*::-webkit-scrollbar {
+*:not(.custom-scroll-x):not(.custom-scroll-y):not(.custom-scroll)::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
@@ -258,16 +258,32 @@ body {
   flex-wrap: nowrap !important;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x;
+  overscroll-behavior-x: contain;
   width: 100%;
-  min-height: 52px; /* Fixed height to prevent jitter */
-  height: 52px;
+  min-height: 60px; /* Increased height to accommodate scrollbar */
+  height: 60px;
   align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--cultivation-gold) rgba(255, 255, 255, 0.05) !important;
 }
 
 .custom-scroll-x::-webkit-scrollbar {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
+  display: block !important;
+  height: 3px !important;
+}
+
+.custom-scroll-x::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.custom-scroll-x::-webkit-scrollbar-thumb {
+  background: var(--cultivation-gold);
+  border-radius: 10px;
+  box-shadow: 0 0 5px var(--cultivation-gold);
 }
 
 .animate-fade-in {

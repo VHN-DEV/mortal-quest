@@ -273,29 +273,43 @@ export class SystemsScreen {
         const shop = state.systems.shop;
         const shopData = SHOPS[shop.currentShopId];
         
-        this.elShopSectionNav.innerHTML = '';
-        Object.keys(shopData.sections).forEach(sectionKey => {
-            const active = shop.currentSection === sectionKey;
-            const el = document.createElement('button');
-            el.className = `px-4 py-2 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all whitespace-nowrap shrink-0 ${active ? 'bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/30' : 'text-gray-500 border border-transparent'}`;
+        const sections = Object.keys(shopData.sections);
+        const currentButtons = this.elShopSectionNav.querySelectorAll('button');
+        
+        // Map section names to Vietnamese
+        const names = {
+            'dan_duoc': 'Đan Dược',
+            'phap_bao': 'Pháp Bảo',
+            'nguyen_lieu': 'Nguyên Liệu',
+            'cong_phap': 'Công Pháp',
+            'tran_phap': 'Trận Pháp',
+            'phu_luc': 'Phù Lục',
+            'luyen_khi': 'Luyện Khí',
+            'bi_tich': 'Bí Tịch'
+        };
+
+        // If buttons count doesn't match or shop changed, rebuild
+        if (currentButtons.length !== sections.length || this.elShopSectionNav.dataset.shopId !== shop.currentShopId) {
+            this.elShopSectionNav.innerHTML = '';
+            this.elShopSectionNav.dataset.shopId = shop.currentShopId;
             
-            // Map section names to Vietnamese
-            const names = {
-                'dan_duoc': 'Đan Dược',
-                'phap_bao': 'Pháp Bảo',
-                'nguyen_lieu': 'Nguyên Liệu',
-                'cong_phap': 'Công Pháp',
-                'tran_phap': 'Trận Pháp',
-                'phu_luc': 'Phù Lục',
-                'luyen_khi': 'Luyện Khí',
-                'bi_tich': 'Bí Tịch'
-            };
-            el.textContent = names[sectionKey] || sectionKey;
-            el.onclick = () => {
-                shop.currentSection = sectionKey;
-                this.renderShop();
-            };
-            this.elShopSectionNav.appendChild(el);
+            sections.forEach(sectionKey => {
+                const el = document.createElement('button');
+                el.dataset.section = sectionKey;
+                el.onclick = () => {
+                    shop.currentSection = sectionKey;
+                    this.renderShop();
+                };
+                this.elShopSectionNav.appendChild(el);
+            });
+        }
+
+        // Update classes and text for all buttons
+        this.elShopSectionNav.querySelectorAll('button').forEach(btn => {
+            const sectionKey = btn.dataset.section;
+            const active = shop.currentSection === sectionKey;
+            btn.className = `px-4 py-2 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all whitespace-nowrap shrink-0 ${active ? 'bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/30' : 'text-gray-500 border border-transparent'}`;
+            btn.textContent = names[sectionKey] || sectionKey;
         });
     }
 
