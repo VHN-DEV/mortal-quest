@@ -790,3 +790,50 @@ button:active {
   border: 1px solid rgba(212,175,55,0.45);
   box-shadow: 0 0 18px rgba(212,175,55,0.12);
 }
+
+
+/* Creation screen layout optimization */
+#screen-creation .creation-mode-wrap .flex {
+  gap: 0.5rem;
+}
+
+#screen-creation .creation-card,
+#screen-creation #creation-resources-panel > div,
+#screen-creation .space-y-2 > input,
+#screen-creation .space-y-2 > .flex {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+#screen-creation #creation-panels {
+  display: grid;
+  gap: 1rem;
+}
+
+#screen-creation #creation-panels > section {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 0.8rem;
+}
+
+#screen-creation input,
+#screen-creation select,
+#screen-creation button {
+  min-height: 40px;
+}
+
+@media (max-width: 767px) {
+  #screen-creation .p-6 {
+    padding: 0.75rem;
+  }
+
+  #screen-creation #creation-panels > section {
+    padding: 0.65rem;
+  }
+
+  #screen-creation #creation-points-container {
+    position: sticky;
+    top: 0;
+    border-radius: 0.75rem;
+  }
+}

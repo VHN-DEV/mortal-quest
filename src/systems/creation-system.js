@@ -1,6 +1,11 @@
 import { CREATION_CONFIG, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS } from '../configs/creation-data.js';
 import { Player } from '../core/player.js';
 
+const RANDOM_NAMES = [
+    'Lâm Phong', 'Mộc Vân', 'Hàn Tuyết', 'Sở Thiên', 'Diệp Trần', 'Vân Mộng', 'Tần Mặc', 'Bạch Ly', 'Tiêu Dao', 'Nguyệt Nhi'
+];
+
+
 export class CreationSystem {
     constructor() {
         this.reset();
@@ -85,7 +90,12 @@ export class CreationSystem {
     rollRandom() {
         this.reset();
         this.mode = 'random';
-        
+
+        this.playerName = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)];
+        this.playerGender = Math.random() < 0.5 ? 'Nam' : 'Nữ';
+        this.playerAge = Math.floor(Math.random() * 41) + 12;
+        this.playerAvatar = this.playerGender === 'Nam' ? 'player_male' : 'player_female';
+
         const rootKeys = Object.keys(CREATION_ROOTS);
         this.selectedRoot = rootKeys[Math.floor(Math.random() * rootKeys.length)];
         
