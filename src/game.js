@@ -163,6 +163,37 @@ export class Game {
             }
         });
 
+        // Restore saved screen if player exists (game is loaded)
+        if (state.player) {
+            let savedScreen = localStorage.getItem('mortal_quest_current_screen');
+            
+            // Special case: If we were in battle, we reset to adventure screen at the current location
+            if (savedScreen === 'screen-battle') {
+                savedScreen = 'screen-adventure';
+                localStorage.setItem('mortal_quest_current_screen', 'screen-adventure');
+                // Ensure we go back to the explore view
+                localStorage.setItem('mortal_quest_map_view', 'explore');
+            }
+
+            if (savedScreen) {
+                const btnId = Object.keys(navMappings).find(key => navMappings[key] === savedScreen);
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if (btn) {
+                        btn.click();
+                        // If it's the adventure screen, we need to restore its sub-view
+                        if (savedScreen === 'screen-adventure') {
+                            this.screens.map.restoreView();
+                        }
+                        return;
+                    }
+                }
+            }
+            // Default to main screen if no saved screen
+            const mainBtn = document.getElementById('nav-main');
+            if (mainBtn) mainBtn.click();
+        }
+
         // Specific character portrait click
         const elHeaderPortraitContainer = document.getElementById('header-portrait-container');
         if (elHeaderPortraitContainer) {
@@ -241,7 +272,6 @@ export class Game {
         this.initSystems(state.player, savedData);
         
         state.ui.toggleOverlay(document.getElementById('screen-creation'), false);
-        state.ui.toggleOverlay(document.getElementById('screen-main'), true);
         
         const elementsToShow = ['header', '#time-hud', 'nav'];
         elementsToShow.forEach(selector => {
@@ -304,7 +334,8 @@ export class Game {
         if (player.currentWorldId) {
             state.currentWorldId = player.currentWorldId;
             state.currentLocId = player.currentLocId;
-            this.screens.map.renderWorldList();
+            state.explorationProgress = player.explorationProgress || 0;
+            // Note: restoreView() is called in initNavigation to avoid redundant renders
         }
     }
 
@@ -364,6 +395,7 @@ export class Game {
         if (state.player) {
             state.player.currentWorldId = state.currentWorldId;
             state.player.currentLocId = state.currentLocId;
+            state.player.explorationProgress = state.explorationProgress;
             const data = state.player.save();
             if (state.systems.time) data.time = state.systems.time.save();
             SaveSystem.save(data);

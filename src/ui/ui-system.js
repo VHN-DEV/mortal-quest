@@ -318,6 +318,9 @@ export class UISystem {
             btn.classList.remove('text-gray-500');
         }
 
+        // Save current screen to localStorage
+        localStorage.setItem('mortal_quest_current_screen', screenId);
+
         // Specific screen refresh logic
         if (screenId === 'screen-main') {
             if (typeof window.renderMainStats === 'function') window.renderMainStats();

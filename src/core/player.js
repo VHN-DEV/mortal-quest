@@ -157,8 +157,8 @@ export class Player {
         this.maxAge = 100; // Base human lifespan
 
         // Persistence of location
-        this.currentWorldId = 'nhan_gioi';
         this.currentLocId = null;
+        this.explorationProgress = 0;
 
         // Formation System
         this.activeFormations = []; // { id, startTime, staminaConsumed }
@@ -1085,6 +1085,7 @@ export class Player {
         this.maxAge = data.maxAge || 100;
 
         this.currentLocId = data.currentLocId || null;
+        this.explorationProgress = data.explorationProgress || 0;
         
         this.beastLevel = data.beastLevel || 1;
         this.beastExp = data.beastExp || 0;
@@ -1183,6 +1184,7 @@ export class Player {
             maxAge: this.maxAge,
             currentWorldId: this.currentWorldId,
             currentLocId: this.currentLocId,
+            explorationProgress: this.explorationProgress,
             beastLevel: this.beastLevel,
             beastExp: this.beastExp,
             beasts: this.beasts,

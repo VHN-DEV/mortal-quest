@@ -58,6 +58,7 @@ export class MapScreen {
             this.btnBackToLocs.onclick = () => {
                 state.ui.toggleOverlay(this.viewExplore, false);
                 state.ui.toggleOverlay(this.viewLocations, true);
+                localStorage.setItem('mortal_quest_map_view', 'locations');
                 if (state.systems.time) state.systems.time.timeMultiplier = 1.0;
             };
         }
@@ -66,6 +67,7 @@ export class MapScreen {
             this.btnBackToWorlds.onclick = () => {
                 state.ui.toggleOverlay(this.viewLocations, false);
                 state.ui.toggleOverlay(this.viewWorlds, true);
+                localStorage.setItem('mortal_quest_map_view', 'worlds');
             };
         }
 
@@ -73,8 +75,36 @@ export class MapScreen {
             this.btnLeaveLoc.onclick = () => {
                 state.ui.toggleOverlay(this.viewExplore, false);
                 state.ui.toggleOverlay(this.viewLocations, true);
+                localStorage.setItem('mortal_quest_map_view', 'locations');
                 if (state.systems.time) state.systems.time.timeMultiplier = 1.0;
             };
+        }
+    }
+
+    /**
+     * Khôi phục chế độ xem từ trạng thái đã lưu
+     */
+    restoreView() {
+        if (!state.player) return;
+        
+        const savedView = localStorage.getItem('mortal_quest_map_view') || 'worlds';
+        
+        // Luôn render world list làm nền nếu cần quay lại
+        this.renderWorldList();
+
+        if (savedView === 'locations' && state.currentWorldId) {
+            this.selectWorld(state.currentWorldId);
+        } else if (savedView === 'explore' && state.currentWorldId && state.currentLocId) {
+            // Restore location info and show explore view
+            const w = getWorlds()[state.currentWorldId];
+            if (w) this.elCurrentWorldName.textContent = w.name;
+            
+            this.startExploration(state.currentLocId, false);
+        } else {
+            // Default to world list
+            state.ui.toggleOverlay(this.viewWorlds, true);
+            state.ui.toggleOverlay(this.viewLocations, false);
+            state.ui.toggleOverlay(this.viewExplore, false);
         }
     }
 
@@ -119,6 +149,7 @@ export class MapScreen {
         this.elCurrentWorldName.textContent = w.name;
         state.ui.toggleOverlay(this.viewWorlds, false);
         state.ui.toggleOverlay(this.viewLocations, true);
+        localStorage.setItem('mortal_quest_map_view', 'locations');
         this.renderLocationList();
         if (state.systems.time) state.systems.time.timeMultiplier = 1.0;
     }
@@ -163,7 +194,7 @@ export class MapScreen {
         return map[danger] || 'bg-black/40 border-white/10 text-qi-blue';
     }
 
-    startExploration(locId) {
+    startExploration(locId, resetProgress = true) {
         state.currentLocId = locId;
         const loc = getLocationById(state.currentWorldId, locId);
         
@@ -190,11 +221,12 @@ export class MapScreen {
         }
 
         this.elCurrentLocName.textContent = loc.name;
-        state.explorationProgress = 0;
+        if (resetProgress) state.explorationProgress = 0;
         
         state.ui.toggleOverlay(this.viewWorlds, false);
         state.ui.toggleOverlay(this.viewLocations, false);
         state.ui.toggleOverlay(this.viewExplore, true);
+        localStorage.setItem('mortal_quest_map_view', 'explore');
         
         this.updateExplorationUI();
         this.updateEventDisplay('Ngươi đã tới địa điểm.', '🚶');

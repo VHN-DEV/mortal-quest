@@ -15,5 +15,7 @@ export const SaveSystem = {
     },
     clear: () => {
         localStorage.removeItem(SAVE_KEY);
+        localStorage.removeItem('mortal_quest_current_screen');
+        localStorage.removeItem('mortal_quest_map_view');
     }
 };
