@@ -3,12 +3,14 @@ import { getFlameById } from '../configs/alchemy-data.js';
 import { getItemById } from '../configs/item-data.js';
 
 export class CombatEngine {
-    constructor(player, enemy, onUpdate, onEnd) {
+    constructor(player, enemy, onUpdate, onEnd, ambushType = null) {
         this.player = player;
         this.enemy = enemy;
         this.onUpdate = onUpdate;
         this.onEnd = onEnd;
+        this.ambushType = ambushType; // 'player', 'enemy', or null
         this.turn = 0; // 0 for player, 1 for enemy
+        this.playerAmbushBonus = false;
         this.log = [];
         this.isActive = true;
         this.playerDefending = false;
@@ -26,9 +28,38 @@ export class CombatEngine {
         return 'BALANCED';
     }
 
+    calculateRacialSuppression(attacker, defender) {
+        let mult = 1.0;
+        const aRace = attacker.race;
+        const dRace = defender.race;
+
+        // Long Tộc áp chế các loại thú khác
+        if (aRace === 'DRAGON' && (dRace === 'SPIRIT_BEAST' || dRace === 'ZOMBIE')) {
+            mult *= 1.3;
+            this.addLog(`<span class="text-yellow-500">Long Uy!</span> Huyết mạch áp chế khiến đối phương run rẩy.`);
+        }
+
+        // Phật/Nho khắc chế Ma/Quỷ
+        if ((aRace === 'BUDDHIST' || aRace === 'CONFUCIAN') && (dRace === 'DEMON' || dRace === 'GHOST')) {
+            mult *= 1.25;
+            this.addLog(`<span class="text-blue-400">Chính khí!</span> Khắc chế tà ma ngoại đạo.`);
+        }
+
+        return mult;
+    }
+
     start() {
-        this.addLog(`Khởi động cuộc chiến với ${this.enemy.name}!`);
-        this.turn = this.player.spd >= this.enemy.spd ? 0 : 1;
+        if (this.ambushType === 'player') {
+            this.addLog(`<span class="text-red-500 font-bold">TẬP KÍCH THÀNH CÔNG!</span> Ngươi giành được tiên cơ, lần công kích đầu tiên tăng mạnh bạo kích.`);
+            this.turn = 0;
+            this.playerAmbushBonus = true;
+        } else if (this.ambushType === 'enemy') {
+            this.addLog(`<span class="text-red-600 font-bold">BỊ TẬP KÍCH!</span> Đối phương xuất hiện bất ngờ, ngươi rơi vào thế bị động.`);
+            this.turn = 1;
+        } else {
+            this.addLog(`Khởi động cuộc chiến với ${this.enemy.name}!`);
+            this.turn = this.player.spd >= this.enemy.spd ? 0 : 1;
+        }
         this.nextTurn();
     }
 
@@ -40,31 +71,178 @@ export class CombatEngine {
 
     nextTurn() {
         if (!this.isActive) return;
-
         this.processTurnStatus();
         if (!this.isActive) return;
-
-        if (this.turn === 0) {
+        this.onUpdate('turn', { turn: this.turn });
+        
+        if (this.turn === 1) {
+            this.enemyTurn();
+        } else {
             if (this.status.player.stun > 0) {
                 this.status.player.stun--;
-                this.addLog("Ngươi bị choáng, không thể hành động!");
-                this.turn = 1;
-                this.nextTurn();
+                this.addLog("Ngươi đang bị <span class='text-yellow-500'>CHOÁNG</span>, không thể hành động!");
+                setTimeout(() => {
+                    this.turn = 1;
+                    this.nextTurn();
+                }, 1000);
+            } else {
+                this.onUpdate('player-turn-start');
+            }
+        }
+    }
+
+    enemyTurn() {
+        if (!this.isActive) return;
+
+        // 1. Check for escape if HP is very low (< 15%)
+        if (this.enemy.hp < this.enemy.maxHp * 0.15 && Math.random() < 0.6) {
+            this.enemyEscape();
+            return;
+        }
+
+        // 2. Check for healing pills if HP is low (< 30%)
+        if (this.enemy.hp < this.enemy.maxHp * 0.3) {
+            const pillIndex = this.enemy.inventory.findIndex(i => {
+                const data = getItemById(i.id);
+                return data?.type === 'consumable' && data.effect?.type === 'heal';
+            });
+            if (pillIndex !== -1 && Math.random() < 0.7) {
+                const pill = this.enemy.inventory[pillIndex];
+                const data = getItemById(pill.id);
+                const heal = Math.floor(this.enemy.maxHp * (data.effect.value || 0.2));
+                this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + heal);
+                this.addLog(`${this.enemy.name} uống một viên <span class="text-green-400">${data.name}</span>, thương thế khép lại!`);
+                pill.quantity--;
+                if (pill.quantity <= 0) this.enemy.inventory.splice(pillIndex, 1);
+                
+                setTimeout(() => {
+                    this.turn = 0;
+                    this.nextTurn();
+                }, 1500);
                 return;
             }
-            this.addLog("Đến lượt của ngươi. Hãy chọn hành động!");
-            this.onUpdate('player-turn-start');
+        }
+
+        // 3. Check for offensive items (Talismans)
+        const offensiveItemIndex = this.enemy.inventory.findIndex(i => {
+            const data = getItemById(i.id);
+            return data?.type === 'talisman' && (data.effect?.type === 'damage' || data.effect?.stat === 'def');
+        });
+        if (offensiveItemIndex !== -1 && Math.random() < 0.3) {
+            this.enemyUseItem(offensiveItemIndex);
+            return;
+        }
+
+        // 4. Decide between Skill or Normal Attack
+        const usableSkills = (this.enemy.skills || []).filter(s => s !== 'BASIC_ATTACK');
+        if (usableSkills.length > 0 && Math.random() < 0.4 && (this.enemy.mana || 0) >= 20) {
+            const skill = usableSkills[Math.floor(Math.random() * usableSkills.length)];
+            setTimeout(() => this.enemyUseSkill(skill), 1000);
         } else {
-            if (this.status.enemy.stun > 0) {
-                this.status.enemy.stun--;
-                this.addLog(`${this.enemy.name} bị choáng, bỏ lượt!`);
+            setTimeout(() => this.enemyAttack(), 1000);
+        }
+    }
+
+    enemyUseSkill(skillId) {
+        if (!this.isActive) return;
+        
+        this.enemy.mana -= 20;
+        let damage = Math.floor(this.enemy.atk * 1.5);
+        let msg = "";
+
+        switch (skillId) {
+            case 'QI_BURST':
+                msg = `${this.enemy.name} bộc phát linh lực toàn thân, oanh kích về phía ngươi!`;
+                damage = Math.floor(this.enemy.atk * 1.8);
+                break;
+            case 'HEAL_TECHNIQUE':
+                const heal = Math.floor(this.enemy.maxHp * 0.25);
+                this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + heal);
+                msg = `${this.enemy.name} thi triển mật thuật trị thương, khí sắc khôi phục!`;
+                damage = 0;
+                break;
+            default:
+                msg = `${this.enemy.name} thi triển kỹ năng đặc thù!`;
+        }
+
+        if (damage > 0) {
+            const finalDmg = Math.max(1, damage - Math.floor(this.player.def / 2));
+            this.player.hp -= finalDmg;
+            this.addLog(msg + ` Gây ${finalDmg} sát thương.`);
+            this.onUpdate('damage', { target: 'player', value: finalDmg, crit: true });
+        } else {
+            this.addLog(msg);
+        }
+
+        if (this.player.hp <= 0) {
+            this.player.hp = 0;
+            this.lose();
+        } else {
+            this.turn = 0;
+            this.nextTurn();
+        }
+    }
+
+    enemyUseItem(index) {
+        if (!this.isActive) return;
+        const item = this.enemy.inventory[index];
+        const data = getItemById(item.id);
+        
+        if (!data) return;
+
+        if (data.effect?.type === 'damage') {
+            const dmg = data.effect.value || 100;
+            this.player.hp -= dmg;
+            this.addLog(`${this.enemy.name} kích hoạt <span class="text-orange-500">${data.name}</span>, oanh tạc gây ${dmg} sát thương!`);
+            this.onUpdate('damage', { target: 'player', value: dmg, crit: true });
+        } else if (data.effect?.type === 'buff' && data.effect.stat === 'def') {
+            this.enemy.def += (data.effect.value || 50);
+            this.addLog(`${this.enemy.name} sử dụng ${data.name}, phòng ngự tăng mạnh!`);
+        }
+
+        item.quantity--;
+        if (item.quantity <= 0) this.enemy.inventory.splice(index, 1);
+
+        if (this.player.hp <= 0) {
+            this.player.hp = 0;
+            this.lose();
+        } else {
+            setTimeout(() => {
                 this.turn = 0;
                 this.nextTurn();
-                return;
-            }
-            this.addLog(`Lượt của ${this.enemy.name}...`);
-            this.onUpdate('player-turn-end');
-            setTimeout(() => this.enemyAttack(), 1500);
+            }, 1000);
+        }
+    }
+
+    enemyEscape() {
+        this.addLog(`<span class="text-yellow-400">${this.enemy.name} cảm thấy bất ổn, đang tìm cách thoát thân!</span>`);
+        this.isActive = false;
+        this.onUpdate('enemy-escape-attempt');
+    }
+
+    chaseEnemy() {
+        const playerSpd = this.player.spd;
+        const enemySpd = this.enemy.spd;
+        
+        let flightBonus = 0;
+        if (this.player.equipment.flightArtifact) {
+            const artifact = getItemById(this.player.equipment.flightArtifact);
+            flightBonus = artifact?.stats?.spd || 20;
+        }
+
+        const successChance = Math.max(0.1, Math.min(0.9, 0.4 + ((playerSpd + flightBonus - enemySpd) / 100)));
+        const success = Math.random() < successChance;
+
+        if (success) {
+            this.isActive = true;
+            this.addLog("<span class='text-qi-blue'>Ngươi dồn lực vào đôi chân, thành công đuổi kịp kẻ địch!</span>");
+            this.turn = 0; // Player gets to move
+            this.nextTurn();
+            return true;
+        } else {
+            this.addLog("<span class='text-gray-500'>Đối phương tốc độ quá nhanh, chớp mắt đã biến mất tận chân trời...</span>");
+            setTimeout(() => this.onEnd('escape'), 1500);
+            return false;
         }
     }
 
@@ -125,6 +303,9 @@ export class CombatEngine {
             case 'insect':
                 this.playerSummonInsect();
                 break;
+            case 'escape':
+                this.playerEscape();
+                break;
         }
     }
 
@@ -144,16 +325,33 @@ export class CombatEngine {
         const pierce = this.player.advancedStats.pierce || 0;
         const effectiveEnemyDef = Math.floor(this.enemy.def * (1 - pierce));
         
-        const damage = Math.max(1, this.player.atk - Math.floor(effectiveEnemyDef / 2));
+        const suppression = this.calculateRacialSuppression(this.player, this.enemy);
+        const damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression));
         
-        const critRate = this.player.advancedStats.critRate || 0.05;
+        let critRate = this.player.advancedStats.critRate || 0.05;
+        if (this.playerAmbushBonus) {
+            critRate += 0.4;
+            this.playerAmbushBonus = false;
+        }
         const crit = Math.random() < critRate;
         
         const critDmg = this.player.advancedStats.critDmg || 2.0;
         const finalDamage = crit ? Math.floor(damage * critDmg) : damage;
         
         this.enemy.hp -= finalDamage;
-        this.addLog(`Ngươi tấn công gây ${finalDamage} sát thương${crit ? " (BẠO KÍCH!)" : ""}.`);
+        if (crit) {
+            this.addLog(`<span class="text-red-500 font-bold">BẠO KÍCH!</span> Ngươi xuất chiêu hiểm hóc, gây ${finalDamage} sát thương.`);
+        } else {
+            const attackVerbs = {
+                'HUMAN': 'vung kiếm tấn công',
+                'SPIRIT_BEAST': 'tung trảo vồ tới',
+                'DEMON': 'oanh tạc ma quang',
+                'DRAGON': 'phun ra long tức',
+                'BUDDHIST': 'đánh ra phật chưởng'
+            };
+            const verb = attackVerbs[this.player.race] || 'tấn công';
+            this.addLog(`Ngươi ${verb}, gây ${finalDamage} sát thương.`);
+        }
         this.onUpdate('damage', { target: 'enemy', value: finalDamage, crit });
         
         // Party attacks
@@ -168,7 +366,7 @@ export class CombatEngine {
             // Coordinated bonus
             const bonus = Math.floor(finalDamage * 0.1 * this.player.party.length);
             this.enemy.hp -= bonus;
-            this.addLog(`Liên kích tổ đội gây thêm ${bonus} sát thương!`);
+            this.addLog(`Liên kích tổ đội bộc phát thêm ${bonus} sát thương!`);
         }
         
         this.endPlayerTurn();
@@ -176,9 +374,37 @@ export class CombatEngine {
 
     playerDefend() {
         this.playerDefending = true;
-        this.addLog("Ngươi vận công phòng thủ, giảm sát thương nhận vào.");
+        this.addLog("Ngươi vận chuyển chân khí, hình thành hộ thân linh giáp.");
         this.turn = 1;
         this.nextTurn();
+    }
+
+    playerEscape() {
+        if (this.turn !== 0 || !this.isActive) return;
+
+        const playerSpd = this.player.spd;
+        const enemySpd = this.enemy.spd;
+        
+        // Check for escape secret techniques
+        const equippedSecrets = (this.player.equippedSecretTechniqueIds || []).filter(Boolean);
+        const hasEscapeSecret = equippedSecrets.some(id => {
+            const data = getSecretTechniqueById(id);
+            const now = Date.now();
+            const lastUsed = this.player.secretTechniqueCooldowns[id] || 0;
+            const isOffCooldown = (now - lastUsed) >= (data?.cooldown || 0) * 1000;
+            return (data?.effects?.type === 'escape' || data?.type === 'escape') && isOffCooldown;
+        });
+
+        if (playerSpd > enemySpd || hasEscapeSecret) {
+            this.addLog("<span class='text-qi-blue'>Ngươi vận dụng thân pháp cực hạn, thành công thoát khỏi chiến trường!</span>");
+            this.isActive = false;
+            this.onUpdate('end');
+            setTimeout(() => this.onEnd('escape'), 1500);
+        } else {
+            this.addLog("<span class='text-red-400'>Thoát thân thất bại! Đối phương tốc độ quá nhanh, khóa chặt mọi đường lui!</span>");
+            this.onUpdate('escape-fail');
+            this.endPlayerTurn();
+        }
     }
 
     playerSkill() {
@@ -189,9 +415,16 @@ export class CombatEngine {
             return;
         }
 
+        const manaCost = 10;
+        if (this.player.mana < manaCost) {
+            this.addLog("Linh lực không đủ để thi triển Linh Thuật!");
+            return;
+        }
+        this.player.mana -= manaCost;
+
         const damage = Math.floor(this.player.atk * 1.8);
         this.enemy.hp -= damage;
-        this.addLog(`Ngươi thi triển Linh Thuật gây ${damage} sát thương!`);
+        this.addLog(`Ngươi kết ấn thi triển Linh Thuật, oanh tạc gây ${damage} sát thương!`);
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
 
         if (this.enemy.hp <= 0) {
@@ -206,23 +439,23 @@ export class CombatEngine {
     playerFlameAttack() {
         const flame = getFlameById(this.player.currentFlame || 'linh_hoa');
         if (!flame || flame.type !== 'di_hoa') {
-            this.addLog("Ngươi chưa có Dị Hỏa để thi triển chiêu này!");
+            this.addLog("Ngươi chưa có Dị Hỏa để dẫn động!");
             return;
         }
 
-        const manaCost = 20;
+        const manaCost = 25;
         if (this.player.mana < manaCost) {
-            this.addLog("Không đủ Linh Lực để dẫn động Dị Hỏa!");
+            this.addLog("Linh lực cạn kiệt, không thể triệu hoán Dị Hỏa!");
             return;
         }
 
         this.player.mana -= manaCost;
-        const damage = Math.floor(this.player.atk * flame.power * 1.5);
+        const damage = Math.floor(this.player.atk * flame.power * 2.0);
         this.enemy.hp -= damage;
-        this.status.enemy.burn = Math.max(this.status.enemy.burn, 2);
-        this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, this.player.atk * 0.2 * flame.power);
-        this.addLog(`Ngươi dẫn động ${flame.name} thi triển Hỏa Công gây ${damage} sát thương cực lớn!`);
-        this.addLog(`${this.enemy.name} rơi vào trạng thái THIÊU ĐỐT!`);
+        this.status.enemy.burn = Math.max(this.status.enemy.burn, 3);
+        this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, this.player.atk * 0.3 * flame.power);
+        this.addLog(`Ngươi dẫn động <span class="text-orange-500">${flame.name}</span>, hỏa diễm ngập trời gây ${damage} sát thương!`);
+        this.addLog(`${this.enemy.name} bị <span class="text-red-500">THIÊU ĐỐT</span> bởi Dị Hỏa!`);
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
 
         this.endPlayerTurn();
@@ -438,27 +671,39 @@ export class CombatEngine {
 
         this.triggerArtifacts('defense');
         let damage = Math.max(1, this.enemy.atk - Math.floor(this.player.def / 2));
+        let attackMsg = `${this.enemy.name} lao đến tấn công, gây ${damage} sát thương.`;
+
         if (this.enemyArchetype === 'ASSASSIN' && Math.random() < 0.35) {
-            const truePart = Math.floor(this.enemy.atk * 0.3);
-            const normalPart = Math.max(1, this.enemy.atk - Math.floor(this.player.def * 0.35));
+            const truePart = Math.floor(this.enemy.atk * 0.4);
+            const normalPart = Math.max(1, this.enemy.atk - Math.floor(this.player.def * 0.3));
             damage = truePart + normalPart;
-            this.addLog(`${this.enemy.name} thi triển thân pháp, xuyên qua phòng ngự!`);
-            if (Math.random() < 0.15) this.status.player.stun = Math.max(this.status.player.stun, 1);
-        } else if (this.enemyArchetype === 'BERSERKER' && Math.random() < 0.25) {
-            damage = Math.floor(damage * 1.4);
-            this.addLog(`${this.enemy.name} vung đòn bạo kích hung mãnh!`);
+            attackMsg = `${this.enemy.name} biến ảo khôn lường, xuyên qua sơ hở gây ${damage} sát thương!`;
+            if (Math.random() < 0.2) {
+                this.status.player.stun = Math.max(this.status.player.stun, 1);
+                this.addLog(`Ngươi bị trấn áp, rơi vào trạng thái <span class="text-yellow-500">CHOÁNG</span>!`);
+            }
+        } else if (this.enemyArchetype === 'BERSERKER' && Math.random() < 0.3) {
+            damage = Math.floor(damage * 1.5);
+            attackMsg = `${this.enemy.name} cuồng bạo oanh kích, gây ${damage} sát thương cực lớn!`;
         } else if (this.enemyArchetype === 'TANK' && Math.random() < 0.3) {
-            this.enemy.def = Math.floor(this.enemy.def * 1.1);
-            this.addLog(`${this.enemy.name} vận giáp khí, phòng ngự gia tăng!`);
+            this.enemy.def = Math.floor(this.enemy.def * 1.2);
+            this.addLog(`${this.enemy.name} vận kình khí, phòng ngự tăng vọt!`);
         }
+
         if (this.playerDefending) {
-            damage = Math.floor(damage * 0.3);
+            damage = Math.floor(damage * 0.25);
+            attackMsg = `Ngươi kịp thời phòng thủ, chỉ nhận ${damage} sát thương từ đòn đánh của ${this.enemy.name}.`;
             this.playerDefending = false;
         }
 
         this.player.hp -= damage;
-        this.addLog(`${this.enemy.name} tấn công gây ${damage} sát thương.`);
-        this.onUpdate('damage', { target: 'player', value: damage, crit: false });
+        
+        const suppression = this.calculateRacialSuppression(this.enemy, this.player);
+        const finalDmg = Math.floor(damage * suppression);
+        this.player.hp -= (finalDmg - damage); // Apply difference
+        
+        this.addLog(attackMsg);
+        this.onUpdate('damage', { target: 'player', value: finalDmg, crit: false });
 
         if (this.player.hp <= 0) {
             this.player.hp = 0;
@@ -482,57 +727,83 @@ export class CombatEngine {
                 if (this.player.mana >= cost) {
                     this.player.mana -= cost;
                 } else {
-                    // Penalty: Artifact is less effective
-                    this.addLog(`Không đủ Linh Lực, [${item.name}] mất hiệu lực!`);
+                    this.addLog(`Linh lực không đủ duy trì [${item.name}]!`);
                 }
             }
 
             // Durability loss
-            if (Math.random() > 0.95) {
+            if (Math.random() > 0.98) {
                 if (!this.player.equipmentMetadata[slot]) {
                     this.player.equipmentMetadata[slot] = { spirit: 0, level: 1, durability: 100 };
                 }
                 const meta = this.player.equipmentMetadata[slot];
                 meta.durability = Math.max(0, meta.durability - 1);
                 if (meta.durability === 0) {
-                    this.addLog(`[${item.name}] đã bị hỏng!`);
+                    this.addLog(`<span class="text-red-400">[${item.name}]</span> đã bị tổn hại nghiêm trọng, mất linh tính!`);
                 }
             }
         });
         
-        // Ensure stats are updated if durability changed
         this.player.calculateStats();
     }
 
     win() {
         this.isActive = false;
-        this.addLog("Đại thắng!");
-        const reward = Math.floor(this.enemy.maxHp * 0.5);
+        this.addLog("<span class=\"text-cultivation-gold font-bold text-lg\">ĐẠI THẮNG!</span> Kẻ địch đã bị tiêu diệt.");
+        
+        // Base Tu Vi reward
+        const reward = Math.floor(this.enemy.maxHp * 0.8);
         this.player.tuVi += reward;
-        this.addLog(`Nhận được ${reward} tu vi.`);
+        this.addLog(`Luyện hóa khí huyết kẻ địch, nhận được ${reward} tu vi.`);
         
-        // Loot logic
-        const lootItems = [];
-        if (Math.random() > 0.5) lootItems.push('linh_thao_thap');
-        if (Math.random() > 0.8) lootItems.push('ngung_khi_dan');
-        if (Math.random() > 0.7) lootItems.push('hoi_huyet_dan');
+        // --- Nâng Cấp Hệ Thống Loot ---
+        const drops = [];
         
-        lootItems.forEach(itemId => {
-            this.player.inventory.addItem(itemId, 1);
-            this.addLog(`Thu được bảo vật: [${itemId}]`);
-        });
+        // 1. Drop ALL items from enemy inventory
+        if (this.enemy.inventory && this.enemy.inventory.length > 0) {
+            this.enemy.inventory.forEach(item => {
+                if (item.quantity > 0) {
+                    this.player.inventory.addItem(item.id, item.quantity);
+                    const data = getItemById(item.id);
+                    drops.push(`<span class="text-qi-blue">[${item.quantity}x ${data?.name || item.id}]</span>`);
+                }
+            });
+        }
+
+        // 2. Drop equipment (80% chance for each piece)
+        if (this.enemy.equipment) {
+            Object.values(this.enemy.equipment).forEach(item => {
+                if (item && Math.random() < 0.8) {
+                    this.player.inventory.addItem(item.id, 1);
+                    const data = getItemById(item.id);
+                    drops.push(`<span class="text-qi-purple">[1x ${data?.name || item.name || item.id}]</span>`);
+                }
+            });
+        }
+
+        // 3. Chance to drop "Storage Bag" (Túi trữ vật) if enemy is high level
+        if (this.enemy.realmId >= 5 && Math.random() < 0.2) {
+            this.player.inventory.addItem('tui_tru_vat_so', 1);
+            drops.push(`<span class="text-cultivation-gold">[1x Túi Trữ Vật của đối thủ]</span>`);
+        }
+
+        if (drops.length > 0) {
+            this.addLog(`Thu được chiến lợi phẩm: ${drops.join(', ')}`);
+        } else {
+            this.addLog("Kẻ địch nghèo rớt mồng tơi, không thu hoạch được gì thêm.");
+        }
 
         this.onUpdate('end');
-        setTimeout(() => this.onEnd('win'), 2500);
+        setTimeout(() => this.onEnd('win'), 3000);
     }
 
     lose() {
         this.isActive = false;
-        this.addLog("Thảm bại...");
-        const penalty = Math.floor(this.player.tuVi * 0.05);
-        this.player.tuVi -= penalty;
-        this.addLog(`Mất ${penalty} tu vi.`);
+        this.addLog("<span class=\"text-red-500 font-bold text-lg\">THẢM BẠI...</span> Ngươi đã kiệt sức.");
+        const penalty = Math.floor(this.player.tuVi * 0.1);
+        this.player.tuVi = Math.max(0, this.player.tuVi - penalty);
+        this.addLog(`Đạo cơ bị tổn hại, mất ${penalty} tu vi.`);
         this.onUpdate('end');
-        setTimeout(() => this.onEnd('lose'), 2500);
+        setTimeout(() => this.onEnd('lose'), 3000);
     }
 }

@@ -1,4 +1,4 @@
-import { getRealmById } from '../configs/realm-data.js';
+import { getRealmById, RACE_DATA } from '../configs/realm-data.js';
 import { Inventory } from './inventory.js';
 import { getItemById } from '../configs/item-data.js';
 import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_QUALITIES, MASTERY_LEVELS } from '../configs/technique-data.js';
@@ -8,6 +8,7 @@ import { ARTIFACT_SETS } from '../configs/artifact-data.js';
 export class Player {
     constructor() {
         this.name = "Phàm Nhân";
+        this.race = 'HUMAN'; // HUMAN, SPIRIT_BEAST, DEMON, etc.
         this.realmId = 1;
         this.tuVi = 0;
         this.buffs = []; // Array of { id, type, value, endTime }
@@ -28,7 +29,16 @@ export class Player {
         this.bodyExp = 0;
         this.soulRealmId = 1;
         this.soulExp = 0;
-        this.cultivationFocus = 'tuvi'; // 'tuvi', 'body', 'soul'
+        
+        // Multi-Path Advancement
+        this.specializedPaths = {
+            sword: { realmId: 0, exp: 0, name: 'Kiếm Tu' },
+            soul_path: { realmId: 0, exp: 0, name: 'Hồn Tu' },
+            buddhist: { realmId: 0, exp: 0, name: 'Phật Tu' },
+            confucian: { realmId: 0, exp: 0, name: 'Nho Tu' }
+        };
+
+        this.cultivationFocus = 'tuvi'; // 'tuvi', 'body', 'soul', 'sword', etc.
         
         // Base Stats (Stored for UI display "Base (+Bonus)")
         this.baseStats = {
@@ -321,7 +331,14 @@ export class Player {
     }
 
     getCurrentRealm(type = 'tuvi') {
-        return getRealmById(type === 'tuvi' ? this.realmId : (type === 'body' ? this.bodyRealmId : this.soulRealmId), type);
+        let id;
+        if (type === 'tuvi') id = this.realmId;
+        else if (type === 'body') id = this.bodyRealmId;
+        else if (type === 'soul') id = this.soulRealmId;
+        else if (this.specializedPaths[type]) id = this.specializedPaths[type].realmId;
+        else id = 1;
+        
+        return getRealmById(id, type, this.race);
     }
 
     update(delta, multiplier = 1.0) {
@@ -447,8 +464,14 @@ export class Player {
 
     canBreakthrough(type = 'tuvi') {
         const realm = this.getCurrentRealm(type);
-        const exp = type === 'tuvi' ? this.tuVi : (type === 'body' ? this.bodyExp : this.soulExp);
-        
+        if (!realm) return { can: false, reason: "Cảnh giới không hợp lệ." };
+
+        let currentExp = 0;
+        if (type === 'tuvi') currentExp = this.tuVi;
+        else if (type === 'body') currentExp = this.bodyExp;
+        else if (type === 'soul') currentExp = this.soulExp;
+        else if (this.specializedPaths[type]) currentExp = this.specializedPaths[type].exp;
+
         // Special requirements for Tu Vi breakthroughs
         if (type === 'tuvi') {
             const nextRealmId = this.realmId + 1;
@@ -468,8 +491,8 @@ export class Player {
         }
 
         return { 
-            can: exp >= realm.expRequired, 
-            reason: exp < realm.expRequired ? "Chưa đủ tích lũy." : "",
+            can: currentExp >= realm.expRequired, 
+            reason: currentExp < realm.expRequired ? `Cần thêm ${(realm.expRequired - currentExp).toLocaleString()} exp để đột phá.` : "",
             expRequired: realm.expRequired
         };
     }
@@ -499,19 +522,24 @@ export class Player {
                 if (type === 'tuvi') this.tuVi *= penalty;
                 else if (type === 'body') this.bodyExp *= penalty;
                 else if (type === 'soul') this.soulExp *= penalty;
+                else if (this.specializedPaths[type]) this.specializedPaths[type].exp *= penalty;
                 
                 return { success: false, msg: isForced ? "Thiên Đạo cưỡng ép đột phá thất bại! Kinh mạch đứt đoạn, tu vi tổn thất nặng nề!" : "Tẩu hỏa nhập ma! Linh lực bạo tẩu làm tổn thương kinh mạch." };
             }
 
+            const realm = this.getCurrentRealm(type);
             if (type === 'tuvi') {
-                this.tuVi -= check.expRequired;
+                this.tuVi -= realm.expRequired;
                 this.realmId++;
             } else if (type === 'body') {
-                this.bodyExp -= check.expRequired;
+                this.bodyExp -= realm.expRequired;
                 this.bodyRealmId++;
             } else if (type === 'soul') {
-                this.soulExp -= check.expRequired;
+                this.soulExp -= realm.expRequired;
                 this.soulRealmId++;
+            } else if (this.specializedPaths[type]) {
+                this.specializedPaths[type].exp -= realm.expRequired;
+                this.specializedPaths[type].realmId++;
             }
             
             this.calculateStats();
@@ -532,11 +560,14 @@ export class Player {
         // 1. Calculate BASE STATS (from Realms)
         const realmMult = Math.pow(1.8, realmLevel - 1);
         
+        const raceInfo = RACE_DATA[this.race || 'HUMAN'] || RACE_DATA.HUMAN;
+        const raceMults = raceInfo.statMult;
+
         this.baseStats.maxMana = 50 * realmMult;
-        this.baseStats.maxHp = 100 * realmMult;
-        this.baseStats.atk = 10 * realmMult;
-        this.baseStats.def = 5 * realmMult;
-        this.baseStats.spd = 15 + (realmLevel * 5);
+        this.baseStats.maxHp = 100 * realmMult * raceMults.hp;
+        this.baseStats.atk = 10 * realmMult * raceMults.atk;
+        this.baseStats.def = 5 * realmMult * raceMults.def;
+        this.baseStats.spd = (15 + (realmLevel * 5)) * raceMults.spd;
 
         // Body Realm adds to HP and Def
         this.baseStats.maxHp += 50 * (bodyLevel - 1) * Math.sqrt(realmLevel);
@@ -545,6 +576,14 @@ export class Player {
         // Soul Realm adds to Mana and Spd
         this.baseStats.maxMana += 30 * (soulLevel - 1) * Math.sqrt(realmLevel);
         this.baseStats.spd += 5 * (soulLevel - 1);
+
+        // 1.5 Specialized Path Bonuses
+        if (this.specializedPaths.sword.realmId > 0) {
+            this.baseStats.atk += 20 * this.specializedPaths.sword.realmId * Math.sqrt(realmLevel);
+        }
+        if (this.specializedPaths.soul_path.realmId > 0) {
+            this.advancedStats.soulRepress += 0.05 * this.specializedPaths.soul_path.realmId;
+        }
 
         // 2. Initialize BONUS & ADVANCED STATS
         this.bonusStats = {
@@ -555,7 +594,7 @@ export class Player {
         this.advancedStats = {
             pierce: 0, soulPierce: 0, critRate: 0.05, critDmg: 1.5,
             fireDmg: 1.0, qiAbsorb: 1.0, lifeSteal: 0,
-            soulRepress: 0, daoVun: 0, murderQi: 0
+            soulRepress: 0, perception: 5 + (soulLevel * 2), daoVun: 0, murderQi: 0
         };
 
         // Apply Destiny Bonuses to Base or Bonus? Let's add to Base

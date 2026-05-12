@@ -201,6 +201,20 @@ export class Game {
         
         const btnRetreat = document.getElementById('btn-mountain-retreat');
         if (btnRetreat) btnRetreat.onclick = () => this.mountainRetreat();
+
+        // Ambush buttons
+        const btnAmbushStart = document.getElementById('btn-ambush-start');
+        if (btnAmbushStart) btnAmbushStart.onclick = () => this.startAmbush();
+        
+        const btnAmbushEscape = document.getElementById('btn-ambush-escape');
+        if (btnAmbushEscape) btnAmbushEscape.onclick = () => this.escapeAmbush();
+
+        // Chase buttons
+        const btnChaseStart = document.getElementById('btn-chase-start');
+        if (btnChaseStart) btnChaseStart.onclick = () => this.startChase();
+        
+        const btnChaseGiveup = document.getElementById('btn-chase-giveup');
+        if (btnChaseGiveup) btnChaseGiveup.onclick = () => this.giveupChase();
     }
 
     showCreationScreen() {
@@ -601,9 +615,73 @@ export class Game {
         }
     }
 
-    startBattle(worldId, locId) {
+    handleCombatEncounter(worldId, locId) {
         const loc = getLocationById(worldId, locId);
         const enemy = EnemyGenerator.generate(loc.dangerLevel || 1);
+        this.pendingEncounter = { worldId, locId, enemy };
+
+        const playerPerc = state.player.advancedStats.perception || 5;
+        const enemyPerc = enemy.perception || 5;
+
+        // Kiểm tra phát hiện (Thần thức đối kháng)
+        const roll = Math.random() * 10 - 5; // -5 to +5 variance
+        if (playerPerc > enemyPerc + roll) {
+            // Người chơi phát hiện quái trước
+            const elDesc = document.getElementById('ambush-desc');
+            if (elDesc) elDesc.textContent = `Thần thức nhạy bén giúp ngươi phát hiện một con ${enemy.name} đang ẩn nấp phía trước. Ngươi có muốn tập kích nó không?`;
+            state.ui.toggleOverlay(document.getElementById('ambush-overlay'), true);
+        } else if (enemyPerc > playerPerc + (Math.random() * 10)) {
+            // Quái tập kích người chơi (xác suất cao hơn nếu thần thức thấp)
+            state.ui.toast(`Ngươi bị một con ${enemy.name} tập kích bất ngờ!`, 'error');
+            setTimeout(() => {
+                this.startBattle(worldId, locId, 'enemy', enemy);
+            }, 1000);
+        } else {
+            // Chạm trán bình thường
+            this.startBattle(worldId, locId, null, enemy);
+        }
+    }
+
+    startAmbush() {
+        if (!this.pendingEncounter) return;
+        state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
+        
+        // Tỷ lệ tập kích thành công dựa trên tốc độ và thần thức
+        const successChance = 0.6 + (state.player.advancedStats.perception / 100);
+        const success = Math.random() < successChance;
+
+        if (success) {
+            this.startBattle(this.pendingEncounter.worldId, this.pendingEncounter.locId, 'player', this.pendingEncounter.enemy);
+        } else {
+            state.ui.toast("Tập kích thất bại! Ngươi đã bị đối phương phát hiện.", "warning");
+            this.startBattle(this.pendingEncounter.worldId, this.pendingEncounter.locId, null, this.pendingEncounter.enemy);
+        }
+        this.pendingEncounter = null;
+    }
+
+    escapeAmbush() {
+        state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
+        state.ui.toast("Ngươi lặng lẽ lách mình qua kẻ địch, tránh được một cuộc chiến.", "info");
+        this.pendingEncounter = null;
+        this.refreshUI();
+    }
+
+    startChase() {
+        if (!state.currentCombat) return;
+        state.ui.toggleOverlay(document.getElementById('chase-overlay'), false);
+        state.currentCombat.chaseEnemy();
+    }
+
+    giveupChase() {
+        if (!state.currentCombat) return;
+        state.ui.toggleOverlay(document.getElementById('chase-overlay'), false);
+        state.ui.toast("Ngươi quyết định không đuổi theo, kẻ địch đã trốn thoát thành công.", "info");
+        state.currentCombat.onEnd('escape');
+    }
+
+    startBattle(worldId, locId, ambushType = null, providedEnemy = null) {
+        const loc = getLocationById(worldId, locId);
+        const enemy = providedEnemy || EnemyGenerator.generate(loc.dangerLevel || 1);
         
         state.currentCombat = new CombatEngine(
             state.player, 
@@ -612,7 +690,8 @@ export class Game {
             (result) => {
                 this.screens.battle.close();
                 this.refreshUI();
-            }
+            },
+            ambushType
         );
         
         this.screens.battle.render('start');

@@ -213,7 +213,7 @@ export class MapScreen {
             } else if (event.type === 'shop') {
                 window.game.openShop();
             } else if (event.type === 'combat') {
-                setTimeout(() => { window.game.startBattle(state.currentWorldId, state.currentLocId); }, 1000);
+                setTimeout(() => { window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId); }, 1000);
             }
         } else {
             this.updateEventDisplay('Một chặng đường yên tĩnh.', '🚶');

@@ -2,6 +2,7 @@ import { state } from '../../state.js';
 import { getSectById } from '../../configs/sect-data.js';
 import { getTechniqueById, MASTERY_LEVELS } from '../../configs/technique-data.js';
 import { getPhysiqueById, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../../configs/physique-data.js';
+import { RACE_DATA } from '../../configs/realm-data.js';
 
 /**
  * Quản lý giao diện chỉ số nhân vật, cảnh giới và các thông tin liên quan.
@@ -37,6 +38,7 @@ export class CharacterScreen {
         
         // Info
         this.elCharSectInfo = document.getElementById('char-sect-info');
+        this.elCharRace = document.getElementById('char-race');
         this.elRoot = document.getElementById('char-root');
         this.elPhysique = document.getElementById('char-physique');
         this.elLuck = document.getElementById('char-luck');
@@ -50,6 +52,7 @@ export class CharacterScreen {
         this.elCharPartyList = document.getElementById('char-party-list');
         this.elFormationList = document.getElementById('active-formations-list');
         this.elCharAdvancedStats = document.getElementById('char-advanced-stats');
+        this.elSpecializedPaths = document.getElementById('char-specialized-paths');
     }
 
     render() {
@@ -96,6 +99,13 @@ export class CharacterScreen {
         if (this.elCharExpTuvi) this.elCharExpTuvi.textContent = `${Math.floor(state.player.tuVi).toLocaleString()} / ${tuviRealm.expRequired.toLocaleString()}`;
         if (this.elCharExpBody) this.elCharExpBody.textContent = `${Math.floor(state.player.bodyExp).toLocaleString()} / ${bodyRealm.expRequired.toLocaleString()}`;
         if (this.elCharExpSoul) this.elCharExpSoul.textContent = `${Math.floor(state.player.soulExp).toLocaleString()} / ${soulRealm.expRequired.toLocaleString()}`;
+
+        // Race Info
+        if (this.elCharRace) {
+            const raceInfo = RACE_DATA[state.player.race] || RACE_DATA.HUMAN;
+            this.elCharRace.textContent = raceInfo.name;
+            this.elCharRace.className = `text-xs font-bold race-${state.player.race.toLowerCase()}`;
+        }
 
         // Breakthrough Buttons
         document.querySelectorAll('.btn-bt-type').forEach(btn => {
@@ -168,6 +178,41 @@ export class CharacterScreen {
         
         // Energy (Qi)
         if (typeof window.game.renderEnergy === 'function') window.game.renderEnergy();
+        
+        // Specialized Paths
+        this.renderSpecializedPaths();
+    }
+
+    renderSpecializedPaths() {
+        if (!this.elSpecializedPaths || !state.player.specializedPaths) return;
+        
+        const activePaths = Object.entries(state.player.specializedPaths).filter(([_, path]) => path.realmId > 0);
+        
+        if (activePaths.length === 0) {
+            this.elSpecializedPaths.innerHTML = '<div class="text-[9px] text-gray-600 italic">Chưa dấn thân vào con đường đặc biệt nào</div>';
+            return;
+        }
+
+        this.elSpecializedPaths.innerHTML = activePaths.map(([key, path]) => {
+            const realm = state.player.getCurrentRealm(key);
+            const progress = Math.min(100, (path.exp / realm.expRequired) * 100);
+            
+            return `
+                <div class="p-3 bg-white/5 border border-white/10 rounded-xl space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] font-ancient text-qi-blue uppercase tracking-widest">${path.name}</span>
+                        <span class="text-[9px] text-gray-500">${realm.name}</span>
+                    </div>
+                    <div class="h-1 bg-black/40 rounded-full overflow-hidden">
+                        <div class="h-full bg-qi-blue shadow-[0_0_10px_rgba(79,209,197,0.5)] transition-all" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-[8px] text-gray-600">${Math.floor(path.exp).toLocaleString()} / ${realm.expRequired.toLocaleString()}</span>
+                        <button onclick="window.game.breakthrough('${key}')" class="text-[8px] btn-gold px-2 py-0.5 rounded ${state.player.canBreakthrough(key).can ? 'animate-pulse' : 'opacity-50'}">ĐỘT PHÁ</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     renderAdvancedStats() {

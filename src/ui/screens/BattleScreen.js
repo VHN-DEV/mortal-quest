@@ -18,11 +18,23 @@ export class BattleScreen {
         // Enemy elements
         this.enemyName = document.getElementById('battle-enemy-name');
         this.enemyHpBar = document.getElementById('battle-enemy-hp');
+        this.enemyHpText = document.getElementById('enemy-hp-text');
+        this.enemyRealm = document.getElementById('battle-enemy-realm');
         this.enemyImg = document.getElementById('enemy-img');
+        this.enemyStatusContainer = document.getElementById('enemy-status-effects');
         
         // Player elements
         this.playerName = document.getElementById('battle-player-name');
         this.playerHpBar = document.getElementById('battle-player-hp');
+        this.playerHpText = document.getElementById('player-hp-text');
+        this.playerManaBar = document.getElementById('battle-player-mana');
+        this.playerManaText = document.getElementById('player-mana-text');
+        this.playerImg = document.getElementById('battle-player-img');
+        this.playerStatusContainer = document.getElementById('player-status-effects');
+        
+        // Turn indicator
+        this.turnIndicator = document.getElementById('turn-indicator');
+        this.battleBg = document.getElementById('battle-bg');
         
         // Actions
         this.actionContainer = document.getElementById('battle-actions');
@@ -38,6 +50,7 @@ export class BattleScreen {
         this.btnPuppet = document.getElementById('btn-puppet');
         this.btnCorpse = document.getElementById('btn-corpse');
         this.btnInsect = document.getElementById('btn-insect');
+        this.btnEscape = document.getElementById('btn-escape');
         this.secretCursor = 0;
         this.secretList = document.getElementById('battle-secret-list');
     }
@@ -54,6 +67,7 @@ export class BattleScreen {
         if (this.btnPuppet) this.btnPuppet.onclick = () => this.handleAction('puppet');
         if (this.btnCorpse) this.btnCorpse.onclick = () => this.handleAction('corpse');
         if (this.btnInsect) this.btnInsect.onclick = () => this.handleAction('insect');
+        if (this.btnEscape) this.btnEscape.onclick = () => this.handleAction('escape');
         if (this.btnSecret) this.btnSecret.onclick = () => this.toggleSecretList();
     }
 
@@ -73,11 +87,20 @@ export class BattleScreen {
                 state.ui.toggleOverlay(this.overlay, true);
                 this.enemyName.textContent = combat.enemy.name;
                 this.playerName.textContent = state.player.name;
+                if (this.enemyRealm) this.enemyRealm.textContent = combat.enemy.realmName || 'Vô Danh';
+                if (this.enemyImg) this.enemyImg.src = combat.enemy.image || './src/assets/images/enemies/monster_default.png';
+                if (this.battleBg) {
+                    const loc = state.player.currentLocationId;
+                    this.battleBg.style.backgroundImage = `url('./public/assets/images/locations/${loc}.png')`;
+                }
                 this.updateHPs();
+                this.updateStatusEffects();
                 this.logEl.innerHTML = '';
                 this.checkFlameButton();
                 this.updateProfessionButtons();
                 this.updateSecretButton();
+                this.updateTurnIndicator(combat.turn);
+                if (this.btnEscape) this.btnEscape.classList.remove('hidden');
                 break;
             case 'log':
                 this.updateLog(combat.log);
@@ -85,15 +108,25 @@ export class BattleScreen {
             case 'damage':
                 this.updateHPs();
                 this.showDamage(data);
+                this.updateStatusEffects();
                 break;
             case 'player-turn-start':
                 this.actionContainer.classList.remove('hidden');
                 this.updateProfessionButtons();
                 this.hideSecretList();
+                this.updateTurnIndicator(0);
                 break;
             case 'player-turn-end':
                 this.actionContainer.classList.add('hidden');
                 this.hideSecretList();
+                this.updateTurnIndicator(1);
+                break;
+            case 'escape-fail':
+                if (this.btnEscape) this.btnEscape.classList.add('hidden');
+                break;
+            case 'enemy-escape-attempt':
+                this.actionContainer.classList.add('hidden');
+                state.ui.toggleOverlay(document.getElementById('chase-overlay'), true);
                 break;
             case 'end':
                 this.actionContainer.classList.add('hidden');
@@ -105,9 +138,51 @@ export class BattleScreen {
         const combat = state.currentCombat;
         const enemyHpPercent = (combat.enemy.hp / combat.enemy.maxHp) * 100;
         const playerHpPercent = (state.player.hp / state.player.maxHp) * 100;
+        const playerManaPercent = (state.player.mana / state.player.maxMana) * 100;
         
-        this.enemyHpBar.style.width = `${Math.max(0, enemyHpPercent)}%`;
-        this.playerHpBar.style.width = `${Math.max(0, playerHpPercent)}%`;
+        if (this.enemyHpBar) this.enemyHpBar.style.width = `${Math.max(0, enemyHpPercent)}%`;
+        if (this.playerHpBar) this.playerHpBar.style.width = `${Math.max(0, playerHpPercent)}%`;
+        if (this.playerManaBar) this.playerManaBar.style.width = `${Math.max(0, playerManaPercent)}%`;
+        
+        if (this.enemyHpText) this.enemyHpText.textContent = `${Math.floor(combat.enemy.hp)}/${Math.floor(combat.enemy.maxHp)}`;
+        if (this.playerHpText) this.playerHpText.textContent = `${Math.floor(state.player.hp)}/${Math.floor(state.player.maxHp)}`;
+        if (this.playerManaText) this.playerManaText.textContent = `${Math.floor(state.player.mana)}/${Math.floor(state.player.maxMana)}`;
+    }
+
+    updateTurnIndicator(turn) {
+        if (!this.turnIndicator) return;
+        if (turn === 0) {
+            this.turnIndicator.textContent = 'Đến lượt ngươi';
+            this.turnIndicator.className = 'px-3 py-1 rounded-full bg-qi-blue/10 border border-qi-blue/20 text-[8px] text-qi-blue font-ancient uppercase tracking-widest animate-pulse';
+        } else {
+            this.turnIndicator.textContent = 'Lượt đối phương';
+            this.turnIndicator.className = 'px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-[8px] text-red-400 font-ancient uppercase tracking-widest';
+        }
+    }
+
+    updateStatusEffects() {
+        const combat = state.currentCombat;
+        if (!combat) return;
+
+        if (this.enemyStatusContainer) {
+            this.enemyStatusContainer.innerHTML = '';
+            if (combat.status.enemy.burn > 0) {
+                this.enemyStatusContainer.innerHTML += `<div class="w-4 h-4 bg-red-500/20 border border-red-500/50 rounded flex items-center justify-center text-[8px] text-red-500" title="Thiêu đốt"><i class="ph ph-fire"></i></div>`;
+            }
+            if (combat.status.enemy.stun > 0) {
+                this.enemyStatusContainer.innerHTML += `<div class="w-4 h-4 bg-yellow-500/20 border border-yellow-500/50 rounded flex items-center justify-center text-[8px] text-yellow-500" title="Choáng"><i class="ph ph-lightning"></i></div>`;
+            }
+        }
+
+        if (this.playerStatusContainer) {
+            this.playerStatusContainer.innerHTML = '';
+            if (combat.status.player.stun > 0) {
+                this.playerStatusContainer.innerHTML += `<div class="w-4 h-4 bg-yellow-500/20 border border-yellow-500/50 rounded flex items-center justify-center text-[8px] text-yellow-500" title="Choáng"><i class="ph ph-lightning"></i></div>`;
+            }
+            if (combat.playerDefending) {
+                this.playerStatusContainer.innerHTML += `<div class="w-4 h-4 bg-blue-500/20 border border-blue-500/50 rounded flex items-center justify-center text-[8px] text-blue-500" title="Phòng thủ"><i class="ph ph-shield"></i></div>`;
+            }
+        }
     }
 
     updateLog(logs) {

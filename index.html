@@ -39,7 +39,8 @@
                 </div>
             </div>
             <div class="flex items-center space-x-4">
-                <div id="header-lingshi-container" class="flex items-center space-x-1.5 bg-black/40 px-3 py-1 rounded-full border border-white/5 cursor-pointer hover:border-cultivation-gold/50 transition-all active:scale-95">
+                <div id="header-lingshi-container"
+                    class="flex items-center space-x-1.5 bg-black/40 px-3 py-1 rounded-full border border-white/5 cursor-pointer hover:border-cultivation-gold/50 transition-all active:scale-95">
                     <span class="text-xs text-cultivation-gold font-bold">LT:</span>
                     <span id="ling-shi-text" class="text-xs font-mono text-white">100</span>
                 </div>
@@ -148,17 +149,23 @@
                                     Tài Nguyên Khởi Đầu</h3>
                                 <div class="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-3">
                                     <div class="flex justify-between items-center">
-                                        <label class="text-[9px] text-gray-400 uppercase tracking-widest">Linh Thạch (Hạ)</label>
+                                        <label class="text-[9px] text-gray-400 uppercase tracking-widest">Linh Thạch
+                                            (Hạ)</label>
                                         <div class="flex items-center space-x-2">
-                                            <button onclick="window.game.adjustStartingLingShi(-100)" class="w-8 h-8 bg-black/40 border border-white/10 rounded-lg flex items-center justify-center hover:bg-qi-blue/20 transition-all">-</button>
+                                            <button onclick="window.game.adjustStartingLingShi(-100)"
+                                                class="w-8 h-8 bg-black/40 border border-white/10 rounded-lg flex items-center justify-center hover:bg-qi-blue/20 transition-all">-</button>
                                             <div class="relative">
-                                                <input id="creation-lingshi-input" type="number" value="0" class="w-24 bg-black/60 border border-white/10 rounded-lg p-1 pr-6 text-center text-xs text-qi-blue outline-none">
-                                                <span class="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] text-gray-500">Hạ</span>
+                                                <input id="creation-lingshi-input" type="number" value="0"
+                                                    class="w-24 bg-black/60 border border-white/10 rounded-lg p-1 pr-6 text-center text-xs text-qi-blue outline-none">
+                                                <span
+                                                    class="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] text-gray-500">Hạ</span>
                                             </div>
-                                            <button onclick="window.game.adjustStartingLingShi(100)" class="w-8 h-8 bg-black/40 border border-white/10 rounded-lg flex items-center justify-center hover:bg-qi-blue/20 transition-all">+</button>
+                                            <button onclick="window.game.adjustStartingLingShi(100)"
+                                                class="w-8 h-8 bg-black/40 border border-white/10 rounded-lg flex items-center justify-center hover:bg-qi-blue/20 transition-all">+</button>
                                         </div>
                                     </div>
-                                    <p class="text-[8px] text-gray-500 italic">"Mỗi 100 Linh Thạch tiêu tốn 1 điểm Tiên Duyên."</p>
+                                    <p class="text-[8px] text-gray-500 italic">"Mỗi 100 Linh Thạch tiêu tốn 1 điểm Tiên
+                                        Duyên."</p>
                                 </div>
                             </section>
 
@@ -294,7 +301,8 @@
                 </div>
             </div>
 
-            <div id="screen-main" class="screen hidden flex flex-col h-full overflow-y-auto custom-scroll animate-fade-in">
+            <div id="screen-main"
+                class="screen hidden flex flex-col h-full overflow-y-auto custom-scroll animate-fade-in">
                 <div class="flex-grow flex flex-col items-center justify-start min-h-full">
                     <div class="m-auto w-full flex flex-col items-center p-6 py-12 space-y-10">
                         <div class="relative w-64 h-64 md:w-72 md:h-72 flex items-center justify-center shrink-0">
@@ -541,15 +549,23 @@
                             <h3 class="text-xs font-ancient text-qi-blue mb-2 uppercase tracking-widest">Cơ Năng Thuộc
                                 Tính</h3>
                             <div class="space-y-2 text-sm">
-                                <div class="flex justify-between items-center"><span class="text-gray-500 font-ancient">Khí
+                                <div class="flex justify-between items-center"><span
+                                        class="text-gray-500 font-ancient">Khí
                                         Huyết:</span> <span id="char-hp" class="text-[10px]">100/100</span></div>
-                                <div class="flex justify-between items-center"><span class="text-gray-500 font-ancient">Công
-                                        Kích:</span> <span id="char-atk" class="text-red-400 text-[10px]">10 (+0)</span></div>
-                                <div class="flex justify-between items-center"><span class="text-gray-500 font-ancient">Phòng
-                                        Thủ:</span> <span id="char-def" class="text-blue-400 text-[10px]">5 (+0)</span></div>
-                                <div class="flex justify-between items-center"><span class="text-gray-500 font-ancient">Thân
-                                        Pháp:</span> <span id="char-spd" class="text-green-400 text-[10px]">10 (+0)</span></div>
-                                <div class="flex justify-between items-center"><span class="text-gray-500 font-ancient">Linh
+                                <div class="flex justify-between items-center"><span
+                                        class="text-gray-500 font-ancient">Công
+                                        Kích:</span> <span id="char-atk" class="text-red-400 text-[10px]">10 (+0)</span>
+                                </div>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-gray-500 font-ancient">Phòng
+                                        Thủ:</span> <span id="char-def" class="text-blue-400 text-[10px]">5 (+0)</span>
+                                </div>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-gray-500 font-ancient">Thân
+                                        Pháp:</span> <span id="char-spd" class="text-green-400 text-[10px]">10
+                                        (+0)</span></div>
+                                <div class="flex justify-between items-center"><span
+                                        class="text-gray-500 font-ancient">Linh
                                         Lực:</span> <span id="char-mana" class="text-[10px]">50/50</span></div>
                                 <div class="flex justify-between pt-2 border-t border-white/5"><span
                                         class="text-gray-500 font-ancient">Tuổi Thọ:</span> <span id="char-age"
@@ -557,11 +573,19 @@
                             </div>
                         </div>
                         <div class="bg-white/5 p-4 rounded-xl border border-white/10 flex-grow space-y-3">
-                            <div>
-                                <h3
-                                    class="text-[10px] font-ancient text-cultivation-gold mb-1 uppercase tracking-widest">
-                                    Môn Phái</h3>
-                                <div id="char-sect-info" class="text-xs italic text-gray-500">Độc Hành</div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <h3
+                                        class="text-[10px] font-ancient text-cultivation-gold mb-1 uppercase tracking-widest">
+                                        Chủng Tộc</h3>
+                                    <div id="char-race" class="text-xs font-bold text-white">Nhân Tộc</div>
+                                </div>
+                                <div>
+                                    <h3
+                                        class="text-[10px] font-ancient text-cultivation-gold mb-1 uppercase tracking-widest">
+                                        Môn Phái</h3>
+                                    <div id="char-sect-info" class="text-xs italic text-gray-500">Độc Hành</div>
+                                </div>
                             </div>
                             <div>
                                 <h3 class="text-[10px] font-ancient text-qi-blue mb-1 uppercase tracking-widest">Thiên
@@ -581,12 +605,25 @@
 
                 <!-- Advanced Stats Section -->
                 <div class="bg-black/40 p-4 rounded-2xl border border-white/5 mb-6">
-                    <h3 class="text-xs font-ancient text-qi-purple mb-4 uppercase tracking-widest border-b border-white/5 pb-2 flex justify-between items-center">
+                    <h3
+                        class="text-xs font-ancient text-qi-purple mb-4 uppercase tracking-widest border-b border-white/5 pb-2 flex justify-between items-center">
                         <span>Thông Số Nâng Cao</span>
                         <i class="ph ph-activity text-qi-purple"></i>
                     </h3>
                     <div id="char-advanced-stats" class="grid grid-cols-2 gap-x-6 gap-y-2 text-[10px]">
                         <!-- Dynamic Advanced Stats -->
+                    </div>
+                </div>
+
+                <!-- Specialized Paths Section -->
+                <div class="bg-black/40 p-4 rounded-2xl border border-white/5 mb-6">
+                    <h3
+                        class="text-xs font-ancient text-qi-blue mb-4 uppercase tracking-widest border-b border-white/5 pb-2 flex justify-between items-center">
+                        <span>Con Đường Tu Luyện</span>
+                        <i class="ph ph-path text-qi-blue"></i>
+                    </h3>
+                    <div id="char-specialized-paths" class="space-y-3">
+                        <!-- Dynamic Specialized Paths -->
                     </div>
                 </div>
 
@@ -720,74 +757,107 @@
                             </div>
                         </div>
 
-            <!-- Tab: Quản Lý Pháp Bảo (Treasure Management) -->
-            <div id="screen-treasure" class="screen hidden fixed inset-0 z-[150] flex flex-col bg-qi-ink animate-fade-in">
-                <header class="p-6 border-b border-white/5 flex justify-between items-center bg-black/40">
-                    <div class="flex items-center space-x-4">
-                        <button id="btn-close-treasure" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all">
-                            <i class="ph ph-caret-left text-xl text-cultivation-gold"></i>
-                        </button>
-                        <div>
-                            <h2 class="text-2xl font-charm text-cultivation-gold">Linh Khí Các</h2>
-                            <p id="treasure-mgmt-subtitle" class="text-[8px] text-gray-500 uppercase tracking-widest mt-1">Bồi dưỡng bản mệnh pháp bảo</p>
-                        </div>
-                    </div>
-                </header>
+                        <!-- Tab: Quản Lý Pháp Bảo (Treasure Management) -->
+                        <div id="screen-treasure"
+                            class="screen hidden fixed inset-0 z-[150] flex flex-col bg-qi-ink animate-fade-in">
+                            <header class="p-6 border-b border-white/5 flex justify-between items-center bg-black/40">
+                                <div class="flex items-center space-x-4">
+                                    <button id="btn-close-treasure"
+                                        class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all">
+                                        <i class="ph ph-caret-left text-xl text-cultivation-gold"></i>
+                                    </button>
+                                    <div>
+                                        <h2 class="text-2xl font-charm text-cultivation-gold">Linh Khí Các</h2>
+                                        <p id="treasure-mgmt-subtitle"
+                                            class="text-[8px] text-gray-500 uppercase tracking-widest mt-1">Bồi dưỡng
+                                            bản mệnh pháp bảo</p>
+                                    </div>
+                                </div>
+                            </header>
 
-                <div class="flex-grow overflow-y-auto p-6 space-y-8 custom-scroll">
-                    <!-- Current Selected Artifact Info -->
-                    <div class="bg-white/5 rounded-3xl border border-white/10 p-6 flex flex-col items-center text-center space-y-4">
-                        <div id="treasure-mgmt-icon" class="text-6xl p-6 bg-black/40 rounded-full border border-cultivation-gold/20 shadow-[0_0_30px_rgba(212,175,55,0.1)]">⚔️</div>
-                        <div>
-                            <h3 id="treasure-mgmt-name" class="text-2xl font-ancient text-white font-bold">Thanh Hồng Kiếm</h3>
-                            <div id="treasure-mgmt-tier" class="text-[10px] text-qi-blue uppercase tracking-[0.2em] mt-1">Linh Khí | Cực Phẩm</div>
-                        </div>
-                        
-                        <div class="w-full grid grid-cols-2 gap-4 pt-4">
-                            <div class="space-y-1">
-                                <div class="flex justify-between text-[9px] text-gray-500 uppercase"><span>Độ bền</span> <span id="treasure-mgmt-durability-text">100%</span></div>
-                                <div class="h-1 bg-white/5 rounded-full overflow-hidden border border-white/5">
-                                    <div id="treasure-mgmt-durability-bar" class="h-full bg-green-500" style="width: 100%"></div>
+                            <div class="flex-grow overflow-y-auto p-6 space-y-8 custom-scroll">
+                                <!-- Current Selected Artifact Info -->
+                                <div
+                                    class="bg-white/5 rounded-3xl border border-white/10 p-6 flex flex-col items-center text-center space-y-4">
+                                    <div id="treasure-mgmt-icon"
+                                        class="text-6xl p-6 bg-black/40 rounded-full border border-cultivation-gold/20 shadow-[0_0_30px_rgba(212,175,55,0.1)]">
+                                        ⚔️</div>
+                                    <div>
+                                        <h3 id="treasure-mgmt-name" class="text-2xl font-ancient text-white font-bold">
+                                            Thanh Hồng Kiếm</h3>
+                                        <div id="treasure-mgmt-tier"
+                                            class="text-[10px] text-qi-blue uppercase tracking-[0.2em] mt-1">Linh Khí |
+                                            Cực Phẩm</div>
+                                    </div>
+
+                                    <div class="w-full grid grid-cols-2 gap-4 pt-4">
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between text-[9px] text-gray-500 uppercase">
+                                                <span>Độ bền</span> <span id="treasure-mgmt-durability-text">100%</span>
+                                            </div>
+                                            <div
+                                                class="h-1 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                                <div id="treasure-mgmt-durability-bar" class="h-full bg-green-500"
+                                                    style="width: 100%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between text-[9px] text-gray-500 uppercase">
+                                                <span>Linh tính</span> <span id="treasure-mgmt-spirit-text">0/500</span>
+                                            </div>
+                                            <div
+                                                class="h-1 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                                <div id="treasure-mgmt-spirit-bar" class="h-full bg-qi-blue"
+                                                    style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Tabs -->
+                                <div class="grid grid-cols-2 gap-4">
+                                    <button id="btn-treasure-recognize"
+                                        class="p-4 bg-red-900/20 border border-red-500/30 rounded-2xl flex flex-col items-center space-y-2 group hover:bg-red-900/30 transition-all">
+                                        <i
+                                            class="ph ph-drop text-2xl text-red-500 group-hover:scale-110 transition-transform"></i>
+                                        <span class="text-[10px] font-ancient text-white uppercase tracking-widest">Nhận
+                                            Chủ</span>
+                                    </button>
+                                    <button id="btn-treasure-nourish"
+                                        class="p-4 bg-qi-blue/10 border border-qi-blue/30 rounded-2xl flex flex-col items-center space-y-2 group hover:bg-qi-blue/20 transition-all">
+                                        <i
+                                            class="ph ph-sparkle text-2xl text-qi-blue group-hover:scale-110 transition-transform"></i>
+                                        <span class="text-[10px] font-ancient text-white uppercase tracking-widest">Nuôi
+                                            Dưỡng</span>
+                                    </button>
+                                    <button id="btn-treasure-repair"
+                                        class="p-4 bg-orange-900/20 border border-orange-500/30 rounded-2xl flex flex-col items-center space-y-2 group hover:bg-orange-900/30 transition-all">
+                                        <i
+                                            class="ph ph-wrench text-2xl text-orange-500 group-hover:scale-110 transition-transform"></i>
+                                        <span class="text-[10px] font-ancient text-white uppercase tracking-widest">Sửa
+                                            Chữa</span>
+                                    </button>
+                                    <button id="btn-treasure-refine"
+                                        class="p-4 bg-qi-purple/10 border border-qi-purple/30 rounded-2xl flex flex-col items-center space-y-2 group hover:bg-qi-purple/20 transition-all">
+                                        <i
+                                            class="ph ph-magic-wand text-2xl text-qi-purple group-hover:scale-110 transition-transform"></i>
+                                        <span class="text-[10px] font-ancient text-white uppercase tracking-widest">Tẩy
+                                            Luyện</span>
+                                    </button>
+                                </div>
+
+                                <!-- Details Section -->
+                                <div class="space-y-4">
+                                    <h4
+                                        class="text-xs font-ancient text-gray-500 uppercase tracking-widest border-l-2 border-gray-500 pl-3">
+                                        Thông số hiện tại</h4>
+                                    <div id="treasure-mgmt-stats"
+                                        class="bg-black/40 rounded-2xl border border-white/5 p-4 grid grid-cols-2 gap-4 text-[10px]">
+                                        <!-- Stats here -->
+                                    </div>
                                 </div>
                             </div>
-                            <div class="space-y-1">
-                                <div class="flex justify-between text-[9px] text-gray-500 uppercase"><span>Linh tính</span> <span id="treasure-mgmt-spirit-text">0/500</span></div>
-                                <div class="h-1 bg-white/5 rounded-full overflow-hidden border border-white/5">
-                                    <div id="treasure-mgmt-spirit-bar" class="h-full bg-qi-blue" style="width: 0%"></div>
-                                </div>
-                            </div>
                         </div>
-                    </div>
-
-                    <!-- Action Tabs -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <button id="btn-treasure-recognize" class="p-4 bg-red-900/20 border border-red-500/30 rounded-2xl flex flex-col items-center space-y-2 group hover:bg-red-900/30 transition-all">
-                            <i class="ph ph-drop text-2xl text-red-500 group-hover:scale-110 transition-transform"></i>
-                            <span class="text-[10px] font-ancient text-white uppercase tracking-widest">Nhận Chủ</span>
-                        </button>
-                        <button id="btn-treasure-nourish" class="p-4 bg-qi-blue/10 border border-qi-blue/30 rounded-2xl flex flex-col items-center space-y-2 group hover:bg-qi-blue/20 transition-all">
-                            <i class="ph ph-sparkle text-2xl text-qi-blue group-hover:scale-110 transition-transform"></i>
-                            <span class="text-[10px] font-ancient text-white uppercase tracking-widest">Nuôi Dưỡng</span>
-                        </button>
-                        <button id="btn-treasure-repair" class="p-4 bg-orange-900/20 border border-orange-500/30 rounded-2xl flex flex-col items-center space-y-2 group hover:bg-orange-900/30 transition-all">
-                            <i class="ph ph-wrench text-2xl text-orange-500 group-hover:scale-110 transition-transform"></i>
-                            <span class="text-[10px] font-ancient text-white uppercase tracking-widest">Sửa Chữa</span>
-                        </button>
-                        <button id="btn-treasure-refine" class="p-4 bg-qi-purple/10 border border-qi-purple/30 rounded-2xl flex flex-col items-center space-y-2 group hover:bg-qi-purple/20 transition-all">
-                            <i class="ph ph-magic-wand text-2xl text-qi-purple group-hover:scale-110 transition-transform"></i>
-                            <span class="text-[10px] font-ancient text-white uppercase tracking-widest">Tẩy Luyện</span>
-                        </button>
-                    </div>
-
-                    <!-- Details Section -->
-                    <div class="space-y-4">
-                        <h4 class="text-xs font-ancient text-gray-500 uppercase tracking-widest border-l-2 border-gray-500 pl-3">Thông số hiện tại</h4>
-                        <div id="treasure-mgmt-stats" class="bg-black/40 rounded-2xl border border-white/5 p-4 grid grid-cols-2 gap-4 text-[10px]">
-                            <!-- Stats here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
 
                         <!-- Formations -->
                         <div class="space-y-3">
@@ -806,7 +876,8 @@
             <div id="screen-alchemy" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                 <div class="flex justify-between items-start mb-8">
                     <div class="flex items-center space-x-4">
-                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                        <button onclick="game.screens.systems.openCraftingHub()"
+                            class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
                             <i class="ph ph-caret-left text-xl text-cultivation-gold"></i>
                         </button>
                         <div>
@@ -935,7 +1006,8 @@
                                 </div>
                                 <span id="detail-icon" class="text-5xl relative z-10 filter drop-shadow-lg">📦</span>
                             </div>
-                            <h3 id="detail-name" class="text-2xl font-bold text-white font-ancient mb-2 text-center">Bảo Vật</h3>
+                            <h3 id="detail-name" class="text-2xl font-bold text-white font-ancient mb-2 text-center">Bảo
+                                Vật</h3>
                             <div id="detail-type"
                                 class="px-3 py-1 bg-qi-blue/10 text-qi-blue text-[9px] font-bold uppercase tracking-widest rounded-full border border-qi-blue/20">
                                 Dược liệu quý
@@ -955,13 +1027,18 @@
                         <div id="detail-quantity-container" class="mb-6 relative z-10 hidden">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-[9px] text-gray-500 uppercase tracking-widest">Số lượng</span>
-                                <span id="detail-max-quantity" class="text-[9px] text-qi-blue font-mono">Tối đa: 0</span>
+                                <span id="detail-max-quantity" class="text-[9px] text-qi-blue font-mono">Tối đa:
+                                    0</span>
                             </div>
                             <div class="flex items-center space-x-2">
-                                <button id="detail-qty-minus" class="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-qi-blue/10 transition-all text-gray-400">-</button>
-                                <input id="detail-quantity-input" type="number" value="1" min="1" class="flex-grow bg-black/40 border border-white/10 rounded-xl py-2 text-center text-qi-blue text-sm outline-none font-mono">
-                                <button id="detail-qty-plus" class="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-qi-blue/10 transition-all text-gray-400">+</button>
-                                <button id="detail-qty-max" class="px-3 py-2 bg-qi-blue/10 text-qi-blue text-[9px] font-bold rounded-xl border border-qi-blue/20 active:scale-95 transition-all">MAX</button>
+                                <button id="detail-qty-minus"
+                                    class="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-qi-blue/10 transition-all text-gray-400">-</button>
+                                <input id="detail-quantity-input" type="number" value="1" min="1"
+                                    class="flex-grow bg-black/40 border border-white/10 rounded-xl py-2 text-center text-qi-blue text-sm outline-none font-mono">
+                                <button id="detail-qty-plus"
+                                    class="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-qi-blue/10 transition-all text-gray-400">+</button>
+                                <button id="detail-qty-max"
+                                    class="px-3 py-2 bg-qi-blue/10 text-qi-blue text-[9px] font-bold rounded-xl border border-qi-blue/20 active:scale-95 transition-all">MAX</button>
                             </div>
                         </div>
 
@@ -1168,7 +1245,8 @@
             <div id="screen-talisman" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                 <div class="flex justify-between items-start mb-8">
                     <div class="flex items-center space-x-4">
-                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                        <button onclick="game.screens.systems.openCraftingHub()"
+                            class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
                             <i class="ph ph-caret-left text-xl text-qi-blue"></i>
                         </button>
                         <div>
@@ -1207,7 +1285,8 @@
             <div id="screen-smithing" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                 <div class="flex justify-between items-start mb-8">
                     <div class="flex items-center space-x-4">
-                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                        <button onclick="game.screens.systems.openCraftingHub()"
+                            class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
                             <i class="ph ph-caret-left text-xl text-red-500"></i>
                         </button>
                         <div>
@@ -1255,12 +1334,14 @@
             <div id="screen-formation" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                 <div class="flex justify-between items-start mb-8">
                     <div class="flex items-center space-x-4">
-                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                        <button onclick="game.screens.systems.openCraftingHub()"
+                            class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
                             <i class="ph ph-caret-left text-xl text-qi-purple"></i>
                         </button>
                         <div>
                             <h2 class="text-3xl font-charm text-qi-purple">Trận Pháp Đường</h2>
-                            <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Nghịch Chuyển Càn Khôn</p>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Nghịch Chuyển Càn Khôn
+                            </p>
                         </div>
                     </div>
                     <div class="text-right">
@@ -1283,7 +1364,8 @@
             <div id="screen-corpse" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                 <div class="flex justify-between items-start mb-8">
                     <div class="flex items-center space-x-4">
-                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                        <button onclick="game.screens.systems.openCraftingHub()"
+                            class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
                             <i class="ph ph-caret-left text-xl text-red-700"></i>
                         </button>
                         <div>
@@ -1311,7 +1393,8 @@
             <div id="screen-beast" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                 <div class="flex justify-between items-start mb-8">
                     <div class="flex items-center space-x-4">
-                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                        <button onclick="game.screens.systems.openCraftingHub()"
+                            class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
                             <i class="ph ph-caret-left text-xl text-qi-jade"></i>
                         </button>
                         <div>
@@ -1352,7 +1435,8 @@
             <div id="screen-puppet" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
                 <div class="flex justify-between items-start mb-8">
                     <div class="flex items-center space-x-4">
-                        <button onclick="game.screens.systems.openCraftingHub()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                        <button onclick="game.screens.systems.openCraftingHub()"
+                            class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
                             <i class="ph ph-caret-left text-xl text-qi-blue"></i>
                         </button>
                         <div>
@@ -1447,7 +1531,7 @@
             <div id="nav-crafting-hub"
                 class="nav-item flex flex-col items-center justify-center space-y-1 text-gray-500 cursor-pointer">
                 <i class="ph ph-hammer text-xl"></i>
-                <span class="text-[8px] uppercase font-ancient tracking-widest">Bách Nghệ Đường</span>
+                <span class="text-[8px] uppercase font-ancient tracking-widest">Bách Nghệ</span>
             </div>
         </nav>
     </div>
@@ -1499,7 +1583,7 @@
         </div>
         <div
             class="relative z-10 flex-grow flex flex-col justify-end min-h-0 overflow-y-auto custom-scroll p-6 pb-10 space-y-6">
-            
+
             <!-- NPC List in Location -->
             <div id="explore-npc-list" class="space-y-3 mb-4">
                 <!-- NPCs will be rendered here -->
@@ -1560,17 +1644,23 @@
     <!-- NPC Trade Overlay -->
     <div id="npc-trade-overlay" class="overlay hidden">
         <div class="w-full h-full flex items-center justify-center p-4 md:p-8 bg-black/80 backdrop-blur-md">
-            <div class="w-full max-w-4xl bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col h-[80vh] shadow-2xl">
+            <div
+                class="w-full max-w-4xl bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col h-[80vh] shadow-2xl">
                 <!-- Header -->
-                <div class="p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-black to-white/5">
+                <div
+                    class="p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-black to-white/5">
                     <div class="flex items-center space-x-4">
-                        <img id="npc-trade-portrait" src="" class="w-12 h-12 rounded-xl border border-white/10 object-cover" alt="NPC">
+                        <img id="npc-trade-portrait" src=""
+                            class="w-12 h-12 rounded-xl border border-white/10 object-cover" alt="NPC">
                         <div>
                             <h2 class="text-xl font-bold text-white tracking-widest uppercase">Giao Dịch Đạo Hữu</h2>
-                            <p id="npc-trade-name" class="text-[10px] text-qi-blue uppercase tracking-widest mt-1">Đang giao dịch với...</p>
+                            <p id="npc-trade-name" class="text-[10px] text-qi-blue uppercase tracking-widest mt-1">Đang
+                                giao dịch với...</p>
                         </div>
                     </div>
-                    <button class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white transition-all" onclick="state.ui.toggleOverlay(document.getElementById('npc-trade-overlay'), false)">
+                    <button
+                        class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white transition-all"
+                        onclick="state.ui.toggleOverlay(document.getElementById('npc-trade-overlay'), false)">
                         <i class="ph-x"></i>
                     </button>
                 </div>
@@ -1579,7 +1669,8 @@
                     <!-- NPC Stock -->
                     <div class="w-1/2 border-r border-white/5 flex flex-col overflow-hidden">
                         <div class="p-4 border-b border-white/5 bg-white/5">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Vật phẩm của Đạo hữu</h3>
+                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Vật phẩm của Đạo
+                                hữu</h3>
                         </div>
                         <div id="npc-trade-stock" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
                             <!-- Items go here -->
@@ -1589,8 +1680,10 @@
                     <!-- Player Inventory / Cart -->
                     <div class="w-1/2 flex flex-col overflow-hidden">
                         <div class="p-4 border-b border-white/5 bg-white/5 flex justify-between items-center">
-                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Túi đồ của ngươi</h3>
-                            <div class="text-[10px] font-bold text-cultivation-gold uppercase" id="player-trade-lingshi">0 Linh Thạch</div>
+                            <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Túi đồ của ngươi
+                            </h3>
+                            <div class="text-[10px] font-bold text-cultivation-gold uppercase"
+                                id="player-trade-lingshi">0 Linh Thạch</div>
                         </div>
                         <div id="player-trade-inventory" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
                             <!-- Player items go here -->
@@ -1601,7 +1694,9 @@
                 <!-- Footer -->
                 <div class="p-6 border-t border-white/5 bg-black/40 flex justify-between items-center">
                     <div class="text-xs text-gray-500 italic">"Hàng đã trao tay, nhân quả tự chịu..."</div>
-                    <button class="px-8 py-3 bg-qi-blue/20 hover:bg-qi-blue/30 border border-qi-blue/40 rounded-xl text-xs font-bold text-qi-blue uppercase tracking-widest transition-all" onclick="state.ui.toggleOverlay(document.getElementById('npc-trade-overlay'), false)">Xong</button>
+                    <button
+                        class="px-8 py-3 bg-qi-blue/20 hover:bg-qi-blue/30 border border-qi-blue/40 rounded-xl text-xs font-bold text-qi-blue uppercase tracking-widest transition-all"
+                        onclick="state.ui.toggleOverlay(document.getElementById('npc-trade-overlay'), false)">Xong</button>
                 </div>
             </div>
         </div>
@@ -1772,10 +1867,11 @@
                     class="text-white font-mono">100</span></div>
         </div>
         <div class="flex-none flex border-b border-white/10 bg-black/20"><button id="shop-tab-buy"
-                class="flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold text-xs">TRAO ĐỔI</button><button
-                id="shop-tab-sell" class="flex-grow py-3 text-gray-500 text-xs">GIAO DỊCH</button></div>
-        <div id="shop-section-nav"
-            class="flex-none w-full min-w-0 custom-scroll-x border-b border-white/5 bg-black/30"></div>
+                class="flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold text-xs">TRAO
+                ĐỔI</button><button id="shop-tab-sell" class="flex-grow py-3 text-gray-500 text-xs">GIAO DỊCH</button>
+        </div>
+        <div id="shop-section-nav" class="flex-none w-full min-w-0 custom-scroll-x border-b border-white/5 bg-black/30">
+        </div>
         <div id="shop-buy-view" class="flex-grow min-h-0 overflow-y-auto p-4 space-y-3 custom-scroll"></div>
         <div id="shop-sell-view" class="hidden flex-grow min-h-0 overflow-y-auto p-4 custom-scroll">
             <div id="shop-sell-grid" class="grid grid-cols-4 gap-3"></div>
@@ -1786,78 +1882,204 @@
         <div class="w-full max-w-xs bg-[#0a0a0a] border border-white/10 rounded-[32px] p-6 shadow-2xl space-y-6">
             <div class="text-center">
                 <h3 id="garden-menu-title" class="text-2xl font-ancient text-cultivation-gold">Quản Lý Linh Điền</h3>
-                <p id="garden-menu-subtitle" class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Cải Tạo & Nâng Cấp</p>
+                <p id="garden-menu-subtitle" class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Cải Tạo &
+                    Nâng Cấp</p>
             </div>
             <div id="garden-menu-content" class="space-y-4 max-h-[60vh] overflow-y-auto custom-scroll pr-2">
                 <!-- Content dynamic -->
             </div>
-            <button onclick="ui.toggleOverlay('garden-menu-overlay', false)" class="w-full py-3 bg-white/5 text-gray-400 text-xs font-bold rounded-2xl border border-white/10">ĐÓNG</button>
+            <button onclick="ui.toggleOverlay('garden-menu-overlay', false)"
+                class="w-full py-3 bg-white/5 text-gray-400 text-xs font-bold rounded-2xl border border-white/10">ĐÓNG</button>
         </div>
     </div>
 
-    <div id="battle-overlay" class="hidden overlay-full z-[200] bg-black">
-        <div class="h-1/3 relative"><img id="enemy-img" src="" class="w-full h-full object-cover opacity-50">
-            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-            <div class="absolute bottom-4 left-0 right-0 p-4">
-                <div class="flex justify-between items-end mb-2"><span id="battle-enemy-name"
-                        class="text-lg font-ancient text-white">Yêu Hổ</span><span
-                        class="text-[10px] text-red-500 uppercase">Cảnh Giới 5</span></div>
-                <div class="h-2 w-full bg-red-900/30 rounded-full overflow-hidden border border-red-500/20">
-                    <div id="battle-enemy-hp" class="h-full bg-red-500 transition-all duration-300" style="width: 100%">
+    <div id="battle-overlay" class="hidden overlay-full z-[200] bg-qi-ink">
+        <!-- Battle Background -->
+        <div id="battle-scene" class="relative h-2/5 overflow-hidden">
+            <div id="battle-bg"
+                class="absolute inset-0 bg-cover bg-center opacity-40 scale-105 transition-transform duration-[10000ms]">
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-qi-ink via-transparent to-black/60"></div>
+
+            <!-- Enemy Side -->
+            <div class="absolute top-10 left-0 right-0 px-6 flex flex-col items-center animate-fade-in">
+                <div class="relative group">
+                    <div class="absolute inset-0 bg-red-500/10 rounded-full blur-2xl animate-pulse"></div>
+                    <div
+                        class="relative w-28 h-28 rounded-full overflow-hidden border-2 border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
+                        <img id="enemy-img" src="" class="w-full h-full object-cover">
+                    </div>
+                    <div id="enemy-status-effects" class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex space-x-1">
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <div class="flex items-center justify-center space-x-2">
+                        <span id="battle-enemy-name"
+                            class="text-xl font-ancient text-white font-bold tracking-widest uppercase">Yêu Hổ</span>
+                    </div>
+                    <div id="battle-enemy-realm"
+                        class="text-[9px] text-red-400 font-ancient uppercase tracking-widest opacity-80">Trúc Cơ Kỳ
+                    </div>
+                </div>
+                <!-- Enemy HP Bar -->
+                <div class="w-48 mt-3 space-y-1">
+                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                        <div id="battle-enemy-hp"
+                            class="h-full bg-gradient-to-r from-red-600 to-red-400 transition-all duration-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
+                            style="width: 100%"></div>
+                    </div>
+                    <div class="flex justify-between text-[7px] text-gray-500 font-mono uppercase">
+                        <span>HP</span>
+                        <span id="enemy-hp-text">100/100</span>
                     </div>
                 </div>
             </div>
+
+            <!-- VS Divider -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20">
+                <div class="text-4xl font-ancient text-cultivation-gold italic">VS</div>
+            </div>
         </div>
+
+        <!-- Combat Log -->
         <div id="battle-log"
-            class="flex-grow bg-black/40 p-4 overflow-y-auto text-xs font-mono text-gray-400 space-y-1 custom-scroll">
+            class="relative flex-grow bg-black/20 p-4 overflow-y-auto text-[10px] font-serif text-gray-400 space-y-1.5 custom-scroll border-y border-white/5">
+            <div
+                class="absolute top-0 left-0 w-full h-4 bg-gradient-to-b from-qi-ink to-transparent pointer-events-none">
+            </div>
+            <!-- Log entries will be here -->
+            <div
+                class="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-t from-qi-ink to-transparent pointer-events-none">
+            </div>
         </div>
-        <div class="p-4 bg-black border-t border-white/10">
-            <div class="flex justify-between items-end mb-2"><span id="battle-player-name"
-                    class="text-sm font-bold text-white">Phàm Nhân</span><span class="text-[10px] text-qi-blue">Thể Lực:
-                    100%</span></div>
-            <div class="h-2 w-full bg-blue-900/30 rounded-full overflow-hidden border border-blue-500/20 mb-4">
-                <div id="battle-player-hp" class="h-full bg-qi-blue transition-all duration-300" style="width: 100%">
+
+        <!-- Player Side Controls -->
+        <div class="p-6 bg-qi-ink/80 backdrop-blur-md border-t border-white/5">
+            <!-- Player Info & Stats -->
+            <div class="flex items-end justify-between mb-6">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <div
+                            class="w-16 h-16 rounded-2xl overflow-hidden border border-qi-blue/30 shadow-[0_0_20px_rgba(79,209,197,0.1)]">
+                            <img id="battle-player-img" src="./src/assets/images/player.png"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div id="player-status-effects" class="absolute -top-2 -right-2 flex flex-col space-y-1"></div>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 id="battle-player-name" class="text-sm font-bold text-white tracking-widest font-ancient">
+                            Phàm Nhân</h4>
+                        <div class="flex space-x-2">
+                            <div class="w-24 space-y-1">
+                                <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+                                    <div id="battle-player-hp" class="h-full bg-qi-jade transition-all duration-500"
+                                        style="width: 100%"></div>
+                                </div>
+                                <div class="text-[7px] text-qi-jade flex justify-between font-mono"><span>HP</span><span
+                                        id="player-hp-text">100/100</span></div>
+                            </div>
+                            <div class="w-20 space-y-1">
+                                <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+                                    <div id="battle-player-mana" class="h-full bg-qi-blue transition-all duration-500"
+                                        style="width: 100%"></div>
+                                </div>
+                                <div class="text-[7px] text-qi-blue flex justify-between font-mono"><span>MP</span><span
+                                        id="player-mana-text">50/50</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Turn Indicator -->
+                <div id="turn-indicator"
+                    class="px-3 py-1 rounded-full bg-cultivation-gold/10 border border-cultivation-gold/20 text-[8px] text-cultivation-gold font-ancient uppercase tracking-widest animate-pulse">
+                    Đến lượt ngươi
                 </div>
             </div>
-            <div id="battle-actions" class="grid grid-cols-4 gap-2 hidden">
-                <button id="btn-attack"
-                    class="py-3 bg-white/5 border border-white/20 rounded-lg text-xs font-bold hover:bg-white/10 active:scale-95 transition-all">TẤN
-                    CÔNG</button>
-                <button id="btn-defend"
-                    class="py-3 bg-white/5 border border-white/20 rounded-lg text-xs font-bold hover:bg-white/10 active:scale-95 transition-all">PHÒNG
-                    THỦ</button>
-                <button id="btn-skill"
-                    class="py-3 bg-qi-purple/20 border border-qi-purple/40 rounded-lg text-xs font-bold text-qi-purple active:scale-95 transition-all">LINH
-                    THUẬT</button>
-                <button id="btn-flame"
-                    class="py-3 bg-red-900/40 border border-red-500/40 rounded-lg text-xs font-bold text-red-400 active:scale-95 transition-all hidden">DỊ
-                    HỎA</button>
-                <button id="btn-secret"
-                    class="py-3 bg-amber-900/40 border border-amber-500/40 rounded-lg text-xs font-bold text-amber-300 active:scale-95 transition-all hidden">BÍ
-                    PHÁP</button>
-                <button id="btn-potion"
-                    class="py-3 bg-emerald-900/40 border border-emerald-500/40 rounded-lg text-xs font-bold text-emerald-300 active:scale-95 transition-all">ĐAN
-                    DƯỢC</button>
-                <button id="btn-talisman"
-                    class="py-3 bg-sky-900/40 border border-sky-500/40 rounded-lg text-xs font-bold text-sky-300 active:scale-95 transition-all">PHÙ
-                    LỤC</button>
-                <button id="btn-beast"
-                    class="py-3 bg-orange-900/40 border border-orange-500/40 rounded-lg text-xs font-bold text-orange-300 active:scale-95 transition-all">LINH
-                    THÚ</button>
-                <button id="btn-formation"
-                    class="py-3 bg-violet-900/40 border border-violet-500/40 rounded-lg text-xs font-bold text-violet-300 active:scale-95 transition-all">TRẬN
-                    PHÁP</button>
-                <button id="btn-puppet"
-                    class="py-3 bg-cyan-900/40 border border-cyan-500/40 rounded-lg text-xs font-bold text-cyan-300 active:scale-95 transition-all">KHÔI
-                    LỖI</button>
-                <button id="btn-corpse"
-                    class="py-3 bg-zinc-800/80 border border-zinc-500/40 rounded-lg text-xs font-bold text-zinc-300 active:scale-95 transition-all">LUYỆN
-                    THI</button>
-                <button id="btn-insect"
-                    class="py-3 bg-lime-900/40 border border-lime-500/40 rounded-lg text-xs font-bold text-lime-300 active:scale-95 transition-all">NGỰ
-                    TRÙNG</button>
+
+            <!-- Actions Tabs/Groups -->
+            <div id="battle-actions" class="hidden space-y-4">
+                <!-- Main Actions Grid -->
+                <div class="grid grid-cols-4 gap-2">
+                    <button id="btn-attack"
+                        class="flex flex-col py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 active:scale-95 transition-all">
+                        <i class="ph ph-sword text-lg mb-1 text-red-400"></i>
+                        <span class="text-[8px] font-bold uppercase tracking-tighter">Công</span>
+                    </button>
+                    <button id="btn-defend"
+                        class="flex flex-col py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 active:scale-95 transition-all">
+                        <i class="ph ph-shield text-lg mb-1 text-blue-400"></i>
+                        <span class="text-[8px] font-bold uppercase tracking-tighter">Thủ</span>
+                    </button>
+                    <button id="btn-skill"
+                        class="flex flex-col py-3 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple active:scale-95 transition-all">
+                        <i class="ph ph-sparkle text-lg mb-1"></i>
+                        <span class="text-[8px] font-bold uppercase tracking-tighter">Thuật</span>
+                    </button>
+                    <button id="btn-potion"
+                        class="flex flex-col py-3 bg-emerald-900/20 border border-emerald-500/30 rounded-xl text-emerald-400 active:scale-95 transition-all">
+                        <i class="ph ph-flask text-lg mb-1"></i>
+                        <span class="text-[8px] font-bold uppercase tracking-tighter">Đan</span>
+                    </button>
+                </div>
+
+                <!-- Secondary Actions (More) -->
+                <div class="grid grid-cols-5 gap-2 border-t border-white/5 pt-4">
+                    <button id="btn-flame"
+                        class="flex flex-col py-2 bg-red-900/20 border border-red-500/30 rounded-xl text-red-500 active:scale-95 transition-all hidden">
+                        <i class="ph ph-fire text-base mb-1"></i>
+                        <span class="text-[7px] font-bold uppercase">Dị Hỏa</span>
+                    </button>
+                    <button id="btn-secret"
+                        class="flex flex-col py-2 bg-amber-900/20 border border-amber-500/30 rounded-xl text-amber-500 active:scale-95 transition-all hidden">
+                        <i class="ph ph-scroll text-base mb-1"></i>
+                        <span class="text-[7px] font-bold uppercase">Bí Pháp</span>
+                    </button>
+                    <button id="btn-talisman"
+                        class="flex flex-col py-2 bg-sky-900/20 border border-sky-500/30 rounded-xl text-sky-400 active:scale-95 transition-all">
+                        <i class="ph ph-cards text-base mb-1"></i>
+                        <span class="text-[7px] font-bold uppercase">Phù</span>
+                    </button>
+                    <button id="btn-beast"
+                        class="flex flex-col py-2 bg-orange-900/20 border border-orange-500/30 rounded-xl text-orange-400 active:scale-95 transition-all">
+                        <i class="ph ph-paw-print text-base mb-1"></i>
+                        <span class="text-[7px] font-bold uppercase">Thú</span>
+                    </button>
+                    <button id="btn-escape"
+                        class="flex flex-col py-2 bg-slate-700/40 border border-white/10 rounded-xl text-gray-300 active:scale-95 transition-all">
+                        <i class="ph ph-wind text-base mb-1"></i>
+                        <span class="text-[7px] font-bold uppercase">Chạy</span>
+                    </button>
+                </div>
+
+                <!-- Profession specific actions (Scrollable or Grid) -->
+                <div id="battle-profession-actions"
+                    class="flex space-x-2 overflow-x-auto pb-2 custom-scroll-x no-scrollbar">
+                    <button id="btn-formation"
+                        class="min-w-[60px] flex flex-col py-2 bg-violet-900/20 border border-violet-500/30 rounded-xl text-violet-400 active:scale-95 transition-all hidden">
+                        <i class="ph ph-spheres text-base mb-1"></i>
+                        <span class="text-[7px] font-bold uppercase">Trận</span>
+                    </button>
+                    <button id="btn-puppet"
+                        class="min-w-[60px] flex flex-col py-2 bg-cyan-900/20 border border-cyan-500/30 rounded-xl text-cyan-400 active:scale-95 transition-all hidden">
+                        <i class="ph ph-robot text-base mb-1"></i>
+                        <span class="text-[7px] font-bold uppercase">Khôi Lỗi</span>
+                    </button>
+                    <button id="btn-corpse"
+                        class="min-w-[60px] flex flex-col py-2 bg-zinc-800/50 border border-zinc-500/30 rounded-xl text-zinc-300 active:scale-95 transition-all hidden">
+                        <i class="ph ph-skull text-base mb-1"></i>
+                        <span class="text-[7px] font-bold uppercase">Luyện Thi</span>
+                    </button>
+                    <button id="btn-insect"
+                        class="min-w-[60px] flex flex-col py-2 bg-lime-900/20 border border-lime-500/30 rounded-xl text-lime-400 active:scale-95 transition-all hidden">
+                        <i class="ph ph-bug text-base mb-1"></i>
+                        <span class="text-[7px] font-bold uppercase">Ngự Trùng</span>
+                    </button>
+                </div>
             </div>
-            <div id="battle-secret-list" class="hidden mt-2 p-2 rounded-lg border border-amber-500/20 bg-black/40 space-y-1"></div>
+
+            <div id="battle-secret-list"
+                class="hidden mt-4 p-4 rounded-2xl border border-amber-500/20 bg-black/60 space-y-2 max-h-48 overflow-y-auto custom-scroll">
+            </div>
         </div>
     </div>
 
@@ -1936,7 +2158,75 @@
         class="fixed top-4 left-1/2 -translate-x-1/2 w-[90%] max-w-[450px] z-[1000] pointer-events-none flex flex-col items-center space-y-3">
     </div>
 
-    <!-- Modal Overlay (Alert / Confirm) -->
+    <!-- Ambush Choice Overlay -->
+    <div id="ambush-overlay"
+        class="hidden overlay-full z-[300] bg-black/90 backdrop-blur-md flex items-center justify-center p-6">
+        <div
+            class="w-full max-w-sm bg-qi-ink border border-cultivation-gold/30 rounded-[32px] p-8 shadow-[0_0_50px_rgba(212,175,55,0.2)] text-center space-y-8 animate-fade-in">
+            <div class="space-y-4">
+                <div class="relative w-32 h-32 mx-auto">
+                    <div class="absolute inset-0 bg-cultivation-gold/10 rounded-full animate-ping"></div>
+                    <div
+                        class="relative w-full h-full rounded-full border-2 border-cultivation-gold/50 flex items-center justify-center bg-black/60">
+                        <i class="ph ph-eye text-5xl text-cultivation-gold"></i>
+                    </div>
+                </div>
+                <h3 class="text-3xl font-ancient text-white tracking-widest uppercase">Phát Hiện Kẻ Địch!</h3>
+                <p id="ambush-desc" class="text-xs text-gray-400 italic">"Ngươi phát hiện một con quái vật đang ẩn nấp
+                    phía trước..."</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <button id="btn-ambush-start"
+                    class="group relative py-5 bg-red-900/40 border border-red-500/50 rounded-2xl overflow-hidden active:scale-95 transition-all">
+                    <div class="absolute inset-0 bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                    </div>
+                    <span class="relative z-10 text-sm font-bold text-red-400 uppercase tracking-[0.4em]">TẬP
+                        KÍCH</span>
+                    <p class="text-[8px] text-red-500/60 uppercase mt-1">Ưu tiên tấn công & Tăng bạo kích</p>
+                </button>
+                <button id="btn-ambush-escape"
+                    class="py-4 bg-white/5 border border-white/10 rounded-2xl text-xs font-bold text-gray-500 uppercase tracking-widest active:scale-95 transition-all">
+                    LÁNH MẶT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chase Choice Overlay -->
+    <div id="chase-overlay"
+        class="hidden overlay-full z-[300] bg-black/90 backdrop-blur-md flex items-center justify-center p-6">
+        <div
+            class="w-full max-w-sm bg-qi-ink border border-qi-blue/30 rounded-[32px] p-8 shadow-[0_0_50px_rgba(0,123,255,0.2)] text-center space-y-8 animate-fade-in">
+            <div class="space-y-4">
+                <div class="relative w-32 h-32 mx-auto">
+                    <div class="absolute inset-0 bg-qi-blue/10 rounded-full animate-ping"></div>
+                    <div
+                        class="relative w-full h-full rounded-full border-2 border-qi-blue/50 flex items-center justify-center bg-black/60">
+                        <i class="ph ph-footprints text-5xl text-qi-blue"></i>
+                    </div>
+                </div>
+                <h3 class="text-3xl font-ancient text-white tracking-widest uppercase">Kẻ Địch Bỏ Chạy!</h3>
+                <p id="chase-desc" class="text-xs text-gray-400 italic">"Đối phương thấy thế yếu liền thi triển độn
+                    thuật hòng thoát thân..."</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <button id="btn-chase-start"
+                    class="group relative py-5 bg-qi-blue/20 border border-qi-blue/50 rounded-2xl overflow-hidden active:scale-95 transition-all">
+                    <div class="absolute inset-0 bg-qi-blue/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                    </div>
+                    <span class="relative z-10 text-sm font-bold text-qi-blue uppercase tracking-[0.4em]">TRUY
+                        ĐUỔI</span>
+                    <p class="text-[8px] text-qi-blue/60 uppercase mt-1">Dựa vào tốc độ hoặc pháp bảo phi hành</p>
+                </button>
+                <button id="btn-chase-giveup"
+                    class="py-4 bg-white/5 border border-white/10 rounded-2xl text-xs font-bold text-gray-500 uppercase tracking-widest active:scale-95 transition-all">
+                    BỎ QUA
+                </button>
+            </div>
+        </div>
+    </div>
     <div id="modal-overlay"
         class="fixed inset-0 bg-qi-ink/80 backdrop-blur-md z-[900] hidden flex items-center justify-center p-6 animate-fade-in">
         <div id="modal-content"
@@ -1996,7 +2286,8 @@
     <!-- Spirit Stone Management Overlay -->
     <div id="spirit-stone-overlay" class="hidden fixed inset-0 z-[150] flex items-center justify-center p-6">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
-        <div class="relative w-full max-w-md bg-qi-ink border border-cultivation-gold/30 rounded-[2.5rem] flex flex-col max-h-[85vh] shadow-[0_0_50px_rgba(212,175,55,0.2)] overflow-hidden">
+        <div
+            class="relative w-full max-w-md bg-qi-ink border border-cultivation-gold/30 rounded-[2.5rem] flex flex-col max-h-[85vh] shadow-[0_0_50px_rgba(212,175,55,0.2)] overflow-hidden">
             <!-- Header -->
             <div class="p-6 border-b border-white/5 flex justify-between items-center bg-cultivation-gold/5">
                 <h3 class="text-xl font-ancient text-cultivation-gold uppercase tracking-widest">Linh Thạch Các</h3>
@@ -2010,22 +2301,29 @@
                 <!-- Current Balance -->
                 <div class="bg-black/40 p-4 rounded-2xl border border-white/5 text-center">
                     <h4 class="text-[10px] text-gray-500 uppercase tracking-widest mb-2">Số Dư Hiện Tại</h4>
-                    <div id="spirit-stone-balance" class="text-lg font-mono text-white flex flex-wrap justify-center gap-2">
+                    <div id="spirit-stone-balance"
+                        class="text-lg font-mono text-white flex flex-wrap justify-center gap-2">
                         <!-- Dynamic balance display -->
                     </div>
                 </div>
 
                 <!-- Conversion Section -->
                 <section class="space-y-4">
-                    <h4 class="text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">Chuyển Đổi Linh Thạch</h4>
+                    <h4
+                        class="text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">
+                        Chuyển Đổi Linh Thạch</h4>
                     <div class="grid grid-cols-1 gap-3">
                         <!-- Merge -->
                         <div class="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-3">
                             <div class="flex justify-between items-center">
                                 <span class="text-xs text-gray-400">Ghép (100 -> 1)</span>
                                 <div class="flex space-x-1">
-                                    <button onclick="game.systems.spiritStone.merge('HA', 100)" class="px-3 py-1 bg-qi-blue/20 text-qi-blue rounded-lg text-[10px] border border-qi-blue/30 hover:bg-qi-blue/30">Ghép Hạ</button>
-                                    <button onclick="game.systems.spiritStone.merge('TRUNG', 100)" class="px-3 py-1 bg-qi-purple/20 text-qi-purple rounded-lg text-[10px] border border-qi-purple/30 hover:bg-qi-purple/30">Ghép Trung</button>
+                                    <button onclick="game.systems.spiritStone.merge('HA', 100)"
+                                        class="px-3 py-1 bg-qi-blue/20 text-qi-blue rounded-lg text-[10px] border border-qi-blue/30 hover:bg-qi-blue/30">Ghép
+                                        Hạ</button>
+                                    <button onclick="game.systems.spiritStone.merge('TRUNG', 100)"
+                                        class="px-3 py-1 bg-qi-purple/20 text-qi-purple rounded-lg text-[10px] border border-qi-purple/30 hover:bg-qi-purple/30">Ghép
+                                        Trung</button>
                                 </div>
                             </div>
                         </div>
@@ -2034,8 +2332,12 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-xs text-gray-400">Tách (1 -> 100)</span>
                                 <div class="flex space-x-1">
-                                    <button onclick="game.systems.spiritStone.split('TRUNG', 1)" class="px-3 py-1 bg-qi-blue/10 text-gray-300 rounded-lg text-[10px] border border-white/10 hover:bg-white/10">Tách Trung</button>
-                                    <button onclick="game.systems.spiritStone.split('THUONG', 1)" class="px-3 py-1 bg-qi-blue/10 text-gray-300 rounded-lg text-[10px] border border-white/10 hover:bg-white/10">Tách Thượng</button>
+                                    <button onclick="game.systems.spiritStone.split('TRUNG', 1)"
+                                        class="px-3 py-1 bg-qi-blue/10 text-gray-300 rounded-lg text-[10px] border border-white/10 hover:bg-white/10">Tách
+                                        Trung</button>
+                                    <button onclick="game.systems.spiritStone.split('THUONG', 1)"
+                                        class="px-3 py-1 bg-qi-blue/10 text-gray-300 rounded-lg text-[10px] border border-white/10 hover:bg-white/10">Tách
+                                        Thượng</button>
                                 </div>
                             </div>
                         </div>
@@ -2044,28 +2346,35 @@
 
                 <!-- Settings Section -->
                 <section class="space-y-4">
-                    <h4 class="text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">Thiết Lập Tiêu Hao</h4>
+                    <h4
+                        class="text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">
+                        Thiết Lập Tiêu Hao</h4>
                     <div class="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/10">
                         <div class="flex justify-between items-center">
                             <span class="text-xs text-gray-400">Khóa Cực Phẩm</span>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="ss-lock-cuc" class="sr-only peer">
-                                <div class="w-8 h-4 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-qi-purple"></div>
+                                <div
+                                    class="w-8 h-4 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-qi-purple">
+                                </div>
                             </label>
                         </div>
                         <div class="flex justify-between items-center pt-3 border-t border-white/5">
                             <span class="text-xs text-gray-400">Tự dùng Hạ Phẩm trước</span>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="ss-auto-low" class="sr-only peer" checked>
-                                <div class="w-8 h-4 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-qi-blue"></div>
+                                <div
+                                    class="w-8 h-4 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-qi-blue">
+                                </div>
                             </label>
                         </div>
                     </div>
                 </section>
             </div>
-            
+
             <div class="p-6 border-t border-white/5 text-center">
-                <p class="text-[9px] text-gray-500 italic">"Linh thạch là căn cơ của giới tu hành, hãy cẩn thận bảo quản."</p>
+                <p class="text-[9px] text-gray-500 italic">"Linh thạch là căn cơ của giới tu hành, hãy cẩn thận bảo
+                    quản."</p>
             </div>
         </div>
     </div>
