@@ -421,11 +421,88 @@ export class Game {
             });
     }
 
+    getRebirthProtectionSource() {
+        const p = state.player;
+        if (!p) return null;
+
+        const lifeSavingArtifactIds = ['phap_bao_bao_menh', 'truong_sinh_phu'];
+        const rebirthArtifactIds = ['trung_sinh_chau', 'nirvana_linh_chau'];
+        const soulSeizureTechniqueIds = ['doat_xa_bi_phap', 'linh_hon_neo'];
+
+        const equippedIds = Object.values(p.equipment || {}).filter(Boolean);
+        const inventoryIds = (p.inventory?.items || []).map(item => item.id);
+        const learnedIds = [
+            ...(p.learnedSecretTechniques || []).map(t => t.id),
+            ...(p.learnedTechniques || []).map(t => t.id)
+        ];
+
+        const foundArtifact = [...lifeSavingArtifactIds, ...rebirthArtifactIds]
+            .find(id => equippedIds.includes(id) || inventoryIds.includes(id));
+        if (foundArtifact) return { type: 'artifact', id: foundArtifact };
+
+        const foundTechnique = soulSeizureTechniqueIds.find(id => learnedIds.includes(id));
+        if (foundTechnique) return { type: 'technique', id: foundTechnique };
+
+        if (p.explorationProxy?.active) return { type: 'clone_proxy', id: 'exploration_proxy' };
+        if (p.activeCloneExploration) return { type: 'clone_proxy', id: 'active_clone' };
+
+        return null;
+    }
+
+    consumeRebirthProtection(source) {
+        const p = state.player;
+        if (!p || !source) return false;
+
+        if (source.type === 'artifact') {
+            if (p.inventory?.removeItem && p.inventory.removeItem(source.id, 1)) return true;
+            // If currently equipped directly, also allow consume as one-time trigger
+            const equippedSlot = Object.entries(p.equipment || {}).find(([, itemId]) => itemId === source.id);
+            if (equippedSlot) {
+                p.equipment[equippedSlot[0]] = null;
+                return true;
+            }
+            return false;
+        }
+
+        if (source.type === 'clone_proxy') {
+            if (p.explorationProxy?.active) {
+                p.explorationProxy.active = false;
+                return true;
+            }
+            if (p.activeCloneExploration) {
+                p.activeCloneExploration = false;
+                return true;
+            }
+            return false;
+        }
+
+        // Soul-retention technique: non-consumable by design
+        if (source.type === 'technique') return true;
+
+        return false;
+    }
+
+    restartFromDeath() {
+        SaveSystem.clear();
+        state.player = null;
+        state.currentCombat = null;
+        state.currentLocId = null;
+        state.explorationProgress = 0;
+        this.showCreationScreen();
+        state.ui.toast('Thân tử đạo tiêu. Không có bảo mệnh, ngươi phải bắt đầu lại từ đầu.', 'error', 8000);
+    }
+
     handleDeath() {
-        // Logic hồi sinh
-        state.player.hp = Math.floor(state.player.maxHp * 0.1);
-        state.ui.toast("Ngươi đã kiệt sức và ngất đi...", "error");
-        this.refreshUI();
+        const source = this.getRebirthProtectionSource();
+        if (source && this.consumeRebirthProtection(source)) {
+            state.player.hp = Math.max(1, Math.floor(state.player.maxHp * 0.2));
+            state.player.mana = Math.floor(state.player.maxMana * 0.1);
+            state.ui.toast('Ngươi đã chết, nhưng nhờ thủ đoạn bảo mệnh/trùng sinh nên thoát kiếp.', 'warning', 7000);
+            this.refreshUI();
+            return;
+        }
+
+        this.restartFromDeath();
     }
 
     setCultivationFocus(focus) {
@@ -1049,7 +1126,8 @@ export class Game {
             if (mode === 'random') {
                 state.systems.creation.rollRandom();
             } else if (mode === 'custom') {
-                state.systems.creation.reset();
+                state.systems.creation.mode = 'custom';
+                state.systems.creation.calculatePoints();
             } else if (mode === 'special') {
                 // ... logic for special scenarios if needed
             }

@@ -271,14 +271,58 @@ export class InventoryScreen {
             ? state.player.getEquipSlotForItemType(itemData.type)
             : itemData.type;
         const equippable = Object.prototype.hasOwnProperty.call(state.player.equipment, mappedSlot);
-        
+
         if (equippable) {
             this.btnEquipItem.textContent = itemData.type.includes('Artifact') ? 'KHỞI ĐỘNG' : 'TRANG BỊ';
+            this.elDetailDesc.textContent += this.buildEquipPreview(itemData, mappedSlot);
         }
         this.btnEquipItem.style.display = equippable ? 'block' : 'none';
 
         state.ui.toggleOverlay(this.elItemDetail, true);
         this.render();
+    }
+
+    getStatLabel(statKey) {
+        const map = {
+            atk: 'Công',
+            def: 'Thủ',
+            spd: 'Tốc',
+            maxHp: 'Sinh lực',
+            maxMana: 'Pháp lực',
+            mana: 'Pháp lực',
+            luck: 'Khí vận',
+            critChance: 'Tỉ lệ bạo kích',
+            critDamage: 'Sát thương bạo kích'
+        };
+        return map[statKey] || statKey;
+    }
+
+    buildEquipPreview(itemData, mappedSlot) {
+        if (!itemData?.stats) return '';
+
+        const currentEquippedId = state.player.equipment[mappedSlot];
+        const currentEquipped = currentEquippedId ? getItemById(currentEquippedId) : null;
+        const currentStats = currentEquipped?.stats || {};
+
+        const statKeys = new Set([...Object.keys(itemData.stats), ...Object.keys(currentStats)]);
+        if (statKeys.size === 0) return '';
+
+        let preview = `\n\n--- DỰ KIẾN CHỈ SỐ KHI TRANG BỊ ---`;
+        statKeys.forEach((key) => {
+            const nextVal = itemData.stats[key] || 0;
+            const curVal = currentStats[key] || 0;
+            const diff = nextVal - curVal;
+            const sign = diff >= 0 ? '+' : '';
+            preview += `
+- ${this.getStatLabel(key)}: ${sign}${diff}`;
+        });
+
+        if (currentEquipped) {
+            preview += `
+Đang trang bị: ${currentEquipped.name}`;
+        }
+
+        return preview;
     }
 
     getQualityClass(quality) {
