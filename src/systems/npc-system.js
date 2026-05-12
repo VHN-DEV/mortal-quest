@@ -5,6 +5,7 @@ import { CREATION_ROOTS, CREATION_PHYSIQUES } from '../configs/creation-data.js'
 export class NPC {
     constructor(templateId, realmId) {
         const template = NPC_TEMPLATES[templateId];
+        this.templateId = templateId;
         this.id = Math.random().toString(36).substr(2, 9);
         this.type = template.type;
         this.role = template.roles[Math.floor(Math.random() * template.roles.length)];
@@ -205,7 +206,8 @@ export class NPCSystem {
     loadData(data) {
         if (!data) return;
         this.npcs = data.map(npcData => {
-            const npc = new NPC(npcData.type, npcData.realmId);
+            const templateId = npcData.templateId || npcData.type;
+            const npc = new NPC(templateId, npcData.realmId);
             Object.assign(npc, npcData);
             return npc;
         });
