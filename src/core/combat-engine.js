@@ -276,12 +276,13 @@ export class CombatEngine {
             this.addLog("Chưa mở khóa Ngự Thú nên không thể triệu hồi linh thú!");
             return;
         }
-        const beast = this.player.spiritBeasts?.[0];
+        const beast = this.player.beasts?.[0];
         if (!beast) {
             this.addLog("Chưa có linh thú chiến đấu để triệu hồi!");
             return;
         }
-        const dmg = Math.max(1, Math.floor((beast.stats?.atk || this.player.atk * 0.4) * 0.7));
+        const levelBonus = (this.player.beastLevel || 1) * 10;
+        const dmg = Math.max(1, Math.floor((beast.stats?.atk || this.player.atk * 0.4) * 0.7 + levelBonus));
         this.enemy.hp -= dmg;
         this.addLog(`Linh thú ${beast.name} xuất chiến, gây ${dmg} sát thương!`);
         this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
@@ -299,7 +300,8 @@ export class CombatEngine {
             return;
         }
         this.player.mana -= cost;
-        const dmg = Math.max(1, Math.floor(this.player.atk * 1.2));
+        const levelBonus = (this.player.formationLevel || 1) * 20;
+        const dmg = Math.max(1, Math.floor(this.player.atk * 1.2 + levelBonus));
         this.enemy.hp -= dmg;
         this.addLog(`Bạn bố trí trận pháp áp chế chiến trường, gây ${dmg} sát thương.`);
         this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });

@@ -638,6 +638,88 @@ export const ITEMS = {
         effect: { type: 'escape' }
     },
 
+    // --- PROFESSION SECRETS (BÍ PHÁP MỞ KHÓA NGHỀ NGHIỆP) ---
+    'bp_luyen_dan': {
+        id: 'bp_luyen_dan',
+        name: 'Đan Đạo Chân Giải',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 1000,
+        effect: { type: 'unlock_profession', profession: 'alchemy' },
+        description: 'Ghi chép các kiến thức cơ bản về dược lý và kỹ thuật ngự hỏa để luyện chế đan dược.'
+    },
+    'bp_luyen_khi': {
+        id: 'bp_luyen_khi',
+        name: 'Luyện Khí Tổng Cương',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 1500,
+        effect: { type: 'unlock_profession', profession: 'smithing' },
+        description: 'Chứa đựng bí quyết tôi luyện kim thạch, rèn đúc thần binh pháp bảo.'
+    },
+    'bp_phu_luc': {
+        id: 'bp_phu_luc',
+        name: 'Thái Thượng Phù Kinh',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 1000,
+        effect: { type: 'unlock_profession', profession: 'talisman' },
+        description: 'Hướng dẫn cách câu thông thiên địa linh lực vào phù văn để tạo ra phù lục.'
+    },
+    'bp_tran_phap': {
+        id: 'bp_tran_phap',
+        name: 'Trận Đạo Thiên Thư',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 2000,
+        effect: { type: 'unlock_profession', profession: 'formation' },
+        description: 'Kiến thức về trận đồ, mắt trận và cách bố trí linh thạch để trấn giữ hoặc công kích.'
+    },
+    'bp_ngu_thu': {
+        id: 'bp_ngu_thu',
+        name: 'Vạn Thú Ngự Pháp',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 1200,
+        effect: { type: 'unlock_profession', profession: 'beast' },
+        description: 'Bí quyết giao tiếp và ký kết khế ước với các loài linh thú.'
+    },
+    'bp_ngu_trung': {
+        id: 'bp_ngu_trung',
+        name: 'Thiên Trùng Bí Lục',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 1200,
+        effect: { type: 'unlock_profession', profession: 'insect' },
+        description: 'Cách nuôi dưỡng và điều khiển bầy trùng mang theo kịch độc hoặc năng lực đặc thù.'
+    },
+    'bp_khoi_loi': {
+        id: 'bp_khoi_loi',
+        name: 'Cơ Quan Linh Kỹ',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 2500,
+        effect: { type: 'unlock_profession', profession: 'puppet' },
+        description: 'Kỹ thuật chế tác cơ quan và truyền linh hồn vào các vật vô tri để tạo ra khôi lỗi.'
+    },
+    'bp_luyen_thi': {
+        id: 'bp_luyen_thi',
+        name: 'Cửu U Luyện Thi Thuật',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 3000,
+        effect: { type: 'unlock_profession', profession: 'corpse' },
+        description: 'Tà thuật luyện chế xác chết thành thi khôi, đao thương bất nhập.'
+    },
+
     // --- TALISMAN TECHNIQUES (BÍ PHÁP) ---
     'thien_loi_phu_quyen': {
         id: 'thien_loi_phu_quyen',

@@ -1002,13 +1002,13 @@ export class SystemsScreen {
 
             const biPhapMap = {
                 'alchemy': 'Đan Đạo Chân Giải',
-                'talisman': 'Thiên Phù Bí Lục',
-                'smithing': 'Luyện Khí Đại Thừa',
-                'formation': 'Trận Pháp Tổng Cương',
-                'puppet': 'Khôi Lỗi Chế Thuật',
-                'corpse': 'Luyện Thi Thuật',
-                'beast': 'Ngự Thú Bí Quyết',
-                'insect': 'Ngự Trùng Tạp Ký'
+                'talisman': 'Thái Thượng Phù Kinh',
+                'smithing': 'Luyện Khí Tổng Cương',
+                'formation': 'Trận Đạo Thiên Thư',
+                'puppet': 'Cơ Quan Linh Kỹ',
+                'corpse': 'Cửu U Luyện Thi Thuật',
+                'beast': 'Vạn Thú Ngự Pháp',
+                'insect': 'Thiên Trùng Bí Lục'
             };
 
             if (isUnlocked) {
@@ -1177,33 +1177,5 @@ export class SystemsScreen {
             view.appendChild(el);
         });
     }
-    openCrafting(type) {
-        if (!state.player) return;
-        
-        // Check unlock status
-        if (!state.player.unlockedProfessions.includes(type)) {
-            state.ui.toast("Ngươi cần lĩnh hội bí pháp tương ứng mới có thể bắt đầu nghề này!", "warning");
-            return;
-        }
-
-        const screenId = `screen-${type}`;
-        state.ui.switchScreen(screenId);
-        
-        // Render specific system
-        switch(type) {
-            case 'alchemy': this.renderAlchemy(); break;
-            case 'talisman': this.renderTalisman(); break;
-            case 'smithing': this.renderSmithing(); break;
-            case 'formation': this.renderFormation(); break;
-            case 'puppet': this.renderPuppet(); break;
-            case 'corpse': this.renderCorpse(); break;
-            case 'beast': this.renderBeast(); break;
-            case 'insect': state.views.beast = 'insect'; this.renderBeast(); break;
-        }
-    }
-
-    openCraftingHub() {
-        state.ui.switchScreen('screen-crafting-hub');
-        this.renderCraftingHub();
     }
 }
