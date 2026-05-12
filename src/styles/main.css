@@ -761,3 +761,32 @@ button:active {
 .danger-nguy_hiem { color: #ef4444; border-color: #ef4444; }
 .danger-cuc_ky_nguy_hiem { color: #991b1b; border-color: #991b1b; }
 .danger-tu_dia { color: #7e22ce; border-color: #7e22ce; }
+
+
+/* Creation Screen polish */
+.creation-card {
+  background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 1rem;
+  padding: 0.85rem;
+}
+
+.creation-section-title {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #d1d5db;
+}
+
+.creation-mode-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  backdrop-filter: blur(6px);
+}
+
+.creation-primary-btn {
+  background: linear-gradient(135deg, rgba(212,175,55,0.22), rgba(212,175,55,0.12));
+  border: 1px solid rgba(212,175,55,0.45);
+  box-shadow: 0 0 18px rgba(212,175,55,0.12);
+}
