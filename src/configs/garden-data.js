@@ -32,7 +32,7 @@ export const HERB_AGE_MILESTONES = [
 export const SEEDS = [
     {
         id: 'seed_linh_thao',
-        name: 'Hạt Giống Linh Thảo',
+        name: 'Linh Chủng Linh Thảo',
         herbId: 'linh_thao_thap',
         grade: 'PHAM',
         baseGrowthTime: 300, // 5 min for 10-year stage
@@ -41,7 +41,7 @@ export const SEEDS = [
     },
     {
         id: 'seed_hoa_diem_thao',
-        name: 'Hạt Giống Hỏa Diễm Thảo',
+        name: 'Linh Chủng Hỏa Diễm Thảo',
         herbId: 'hoa_diem_thao',
         grade: 'LINH',
         baseGrowthTime: 1200, // 20 min
@@ -50,7 +50,7 @@ export const SEEDS = [
     },
     {
         id: 'seed_han_tuy_hoa',
-        name: 'Hạt Giống Hàn Tủy Hoa',
+        name: 'Linh Chủng Hàn Tủy Hoa',
         herbId: 'han_tuy_hoa',
         grade: 'LINH',
         baseGrowthTime: 1200,
@@ -59,7 +59,7 @@ export const SEEDS = [
     },
     {
         id: 'seed_u_minh_hoa',
-        name: 'Hạt Giống U Minh Hoa',
+        name: 'Linh Chủng U Minh Hoa',
         herbId: 'u_minh_hoa',
         grade: 'HUYEN',
         baseGrowthTime: 3600, // 1h

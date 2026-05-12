@@ -10,11 +10,13 @@ import { TOWER_LEVELS } from '../../configs/tower-data.js';
 import { MOUNTAIN_LAYERS } from '../../configs/mountain-data.js';
 import { SECTS, getSectById } from '../../configs/sect-data.js';
 import { getRealmById } from '../../configs/realm-data.js';
+import { CORPSE_TYPES, getCorpseLevelInfo } from '../../configs/corpse-data.js';
 import { SHOPS } from '../../configs/shop-data.js';
 import { ASSETS } from '../../configs/asset-data.js';
 import { PUPPET_RECIPES, PUPPET_GRADES } from '../../configs/puppet-data.js';
 import { TALISMAN_RECIPES, getTalismanLevelInfo } from '../../configs/talisman-data.js';
 import { BEASTS, BEAST_TYPES, BLOODLINES, getBeastLevelInfo } from '../../configs/beast-data.js';
+import { getTechniqueById, getSecretTechniqueById, MASTERY_LEVELS } from '../../configs/technique-data.js';
 
 
 /**
@@ -48,6 +50,15 @@ export class SystemsScreen {
 
         // Other lists
         this.elGuildCerts = document.getElementById('guild-cert-list');
+
+        // Technique Screen
+        this.elTechListView = document.getElementById('tech-list-view');
+        this.elTechDetailView = document.getElementById('tech-detail-view');
+        this.elTechDetailContent = document.getElementById('tech-detail-content');
+        this.elTechPoints = document.getElementById('tech-points');
+        this.btnTechTabCultivation = document.getElementById('tech-tab-cultivation');
+        this.btnTechTabSecret = document.getElementById('tech-tab-secret');
+        this.btnTechBack = document.getElementById('tech-back-btn');
         this.elGuildMissions = document.getElementById('guild-mission-list');
         this.elGuildRooms = document.getElementById('guild-room-list');
         this.elTowerFloors = document.getElementById('tower-floor-list');
@@ -79,6 +90,13 @@ export class SystemsScreen {
                 this.renderShop();
             };
         }
+        // Technique Tabs
+        if (this.btnTechTabCultivation) this.btnTechTabCultivation.onclick = () => this.renderTechniques('cultivation');
+        if (this.btnTechTabSecret) this.btnTechTabSecret.onclick = () => this.renderTechniques('secret');
+        if (this.btnTechBack) this.btnTechBack.onclick = () => {
+            this.elTechListView.classList.remove('hidden');
+            this.elTechDetailView.classList.add('hidden');
+        };
     }
 
     // --- ALCHEMY ---
@@ -127,7 +145,7 @@ export class SystemsScreen {
         const known = ALCHEMY_RECIPES.filter(r => state.player.knownRecipes.includes(r.id));
 
         if (known.length === 0) {
-            this.viewAlchemyRecipes.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa học được đan phương nào...</div>';
+            this.viewAlchemyRecipes.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ được đan phương nào...</div>';
             return;
         }
 
@@ -285,7 +303,8 @@ export class SystemsScreen {
             'tran_phap': 'Trận Pháp',
             'phu_luc': 'Phù Lục',
             'luyen_khi': 'Luyện Khí',
-            'bi_tich': 'Bí Tịch'
+            'bi_tich': 'Bí Tịch',
+            'linh_dien': 'Linh Điện'
         };
 
         // If buttons count doesn't match or shop changed, rebuild
@@ -347,7 +366,7 @@ export class SystemsScreen {
 
             const btn = document.createElement('button');
             btn.className = `px-4 py-2 btn-gold text-[10px] font-bold rounded-lg ${item.stock <= 0 ? 'opacity-50 grayscale pointer-events-none' : ''}`;
-            btn.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>MUA`;
+            btn.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>TRAO ĐỔI`;
             btn.onclick = () => window.game.buyItem(item.id);
 
             btnContainer.appendChild(btn);
@@ -530,7 +549,7 @@ export class SystemsScreen {
                             <span class="text-gray-500">Điểm cống hiến:</span>
                             <span class="text-cultivation-gold">${state.player.sectContribution || 0}</span>
                         </div>
-                        <h4 class="text-xs font-ancient text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2">Nhiệm Vụ Tông Môn</h4>
+                        <h4 class="text-xs font-ancient text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2">Ủy Thác Tông Môn</h4>
                         <div class="space-y-3">
                             ${sect.missions.map(m => `
                                 <div class="p-3 bg-black/40 rounded-lg border border-white/5 flex justify-between items-center">
@@ -555,11 +574,11 @@ export class SystemsScreen {
                 el.innerHTML = `
                     <div class="flex justify-between items-center">
                         <h3 class="text-xl font-ancient text-white">${sect.name}</h3>
-                        <span class="text-[10px] ${canJoin ? 'text-qi-blue' : 'text-red-500'}">${canJoin ? 'Có thể gia nhập' : 'Cần: ' + getRealmById(sect.minRealm).name}</span>
+                        <span class="text-[10px] ${canJoin ? 'text-qi-blue' : 'text-red-500'}">${canJoin ? 'Có thể bái nhập' : 'Cần: ' + getRealmById(sect.minRealm).name}</span>
                     </div>
                     <p class="text-xs text-gray-500">${sect.description}</p>
                     <button class="w-full py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-xl flex items-center justify-center ${canJoin ? '' : 'hidden'}" onclick="window.game.joinSect('${sect.id}')">
-                        <i class="ph ph-identification-badge mr-2"></i>GIA NHẬP TÔNG MÔN
+                        <i class="ph ph-identification-badge mr-2"></i>BÁI NHẬP TÔNG MÔN
                     </button>
                 `;
                 elSects.appendChild(el);
@@ -651,7 +670,7 @@ export class SystemsScreen {
         const recipes = Object.values(SMITHING_RECIPES).filter(r => state.player.knownSmithingRecipes.includes(r.id));
 
         if (recipes.length === 0) {
-            view.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa học được bản vẽ nào...</div>';
+            view.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ được bản vẽ nào...</div>';
             return;
         }
 
@@ -691,44 +710,35 @@ export class SystemsScreen {
     }
 
     openCrafting(type) {
-        // Toggle specific crafting sub-screens
-        const craftingScreens = ['screen-crafting-hub', 'screen-alchemy', 'screen-talisman', 'screen-smithing', 'screen-formation', 'screen-corpse', 'screen-beast', 'screen-puppet'];
-        craftingScreens.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.classList.add('hidden');
-                el.classList.remove('flex');
-            }
-        });
+        if (!state.player) return;
 
-        // Special handling for insect (it uses screen-beast but different tab)
-        let screenType = type;
-        if (type === 'insect') {
-            screenType = 'beast';
-            state.views.beast = 'insect';
-        } else if (type === 'beast') {
-            state.views.beast = 'beast';
-        }
-
-        // Check if unlocked
-        if (type !== 'crafting-hub' && !state.player.unlockedProfessions.includes(type)) {
-            state.ui.toast(`Ngươi cần lĩnh hội bí pháp tương ứng mới có thể bắt đầu nghề này!`, 'warning');
+        // Bách nghệ block
+        const isUnlocked = state.player.unlockedProfessions.includes(type);
+        if (!isUnlocked) {
+            state.ui.toast("Ngươi chưa nắm vững bí pháp của nghề này!", "error");
             return;
         }
 
-        const target = document.getElementById(`screen-${screenType}`);
-        if (target) {
-            target.classList.remove('hidden');
-            target.classList.add('flex');
+        const screens = {
+            alchemy: 'screen-alchemy',
+            smithing: 'screen-smithing',
+            talisman: 'screen-talisman',
+            formation: 'screen-formation',
+            beast: 'screen-beast',
+            puppet: 'screen-puppet',
+            corpse: 'screen-corpse'
+        };
 
-            if (screenType === 'alchemy') this.renderAlchemy();
-            if (screenType === 'talisman') this.renderTalisman();
-            if (screenType === 'smithing') this.renderSmithing();
-            if (screenType === 'formation') this.renderFormation();
-            if (screenType === 'corpse') this.renderCorpse();
-            if (screenType === 'beast') this.renderBeast();
-            if (screenType === 'puppet') this.renderPuppet();
-            if (screenType === 'crafting-hub') this.renderCraftingHub();
+        const screenId = screens[type];
+        if (screenId) {
+            state.ui.switchScreen(screenId);
+            if (type === 'alchemy') this.renderAlchemy();
+            if (type === 'smithing') this.renderSmithing();
+            if (type === 'talisman') this.renderTalisman();
+            if (type === 'formation') this.renderFormation();
+            if (type === 'beast') this.renderBeast();
+            if (type === 'puppet') this.renderPuppet();
+            if (type === 'corpse') this.renderCorpse();
         }
     }
 
@@ -1142,7 +1152,6 @@ export class SystemsScreen {
         refiningHeader.textContent = 'Bản Vẽ Luyện Thi';
         view.appendChild(refiningHeader);
 
-        const { CORPSE_TYPES } = require('../../configs/corpse-data.js');
         Object.values(CORPSE_TYPES).forEach(type => {
             const el = document.createElement('div');
             el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 space-y-3';
@@ -1176,5 +1185,116 @@ export class SystemsScreen {
             `;
             view.appendChild(el);
         });
+    }
+
+    renderTechniques(tab = 'cultivation') {
+        if (!state.player) return;
+
+        state.activeTechTab = tab;
+
+        // Update tab styles
+        if (this.btnTechTabCultivation && this.btnTechTabSecret) {
+            if (tab === 'cultivation') {
+                this.btnTechTabCultivation.className = 'flex-grow py-2 bg-qi-blue/20 text-qi-blue border border-qi-blue/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+                this.btnTechTabSecret.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            } else {
+                this.btnTechTabCultivation.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+                this.btnTechTabSecret.className = 'flex-grow py-2 bg-qi-purple/20 text-qi-purple border border-qi-purple/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            }
+        }
+
+        if (this.elTechListView) {
+            this.elTechListView.innerHTML = '';
+            this.elTechListView.classList.remove('hidden');
+            if (this.elTechDetailView) this.elTechDetailView.classList.add('hidden');
+
+            const list = tab === 'cultivation' ? state.player.learnedTechniques : state.player.learnedSecretTechniques;
+
+            if (list.length === 0) {
+                this.elTechListView.innerHTML = `<div class="text-center py-20 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ ${tab === 'cultivation' ? 'công pháp' : 'bí pháp'} nào...</div>`;
+            } else {
+                list.forEach(entry => {
+                    const data = tab === 'cultivation' ? getTechniqueById(entry.id) : getSecretTechniqueById(entry.id);
+                    if (!data) return;
+
+                    const mastery = MASTERY_LEVELS.find(m => m.id === (entry.masteryLevel || 1));
+                    const stageLabel = data.stageLabel || 'Tầng';
+                    const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
+
+                    const el = document.createElement('div');
+                    el.className = `p-4 border ${tab === 'cultivation' ? 'border-qi-blue/10 bg-qi-blue/5' : 'border-qi-purple/10 bg-qi-purple/5'} rounded-2xl flex items-center justify-between hover:bg-white/5 cursor-pointer transition-all mb-3`;
+                    el.innerHTML = `
+                        <div class="flex items-center space-x-4">
+                            <div class="text-2xl">${data.icon || (tab === 'cultivation' ? '📜' : '✨')}</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">${data.name}</h4>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="text-[8px] px-1.5 py-0.5 bg-black/40 rounded border border-white/5 text-gray-400 font-mono">${stageName}</span>
+                                    <span class="text-[8px] text-cultivation-gold font-bold">${mastery?.name || 'Nhập Môn'}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="ph ph-caret-right text-gray-600"></i>
+                    `;
+                    el.onclick = () => this.renderTechniqueDetail(entry.id, tab === 'secret');
+                    this.elTechListView.appendChild(el);
+                });
+            }
+        }
+
+        if (this.elTechPoints) this.elTechPoints.textContent = state.player.techniquePoints || 0;
+    }
+
+    renderTechniqueDetail(id, isSecret) {
+        if (!this.elTechDetailContent) return;
+
+        const entry = isSecret ? state.player.learnedSecretTechniques.find(s => s.id === id) : state.player.learnedTechniques.find(t => t.id === id);
+        const data = isSecret ? getSecretTechniqueById(id) : getTechniqueById(id);
+        if (!entry || !data) return;
+
+        this.elTechListView.classList.add('hidden');
+        this.elTechDetailView.classList.remove('hidden');
+
+        const currentMasteryIdx = MASTERY_LEVELS.findIndex(m => m.id === (entry.masteryLevel || 1));
+        const mastery = MASTERY_LEVELS[currentMasteryIdx];
+        const nextMastery = MASTERY_LEVELS[currentMasteryIdx + 1];
+
+        const stageLabel = data.stageLabel || 'Tầng';
+        const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
+
+        const canBreakthrough = entry.masteryLevel >= 4 && (entry.stage < (data.maxStage || 10));
+
+        this.elTechDetailContent.innerHTML = `
+            <div class="flex flex-col items-center text-center space-y-4">
+                <div class="text-6xl p-6 bg-white/5 rounded-full border border-white/10">${data.icon || '📜'}</div>
+                <div>
+                    <h3 class="text-2xl font-ancient text-white">${data.name}</h3>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${data.quality || 'Phàm'} Phẩm | ${stageName}</p>
+                </div>
+            </div>
+
+            <div class="bg-black/40 p-5 rounded-3xl border border-white/5 space-y-4">
+                <div class="flex justify-between items-end mb-1">
+                    <span class="text-[9px] text-gray-500 uppercase tracking-widest">Độ Thuần Thục: ${mastery?.name || 'Nhập Môn'}</span>
+                    <span class="text-[10px] font-mono text-white">${entry.mastery} / ${nextMastery?.threshold || 'MAX'}</span>
+                </div>
+                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-cultivation-gold" style="width: ${entry.masteryLevel >= 4 ? 100 : (entry.mastery / (nextMastery?.threshold || 1)) * 100}%"></div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 mt-6">
+                    <button class="py-4 bg-qi-blue text-black text-xs font-bold rounded-2xl active:scale-95 transition-all" onclick="window.game.cultivateTechnique('${id}', ${isSecret})">TU LUYỆN</button>
+                    <button class="py-4 ${canBreakthrough ? 'bg-cultivation-gold' : 'bg-gray-800 opacity-50'} text-black text-xs font-bold rounded-2xl active:scale-95 transition-all" 
+                        onclick="window.game.breakthroughTechnique('${id}', ${isSecret})">ĐỘT PHÁ TẦNG</button>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h4 class="text-xs font-ancient text-gray-500 uppercase tracking-widest border-l-2 border-gray-500 pl-3">Mô tả & Hiệu ứng</h4>
+                <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-xs text-gray-400 leading-relaxed">
+                    ${data.description || 'Không có mô tả.'}
+                </div>
+            </div>
+        `;
     }
 }

@@ -12,10 +12,10 @@
 
 export const ITEMS = {
     // Hạt giống
-    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Hạt Giống Linh Thảo', type: 'consumable', icon: '🌱', quality: 'Phàm', price: 10, description: 'Hạt giống linh thảo sơ cấp.' },
-    'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Hạt Giống Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh', price: 150, description: 'Hạt giống linh thảo hỏa hệ.' },
-    'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Hạt Giống Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh', price: 150, description: 'Hạt giống linh thảo băng hệ.' },
-    'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Hạt Giống U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Huyền', price: 300, description: 'Hạt giống linh thảo âm hệ.' },
+    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Linh Thảo', type: 'consumable', icon: '🌱', quality: 'Phàm', price: 10, description: 'Linh chủng linh thảo sơ cấp.' },
+    'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh', price: 150, description: 'Linh chủng linh thảo hỏa hệ.' },
+    'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh', price: 150, description: 'Linh chủng linh thảo băng hệ.' },
+    'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Huyền', price: 300, description: 'Linh chủng linh thảo âm hệ.' },
 
     // Tiêu hao
     'tich_coc_dan': {
@@ -35,7 +35,7 @@ export const ITEMS = {
         icon: '💊',
         quality: 'Hoàng',
         price: 150,
-        description: 'Tăng 500 linh khí ngay lập tức.',
+        description: 'Gia tăng 500 linh khí ngay lập tức.',
         effect: { type: 'tu_vi', value: 500 }
     },
     'linh_thao_thap': {
@@ -533,8 +533,8 @@ export const ITEMS = {
     },
 
     // --- TALISMAN PAPERS (GIẤY PHÙ) ---
-    'hoang_chi_phu': { id: 'hoang_chi_phu', name: 'Hoàng Chỉ Phù', type: 'material', price: 10, description: 'Giấy phù vàng cơ bản.' },
-    'chu_sa_muc': { id: 'chu_sa_muc', name: 'Chu Sa Mực', type: 'material', price: 20, description: 'Mực chu sa dùng để vẽ phù.' },
+    'hoang_chi_phu': { id: 'hoang_chi_phu', name: 'Hoàng Chỉ Phù', type: 'material', icon: '📜', quality: 'Phàm', price: 10, description: 'Giấy phù vàng cơ bản.' },
+    'chu_sa_muc': { id: 'chu_sa_muc', name: 'Chu Sa Mực', type: 'material', icon: '🩸', quality: 'Phàm', price: 20, description: 'Mực chu sa dùng để vẽ phù.' },
 
     // Khôi Lỗi
     'khoi_loi_item': {

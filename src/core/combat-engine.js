@@ -27,7 +27,7 @@ export class CombatEngine {
     }
 
     start() {
-        this.addLog(`Bắt đầu chiến đấu với ${this.enemy.name}!`);
+        this.addLog(`Khởi động cuộc chiến với ${this.enemy.name}!`);
         this.turn = this.player.spd >= this.enemy.spd ? 0 : 1;
         this.nextTurn();
     }
@@ -47,12 +47,12 @@ export class CombatEngine {
         if (this.turn === 0) {
             if (this.status.player.stun > 0) {
                 this.status.player.stun--;
-                this.addLog("Bạn bị choáng, không thể hành động!");
+                this.addLog("Ngươi bị choáng, không thể hành động!");
                 this.turn = 1;
                 this.nextTurn();
                 return;
             }
-            this.addLog("Đến lượt của bạn. Hãy chọn hành động!");
+            this.addLog("Đến lượt của ngươi. Hãy chọn hành động!");
             this.onUpdate('player-turn-start');
         } else {
             if (this.status.enemy.stun > 0) {
@@ -153,7 +153,7 @@ export class CombatEngine {
         const finalDamage = crit ? Math.floor(damage * critDmg) : damage;
         
         this.enemy.hp -= finalDamage;
-        this.addLog(`Bạn tấn công gây ${finalDamage} sát thương${crit ? " (BẠO KÍCH!)" : ""}.`);
+        this.addLog(`Ngươi tấn công gây ${finalDamage} sát thương${crit ? " (BẠO KÍCH!)" : ""}.`);
         this.onUpdate('damage', { target: 'enemy', value: finalDamage, crit });
         
         // Party attacks
@@ -176,7 +176,7 @@ export class CombatEngine {
 
     playerDefend() {
         this.playerDefending = true;
-        this.addLog("Bạn vận công phòng thủ, giảm sát thương nhận vào.");
+        this.addLog("Ngươi vận công phòng thủ, giảm sát thương nhận vào.");
         this.turn = 1;
         this.nextTurn();
     }
@@ -191,7 +191,7 @@ export class CombatEngine {
 
         const damage = Math.floor(this.player.atk * 1.8);
         this.enemy.hp -= damage;
-        this.addLog(`Bạn thi triển Linh Thuật gây ${damage} sát thương!`);
+        this.addLog(`Ngươi thi triển Linh Thuật gây ${damage} sát thương!`);
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
 
         if (this.enemy.hp <= 0) {
@@ -221,7 +221,7 @@ export class CombatEngine {
         this.enemy.hp -= damage;
         this.status.enemy.burn = Math.max(this.status.enemy.burn, 2);
         this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, this.player.atk * 0.2 * flame.power);
-        this.addLog(`Bạn dẫn động ${flame.name} thi triển Hỏa Công gây ${damage} sát thương cực lớn!`);
+        this.addLog(`Ngươi dẫn động ${flame.name} thi triển Hỏa Công gây ${damage} sát thương cực lớn!`);
         this.addLog(`${this.enemy.name} rơi vào trạng thái THIÊU ĐỐT!`);
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
 
@@ -238,7 +238,7 @@ export class CombatEngine {
             return;
         }
         this.player.inventory.useItem(potion.id, 1);
-        this.addLog(`Bạn dùng ${getItemById(potion.id)?.name || 'đan dược'}, điều tức hồi phục.`);
+        this.addLog(`Ngươi dùng ${getItemById(potion.id)?.name || 'đan dược'}, điều tức hồi phục.`);
         this.endPlayerTurn();
     }
 
@@ -263,7 +263,7 @@ export class CombatEngine {
             this.player.def += data.effect.value || 60;
             this.addLog(`${data.name} bảo hộ thân thể, phòng ngự tăng tạm thời!`);
         } else if (data.effect?.type === 'escape') {
-            this.addLog(`Bạn dùng ${data.name} thoát chiến.`);
+            this.addLog(`Ngươi dùng ${data.name} thoát chiến.`);
             this.isActive = false;
             this.onEnd('escape');
             return;
@@ -408,7 +408,7 @@ export class CombatEngine {
         const critChance = masteryBonus?.critChance || secretData.effects?.critChance || 0;
 
         if (secretData.effects?.type === 'escape' || secretData.type === 'escape') {
-            this.addLog(`Bạn thi triển ${secretData.name} và thoát khỏi trận chiến!`);
+            this.addLog(`Ngươi thi triển ${secretData.name} và thoát khỏi trận chiến!`);
             setTimeout(() => this.onEnd('escape'), 1000);
             this.isActive = false;
             return;
@@ -420,7 +420,7 @@ export class CombatEngine {
             this.addLog(`Bí pháp bạo kích!`);
         }
         this.enemy.hp -= damage;
-        this.addLog(`Bạn thi triển ${secretData.name} bộc phát ${damage} sát thương!`);
+        this.addLog(`Ngươi thi triển ${secretData.name} bộc phát ${damage} sát thương!`);
 
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
 
@@ -506,7 +506,7 @@ export class CombatEngine {
 
     win() {
         this.isActive = false;
-        this.addLog("Chiến thắng!");
+        this.addLog("Đại thắng!");
         const reward = Math.floor(this.enemy.maxHp * 0.5);
         this.player.tuVi += reward;
         this.addLog(`Nhận được ${reward} tu vi.`);
@@ -519,7 +519,7 @@ export class CombatEngine {
         
         lootItems.forEach(itemId => {
             this.player.inventory.addItem(itemId, 1);
-            this.addLog(`Nhận được vật phẩm: [${itemId}]`);
+            this.addLog(`Thu được bảo vật: [${itemId}]`);
         });
 
         this.onUpdate('end');
@@ -528,7 +528,7 @@ export class CombatEngine {
 
     lose() {
         this.isActive = false;
-        this.addLog("Thất bại...");
+        this.addLog("Thảm bại...");
         const penalty = Math.floor(this.player.tuVi * 0.05);
         this.player.tuVi -= penalty;
         this.addLog(`Mất ${penalty} tu vi.`);

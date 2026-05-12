@@ -20,7 +20,8 @@ export const MASTERY_LEVELS = [
     { id: 1, name: 'Nhập Môn', threshold: 0, multiplier: 1.0 },
     { id: 2, name: 'Tiểu Thành', threshold: 1000, multiplier: 1.5 },
     { id: 3, name: 'Đại Thành', threshold: 5000, multiplier: 2.5 },
-    { id: 4, name: 'Viên Mãn', threshold: 15000, multiplier: 4.0 }
+    { id: 4, name: 'Viên Mãn', threshold: 15000, multiplier: 4.0 },
+    { id: 5, name: 'Đại Viên Mãn', threshold: 40000, multiplier: 6.0 }
 ];
 
 export const TECHNIQUES = {
@@ -32,6 +33,7 @@ export const TECHNIQUES = {
         quality: 'Hoàng',
         description: 'Công pháp nhập môn phổ thông được lưu truyền rộng rãi trong Nhân Giới. Ổn định, dễ tu luyện, ít tẩu hỏa nhập ma.',
         maxStage: 7,
+        stageLabel: 'Chu Thiên',
         stageNames: [
             'Cảm Khí', 'Dẫn Khí', 'Tụ Khí', 'Luyện Mạch',
             'Tiểu Chu Thiên', 'Đại Chu Thiên', 'Khí Hải Ổn Định'
@@ -79,6 +81,7 @@ export const TECHNIQUES = {
         quality: 'Hoàng',
         description: 'Công pháp thuộc tính Hỏa, hấp thu linh khí mang tính nóng bỏng của mặt trời.',
         maxStage: 5,
+        stageLabel: 'Trọng',
         stats: { atk: 15, mana: 10 },
         effects: { tvps: 1.3, fireDamage: 1.2 },
         masteryBonuses: {
@@ -96,6 +99,7 @@ export const TECHNIQUES = {
         quality: 'Hoàng',
         description: 'Công pháp thuộc tính Thủy, linh lực mang tính hàn băng, giúp ổn định tâm tính.',
         maxStage: 5,
+        stageLabel: 'Trọng',
         stats: { def: 10, mana: 30 },
         effects: { tvps: 1.3, iceDamage: 1.2 }
     },
@@ -135,6 +139,8 @@ export const TECHNIQUES = {
         quality: 'Hoàng',
         description: 'Công pháp thuộc tính Thổ, phòng ngự vững chãi như đại địa.',
         maxStage: 5,
+        stageLabel: 'Tầng',
+        stageNames: ['Đồng Bì', 'Thiết Cốt', 'Ngân Huyết', 'Kim Thân', 'Bất Diệt Thể'],
         stats: { def: 20, hp: 30 },
         effects: { tvps: 1.2, defMult: 1.15 }
     },
@@ -147,6 +153,7 @@ export const TECHNIQUES = {
         quality: 'Huyền',
         description: 'Môn luyện thể cực kỳ cường hãn, tu luyện đến đại thành có thể tay không đón thần binh.',
         maxStage: 9,
+        stageLabel: 'Chuyển',
         stats: { hp: 500, def: 100 },
         effects: { bodyPs: 1.5, physRes: 0.2 },
         masteryBonuses: {
@@ -187,6 +194,7 @@ export const TECHNIQUES = {
         quality: 'Hoàng',
         description: 'Môn rèn luyện thần hồn cơ bản, giúp tinh thần minh mẫn.',
         maxStage: 3,
+        stageLabel: 'Tầng',
         stats: { mana: 50 },
         effects: { soulPs: 1.2 }
     },
@@ -295,7 +303,9 @@ export const SECRET_TECHNIQUES = {
         type: 'profession',
         quality: 'Huyền',
         icon: '📜',
-        description: 'Tăng cường hiểu biết về đan đạo.',
+        description: 'Tăng cường hiểu biết về đan đạo. Mỗi tầng giúp tăng tỷ lệ thành công và kinh nghiệm đan đạo.',
+        maxStage: 9,
+        stageLabel: 'Tầng',
         masteryBonuses: {
             1: { alchemyExpBonus: 1.0, alchemySuccess: 1.0 },
             2: { alchemyExpBonus: 1.2, alchemySuccess: 1.05 },
@@ -309,7 +319,8 @@ export const SECRET_TECHNIQUES = {
         type: 'profession',
         quality: 'Huyền',
         icon: '📜',
-        description: 'Tăng cường hiểu biết về luyện khí.',
+        description: 'Tăng cường hiểu biết về luyện khí. Mỗi tầng giúp tăng độ bền pháp bảo và tỷ lệ tinh luyện hoàn mỹ.',
+        maxStage: 9,
         masteryBonuses: {
             1: { smithingExpBonus: 1.0 },
             2: { smithingExpBonus: 1.2, smithingSuccess: 1.05 },
@@ -323,14 +334,15 @@ export const SECRET_TECHNIQUES = {
         type: 'profession',
         quality: 'Huyền',
         icon: '📜',
-        description: 'Tăng cường hiểu biết về phù lục.',
+        description: 'Tăng cường hiểu biết về phù lục. Mỗi tầng giúp tăng uy lực phù văn và tỷ lệ vẽ song phù.',
+        maxStage: 9,
         masteryBonuses: {
             1: { talismanExpBonus: 1.0 },
             2: { talismanExpBonus: 1.2, talismanSuccess: 1.05 },
             3: { talismanExpBonus: 1.5, talismanSuccess: 1.15, talismanPower: 1.2 },
             4: { talismanExpBonus: 2.0, talismanSuccess: 1.3, talismanPower: 1.5, twinWrite: 0.2 }
-            }
-    }
+        }
+    },
 };
 
 export const getTechniqueById = (id) => TECHNIQUES[id];

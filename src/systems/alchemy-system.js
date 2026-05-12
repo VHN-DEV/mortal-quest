@@ -144,7 +144,7 @@ export class AlchemySystem {
             // ... (Dan Tribulation logic remains)
             if (result.hasTribulation) {
                 const survived = await this.ui.confirm(
-                    `Linh đan xuất thế dẫn động Đan Kiếp! Bạn có muốn dùng linh lực che chắn lò luyện? (Rủi ro: Nổ lò)`, 
+                    `Linh đan xuất thế dẫn động Đan Kiếp! Ngươi có muốn dùng linh lực che chắn lò luyện? (Rủi ro: Nổ lò)`, 
                     'ĐAN KIẾP GIÁNG LÂM'
                 );
                 
@@ -189,7 +189,7 @@ export class AlchemySystem {
         } else {
             if (result.exploded) {
                 this.player.hp -= 20; // Take damage
-                this.ui.toast("Bạn bị phản phệ từ vụ nổ lò!", "error");
+                this.ui.toast("Ngươi bị phản phệ từ vụ nổ lò!", "error");
             }
             return result;
         }

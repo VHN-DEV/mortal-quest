@@ -1,7 +1,7 @@
 import { getRealmById } from '../configs/realm-data.js';
 import { Inventory } from './inventory.js';
 import { getItemById } from '../configs/item-data.js';
-import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_QUALITIES } from '../configs/technique-data.js';
+import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_QUALITIES, MASTERY_LEVELS } from '../configs/technique-data.js';
 import { getPhysiqueById, getPhysiqueAwakenBonus, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../configs/physique-data.js';
 import { ARTIFACT_SETS } from '../configs/artifact-data.js';
 
@@ -112,7 +112,7 @@ export class Player {
         this.currentCauldron = 'pham_lu';
         this.currentFlame = 'linh_hoa';
         this.danPoison = 0;
-        this.knownRecipes = ['ngung_khi_dan']; // Start with basic recipe
+        this.knownRecipes = []; // No default recipes
         this.ownedFlames = ['linh_hoa'];
         this.ownedCauldrons = ['pham_lu'];
         this.alchemyReputation = 0;
@@ -128,13 +128,13 @@ export class Player {
         this.talismanLevel = 1;
         this.talismanExp = 0;
         this.currentTalismanPen = 'truc_phu_but';
-        this.knownTalismanRecipes = ['hoa_cau_phu'];
+        this.knownTalismanRecipes = [];
         this.ownedTalismanPens = ['truc_phu_but'];
 
         // Puppet System
         this.puppetLevel = 1;
         this.puppetExp = 0;
-        this.knownPuppetRecipes = ['thiet_giap_khoi_loi'];
+        this.knownPuppetRecipes = [];
         
         // Smithing System
         this.smithingLevel = 1;
@@ -606,6 +606,9 @@ export class Player {
         this.applyTechniqueToStats('body', this.mainBodyTechniqueId);
         this.applyTechniqueToStats('soul', this.mainSoulTechniqueId);
 
+        // Apply secret technique bonuses
+        this.applySecretTechniqueBonuses();
+
         // 3. Apply EQUIPMENT & ARTIFACT BONUSES
         const equippedIds = [];
         Object.values(this.equipment).forEach(itemId => {
@@ -776,28 +779,59 @@ export class Player {
             }
         }
 
-        const finalMult = masteryMult * qualityMult * attributeMult;
+        const stageMult = 1 + ((playerTech.stage || 1) - 1) * 0.2;
+        const finalMult = masteryMult * qualityMult * attributeMult * stageMult;
 
         // Apply path-specific cultivation rate
         if (path === 'tuvi') {
-            const baseTvps = masteryBonus?.tvps || techData.effects.tvps || 0;
+            const baseTvps = masteryBonus?.tvps || techData.effects?.tvps || 0;
             this.tuViPerSecond = baseTvps * finalMult;
         } else if (path === 'body') {
-            const baseBodyPs = masteryBonus?.bodyPs || techData.effects.bodyPs || 0;
+            const baseBodyPs = masteryBonus?.bodyPs || techData.effects?.bodyPs || 0;
             this.bodyExpPerSecond = baseBodyPs * finalMult;
         } else if (path === 'soul') {
-            const baseSoulPs = masteryBonus?.soulPs || techData.effects.soulPs || 0;
+            const baseSoulPs = masteryBonus?.soulPs || techData.effects?.soulPs || 0;
             this.soulExpPerSecond = baseSoulPs * finalMult;
         }
         
         // Apply stat bonuses from technique
         if (techData.stats) {
-            if (techData.stats.atk) this.atk += techData.stats.atk * finalMult;
-            if (techData.stats.def) this.def += techData.stats.def * finalMult;
-            if (techData.stats.hp) this.maxHp += techData.stats.hp * finalMult;
-            if (techData.stats.mana) this.maxMana += techData.stats.mana * finalMult;
-            if (techData.stats.spd) this.spd += techData.stats.spd * finalMult;
+            if (techData.stats.atk) this.bonusStats.atk += techData.stats.atk * finalMult;
+            if (techData.stats.def) this.bonusStats.def += techData.stats.def * finalMult;
+            if (techData.stats.hp) this.bonusStats.maxHp += techData.stats.hp * finalMult;
+            if (techData.stats.mana) this.bonusStats.maxMana += techData.stats.mana * finalMult;
+            if (techData.stats.spd) this.bonusStats.spd += techData.stats.spd * finalMult;
         }
+    }
+
+    applySecretTechniqueBonuses() {
+        this.learnedSecretTechniques.forEach(entry => {
+            const data = getSecretTechniqueById(entry.id);
+            if (!data || !data.masteryBonuses) return;
+
+            const masteryBonus = data.masteryBonuses[entry.masteryLevel] || {};
+            const stageMult = 1 + ((entry.stage || 1) - 1) * 0.3; // Secret techniques scale better with stage
+
+            // Apply bonuses to player state or bonuses
+            Object.entries(masteryBonus).forEach(([key, val]) => {
+                const finalVal = val * stageMult;
+                if (this.bonusStats.hasOwnProperty(key)) {
+                    // If it's a multiplier-like stat (like tuViSpeed), multiply
+                    if (key.toLowerCase().includes('speed') || key.toLowerCase().includes('bonus')) {
+                        this.bonusStats[key] *= finalVal;
+                    } else {
+                        this.bonusStats[key] += finalVal;
+                    }
+                } else if (this.advancedStats.hasOwnProperty(key)) {
+                    this.advancedStats[key] += finalVal;
+                } else if (key === 'alchemyExpBonus') {
+                    this.alchemyExpBonus = (this.alchemyExpBonus || 1.0) * finalVal;
+                } else if (key === 'beastExpBonus') {
+                    this.beastExpBonus = (this.beastExpBonus || 1.0) * finalVal;
+                }
+                // Add more custom mappings as needed for professions
+            });
+        });
     }
 
 
@@ -1384,6 +1418,44 @@ export class Player {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Đột phá tầng (Layer) cho Bí Pháp
+     */
+    breakthroughSecretTechnique(id) {
+        const secret = this.learnedSecretTechniques.find(s => s.id === id);
+        const data = getSecretTechniqueById(id);
+        
+        if (!secret || !data) return { success: false, msg: "Không tìm thấy bí pháp." };
+        
+        const maxStage = data.maxStage || 1;
+        if (secret.stage >= maxStage) {
+            return { success: false, msg: "Bí pháp đã đạt đại viên mãn, không thể đột phá thêm." };
+        }
+        
+        if (secret.masteryLevel < 4) {
+            return { success: false, msg: "Cần đạt đến cảnh giới Viên Mãn mới có thể đột phá tầng tiếp theo." };
+        }
+
+        // Cost calculation (can be adjusted)
+        const costTuVi = secret.stage * 5000 * (data.quality === 'Địa' ? 2 : data.quality === 'Thiên' ? 5 : 1);
+        
+        if (this.tuVi < costTuVi) {
+            return { success: false, msg: `Chưa đủ Tu Vi để đột phá. Cần: ${costTuVi.toLocaleString()} Tu Vi.` };
+        }
+
+        this.tuVi -= costTuVi;
+        secret.stage++;
+        secret.mastery = 0;
+        secret.masteryLevel = 1; // Reset to Nhập Môn at new layer
+
+        this.calculateStats();
+        return { 
+            success: true, 
+            msg: `Chúc mừng! Ngươi đã đột phá ${data.name} lên Tầng ${secret.stage}!`,
+            stage: secret.stage
+        };
     }
 
     // --- Physique Methods ---

@@ -74,12 +74,12 @@ export class SmithingSystem {
             }
             return { 
                 success: true, 
-                msg: `Chúc mừng! Bạn đã rèn thành công [${quality}] ${getItemById(recipe.id).name}!${hasKhiLinh ? ' VẬT PHẨM ĐÃ SINH RA KHÍ LINH!' : ''}` 
+                msg: `Chúc mừng! Ngươi đã rèn thành công [${quality}] ${getItemById(recipe.id).name}!${hasKhiLinh ? ' VẬT PHẨM ĐÃ SINH RA KHÍ LINH!' : ''}` 
             };
         } else {
             // Failure
             if (Math.random() < 0.1 + (recipe.level * 0.05)) {
-                this.ui.toast("Lò rèn nổ tung! Bạn bị thương phản phệ.", "error");
+                this.ui.toast("Lò rèn nổ tung! Ngươi bị thương phản phệ.", "error");
                 this.player.hp -= 50 * recipe.level;
             }
             return { success: false, msg: 'Rèn thất bại! Nguyên liệu đã biến thành đống sắt vụn.' };

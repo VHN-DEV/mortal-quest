@@ -15,16 +15,16 @@ export class ShopSystem {
 
     buyItem(itemId, quantity = 1) {
         const itemData = getItemById(itemId);
-        if (!itemData) return { success: false, msg: 'Vật phẩm không tồn tại!' };
+        if (!itemData) return { success: false, msg: 'Bảo vật không tồn tại!' };
 
         // Check VIP requirement
         const section = SHOPS[this.currentShopId].sections[this.currentSection];
         const shopItem = section.find(i => i.id === itemId);
-        if (!shopItem) return { success: false, msg: 'Vật phẩm không có sẵn trong cửa hàng này!' };
+        if (!shopItem) return { success: false, msg: 'Bảo vật không có sẵn trong nơi này!' };
         
         const playerVip = this.player.vipLevel || 0;
         if (shopItem.minVip && playerVip < shopItem.minVip) {
-            return { success: false, msg: `Cần cấp độ khách quý VIP ${shopItem.minVip} để mua vật phẩm này!` };
+            return { success: false, msg: `Cần cấp độ khách quý VIP ${shopItem.minVip} để trao đổi bảo vật này!` };
         }
 
         // Calculate price with VIP discount (5% per level, max 25%)
@@ -38,14 +38,14 @@ export class ShopSystem {
 
         // Check stock
         if (!shopItem || shopItem.stock < quantity) {
-            return { success: false, msg: 'Hết hàng!' };
+            return { success: false, msg: 'Nguồn hàng đã cạn kiệt!' };
         }
 
         // Execute transaction using the new player method
         if (this.player.spendLingShi(totalPrice)) {
             this.player.inventory.addItem(itemId, quantity);
             shopItem.stock -= quantity;
-            return { success: true, msg: `Đã mua ${quantity}x ${itemData.name} với giá ưu đãi VIP!` };
+            return { success: true, msg: `Đã trao đổi ${quantity}x ${itemData.name} với giá ưu đãi VIP!` };
         }
 
         return { success: false, msg: 'Giao dịch thất bại!' };
@@ -53,12 +53,12 @@ export class ShopSystem {
 
     sellItem(itemId, quantity = 1) {
         const itemData = getItemById(itemId);
-        if (!itemData) return { success: false, msg: 'Vật phẩm không tồn tại!' };
+        if (!itemData) return { success: false, msg: 'Bảo vật không tồn tại!' };
 
         // Check if player has the item
         const playerItem = this.player.inventory.items.find(i => i.id === itemId);
         if (!playerItem || playerItem.quantity < quantity) {
-            return { success: false, msg: 'Không đủ vật phẩm để bán!' };
+            return { success: false, msg: 'Không đủ bảo vật để giao dịch!' };
         }
 
         // Sell price: 30% for materials, 50% for others
@@ -71,6 +71,6 @@ export class ShopSystem {
         this.player.inventory.removeItem(itemId, quantity);
         this.player.addLingShi(sellPrice);
 
-        return { success: true, msg: `Đã bán ${quantity}x ${itemData.name}, nhận được ${sellPrice} Linh Thạch!` };
+        return { success: true, msg: `Đã giao dịch ${quantity}x ${itemData.name}, nhận được ${sellPrice} Linh Thạch!` };
     }
 }

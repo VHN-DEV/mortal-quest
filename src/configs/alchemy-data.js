@@ -26,7 +26,7 @@ export const CAULDRONS = {
         stability: 0.5,
         heatRate: 1.0,
         outputBonus: 0,
-        description: 'Lò luyện đan phổ thông của các học đồ.'
+        description: 'Lò luyện đan phổ thông của các đệ tử sơ nhập.'
     },
     'huyen_lu': {
         id: 'huyen_lu',
@@ -140,7 +140,7 @@ export const ALCHEMY_RECIPES = [
         ],
         baseSuccessRate: 0.7,
         time: 15,
-        description: 'Giúp bình ổn tâm thần, hồi phục 50% HP.'
+        description: 'Giúp bình ổn tâm thần, hồi phục 50% Khí Huyết.'
     },
     {
         id: 'truc_co_dan',
@@ -167,7 +167,7 @@ export const ALCHEMY_RECIPES = [
         ],
         baseSuccessRate: 0.65,
         time: 20,
-        description: 'Bồi bổ nguyên khí, hồi phục HP và Mana.'
+        description: 'Bồi bổ nguyên khí, hồi phục Khí Huyết và Linh Lực.'
     },
     {
         id: 'ngung_anh_dan',

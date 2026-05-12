@@ -116,9 +116,6 @@ export class Game {
 
     bindPlaceholderButtons() {
         const placeholderBinds = {
-            'tech-tab-cultivation': 'Mục Công Pháp đang được hoàn thiện giao diện mới.',
-            'tech-tab-secret': 'Mục Bí Pháp đang được hoàn thiện giao diện mới.',
-            'tech-back-btn': 'Trang chi tiết công pháp tạm thời chưa khả dụng.',
             'btn-npc-talk': 'Tương tác hội thoại NPC đang được bảo trì.',
             'btn-npc-gift': 'Tính năng tặng quà NPC đang được phát triển.',
             'btn-npc-party': 'Tính năng mời NPC vào đội đang được phát triển.',
@@ -151,7 +148,14 @@ export class Game {
         Object.entries(navMappings).forEach(([btnId, screenId]) => {
             const btn = document.getElementById(btnId);
             if (btn) {
-                btn.onclick = () => state.ui.switchScreen(screenId, btn);
+                btn.onclick = () => {
+                    state.ui.switchScreen(screenId, btn);
+                    if (screenId === 'screen-technique') {
+                        this.screens.systems.renderTechniques(state.activeTechTab || 'cultivation');
+                    } else if (screenId === 'screen-crafting-hub') {
+                        this.screens.systems.renderCraftingHub();
+                    }
+                };
             }
         });
 
@@ -331,7 +335,7 @@ export class Game {
     }
 
     resetGame() {
-        state.ui.confirm("Bạn có chắc chắn muốn xóa hết tu vi để bắt đầu lại từ đầu? Hành động này không thể hoàn tác!", "Xác Nhận Luân Hồi")
+        state.ui.confirm("Ngươi có chắc chắn muốn xóa hết tu vi để bắt đầu lại từ đầu? Hành động này không thể hoàn tác!", "Xác Nhận Luân Hồi")
             .then(confirmed => {
                 if (confirmed) {
                     SaveSystem.clear();
@@ -343,7 +347,7 @@ export class Game {
     handleDeath() {
         // Logic hồi sinh
         state.player.hp = Math.floor(state.player.maxHp * 0.1);
-        state.ui.toast("Bạn đã kiệt sức và ngất đi...", "error");
+        state.ui.toast("Ngươi đã kiệt sức và ngất đi...", "error");
         this.refreshUI();
     }
 
@@ -754,62 +758,6 @@ export class Game {
         }
     }
 
-    // Bridge methods for new systems
-    drawTalisman(recipeId) {
-        if (state.systems.talisman) {
-            const res = state.systems.talisman.draw(recipeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    forge(recipeId) {
-        if (state.systems.smithing) {
-            const res = state.systems.smithing.forge(recipeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    activateFormation(diagramId) {
-        if (state.systems.formation) {
-            const res = state.systems.formation.activateFormation(diagramId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    deactivateFormation(diagramId) {
-        if (state.systems.formation) {
-            const res = state.systems.formation.deactivateFormation(diagramId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    refineCorpse(typeId) {
-        if (state.systems.corpse) {
-            const res = state.systems.corpse.refine(typeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    craftPuppet(recipeId) {
-        if (state.systems.puppet) {
-            const res = state.systems.puppet.craft(recipeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    hatchBeast(eggId) {
-        if (state.systems.beast) {
-            const res = state.systems.beast.hatch(eggId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
 
     openCrafting(type) {
         if (this.screens.systems) {
@@ -820,6 +768,42 @@ export class Game {
     openCraftingHub() {
         if (this.screens.systems) {
             this.screens.systems.openCraftingHub();
+        }
+    }
+
+    cultivateTechnique(id, isSecret) {
+        const result = state.systems.technique.cultivate(id, isSecret);
+        if (result.success) {
+            state.ui.toast(result.msg, 'success');
+            this.screens.systems.renderTechniqueDetail(id, isSecret);
+            state.player.calculateStats();
+            state.ui.updateHUD();
+        } else {
+            state.ui.toast(result.msg, 'error');
+        }
+    }
+
+    breakthroughTechnique(id, isSecret) {
+        let success = false;
+        let msg = "";
+
+        if (isSecret) {
+            const res = state.player.breakthroughSecretTechnique(id);
+            success = res.success;
+            msg = res.msg;
+        } else {
+            // Main technique breakthrough (if implemented)
+            success = false;
+            msg = "Công pháp này hiện chưa hỗ trợ đột phá tầng.";
+        }
+
+        if (success) {
+            state.ui.toast(msg, 'success');
+            this.screens.systems.renderTechniqueDetail(id, isSecret);
+            state.player.calculateStats();
+            state.ui.updateHUD();
+        } else {
+            state.ui.toast(msg || "Không thể đột phá!", 'warning');
         }
     }
 }

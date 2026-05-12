@@ -175,14 +175,14 @@ export class CharacterScreen {
         
         const stats = state.player.advancedStats;
         const labels = {
-            pierce: 'Xuyên Giáp',
-            soulPierce: 'Xuyên Hồn',
+            pierce: 'Phá Giáp',
+            soulPierce: 'Phá Hồn',
             critRate: 'Bạo Kích',
             critDmg: 'Sát Thương Bạo',
-            lifeSteal: 'Hút Máu',
-            soulRepress: 'Trấn Áp',
+            lifeSteal: 'Huyết Tế',
+            soulRepress: 'Trấn Áp Thần Thức',
             daoVun: 'Đạo Vận',
-            murderQi: 'Hung Sát'
+            murderQi: 'Sát Khí'
         };
 
         this.elCharAdvancedStats.innerHTML = Object.entries(labels).map(([key, label]) => {
@@ -208,8 +208,16 @@ export class CharacterScreen {
         if (techId) {
             const tech = getTechniqueById(techId);
             const entry = state.player.learnedTechniques.find(t => t.id === techId);
-            const mastery = MASTERY_LEVELS.find(m => m.id === (entry?.masteryLevel || 1));
-            element.textContent = tech ? `${tech.name} (${mastery?.name || 'Nhập Môn'})` : "Không";
+            if (!tech || !entry) {
+                element.textContent = "Không";
+                return;
+            }
+            
+            const mastery = MASTERY_LEVELS.find(m => m.id === (entry.masteryLevel || 1));
+            const stageLabel = tech.stageLabel || 'Tầng';
+            const stageName = (tech.stageNames && tech.stageNames[entry.stage - 1]) ? tech.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
+            
+            element.textContent = `${tech.name} [${stageName}] (${mastery?.name || 'Nhập Môn'})`;
         } else {
             element.textContent = "Không";
         }

@@ -159,7 +159,7 @@ export class MapScreen {
         state.ui.toggleOverlay(this.viewExplore, true);
         
         this.updateExplorationUI();
-        this.updateEventDisplay('Bạn đã tới địa điểm.', '🚶');
+        this.updateEventDisplay('Ngươi đã tới địa điểm.', '🚶');
 
         if (state.systems.time) {
             state.systems.time.timeMultiplier = loc.timeRate || 1.0;
@@ -175,7 +175,7 @@ export class MapScreen {
 
     handleMove() {
         if (state.player.stamina < 5) { 
-            state.ui.toast('Không đủ thể lực!', 'error'); 
+            state.ui.toast('Thể lực khô cạn!', 'error'); 
             return; 
         }
         
@@ -219,7 +219,7 @@ export class MapScreen {
 
         if (state.explorationProgress >= 100) {
             setTimeout(() => {
-                state.ui.toast(`Bạn đã hoàn thành khám phá ${loc.name}!`, 'success');
+                state.ui.toast(`Ngươi đã hoàn thành lịch luyện tại ${loc.name}!`, 'success');
                 state.explorationProgress = 0;
                 this.updateExplorationUI();
             }, 1500);
@@ -236,10 +236,10 @@ export class MapScreen {
             hasSpecial = true;
             this.elLocSpecialActions.innerHTML = `
                 <button onclick="window.game.openShop('buy')" class="py-3 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
-                    <i class="ph ph-shopping-cart text-lg mb-1"></i>MUA ĐỒ
+                    <i class="ph ph-shopping-cart text-lg mb-1"></i>TRAO ĐỔI
                 </button>
                 <button onclick="window.game.openShop('sell')" class="py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
-                    <i class="ph ph-currency-circle-dollar text-lg mb-1"></i>BÁN ĐỒ
+                    <i class="ph ph-currency-circle-dollar text-lg mb-1"></i>GIAO DỊCH
                 </button>
                 <button onclick="window.game.openAuction()" class="col-span-2 py-3 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
                     <i class="ph ph-hammer text-lg"></i><span>ĐẤU GIÁ</span>

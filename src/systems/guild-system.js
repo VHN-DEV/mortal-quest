@@ -25,7 +25,7 @@ export class GuildSystem {
         }
 
         const confirm = await this.ui.confirm(
-            `${cert.name}: Phí ${cert.requirements.fee} LT. Bạn cần nộp ${cert.task.quantity} viên ${getItemById(cert.task.targetId).name} đạt phẩm chất ${cert.task.minQuality}. Bắt đầu?`,
+            `${cert.name}: Phí ${cert.requirements.fee} LT. Ngươi cần nộp ${cert.task.quantity} viên ${getItemById(cert.task.targetId).name} đạt phẩm chất ${cert.task.minQuality}. Bắt đầu?`,
             "KHẢO HẠCH CÔNG HỘI"
         );
 
@@ -49,7 +49,7 @@ export class GuildSystem {
                 }
                 this.player.alchemyReputation += cert.reward.reputation;
                 this.player.addLingShi(cert.reward.lingShi);
-                this.ui.alert(`Chúc mừng! Bạn đã nhận được danh hiệu: ${cert.reward.title}`, "KHẢO HẠCH THÀNH CÔNG");
+                this.ui.alert(`Chúc mừng! Ngươi đã nhận được danh hiệu: ${cert.reward.title}`, "KHẢO HẠCH THÀNH CÔNG");
                 return true;
             } else {
                 this.ui.alert("Sản phẩm không đạt yêu cầu hoặc không đủ số lượng. Khảo hạch thất bại!", "KHẢO HẠCH THẤT BẠI");
@@ -81,7 +81,7 @@ export class GuildSystem {
             if (mission.rewards.items) {
                 mission.rewards.items.forEach(id => this.player.inventory.addItem(id, 1));
             }
-            this.ui.toast(`Hoàn thành nhiệm vụ: ${mission.name}!`, "success");
+            this.ui.toast(`Hoàn thành ủy thác: ${mission.name}!`, "success");
             return true;
         } else {
             this.ui.toast("Không đủ đan dược yêu cầu!", "error");

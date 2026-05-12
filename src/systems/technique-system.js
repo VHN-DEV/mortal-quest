@@ -26,10 +26,10 @@ export class TechniqueSystem {
         
         // Cập nhật cấp độ thuần thục
         const currentMastery = MASTERY_LEVELS.filter(m => playerTech.mastery >= m.threshold).pop();
-        playerTech.masteryLevel = currentMastery.name;
+        playerTech.masteryLevel = currentMastery.id;
 
         // Kiểm tra tiến hóa nếu đạt Viên Mãn
-        if (currentMastery.name === 'Viên Mãn') {
+        if (currentMastery.id === 4) {
             this.checkEvolution(techId);
         }
 
@@ -267,20 +267,41 @@ export class TechniqueSystem {
     }
 
     /**
+     * Tăng độ thuần thục cho Bí Pháp
+     */
+    addSecretMastery(secretId, amount) {
+        const secret = this.player.learnedSecretTechniques.find(s => s.id === secretId);
+        if (!secret) return false;
+
+        secret.mastery += amount;
+        const currentMastery = MASTERY_LEVELS.filter(m => secret.mastery >= m.threshold).pop();
+        
+        if (currentMastery.id > secret.masteryLevel) {
+            secret.masteryLevel = currentMastery.id;
+            return { leveledUp: true, newLevel: currentMastery.name };
+        }
+        return { leveledUp: false };
+    }
+
+    /**
      * Tu luyện công pháp để tăng độ thuần thục
      * @param {string} techId 
+     * @param {boolean} isSecret
      */
-    cultivate(techId) {
-        const playerTech = this.player.learnedTechniques.find(t => t.id === techId);
-        if (!playerTech) return { success: false, msg: "Không tìm thấy công pháp." };
-
+    cultivate(techId, isSecret = false) {
         if (this.player.techniquePoints < 1) {
             return { success: false, msg: "Không đủ Điểm Công Pháp." };
         }
 
         this.player.techniquePoints -= 1;
-        this.addMastery(techId, 10 + Math.floor(Math.random() * 10));
+        const gain = 10 + Math.floor(Math.random() * 10);
         
-        return { success: true, msg: "Tu luyện thành công!" };
+        if (isSecret) {
+            const res = this.addSecretMastery(techId, gain);
+            return { success: true, msg: res.leveledUp ? `Lĩnh ngộ bí pháp tăng tiến! Đạt đến: ${res.newLevel}` : "Lĩnh ngộ bí pháp tăng thêm một chút." };
+        } else {
+            this.addMastery(techId, gain);
+            return { success: true, msg: "Tu luyện thành công!" };
+        }
     }
 }

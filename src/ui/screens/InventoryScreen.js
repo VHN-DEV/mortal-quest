@@ -193,10 +193,10 @@ export class InventoryScreen {
 
         const typeNames = {
             'spirit_stone': 'Linh Thạch',
-            'consumable': 'Vật Phẩm Tiêu Hao',
-            'book': 'Bí Tịch / Công Pháp',
-            'weapon': 'Pháp Bảo / Vũ Khí',
-            'armor': 'Pháp Y / Giáp',
+            'consumable': 'Đan Dược / Linh Vật',
+            'book': 'Công Pháp / Bí Tịch',
+            'weapon': 'Linh Khí / Pháp Bảo',
+            'armor': 'Pháp Y / Linh Giáp',
             'accessory': 'Trang Sức',
             'treasure': 'Thiên Tài Địa Bảo',
             'formation': 'Trận Pháp',
@@ -205,7 +205,7 @@ export class InventoryScreen {
             'attackArtifact': 'Pháp Bảo Chủ Chiến',
             'defenseArtifact': 'Pháp Bảo Hộ Thân',
             'flightArtifact': 'Phi Hành Pháp Bảo',
-            'spaceArtifact': 'Không Gian Pháp Bảo',
+            'spaceArtifact': 'Càn Khôn Pháp Bảo',
             'formationArtifact': 'Trận Đạo Pháp Bảo',
             'supportArtifact': 'Phụ Trợ Pháp Bảo',
             'soulArtifact': 'Hồn Đạo Pháp Bảo'
@@ -265,6 +265,10 @@ export class InventoryScreen {
             this.btnUseItem.textContent = 'LUYỆN HÓA';
         } else {
             this.btnUseItem.textContent = (itemData.type === 'book') ? 'LĨNH NGỘ' : 'SỬ DỤNG';
+        }
+        
+        if (equippable) {
+            this.btnEquipItem.textContent = itemData.type.includes('Artifact') ? 'KHỞI ĐỘNG' : 'TRANG BỊ';
         }
 
         const mappedSlot = state.player.getEquipSlotForItemType
