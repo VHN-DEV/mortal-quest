@@ -1122,16 +1122,8 @@ export class Game {
 
     selectCreationMode(mode) {
         if (state.systems.creation) {
-            state.systems.creation.mode = mode;
-            if (mode === 'random') {
-                state.systems.creation.rollRandom();
-            } else if (mode === 'custom') {
-                state.systems.creation.mode = 'custom';
-                state.systems.creation.calculatePoints();
-            } else if (mode === 'special') {
-                // ... logic for special scenarios if needed
-            }
-            // Ensure starting resources are synced with mode defaults if needed
+            state.systems.creation.mode = mode === 'custom' ? 'custom' : 'custom';
+            state.systems.creation.calculatePoints();
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }

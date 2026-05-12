@@ -89,22 +89,17 @@
                         <!-- Mode Selection -->
                         <div class="creation-mode-wrap space-y-2">
                             <div class="flex space-x-1 md:space-x-2 bg-black/50 p-1.5 rounded-2xl border border-white/10">
-                            <button id="creation-mode-random"
-                                class="flex-grow py-3 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all">Ngẫu
-                                Nhiên</button>
                             <button id="creation-mode-custom"
                                 class="flex-grow py-3 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl bg-qi-blue/20 text-qi-blue border border-qi-blue/30 transition-all">Tùy
                                 Chỉnh</button>
-                            <button id="creation-mode-special"
-                                class="flex-grow py-3 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all">Thiên
-                                Mệnh</button>
                                                     </div>
                             <div id="creation-reroll-container" class="hidden">
                             <button id="creation-reroll-btn"
                                 class="w-full py-2.5 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all bg-qi-purple/15 border border-qi-purple/30 text-qi-purple hover:bg-qi-purple/25">
-                                Xáo Trộn Ngẫu Nhiên
+                                Gợi ý ngẫu nhiên
                             </button>
                                                     </div>
+                            <div id="creation-mode-description" class="text-[9px] md:text-[10px] text-gray-400 bg-black/35 border border-white/10 rounded-xl px-3 py-2 leading-relaxed"></div>
                         </div>
 
                         <!-- Player Name -->
@@ -142,11 +137,17 @@
                         <!-- Points Counter (Custom Mode only) -->
                         <div id="creation-points-container"
                             class="sticky top-0 z-10 bg-qi-ink/90 backdrop-blur-md py-3 border-b border-white/5 flex justify-between items-center px-2">
-                            <span class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest">Điểm Tiên
-                                Duyên:</span>
+                            <div class="flex flex-col">
+                                <span id="creation-points-label" class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest">Điểm Tiên Duyên:</span>
+                                <span id="creation-points-note" class="text-[8px] text-gray-500">Điểm dùng để tùy chỉnh xuất thân/tài nguyên.</span>
+                            </div>
                             <div id="creation-points-value"
                                 class="text-xl md:text-2xl font-bold font-mono text-qi-blue">100</div>
                         </div>
+
+
+                        <!-- Preview Stats -->
+                        <div id="creation-stats-preview" class="grid grid-cols-3 gap-2"></div>
 
                         <!-- Selection Panels -->
                         <div id="creation-panels" class="space-y-8 md:space-y-10 pb-12">
@@ -214,14 +215,6 @@
                                     class="text-[10px] md:text-xs font-ancient text-gray-400 uppercase tracking-widest border-l-2 border-gray-400 pl-3">
                                     Thiên Phú & Nhân Quả</h3>
                                 <div id="creation-traits-grid" class="grid grid-cols-2 gap-2 md:gap-3"></div>
-                            </section>
-
-                            <!-- Special Scenarios (Hidden by default) -->
-                            <section id="creation-scenarios-panel" class="hidden space-y-4">
-                                <h3
-                                    class="text-[10px] md:text-xs font-ancient text-red-400 uppercase tracking-widest border-l-2 border-red-400 pl-3">
-                                    Mệnh Cách Đặc Biệt</h3>
-                                <div id="creation-scenarios-list" class="space-y-4"></div>
                             </section>
                         </div>
                     </div>
