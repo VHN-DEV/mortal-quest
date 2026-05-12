@@ -1075,6 +1075,7 @@ export class Game {
     selectCreationRoot(id) {
         if (state.systems.creation) {
             state.systems.creation.selectedRoot = id;
+            state.systems.creation.calculatePoints();
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }
@@ -1082,6 +1083,7 @@ export class Game {
     selectCreationPhysique(id) {
         if (state.systems.creation) {
             state.systems.creation.selectedPhysique = id;
+            state.systems.creation.calculatePoints();
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }
@@ -1094,6 +1096,7 @@ export class Game {
             if (origin) {
                 state.systems.creation.startingLingShi = origin.resources.lingShi;
             }
+            state.systems.creation.calculatePoints();
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }
