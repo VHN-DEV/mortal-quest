@@ -2,6 +2,37 @@ import { getAssetUrl } from './asset-data.js';
 
 const getLocImg = (id) => getAssetUrl(`locations/${id}`);
 
+export const DANGER_LEVELS = {
+    an_toan: {
+        name: 'An Toàn',
+        color: '#22c55e'
+    },
+    ha_cap: {
+        name: 'Hạ Cấp',
+        color: '#3b82f6'
+    },
+    trung_cap: {
+        name: 'Trung Cấp',
+        color: '#eab308'
+    },
+    cao_cap: {
+        name: 'Cao Cấp',
+        color: '#f97316'
+    },
+    nguy_hiem: {
+        name: 'Nguy Hiểm',
+        color: '#ef4444'
+    },
+    cuc_ky_nguy_hiem: {
+        name: 'Cực Kỳ Nguy Hiểm',
+        color: '#991b1b'
+    },
+    tu_dia: {
+        name: 'Tử Địa',
+        color: '#7e22ce'
+    }
+};
+
 export const WORLDS = {
     'nhan_gioi': {
         name: 'Phàm Trần Giới',
@@ -12,7 +43,7 @@ export const WORLDS = {
                 id: 'van_thu_lam',
                 name: 'Vạn Thú Chi Lâm',
                 minRealm: 1,
-                danger: 'Hạ Cấp',
+                danger: 'ha_cap',
                 image: getLocImg('van_thu_lam'),
                 description: 'Nơi yêu thú sơ cấp hoành hành, đầy rẫy linh thảo thiên nhiên.',
                 resources: ['Linh Thảo', 'Yêu Đan Hạ Phẩm'],
@@ -23,7 +54,7 @@ export const WORLDS = {
                 id: 'loan_tinh_hai',
                 name: 'Loạn Tinh Hải',
                 minRealm: 1,
-                danger: 'Hạ Cấp',
+                danger: 'ha_cap',
                 image: getLocImg('loan_tinh_hai'),
                 description: 'Vùng biển hỗn loạn với vô số đảo nhỏ và yêu thú thủy tộc.',
                 resources: ['Thủy Tinh', 'Linh Thạch Hạ Phẩm'],
@@ -34,7 +65,7 @@ export const WORLDS = {
                 id: 'thien_kiem_tong',
                 name: 'Thiên Kiếm Thánh Tông',
                 minRealm: 5,
-                danger: 'An Toàn',
+                danger: 'an_toan',
                 image: getLocImg('thien_kiem_tong'),
                 description: 'Kiếm đạo thánh địa, nơi vạn kiếm quy tông.',
                 resources: ['Kiếm Ý', 'Linh Khoáng'],
@@ -45,7 +76,7 @@ export const WORLDS = {
                 id: 'huyen_am_coc',
                 name: 'Huyền Âm Ma Cốc',
                 minRealm: 10,
-                danger: 'Trung Cấp',
+                danger: 'trung_cap',
                 image: getLocImg('huyen_am_coc'),
                 description: 'U ám tà khí, nơi ma tu thường xuyên ẩn nấp phục kích.',
                 resources: ['Âm Sát', 'Ma Thạch'],
@@ -56,7 +87,7 @@ export const WORLDS = {
                 id: 'van_bao_cac',
                 name: 'Vạn Bảo Các',
                 minRealm: 1,
-                danger: 'An Toàn',
+                danger: 'an_toan',
                 image: getLocImg('van_bao_cac'),
                 description: 'Thương hội liên giới, nơi có mọi thứ mà tu sĩ cần.',
                 resources: ['Đan Dược', 'Pháp Bảo'],
@@ -66,7 +97,7 @@ export const WORLDS = {
                 id: 'linh_bao_lau',
                 name: 'Linh Bảo Lâu',
                 minRealm: 5,
-                danger: 'An Toàn',
+                danger: 'an_toan',
                 image: getLocImg('linh_bao_lau'),
                 description: 'Lâu đài chứa đựng vô số linh bảo, cạnh tranh khốc liệt với Vạn Bảo Các.',
                 resources: ['Pháp Bảo Hiếm', 'Vật Phẩm Quý'],
@@ -76,7 +107,7 @@ export const WORLDS = {
                 id: 'cong_hoi_luyen_duoc',
                 name: 'Công Hội Luyện Dược Sư',
                 minRealm: 1,
-                danger: 'An Toàn',
+                danger: 'an_toan',
                 image: getLocImg('cong_hoi_luyen_duoc'),
                 description: 'Nơi quản lý và cấp chứng nhận cho các Luyện Dược Sư.',
                 resources: ['Đan Phương', 'Linh Thảo'],
@@ -87,7 +118,7 @@ export const WORLDS = {
                 id: 'thap_van_dai_son',
                 name: 'Thập Vạn Đại Sơn',
                 minRealm: 1,
-                danger: 'Cực Kỳ Nguy Hiểm',
+                danger: 'cuc_ky_nguy_hiem',
                 image: getLocImg('thap_van_dai_son'),
                 description: 'Dãy núi cổ vô tận, nơi chôn giấu bí mật thời thượng cổ.',
                 resources: ['Yêu Đan', 'Linh Dược Cổ'],
@@ -106,7 +137,7 @@ export const WORLDS = {
                 id: 'linh_vuc_thanh_dia',
                 name: 'Thượng Cổ Linh Vực',
                 minRealm: 30,
-                danger: 'Cao Cấp',
+                danger: 'cao_cap',
                 image: getLocImg('linh_vuc_thanh_dia'),
                 description: 'Di tích cổ đại with linh khí đậm đặc gấp bội.',
                 resources: ['Linh Thạch Trung Phẩm', 'Cổ Bảo'],
@@ -117,7 +148,7 @@ export const WORLDS = {
                 id: 'dan_thap',
                 name: 'Thánh Địa Đan Tháp',
                 minRealm: 30,
-                danger: 'An Toàn',
+                danger: 'an_toan',
                 image: getLocImg('dan_thap'),
                 description: 'Nơi cao nhất của Đan Đạo, hội tụ các bậc đại sư.',
                 resources: ['Tiên Đan', 'Dị Hỏa Chi Lực'],
@@ -128,7 +159,7 @@ export const WORLDS = {
                 id: 'thoi_khong_bi_canh',
                 name: 'Thời Không Bí Cảnh',
                 minRealm: 30,
-                danger: 'Trung Cấp',
+                danger: 'trung_cap',
                 image: getLocImg('thoi_khong_bi_canh'),
                 description: 'Nơi quy luật thời gian bị bẻ cong, một ngày bên trong bằng mười ngày bên ngoài.',
                 resources: ['Thời Không Tinh Thạch'],
@@ -147,7 +178,7 @@ export const WORLDS = {
                 id: 'cuu_trong_thien',
                 name: 'Cửu Trọng Thiên Khuyết',
                 minRealm: 42,
-                danger: 'Tử Địa',
+                danger: 'tu_dia',
                 image: getLocImg('cuu_trong_thien'),
                 description: 'Nơi ở của các Tiên nhân và Đạo tổ vĩnh hằng.',
                 resources: ['Tiên Khí', 'Đạo Quả'],

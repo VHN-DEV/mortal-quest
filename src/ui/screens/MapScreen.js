@@ -1,5 +1,5 @@
 import { state } from '../../state.js';
-import { getWorlds, getLocationById } from '../../configs/map-data.js';
+import { getWorlds, getLocationById, DANGER_LEVELS } from '../../configs/map-data.js';
 import { getRealmById } from '../../configs/realm-data.js';
 import { ASSETS } from '../../configs/asset-data.js';
 import { getRandomEvent } from '../../configs/event-data.js';
@@ -162,7 +162,8 @@ export class MapScreen {
             const el = document.createElement('div');
             el.className = `location-card h-40 p-6 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
             
-            const dangerClass = this.getDangerClass(loc.danger);
+            const dangerInfo = DANGER_LEVELS[loc.danger] || { name: loc.danger };
+            const dangerClass = `danger-${loc.danger}`;
 
             el.innerHTML = `
                 <img src="${loc.image || ASSETS.backgrounds.cultivation}" class="location-card-image">
@@ -173,7 +174,7 @@ export class MapScreen {
                     </div>
                     <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">${loc.description}</p>
                     <div class="flex items-center space-x-2 pt-1">
-                        <span class="px-2 py-0.5 rounded border text-[7px] uppercase font-bold tracking-widest ${dangerClass}">${loc.danger}</span>
+                        <span class="px-2 py-0.5 rounded border text-[7px] uppercase font-bold tracking-widest ${dangerClass}">${dangerInfo.name}</span>
                         <span class="text-[7px] text-gray-500 uppercase tracking-widest">Yêu cầu: ${getRealmById(loc.minRealm).name}</span>
                     </div>
                 </div>
@@ -184,14 +185,7 @@ export class MapScreen {
     }
 
     getDangerClass(danger) {
-        const map = {
-            'An Toàn': 'danger-an-toan',
-            'Hạ Cấp': 'danger-ha-cap',
-            'Trung Cấp': 'danger-trung-cap',
-            'Cao Cấp': 'danger-cao-cap',
-            'Cực Nguy Hiểm': 'danger-cuc-nguy-hiem'
-        };
-        return map[danger] || 'bg-black/40 border-white/10 text-qi-blue';
+        return `danger-${danger}`;
     }
 
     startExploration(locId, resetProgress = true) {
