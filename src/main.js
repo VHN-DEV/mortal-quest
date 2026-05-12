@@ -143,6 +143,45 @@ window.renderTimeHUD = () => {
     }
 };
 
+const CREATION_BONUS_LABELS = {
+    atk: 'Công',
+    def: 'Thủ',
+    maxHp: 'Sinh lực',
+    spd: 'Tốc',
+    mana: 'Mana',
+    luck: 'May mắn',
+    karma: 'Nghiệp',
+    tvps: 'Tu vi/s',
+    alchemySuccess: 'Tỉ lệ luyện đan'
+};
+
+const formatCreationBonus = (bonus = {}) => {
+    const normalized = { ...bonus, ...(bonus.stats || {}) };
+    delete normalized.stats;
+
+    return Object.entries(normalized)
+        .map(([key, value]) => {
+            if (typeof value !== 'number') return null;
+            const label = CREATION_BONUS_LABELS[key] || key;
+            if (key === 'tvps' || key === 'alchemySuccess') {
+                const percent = Math.round((value - 1) * 100);
+                return `${label} ${percent > 0 ? '+' : ''}${percent}%`;
+            }
+            return `${label} ${value > 0 ? '+' : ''}${value}`;
+        })
+        .filter(Boolean)
+        .join(' · ');
+};
+
+const formatOriginResources = (origin) => {
+    const lingShi = origin?.resources?.lingShi || 0;
+    const monthly = origin?.monthlyResources?.lingShi || 0;
+    const lines = [];
+    if (lingShi !== 0) lines.push(`Linh thạch ${lingShi > 0 ? '+' : ''}${lingShi}`);
+    if (monthly !== 0) lines.push(`Bổng lộc/tháng ${monthly > 0 ? '+' : ''}${monthly}`);
+    return lines.join(' · ');
+};
+
 window.renderCreationScreen = () => {
     const sys = state.systems.creation;
     if (!sys) return;
@@ -303,10 +342,11 @@ window.renderCreationScreen = () => {
             const active = sys.selectedRoot === r.id;
             return `
                 <button onclick="window.game.selectCreationRoot('${r.id}')" 
-                    class="p-4 bg-white/5 border ${active ? 'border-qi-blue bg-qi-blue/10' : 'border-white/10'} rounded-xl hover:border-qi-blue transition-all text-left">
-                    <div class="${active ? 'text-qi-blue' : 'text-gray-300'} font-bold text-xs">${r.name}</div>
-                    <div class="text-[8px] text-gray-500 mt-1">${r.desc}</div>
-                    <div class="text-[8px] text-cultivation-gold mt-1">Hao phí: ${r.cost}</div>
+                    class="p-4 bg-white/5 border ${active ? 'border-qi-blue bg-qi-blue/10' : 'border-white/10'} rounded-xl hover:border-qi-blue transition-all text-left space-y-1">
+                    <div class="${active ? 'text-qi-blue' : 'text-gray-300'} font-bold text-xs leading-relaxed">${r.name}</div>
+                    <div class="text-[8px] text-gray-500 leading-relaxed">${r.desc}</div>
+                    <div class="text-[8px] text-emerald-300/90 leading-relaxed">${formatCreationBonus(r.bonus) || 'Không có chỉ số cộng thêm'}</div>
+                    <div class="text-[8px] text-cultivation-gold">Hao phí: ${r.cost}</div>
                 </button>
             `;
         }).join('');
@@ -333,12 +373,13 @@ window.renderCreationScreen = () => {
             const active = sys.selectedOrigin === o.id;
             return `
                 <button onclick="window.game.selectCreationOrigin('${o.id}')" 
-                    class="w-full p-4 bg-white/5 border ${active ? 'border-qi-blue bg-qi-blue/10' : 'border-white/10'} rounded-xl hover:border-qi-blue transition-all text-left flex justify-between items-center">
-                    <div>
-                        <div class="${active ? 'text-qi-blue' : 'text-gray-300'} font-bold text-xs">${o.name}</div>
-                        <div class="text-[8px] text-gray-500 mt-1">${o.desc}</div>
+                    class="w-full p-4 bg-white/5 border ${active ? 'border-qi-blue bg-qi-blue/10' : 'border-white/10'} rounded-xl hover:border-qi-blue transition-all text-left flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+                    <div class="space-y-1">
+                        <div class="${active ? 'text-qi-blue' : 'text-gray-300'} font-bold text-xs leading-relaxed">${o.name}</div>
+                        <div class="text-[8px] text-gray-500 leading-relaxed">${o.desc}</div>
+                        <div class="text-[8px] text-emerald-300/90 leading-relaxed">${formatOriginResources(o) || 'Không có tài nguyên cộng thêm'}</div>
                     </div>
-                    <div class="text-[8px] text-cultivation-gold">Hao phí: ${o.cost}</div>
+                    <div class="text-[8px] text-cultivation-gold shrink-0">Hao phí: ${o.cost}</div>
                 </button>
             `;
         }).join('');
@@ -349,10 +390,11 @@ window.renderCreationScreen = () => {
             const active = sys.selectedTraits.includes(t.id);
             return `
                 <button onclick="window.game.toggleCreationTrait('${t.id}')" 
-                    class="p-3 bg-white/5 border ${active ? 'border-qi-jade bg-qi-jade/10' : 'border-white/10'} rounded-xl hover:border-qi-jade transition-all text-left">
-                    <div class="${active ? 'text-qi-jade' : 'text-gray-300'} font-bold text-[10px]">${t.name}</div>
-                    <div class="text-[8px] text-gray-500 mt-1">${t.desc}</div>
-                    <div class="text-[8px] text-cultivation-gold mt-1">Hao phí: ${t.cost}</div>
+                    class="p-3 bg-white/5 border ${active ? 'border-qi-jade bg-qi-jade/10' : 'border-white/10'} rounded-xl hover:border-qi-jade transition-all text-left space-y-1">
+                    <div class="${active ? 'text-qi-jade' : 'text-gray-300'} font-bold text-[10px] leading-relaxed">${t.name}</div>
+                    <div class="text-[8px] text-gray-500 leading-relaxed">${t.desc}</div>
+                    <div class="text-[8px] text-emerald-300/90 leading-relaxed">${formatCreationBonus(t.bonus) || 'Không có chỉ số cộng thêm'}</div>
+                    <div class="text-[8px] text-cultivation-gold">Hao phí: ${t.cost}</div>
                 </button>
             `;
         }).join('');
