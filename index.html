@@ -105,6 +105,7 @@
                                 Xáo Trộn Ngẫu Nhiên
                             </button>
                                                     </div>
+                            <div id="creation-mode-description" class="text-[9px] md:text-[10px] text-gray-400 bg-black/35 border border-white/10 rounded-xl px-3 py-2 leading-relaxed"></div>
                         </div>
 
                         <!-- Player Name -->
@@ -142,8 +143,10 @@
                         <!-- Points Counter (Custom Mode only) -->
                         <div id="creation-points-container"
                             class="sticky top-0 z-10 bg-qi-ink/90 backdrop-blur-md py-3 border-b border-white/5 flex justify-between items-center px-2">
-                            <span class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest">Điểm Tiên
-                                Duyên:</span>
+                            <div class="flex flex-col">
+                                <span id="creation-points-label" class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest">Điểm Tiên Duyên:</span>
+                                <span id="creation-points-note" class="text-[8px] text-gray-500">Điểm dùng để tùy chỉnh xuất thân/tài nguyên.</span>
+                            </div>
                             <div id="creation-points-value"
                                 class="text-xl md:text-2xl font-bold font-mono text-qi-blue">100</div>
                         </div>
