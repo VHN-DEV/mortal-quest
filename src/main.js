@@ -159,34 +159,23 @@ window.renderCreationScreen = () => {
 
     // Mode Buttons
     const btnCustom = document.getElementById('creation-mode-custom');
-    const btnSpecial = document.getElementById('creation-mode-special');
     if (btnCustom) {
         btnCustom.onclick = () => window.game.selectCreationMode('custom');
         btnCustom.className = `flex-grow py-3 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all ${sys.mode === 'custom' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500'}`;
-    }
-    if (btnSpecial) {
-        btnSpecial.onclick = () => window.game.selectCreationMode('special');
-        btnSpecial.className = `flex-grow py-3 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all ${sys.mode === 'special' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500'}`;
     }
 
     if (elPointsContainer) elPointsContainer.classList.remove('hidden');
 
 
     const modeDescriptions = {
-        custom: 'Tùy Chỉnh: bạn có thể tự build hoặc bấm "Gợi ý ngẫu nhiên" để hệ thống xáo trộn nhanh rồi tinh chỉnh tiếp.',
-        special: 'Thiên Mệnh: chọn các kịch bản định sẵn có câu chuyện riêng, phù hợp người muốn trải nghiệm theo vai.'
+        custom: 'Tùy Chỉnh: bạn có thể tự build hoặc bấm "Gợi ý ngẫu nhiên" để hệ thống xáo trộn nhanh rồi tinh chỉnh tiếp.'
     };
 
     if (elModeDescription) elModeDescription.textContent = modeDescriptions[sys.mode] || '';
 
     if (elPointsLabel && elPointsNote) {
-        if (sys.mode === 'custom') {
-            elPointsLabel.textContent = 'Điểm Tiên Duyên:';
-            elPointsNote.textContent = 'Điểm dùng để tùy chỉnh xuất thân/tài nguyên.';
-        } else {
-            elPointsLabel.textContent = 'Điểm Tiên Duyên (kịch bản):';
-            elPointsNote.textContent = 'Ở chế độ Thiên Mệnh, điểm phụ thuộc kịch bản định sẵn.';
-        }
+        elPointsLabel.textContent = 'Điểm Tiên Duyên:';
+        elPointsNote.textContent = 'Điểm dùng để tùy chỉnh xuất thân/tài nguyên.';
     }
     // Starting Resources Panel (Custom only)
     const elResourcesPanel = document.getElementById('creation-resources-panel');

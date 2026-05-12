@@ -12,7 +12,7 @@ export class CreationSystem {
     }
 
     reset() {
-        this.mode = 'custom'; // custom, special
+        this.mode = 'custom';
         this.points = CREATION_CONFIG.BASE_POINTS;
         this.selectedRoot = 'ngu_hanh_linh_can';
         this.selectedPhysique = 'binh_thuong';
