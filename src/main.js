@@ -156,6 +156,7 @@ window.renderCreationScreen = () => {
     const elPointsLabel = document.getElementById('creation-points-label');
     const elPointsNote = document.getElementById('creation-points-note');
     const elModeDescription = document.getElementById('creation-mode-description');
+    const elStatsPreview = document.getElementById('creation-stats-preview');
 
     // Mode Buttons
     const btnCustom = document.getElementById('creation-mode-custom');
@@ -176,6 +177,40 @@ window.renderCreationScreen = () => {
     if (elPointsLabel && elPointsNote) {
         elPointsLabel.textContent = 'Điểm Tiên Duyên:';
         elPointsNote.textContent = 'Điểm dùng để tùy chỉnh xuất thân/tài nguyên.';
+    }
+
+    if (elStatsPreview) {
+        const rootBonus = CREATION_ROOTS[sys.selectedRoot]?.bonus || {};
+        const traitBonus = sys.selectedTraits.reduce((acc, traitId) => {
+            const bonus = CREATION_TRAITS[traitId]?.bonus || {};
+            Object.entries(bonus).forEach(([k, v]) => {
+                acc[k] = (acc[k] || 0) + v;
+            });
+            return acc;
+        }, {});
+
+        const sumBonus = (key) => (rootBonus[key] || 0) + (traitBonus[key] || 0);
+        const previewStats = [
+            { label: 'Công', value: sumBonus('atk'), color: 'text-red-400' },
+            { label: 'Thủ', value: sumBonus('def'), color: 'text-blue-400' },
+            { label: 'Sinh lực', value: sumBonus('maxHp'), color: 'text-emerald-400' },
+            { label: 'Tốc', value: sumBonus('spd'), color: 'text-yellow-400' },
+            { label: 'Mana', value: sumBonus('mana'), color: 'text-purple-400' },
+            { label: 'May mắn', value: sumBonus('luck'), color: 'text-cyan-400' },
+            { label: 'Tu vi/s', value: `${sumBonus('tvps') >= 0 ? '+' : ''}${Math.round(sumBonus('tvps') * 100)}%`, color: 'text-cultivation-gold' }
+        ];
+
+        elStatsPreview.innerHTML = previewStats.map(stat => {
+            const numVal = typeof stat.value === 'number' ? stat.value : null;
+            const text = numVal !== null ? `${numVal >= 0 ? '+' : ''}${numVal}` : stat.value;
+            const isNeutral = (numVal !== null && numVal === 0) || stat.value === '+0%';
+            return `
+                <div class="rounded-xl border border-white/10 bg-black/35 px-2 py-2 text-center">
+                    <div class="text-[8px] text-gray-400 uppercase tracking-wider">${stat.label}</div>
+                    <div class="text-xs font-bold ${isNeutral ? 'text-gray-500' : stat.color}">${text}</div>
+                </div>
+            `;
+        }).join('');
     }
     // Starting Resources Panel (Custom only)
     const elResourcesPanel = document.getElementById('creation-resources-panel');

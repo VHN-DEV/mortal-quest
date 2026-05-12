@@ -868,3 +868,5 @@ button:active {
     border-radius: 0.7rem;
   }
 }
+
+#creation-stats-preview { margin-top: 0.35rem; }
