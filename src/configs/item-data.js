@@ -646,7 +646,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Huyền',
         price: 1000,
-        effect: { type: 'unlock_profession', profession: 'alchemy' },
+        effect: { type: 'unlock_profession', profession: 'alchemy', secretId: 'bp_luyen_dan' },
         description: 'Ghi chép các kiến thức cơ bản về dược lý và kỹ thuật ngự hỏa để luyện chế đan dược.'
     },
     'bp_luyen_khi': {
@@ -656,7 +656,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Huyền',
         price: 1500,
-        effect: { type: 'unlock_profession', profession: 'smithing' },
+        effect: { type: 'unlock_profession', profession: 'smithing', secretId: 'bp_luyen_khi' },
         description: 'Chứa đựng bí quyết tôi luyện kim thạch, rèn đúc thần binh pháp bảo.'
     },
     'bp_phu_luc': {
@@ -666,7 +666,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Huyền',
         price: 1000,
-        effect: { type: 'unlock_profession', profession: 'talisman' },
+        effect: { type: 'unlock_profession', profession: 'talisman', secretId: 'bp_phu_luc' },
         description: 'Hướng dẫn cách câu thông thiên địa linh lực vào phù văn để tạo ra phù lục.'
     },
     'bp_tran_phap': {
@@ -676,7 +676,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Huyền',
         price: 2000,
-        effect: { type: 'unlock_profession', profession: 'formation' },
+        effect: { type: 'unlock_profession', profession: 'formation', secretId: 'bp_tran_phap' },
         description: 'Kiến thức về trận đồ, mắt trận và cách bố trí linh thạch để trấn giữ hoặc công kích.'
     },
     'bp_ngu_thu': {
@@ -686,7 +686,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Huyền',
         price: 1200,
-        effect: { type: 'unlock_profession', profession: 'beast' },
+        effect: { type: 'unlock_profession', profession: 'beast', secretId: 'bp_ngu_thu' },
         description: 'Bí quyết giao tiếp và ký kết khế ước với các loài linh thú.'
     },
     'bp_ngu_trung': {
@@ -696,7 +696,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Huyền',
         price: 1200,
-        effect: { type: 'unlock_profession', profession: 'insect' },
+        effect: { type: 'unlock_profession', profession: 'insect', secretId: 'bp_ngu_trung' },
         description: 'Cách nuôi dưỡng và điều khiển bầy trùng mang theo kịch độc hoặc năng lực đặc thù.'
     },
     'bp_khoi_loi': {
@@ -706,7 +706,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Huyền',
         price: 2500,
-        effect: { type: 'unlock_profession', profession: 'puppet' },
+        effect: { type: 'unlock_profession', profession: 'puppet', secretId: 'bp_khoi_loi' },
         description: 'Kỹ thuật chế tác cơ quan và truyền linh hồn vào các vật vô tri để tạo ra khôi lỗi.'
     },
     'bp_luyen_thi': {
@@ -716,7 +716,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Huyền',
         price: 3000,
-        effect: { type: 'unlock_profession', profession: 'corpse' },
+        effect: { type: 'unlock_profession', profession: 'corpse', secretId: 'bp_luyen_thi' },
         description: 'Tà thuật luyện chế xác chết thành thi khôi, đao thương bất nhập.'
     },
 

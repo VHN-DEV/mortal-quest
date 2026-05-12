@@ -84,14 +84,14 @@ export class SystemsScreen {
     // --- ALCHEMY ---
     renderAlchemy() {
         if (!state.player) return;
-        
+
         const toolsContainer = document.getElementById('alchemy-tools-container');
 
         if (state.views.alchemy === 'recipes') {
             this.viewAlchemyRecipes.classList.remove('hidden');
             this.viewAlchemyGarden.classList.add('hidden');
             if (toolsContainer) toolsContainer.classList.remove('hidden');
-            
+
             // Tab styles
             if (this.btnAlchemyTabRecipes) this.btnAlchemyTabRecipes.className = "flex-grow py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all";
             if (this.btnAlchemyTabGarden) this.btnAlchemyTabGarden.className = "flex-grow py-3 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all";
@@ -125,7 +125,7 @@ export class SystemsScreen {
     renderRecipes() {
         this.viewAlchemyRecipes.innerHTML = '';
         const known = ALCHEMY_RECIPES.filter(r => state.player.knownRecipes.includes(r.id));
-        
+
         if (known.length === 0) {
             this.viewAlchemyRecipes.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa học được đan phương nào...</div>';
             return;
@@ -157,9 +157,9 @@ export class SystemsScreen {
                         <span class="font-bold quality-${qClass} font-ancient">${resultItem.name}</span>
                     </div>
                     ${locked ?
-                        `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
-                        `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg" onclick="window.game.craft('${recipe.id}')">LUYỆN CHẾ</button>`
-                    }
+                    `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
+                    `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg" onclick="window.game.craft('${recipe.id}')">LUYỆN CHẾ</button>`
+                }
                 </div>
                 <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
                 <div class="text-[9px] text-gray-500 italic">${recipe.description}</div>
@@ -176,7 +176,7 @@ export class SystemsScreen {
             const attrInfo = FIELD_ATTRIBUTES[plot.attribute] || FIELD_ATTRIBUTES.NORMAL;
 
             el.className = `p-4 border rounded-3xl bg-white/5 flex flex-col space-y-4 transition-all hover:border-qi-jade/30 border-white/5 relative overflow-hidden`;
-            
+
             // Background attribute icon
             const bgIcon = document.createElement('div');
             bgIcon.className = 'absolute -right-2 -bottom-2 text-4xl opacity-5 pointer-events-none';
@@ -200,7 +200,7 @@ export class SystemsScreen {
             if (plot.seedId) {
                 const seed = SEEDS.find(s => s.id === plot.seedId);
                 const herbItem = getItemById(seed.herbId);
-                
+
                 contentHTML += `
                     <div class="flex items-center space-x-4">
                         <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-2xl border border-white/10">
@@ -226,7 +226,7 @@ export class SystemsScreen {
                     </div>
                 `;
             }
-            
+
             el.innerHTML += contentHTML;
             this.elGardenPlots.appendChild(el);
         });
@@ -236,7 +236,7 @@ export class SystemsScreen {
     renderShop() {
         if (!state.player) return;
         this.elShopLingShi.innerHTML = state.player.getFormattedLingShi();
-        
+
         // Update VIP display
         const elVip = document.getElementById('shop-vip-level');
         if (elVip) {
@@ -245,7 +245,7 @@ export class SystemsScreen {
         }
 
         this.renderShopSections();
-        
+
         // Cập nhật style cho tab
         if (this.btnShopTabBuy && this.btnShopTabSell) {
             if (state.views.shop === 'buy') {
@@ -272,10 +272,10 @@ export class SystemsScreen {
         if (!this.elShopSectionNav) return;
         const shop = state.systems.shop;
         const shopData = SHOPS[shop.currentShopId];
-        
+
         const sections = Object.keys(shopData.sections);
         const currentButtons = this.elShopSectionNav.querySelectorAll('button');
-        
+
         // Map section names to Vietnamese
         const names = {
             'dan_duoc': 'Đan Dược',
@@ -292,7 +292,7 @@ export class SystemsScreen {
         if (currentButtons.length !== sections.length || this.elShopSectionNav.dataset.shopId !== shop.currentShopId) {
             this.elShopSectionNav.innerHTML = '';
             this.elShopSectionNav.dataset.shopId = shop.currentShopId;
-            
+
             sections.forEach(sectionKey => {
                 const el = document.createElement('button');
                 el.dataset.section = sectionKey;
@@ -320,10 +320,10 @@ export class SystemsScreen {
             const itemData = getItemById(item.id);
             if (!itemData) return;
             const qClass = this.getQualityClass(itemData.quality);
-            
+
             const el = document.createElement('div');
             el.className = `flex items-center justify-between p-3 bg-black/40 border border-gray-800 rounded-xl hover:border-${qClass}`;
-            
+
             const info = document.createElement('div');
             info.className = 'flex items-center space-x-3';
             info.innerHTML = `
@@ -333,7 +333,7 @@ export class SystemsScreen {
                     <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality} phẩm | Kho: ${item.stock}</div>
                 </div>
             `;
-            
+
             const finalPrice = Math.floor(itemData.price * (1 - Math.min(0.25, state.player.vipLevel * 0.05)));
 
             const btnContainer = document.createElement('div');
@@ -349,7 +349,7 @@ export class SystemsScreen {
             btn.className = `px-4 py-2 btn-gold text-[10px] font-bold rounded-lg ${item.stock <= 0 ? 'opacity-50 grayscale pointer-events-none' : ''}`;
             btn.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>MUA`;
             btn.onclick = () => window.game.buyItem(item.id);
-            
+
             btnContainer.appendChild(btn);
             el.appendChild(info);
             el.appendChild(btnContainer);
@@ -360,9 +360,9 @@ export class SystemsScreen {
     renderShopSell() {
         this.elShopSellGrid.innerHTML = '';
         if (!state.player || !state.player.inventory) return;
-        
+
         const sectionType = state.systems.shop.currentSection;
-        
+
         state.player.inventory.items.forEach(item => {
             const itemData = getItemById(item.id);
             if (!itemData) return;
@@ -381,7 +381,7 @@ export class SystemsScreen {
             if (sectionType && typeMap[sectionType] && !typeMap[sectionType].includes(itemData.type)) return;
 
             const qClass = this.getQualityClass(itemData.quality);
-            
+
             let sellMult = 0.5;
             if (['material', 'herb', 'ore', 'wood'].includes(itemData.type)) sellMult = 0.3;
 
@@ -580,7 +580,7 @@ export class SystemsScreen {
                     const purity = state.systems.energy.getPurity(purityId);
                     elEnvPurity.textContent = purity.name;
                 }
-                
+
                 elEnvList.innerHTML = loc.energies.map(e => {
                     const type = state.systems.energy.getEnergyType(e.type);
                     return `
@@ -649,7 +649,7 @@ export class SystemsScreen {
         if (lvlText) lvlText.textContent = lvlInfo.name;
 
         const recipes = Object.values(SMITHING_RECIPES).filter(r => state.player.knownSmithingRecipes.includes(r.id));
-        
+
         if (recipes.length === 0) {
             view.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa học được bản vẽ nào...</div>';
             return;
@@ -679,9 +679,9 @@ export class SystemsScreen {
                         <span class="font-bold quality-${qClass} font-ancient">${item.name}</span>
                     </div>
                     ${locked ?
-                        `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
-                        `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg" onclick="window.game.forge('${recipe.id}')">RÈN ĐÚC</button>`
-                    }
+                    `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
+                    `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg" onclick="window.game.forge('${recipe.id}')">RÈN ĐÚC</button>`
+                }
                 </div>
                 <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
                 <div class="text-[9px] text-gray-500 italic">Thể lực: ${recipe.staminaCost} | Linh lực: ${recipe.manaCost}</div>
@@ -720,7 +720,7 @@ export class SystemsScreen {
         if (target) {
             target.classList.remove('hidden');
             target.classList.add('flex');
-            
+
             if (screenType === 'alchemy') this.renderAlchemy();
             if (screenType === 'talisman') this.renderTalisman();
             if (screenType === 'smithing') this.renderSmithing();
@@ -796,9 +796,9 @@ export class SystemsScreen {
                             </div>
                         </div>
                         ${locked ?
-                            `<div class="text-[9px] text-red-500 font-bold uppercase py-2">Cần Cấp ${recipe.skillLevel}</div>` :
-                            `<button class="px-5 py-2.5 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue text-[10px] font-bold rounded-xl border border-qi-blue/20 active:scale-95 transition-all" onclick="window.game.craftPuppet('${recipe.id}')">LUYỆN CHẾ</button>`
-                        }
+                        `<div class="text-[9px] text-red-500 font-bold uppercase py-2">Cần Cấp ${recipe.skillLevel}</div>` :
+                        `<button class="px-5 py-2.5 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue text-[10px] font-bold rounded-xl border border-qi-blue/20 active:scale-95 transition-all" onclick="window.game.craftPuppet('${recipe.id}')">LUYỆN CHẾ</button>`
+                    }
                     </div>
                     <p class="text-[10px] text-gray-500 italic leading-relaxed">${recipe.description}</p>
                     <div class="grid grid-cols-2 gap-2">${materialsHTML}</div>
@@ -840,9 +840,9 @@ export class SystemsScreen {
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="font-bold text-qi-blue">${recipe.name}</h4>
                         ${locked ?
-                            `<span class="text-[8px] text-red-500 uppercase">Cần Cấp ${recipe.level}</span>` :
-                            `<button class="px-3 py-1 bg-qi-blue/10 text-qi-blue text-[10px] rounded border border-qi-blue/20" onclick="window.game.drawTalisman('${recipe.id}')">VẼ PHÙ</button>`
-                        }
+                        `<span class="text-[8px] text-red-500 uppercase">Cần Cấp ${recipe.level}</span>` :
+                        `<button class="px-3 py-1 bg-qi-blue/10 text-qi-blue text-[10px] rounded border border-qi-blue/20" onclick="window.game.drawTalisman('${recipe.id}')">VẼ PHÙ</button>`
+                    }
                     </div>
                     <div class="grid grid-cols-2 gap-1 mb-2">${materialsHTML}</div>
                     <div class="text-[8px] text-gray-500 italic">Mana: ${recipe.manaCost} | Stamina: ${recipe.staminaCost}</div>
@@ -879,8 +879,8 @@ export class SystemsScreen {
             if (tab) {
                 tab.classList.remove(...activeClass, ...inactiveClass);
                 const isActive = (tab === tabBeast && state.views.beast === 'beast') ||
-                                 (tab === tabInsect && state.views.beast === 'insect') ||
-                                 (tab === tabHatch && state.views.beast === 'hatch');
+                    (tab === tabInsect && state.views.beast === 'insect') ||
+                    (tab === tabHatch && state.views.beast === 'hatch');
                 tab.classList.add(...(isActive ? activeClass : inactiveClass));
             }
         });
@@ -888,10 +888,10 @@ export class SystemsScreen {
         // Update Level/Exp Display
         const elLvl = document.getElementById('beast-level-text');
         const elExp = document.getElementById('beast-exp-bar');
-        
+
         const curLevel = state.views.beast === 'insect' ? state.player.insectLevel : state.player.beastLevel;
         const curExp = state.views.beast === 'insect' ? state.player.insectExp : state.player.beastExp;
-        
+
         if (elLvl) elLvl.textContent = `Cấp ${curLevel}`;
         if (elExp) {
             const nextLevelExp = curLevel * 100 * Math.pow(1.5, curLevel - 1);
@@ -901,7 +901,7 @@ export class SystemsScreen {
         // List View Rendering
         if (viewList && state.views.beast !== 'hatch') {
             viewList.innerHTML = '';
-            
+
             // Filter beasts based on tab
             const filteredBeasts = state.player.beasts.filter(beast => {
                 const data = BEASTS[beast.id];
@@ -922,7 +922,7 @@ export class SystemsScreen {
                     const data = BEASTS[beast.id];
                     const lvlInfo = getBeastLevelInfo(beast.level);
                     const blood = BLOODLINES[beast.bloodline];
-                    
+
                     const el = document.createElement('div');
                     el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] flex items-center space-x-4';
                     el.innerHTML = `
@@ -977,7 +977,7 @@ export class SystemsScreen {
 
     renderCraftingHub() {
         if (!state.player) return;
-        
+
         const professions = [
             { id: 'alchemy', key: 'alchemy', name: 'Luyện Dược Sư', level: state.player.alchemyLevel, exp: state.player.alchemyExp, getLevelInfo: getAlchemyLevelInfo },
             { id: 'talisman', key: 'talisman', name: 'Phù Sư', level: state.player.talismanLevel, exp: state.player.talismanExp, getLevelInfo: getTalismanLevelInfo },
@@ -992,11 +992,11 @@ export class SystemsScreen {
         professions.forEach(prof => {
             const levelEl = document.getElementById(`hub-${prof.id}-level`);
             const cardEl = levelEl?.closest('.hub-card');
-            
+
             if (!levelEl || !cardEl) return;
 
             const isUnlocked = state.player.unlockedProfessions.includes(prof.id);
-            
+
             // Re-bind onclick to handle both locked state and opening
             cardEl.onclick = () => window.game.openCrafting(prof.id);
 
@@ -1015,7 +1015,7 @@ export class SystemsScreen {
                 const lvlInfo = prof.getLevelInfo ? prof.getLevelInfo(prof.level) : { name: `Cấp ${prof.level}` };
                 const nextLevelExp = prof.level * 100 * Math.pow(1.5, prof.level - 1);
                 const progress = Math.floor((prof.exp / nextLevelExp) * 100);
-                
+
                 levelEl.innerHTML = `${prof.name} - ${lvlInfo.name} <span class="text-white/30 ml-2">(${progress}%)</span>`;
                 cardEl.classList.remove('opacity-40', 'grayscale');
                 cardEl.classList.add('cursor-pointer');
@@ -1038,7 +1038,7 @@ export class SystemsScreen {
         if (!view) return;
 
         view.innerHTML = '';
-        
+
         // Active Formations
         if (state.player.activeFormations.length > 0) {
             const activeHeader = document.createElement('h3');
@@ -1086,7 +1086,7 @@ export class SystemsScreen {
                             <p class="text-[9px] text-gray-500">${item.description || ''}</p>
                         </div>
                     </div>
-                    ${isActive ? 
+                    ${isActive ?
                         '<span class="text-[9px] text-qi-purple font-bold">ĐÃ KÍCH HOẠT</span>' :
                         `<button class="px-4 py-2 bg-qi-purple/10 text-qi-purple text-[10px] rounded-xl border border-qi-purple/20" onclick="window.game.activateFormation('${d.id}')">KÍCH HOẠT</button>`
                     }
@@ -1146,7 +1146,7 @@ export class SystemsScreen {
         Object.values(CORPSE_TYPES).forEach(type => {
             const el = document.createElement('div');
             el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 space-y-3';
-            
+
             let materialsHTML = '';
             type.materials.forEach(mat => {
                 const matItem = getItemById(mat.id);
@@ -1164,18 +1164,17 @@ export class SystemsScreen {
                         <p class="text-[9px] text-gray-500 mt-1">${type.description}</p>
                     </div>
                     ${locked ?
-                        `<span class="text-[8px] text-red-500 uppercase font-bold">Cần Cấp ${type.level}</span>` :
-                        `<button class="px-4 py-2 bg-red-900/20 text-red-400 text-[10px] font-bold rounded-xl border border-red-900/30" onclick="window.game.refineCorpse('${type.id}')">LUYỆN CHẾ</button>`
-                    }
+                    `<span class="text-[8px] text-red-500 uppercase font-bold">Cần Cấp ${type.level}</span>` :
+                    `<button class="px-4 py-2 bg-red-900/20 text-red-400 text-[10px] font-bold rounded-xl border border-red-900/30" onclick="window.game.refineCorpse('${type.id}')">LUYỆN CHẾ</button>`
+                }
                 </div>
                 <div class="grid grid-cols-2 gap-2">${materialsHTML}</div>
                 <div class="flex justify-between items-center text-[8px] text-gray-500 italic">
                     <span>Tỷ lệ thành công: ${successRate}%</span>
-                    <span>Phản phệ: ${(100-successRate)}%</span>
+                    <span>Phản phệ: ${(100 - successRate)}%</span>
                 </div>
             `;
             view.appendChild(el);
         });
-    }
     }
 }

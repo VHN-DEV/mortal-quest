@@ -1,6 +1,6 @@
 import { state } from '../../state.js';
 import { getSectById } from '../../configs/sect-data.js';
-import { getTechniqueById } from '../../configs/technique-data.js';
+import { getTechniqueById, MASTERY_LEVELS } from '../../configs/technique-data.js';
 import { getPhysiqueById, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../../configs/physique-data.js';
 
 /**
@@ -208,7 +208,8 @@ export class CharacterScreen {
         if (techId) {
             const tech = getTechniqueById(techId);
             const entry = state.player.learnedTechniques.find(t => t.id === techId);
-            element.textContent = tech ? `${tech.name} (${entry?.stage || 1})` : "Không";
+            const mastery = MASTERY_LEVELS.find(m => m.id === (entry?.masteryLevel || 1));
+            element.textContent = tech ? `${tech.name} (${mastery?.name || 'Nhập Môn'})` : "Không";
         } else {
             element.textContent = "Không";
         }

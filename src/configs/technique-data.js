@@ -17,12 +17,10 @@ export const TECHNIQUE_LEVELS = {
 };
 
 export const MASTERY_LEVELS = [
-    { threshold: 0, name: 'Nhập Môn', next: 200 },
-    { threshold: 200, name: 'Tiểu Thành', next: 1000 },
-    { threshold: 1000, name: 'Đại Thành', next: 5000 },
-    { threshold: 5000, name: 'Viên Mãn', next: 15000 },
-    { threshold: 15000, name: 'Đăng Phong Tạo Cực', next: 40000 },
-    { threshold: 40000, name: 'Xuất Thần Nhập Hóa', next: Infinity }
+    { id: 1, name: 'Nhập Môn', threshold: 0, multiplier: 1.0 },
+    { id: 2, name: 'Tiểu Thành', threshold: 1000, multiplier: 1.5 },
+    { id: 3, name: 'Đại Thành', threshold: 5000, multiplier: 2.5 },
+    { id: 4, name: 'Viên Mãn', threshold: 15000, multiplier: 4.0 }
 ];
 
 export const TECHNIQUES = {
@@ -35,13 +33,13 @@ export const TECHNIQUES = {
         description: 'Công pháp nhập môn phổ thông được lưu truyền rộng rãi trong Nhân Giới. Ổn định, dễ tu luyện, ít tẩu hỏa nhập ma.',
         maxStage: 7,
         stageNames: [
-            'Cảm Khí', 'Dẫn Khí', 'Tụ Khí', 'Luyện Mạch', 
+            'Cảm Khí', 'Dẫn Khí', 'Tụ Khí', 'Luyện Mạch',
             'Tiểu Chu Thiên', 'Đại Chu Thiên', 'Khí Hải Ổn Định'
         ],
         stats: { mana: 20, spd: 5 },
-        effects: { 
-            tvps: 1.2, 
-            manaRegen: 1.0, 
+        effects: {
+            tvps: 1.2,
+            manaRegen: 1.0,
             stability: 15,
             manaConsumptionReduce: 0.1,
             deviationRiskReduce: 0.2
@@ -65,6 +63,12 @@ export const TECHNIQUES = {
         evolution: {
             id: 'truong_xuan_dao_kinh',
             condition: 'Viên Mãn'
+        },
+        masteryBonuses: {
+            1: { tvps: 1.0 },
+            2: { tvps: 1.5, manaRegen: 1.2 },
+            3: { tvps: 2.5, manaRegen: 1.5, manaConsumptionReduce: 0.15 },
+            4: { tvps: 4.0, manaRegen: 2.0, manaConsumptionReduce: 0.25, stability: 30 }
         }
     },
     'liet_duong_cong': {
@@ -76,7 +80,13 @@ export const TECHNIQUES = {
         description: 'Công pháp thuộc tính Hỏa, hấp thu linh khí mang tính nóng bỏng của mặt trời.',
         maxStage: 5,
         stats: { atk: 15, mana: 10 },
-        effects: { tvps: 1.3, fireDamage: 1.2 }
+        effects: { tvps: 1.3, fireDamage: 1.2 },
+        masteryBonuses: {
+            1: { tvps: 1.3 },
+            2: { tvps: 1.8, fireDmg: 1.3 },
+            3: { tvps: 2.8, fireDmg: 1.5, atk: 1.1 },
+            4: { tvps: 4.5, fireDmg: 2.0, atk: 1.25, critChance: 0.1 }
+        }
     },
     'han_thuy_quyet': {
         id: 'han_thuy_quyet',
@@ -98,7 +108,13 @@ export const TECHNIQUES = {
         description: 'Công pháp thuộc tính Mộc, tăng cường khả năng phục hồi và thọ nguyên.',
         maxStage: 5,
         stats: { hp: 50, mana: 10 },
-        effects: { tvps: 1.4, healing: 1.5 }
+        effects: { tvps: 1.4, healing: 1.5 },
+        masteryBonuses: {
+            1: { tvps: 1.4 },
+            2: { tvps: 2.0, hpRegen: 1.1 },
+            3: { tvps: 3.0, hpRegen: 1.3, maxHp: 1.15 },
+            4: { tvps: 5.0, hpRegen: 1.6, maxHp: 1.3, lifespanBonus: 20 }
+        }
     },
     'canh_kim_quyet': {
         id: 'canh_kim_quyet',
@@ -132,7 +148,13 @@ export const TECHNIQUES = {
         description: 'Môn luyện thể cực kỳ cường hãn, tu luyện đến đại thành có thể tay không đón thần binh.',
         maxStage: 9,
         stats: { hp: 500, def: 100 },
-        effects: { bodyPs: 1.5, physRes: 0.2 }
+        effects: { bodyPs: 1.5, physRes: 0.2 },
+        masteryBonuses: {
+            1: { bodyPs: 1.5 },
+            2: { bodyPs: 2.2, def: 1.2 },
+            3: { bodyPs: 3.8, def: 1.5, physRes: 0.3 },
+            4: { bodyPs: 7.0, def: 2.0, physRes: 0.5, counterDamage: 0.15 }
+        }
     },
     'man_nguu_kinh': {
         id: 'man_nguu_kinh',
@@ -224,7 +246,13 @@ export const SECRET_TECHNIQUES = {
         description: 'Đốt cháy tinh huyết để thoát khỏi chiến đấu ngay lập tức.',
         costs: { hp: 20, lifespan: 1 },
         cooldown: 0,
-        effects: { escape: true }
+        effects: { escape: true },
+        masteryBonuses: {
+            1: { costHp: 20 },
+            2: { costHp: 15 },
+            3: { costHp: 10 },
+            4: { costHp: 5, lifespanCost: 0 }
+        }
     },
     'am_sat_thu_phap': {
         id: 'am_sat_thu_phap',
@@ -235,7 +263,13 @@ export const SECRET_TECHNIQUES = {
         description: 'Kỹ thuật ám sát lạnh lùng, nhắm vào điểm yếu đối phương.',
         costs: { mana: 30 },
         cooldown: 4,
-        effects: { damageMult: 2.5, critChance: 0.3 }
+        effects: { damageMult: 2.5, critChance: 0.3 },
+        masteryBonuses: {
+            1: { damageMult: 2.5 },
+            2: { damageMult: 3.5, critChance: 0.35 },
+            3: { damageMult: 5.0, critChance: 0.45 },
+            4: { damageMult: 8.0, critChance: 0.6, ignoreDef: 0.2 }
+        }
     },
     'thien_loi_kich': {
         id: 'thien_loi_kich',
@@ -246,7 +280,56 @@ export const SECRET_TECHNIQUES = {
         description: 'Triệu hồi thiên lôi giáng xuống đầu kẻ thù.',
         costs: { mana: 100 },
         cooldown: 8,
-        effects: { damageMult: 5.0, stun: true }
+        effects: { damageMult: 5.0, stun: true },
+        masteryBonuses: {
+            1: { damageMult: 5.0 },
+            2: { damageMult: 7.0, costMana: 80 },
+            3: { damageMult: 10.0, stun: true, critChance: 0.2 },
+            4: { damageMult: 15.0, stun: true, critChance: 0.35, ignoreDef: 0.3 }
+        }
+    },
+    // --- PROFESSION MASTERY SECRETS ---
+    'bp_luyen_dan': {
+        id: 'bp_luyen_dan',
+        name: 'Đan Đạo Chân Giải',
+        type: 'profession',
+        quality: 'Huyền',
+        icon: '📜',
+        description: 'Tăng cường hiểu biết về đan đạo.',
+        masteryBonuses: {
+            1: { alchemyExpBonus: 1.0, alchemySuccess: 1.0 },
+            2: { alchemyExpBonus: 1.2, alchemySuccess: 1.05 },
+            3: { alchemyExpBonus: 1.5, alchemySuccess: 1.15, doubleDanChance: 0.1 },
+            4: { alchemyExpBonus: 2.0, alchemySuccess: 1.3, doubleDanChance: 0.25, autoPurify: true }
+        }
+    },
+    'bp_luyen_khi': {
+        id: 'bp_luyen_khi',
+        name: 'Luyện Khí Tổng Cương',
+        type: 'profession',
+        quality: 'Huyền',
+        icon: '📜',
+        description: 'Tăng cường hiểu biết về luyện khí.',
+        masteryBonuses: {
+            1: { smithingExpBonus: 1.0 },
+            2: { smithingExpBonus: 1.2, smithingSuccess: 1.05 },
+            3: { smithingExpBonus: 1.5, smithingSuccess: 1.15, artifactDuraBonus: 20 },
+            4: { smithingExpBonus: 2.0, smithingSuccess: 1.3, artifactDuraBonus: 50, perfectRefine: 0.1 }
+        }
+    },
+    'bp_phu_luc': {
+        id: 'bp_phu_luc',
+        name: 'Thái Thượng Phù Kinh',
+        type: 'profession',
+        quality: 'Huyền',
+        icon: '📜',
+        description: 'Tăng cường hiểu biết về phù lục.',
+        masteryBonuses: {
+            1: { talismanExpBonus: 1.0 },
+            2: { talismanExpBonus: 1.2, talismanSuccess: 1.05 },
+            3: { talismanExpBonus: 1.5, talismanSuccess: 1.15, talismanPower: 1.2 },
+            4: { talismanExpBonus: 2.0, talismanSuccess: 1.3, talismanPower: 1.5, twinWrite: 0.2 }
+            }
     }
 };
 

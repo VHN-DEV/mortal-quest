@@ -95,9 +95,15 @@ export class Player {
         this.talents = [];
         this.destinyRating = "Phàm mệnh";
 
-        // NPC & Story systems
-        this.party = []; // Array of NPC objects
-        this.knownNPCs = {}; // Map of id -> NPC object
+        // Technique systems
+        this.mainTechniqueId = null;
+        this.mainBodyTechniqueId = null;
+        this.mainSoulTechniqueId = null;
+        this.learnedTechniques = []; // Array of { id, stage, mastery, masteryLevel, quality }
+        this.learnedSecretTechniques = []; // Array of { id, mastery, masteryLevel }
+        this.equippedSecretTechniqueIds = [];
+        this.secretTechniqueCooldowns = {};
+        this.techniquePoints = 0;
         this.karma = 0; // -1000 to 1000
         
         // Alchemy System
@@ -739,9 +745,13 @@ export class Player {
         const playerTech = this.learnedTechniques.find(t => t.id === techId);
         if (!techData || !playerTech) return;
 
-        const stageMult = 1 + (playerTech.stage - 1) * 0.2;
+        const masteryLevel = playerTech.masteryLevel || 1;
         const qualityLevel = TECHNIQUE_LEVELS[techData.quality];
         const qualityMult = qualityLevel ? qualityLevel.multiplier : 1.0;
+
+        // Use stage-specific bonuses if defined
+        const masteryBonus = techData.masteryBonuses ? techData.masteryBonuses[masteryLevel] : null;
+        const masteryMult = MASTERY_LEVELS.find(m => m.id === masteryLevel)?.multiplier || 1.0;
         
         // Attribute matching logic
         let attributeMult = 1.0;
@@ -766,15 +776,18 @@ export class Player {
             }
         }
 
-        const finalMult = stageMult * qualityMult * attributeMult;
+        const finalMult = masteryMult * qualityMult * attributeMult;
 
         // Apply path-specific cultivation rate
-        if (path === 'tuvi' && techData.effects.tvps) {
-            this.tuViPerSecond = techData.effects.tvps * finalMult;
-        } else if (path === 'body' && techData.effects.bodyPs) {
-            this.bodyExpPerSecond = techData.effects.bodyPs * finalMult;
-        } else if (path === 'soul' && techData.effects.soulPs) {
-            this.soulExpPerSecond = techData.effects.soulPs * finalMult;
+        if (path === 'tuvi') {
+            const baseTvps = masteryBonus?.tvps || techData.effects.tvps || 0;
+            this.tuViPerSecond = baseTvps * finalMult;
+        } else if (path === 'body') {
+            const baseBodyPs = masteryBonus?.bodyPs || techData.effects.bodyPs || 0;
+            this.bodyExpPerSecond = baseBodyPs * finalMult;
+        } else if (path === 'soul') {
+            const baseSoulPs = masteryBonus?.soulPs || techData.effects.soulPs || 0;
+            this.soulExpPerSecond = baseSoulPs * finalMult;
         }
         
         // Apply stat bonuses from technique
@@ -1003,7 +1016,10 @@ export class Player {
         this.ownedTalismanPens = data.ownedTalismanPens || ['truc_phu_but'];
         
         this.mainTechniqueId = data.mainTechniqueId || null;
+        this.mainBodyTechniqueId = data.mainBodyTechniqueId || null;
+        this.mainSoulTechniqueId = data.mainSoulTechniqueId || null;
         this.learnedTechniques = data.learnedTechniques || [];
+        this.learnedSecretTechniques = data.learnedSecretTechniques || [];
         this.equippedSecretTechniqueIds = data.equippedSecretTechniqueIds || [];
         this.secretTechniqueCooldowns = data.secretTechniqueCooldowns || {};
         this.techniquePoints = data.techniquePoints || 0;
@@ -1094,7 +1110,10 @@ export class Player {
             knownTalismanRecipes: this.knownTalismanRecipes,
             ownedTalismanPens: this.ownedTalismanPens,
             mainTechniqueId: this.mainTechniqueId,
+            mainBodyTechniqueId: this.mainBodyTechniqueId,
+            mainSoulTechniqueId: this.mainSoulTechniqueId,
             learnedTechniques: this.learnedTechniques,
+            learnedSecretTechniques: this.learnedSecretTechniques,
             equippedSecretTechniqueIds: this.equippedSecretTechniqueIds,
             secretTechniqueCooldowns: this.secretTechniqueCooldowns,
             techniquePoints: this.techniquePoints,
@@ -1107,7 +1126,12 @@ export class Player {
     }
 
     addAlchemyExp(amount) {
-        this.alchemyExp += amount;
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'bp_luyen_dan');
+        const masteryLevel = secret?.masteryLevel || 1;
+        const secretData = getSecretTechniqueById('bp_luyen_dan');
+        const bonus = secretData?.masteryBonuses?.[masteryLevel]?.alchemyExpBonus || 1.0;
+        
+        this.alchemyExp += amount * bonus;
         const nextLevelExp = this.alchemyLevel * 100 * Math.pow(1.5, this.alchemyLevel - 1);
         if (this.alchemyExp >= nextLevelExp) {
             this.alchemyExp -= nextLevelExp;
@@ -1118,7 +1142,12 @@ export class Player {
     }
 
     addTalismanExp(amount) {
-        this.talismanExp += amount;
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'bp_phu_luc');
+        const masteryLevel = secret?.masteryLevel || 1;
+        const secretData = getSecretTechniqueById('bp_phu_luc');
+        const bonus = secretData?.masteryBonuses?.[masteryLevel]?.talismanExpBonus || 1.0;
+
+        this.talismanExp += amount * bonus;
         const nextLevelExp = this.talismanLevel * 100 * Math.pow(1.5, this.talismanLevel - 1);
         if (this.talismanExp >= nextLevelExp) {
             this.talismanExp -= nextLevelExp;
@@ -1129,7 +1158,12 @@ export class Player {
     }
 
     addSmithingExp(amount) {
-        this.smithingExp += amount;
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'bp_luyen_khi');
+        const masteryLevel = secret?.masteryLevel || 1;
+        const secretData = getSecretTechniqueById('bp_luyen_khi');
+        const bonus = secretData?.masteryBonuses?.[masteryLevel]?.smithingExpBonus || 1.0;
+
+        this.smithingExp += amount * bonus;
         const nextLevelExp = this.smithingLevel * 100 * Math.pow(1.5, this.smithingLevel - 1);
         if (this.smithingExp >= nextLevelExp) {
             this.smithingExp -= nextLevelExp;
@@ -1238,6 +1272,9 @@ export class Player {
                         return { success: false, msg: "Ngươi đã lĩnh hội nghề này rồi!" };
                     }
                     this.unlockedProfessions.push(effect.profession);
+                    if (effect.secretId) {
+                        this.learnSecretTechnique(effect.secretId);
+                    }
                     success = true;
                     msg = `Lĩnh hội thành công! Nghề ${effect.profession} đã được mở khóa trong Bách Nghệ Đường.`;
                     break;
@@ -1274,6 +1311,7 @@ export class Player {
             id: techId,
             stage: 1,
             mastery: 0,
+            masteryLevel: 1, // 1: Nhập Môn, 2: Tiểu Thành, 3: Đại Thành, 4: Viên Mãn
             quality: TECHNIQUE_QUALITIES[qualityId.toUpperCase()] || TECHNIQUE_QUALITIES.BINH_THUONG
         });
 
@@ -1291,17 +1329,39 @@ export class Player {
     }
 
     learnSecretTechnique(secretId) {
-        if (this.learnedSecretTechniqueIds.includes(secretId)) return false;
+        if (this.learnedSecretTechniques.find(s => s.id === secretId)) return false;
         const secretData = getSecretTechniqueById(secretId);
         if (!secretData) return false;
 
-        this.learnedSecretTechniqueIds.push(secretId);
+        this.learnedSecretTechniques.push({
+            id: secretId,
+            mastery: 0,
+            masteryLevel: 1
+        });
         
         // Auto-equip if slot available
         if (this.equippedSecretTechniqueIds.length < 3) {
             this.equippedSecretTechniqueIds.push(secretId);
         }
         return true;
+    }
+
+    gainTechniqueMastery(techId, amount, isSecret = false) {
+        const list = isSecret ? this.learnedSecretTechniques : this.learnedTechniques;
+        const entry = list.find(t => t.id === techId);
+        if (!entry) return null;
+
+        entry.mastery += amount;
+        
+        const currentLevel = entry.masteryLevel || 1;
+        const nextLevel = MASTERY_LEVELS.find(m => m.id === currentLevel + 1);
+        
+        if (nextLevel && entry.mastery >= nextLevel.threshold) {
+            entry.masteryLevel = nextLevel.id;
+            this.calculateStats();
+            return { leveledUp: true, newLevel: nextLevel.name };
+        }
+        return { leveledUp: false };
     }
 
     setMainTechnique(techId) {

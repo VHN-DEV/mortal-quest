@@ -375,42 +375,52 @@ export class CombatEngine {
             return;
         }
 
+        const playerSecret = this.player.learnedSecretTechniques.find(s => s.id === secretId);
+        const masteryLevel = playerSecret?.masteryLevel || 1;
+        const masteryBonus = secretData.masteryBonuses ? secretData.masteryBonuses[masteryLevel] : null;
+
         // Apply cost
-        if (secretData.cost) {
-            if (secretData.cost.hp && this.player.hp < this.player.maxHp * secretData.cost.hp) {
-                this.addLog("Khí huyết không đủ để thi triển bí pháp!");
-                return;
-            }
-            if (secretData.cost.mana && this.player.mana < secretData.cost.mana) {
-                this.addLog("Linh lực không đủ để thi triển bí pháp!");
-                return;
-            }
-            if (secretData.cost.lifespan && this.player.age + secretData.cost.lifespan > this.player.maxAge) {
-                this.addLog("Thọ nguyên không đủ để thi triển bí pháp này!");
-                return;
-            }
-            if (secretData.cost.hp) this.player.hp -= Math.floor(this.player.maxHp * secretData.cost.hp);
-            if (secretData.cost.mana) this.player.mana -= secretData.cost.mana;
-            if (secretData.cost.lifespan) this.player.age += secretData.cost.lifespan;
+        const costHp = masteryBonus?.costHp || secretData.costs?.hp || 0;
+        const costMana = masteryBonus?.costMana || secretData.costs?.mana || 0;
+        const costLifespan = (masteryBonus?.lifespanCost !== undefined) ? masteryBonus.lifespanCost : (secretData.costs?.lifespan || 0);
+
+        if (costHp && this.player.hp < this.player.maxHp * (costHp / 100)) {
+            this.addLog("Khí huyết không đủ để thi triển bí pháp!");
+            return;
         }
+        if (costMana && this.player.mana < costMana) {
+            this.addLog("Linh lực không đủ để thi triển bí pháp!");
+            return;
+        }
+        if (costLifespan && this.player.age + costLifespan > this.player.maxAge) {
+            this.addLog("Thọ nguyên không đủ để thi triển bí pháp này!");
+            return;
+        }
+
+        if (costHp) this.player.hp -= Math.floor(this.player.maxHp * (costHp / 100));
+        if (costMana) this.player.mana -= costMana;
+        if (costLifespan) this.player.age += costLifespan;
 
         this.player.secretTechniqueCooldowns[secretId] = now;
 
         let damage = 0;
-        if (secretData.effect.type === 'damage') {
-            damage = secretData.effect.value;
-            this.enemy.hp -= damage;
-            this.addLog(`Bạn thi triển ${secretData.name} gây ${damage} sát thương!`);
-        } else if (secretData.effect.atkMultiplier) {
-            damage = Math.floor(this.player.atk * secretData.effect.atkMultiplier);
-            this.enemy.hp -= damage;
-            this.addLog(`Bạn kích hoạt ${secretData.name}, bộc phát ${damage} sát thương!`);
-        } else if (secretData.effect.type === 'escape') {
+        const damageMult = masteryBonus?.damageMult || secretData.effects?.damageMult || 1.0;
+        const critChance = masteryBonus?.critChance || secretData.effects?.critChance || 0;
+
+        if (secretData.effects?.type === 'escape' || secretData.type === 'escape') {
             this.addLog(`Bạn thi triển ${secretData.name} và thoát khỏi trận chiến!`);
             setTimeout(() => this.onEnd('escape'), 1000);
             this.isActive = false;
             return;
         }
+
+        damage = Math.floor(this.player.atk * damageMult);
+        if (Math.random() < critChance) {
+            damage = Math.floor(damage * 2.0);
+            this.addLog(`Bí pháp bạo kích!`);
+        }
+        this.enemy.hp -= damage;
+        this.addLog(`Bạn thi triển ${secretData.name} bộc phát ${damage} sát thương!`);
 
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
 
