@@ -6,17 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-D0cOasBl.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-C4hgMzEH.css">
+  <script type="module" crossorigin src="./assets/index-BaIQ6yyC.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CyVskTml.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
 
     <!-- Desktop Vignette & Background Overlay -->
     <div
-        class="fixed inset-0 pointer-events-none z-[-1] bg-gradient-to-t from-qi-ink via-transparent to-qi-ink opacity-60">
+        class="absolute inset-0 pointer-events-none z-[-1] bg-gradient-to-t from-qi-ink via-transparent to-qi-ink opacity-60">
     </div>
-    <div class="fixed inset-0 pointer-events-none z-[-1] shadow-[inset_0_0_200px_rgba(0,0,0,0.8)]"></div>
+    <div class="absolute inset-0 pointer-events-none z-[-1] shadow-[inset_0_0_200px_rgba(0,0,0,0.8)]"></div>
 
     <!-- Main App Container -->
     <div id="app"
@@ -206,7 +206,7 @@
             </div>
 
             <!-- Game Guide Overlay -->
-            <div id="guide-overlay" class="fixed inset-0 z-[200] hidden">
+            <div id="guide-overlay" class="absolute inset-0 z-[200] hidden">
                 <div class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
                 <div class="absolute inset-0 flex items-center justify-center p-4">
                     <div
@@ -761,7 +761,7 @@
 
                         <!-- Tab: Quản Lý Pháp Bảo (Treasure Management) -->
                         <div id="screen-treasure"
-                            class="screen hidden fixed inset-0 z-[150] flex flex-col bg-qi-ink animate-fade-in">
+                            class="screen hidden absolute inset-0 z-[150] flex flex-col bg-qi-ink animate-fade-in">
                             <header class="p-6 border-b border-white/5 flex justify-between items-center bg-black/40">
                                 <div class="flex items-center space-x-4">
                                     <button id="btn-close-treasure"
@@ -990,7 +990,7 @@
                 </div>
 
                 <!-- Item Details Modal (Premium Redesign) -->
-                <div id="item-detail" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6">
+                <div id="item-detail" class="hidden absolute inset-0 z-[100] flex items-center justify-center p-6">
                     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"
                         onclick="ui.toggleOverlay('item-detail', false)"></div>
                     <div
@@ -1536,112 +1536,101 @@
                 <span class="text-[8px] uppercase font-ancient tracking-widest">Bách Nghệ</span>
             </div>
         </nav>
-    </div>
+
 
     <!-- --- GLOBAL UI OVERLAYS --- -->
     <div id="map-location-view" class="hidden overlay-full z-[60] bg-[#05070a]">
-        <header class="flex-none p-6 flex items-center border-b border-white/5 bg-black/40">
-            <button id="back-to-worlds"
-                class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-qi-blue active:scale-90 transition-all">
-                <i class="ph ph-arrow-left text-xl"></i>
-            </button>
-            <h2 id="current-world-name" class="ml-4 text-xl font-charm text-white">Chọn Địa Điểm</h2>
+        <header class="flex-none p-6 flex items-center justify-between border-b border-white/5 bg-black/40 backdrop-blur-md">
+            <div class="flex items-center">
+                <button id="back-to-worlds"
+                    class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-qi-blue active:scale-90 transition-all border border-white/10">
+                    <i class="ph ph-arrow-left text-xl"></i>
+                </button>
+                <div class="ml-4">
+                    <h2 id="current-world-name" class="text-xl font-charm text-white">Sơn Hà Giới</h2>
+                    <p class="text-[8px] text-gray-500 uppercase tracking-widest">Chọn địa điểm lịch luyện</p>
+                </div>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-qi-blue/10 border border-qi-blue/20 flex items-center justify-center text-qi-blue">
+                <i class="ph ph-map-pin text-xl"></i>
+            </div>
         </header>
-        <div id="location-list" class="flex-grow min-h-0 p-4 overflow-y-auto space-y-3 custom-scroll"></div>
+        <div id="location-list" class="flex-grow min-h-0 p-6 overflow-y-auto space-y-6 custom-scroll pb-24"></div>
     </div>
 
     <div id="map-explore-view" class="hidden overlay-full z-[70] bg-[#05070a] relative">
         <div id="explore-bg" class="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-105"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-[#05070a]"></div>
-        <div
-            class="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]">
-        </div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-[#05070a]"></div>
+        
         <div class="relative z-20 flex-none p-6 flex justify-between items-start">
             <button id="back-to-locations"
                 class="w-12 h-12 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 flex items-center justify-center text-qi-blue shadow-2xl active:scale-90 transition-all">
                 <i class="ph ph-arrow-left text-2xl"></i>
             </button>
-            <div class="flex flex-col items-end space-y-3">
-                <div class="flex space-x-3">
-                    <div
-                        class="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-green-500/20 shadow-lg flex items-center space-x-2">
-                        <i class="ph ph-lightning-bolt text-green-400 text-xs"></i>
-                        <div class="w-12 h-1 bg-white/5 rounded-full overflow-hidden">
-                            <div id="explore-stamina-bar" class="h-full bg-green-500" style="width: 100%"></div>
-                        </div>
-                    </div>
-                    <div
-                        class="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-blue-500/20 shadow-lg flex items-center space-x-2">
-                        <i class="ph ph-drop text-blue-400 text-xs"></i>
-                        <div class="w-12 h-1 bg-white/5 rounded-full overflow-hidden">
-                            <div id="explore-mana-bar" class="h-full bg-blue-500" style="width: 100%"></div>
-                        </div>
-                    </div>
-                </div>
-                <div id="env-purity-tag"
-                    class="px-2 py-0.5 bg-qi-blue/10 text-qi-blue text-[7px] font-bold uppercase tracking-widest rounded border border-qi-blue/20">
-                    Linh Khí Tinh Thuần</div>
+            <div id="env-purity-tag"
+                class="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-qi-blue/20 shadow-lg text-qi-blue text-[8px] font-bold uppercase tracking-widest">
+                Linh Khí Tinh Thuần
             </div>
         </div>
-        <div
-            class="relative z-10 flex-grow flex flex-col justify-end min-h-0 overflow-y-auto custom-scroll p-6 pb-10 space-y-6">
 
-            <!-- NPC List in Location -->
-            <div id="explore-npc-list" class="space-y-3 mb-4">
-                <!-- NPCs will be rendered here -->
+        <div class="relative z-10 flex-grow flex flex-col justify-end p-6 pb-10 space-y-8">
+            <div class="text-center space-y-4">
+                <div class="space-y-1">
+                    <h3 id="current-location-name" class="text-4xl font-charm text-white drop-shadow-2xl">Vạn Thú Lâm</h3>
+                    <div class="flex items-center justify-center space-x-3 opacity-60">
+                        <div class="w-12 h-[1px] bg-gradient-to-r from-transparent to-qi-blue"></div>
+                        <span id="current-world-name-sub" class="text-[9px] text-qi-blue font-ancient uppercase tracking-[0.3em]">Phàm Trần Giới</span>
+                        <div class="w-12 h-[1px] bg-gradient-to-l from-transparent to-qi-blue"></div>
+                    </div>
+                </div>
+                <p id="event-text" class="text-sm text-gray-300 font-serif italic leading-relaxed max-w-xs mx-auto opacity-80">
+                    “Không gian tĩnh lặng, chỉ nghe tiếng gió lướt qua kẽ lá...”
+                </p>
             </div>
 
-            <div class="flex flex-col items-center space-y-4 text-center">
-                <div class="space-y-2">
-                    <h3 id="current-location-name" class="text-3xl font-charm text-white drop-shadow-2xl">Vạn Thú Lâm
-                    </h3>
-                    <div class="flex items-center justify-center space-x-3 opacity-50">
-                        <div class="w-8 h-[1px] bg-gradient-to-r from-transparent to-qi-blue"></div>
-                        <span id="current-world-name-sub"
-                            class="text-[8px] text-qi-blue font-ancient uppercase tracking-[0.4em]">Phàm Trần
-                            Giới</span>
-                        <div class="w-8 h-[1px] bg-gradient-to-l from-transparent to-qi-blue"></div>
-                    </div>
-                    <p id="event-text"
-                        class="text-xs text-gray-300 font-ancient italic leading-relaxed max-w-xs mx-auto drop-shadow-md">
-                        “Bầu không khí tĩnh mịch lạ thường, ẩn chứa nguy hiểm...”</p>
+            <!-- Dashboard Stats Grid -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="dashboard-stat">
+                    <span class="dashboard-stat-label">Linh Khí</span>
+                    <span id="env-concentration" class="dashboard-stat-value text-qi-blue">15%</span>
+                </div>
+                <div class="dashboard-stat">
+                    <span class="dashboard-stat-label">Thời Gian</span>
+                    <span id="env-timerate" class="dashboard-stat-value text-cultivation-gold">1.0x</span>
                 </div>
             </div>
-            <div id="env-energy-display"
-                class="flex justify-center space-x-8 py-5 bg-white/[0.03] backdrop-blur-md rounded-3xl border border-white/5">
-                <div id="env-energy-list" class="flex space-x-8"></div>
+
+            <!-- NPC Section -->
+            <div id="explore-npc-list" class="space-y-3">
+                <!-- NPCs rendered here -->
             </div>
+
             <div class="space-y-6">
                 <div class="px-2 space-y-2">
                     <div class="flex justify-between items-end">
-                        <span class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Tiến Độ</span>
+                        <span class="text-[8px] text-gray-500 uppercase tracking-widest font-bold">Lịch Luyện Tiến Độ</span>
                         <span id="explore-progress" class="text-xs text-qi-blue font-mono font-bold">0%</span>
                     </div>
-                    <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                        <div id="explore-bar"
-                            class="h-full bg-gradient-to-r from-qi-blue via-qi-purple to-qi-blue bg-[length:200%_100%] animate-gradient-x w-0 transition-all duration-1000">
-                        </div>
+                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
+                        <div id="explore-bar" class="h-full bg-gradient-to-r from-qi-blue via-qi-purple to-qi-blue bg-[length:200%_100%] animate-gradient-x w-0 transition-all duration-1000"></div>
                     </div>
                 </div>
+
                 <div id="explore-actions" class="grid grid-cols-2 gap-4">
                     <button id="btn-move"
-                        class="col-span-2 py-5 bg-qi-blue/10 border border-qi-blue/20 rounded-2xl active:scale-95 transition-all flex items-center justify-center space-x-3 shadow-2xl shadow-qi-blue/5">
-                        <i class="ph ph-footprints text-qi-blue text-lg"></i>
-                        <span class="text-sm font-bold text-qi-blue uppercase tracking-[0.4em]">TIẾN BƯỚC</span>
+                        class="col-span-2 py-5 bg-gradient-to-r from-qi-blue/20 to-qi-purple/20 border border-white/10 rounded-2xl active:scale-95 transition-all flex items-center justify-center space-x-3 shadow-2xl">
+                        <i class="ph ph-boot text-qi-blue text-xl"></i>
+                        <span class="text-sm font-bold text-white uppercase tracking-[0.4em]">TIẾN BƯỚC</span>
                     </button>
-                    <div id="loc-special-actions" class="col-span-2 grid grid-cols-2 gap-4 hidden mb-2"></div>
+                    <div id="loc-special-actions" class="col-span-2 grid grid-cols-2 gap-4 hidden"></div>
                     <button id="btn-leave-loc"
-                        class="col-span-2 py-4 bg-white/5 rounded-2xl active:scale-95 transition-all text-[9px] text-gray-500 font-bold uppercase tracking-[0.2em]">RỜI
-                        KHU VỰC</button>
+                        class="col-span-2 py-4 bg-white/5 rounded-2xl active:scale-95 transition-all text-[10px] text-gray-500 font-bold uppercase tracking-widest">RỜI KHU VỰC</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- NPC Screen -->
-    <div id="npc-overlay" class="overlay hidden">
-        <div id="screen-npc" class="w-full h-full"></div>
-    </div>
+
 
     <!-- NPC Trade Overlay -->
     <div id="npc-trade-overlay" class="overlay hidden">
@@ -1735,50 +1724,105 @@
         </div>
     </div>
 
-    <div id="mountain-overlay" class="hidden overlay-full bg-slate-900/95 z-[120] animate-fade-in">
-        <div class="flex-none flex justify-between items-center p-6 border-b border-white/5">
-            <h2 class="text-3xl font-charm text-red-500">Thập Vạn Đại Sơn</h2>
-            <button id="close-mountain-btn" class="text-gray-500 hover:text-white"><i
-                    class="ph ph-x text-2xl"></i></button>
-        </div>
+    <div id="mountain-overlay" class="hidden overlay-full bg-[#0a0a0c] z-[120] animate-fade-in">
+        <header class="flex-none p-6 flex justify-between items-center border-b border-red-900/20 bg-red-950/10 backdrop-blur-md">
+            <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 rounded-full bg-red-900/20 border border-red-500/30 flex items-center justify-center text-red-500">
+                    <i class="ph ph-mountain text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-charm text-red-500 leading-tight">Thập Vạn Đại Sơn</h2>
+                    <p class="text-[8px] text-red-900/60 uppercase tracking-[0.2em]">Cấm Địa Thượng Cổ</p>
+                </div>
+            </div>
+            <button id="close-mountain-btn" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-gray-500 hover:text-white transition-all">
+                <i class="ph ph-x text-xl"></i>
+            </button>
+        </header>
+
         <div class="flex-grow min-h-0 overflow-y-auto p-6 custom-scroll">
-            <div class="space-y-6 pb-20">
-                <div class="bg-black/40 p-4 rounded-2xl border border-red-900/30 text-center">
-                    <h3 id="mountain-layer-name" class="text-xl font-ancient text-red-400 mb-2">Ngoại Vi Đại Sơn</h3>
-                    <p id="mountain-layer-desc" class="text-[10px] text-gray-500 italic">Vùng ngoài cùng, linh khí
-                        loãng.</p>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-black/60 p-4 rounded-xl border border-white/5 space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[9px] text-gray-400 uppercase font-ancient">Dưỡng Khí</span>
-                            <span id="mountain-oxygen-text" class="text-[10px] text-qi-blue font-mono">100%</span>
-                        </div>
-                        <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                            <div id="mountain-oxygen-bar" class="h-full bg-qi-blue" style="width: 100%"></div>
-                        </div>
+            <div class="space-y-8 pb-24">
+                <!-- Layer Info -->
+                <div class="relative p-6 rounded-[2rem] border border-red-900/30 bg-gradient-to-br from-red-950/20 to-black overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="ph ph-skull text-6xl text-red-500"></i>
                     </div>
-                    <div class="bg-black/60 p-4 rounded-xl border border-white/5 space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[9px] text-gray-400 uppercase font-ancient">Chướng Khí</span>
-                            <span id="mountain-toxicity-text" class="text-[10px] text-red-500 font-mono">0%</span>
+                    <div class="relative z-10 text-center space-y-4">
+                        <div>
+                            <h3 id="mountain-layer-name" class="text-2xl font-ancient text-red-400 mb-1">Ngoại Vi Đại Sơn</h3>
+                            <p id="mountain-layer-desc" class="text-[10px] text-gray-500 italic font-serif">"Vùng ngoài cùng, linh khí loãng và đầy sương mù..."</p>
                         </div>
-                        <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                            <div id="mountain-toxicity-bar" class="h-full bg-red-500" style="width: 0%"></div>
+                        
+                        <!-- Layer Progress -->
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between items-end px-1">
+                                <span class="text-[7px] text-red-900/60 uppercase tracking-widest font-bold">Tiến Độ Tầng</span>
+                                <span id="mountain-layer-progress-text" class="text-[9px] font-mono text-red-400">0%</span>
+                            </div>
+                            <div class="h-1 w-full bg-red-950/40 rounded-full overflow-hidden border border-red-900/10">
+                                <div id="mountain-layer-progress-bar" class="h-full bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.4)] transition-all duration-1000" style="width: 0%"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div id="mountain-event-log"
-                    class="bg-black/20 rounded-xl p-4 border border-white/5 min-h-[180px] overflow-y-auto text-[10px] space-y-2 font-ancient text-gray-400">
-                    <p>Đã bước vào chân núi...</p>
+
+                <!-- Survival Stats -->
+                <div class="mountain-survival-panel grid grid-cols-1 gap-6">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-end px-1">
+                            <div class="flex items-center space-x-2">
+                                <i class="ph ph-wind text-qi-blue text-xs"></i>
+                                <span class="text-[9px] text-gray-400 uppercase tracking-widest font-bold">Dưỡng Khí</span>
+                            </div>
+                            <span id="mountain-oxygen-text" class="text-xs font-mono text-qi-blue">100%</span>
+                        </div>
+                        <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 p-0.5">
+                            <div id="mountain-oxygen-bar" class="h-full bg-gradient-to-r from-qi-blue to-blue-400 rounded-full transition-all duration-500 shadow-[0_0_15px_rgba(79,209,197,0.3)]" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-end px-1">
+                            <div class="flex items-center space-x-2">
+                                <i class="ph ph-skull text-red-500 text-xs"></i>
+                                <span class="text-[9px] text-gray-400 uppercase tracking-widest font-bold">Chướng Khí</span>
+                            </div>
+                            <span id="mountain-toxicity-text" class="text-xs font-mono text-red-500">0%</span>
+                        </div>
+                        <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 p-0.5">
+                            <div id="mountain-toxicity-bar" class="h-full bg-gradient-to-r from-red-600 to-red-400 rounded-full transition-all duration-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]" style="width: 0%"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <button id="btn-mountain-deeper"
-                        class="py-4 bg-red-900 text-white font-bold rounded-xl active:scale-95 transition-all">TIẾN
-                        SÂU</button>
-                    <button id="btn-mountain-retreat"
-                        class="py-4 bg-slate-800 text-white font-bold rounded-xl active:scale-95 transition-all">RÚT
-                        LUI</button>
+
+                <!-- Event Log -->
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2 px-2">
+                        <div class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+                        <span class="text-[8px] text-gray-500 uppercase tracking-widest font-bold">Nhật Ký Thám Hiểm</span>
+                    </div>
+                    <div id="mountain-event-log" class="mountain-log min-h-[200px] max-h-[300px] overflow-y-auto custom-scroll">
+                        <p>Đã bước vào chân núi...</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-4">
+                    <button id="btn-mountain-explore"
+                        class="w-full py-5 bg-gradient-to-r from-red-600/30 to-red-900/30 border border-red-500/40 rounded-2xl active:scale-95 transition-all flex items-center justify-center space-x-3 shadow-[0_0_30px_rgba(220,38,38,0.2)] group">
+                        <i class="ph ph-footprints text-red-500 text-2xl group-hover:animate-bounce"></i>
+                        <span class="text-sm font-bold text-white uppercase tracking-[0.5em]">THÁM HIỂM</span>
+                    </button>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <button id="btn-mountain-deeper"
+                            class="group relative py-4 bg-red-900/40 border border-red-500/30 rounded-2xl overflow-hidden active:scale-95 transition-all shadow-2xl">
+                            <div class="absolute inset-0 bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <span class="relative z-10 text-xs font-bold text-red-400 uppercase tracking-[0.2em]">TIẾN SÂU</span>
+                        </button>
+                        <button id="btn-mountain-retreat"
+                            class="py-4 bg-white/5 border border-white/10 rounded-2xl active:scale-95 transition-all text-xs font-bold text-gray-500 uppercase tracking-[0.2em]">RÚT LUI</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1895,198 +1939,9 @@
         </div>
     </div>
 
-    <div id="battle-overlay" class="hidden overlay-full z-[200] bg-qi-ink">
-        <!-- Battle Background -->
-        <div id="battle-scene" class="relative h-2/5 overflow-hidden">
-            <div id="battle-bg"
-                class="absolute inset-0 bg-cover bg-center opacity-40 scale-105 transition-transform duration-[10000ms]">
-            </div>
-            <div class="absolute inset-0 bg-gradient-to-t from-qi-ink via-transparent to-black/60"></div>
-
-            <!-- Enemy Side -->
-            <div class="absolute top-10 left-0 right-0 px-6 flex flex-col items-center animate-fade-in">
-                <div class="relative group">
-                    <div class="absolute inset-0 bg-red-500/10 rounded-full blur-2xl animate-pulse"></div>
-                    <div
-                        class="relative w-28 h-28 rounded-full overflow-hidden border-2 border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
-                        <img id="enemy-img" src="" class="w-full h-full object-cover">
-                    </div>
-                    <div id="enemy-status-effects" class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex space-x-1">
-                    </div>
-                </div>
-                <div class="mt-4 text-center">
-                    <div class="flex items-center justify-center space-x-2">
-                        <span id="battle-enemy-name"
-                            class="text-xl font-ancient text-white font-bold tracking-widest uppercase">Yêu Hổ</span>
-                    </div>
-                    <div id="battle-enemy-realm"
-                        class="text-[9px] text-red-400 font-ancient uppercase tracking-widest opacity-80">Trúc Cơ Kỳ
-                    </div>
-                </div>
-                <!-- Enemy HP Bar -->
-                <div class="w-48 mt-3 space-y-1">
-                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                        <div id="battle-enemy-hp"
-                            class="h-full bg-gradient-to-r from-red-600 to-red-400 transition-all duration-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
-                            style="width: 100%"></div>
-                    </div>
-                    <div class="flex justify-between text-[7px] text-gray-500 font-mono uppercase">
-                        <span>HP</span>
-                        <span id="enemy-hp-text">100/100</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VS Divider -->
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20">
-                <div class="text-4xl font-ancient text-cultivation-gold italic">VS</div>
-            </div>
-        </div>
-
-        <!-- Combat Log -->
-        <div id="battle-log"
-            class="relative flex-grow bg-black/20 p-4 overflow-y-auto text-[10px] font-serif text-gray-400 space-y-1.5 custom-scroll border-y border-white/5">
-            <div
-                class="absolute top-0 left-0 w-full h-4 bg-gradient-to-b from-qi-ink to-transparent pointer-events-none">
-            </div>
-            <!-- Log entries will be here -->
-            <div
-                class="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-t from-qi-ink to-transparent pointer-events-none">
-            </div>
-        </div>
-
-        <!-- Player Side Controls -->
-        <div class="p-6 bg-qi-ink/80 backdrop-blur-md border-t border-white/5">
-            <!-- Player Info & Stats -->
-            <div class="flex items-end justify-between mb-6">
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <div
-                            class="w-16 h-16 rounded-2xl overflow-hidden border border-qi-blue/30 shadow-[0_0_20px_rgba(79,209,197,0.1)]">
-                            <img id="battle-player-img" src="./assets/player-CKwXHBQJ.png"
-                                class="w-full h-full object-cover">
-                        </div>
-                        <div id="player-status-effects" class="absolute -top-2 -right-2 flex flex-col space-y-1"></div>
-                    </div>
-                    <div class="space-y-1">
-                        <h4 id="battle-player-name" class="text-sm font-bold text-white tracking-widest font-ancient">
-                            Phàm Nhân</h4>
-                        <div class="flex space-x-2">
-                            <div class="w-24 space-y-1">
-                                <div class="h-1 bg-white/5 rounded-full overflow-hidden">
-                                    <div id="battle-player-hp" class="h-full bg-qi-jade transition-all duration-500"
-                                        style="width: 100%"></div>
-                                </div>
-                                <div class="text-[7px] text-qi-jade flex justify-between font-mono"><span>HP</span><span
-                                        id="player-hp-text">100/100</span></div>
-                            </div>
-                            <div class="w-20 space-y-1">
-                                <div class="h-1 bg-white/5 rounded-full overflow-hidden">
-                                    <div id="battle-player-mana" class="h-full bg-qi-blue transition-all duration-500"
-                                        style="width: 100%"></div>
-                                </div>
-                                <div class="text-[7px] text-qi-blue flex justify-between font-mono"><span>MP</span><span
-                                        id="player-mana-text">50/50</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Turn Indicator -->
-                <div id="turn-indicator"
-                    class="px-3 py-1 rounded-full bg-cultivation-gold/10 border border-cultivation-gold/20 text-[8px] text-cultivation-gold font-ancient uppercase tracking-widest animate-pulse">
-                    Đến lượt ngươi
-                </div>
-            </div>
-
-            <!-- Actions Tabs/Groups -->
-            <div id="battle-actions" class="hidden space-y-4">
-                <!-- Main Actions Grid -->
-                <div class="grid grid-cols-4 gap-2">
-                    <button id="btn-attack"
-                        class="flex flex-col py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 active:scale-95 transition-all">
-                        <i class="ph ph-sword text-lg mb-1 text-red-400"></i>
-                        <span class="text-[8px] font-bold uppercase tracking-tighter">Công</span>
-                    </button>
-                    <button id="btn-defend"
-                        class="flex flex-col py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 active:scale-95 transition-all">
-                        <i class="ph ph-shield text-lg mb-1 text-blue-400"></i>
-                        <span class="text-[8px] font-bold uppercase tracking-tighter">Thủ</span>
-                    </button>
-                    <button id="btn-skill"
-                        class="flex flex-col py-3 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple active:scale-95 transition-all">
-                        <i class="ph ph-sparkle text-lg mb-1"></i>
-                        <span class="text-[8px] font-bold uppercase tracking-tighter">Thuật</span>
-                    </button>
-                    <button id="btn-potion"
-                        class="flex flex-col py-3 bg-emerald-900/20 border border-emerald-500/30 rounded-xl text-emerald-400 active:scale-95 transition-all">
-                        <i class="ph ph-flask text-lg mb-1"></i>
-                        <span class="text-[8px] font-bold uppercase tracking-tighter">Đan</span>
-                    </button>
-                </div>
-
-                <!-- Secondary Actions (More) -->
-                <div class="grid grid-cols-5 gap-2 border-t border-white/5 pt-4">
-                    <button id="btn-flame"
-                        class="flex flex-col py-2 bg-red-900/20 border border-red-500/30 rounded-xl text-red-500 active:scale-95 transition-all hidden">
-                        <i class="ph ph-fire text-base mb-1"></i>
-                        <span class="text-[7px] font-bold uppercase">Dị Hỏa</span>
-                    </button>
-                    <button id="btn-secret"
-                        class="flex flex-col py-2 bg-amber-900/20 border border-amber-500/30 rounded-xl text-amber-500 active:scale-95 transition-all hidden">
-                        <i class="ph ph-scroll text-base mb-1"></i>
-                        <span class="text-[7px] font-bold uppercase">Bí Pháp</span>
-                    </button>
-                    <button id="btn-talisman"
-                        class="flex flex-col py-2 bg-sky-900/20 border border-sky-500/30 rounded-xl text-sky-400 active:scale-95 transition-all">
-                        <i class="ph ph-cards text-base mb-1"></i>
-                        <span class="text-[7px] font-bold uppercase">Phù</span>
-                    </button>
-                    <button id="btn-beast"
-                        class="flex flex-col py-2 bg-orange-900/20 border border-orange-500/30 rounded-xl text-orange-400 active:scale-95 transition-all">
-                        <i class="ph ph-paw-print text-base mb-1"></i>
-                        <span class="text-[7px] font-bold uppercase">Thú</span>
-                    </button>
-                    <button id="btn-escape"
-                        class="flex flex-col py-2 bg-slate-700/40 border border-white/10 rounded-xl text-gray-300 active:scale-95 transition-all">
-                        <i class="ph ph-wind text-base mb-1"></i>
-                        <span class="text-[7px] font-bold uppercase">Chạy</span>
-                    </button>
-                </div>
-
-                <!-- Profession specific actions (Scrollable or Grid) -->
-                <div id="battle-profession-actions"
-                    class="flex space-x-2 overflow-x-auto pb-2 custom-scroll-x no-scrollbar">
-                    <button id="btn-formation"
-                        class="min-w-[60px] flex flex-col py-2 bg-violet-900/20 border border-violet-500/30 rounded-xl text-violet-400 active:scale-95 transition-all hidden">
-                        <i class="ph ph-spheres text-base mb-1"></i>
-                        <span class="text-[7px] font-bold uppercase">Trận</span>
-                    </button>
-                    <button id="btn-puppet"
-                        class="min-w-[60px] flex flex-col py-2 bg-cyan-900/20 border border-cyan-500/30 rounded-xl text-cyan-400 active:scale-95 transition-all hidden">
-                        <i class="ph ph-robot text-base mb-1"></i>
-                        <span class="text-[7px] font-bold uppercase">Khôi Lỗi</span>
-                    </button>
-                    <button id="btn-corpse"
-                        class="min-w-[60px] flex flex-col py-2 bg-zinc-800/50 border border-zinc-500/30 rounded-xl text-zinc-300 active:scale-95 transition-all hidden">
-                        <i class="ph ph-skull text-base mb-1"></i>
-                        <span class="text-[7px] font-bold uppercase">Luyện Thi</span>
-                    </button>
-                    <button id="btn-insect"
-                        class="min-w-[60px] flex flex-col py-2 bg-lime-900/20 border border-lime-500/30 rounded-xl text-lime-400 active:scale-95 transition-all hidden">
-                        <i class="ph ph-bug text-base mb-1"></i>
-                        <span class="text-[7px] font-bold uppercase">Ngự Trùng</span>
-                    </button>
-                </div>
-            </div>
-
-            <div id="battle-secret-list"
-                class="hidden mt-4 p-4 rounded-2xl border border-amber-500/20 bg-black/60 space-y-2 max-h-48 overflow-y-auto custom-scroll">
-            </div>
-        </div>
-    </div>
 
     <div id="stats-modal"
-        class="fixed inset-0 bg-black/95 z-[300] hidden flex flex-col p-6 items-center justify-center">
+        class="absolute inset-0 bg-black/95 z-[300] hidden flex flex-col p-6 items-center justify-center">
         <div class="w-full max-w-xs space-y-6 animate-fade-in">
             <h2 class="text-3xl font-ancient text-cultivation-gold text-center">Bảng Trạng Thái</h2>
             <div class="space-y-4">
@@ -2230,7 +2085,7 @@
         </div>
     </div>
     <div id="modal-overlay"
-        class="fixed inset-0 bg-qi-ink/80 backdrop-blur-md z-[900] hidden flex items-center justify-center p-6 animate-fade-in">
+        class="absolute inset-0 bg-qi-ink/80 backdrop-blur-md z-[900] hidden flex items-center justify-center p-6 animate-fade-in">
         <div id="modal-content"
             class="w-full max-w-[300px] bg-qi-ink border border-cultivation-gold/20 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] space-y-8">
             <div class="text-center">
@@ -2255,7 +2110,7 @@
 
     <!-- Loading Overlay -->
     <div id="loading-overlay"
-        class="fixed inset-0 z-[1000] hidden flex-col items-center justify-center bg-qi-ink/95 backdrop-blur-2xl">
+        class="absolute inset-0 z-[1000] hidden flex-col items-center justify-center bg-qi-ink/95 backdrop-blur-2xl">
         <div class="relative w-32 h-32 mb-12">
             <!-- Outer Ring with Runes -->
             <div class="absolute inset-0 border border-dashed border-qi-blue/30 rounded-full animate-spin-slow"></div>
@@ -2282,10 +2137,8 @@
         </div>
     </div>
 
-    </div>
-
     <!-- Spirit Stone Management Overlay -->
-    <div id="spirit-stone-overlay" class="hidden fixed inset-0 z-[150] flex items-center justify-center p-6">
+    <div id="spirit-stone-overlay" class="hidden absolute inset-0 z-[150] flex items-center justify-center p-6">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
         <div
             class="relative w-full max-w-md bg-qi-ink border border-cultivation-gold/30 rounded-[2.5rem] flex flex-col max-h-[85vh] shadow-[0_0_50px_rgba(212,175,55,0.2)] overflow-hidden">
@@ -2379,6 +2232,151 @@
             </div>
         </div>
     </div>
+
+    <!-- Combat Screen -->
+    <div id="battle-overlay" class="hidden overlay-full animate-fade-in bg-[#05070a] z-[999]">
+        <div id="battle-bg" class="absolute inset-0 bg-cover bg-center transition-all duration-1000"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-[#05070a]"></div>
+
+        <!-- Combat Timeline (Left Side) -->
+        <div id="battle-timeline" class="absolute left-4 top-24 bottom-32 w-12 flex flex-col items-center space-y-4 z-20 pointer-events-none">
+            <!-- Entities turn order will be rendered here -->
+        </div>
+
+        <div class="relative z-10 flex flex-col h-full">
+            <!-- Header -->
+            <div class="flex-none p-6 flex justify-between items-start">
+                <div id="turn-indicator"
+                    class="px-3 py-1 rounded-full bg-qi-blue/10 border border-qi-blue/20 text-[8px] text-qi-blue font-ancient uppercase tracking-widest animate-pulse">
+                    Đến lượt ngươi</div>
+                <div class="flex items-center space-x-3">
+                    <div class="text-right">
+                        <div class="text-[8px] text-gray-500 uppercase tracking-widest font-bold">Linh Khí Chiến Trường</div>
+                        <div id="battle-energy" class="text-xs text-qi-blue font-mono font-bold">Linh Khí Dày Đặc</div>
+                    </div>
+                    <div class="w-1.5 h-1.5 rounded-full bg-qi-blue animate-pulse"></div>
+                </div>
+            </div>
+
+            <!-- Entities View -->
+            <div class="flex-grow flex flex-col justify-start items-center p-6 space-y-12 overflow-y-auto custom-scroll min-h-0">
+                <!-- Enemy Side -->
+                <div class="relative w-full max-w-xs group">
+                    <div class="absolute -inset-4 bg-red-600/5 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative flex flex-col items-center space-y-4">
+                        <div class="relative">
+                            <div class="w-32 h-32 rounded-3xl overflow-hidden border-2 border-red-900/30 shadow-[0_0_40px_rgba(153,27,27,0.2)]">
+                                <img id="enemy-img" src="" class="w-full h-full object-cover">
+                            </div>
+                            <div id="enemy-status-effects" class="absolute -right-2 -bottom-2 flex flex-col space-y-1"></div>
+                        </div>
+                        <div class="text-center space-y-1.5">
+                            <h3 id="battle-enemy-name" class="text-xl font-ancient text-red-400">Yêu Thú</h3>
+                            <div id="battle-enemy-realm" class="text-[9px] text-gray-500 uppercase tracking-[0.2em]">Luyện Khí Tầng 3</div>
+                        </div>
+                        <!-- Enemy HP -->
+                        <div class="w-full px-4 space-y-1.5">
+                            <div class="flex justify-between items-end px-1">
+                                <span class="text-[7px] text-red-900/60 uppercase tracking-widest font-bold">Khí Huyết</span>
+                                <span id="enemy-hp-text" class="text-[9px] font-mono text-red-500">100/100</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-red-950/40 rounded-full overflow-hidden border border-red-900/20">
+                                <div id="battle-enemy-hp" class="h-full bg-red-600 shadow-[0_0_10px_rgba(220,38,38,0.3)] transition-all duration-500" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-20 h-20 flex items-center justify-center">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-qi-blue/20 blur-xl rounded-full animate-pulse"></div>
+                        <i class="ph ph-swords text-4xl text-qi-blue/40 relative z-10 animate-bounce"></i>
+                    </div>
+                </div>
+
+                <!-- Player Side -->
+                <div class="relative w-full max-w-xs">
+                    <div class="relative flex flex-col items-center space-y-4">
+                        <!-- Player HP/MP Bars -->
+                        <div class="w-full px-4 space-y-3">
+                            <!-- HP -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end px-1">
+                                    <span class="text-[7px] text-qi-jade/60 uppercase tracking-widest font-bold">Trạng Thái</span>
+                                    <span id="player-hp-text" class="text-[9px] font-mono text-qi-jade">100/100</span>
+                                </div>
+                                <div class="h-1.5 w-full bg-qi-jade/10 rounded-full overflow-hidden border border-qi-jade/20">
+                                    <div id="battle-player-hp" class="h-full bg-qi-jade shadow-[0_0_10px_rgba(16,185,129,0.3)] transition-all duration-500" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <!-- Mana -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end px-1">
+                                    <span class="text-[7px] text-qi-blue/60 uppercase tracking-widest font-bold">Linh Lực</span>
+                                    <span id="player-mana-text" class="text-[9px] font-mono text-qi-blue">100/100</span>
+                                </div>
+                                <div class="h-1.5 w-full bg-qi-blue/10 rounded-full overflow-hidden border border-qi-blue/20">
+                                    <div id="battle-player-mana" class="h-full bg-qi-blue shadow-[0_0_10px_rgba(59,130,246,0.3)] transition-all duration-500" style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <div class="w-24 h-24 rounded-3xl overflow-hidden border-2 border-qi-blue/30 shadow-[0_0_40px_rgba(59,130,246,0.2)]">
+                                <img id="battle-player-img" src="" class="w-full h-full object-cover">
+                            </div>
+                            <div id="player-status-effects" class="absolute -left-2 -bottom-2 flex flex-col space-y-1"></div>
+                        </div>
+                        <div class="text-center space-y-1">
+                            <h3 id="battle-player-name" class="text-lg font-ancient text-white">Bản Tọa</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Battle Log & Actions -->
+            <div class="flex-none p-6 space-y-4 bg-gradient-to-t from-black to-transparent">
+                <div id="battle-log" class="h-20 overflow-y-auto text-[10px] text-gray-400 font-serif italic space-y-1 custom-scroll mask-fade-top">
+                    <p>Bắt đầu cuộc chiến...</p>
+                </div>
+
+                <div id="battle-actions" class="grid grid-cols-4 gap-2">
+                    <button id="btn-attack" class="battle-action-btn bg-qi-blue/10 border-qi-blue/30 text-qi-blue">
+                        <i class="ph ph-sword mb-1 text-lg"></i>
+                        <span>CÔNG</span>
+                    </button>
+                    <button id="btn-defend" class="battle-action-btn bg-qi-jade/10 border-qi-jade/30 text-qi-jade">
+                        <i class="ph ph-shield mb-1 text-lg"></i>
+                        <span>THỦ</span>
+                    </button>
+                    <button id="btn-skill" class="battle-action-btn bg-qi-purple/10 border-qi-purple/30 text-qi-purple">
+                        <i class="ph ph-sparkles mb-1 text-lg"></i>
+                        <span>THUẬT</span>
+                    </button>
+                    <button id="btn-secret" class="battle-action-btn bg-cultivation-gold/10 border-cultivation-gold/30 text-cultivation-gold">
+                        <i class="ph ph-scroll mb-1 text-lg"></i>
+                        <span>BÍ PHÁP</span>
+                    </button>
+                    
+                    <!-- Hidden List for Secrets -->
+                    <div id="battle-secret-list" class="hidden absolute bottom-40 left-6 right-6 p-4 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl z-50 space-y-2 max-h-48 overflow-y-auto custom-scroll"></div>
+
+                    <!-- Profession Buttons (Dynamic) -->
+                    <button id="btn-potion" class="battle-action-btn-sm">ĐAN</button>
+                    <button id="btn-talisman" class="battle-action-btn-sm">PHÙ</button>
+                    <button id="btn-beast" class="battle-action-btn-sm">THÚ</button>
+                    <button id="btn-flame" class="battle-action-btn-sm hidden">HỎA</button>
+                    <button id="btn-formation" class="battle-action-btn-sm">TRẬN</button>
+                    <button id="btn-puppet" class="battle-action-btn-sm">LỖI</button>
+                    <button id="btn-corpse" class="battle-action-btn-sm">THI</button>
+                    <button id="btn-insect" class="battle-action-btn-sm">TRÙNG</button>
+                    <button id="btn-escape" class="battle-action-btn-sm col-span-2">ĐÀO TẨU</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
 
 </body>
 

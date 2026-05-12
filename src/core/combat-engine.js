@@ -19,6 +19,16 @@ export class CombatEngine {
             player: { stun: 0 },
             enemy: { burn: 0, burnPower: 0, stun: 0 }
         };
+        this.turnOrder = [];
+        this.calculateTurnOrder();
+    }
+
+    calculateTurnOrder() {
+        // Initial turn order based on speed
+        this.turnOrder = [
+            { id: 'player', name: 'Ngươi', spd: this.player.spd },
+            { id: 'enemy', name: this.enemy.name, spd: this.enemy.spd }
+        ].sort((a, b) => b.spd - a.spd);
     }
 
     getEnemyArchetype() {

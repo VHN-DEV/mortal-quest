@@ -30,13 +30,17 @@ export class MapScreen {
         this.elCurrentLocName = document.getElementById('current-location-name');
         this.elCurrentWorldNameSub = document.getElementById('current-world-name-sub');
         this.elEventText = document.getElementById('event-text');
-        this.elExploreEvent = document.getElementById('explore-event-display');
         this.elExploreBg = document.getElementById('explore-bg');
         this.elExploreNpcList = document.getElementById('explore-npc-list');
         
         // Progress Bars
         this.elExploreBar = document.getElementById('explore-bar');
         this.elExploreProgress = document.getElementById('explore-progress');
+
+        // Dashboard Stats
+        this.elEnvConcentration = document.getElementById('env-concentration');
+        this.elEnvTimeRate = document.getElementById('env-timerate');
+        this.elEnvPurityTag = document.getElementById('env-purity-tag');
         
         // Buttons
         this.btnMove = document.getElementById('btn-move');
@@ -125,22 +129,21 @@ export class MapScreen {
         w.locations.forEach(loc => {
             const locked = state.player.realmId < loc.minRealm;
             const el = document.createElement('div');
-            el.className = `group relative overflow-hidden p-5 rounded-2xl border transition-all active:scale-[0.98] ${locked ? 'bg-black/20 border-white/5 opacity-60 grayscale' : 'bg-white/[0.02] border-white/5 hover:border-qi-blue/30 hover:bg-white/[0.05]'}`;
+            el.className = `location-card h-40 p-6 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
             
+            const dangerClass = this.getDangerClass(loc.danger);
+
             el.innerHTML = `
-                <div class="relative z-10 flex justify-between items-center">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-lg font-bold text-white group-hover:text-qi-blue transition-colors">${loc.name}</span>
-                            <span class="text-[8px] px-2 py-0.5 rounded-full bg-black/40 border border-white/10 text-gray-500 uppercase tracking-widest">${loc.danger}</span>
-                        </div>
-                        <p class="text-[11px] text-gray-500 font-ancient leading-tight max-w-xs">${loc.description}</p>
+                <img src="${loc.image || ASSETS.backgrounds.cultivation}" class="location-card-image">
+                <div class="relative z-10 space-y-1">
+                    <div class="flex justify-between items-center">
+                        <h4 class="text-xl font-bold text-white group-hover:text-qi-blue transition-colors">${loc.name}</h4>
+                        ${locked ? '<i class="ph ph-lock text-red-500"></i>' : ''}
                     </div>
-                    <div class="flex flex-col items-end">
-                        ${locked ? 
-                            `<span class="text-[8px] text-red-500 uppercase font-bold tracking-widest">Khóa</span>` : 
-                            `<i class="ph ph-caret-right text-qi-blue opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0"></i>`
-                        }
+                    <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">${loc.description}</p>
+                    <div class="flex items-center space-x-2 pt-1">
+                        <span class="px-2 py-0.5 rounded border text-[7px] uppercase font-bold tracking-widest ${dangerClass}">${loc.danger}</span>
+                        <span class="text-[7px] text-gray-500 uppercase tracking-widest">Yêu cầu: ${getRealmById(loc.minRealm).name}</span>
                     </div>
                 </div>
             `;
@@ -149,9 +152,43 @@ export class MapScreen {
         });
     }
 
+    getDangerClass(danger) {
+        const map = {
+            'An Toàn': 'danger-an-toan',
+            'Hạ Cấp': 'danger-ha-cap',
+            'Trung Cấp': 'danger-trung-cap',
+            'Cao Cấp': 'danger-cao-cap',
+            'Cực Nguy Hiểm': 'danger-cuc-nguy-hiem'
+        };
+        return map[danger] || 'bg-black/40 border-white/10 text-qi-blue';
+    }
+
     startExploration(locId) {
         state.currentLocId = locId;
         const loc = getLocationById(state.currentWorldId, locId);
+        
+        // LOGIC: If it's a direct-entry special location, skip the dashboard
+        if (loc.special === 'mountain') {
+            window.game.openMountain();
+            return;
+        }
+        if (loc.id === 'van_bao_cac') {
+            window.game.openShop();
+            return;
+        }
+        if (loc.special === 'tower') {
+            window.game.openTower();
+            return;
+        }
+        if (loc.special === 'guild') {
+            window.game.openGuild();
+            return;
+        }
+        if (SECTS[loc.id]) {
+            window.game.openSect();
+            return;
+        }
+
         this.elCurrentLocName.textContent = loc.name;
         state.explorationProgress = 0;
         
@@ -173,6 +210,28 @@ export class MapScreen {
         this.viewExplore.scrollTop = 0;
         this.renderExplore();
         this.renderNPCs();
+        this.updateDashboardStats(loc);
+    }
+
+    updateDashboardStats(loc) {
+        if (this.elEnvConcentration && loc.energies && loc.energies.length > 0) {
+            const mainEnergy = loc.energies[0];
+            this.elEnvConcentration.textContent = `${mainEnergy.concentration}%`;
+            this.elEnvConcentration.className = `dashboard-stat-value env-glow-${mainEnergy.type.replace(/_/g, '-')}`;
+            
+            if (this.elEnvPurityTag) {
+                const purityMap = {
+                    'TINH_THUAN': 'Tinh Thuần',
+                    'CUC_PHAM': 'Cực Phẩm',
+                    'TAP': 'Tạp Chất',
+                    'DAO': 'Đạo Vận'
+                };
+                this.elEnvPurityTag.textContent = `${mainEnergy.type.replace(/_/g, ' ').toUpperCase()} - ${purityMap[mainEnergy.purity] || 'Thường'}`;
+            }
+        }
+        if (this.elEnvTimeRate) {
+            this.elEnvTimeRate.textContent = `${(loc.timeRate || 1.0).toFixed(1)}x`;
+        }
     }
 
     handleMove() {
@@ -284,16 +343,11 @@ export class MapScreen {
 
     updateEventDisplay(text) {
         if (this.elEventText) this.elEventText.textContent = text;
-        if (this.elExploreEvent) {
-            this.elExploreEvent.classList.remove('animate-fade-in');
-            void this.elExploreEvent.offsetWidth;
-            this.elExploreEvent.classList.add('animate-fade-in');
-        }
     }
 
     updateExplorationUI() {
-        this.elExploreProgress.textContent = `Tiến độ: ${Math.floor(state.explorationProgress)}%`;
-        this.elExploreBar.style.width = `${state.explorationProgress}%`;
+        if (this.elExploreProgress) this.elExploreProgress.textContent = `${Math.floor(state.explorationProgress)}%`;
+        if (this.elExploreBar) this.elExploreBar.style.width = `${state.explorationProgress}%`;
     }
 
     renderExplore() {
@@ -303,28 +357,14 @@ export class MapScreen {
         const defaultBg = ASSETS.backgrounds.cultivation;
         const bgUrl = loc.image || ASSETS.backgrounds[loc.id] || defaultBg;
         
-        const setBg = (url) => {
-            if (this.elExploreBg) {
-                this.elExploreBg.style.backgroundImage = `url('${url}')`;
-            } else {
-                this.viewExplore.style.backgroundImage = `url('${url}')`;
-                this.viewExplore.style.backgroundSize = 'cover';
-                this.viewExplore.style.backgroundPosition = 'center';
-            }
-        };
-
-        const img = new Image();
-        img.onload = () => setBg(bgUrl);
-        img.onerror = () => setBg(defaultBg);
-        img.src = bgUrl;
+        if (this.elExploreBg) {
+            this.elExploreBg.style.backgroundImage = `url('${bgUrl}')`;
+        }
 
         if (this.elCurrentWorldNameSub) {
             const world = getWorlds()[state.currentWorldId];
             this.elCurrentWorldNameSub.textContent = world ? world.name : 'Vô Danh Giới';
         }
-
-        // renderEnergy is still in main.js or should be moved to EnergySystem
-        if (typeof window.game.renderEnergy === 'function') window.game.renderEnergy();
     }
 
     renderNPCs() {
@@ -338,32 +378,25 @@ export class MapScreen {
         }
 
         this.elExploreNpcList.innerHTML = `
-            <div class="text-[8px] text-gray-500 uppercase tracking-widest mb-2 border-b border-white/5 pb-1 flex justify-between">
-                <span>Hiện diện tại đây</span>
-                <span>${npcs.length} Đạo hữu</span>
+            <div class="flex items-center space-x-2 px-2 mb-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-qi-blue animate-pulse"></div>
+                <span class="text-[8px] text-gray-500 uppercase tracking-widest font-bold">Cường Giả Hiện Diện (${npcs.length})</span>
             </div>
-            <div class="grid grid-cols-1 gap-2">
+            <div class="flex flex-col space-y-2">
                 ${npcs.map(npc => `
-                    <div class="flex items-center justify-between p-3 bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl group hover:border-qi-blue/50 transition-all cursor-pointer"
+                    <div class="flex items-center justify-between p-3 bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl group hover:border-qi-blue/30 transition-all cursor-pointer"
                          onclick="window.game.openNPCDialogue('${npc.id}')">
                         <div class="flex items-center space-x-3">
                             <div class="relative">
-                                <img src="${npc.portrait}" class="w-10 h-10 rounded-xl object-cover border border-white/10">
-                                <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-qi-jade rounded-full border-2 border-black"></div>
+                                <img src="${npc.portrait}" class="w-10 h-10 rounded-xl object-cover border border-white/10 shadow-lg">
+                                <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-qi-jade rounded-full border-2 border-black shadow-sm"></div>
                             </div>
                             <div>
                                 <div class="text-[10px] font-bold text-white group-hover:text-qi-blue transition-colors">${npc.name}</div>
                                 <div class="text-[8px] text-gray-500 uppercase tracking-tighter">${getRealmById(npc.realmId).name}</div>
                             </div>
                         </div>
-                        <div class="flex space-x-2">
-                            <button class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-qi-blue/20 transition-all" title="Thông tin" onclick="event.stopPropagation(); window.npcScreen.selectNpc('${npc.id}'); window.switchScreen('screen-npc', document.getElementById('nav-npc'))">
-                                <i class="ph ph-info text-gray-400"></i>
-                            </button>
-                            <button class="px-3 py-1 rounded-lg bg-qi-blue/10 border border-qi-blue/20 text-qi-blue text-[8px] font-bold uppercase tracking-widest hover:bg-qi-blue/20 transition-all">
-                                TƯƠNG TÁC
-                            </button>
-                        </div>
+                        <i class="ph ph-chat-circle-dots text-qi-blue opacity-40 group-hover:opacity-100 transition-opacity"></i>
                     </div>
                 `).join('')}
             </div>

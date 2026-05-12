@@ -236,7 +236,7 @@ export class UISystem {
             el.classList.remove('flex', 'animate-fade-in', 'animate-zoom-in');
 
             // Check if any other overlays are still visible
-            const visibleOverlays = document.querySelectorAll('.fixed:not(.hidden)');
+            const visibleOverlays = document.querySelectorAll('.overlay-full:not(.hidden), .absolute.inset-0:not(.hidden)');
             if (visibleOverlays.length === 0) {
                 document.body.classList.remove('modal-open');
             }
@@ -251,11 +251,16 @@ export class UISystem {
         popup.className = `damage-popup ${crit ? 'text-2xl text-yellow-400 scale-125' : 'text-red-500'}`;
         popup.textContent = `-${value}`;
 
+        const app = document.getElementById('app');
+        const appRect = app.getBoundingClientRect();
         const rect = anchor.getBoundingClientRect();
-        popup.style.left = `${rect.left + rect.width / 2}px`;
-        popup.style.top = `${rect.top}px`;
+        
+        popup.style.position = 'absolute';
+        popup.style.left = `${rect.left - appRect.left + rect.width / 2}px`;
+        popup.style.top = `${rect.top - appRect.top}px`;
+        popup.style.zIndex = '1000';
 
-        document.body.appendChild(popup);
+        app.appendChild(popup);
         setTimeout(() => popup.remove(), 1000);
     }
 
@@ -266,21 +271,23 @@ export class UISystem {
         const p = document.createElement('div');
         p.className = 'qi-particle w-2 h-2';
         
-        // Path-aligned colors
         const colors = {
             tuvi: 'var(--qi-blue)',
             body: 'var(--qi-red)',
             soul: 'var(--qi-purple)'
         };
         
-        p.style.position = 'fixed';
-        p.style.left = `${x}px`;
-        p.style.top = `${y}px`;
+        const app = document.getElementById('app');
+        const appRect = app.getBoundingClientRect();
+        
+        p.style.position = 'absolute';
+        p.style.left = `${x - appRect.left}px`;
+        p.style.top = `${y - appRect.top}px`;
         p.style.zIndex = '9999';
         p.style.background = `radial-gradient(circle, ${colors[type] || colors.tuvi} 0%, transparent 70%)`;
         p.style.boxShadow = `0 0 10px ${colors[type] || colors.tuvi}`;
 
-        document.body.appendChild(p);
+        app.appendChild(p);
         setTimeout(() => p.remove(), 2000);
     }
 

@@ -196,6 +196,9 @@ export class Game {
         });
 
         // Mountain buttons
+        const btnExplore = document.getElementById('btn-mountain-explore');
+        if (btnExplore) btnExplore.onclick = () => this.mountainExplore();
+
         const btnDeeper = document.getElementById('btn-mountain-deeper');
         if (btnDeeper) btnDeeper.onclick = () => this.mountainDeeper();
         
@@ -458,6 +461,13 @@ export class Game {
 
     renderEnergy() {
         if (this.screens.systems) this.screens.systems.renderEnergy();
+    }
+
+    mountainExplore() {
+        if (state.systems.mountain) {
+            const success = state.systems.mountain.explore();
+            if (success) this.refreshUI();
+        }
     }
 
     mountainDeeper() {

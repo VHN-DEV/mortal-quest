@@ -1,6 +1,7 @@
 import { state } from '../../state.js';
 import { getFlameById } from '../../configs/alchemy-data.js';
 import { getSecretTechniqueById } from '../../configs/technique-data.js';
+import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 
 /**
  * Quản lý giao diện và logic của màn hình Chiến Đấu.
@@ -35,6 +36,7 @@ export class BattleScreen {
         // Turn indicator
         this.turnIndicator = document.getElementById('turn-indicator');
         this.battleBg = document.getElementById('battle-bg');
+        this.timeline = document.getElementById('battle-timeline');
         
         // Actions
         this.actionContainer = document.getElementById('battle-actions');
@@ -87,11 +89,12 @@ export class BattleScreen {
                 state.ui.toggleOverlay(this.overlay, true);
                 this.enemyName.textContent = combat.enemy.name;
                 this.playerName.textContent = state.player.name;
+                if (this.playerImg) this.playerImg.src = ASSETS.portraits.player;
                 if (this.enemyRealm) this.enemyRealm.textContent = combat.enemy.realmName || 'Vô Danh';
-                if (this.enemyImg) this.enemyImg.src = combat.enemy.image || './src/assets/images/enemies/monster_default.png';
+                if (this.enemyImg) this.enemyImg.src = combat.enemy.image || ASSETS.enemies.wolf;
                 if (this.battleBg) {
                     const loc = state.player.currentLocationId;
-                    this.battleBg.style.backgroundImage = `url('./public/assets/images/locations/${loc}.png')`;
+                    this.battleBg.style.backgroundImage = `url('${getAssetUrl(`locations/${loc}`)}')`;
                 }
                 this.updateHPs();
                 this.updateStatusEffects();
@@ -100,6 +103,7 @@ export class BattleScreen {
                 this.updateProfessionButtons();
                 this.updateSecretButton();
                 this.updateTurnIndicator(combat.turn);
+                this.updateTimeline();
                 if (this.btnEscape) this.btnEscape.classList.remove('hidden');
                 break;
             case 'log':
@@ -127,6 +131,10 @@ export class BattleScreen {
             case 'enemy-escape-attempt':
                 this.actionContainer.classList.add('hidden');
                 state.ui.toggleOverlay(document.getElementById('chase-overlay'), true);
+                break;
+            case 'turn':
+                this.updateTimeline();
+                this.updateTurnIndicator(data.turn);
                 break;
             case 'end':
                 this.actionContainer.classList.add('hidden');
@@ -158,6 +166,33 @@ export class BattleScreen {
             this.turnIndicator.textContent = 'Lượt đối phương';
             this.turnIndicator.className = 'px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-[8px] text-red-400 font-ancient uppercase tracking-widest';
         }
+    }
+
+    updateTimeline() {
+        if (!this.timeline || !state.currentCombat) return;
+        
+        const combat = state.currentCombat;
+        const order = combat.turnOrder || [
+            { id: 'player', name: 'Ngươi', spd: state.player.spd },
+            { id: 'enemy', name: combat.enemy.name, spd: combat.enemy.spd }
+        ];
+
+        this.timeline.innerHTML = order.map(entity => {
+            const isActive = (entity.id === 'player' && combat.turn === 0) || (entity.id === 'enemy' && combat.turn === 1);
+            const img = entity.id === 'player' ? ASSETS.portraits.player : (combat.enemy.image || ASSETS.enemies.wolf);
+            
+            return `
+                <div class="relative group">
+                    <div class="w-10 h-10 rounded-xl overflow-hidden border-2 transition-all ${isActive ? 'border-qi-blue scale-110 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'border-white/10 opacity-60 grayscale'}">
+                        <img src="${img}" class="w-full h-full object-cover">
+                    </div>
+                    ${isActive ? '<div class="absolute -right-1 -top-1 w-3 h-3 bg-qi-blue rounded-full border-2 border-black animate-pulse"></div>' : ''}
+                    <div class="absolute left-12 top-1/2 -translate-y-1/2 px-2 py-1 bg-black/80 backdrop-blur-md rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                        <span class="text-[8px] text-white uppercase tracking-widest font-bold">${entity.name}</span>
+                    </div>
+                </div>
+            `;
+        }).join('<div class="w-[1px] h-4 bg-white/5"></div>');
     }
 
     updateStatusEffects() {

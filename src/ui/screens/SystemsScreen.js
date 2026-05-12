@@ -504,6 +504,8 @@ export class SystemsScreen {
     renderMountain() {
         const elLayerName = document.getElementById('mountain-layer-name');
         const elLayerDesc = document.getElementById('mountain-layer-desc');
+        const elLayerProgText = document.getElementById('mountain-layer-progress-text');
+        const elLayerProgBar = document.getElementById('mountain-layer-progress-bar');
         const elOxyText = document.getElementById('mountain-oxygen-text');
         const elOxyBar = document.getElementById('mountain-oxygen-bar');
         const elToxText = document.getElementById('mountain-toxicity-text');
@@ -511,9 +513,13 @@ export class SystemsScreen {
 
         if (!state.player.mountainSurvival) return;
 
-        const layer = MOUNTAIN_LAYERS.find(l => l.id === state.systems.mountain.currentLayer);
+        const mSys = state.systems.mountain;
+        const layer = MOUNTAIN_LAYERS.find(l => l.id === mSys.currentLayer);
+        
         if (elLayerName) elLayerName.textContent = layer.name;
         if (elLayerDesc) elLayerDesc.textContent = layer.description;
+        if (elLayerProgText) elLayerProgText.textContent = `${Math.floor(mSys.layerProgress)}%`;
+        if (elLayerProgBar) elLayerProgBar.style.width = `${mSys.layerProgress}%`;
 
         if (elOxyText) elOxyText.textContent = `${Math.ceil(state.player.mountainSurvival.oxygen)}%`;
         if (elOxyBar) elOxyBar.style.width = `${state.player.mountainSurvival.oxygen}%`;
