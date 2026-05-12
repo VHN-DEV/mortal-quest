@@ -267,14 +267,14 @@ export class InventoryScreen {
             this.btnUseItem.textContent = (itemData.type === 'book') ? 'LĨNH NGỘ' : 'SỬ DỤNG';
         }
         
-        if (equippable) {
-            this.btnEquipItem.textContent = itemData.type.includes('Artifact') ? 'KHỞI ĐỘNG' : 'TRANG BỊ';
-        }
-
         const mappedSlot = state.player.getEquipSlotForItemType
             ? state.player.getEquipSlotForItemType(itemData.type)
             : itemData.type;
         const equippable = Object.prototype.hasOwnProperty.call(state.player.equipment, mappedSlot);
+        
+        if (equippable) {
+            this.btnEquipItem.textContent = itemData.type.includes('Artifact') ? 'KHỞI ĐỘNG' : 'TRANG BỊ';
+        }
         this.btnEquipItem.style.display = equippable ? 'block' : 'none';
 
         state.ui.toggleOverlay(this.elItemDetail, true);

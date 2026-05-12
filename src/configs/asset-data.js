@@ -1,62 +1,92 @@
 /**
  * Cấu hình toàn bộ tài nguyên hình ảnh của game.
- * Bạn có thể thay đổi các link này để cập nhật hình ảnh mới.
+ * Sử dụng import.meta.glob để đảm bảo Vite đóng gói chính xác các tài nguyên.
  */
-// Import all location images dynamically so Vite bundles them
-const locationImages = import.meta.glob('../assets/images/locations/*.png', { eager: true, query: '?url', import: 'default' });
 
-export const getAssetUrl = (name, type = 'images', ext = 'png') => {
-    // If it's a location image, try to get it from the globbed map
-    if (name.startsWith('locations/')) {
-        const locPath = `../assets/images/${name}.${ext}`;
-        if (locationImages[locPath]) {
-            return locationImages[locPath];
-        }
+// Tự động quét toàn bộ thư mục assets/images
+const allImages = import.meta.glob('../assets/images/**/*.{png,jpg,jpeg,webp,gif,svg}', { eager: true, query: '?url', import: 'default' });
+
+/**
+ * Lấy URL của tài nguyên dựa trên đường dẫn tương đối.
+ * @param {string} path - Đường dẫn tính từ thư mục assets/images/ (VD: 'portraits/player_male')
+ */
+export const getAssetUrl = (path) => {
+    if (!path) return '';
+    
+    const extensions = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'svg'];
+    
+    // Nếu path đã có phần mở rộng
+    if (path.includes('.')) {
+        const fullPath = `../assets/images/${path}`;
+        if (allImages[fullPath]) return allImages[fullPath];
+        // Thử fix path nếu nó bắt đầu bằng / hoặc ./
+        const cleanPath = path.replace(/^\.?\//, '');
+        const fullCleanPath = `../assets/images/${cleanPath}`;
+        if (allImages[fullCleanPath]) return allImages[fullCleanPath];
     }
     
-    // Fallback to the standard URL construction for others
-    return new URL(`../assets/${type}/${name}.${ext}`, import.meta.url).href;
+    // Thử lần lượt các phần mở rộng
+    for (const ext of extensions) {
+        const fullPath = `../assets/images/${path}.${ext}`;
+        if (allImages[fullPath]) return allImages[fullPath];
+    }
+
+    // Console warn only in dev
+    if (import.meta.env.DEV) {
+        console.warn(`[Asset Missing] Không tìm thấy ảnh: ${path}`);
+    }
+    
+    return ''; 
+};
+
+// Helper to create a proxy that fallbacks to a default asset if key not found
+const createAssetProxy = (data, category, defaultKey) => {
+    return new Proxy(data, {
+        get: (target, prop) => {
+            if (prop in target) return target[prop];
+            
+            // Try to resolve dynamically
+            const dynamicUrl = getAssetUrl(`${category}/${String(prop)}`);
+            if (dynamicUrl) return dynamicUrl;
+            
+            // Fallback to default
+            return target[defaultKey] || '';
+        }
+    });
 };
 
 export const ASSETS = {
     // Nhân vật & NPC
-    portraits: {
-        player: getAssetUrl('player'),
-        cultivator_male: getAssetUrl('cultivator'),
-        cultivator_female: getAssetUrl('cultivator'),
-        merchant: getAssetUrl('cultivator'),
-        sect_elder: getAssetUrl('cultivator'),
-        demon: getAssetUrl('cultivator'),
-    },
+    portraits: createAssetProxy({
+        player: getAssetUrl('portraits/player_male'),
+        player_male: getAssetUrl('portraits/player_male'),
+        player_female: getAssetUrl('portraits/player_female'),
+        sect_elder: getAssetUrl('portraits/sect_elder'),
+        merchant: getAssetUrl('portraits/merchant'),
+        demon: getAssetUrl('portraits/demon'),
+    }, 'portraits', 'player'),
 
-    // Quái vật & Yêu thú
-    enemies: {
-        wolf: getAssetUrl('wolf'),
-        dragon: getAssetUrl('dragon'),
-        demon: getAssetUrl('cultivator'),
-        rogue: getAssetUrl('cultivator'),
-    },
+    // Kẻ địch
+    enemies: createAssetProxy({
+        wolf: getAssetUrl('enemies/spirit_wolf'),
+        dragon: getAssetUrl('enemies/fire_dragon'),
+    }, 'enemies', 'wolf'),
 
     // Bối cảnh & Bản đồ
-    backgrounds: {
-        nhan_gioi: getAssetUrl('cultivation_bg'),
-        linh_gioi: getAssetUrl('sect'),
-        tien_gioi: getAssetUrl('sect'),
-        forest: getAssetUrl('cultivation_bg'),
-        cave: getAssetUrl('cultivation_bg'),
-        sect: getAssetUrl('sect'),
-        cultivation: getAssetUrl('cultivation_bg'),
-    },
+    backgrounds: createAssetProxy({
+        nhan_gioi: getAssetUrl('backgrounds/sect_gate'),
+        cave: getAssetUrl('backgrounds/cultivation_cave'),
+        sect: getAssetUrl('backgrounds/sect_gate'),
+        cultivation: getAssetUrl('backgrounds/cultivation_cave'),
+    }, 'backgrounds', 'cultivation'),
 
-    // Sự kiện & Kỳ ngộ
-    events: {
-        ancient_cave: getAssetUrl('cultivation_bg'),
-        spiritual_spring: getAssetUrl('cultivation_bg'),
-        herb_discovery: getAssetUrl('cultivation_bg'),
-        ambush: getAssetUrl('cultivation_bg'),
-    },
+    // Vật phẩm
+    items: createAssetProxy({
+        spirit_stone: getAssetUrl('items/spirit_stone'),
+        healing_pill: getAssetUrl('items/healing_pill'),
+    }, 'items', 'spirit_stone'),
 
-    // UI Icons (Using emojis as fallbacks for icons)
+    // UI (Non-proxied for icons)
     ui: {
         stamina: '⚡',
         mana: '💧',

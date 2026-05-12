@@ -324,11 +324,16 @@ export class Game {
         const elName = document.getElementById('player-name-header');
         if (elName) elName.textContent = player.name;
         
+        // Cập nhật chân dung dựa trên giới tính
+        const portraitKey = player.gender === 'Nữ' ? 'player_female' : 'player_male';
+        const portraitUrl = ASSETS.portraits[portraitKey];
+
         const elPortrait = document.getElementById('header-portrait');
-        if (elPortrait) elPortrait.src = ASSETS.portraits.player;
+        if (elPortrait) elPortrait.src = portraitUrl;
         
         const mainPortrait = document.getElementById('main-player-portrait');
-        if (mainPortrait) mainPortrait.src = ASSETS.portraits.player;
+        if (mainPortrait) mainPortrait.src = portraitUrl;
+
 
         // Restore location
         if (player.currentWorldId) {
