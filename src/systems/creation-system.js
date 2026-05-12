@@ -12,7 +12,7 @@ export class CreationSystem {
     }
 
     reset() {
-        this.mode = 'custom'; // random, custom, special
+        this.mode = 'custom'; // custom, special
         this.points = CREATION_CONFIG.BASE_POINTS;
         this.selectedRoot = 'ngu_hanh_linh_can';
         this.selectedPhysique = 'binh_thuong';
@@ -89,7 +89,7 @@ export class CreationSystem {
 
     rollRandom() {
         this.reset();
-        this.mode = 'random';
+        this.mode = 'custom';
 
         this.playerName = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)];
         this.playerGender = Math.random() < 0.5 ? 'Nam' : 'Nữ';

@@ -158,14 +158,8 @@ window.renderCreationScreen = () => {
     const elModeDescription = document.getElementById('creation-mode-description');
 
     // Mode Buttons
-    const btnRandom = document.getElementById('creation-mode-random');
     const btnCustom = document.getElementById('creation-mode-custom');
     const btnSpecial = document.getElementById('creation-mode-special');
-
-    if (btnRandom) {
-        btnRandom.onclick = () => window.game.selectCreationMode('random');
-        btnRandom.className = `flex-grow py-3 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all ${sys.mode === 'random' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500'}`;
-    }
     if (btnCustom) {
         btnCustom.onclick = () => window.game.selectCreationMode('custom');
         btnCustom.className = `flex-grow py-3 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all ${sys.mode === 'custom' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500'}`;
@@ -179,8 +173,7 @@ window.renderCreationScreen = () => {
 
 
     const modeDescriptions = {
-        random: 'Ngẫu Nhiên: hệ thống tự chọn nhanh thông tin nhân vật và thiên phú để vào game ngay.',
-        custom: 'Tùy Chỉnh: bạn tự phân bổ Điểm Tiên Duyên để đổi linh căn, xuất thân và tài nguyên khởi đầu.',
+        custom: 'Tùy Chỉnh: bạn có thể tự build hoặc bấm "Gợi ý ngẫu nhiên" để hệ thống xáo trộn nhanh rồi tinh chỉnh tiếp.',
         special: 'Thiên Mệnh: chọn các kịch bản định sẵn có câu chuyện riêng, phù hợp người muốn trải nghiệm theo vai.'
     };
 
@@ -190,9 +183,6 @@ window.renderCreationScreen = () => {
         if (sys.mode === 'custom') {
             elPointsLabel.textContent = 'Điểm Tiên Duyên:';
             elPointsNote.textContent = 'Điểm dùng để tùy chỉnh xuất thân/tài nguyên.';
-        } else if (sys.mode === 'random') {
-            elPointsLabel.textContent = 'Điểm Tiên Duyên (tham khảo):';
-            elPointsNote.textContent = 'Ở chế độ Ngẫu Nhiên, điểm được hệ thống tự phân bổ.';
         } else {
             elPointsLabel.textContent = 'Điểm Tiên Duyên (kịch bản):';
             elPointsNote.textContent = 'Ở chế độ Thiên Mệnh, điểm phụ thuộc kịch bản định sẵn.';
@@ -231,7 +221,7 @@ window.renderCreationScreen = () => {
     }
 
     const elRerollContainer = document.getElementById('creation-reroll-container');
-    if (elRerollContainer) elRerollContainer.classList.toggle('hidden', sys.mode !== 'random');
+    if (elRerollContainer) elRerollContainer.classList.toggle('hidden', sys.mode !== 'custom');
 
     const btnReroll = document.getElementById('creation-reroll-btn');
     if (btnReroll) {
