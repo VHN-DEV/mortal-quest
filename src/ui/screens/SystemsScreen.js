@@ -262,6 +262,16 @@ export class SystemsScreen {
             elVip.className = `px-2 py-0.5 rounded bg-gray-800 text-[8px] font-bold text-gray-400 border border-white/5 bg-vip-${state.player.vipLevel}`;
         }
 
+        // Update Shop Title
+        const elTitle = document.getElementById('shop-overlay-title');
+        if (elTitle && state.systems.shop) {
+            const shopData = SHOPS[state.systems.shop.currentShopId];
+            if (shopData) {
+                // Shorten name for UI if needed, or just use the name
+                elTitle.textContent = shopData.name.split(' - ')[0]; 
+            }
+        }
+
         this.renderShopSections();
 
         // Cập nhật style cho tab

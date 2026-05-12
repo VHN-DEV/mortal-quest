@@ -1,5 +1,5 @@
 export const SHOPS = {
-    'nhan_gioi': {
+    'van_bao_cac': {
         name: 'Vạn Bảo Các - Chi Nhánh Nhân Giới',
         sections: {
             'dan_duoc': [
@@ -80,6 +80,42 @@ export const SHOPS = {
                 { id: 'seed_hoa_diem_thao', stock: 20 },
                 { id: 'seed_han_tuy_hoa', stock: 20 },
                 { id: 'seed_u_minh_hoa', stock: 5, minVip: 1 }
+            ]
+        }
+    },
+    'linh_bao_lau': {
+        name: 'Linh Bảo Lâu - Nhân Giới Chi Nhánh',
+        sections: {
+            'dan_duoc': [
+                { id: 'ngung_khi_dan', stock: 100 },
+                { id: 'hoi_huyet_dan', stock: 200 },
+                { id: 'truc_co_dan', stock: 5 }
+            ],
+            'phap_bao': [
+                { id: 'phi_kiem_thanh_tuyen', stock: 10 },
+                { id: 'bat_quai_kinh', stock: 5 },
+                { id: 'huyen_lu_item', stock: 5 }
+            ],
+            'nguyen_lieu': [
+                { id: 'linh_thao_100y', stock: 50 },
+                { id: 'yeu_dan_so', stock: 100 },
+                { id: 'hoa_tinh_thach', stock: 30 }
+            ],
+            'cong_phap': [
+                { id: 'liet_duong_book', stock: 5 },
+                { id: 'han_thuy_book', stock: 5 },
+                { id: 'u_minh_book', stock: 2 }
+            ],
+            'tran_phap': [
+                { id: 'tran_do_tu_linh', stock: 10 }
+            ],
+            'phu_luc': [
+                { id: 'hoa_cau_phu', stock: 50 },
+                { id: 'kim_cuong_phu', stock: 10 }
+            ],
+            'luyen_khi': [
+                { id: 'huyen_thiet', stock: 100 },
+                { id: 'tinh_kim', stock: 50 }
             ]
         }
     }

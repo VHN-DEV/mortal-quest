@@ -426,9 +426,10 @@ export class Game {
     }
 
     // Các hàm helper để gọi từ HTML (window.game.xxx)
-    openShop(view) { 
+    openShop(view, shopId = null) { 
         if (state.systems.shop) {
             state.views.shop = view || 'buy';
+            if (shopId) state.systems.shop.currentShopId = shopId;
             state.ui.toggleOverlay(document.getElementById('shop-overlay'), true);
             if (this.screens.systems) this.screens.systems.renderShop();
         }

@@ -4,7 +4,7 @@ import { SHOPS } from '../configs/shop-data.js';
 export class ShopSystem {
     constructor(player) {
         this.player = player;
-        this.currentShopId = 'nhan_gioi';
+        this.currentShopId = 'van_bao_cac';
         this.currentSection = 'dan_duoc';
     }
 

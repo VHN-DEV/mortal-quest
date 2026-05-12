@@ -63,6 +63,16 @@ export const WORLDS = {
                 eventProbs: { combat: 0.0, loot: 0.0, npc: 0.8, empty: 0.2 }
             },
             {
+                id: 'linh_bao_lau',
+                name: 'Linh Bảo Lâu',
+                minRealm: 5,
+                danger: 'An Toàn',
+                image: getLocImg('linh_bao_lau'),
+                description: 'Lâu đài chứa đựng vô số linh bảo, cạnh tranh khốc liệt với Vạn Bảo Các.',
+                resources: ['Pháp Bảo Hiếm', 'Vật Phẩm Quý'],
+                eventProbs: { combat: 0.0, loot: 0.0, npc: 0.9, empty: 0.1 }
+            },
+            {
                 id: 'cong_hoi_luyen_duoc',
                 name: 'Công Hội Luyện Dược Sư',
                 minRealm: 1,

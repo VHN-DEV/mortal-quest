@@ -172,8 +172,8 @@ export class MapScreen {
             window.game.openMountain();
             return;
         }
-        if (loc.id === 'van_bao_cac') {
-            window.game.openShop();
+        if (loc.id === 'van_bao_cac' || loc.id === 'linh_bao_lau') {
+            window.game.openShop(null, loc.id);
             return;
         }
         if (loc.special === 'tower') {
@@ -295,18 +295,20 @@ export class MapScreen {
         let hasSpecial = false;
 
         // Special actions mapped to window.game functions
-        if (loc.id === 'van_bao_cac') {
+        if (loc.id === 'van_bao_cac' || loc.id === 'linh_bao_lau') {
             hasSpecial = true;
             this.elLocSpecialActions.innerHTML = `
-                <button onclick="window.game.openShop('buy')" class="py-3 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
+                <button onclick="window.game.openShop('buy', '${loc.id}')" class="py-3 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
                     <i class="ph ph-shopping-cart text-lg mb-1"></i>TRAO ĐỔI
                 </button>
-                <button onclick="window.game.openShop('sell')" class="py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
+                <button onclick="window.game.openShop('sell', '${loc.id}')" class="py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
                     <i class="ph ph-currency-circle-dollar text-lg mb-1"></i>GIAO DỊCH
                 </button>
+                ${loc.id === 'van_bao_cac' ? `
                 <button onclick="window.game.openAuction()" class="col-span-2 py-3 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
                     <i class="ph ph-hammer text-lg"></i><span>ĐẤU GIÁ</span>
                 </button>
+                ` : ''}
             `;
         } else if (SECTS[loc.id]) {
             hasSpecial = true;
