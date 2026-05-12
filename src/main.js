@@ -8,7 +8,7 @@ import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
 import { getWorlds, getLocationById } from './configs/map-data.js';
 import { ASSETS } from './configs/asset-data.js';
-import { getRealmById } from './configs/realm-data.js';
+import { getRealmById, HUMAN_REALMS } from './configs/realm-data.js';
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
 import { SEEDS } from './configs/garden-data.js';
 import { SECTS, getSectById } from './configs/sect-data.js';
@@ -192,6 +192,31 @@ window.renderCreationScreen = () => {
     if (elPoints) {
         elPoints.textContent = sys.points;
         elPoints.className = `text-xl md:text-2xl font-bold font-mono ${sys.points < 0 ? 'text-red-500' : 'text-qi-blue'}`;
+    }
+
+    const elStartingRealmSelect = document.getElementById('creation-starting-realm-select');
+    if (elStartingRealmSelect) {
+        const availableRealms = HUMAN_REALMS.filter(realm => realm.id <= 13);
+        elStartingRealmSelect.innerHTML = availableRealms.map(realm => `
+            <option value="${realm.id}">${realm.name}</option>
+        `).join('');
+        elStartingRealmSelect.value = String(sys.startingRealmId || 1);
+        elStartingRealmSelect.onchange = (e) => {
+            sys.startingRealmId = parseInt(e.target.value, 10) || 1;
+        };
+    }
+
+    const elRerollContainer = document.getElementById('creation-reroll-container');
+    if (elRerollContainer) elRerollContainer.classList.toggle('hidden', sys.mode !== 'random');
+
+    const btnReroll = document.getElementById('creation-reroll-btn');
+    if (btnReroll) {
+        btnReroll.onclick = () => {
+            if (state.systems.creation) {
+                state.systems.creation.rollRandom();
+                window.renderCreationScreen();
+            }
+        };
     }
 
     // Name Input

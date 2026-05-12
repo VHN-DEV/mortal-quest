@@ -18,6 +18,7 @@ export class CreationSystem {
         this.playerAge = 18;
         this.playerAvatar = "player_male";
         this.startingLingShi = 0;
+        this.startingRealmId = 1;
     }
 
     calculatePoints() {
@@ -77,6 +78,7 @@ export class CreationSystem {
         this.selectedOrigin = scenario.setup.origin;
         this.selectedTraits = [...scenario.setup.traits];
         this.startingLingShi = CREATION_ORIGINS[this.selectedOrigin].resources.lingShi;
+        this.startingRealmId = 1;
         this.calculatePoints();
     }
 
@@ -93,6 +95,7 @@ export class CreationSystem {
         const originKeys = Object.keys(CREATION_ORIGINS);
         this.selectedOrigin = originKeys[Math.floor(Math.random() * originKeys.length)];
         this.startingLingShi = CREATION_ORIGINS[this.selectedOrigin].resources.lingShi;
+        this.startingRealmId = 1;
         
         // Random traits
         const traitKeys = Object.keys(CREATION_TRAITS);
@@ -138,6 +141,10 @@ export class CreationSystem {
         
         // Apply Origin resources
         player.origin = origin;
+        player.realmId = this.startingRealmId;
+        player.bodyRealmId = this.startingRealmId;
+        player.soulRealmId = this.startingRealmId;
+
         player.addLingShi(this.startingLingShi);
         origin.resources.items.forEach(itemId => player.inventory.addItem(itemId, 1));
         if (origin.resources.karma) player.karma = origin.resources.karma;
