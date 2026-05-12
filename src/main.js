@@ -45,7 +45,7 @@ window.switchScreen = (screenId, btn) => state.ui.switchScreen(screenId, btn);
 window.renderMainStats = () => {
     const player = state.player;
     if (!player) return;
-    
+
     const realm = player.getCurrentRealm();
     const progress = (player.tuVi / realm.expRequired) * 100;
 
@@ -109,21 +109,21 @@ window.renderMainStats = () => {
         elBtnBreakthrough.disabled = !check.can;
         elBtnBreakthrough.title = check.can ? '' : (check.reason || 'Chưa đủ điều kiện');
     }
-    
+
     renderTimeHUD();
 };
 
 window.renderTimeHUD = () => {
     if (!state.systems.time) return;
-    
+
     const t = state.systems.time.getFormattedTime();
-    
+
     const elHour = document.getElementById('time-hour');
     const elPeriod = document.getElementById('time-period');
     const elSeason = document.getElementById('time-season');
     const elDate = document.getElementById('time-date');
     const elPhenomenon = document.getElementById('time-phenomenon');
-    
+
     if (elHour) elHour.textContent = t.hourName;
     if (elPeriod) elPeriod.textContent = `(${t.period === 'Day' ? 'Ban Ngày' : 'Ban Đêm'})`;
     if (elSeason) {
@@ -132,7 +132,7 @@ window.renderTimeHUD = () => {
         elSeason.style.borderColor = `${t.seasonColor}4d`; // 30% opacity hex
     }
     if (elDate) elDate.textContent = `Ngày ${t.day} Tháng ${t.month} Năm ${t.year}`;
-    
+
     if (elPhenomenon) {
         if (t.phenomenon) {
             elPhenomenon.textContent = t.phenomenon;
@@ -153,7 +153,7 @@ window.renderCreationScreen = () => {
     const elTraits = document.getElementById('creation-traits-grid');
     const elPoints = document.getElementById('creation-points-value');
     const elPointsContainer = document.getElementById('creation-points-container');
-    
+
     // Mode Buttons
     const btnRandom = document.getElementById('creation-mode-random');
     const btnCustom = document.getElementById('creation-mode-custom');
@@ -173,11 +173,11 @@ window.renderCreationScreen = () => {
     }
 
     if (elPointsContainer) elPointsContainer.classList.toggle('hidden', sys.mode !== 'custom');
-    
+
     // Starting Resources Panel (Custom only)
     const elResourcesPanel = document.getElementById('creation-resources-panel');
     if (elResourcesPanel) elResourcesPanel.classList.toggle('hidden', sys.mode !== 'custom');
-    
+
     const elLingShiInput = document.getElementById('creation-lingshi-input');
     if (elLingShiInput) {
         elLingShiInput.value = sys.startingLingShi;
@@ -188,10 +188,51 @@ window.renderCreationScreen = () => {
             window.renderCreationScreen();
         };
     }
-    
+
     if (elPoints) {
         elPoints.textContent = sys.points;
         elPoints.className = `text-xl md:text-2xl font-bold font-mono ${sys.points < 0 ? 'text-red-500' : 'text-qi-blue'}`;
+    }
+
+    // Name Input
+    const elNameInput = document.getElementById('creation-name-input');
+    if (elNameInput) {
+        elNameInput.value = sys.playerName;
+        elNameInput.oninput = (e) => sys.playerName = e.target.value;
+    }
+
+    // Gender Buttons
+    const btnMale = document.getElementById('creation-gender-male');
+    const btnFemale = document.getElementById('creation-gender-female');
+    if (btnMale && btnFemale) {
+        btnMale.className = `flex-grow py-2 text-[10px] font-ancient uppercase rounded-lg transition-all ${sys.playerGender === 'Nam' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500 hover:text-white'}`;
+        btnFemale.className = `flex-grow py-2 text-[10px] font-ancient uppercase rounded-lg transition-all ${sys.playerGender === 'Nữ' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500 hover:text-white'}`;
+    }
+
+    // Age Input
+    const elAgeInput = document.getElementById('creation-age-input');
+    if (elAgeInput) {
+        elAgeInput.value = sys.playerAge;
+        elAgeInput.onchange = (e) => {
+            sys.playerAge = parseInt(e.target.value) || 18;
+            window.renderCreationScreen();
+        };
+    }
+
+    // Avatar Gallery
+    const elAvatarList = document.getElementById('creation-avatar-list');
+    if (elAvatarList) {
+        const avatars = ['player_male', 'player_female'];
+        elAvatarList.innerHTML = avatars.map(key => {
+            const active = sys.playerAvatar === key;
+            const url = ASSETS.portraits[key] || '';
+            return `
+                <div onclick="window.game.selectCreationAvatar('${key}')" 
+                    class="w-16 h-16 shrink-0 rounded-xl border-2 ${active ? 'border-qi-blue' : 'border-transparent'} overflow-hidden cursor-pointer hover:border-qi-blue/50 transition-all">
+                    <img src="${url}" class="w-full h-full object-cover">
+                </div>
+            `;
+        }).join('');
     }
 
     if (elRoots) {

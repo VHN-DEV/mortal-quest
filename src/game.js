@@ -324,8 +324,8 @@ export class Game {
         const elName = document.getElementById('player-name-header');
         if (elName) elName.textContent = player.name;
         
-        // Cập nhật chân dung dựa trên giới tính
-        const portraitKey = player.gender === 'Nữ' ? 'player_female' : 'player_male';
+        // Cập nhật chân dung dựa trên avatar
+        const portraitKey = player.avatar || (player.gender === 'Nữ' ? 'player_female' : 'player_male');
         const portraitUrl = ASSETS.portraits[portraitKey];
 
         const elPortrait = document.getElementById('header-portrait');
@@ -333,6 +333,10 @@ export class Game {
         
         const mainPortrait = document.getElementById('main-player-portrait');
         if (mainPortrait) mainPortrait.src = portraitUrl;
+        
+        // Also update character screen portrait if it exists
+        const charPortrait = document.querySelector('#screen-character img');
+        if (charPortrait) charPortrait.src = portraitUrl;
 
 
         // Restore location
@@ -1020,6 +1024,21 @@ export class Game {
     toggleCreationTrait(id) {
         if (state.systems.creation) {
             state.systems.creation.toggleTrait(id);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationGender(gender) {
+        if (state.systems.creation) {
+            state.systems.creation.playerGender = gender;
+            state.systems.creation.playerAvatar = (gender === 'Nữ' ? 'player_female' : 'player_male');
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationAvatar(avatarKey) {
+        if (state.systems.creation) {
+            state.systems.creation.playerAvatar = avatarKey;
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }

@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-BDk_N_jS.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-yGnLZjJj.css">
+  <script type="module" crossorigin src="./assets/index-BdDCbS8m.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-B0tfDuuj.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -28,7 +28,7 @@
             <div class="flex items-center space-x-3">
                 <div id="header-portrait-container"
                     class="w-10 h-10 rounded-full border border-cultivation-gold p-0.5 relative cursor-pointer active:scale-90 transition-all hover:shadow-[0_0_15px_rgba(212,175,55,0.4)]">
-                    <img id="header-portrait" src="./assets/player_male-BLeIBiiT.png"
+                    <img id="header-portrait" src="./src/assets/images/portraits/player_male.png"
                         class="w-full h-full object-cover rounded-full">
                 </div>
                 <div>
@@ -107,6 +107,30 @@
                                 Tính</label>
                             <input id="creation-name-input" type="text" placeholder="Nhập tên đạo hữu..."
                                 class="w-full bg-black/60 border border-white/10 rounded-2xl p-4 text-sm text-white focus:border-qi-blue outline-none transition-all font-ancient">
+                        </div>
+
+                        <!-- Gender & Age -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest ml-1">Giới Tính</label>
+                                <div class="flex space-x-1 bg-black/40 p-1 rounded-xl border border-white/5">
+                                    <button onclick="window.game.selectCreationGender('Nam')" id="creation-gender-male" class="flex-grow py-2 text-[10px] font-ancient uppercase rounded-lg transition-all">Nam</button>
+                                    <button onclick="window.game.selectCreationGender('Nữ')" id="creation-gender-female" class="flex-grow py-2 text-[10px] font-ancient uppercase rounded-lg transition-all">Nữ</button>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest ml-1">Tuổi Tác</label>
+                                <input id="creation-age-input" type="number" value="18" min="10" max="100"
+                                    class="w-full bg-black/60 border border-white/10 rounded-2xl p-2.5 text-sm text-white focus:border-qi-blue outline-none transition-all font-ancient text-center">
+                            </div>
+                        </div>
+
+                        <!-- Avatar Selection -->
+                        <div class="space-y-3">
+                            <label class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest ml-1">Ảnh Đại Diện</label>
+                            <div id="creation-avatar-list" class="flex space-x-3 overflow-x-auto pb-2 custom-scrollbar">
+                                <!-- Dynamic avatars here -->
+                            </div>
                         </div>
 
                         <!-- Points Counter (Custom Mode only) -->
@@ -324,7 +348,7 @@
 
                             <div id="aura-border"
                                 class="relative w-56 h-56 rounded-full overflow-hidden border border-cultivation-gold/30 shadow-[0_0_60px_rgba(212,175,55,0.15)] group aura-border">
-                                <img id="main-player-portrait" src="./assets/player_male-BLeIBiiT.png"
+                                <img id="main-player-portrait" src="./src/assets/images/portraits/player_male.png"
                                     class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110">
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-qi-ink via-transparent to-transparent">
@@ -496,7 +520,7 @@
                 <div class="grid grid-cols-2 gap-6 mb-6">
                     <!-- Avatar & Equipment Slots -->
                     <div class="relative aspect-[3/4] bg-white/5 rounded-2xl border border-white/10 p-2">
-                        <img src="./assets/player_male-BLeIBiiT.png"
+                        <img src="./src/assets/images/portraits/player_male.png"
                             class="w-full h-full object-cover rounded-xl opacity-60">
                         <!-- Slots -->
                         <!-- Top -->
@@ -581,6 +605,12 @@
                                         class="text-[10px] font-ancient text-cultivation-gold mb-1 uppercase tracking-widest">
                                         Chủng Tộc</h3>
                                     <div id="char-race" class="text-xs font-bold text-white">Nhân Tộc</div>
+                                </div>
+                                <div>
+                                    <h3
+                                        class="text-[10px] font-ancient text-cultivation-gold mb-1 uppercase tracking-widest">
+                                        Giới Tính</h3>
+                                    <div id="char-gender" class="text-xs font-bold text-white">Nam</div>
                                 </div>
                                 <div>
                                     <h3

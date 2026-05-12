@@ -8,6 +8,8 @@ import { ARTIFACT_SETS } from '../configs/artifact-data.js';
 export class Player {
     constructor() {
         this.name = "Phàm Nhân";
+        this.gender = "Nam";
+        this.avatar = "player_male";
         this.race = 'HUMAN'; // HUMAN, SPIRIT_BEAST, DEMON, etc.
         this.realmId = 1;
         this.tuVi = 0;
@@ -1020,6 +1022,8 @@ export class Player {
     load(data) {
         if (!data) return;
         this.name = data.name || "Phàm Nhân";
+        this.gender = data.gender || "Nam";
+        this.avatar = data.avatar || (this.gender === "Nữ" ? "player_female" : "player_male");
         this.realmId = data.realmId || 1;
         this.tuVi = data.tuVi || 0;
         
@@ -1140,6 +1144,8 @@ export class Player {
     save() {
         return {
             name: this.name,
+            gender: this.gender,
+            avatar: this.avatar,
             realmId: this.realmId,
             tuVi: this.tuVi,
             lingShi: this.lingShi,

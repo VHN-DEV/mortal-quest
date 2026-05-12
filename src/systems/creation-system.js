@@ -14,6 +14,9 @@ export class CreationSystem {
         this.selectedOrigin = 'tan_tu';
         this.selectedTraits = [];
         this.playerName = "Phàm Nhân";
+        this.playerGender = "Nam";
+        this.playerAge = 18;
+        this.playerAvatar = "player_male";
         this.startingLingShi = 0;
     }
 
@@ -109,6 +112,9 @@ export class CreationSystem {
         
         const player = new Player();
         player.name = this.playerName;
+        player.gender = this.playerGender;
+        player.age = this.playerAge;
+        player.avatar = this.playerAvatar;
         
         const root = CREATION_ROOTS[this.selectedRoot];
         const phys = CREATION_PHYSIQUES[this.selectedPhysique];

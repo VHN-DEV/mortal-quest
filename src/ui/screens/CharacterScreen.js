@@ -39,6 +39,7 @@ export class CharacterScreen {
         // Info
         this.elCharSectInfo = document.getElementById('char-sect-info');
         this.elCharRace = document.getElementById('char-race');
+        this.elCharGender = document.getElementById('char-gender');
         this.elRoot = document.getElementById('char-root');
         this.elPhysique = document.getElementById('char-physique');
         this.elLuck = document.getElementById('char-luck');
@@ -105,6 +106,9 @@ export class CharacterScreen {
             const raceInfo = RACE_DATA[state.player.race] || RACE_DATA.HUMAN;
             this.elCharRace.textContent = raceInfo.name;
             this.elCharRace.className = `text-xs font-bold race-${state.player.race.toLowerCase()}`;
+        }
+        if (this.elCharGender) {
+            this.elCharGender.textContent = state.player.gender || "Nam";
         }
 
         // Breakthrough Buttons

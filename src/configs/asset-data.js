@@ -58,9 +58,9 @@ const createAssetProxy = (data, category, defaultKey) => {
 export const ASSETS = {
     // Nhân vật & NPC
     portraits: createAssetProxy({
-        player: getAssetUrl('portraits/player_male'),
-        player_male: getAssetUrl('portraits/player_male'),
-        player_female: getAssetUrl('portraits/player_female'),
+        player: getAssetUrl('players/player_male'),
+        player_male: getAssetUrl('players/player_male'),
+        player_female: getAssetUrl('players/player_female'),
         sect_elder: getAssetUrl('portraits/sect_elder'),
         merchant: getAssetUrl('portraits/merchant'),
         demon: getAssetUrl('portraits/demon'),
