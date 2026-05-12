@@ -705,6 +705,27 @@ export class Player {
         this.activeFormations.forEach(f => {
             if (f.id === 'tu_linh_tran') this.tuViPerSecond *= 1.2;
         });
+
+        // Add Social System Bonuses
+        if (typeof state !== 'undefined' && state.systems.social) {
+            const social = state.systems.social;
+            // Đạo lữ (Song Tu): Tăng 20% tốc độ tu luyện
+            if (social.bonds.daoLu) {
+                this.tuViPerSecond *= 1.2;
+                
+                // Thêm buff đặc biệt nếu ở cùng vị trí (Check trong update hoặc calculateStats)
+                const daoLu = state.systems.npc.npcs.find(n => n.id === social.bonds.daoLu);
+                if (daoLu && daoLu.location === this.currentLocId) {
+                    this.tuViPerSecond *= 1.1; // Thêm 10% khi ở gần
+                }
+            }
+            
+            // Sư đồ: Tăng 15% tốc độ lĩnh ngộ (Trong thực tế có thể tăng exp luyện tập công pháp)
+            if (social.bonds.mentor) {
+                // Giả sử có bonus cho mastery speed
+                this.bonusStats.tuViSpeed *= 1.05; // Tạm thời tăng nhẹ tu vi nếu là mentor
+            }
+        }
         
         // Add Energy (Qi) System Bonuses
         if (typeof energySystem !== 'undefined' && energySystem) {
@@ -1155,7 +1176,9 @@ export class Player {
             currentEnvironmentalQi: this.currentEnvironmentalQi,
             spiritStoneSettings: this.spiritStoneSettings,
             insectLevel: this.insectLevel,
-            insectExp: this.insectExp
+            insectExp: this.insectExp,
+            npcData: (typeof state !== 'undefined' && state.systems.npc) ? state.systems.npc.saveData() : null,
+            socialData: (typeof state !== 'undefined' && state.systems.social) ? state.systems.social.getData() : null
         };
     }
 

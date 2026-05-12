@@ -32,6 +32,7 @@ export class MapScreen {
         this.elEventText = document.getElementById('event-text');
         this.elExploreEvent = document.getElementById('explore-event-display');
         this.elExploreBg = document.getElementById('explore-bg');
+        this.elExploreNpcList = document.getElementById('explore-npc-list');
         
         // Progress Bars
         this.elExploreBar = document.getElementById('explore-bar');
@@ -171,6 +172,7 @@ export class MapScreen {
         this.renderSpecialActions(loc);
         this.viewExplore.scrollTop = 0;
         this.renderExplore();
+        this.renderNPCs();
     }
 
     handleMove() {
@@ -224,6 +226,8 @@ export class MapScreen {
                 this.updateExplorationUI();
             }, 1500);
         }
+
+        this.renderNPCs();
     }
 
     renderSpecialActions(loc) {
@@ -321,5 +325,48 @@ export class MapScreen {
 
         // renderEnergy is still in main.js or should be moved to EnergySystem
         if (typeof window.game.renderEnergy === 'function') window.game.renderEnergy();
+    }
+
+    renderNPCs() {
+        if (!this.elExploreNpcList) return;
+        
+        const npcs = state.systems.npc.npcs.filter(n => n.location === state.currentLocId);
+        
+        if (npcs.length === 0) {
+            this.elExploreNpcList.innerHTML = '';
+            return;
+        }
+
+        this.elExploreNpcList.innerHTML = `
+            <div class="text-[8px] text-gray-500 uppercase tracking-widest mb-2 border-b border-white/5 pb-1 flex justify-between">
+                <span>Hiện diện tại đây</span>
+                <span>${npcs.length} Đạo hữu</span>
+            </div>
+            <div class="grid grid-cols-1 gap-2">
+                ${npcs.map(npc => `
+                    <div class="flex items-center justify-between p-3 bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl group hover:border-qi-blue/50 transition-all cursor-pointer"
+                         onclick="window.game.openNPCDialogue('${npc.id}')">
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                <img src="${npc.portrait}" class="w-10 h-10 rounded-xl object-cover border border-white/10">
+                                <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-qi-jade rounded-full border-2 border-black"></div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-white group-hover:text-qi-blue transition-colors">${npc.name}</div>
+                                <div class="text-[8px] text-gray-500 uppercase tracking-tighter">${getRealmById(npc.realmId).name}</div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-qi-blue/20 transition-all" title="Thông tin" onclick="event.stopPropagation(); window.npcScreen.selectNpc('${npc.id}'); window.switchScreen('screen-npc', document.getElementById('nav-npc'))">
+                                <i class="ph ph-info text-gray-400"></i>
+                            </button>
+                            <button class="px-3 py-1 rounded-lg bg-qi-blue/10 border border-qi-blue/20 text-qi-blue text-[8px] font-bold uppercase tracking-widest hover:bg-qi-blue/20 transition-all">
+                                TƯƠNG TÁC
+                            </button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
     }
 }

@@ -13,6 +13,9 @@ import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
 import { SEEDS } from './configs/garden-data.js';
 import { SECTS, getSectById } from './configs/sect-data.js';
 import { CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS } from './configs/creation-data.js';
+import { NPCScreen } from './ui/screens/NPCScreen.js';
+
+window.npcScreen = new NPCScreen();
 
 /**
  * Entry point của ứng dụng.

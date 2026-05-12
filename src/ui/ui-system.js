@@ -322,6 +322,8 @@ export class UISystem {
             if (window.game && window.game.screens.map) window.game.screens.map.renderWorldList();
         } else if (screenId === 'screen-crafting-hub') {
             if (window.game && window.game.screens.systems) window.game.screens.systems.renderCraftingHub();
+        } else if (screenId === 'screen-npc') {
+            if (window.npcScreen) window.npcScreen.render();
         }
     }
 }

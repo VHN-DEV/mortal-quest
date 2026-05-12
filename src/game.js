@@ -37,6 +37,9 @@ import { EnergySystem } from './systems/energy-system.js';
 import { SpiritStoneSystem } from './systems/spirit-stone-system.js';
 import { PuppetSystem } from './systems/puppet-system.js';
 import { TreasureSystem } from './systems/treasure-system.js';
+import { NPCSystem } from './systems/npc-system.js';
+import { SocialSystem } from './systems/social-system.js';
+
 
 export class Game {
     constructor() {
@@ -142,7 +145,8 @@ export class Game {
             'nav-inventory': 'screen-inventory',
             'nav-character': 'screen-character',
             'nav-technique': 'screen-technique',
-            'nav-crafting-hub': 'screen-crafting-hub'
+            'nav-crafting-hub': 'screen-crafting-hub',
+            'nav-npc': 'screen-npc'
         };
 
         Object.entries(navMappings).forEach(([btnId, screenId]) => {
@@ -249,8 +253,21 @@ export class Game {
             technique: new TechniqueSystem(player),
             spiritStone: new SpiritStoneSystem(player, state.ui),
             puppet: new PuppetSystem(player, state.ui),
-            treasure: new TreasureSystem(player, state.ui)
+            treasure: new TreasureSystem(player, state.ui),
+            npc: new NPCSystem(),
+            social: new SocialSystem()
         });
+
+        if (savedData) {
+            if (savedData.npcData) state.systems.npc.loadData(savedData.npcData);
+            if (savedData.socialData) state.systems.social.loadData(savedData.socialData);
+        } else {
+            // Khởi tạo một số NPC mặc định cho thế giới mới
+            state.systems.npc.generate('tan_tu', 1, 'thanh_van_tran');
+            state.systems.npc.generate('thuong_nhan', 3, 'thanh_van_tran');
+            state.systems.npc.generate('sect_elder', 10, 'thanh_van_tong');
+            state.systems.npc.generate('thien_kieu', 5, 'linh_vong_son');
+        }
 
         if (savedData && savedData.time) {
             state.systems.time.load(savedData.time);
@@ -298,6 +315,8 @@ export class Game {
         if (state.systems.time) state.systems.time.update(delta);
         if (state.systems.garden) state.systems.garden.update(delta);
         if (state.systems.mountain && state.systems.mountain.isActive) state.systems.mountain.update(delta);
+        if (state.systems.npc && state.systems.time) state.systems.npc.update(delta, state.systems.time.totalMinutes);
+        if (state.systems.social) state.systems.social.update(delta);
         
         if (state.player.hp <= 0) this.handleDeath();
     }
@@ -605,6 +624,166 @@ export class Game {
     }
 
 
+
+    openNPCDialogue(npcId) {
+        const npc = state.systems.npc.npcs.find(n => n.id === npcId);
+        if (!npc) return;
+        
+        // Dynamic Dialogue based on AI
+        const dialogue = npc.generateDialogue(state.player);
+        state.ui.alert(dialogue, npc.name);
+    }
+
+    openNPCGift(npcId) {
+        const npc = state.systems.npc.npcs.find(n => n.id === npcId);
+        if (!npc) return;
+
+        // Tìm vật phẩm có thể tặng (ví dụ Linh Thạch hoặc Đan Dược)
+        const giftItem = state.player.inventory.items.find(i => i.id.includes('ling_thach') || i.id.includes('dan'));
+        
+        if (!giftItem) {
+            state.ui.toast("Ngươi không có vật phẩm nào giá trị để tặng.", "warning");
+            return;
+        }
+
+        const itemName = giftItem.name || giftItem.id;
+        state.ui.confirm(`Ngươi có muốn tặng 1x ${itemName} cho ${npc.name}?`, (confirmed) => {
+            if (confirmed) {
+                state.player.inventory.removeItem(giftItem.id, 1);
+                npc.addMemory(giftItem.id.includes('thuong') ? 'gift_high' : 'gift_low');
+                state.ui.toast(`Ngươi đã tặng ${itemName} cho ${npc.name}. Hảo cảm tăng lên!`, "success");
+                if (window.npcScreen) window.npcScreen.render();
+            }
+        });
+    }
+
+    openNPCTrade(npcId) {
+        const npc = state.systems.npc.npcs.find(n => n.id === npcId);
+        if (!npc) return;
+
+        state.currentNPC = npc;
+        state.ui.toggleOverlay(document.getElementById('npc-trade-overlay'), true);
+        
+        // Update Header
+        const elPortrait = document.getElementById('npc-trade-portrait');
+        const elName = document.getElementById('npc-trade-name');
+        if (elPortrait) elPortrait.src = npc.portrait;
+        if (elName) elName.textContent = `${npc.title} ${npc.name}`;
+
+        this.renderNPCTrade();
+    }
+
+    renderNPCTrade() {
+        const npc = state.currentNPC;
+        if (!npc) return;
+
+        const elStock = document.getElementById('npc-trade-stock');
+        const elPlayerInv = document.getElementById('player-trade-inventory');
+        const elLingshi = document.getElementById('player-trade-lingshi');
+
+        if (elLingshi) elLingshi.innerHTML = state.player.getFormattedLingShi();
+
+        // Render NPC Stock
+        if (elStock) {
+            elStock.innerHTML = npc.inventory.length === 0 ? 
+                '<div class="text-center py-10 text-gray-600 italic text-[10px]">Đạo hữu này không có vật phẩm gì để bán...</div>' :
+                npc.inventory.map(item => {
+                    const data = getItemById(item.id);
+                    // Adjust price based on relationship and personality
+                    let price = item.price;
+                    if (npc.relationship > 50) price *= 0.8; // 20% discount for friends
+                    if (npc.personalityIds.includes('tham_lam')) price *= 1.5; // 50% extra for greedy NPCs
+
+                    return `
+                        <div class="p-3 bg-white/5 border border-white/5 rounded-xl flex items-center space-x-3 hover:bg-white/10 transition-all">
+                            <div class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center">
+                                <i class="ph-package text-xl text-qi-blue"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-xs font-bold text-white">${data?.name || item.id}</div>
+                                <div class="text-[9px] text-gray-500">Số lượng: ${item.quantity}</div>
+                            </div>
+                            <button class="px-4 py-2 bg-qi-blue/20 hover:bg-qi-blue/30 border border-qi-blue/30 rounded-lg text-[10px] font-bold text-qi-blue" 
+                                onclick="window.game.buyNPCItem('${item.id}', ${price})">
+                                ${price} Linh Thạch
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        // Render Player Inventory (Simple version: only tradable things)
+        if (elPlayerInv) {
+            const tradableItems = state.player.inventory.items.filter(i => !i.id.includes('ling_thach'));
+            elPlayerInv.innerHTML = tradableItems.length === 0 ?
+                '<div class="text-center py-10 text-gray-600 italic text-[10px]">Ngươi không có vật phẩm gì để bán...</div>' :
+                tradableItems.map(item => {
+                    const price = 50; // Simple flat sell price to NPC for now
+                    return `
+                        <div class="p-3 bg-white/5 border border-white/5 rounded-xl flex items-center space-x-3 hover:bg-white/10 transition-all">
+                            <div class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center">
+                                <i class="ph-package text-xl text-qi-jade"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-xs font-bold text-white">${item.name || item.id}</div>
+                                <div class="text-[9px] text-gray-500">Số lượng: ${item.quantity}</div>
+                            </div>
+                            <button class="px-4 py-2 bg-qi-jade/20 hover:bg-qi-jade/30 border border-qi-jade/30 rounded-lg text-[10px] font-bold text-qi-jade" 
+                                onclick="window.game.sellNPCItem('${item.id}', ${price})">
+                                Bán: ${price} LT
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+        }
+    }
+
+    buyNPCItem(itemId, price) {
+        const npc = state.currentNPC;
+        if (!npc || !state.player.spendLingShi(price)) {
+            state.ui.toast("Không đủ Linh Thạch!", "error");
+            return;
+        }
+
+        const stockItem = npc.inventory.find(i => i.id === itemId);
+        if (stockItem && stockItem.quantity > 0) {
+            stockItem.quantity--;
+            if (stockItem.quantity <= 0) {
+                npc.inventory = npc.inventory.filter(i => i.id !== itemId);
+            }
+            state.player.inventory.addItem(itemId, 1);
+            state.ui.toast(`Giao dịch thành công! Nhận được ${itemId}.`, "success");
+            this.renderNPCTrade();
+            this.refreshUI();
+        }
+    }
+
+    sellNPCItem(itemId, price) {
+        if (state.player.inventory.removeItem(itemId, 1)) {
+            state.player.addLingShi(price);
+            state.ui.toast(`Bán thành công! Nhận được ${price} Linh Thạch.`, "success");
+            this.renderNPCTrade();
+            this.refreshUI();
+        }
+    }
+
+    socialAction(npcId, type) {
+        const npc = state.systems.npc.npcs.find(n => n.id === npcId);
+        if (!npc) return;
+
+        if (type === 'dao_lu') {
+            if (state.systems.social.proposeDaoLu(npc)) {
+                if (window.npcScreen) window.npcScreen.render();
+            }
+        } else if (type === 'su_do') {
+            if (state.systems.social.requestMentorship(npc)) {
+                if (window.npcScreen) window.npcScreen.render();
+            }
+        } else if (type === 'double_cultivate') {
+            state.systems.social.performDoubleCultivation();
+            if (window.npcScreen) window.npcScreen.render();
+        }
+    }
 
     openNPC() {
         state.ui.toast('Hệ thống NPC đang được bảo trì...', 'info');
