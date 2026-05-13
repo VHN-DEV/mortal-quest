@@ -150,8 +150,7 @@ export class Game {
             'nav-character': 'screen-character',
             'nav-technique': 'screen-technique',
             'nav-crafting-hub': 'screen-crafting-hub',
-            'nav-npc': 'screen-npc',
-            'nav-fate': 'screen-fate'
+            'nav-npc': 'screen-npc'
         };
 
         Object.entries(navMappings).forEach(([btnId, screenId]) => {
@@ -163,8 +162,8 @@ export class Game {
                         this.screens.systems.renderTechniques(state.activeTechTab || 'cultivation');
                     } else if (screenId === 'screen-crafting-hub') {
                         this.screens.systems.renderCraftingHub();
-                    } else if (screenId === 'screen-fate') {
-                        this.screens.fate.render();
+                    } else if (screenId === 'screen-npc') {
+                        if (window.npcScreen) window.npcScreen.render();
                     }
                 };
             }

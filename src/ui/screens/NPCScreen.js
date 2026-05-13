@@ -7,70 +7,113 @@ export class NPCScreen {
     constructor() {
         this.containerId = 'screen-npc';
         this.selectedNpcId = null;
+        this.activeTab = 'npcs'; // 'npcs' or 'fate'
     }
 
     render() {
         const container = document.getElementById(this.containerId);
         if (!container) return;
 
-        const knownNpcs = state.systems.npc.npcs;
-
         container.innerHTML = `
             <div class="flex flex-col h-full bg-[#0a0a0a] text-gray-300 font-serif overflow-hidden">
-                <!-- Header -->
+                <!-- Header with Tabs -->
                 <div class="p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-black to-white/5">
-                    <div>
-                        <h2 class="text-xl font-bold text-white tracking-widest uppercase">Nhân Thế Lục</h2>
-                        <p class="text-[10px] text-gray-500 uppercase tracking-tighter mt-1">Danh sách các đạo hữu đã tương ngộ</p>
-                    </div>
-                    <div class="px-4 py-1.5 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase">
-                        ${knownNpcs.length} Vị Đạo Hữu
-                    </div>
-                </div>
-
-                <div class="flex-1 flex overflow-hidden">
-                    <!-- NPC List -->
-                    <div class="w-1/3 border-r border-white/5 overflow-y-auto custom-scrollbar p-4 space-y-6">
+                    <div class="flex items-center space-x-8">
                         <div>
-                            <h4 class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-4 px-2">Đạo Hữu</h4>
-                            <div class="space-y-3">
-                                ${knownNpcs.length === 0 ? `
-                                    <div class="text-center py-10 text-gray-600 italic text-[10px]">Chưa gặp đạo hữu nào...</div>
-                                ` : knownNpcs.map(npc => this.renderNpcListItem(npc)).join('')}
-                            </div>
+                            <h2 class="text-xl font-bold text-white tracking-widest uppercase">Nhân Thế Lục</h2>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-tighter mt-1">Giao tế & Vận mệnh</p>
                         </div>
-
-                        ${state.systems.social.bonds.family.length > 0 ? `
-                            <div>
-                                <h4 class="text-[9px] font-bold text-qi-purple uppercase tracking-widest mb-4 px-2">Hậu Đại (Gia Tộc)</h4>
-                                <div class="space-y-3">
-                                    ${state.systems.social.bonds.family.map(child => `
-                                        <div class="p-4 bg-qi-purple/5 border border-qi-purple/10 rounded-2xl">
-                                            <div class="flex items-center space-x-3">
-                                                <div class="w-10 h-10 rounded-xl bg-qi-purple/20 flex items-center justify-center text-qi-purple">
-                                                    <i class="ph-baby text-xl"></i>
-                                                </div>
-                                                <div class="flex-1">
-                                                    <div class="text-xs font-bold text-white">${child.name}</div>
-                                                    <div class="text-[8px] text-qi-purple/60 uppercase">Tư chất: ${Math.floor(child.talent)} | 0 Tuổi</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        ` : ''}
+                        
+                        <!-- Sub-Tabs -->
+                        <div class="flex bg-black/40 p-1 rounded-xl border border-white/5">
+                            <button onclick="window.npcScreen.setTab('npcs')" 
+                                class="px-4 py-1.5 rounded-lg text-[10px] font-ancient uppercase tracking-widest transition-all ${this.activeTab === 'npcs' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500 hover:text-white'}">
+                                Đạo Hữu
+                            </button>
+                            <button onclick="window.npcScreen.setTab('fate')" 
+                                class="px-4 py-1.5 rounded-lg text-[10px] font-ancient uppercase tracking-widest transition-all ${this.activeTab === 'fate' ? 'bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/30' : 'text-gray-500 hover:text-white'}">
+                                Nhân Quả
+                            </button>
+                        </div>
                     </div>
+                    
+                    ${this.activeTab === 'npcs' ? `
+                        <div class="px-4 py-1.5 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase">
+                            ${state.systems.npc.npcs.length} Vị Đạo Hữu
+                        </div>
+                    ` : ''}
+                </div>
 
-                    <!-- NPC Detail -->
-                    <div class="w-2/3 overflow-y-auto custom-scrollbar bg-black/40 relative">
-                        ${this.selectedNpcId ? this.renderNpcDetail(knownNpcs.find(n => n.id === this.selectedNpcId)) : `
-                            <div class="absolute inset-0 flex items-center justify-center text-gray-600 uppercase tracking-widest text-[10px] italic">
-                                Hãy chọn một vị đạo hữu để xem chi tiết
-                            </div>
-                        `}
+                <div id="npc-screen-content" class="flex-1 flex overflow-hidden">
+                    ${this.activeTab === 'npcs' ? this.renderNpcsView() : this.renderFateView()}
+                </div>
+            </div>
+        `;
+
+        if (this.activeTab === 'fate') {
+            const fateContainer = document.getElementById('fate-tab-container');
+            if (fateContainer && window.game && window.game.screens.fate) {
+                window.game.screens.fate.render(fateContainer);
+            }
+        }
+    }
+
+    setTab(tab) {
+        this.activeTab = tab;
+        this.render();
+    }
+
+    renderNpcsView() {
+        const knownNpcs = state.systems.npc.npcs;
+        return `
+            <!-- NPC List -->
+            <div class="w-1/3 border-r border-white/5 overflow-y-auto custom-scrollbar p-4 space-y-6">
+                <div>
+                    <h4 class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-4 px-2">Đạo Hữu</h4>
+                    <div class="space-y-3">
+                        ${knownNpcs.length === 0 ? `
+                            <div class="text-center py-10 text-gray-600 italic text-[10px]">Chưa gặp đạo hữu nào...</div>
+                        ` : knownNpcs.map(npc => this.renderNpcListItem(npc)).join('')}
                     </div>
                 </div>
+
+                ${state.systems.social.bonds.family.length > 0 ? `
+                    <div>
+                        <h4 class="text-[9px] font-bold text-qi-purple uppercase tracking-widest mb-4 px-2">Hậu Đại (Gia Tộc)</h4>
+                        <div class="space-y-3">
+                            ${state.systems.social.bonds.family.map(child => `
+                                <div class="p-4 bg-qi-purple/5 border border-qi-purple/10 rounded-2xl">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-xl bg-qi-purple/20 flex items-center justify-center text-qi-purple">
+                                            <i class="ph-baby text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-xs font-bold text-white">${child.name}</div>
+                                            <div class="text-[8px] text-qi-purple/60 uppercase">Tư chất: ${Math.floor(child.talent)} | 0 Tuổi</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+
+            <!-- NPC Detail -->
+            <div class="w-2/3 overflow-y-auto custom-scrollbar bg-black/40 relative">
+                ${this.selectedNpcId ? this.renderNpcDetail(knownNpcs.find(n => n.id === this.selectedNpcId)) : `
+                    <div class="absolute inset-0 flex items-center justify-center text-gray-600 uppercase tracking-widest text-[10px] italic">
+                        Hãy chọn một vị đạo hữu để xem chi tiết
+                    </div>
+                `}
+            </div>
+        `;
+    }
+
+    renderFateView() {
+        return `
+            <div id="fate-tab-container" class="w-full h-full p-6 overflow-y-auto custom-scrollbar">
+                <!-- Fate content will be injected here -->
             </div>
         `;
     }

@@ -7,15 +7,16 @@ export class FateScreen {
         this.container = document.getElementById('fate-screen-content');
     }
 
-    render() {
-        if (!this.container) return;
+    render(customContainer = null) {
+        const container = customContainer || this.container;
+        if (!container) return;
 
         const fate = this.player.fate;
         const moralityScale = window.game.systems.fate.getMoralityScale();
         const reputationTier = window.game.systems.fate.getReputationTier();
         const debt = window.game.systems.fate.getKarmaDebt();
 
-        this.container.innerHTML = `
+        container.innerHTML = `
             <div class="space-y-6 animate-fade-in">
                 <!-- Reputation & Morality Overview -->
                 <div class="grid grid-cols-2 gap-4">
