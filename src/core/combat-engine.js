@@ -84,7 +84,7 @@ export class CombatEngine {
         this.processTurnStatus();
         if (!this.isActive) return;
         this.onUpdate('turn', { turn: this.turn });
-        
+
         if (this.turn === 1) {
             this.enemyTurn();
         } else {
@@ -124,7 +124,7 @@ export class CombatEngine {
                 this.addLog(`${this.enemy.name} uống một viên <span class="text-green-400">${data.name}</span>, thương thế khép lại!`);
                 pill.quantity--;
                 if (pill.quantity <= 0) this.enemy.inventory.splice(pillIndex, 1);
-                
+
                 setTimeout(() => {
                     this.turn = 0;
                     this.nextTurn();
@@ -155,7 +155,7 @@ export class CombatEngine {
 
     enemyUseSkill(skillId) {
         if (!this.isActive) return;
-        
+
         this.enemy.mana -= 20;
         let damage = Math.floor(this.enemy.atk * 1.5);
         let msg = "";
@@ -197,7 +197,7 @@ export class CombatEngine {
         if (!this.isActive) return;
         const item = this.enemy.inventory[index];
         const data = getItemById(item.id);
-        
+
         if (!data) return;
 
         if (data.effect?.type === 'damage') {
@@ -233,7 +233,7 @@ export class CombatEngine {
     chaseEnemy() {
         const playerSpd = this.player.spd;
         const enemySpd = this.enemy.spd;
-        
+
         let flightBonus = 0;
         if (this.player.equipment.flightArtifact) {
             const artifact = getItemById(this.player.equipment.flightArtifact);
@@ -276,7 +276,7 @@ export class CombatEngine {
 
         this.playerDefending = false;
 
-        switch(type) {
+        switch (type) {
             case 'attack':
                 this.playerAttack();
                 break;
@@ -331,23 +331,23 @@ export class CombatEngine {
 
     playerAttack() {
         this.triggerArtifacts('attack');
-        
+
         const pierce = this.player.advancedStats.pierce || 0;
         const effectiveEnemyDef = Math.floor(this.enemy.def * (1 - pierce));
-        
+
         const suppression = this.calculateRacialSuppression(this.player, this.enemy);
         const damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression));
-        
+
         let critRate = this.player.advancedStats.critRate || 0.05;
         if (this.playerAmbushBonus) {
             critRate += 0.4;
             this.playerAmbushBonus = false;
         }
         const crit = Math.random() < critRate;
-        
+
         const critDmg = this.player.advancedStats.critDmg || 2.0;
         const finalDamage = crit ? Math.floor(damage * critDmg) : damage;
-        
+
         this.enemy.hp -= finalDamage;
         if (crit) {
             this.addLog(`<span class="text-red-500 font-bold">BẠO KÍCH!</span> Ngươi xuất chiêu hiểm hóc, gây ${finalDamage} sát thương.`);
@@ -363,7 +363,7 @@ export class CombatEngine {
             this.addLog(`Ngươi ${verb}, gây ${finalDamage} sát thương.`);
         }
         this.onUpdate('damage', { target: 'enemy', value: finalDamage, crit });
-        
+
         // Party attacks
         if (this.player.party && this.player.party.length > 0) {
             this.player.party.forEach(npc => {
@@ -372,13 +372,13 @@ export class CombatEngine {
                 this.addLog(`${npc.name} (${npc.role}) hỗ trợ gây ${npcDamage} sát thương.`);
                 this.onUpdate('damage', { target: 'enemy', value: npcDamage, crit: false });
             });
-            
+
             // Coordinated bonus
             const bonus = Math.floor(finalDamage * 0.1 * this.player.party.length);
             this.enemy.hp -= bonus;
             this.addLog(`Liên kích tổ đội bộc phát thêm ${bonus} sát thương!`);
         }
-        
+
         this.endPlayerTurn();
     }
 
@@ -394,7 +394,7 @@ export class CombatEngine {
 
         const playerSpd = this.player.spd;
         const enemySpd = this.enemy.spd;
-        
+
         // Check for escape secret techniques
         const equippedSecrets = (this.player.equippedSecretTechniqueIds || []).filter(Boolean);
         const hasEscapeSecret = equippedSecrets.some(id => {
@@ -592,7 +592,7 @@ export class CombatEngine {
 
     playerSummonInsect() {
         if (!this.player.unlockedProfessions?.includes('insect')) {
-            this.addLog("Chưa mở khóa Ngự Trùng Thuật!");
+            this.addLog("Chưa mở khóa Khu Trùng Thuật!");
             return;
         }
         const lvl = this.player.insectLevel || 1;
@@ -607,7 +607,7 @@ export class CombatEngine {
 
     playerSecretTechnique(secretId) {
         if (!secretId) return;
-        
+
         const secretData = getSecretTechniqueById(secretId);
         if (!secretData) return;
 
@@ -707,11 +707,11 @@ export class CombatEngine {
         }
 
         this.player.hp -= damage;
-        
+
         const suppression = this.calculateRacialSuppression(this.enemy, this.player);
         const finalDmg = Math.floor(damage * suppression);
         this.player.hp -= (finalDmg - damage); // Apply difference
-        
+
         this.addLog(attackMsg);
         this.onUpdate('damage', { target: 'player', value: finalDmg, crit: false });
 
@@ -727,7 +727,7 @@ export class CombatEngine {
     triggerArtifacts(phase) {
         Object.entries(this.player.equipment).forEach(([slot, itemId]) => {
             if (!itemId || !slot.includes('Artifact')) return;
-            
+
             const item = (typeof getItemById === 'function') ? getItemById(itemId) : null;
             if (!item || !item.stats) return;
 
@@ -753,22 +753,22 @@ export class CombatEngine {
                 }
             }
         });
-        
+
         this.player.calculateStats();
     }
 
     win() {
         this.isActive = false;
         this.addLog("<span class=\"text-cultivation-gold font-bold text-lg\">ĐẠI THẮNG!</span> Kẻ địch đã bị tiêu diệt.");
-        
+
         // Base Tu Vi reward
         const reward = Math.floor(this.enemy.maxHp * 0.8);
         this.player.tuVi += reward;
         this.addLog(`Luyện hóa khí huyết kẻ địch, nhận được ${reward} tu vi.`);
-        
+
         // --- Nâng Cấp Hệ Thống Loot ---
         const drops = [];
-        
+
         // 1. Drop ALL items from enemy inventory
         if (this.enemy.inventory && this.enemy.inventory.length > 0) {
             this.enemy.inventory.forEach(item => {

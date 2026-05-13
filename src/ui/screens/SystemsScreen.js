@@ -268,7 +268,7 @@ export class SystemsScreen {
             const shopData = SHOPS[state.systems.shop.currentShopId];
             if (shopData) {
                 // Shorten name for UI if needed, or just use the name
-                elTitle.textContent = shopData.name.split(' - ')[0]; 
+                elTitle.textContent = shopData.name.split(' - ')[0];
             }
         }
 
@@ -532,7 +532,7 @@ export class SystemsScreen {
 
         const mSys = state.systems.mountain;
         const layer = MOUNTAIN_LAYERS.find(l => l.id === mSys.currentLayer);
-        
+
         if (elLayerName) elLayerName.textContent = layer.name;
         if (elLayerDesc) elLayerDesc.textContent = layer.description;
         if (elLayerProgText) elLayerProgText.textContent = `${Math.floor(mSys.layerProgress)}%`;
@@ -1019,7 +1019,7 @@ export class SystemsScreen {
             { id: 'puppet', key: 'puppet', name: 'Khôi Lỗi Sư', level: state.player.puppetLevel, exp: state.player.puppetExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) },
             { id: 'corpse', key: 'corpse', name: 'Luyện Thi Sư', level: state.player.corpseLevel, exp: state.player.corpseExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) },
             { id: 'beast', key: 'beast', name: 'Ngự Thú Sư', level: state.player.beastLevel, exp: state.player.beastExp, getLevelInfo: getBeastLevelInfo },
-            { id: 'insect', key: 'insect', name: 'Ngự Trùng Sư', level: state.player.insectLevel, exp: state.player.insectExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) }
+            { id: 'insect', key: 'insect', name: 'Khu Trùng Sư', level: state.player.insectLevel, exp: state.player.insectExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) }
         ];
 
         professions.forEach(prof => {

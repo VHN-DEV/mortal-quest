@@ -1073,7 +1073,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Huyền',
         price: 5000,
-        description: 'Kỹ thuật nuôi dưỡng kỳ trùng, dùng để mở khóa nghề Ngự Trùng.',
+        description: 'Kỹ thuật nuôi dưỡng kỳ trùng, dùng để mở khóa nghề Khu Trùng.',
         effect: { type: 'unlock_profession', profession: 'insect' }
     },
     // --- TECHNIQUE BOOKS ---
