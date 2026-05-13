@@ -20,6 +20,9 @@
     "vite": "^6.4.2"
   },
   "dependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/cli": "^8.3.4",
+    "@capacitor/core": "^8.3.4",
     "@fontsource/charm": "^5.2.7",
     "@fontsource/eb-garamond": "^5.2.7",
     "@fontsource/noto-serif": "^5.2.9",
