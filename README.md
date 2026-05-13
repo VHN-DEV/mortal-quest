@@ -46,6 +46,33 @@ Ngay khi bắt đầu, người chơi sẽ được thức tỉnh Thiên Mệnh 
 3. Chạy `npm run dev` để khởi động môi trường phát triển.
 4. Chạy `npm run build` để đóng gói sản phẩm.
 
+### Xây dựng bản cài đặt Android (APK):
+Để chuyển đổi game từ web sang Android APK, dự án sử dụng **Capacitor**.
+
+1. **Đóng gói tài nguyên web:**
+   ```bash
+   npm run build
+   ```
+   *Lưu ý: Luôn chạy lệnh này trước khi sync để đảm bảo bản build Android có code mới nhất.*
+
+2. **Đồng bộ hóa với project Android:**
+   ```bash
+   npx cap sync android
+   ```
+
+3. **Mở project trong Android Studio:**
+   ```bash
+   npx cap open android
+   ```
+
+4. **Tạo file APK:**
+   - Trong Android Studio, đợi Gradle đồng bộ xong.
+   - Chọn menu **Build > Build Bundle(s) / APK(s) > Build APK(s)**.
+   - Sau khi hoàn tất, nhấn **Locate** trong thông báo popup để tìm file `app-debug.apk`.
+   - Đường dẫn mặc định: `android/app/build/outputs/apk/debug/app-debug.apk`.
+
+*Lưu ý: Thư mục `android` chính là một project Android hoàn chỉnh. Nếu bạn muốn build thủ công bằng command line (Gradle), bạn cần `cd android` trước khi chạy các lệnh như `./gradlew assembleDebug`.*
+
 ## 📜 Quy Tắc Đột Phá (Breakthrough Rules)
 - Để lên **Trúc Cơ**, cần nhục thân đủ mạnh.
 - Để lên **Nguyên Anh**, thần thức phải đạt mức Thần Hải.
