@@ -1,6 +1,6 @@
 {
-	"appId": "com.mortalquest.game",
-	"appName": "Mortal Quest",
+	"appId": "com.mortalquest.app",
+	"appName": "mortal-quest",
 	"webDir": "dist",
 	"bundledWebRuntime": false
 }
