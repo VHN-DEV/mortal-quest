@@ -870,3 +870,107 @@ button:active {
 }
 
 #creation-stats-preview { margin-top: 0.35rem; }
+
+/* Enhanced Creation Buttons */
+#screen-creation button[onclick^='window.game.select'],
+#screen-creation button[onclick^='window.game.toggle'] {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#screen-creation button[onclick^='window.game.select']:hover,
+#screen-creation button[onclick^='window.game.toggle']:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+#screen-creation button.border-qi-blue,
+#screen-creation button.border-qi-purple,
+#screen-creation button.border-qi-jade {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.02);
+}
+
+/* Redesigned Creation Cards V3 */
+.q-card {
+  position: relative;
+  padding: 1rem;
+  background: linear-gradient(165deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-left-width: 3px;
+  border-radius: 0.75rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow: hidden;
+}
+
+.q-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle at top right, rgba(255,255,255,0.03), transparent 70%);
+  pointer-events: none;
+}
+
+.q-card:hover {
+  background: linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  transform: translateX(4px);
+  border-color: rgba(255,255,255,0.15);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.q-card.active {
+  background: linear-gradient(165deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05));
+  border-left-color: currentColor;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.q-title {
+  font-family: 'Charm', cursive;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  background: linear-gradient(to bottom, #fff, #ccc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.q-cost {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: #d4af37;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.q-desc {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.q-bonus-list {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(255,255,255,0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.q-bonus-tag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 4px;
+  font-weight: 600;
+}
