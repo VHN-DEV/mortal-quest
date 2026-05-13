@@ -10,6 +10,7 @@ import { RACE_DATA } from '../../configs/realm-data.js';
 export class CharacterScreen {
     constructor() {
         this.initElements();
+        this.initEvents();
     }
 
     initElements() {
@@ -54,6 +55,17 @@ export class CharacterScreen {
         this.elFormationList = document.getElementById('active-formations-list');
         this.elCharAdvancedStats = document.getElementById('char-advanced-stats');
         this.elSpecializedPaths = document.getElementById('char-specialized-paths');
+    }
+    
+    initEvents() {
+        const btnSaveExit = document.getElementById('btn-save-exit');
+        if (btnSaveExit) {
+            btnSaveExit.onclick = async () => {
+                if (window.game && window.game.saveAndExit) {
+                    await window.game.saveAndExit();
+                }
+            };
+        }
     }
 
     render() {

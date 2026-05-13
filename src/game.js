@@ -278,6 +278,27 @@ export class Game {
         if (btnChaseGiveup) btnChaseGiveup.onclick = () => this.giveupChase();
     }
 
+    async saveAndExit() {
+        if (!state.player) return;
+
+        // 1. Lưu game trước khi thoát
+        await this.saveGame();
+        
+        // 2. Dừng các vòng lặp tự động nếu có
+        if (state.autoCultivateInterval) {
+            clearInterval(state.autoCultivateInterval);
+            state.autoCultivateInterval = null;
+        }
+        
+        // 3. Xóa dữ liệu phiên chơi hiện tại
+        state.player = null;
+        
+        // 4. Quay về màn hình bắt đầu
+        await this.showStartScreen();
+        
+        state.ui.toast('Đã lưu và thoát về màn hình chính', 'success');
+    }
+
     async showStartScreen() {
         state.ui.switchScreen('screen-start');
         await this.screens.start.render();

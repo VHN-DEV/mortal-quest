@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/logo-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-Z97ZGGQY.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-B1AIx4Y2.css">
+  <script type="module" crossorigin src="./assets/index-BSXjic1i.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BD-aQcbg.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -926,6 +926,14 @@
                                 <div class="text-[9px] text-gray-600 italic">Chưa có trận pháp nào</div>
                             </div>
                         </div>
+                        <!-- System Actions -->
+                        <div class="mt-8 space-y-4">
+                            <button id="btn-save-exit"
+                                class="w-full py-4 bg-red-900/40 border border-red-500/30 rounded-2xl text-red-400 font-ancient font-bold uppercase tracking-widest flex items-center justify-center space-x-2 active:scale-95 transition-all">
+                                <i class="ph ph-sign-out text-xl"></i>
+                                <span>Lưu và Thoát</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1834,7 +1842,8 @@
                         <button id="btn-mountain-explore"
                             class="w-full py-5 bg-gradient-to-r from-red-600/30 to-red-900/30 border border-red-500/40 rounded-2xl active:scale-95 transition-all flex items-center justify-center space-x-3 shadow-[0_0_30px_rgba(220,38,38,0.2)] group pointer-events-auto">
                             <i class="ph ph-footprints text-red-500 text-2xl group-hover:animate-bounce"></i>
-                            <span class="text-sm font-bold text-white uppercase tracking-[0.5em]">TIẾP TỤC KHÁM PHÁ</span>
+                            <span class="text-sm font-bold text-white uppercase tracking-[0.5em]">TIẾP TỤC KHÁM
+                                PHÁ</span>
                         </button>
 
                         <div class="grid grid-cols-2 gap-4">
@@ -1844,7 +1853,8 @@
                                     class="absolute inset-0 bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
                                 </div>
                                 <span
-                                    class="relative z-10 text-xs font-bold text-red-400 uppercase tracking-[0.2em]">TẦNG KẾ TIẾP</span>
+                                    class="relative z-10 text-xs font-bold text-red-400 uppercase tracking-[0.2em]">TẦNG
+                                    KẾ TIẾP</span>
                             </button>
                             <button id="btn-mountain-retreat"
                                 class="py-4 bg-white/5 border border-white/10 rounded-2xl active:scale-95 transition-all text-xs font-bold text-gray-500 uppercase tracking-[0.2em] pointer-events-auto">RÚT
@@ -2132,8 +2142,8 @@
         </div>
         <!-- Item Details Modal (Global - shown above all overlays) -->
         <div id="item-detail" class="hidden absolute inset-0 z-[200] flex items-center justify-center p-6">
-            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"
-                onclick="ui.toggleOverlay('item-detail', false)"></div>
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="ui.toggleOverlay('item-detail', false)">
+            </div>
             <div
                 class="relative w-full max-w-sm bg-[#0a0c10] border border-white/10 rounded-[2.5rem] p-8 shadow-2xl animate-zoom-in overflow-hidden">
                 <div class="absolute -top-24 -left-24 w-48 h-48 bg-qi-blue/10 rounded-full blur-[80px]"></div>
@@ -2148,7 +2158,8 @@
                         </div>
                         <span id="detail-icon" class="text-5xl relative z-10 filter drop-shadow-lg">📦</span>
                     </div>
-                    <h3 id="detail-name" class="text-2xl font-bold text-white font-ancient mb-2 text-center">Bảo Vật</h3>
+                    <h3 id="detail-name" class="text-2xl font-bold text-white font-ancient mb-2 text-center">Bảo Vật
+                    </h3>
                     <div id="detail-type"
                         class="px-3 py-1 bg-qi-blue/10 text-qi-blue text-[9px] font-bold uppercase tracking-widest rounded-full border border-qi-blue/20">
                         Dược liệu quý
