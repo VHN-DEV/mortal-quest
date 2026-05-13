@@ -10,6 +10,8 @@ export const SHOPS = {
                 { id: 'truc_co_dan', stock: 2, minVip: 1 }
             ],
             'phap_bao': [
+                { id: 'pham_lu_item', stock: 10 },
+                { id: 'linh_hoa_item', stock: 10 },
                 { id: 'phi_kiem_go', stock: 5 },
                 { id: 'ao_bo_so_cap', stock: 5 },
                 { id: 'thanh_hong_kiem', stock: 1, minVip: 1 },

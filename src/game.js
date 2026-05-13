@@ -6,6 +6,7 @@ import { ASSETS } from './configs/asset-data.js';
 import { EnemyGenerator } from './core/enemy.js';
 import { getLocationById } from './configs/map-data.js';
 import { CombatEngine } from './core/combat-engine.js';
+import { getItemById } from './configs/item-data.js';
 
 // Import Screens
 import { MapScreen } from './ui/screens/MapScreen.js';

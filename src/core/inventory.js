@@ -121,6 +121,11 @@ export class Inventory {
                 this.player.ownedFlames.push(effect.value);
                 this.player.currentFlame = effect.value; // Auto switch to better flame
             }
+        } else if (effect.type === 'equip_cauldron') {
+            if (!this.player.ownedCauldrons.includes(effect.value)) {
+                this.player.ownedCauldrons.push(effect.value);
+                this.player.currentCauldron = effect.value;
+            }
         } else if (effect.type === 'buff') {
             this.player.addBuff({
                 id: effect.id || 'temp_buff',

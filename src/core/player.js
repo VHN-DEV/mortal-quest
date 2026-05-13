@@ -124,12 +124,12 @@ export class Player {
         // Alchemy System
         this.alchemyLevel = 1;
         this.alchemyExp = 0;
-        this.currentCauldron = 'pham_lu';
-        this.currentFlame = 'linh_hoa';
+        this.currentCauldron = null;
+        this.currentFlame = null;
         this.danPoison = 0;
         this.knownRecipes = []; // No default recipes
-        this.ownedFlames = ['linh_hoa'];
-        this.ownedCauldrons = ['pham_lu'];
+        this.ownedFlames = [];
+        this.ownedCauldrons = [];
         this.alchemyReputation = 0;
         this.currentAlchemyRoom = null;
         this.gardenPlots = [

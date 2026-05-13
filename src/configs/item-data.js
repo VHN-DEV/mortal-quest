@@ -816,6 +816,26 @@ export const ITEMS = {
     },
 
     // --- ALCHEMY TOOLS (AS ITEMS) ---
+    'pham_lu_item': {
+        id: 'pham_lu_item',
+        name: 'Phàm Lư',
+        type: 'consumable',
+        icon: '🏺',
+        quality: 'Phàm',
+        price: 100,
+        description: 'Đan lư cơ bản cho người mới học luyện đan.',
+        effect: { type: 'equip_cauldron', value: 'pham_lu' }
+    },
+    'linh_hoa_item': {
+        id: 'linh_hoa_item',
+        name: 'Mồi Lửa: Linh Hỏa',
+        type: 'consumable',
+        icon: '🔥',
+        quality: 'Phàm',
+        price: 50,
+        description: 'Linh hỏa cấp thấp, đủ để luyện chế đan dược phàm phẩm.',
+        effect: { type: 'refine_flame', value: 'linh_hoa' }
+    },
     'huyen_lu_item': {
         id: 'huyen_lu_item',
         name: 'Huyền Thiết Trọng Lư',

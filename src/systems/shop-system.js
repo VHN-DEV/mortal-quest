@@ -41,6 +41,12 @@ export class ShopSystem {
             return { success: false, msg: 'Nguồn hàng đã cạn kiệt!' };
         }
 
+        // Check if we can add item
+        const existing = this.player.inventory.items.find(i => i.id === itemId);
+        if (!existing && this.player.inventory.items.length >= this.player.inventory.maxSlots) {
+            return { success: false, msg: 'Túi đồ đã đầy, không thể chứa thêm bảo vật!' };
+        }
+
         // Execute transaction using the new player method
         if (this.player.spendLingShi(totalPrice)) {
             this.player.inventory.addItem(itemId, quantity);
