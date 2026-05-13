@@ -347,7 +347,22 @@ export class InventoryScreen {
             mana: 'Pháp lực',
             luck: 'Khí vận',
             critChance: 'Tỉ lệ bạo kích',
-            critDamage: 'Sát thương bạo kích'
+            critDamage: 'Sát thương bạo kích',
+            karma: 'Nhân quả',
+            lifespan: 'Thọ nguyên',
+            life_span: 'Thọ nguyên',
+            qiAbsorb: 'Hấp thụ Linh khí',
+            qi_absorb: 'Hấp thụ Linh khí',
+            alchemyBonus: 'Tỉ lệ Luyện đan',
+            alchemy_success: 'Tỉ lệ Luyện đan',
+            smithingBonus: 'Tỉ lệ Luyện khí',
+            smithing_success: 'Tỉ lệ Luyện khí',
+            tu_vi_speed: 'Tốc độ Tu luyện',
+            tuViSpeed: 'Tốc độ Tu luyện',
+            spirit: 'Thần thức',
+            slots: 'Ô chứa đồ',
+            breakthroughRate: 'Tỉ lệ Đột phá',
+            breakthrough_rate: 'Tỉ lệ Đột phá'
         };
         return map[statKey] || statKey;
     }

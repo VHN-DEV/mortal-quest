@@ -12,7 +12,7 @@
 
 export const ITEMS = {
     // Hạt giống
-    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Linh Thảo', type: 'consumable', icon: '🌱', quality: 'Phàm', price: 10, description: 'Linh chủng linh thảo sơ cấp.' },
+    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Linh Thảo', type: 'seed', icon: '🌱', quality: 'Phàm', price: 10, description: 'Linh chủng linh thảo sơ cấp.' },
     'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh', price: 150, description: 'Linh chủng linh thảo hỏa hệ.' },
     'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh', price: 150, description: 'Linh chủng linh thảo băng hệ.' },
     'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Huyền', price: 300, description: 'Linh chủng linh thảo âm hệ.' },
@@ -184,19 +184,6 @@ export const ITEMS = {
         description: 'Mở rộng thêm 10 ô chứa đồ.',
         stats: { slots: 10 }
     },
-    'thanh_hong_kiem': {
-        id: 'thanh_hong_kiem',
-        name: 'Thanh Hồng Kiếm',
-        type: 'attackArtifact',
-        quality: 'Tinh Phẩm',
-        tier: 'LINH_KHI',
-        icon: '⚔️',
-        description: 'Thanh kiếm tỏa ra ánh sáng xanh lục, sắc bén vô cùng.',
-        price: 1500,
-        stats: { atk: 50, spd: 5 },
-        durability: 100,
-        maxDurability: 100
-    },
     'ho_tam_kinh': {
         id: 'ho_tam_kinh',
         name: 'Hộ Tâm Kính',
@@ -278,15 +265,6 @@ export const ITEMS = {
         isLifeBound: true,
         spirit: 0,
         level: 1
-    },
-    'seed_linh_thao': {
-        id: 'seed_linh_thao',
-        name: 'Hạt Giống Linh Thảo',
-        type: 'seed',
-        icon: '🌱',
-        quality: 'Phàm',
-        price: 5,
-        description: 'Dùng để gieo trồng trong Linh Điền.'
     },
     'seed_linh_thao_trung': {
         id: 'seed_linh_thao_trung',
@@ -1239,6 +1217,16 @@ export const ITEMS = {
         description: 'Bản vẽ rèn Long Lân Giáp phòng ngự kinh người.',
         effect: { type: 'learn_smithing_recipe', value: 'long_lan_giap' }
     },
+    'huyen_lu_item': {
+        id: 'huyen_lu_item',
+        name: 'Huyền Thiết Lư',
+        type: 'cauldron',
+        icon: '🏺',
+        quality: 'Hoàng',
+        price: 5000,
+        description: 'Đan lư rèn từ huyền thiết, dẫn hỏa ổn định.',
+        stats: { alchemyBonus: 0.1 }
+    },
     'dia_lu_item': {
         id: 'dia_lu_item',
         name: 'Địa Long Phần Thiên Lư',
@@ -1330,86 +1318,6 @@ export const ITEMS = {
     },
 
     // --- PROFESSION MANUALS (BÍ PHÁP) ---
-    'manual_alchemy': {
-        id: 'manual_alchemy',
-        name: '« Đan Đạo Chân Giải »',
-        type: 'consumable',
-        quality: 'Huyền',
-        icon: '📔',
-        description: 'Ghi chép những kiến thức cơ bản về dược lý và cách vận hành linh hỏa. Dùng để mở khóa nghề Luyện Đan.',
-        price: 1000,
-        effect: { type: 'unlock_profession', profession: 'alchemy' }
-    },
-    'manual_talisman': {
-        id: 'manual_talisman',
-        name: '« Thiên Phù Bí Lục »',
-        type: 'consumable',
-        quality: 'Huyền',
-        icon: '📔',
-        description: 'Ghi chép về cách dẫn dắt linh lực vào ngòi bút và các ký tự phù văn cổ. Dùng để mở khóa nghề Phù Lục.',
-        price: 1000,
-        effect: { type: 'unlock_profession', profession: 'talisman' }
-    },
-    'manual_smithing': {
-        id: 'manual_smithing',
-        name: '« Luyện Khí Bí Điển »',
-        type: 'consumable',
-        quality: 'Huyền',
-        icon: '📔',
-        description: 'Ghi chép về tính chất các loại linh tài và cách tôi luyện chúng. Dùng để mở khóa nghề Luyện Khí.',
-        price: 1000,
-        effect: { type: 'unlock_profession', profession: 'smithing' }
-    },
-    'manual_formation': {
-        id: 'manual_formation',
-        name: '« Trận Pháp Cương Mục »',
-        type: 'consumable',
-        quality: 'Huyền',
-        icon: '📔',
-        description: 'Ghi chép về cách bố trí linh thạch và kết nối các điểm trận nhãn. Dùng để mở khóa nghề Trận Pháp.',
-        price: 1000,
-        effect: { type: 'unlock_profession', profession: 'formation' }
-    },
-    'manual_puppet': {
-        id: 'manual_puppet',
-        name: '« Khôi Lỗi Chân Kinh »',
-        type: 'consumable',
-        quality: 'Huyền',
-        icon: '📔',
-        description: 'Ghi chép về cách chế tác các bộ phận cơ quan và nạm linh thạch lõi. Dùng để mở khóa nghề Khôi Lỗi.',
-        price: 1000,
-        effect: { type: 'unlock_profession', profession: 'puppet' }
-    },
-    'manual_corpse': {
-        id: 'manual_corpse',
-        name: '« Luyện Thi Bí Pháp »',
-        type: 'consumable',
-        quality: 'Huyền',
-        icon: '📔',
-        description: 'Ghi chép về cách dùng âm khí để cường hóa và điều khiển thi thể. Dùng để mở khóa nghề Luyện Thi.',
-        price: 1000,
-        effect: { type: 'unlock_profession', profession: 'corpse' }
-    },
-    'manual_beast': {
-        id: 'manual_beast',
-        name: '« Vạn Thú Bí Lục »',
-        type: 'consumable',
-        quality: 'Huyền',
-        icon: '📔',
-        description: 'Ghi chép về thói quen và cách thuần hóa các loại yêu thú. Dùng để mở khóa nghề Ngự Thú.',
-        price: 1000,
-        effect: { type: 'unlock_profession', profession: 'beast' }
-    },
-    'manual_insect': {
-        id: 'manual_insect',
-        name: '« Kỳ Trùng Kinh »',
-        type: 'consumable',
-        quality: 'Huyền',
-        icon: '📔',
-        description: 'Ghi chép về các loại linh trùng kỳ lạ và cách nuôi dưỡng chúng. Dùng để mở khóa nghề Ngự Trùng.',
-        price: 1000,
-        effect: { type: 'unlock_profession', profession: 'insect' }
-    }
 };
 
 export const getItemById = (id) => ITEMS[id];
