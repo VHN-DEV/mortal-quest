@@ -181,7 +181,12 @@ export class MountainSystem {
             this.layerProgress = 100; // Keep progress if retreating
             this.ui.toast(`Lùi về ${prevLayer.name}...`, "info");
             return true;
+        } else {
+            this.ui.toast("Ngươi quyết định rời khỏi Đại Sơn.", "info");
+            this.stop();
+            const overlay = document.getElementById('mountain-overlay');
+            if (overlay) state.ui.toggleOverlay(overlay, false);
+            return true;
         }
-        return false;
     }
 }

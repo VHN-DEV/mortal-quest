@@ -276,11 +276,7 @@ export class MapScreen {
 
         const loc = getLocationById(state.currentWorldId, state.currentLocId);
 
-        let probs = { ...loc.eventProbs };
-        if (state.systems.time && state.systems.time.isNight()) {
-            probs.combat = (probs.combat || 0) * 1.5;
-            probs.loot = (probs.loot || 0) * 1.2;
-        }
+        let probs = { combat: 1.0, loot: 0, npc: 0, shop: 0 };
 
         const event = getRandomEvent(probs);
 

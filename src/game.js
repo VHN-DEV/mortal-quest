@@ -401,6 +401,10 @@ export class Game {
         if (this.screens.systems) {
             this.screens.systems.renderAlchemy();
             this.screens.systems.renderShop();
+            this.screens.systems.renderMountain();
+            this.screens.systems.renderSects();
+            this.screens.systems.renderGuild();
+            this.screens.systems.renderTower();
         }
         if (this.screens.spiritStone) {
             this.screens.spiritStone.render();
@@ -790,27 +794,37 @@ export class Game {
     }
 
     startAmbush() {
-        if (!this.pendingEncounter) return;
-        state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
-        
-        // Tỷ lệ tập kích thành công dựa trên tốc độ và thần thức
-        const successChance = 0.6 + (state.player.advancedStats.perception / 100);
-        const success = Math.random() < successChance;
+        try {
+            if (!this.pendingEncounter) return;
+            state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
+            
+            const perc = (state.player && state.player.advancedStats && state.player.advancedStats.perception) || 5;
+            const successChance = 0.6 + (perc / 100);
+            const success = Math.random() < successChance;
 
-        if (success) {
-            this.startBattle(this.pendingEncounter.worldId, this.pendingEncounter.locId, 'player', this.pendingEncounter.enemy);
-        } else {
-            state.ui.toast("Tập kích thất bại! Ngươi đã bị đối phương phát hiện.", "warning");
-            this.startBattle(this.pendingEncounter.worldId, this.pendingEncounter.locId, null, this.pendingEncounter.enemy);
+            if (success) {
+                this.startBattle(this.pendingEncounter.worldId, this.pendingEncounter.locId, 'player', this.pendingEncounter.enemy);
+            } else {
+                state.ui.toast("Tập kích thất bại! Ngươi đã bị đối phương phát hiện.", "warning");
+                this.startBattle(this.pendingEncounter.worldId, this.pendingEncounter.locId, null, this.pendingEncounter.enemy);
+            }
+            this.pendingEncounter = null;
+        } catch (e) {
+            console.error(e);
+            state.ui.toast("Lỗi khi tập kích!", "error");
         }
-        this.pendingEncounter = null;
     }
 
     escapeAmbush() {
-        state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
-        state.ui.toast("Ngươi lặng lẽ lách mình qua kẻ địch, tránh được một cuộc chiến.", "info");
-        this.pendingEncounter = null;
-        this.refreshUI();
+        try {
+            state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
+            state.ui.toast("Ngươi lặng lẽ lách mình qua kẻ địch, tránh được một cuộc chiến.", "info");
+            this.pendingEncounter = null;
+            this.refreshUI();
+        } catch (e) {
+            console.error(e);
+            state.ui.toast("Lỗi khi lánh mặt!", "error");
+        }
     }
 
     startChase() {
