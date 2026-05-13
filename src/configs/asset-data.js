@@ -86,6 +86,11 @@ export const ASSETS = {
         healing_pill: getAssetUrl('items/healing_pill'),
     }, 'items', 'spirit_stone'),
 
+    // Logos
+    logos: createAssetProxy({
+        main: getAssetUrl('logos/logo'),
+    }, 'logos', 'main'),
+
     // UI (Non-proxied for icons)
     ui: {
         stamina: '⚡',

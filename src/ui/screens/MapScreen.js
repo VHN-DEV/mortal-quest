@@ -237,6 +237,7 @@ export class MapScreen {
         this.renderExplore();
         this.renderNPCs();
         this.updateDashboardStats(loc);
+        if (window.game && window.game.saveGame) window.game.saveGame();
     }
 
     updateDashboardStats(loc) {
@@ -286,7 +287,10 @@ export class MapScreen {
                 const resultMsg = event.result(state.player);
                 const droppedShi = Math.floor(Math.random() * 10 * state.player.realmId);
                 state.player.addLingShi(droppedShi);
-                setTimeout(() => { this.updateEventDisplay(resultMsg + ` (+${droppedShi} LT)`, '🎁'); }, 1000);
+                setTimeout(() => { 
+                    this.updateEventDisplay(resultMsg + ` (+${droppedShi} LT)`, '🎁'); 
+                    if (window.game) window.game.saveGame();
+                }, 1000);
             } else if (event.type === 'npc') {
                 setTimeout(() => { 
                     window.game.openNPC();

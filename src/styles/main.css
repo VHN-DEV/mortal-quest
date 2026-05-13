@@ -211,6 +211,53 @@ body {
   animation: float-particle 2s ease-out forwards;
 }
 
+/* --- Start Screen Specifics --- */
+.bg-start-default {
+    background-image: url('../assets/images/backgrounds/sect_gate.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.bg-start-expert {
+    background-image: url('../assets/images/backgrounds/mountain_peak.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.bg-start-immortal {
+    background-image: url('../assets/images/backgrounds/void_galaxy.png');
+    background-size: cover;
+    background-position: center;
+}
+
+@keyframes spiritual-fog-move {
+    0% { transform: translateX(-10%) translateY(0); opacity: 0.3; }
+    50% { transform: translateX(10%) translateY(-5%); opacity: 0.5; }
+    100% { transform: translateX(-10%) translateY(0); opacity: 0.3; }
+}
+
+.spiritual-fog {
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 70%);
+    filter: blur(40px);
+    animation: spiritual-fog-move 20s ease-in-out infinite;
+}
+
+@keyframes sword-qi-float {
+    0% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
+}
+
+.sword-qi-particle {
+    position: absolute;
+    width: 2px;
+    height: 100px;
+    background: linear-gradient(to top, transparent, var(--qi-blue), transparent);
+    box-shadow: 0 0 10px var(--qi-blue);
+    animation: sword-qi-float 5s linear infinite;
+}
+
 /* Animations */
 @keyframes fade-in {
   from { opacity: 0; transform: scale(0.98); }

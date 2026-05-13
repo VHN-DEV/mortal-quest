@@ -17,6 +17,8 @@ import { BattleScreen } from './ui/screens/BattleScreen.js';
 import { SpiritStoneUI } from './ui/spirit-stone-ui.js';
 import { TreasureScreen } from './ui/screens/TreasureScreen.js';
 import { FateScreen } from './ui/screens/FateScreen.js';
+import { StartScreen } from './ui/screens/StartScreen.js';
+import { SaveScreen } from './ui/screens/SaveScreen.js';
 
 // Import Systems
 import { ShopSystem } from './systems/shop-system.js';
@@ -66,18 +68,15 @@ export class Game {
         this.screens.spiritStone = new SpiritStoneUI();
         this.screens.treasure = new TreasureScreen();
         this.screens.fate = new FateScreen(state.player, state.ui);
+        this.screens.start = new StartScreen();
+        this.screens.save = new SaveScreen();
 
         // 3. Khởi tạo Creation System (cho màn hình mới)
         state.systems.creation = new CreationSystem();
 
-        // 4. Load dữ liệu
-        const savedData = SaveSystem.load();
-
-        if (!savedData) {
-            this.showCreationScreen();
-        } else {
-            this.loadGame(savedData);
-        }
+        // 4. Load dữ liệu & Khởi động
+        SaveSystem.migrateLegacySave();
+        this.showStartScreen();
 
         // 5. Vòng lặp game
         this.startLoop();
@@ -277,8 +276,19 @@ export class Game {
         if (btnChaseGiveup) btnChaseGiveup.onclick = () => this.giveupChase();
     }
 
+    showStartScreen() {
+        state.ui.switchScreen('screen-start');
+        this.screens.start.render();
+
+        const elementsToHide = ['header', '#time-hud', 'nav'];
+        elementsToHide.forEach(selector => {
+            const el = document.querySelector(selector);
+            if (el) el.classList.add('hidden');
+        });
+    }
+
     showCreationScreen() {
-        state.ui.toggleOverlay(document.getElementById('screen-creation'), true);
+        state.ui.switchScreen('screen-creation');
         state.ui.toggleOverlay(document.getElementById('screen-main'), false);
 
         const elementsToHide = ['header', '#time-hud', 'nav'];
@@ -287,7 +297,6 @@ export class Game {
             if (el) el.classList.add('hidden');
         });
 
-        // window.renderCreationScreen() should still exist or be moved
         if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
     }
 
@@ -297,7 +306,12 @@ export class Game {
 
         this.initSystems(state.player, savedData);
 
-        state.ui.toggleOverlay(document.getElementById('screen-creation'), false);
+        // Hide non-game screens
+        const nonGameScreens = ['screen-creation', 'screen-start', 'screen-save'];
+        nonGameScreens.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        });
 
         const elementsToShow = ['header', '#time-hud', 'nav'];
         elementsToShow.forEach(selector => {
@@ -462,15 +476,77 @@ export class Game {
                     currentLayer: state.systems.mountain.currentLayer
                 };
             }
-            SaveSystem.save(data);
+            
+            // Create metadata for save screen
+            const metadata = {
+                name: state.player.name,
+                realm: state.player.getCurrentRealm().name,
+                realmId: state.player.realmId,
+                age: state.player.age,
+                area: state.currentLocId || 'Thanh Vân Trấn',
+                playTime: state.player.playTime || 0,
+                avatar: state.player.avatar || 'player_male',
+                updatedAt: Date.now()
+            };
+
+            SaveSystem.save(SaveSystem.currentSlot, data, metadata);
         }
     }
 
+    loadSlot(slot) {
+        const savedData = SaveSystem.load(slot);
+        if (savedData) {
+            SaveSystem.currentSlot = slot;
+            this.loadGame(savedData);
+        } else {
+            state.ui.toast(`Không tìm thấy dữ liệu ở Slot ${slot}`, 'error');
+        }
+    }
+
+    startNewAtSlot(slot) {
+        SaveSystem.currentSlot = slot;
+        this.showCreationScreen();
+    }
+
+    showSaveMenu(slot) {
+        const options = [
+            { label: 'Tiếp Tục Chơi', value: 'load', icon: 'ph-play' },
+            { label: 'Đổi Tên Nhân Vật', value: 'rename', icon: 'ph-pencil' },
+            { label: 'Xóa Dữ Liệu', value: 'delete', icon: 'ph-trash' },
+            { label: 'Sao Lưu (Backup)', value: 'backup', icon: 'ph-copy' },
+            { label: 'Thống Kê Chi Tiết', value: 'stats', icon: 'ph-chart-bar' }
+        ];
+
+        state.ui.promptOptions('Lựa Chọn Hành Trình', options, `Quản lý ô lưu số ${slot}`)
+            .then(action => {
+                if (action === 'load') this.loadSlot(slot);
+                else if (action === 'delete') {
+                    state.ui.confirm(`Ngươi có chắc muốn xóa bỏ đạo quả ở ô lưu số ${slot}? Hành động này không thể hoàn tác!`, 'Cảnh Báo Diệt Môn')
+                        .then(confirmed => {
+                            if (confirmed) {
+                                SaveSystem.deleteSave(slot);
+                                this.screens.save.render();
+                            }
+                        });
+                } else if (action === 'rename') {
+                    const newName = prompt('Nhập tên mới:');
+                    if (newName) {
+                        SaveSystem.renameSave(slot, newName);
+                        this.screens.save.render();
+                    }
+                } else if (action === 'backup') {
+                    state.ui.toast('Tính năng sao lưu đám mây đang được phát triển.', 'info');
+                } else if (action === 'stats') {
+                    state.ui.toast('Tính năng xem thống kê chi tiết đang được phát triển.', 'info');
+                }
+            });
+    }
+
     resetGame() {
-        state.ui.confirm("Ngươi có chắc chắn muốn xóa hết tu vi để bắt đầu lại từ đầu? Hành động này không thể hoàn tác!", "Xác Nhận Luân Hồi")
+        state.ui.confirm("Ngươi có chắc chắn muốn xóa sạch toàn bộ dữ liệu (cả 3 slot) để bắt đầu lại từ đầu? Hành động này không thể hoàn tác!", "Xác Nhận Luân Hồi")
             .then(confirmed => {
                 if (confirmed) {
-                    SaveSystem.clear();
+                    SaveSystem.clearAll();
                     location.reload();
                 }
             });
@@ -590,6 +666,7 @@ export class Game {
         const focus = state.player.cultivationFocus || 'tuvi';
         const result = state.player.breakthrough(focus);
         if (result && result.msg) state.ui.toast(result.msg, result.success ? 'success' : 'error');
+        if (result && result.success) this.saveGame();
         this.refreshUI();
     }
 
