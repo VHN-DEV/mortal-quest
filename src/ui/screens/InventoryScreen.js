@@ -255,9 +255,9 @@ export class InventoryScreen {
             }
         }
         
-        // Artifact specific
+        // Artifact specific (only when item is in player inventory)
         const isArtifact = itemData.type.includes('Artifact');
-        if (isArtifact) {
+        if (isArtifact && playerItem) {
             const meta = playerItem.metadata || {};
             const tier = itemData.tier || 'PHAM_KHI';
             const level = meta.level || 1;
@@ -270,17 +270,16 @@ export class InventoryScreen {
             desc += `\nLinh tính: ${spirit.toFixed(1)} / ${level * 500}`;
             desc += `\nĐộ bền: ${durability}%`;
             desc += `\nNhận chủ: ${isBound ? 'ĐÃ NHẬN CHỦ' : 'CHƯA NHẬN CHỦ'}`;
-            
-            if (itemData.stats) {
-                Object.entries(itemData.stats).forEach(([key, val]) => {
-                    if (this.elDetailStats) {
-                        const statEl = document.createElement('div');
-                        statEl.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
-                        statEl.innerHTML = `<span>${this.getStatLabel(key)}</span><span class="text-qi-blue font-mono">+${val}</span>`;
-                        this.elDetailStats.appendChild(statEl);
-                    }
-                });
-            }
+        }
+
+        // Show stats for all equippable items (works in both shop and inventory view)
+        if (itemData.stats && this.elDetailStats) {
+            Object.entries(itemData.stats).forEach(([key, val]) => {
+                const statEl = document.createElement('div');
+                statEl.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                statEl.innerHTML = `<span>${this.getStatLabel(key)}</span><span class="text-qi-blue font-mono">+${val}</span>`;
+                this.elDetailStats.appendChild(statEl);
+            });
         }
 
         // Show/Hide Quantity Container
@@ -294,10 +293,10 @@ export class InventoryScreen {
         }
 
         if (fromShop || fromSell) {
-            this.btnUseItem.style.display = 'none';
-            this.btnEquipItem.style.display = 'none';
-            if (this.btnBuyItem) this.btnBuyItem.style.display = fromShop ? 'block' : 'none';
-            if (this.btnSellItem) this.btnSellItem.style.display = fromSell ? 'block' : 'none';
+            this.btnUseItem.classList.add('hidden');
+            this.btnEquipItem.classList.add('hidden');
+            if (this.btnBuyItem) this.btnBuyItem.classList.toggle('hidden', !fromShop);
+            if (this.btnSellItem) this.btnSellItem.classList.toggle('hidden', !fromSell);
             
             // Re-show quantity for selling
             if (fromSell && isStackable) {
@@ -311,11 +310,11 @@ export class InventoryScreen {
             state.ui.toggleOverlay(this.elItemDetail, true);
             return;
         } else {
-            if (this.btnBuyItem) this.btnBuyItem.style.display = 'none';
-            if (this.btnSellItem) this.btnSellItem.style.display = 'none';
+            if (this.btnBuyItem) this.btnBuyItem.classList.add('hidden');
+            if (this.btnSellItem) this.btnSellItem.classList.add('hidden');
         }
 
-        this.btnUseItem.style.display = (['consumable', 'book', 'spirit_stone'].includes(itemData.type)) ? 'block' : 'none';
+        this.btnUseItem.classList.toggle('hidden', !(['consumable', 'book', 'spirit_stone'].includes(itemData.type)));
         if (itemData.type === 'spirit_stone') {
             this.btnUseItem.textContent = 'LUYỆN HÓA';
         } else {
@@ -331,7 +330,7 @@ export class InventoryScreen {
             this.btnEquipItem.textContent = itemData.type.includes('Artifact') ? 'KHỞI ĐỘNG' : 'TRANG BỊ';
             this.buildEquipPreview(itemData, mappedSlot);
         }
-        this.btnEquipItem.style.display = equippable ? 'block' : 'none';
+        this.btnEquipItem.classList.toggle('hidden', !equippable);
 
         state.ui.toggleOverlay(this.elItemDetail, true);
         this.render();
