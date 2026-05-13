@@ -52,11 +52,11 @@ export class Game {
 
     init() {
         console.log("%c🌌 Mortal Quest: Tái cấu trúc thành công!", "color: #4fd1c5; font-size: 14px; font-weight: bold;");
-        
+
         // 1. Khởi tạo UI Core
         state.ui = new UISystem();
         window.ui = state.ui; // Compatibility with index.html onclicks
-        
+
         // 2. Khởi tạo Screen Controllers
         this.screens.map = new MapScreen();
         this.screens.inventory = new InventoryScreen();
@@ -94,6 +94,26 @@ export class Game {
         const btnReset = document.getElementById('reset-game-btn');
         if (btnReset) {
             btnReset.onclick = () => this.resetGame();
+        }
+
+        // Emergency UI Reset: Triple-click character portrait
+        const portrait = document.getElementById('header-portrait-container');
+        if (portrait) {
+            let clickCount = 0;
+            let lastClick = 0;
+            portrait.addEventListener('click', () => {
+                const now = Date.now();
+                if (now - lastClick < 500) {
+                    clickCount++;
+                    if (clickCount >= 2) { // 3 clicks total
+                        this.emergencyUIReset();
+                        clickCount = 0;
+                    }
+                } else {
+                    clickCount = 0;
+                }
+                lastClick = now;
+            });
         }
 
         const focusMap = {
@@ -172,7 +192,7 @@ export class Game {
         // Restore saved screen if player exists (game is loaded)
         if (state.player) {
             let savedScreen = localStorage.getItem('mortal_quest_current_screen');
-            
+
             // Special case: If we were in battle, we reset to adventure screen at the current location
             if (savedScreen === 'screen-battle') {
                 savedScreen = 'screen-adventure';
@@ -238,21 +258,21 @@ export class Game {
 
         const btnDeeper = document.getElementById('btn-mountain-deeper');
         if (btnDeeper) btnDeeper.onclick = () => this.mountainDeeper();
-        
+
         const btnRetreat = document.getElementById('btn-mountain-retreat');
         if (btnRetreat) btnRetreat.onclick = () => this.mountainRetreat();
 
         // Ambush buttons
         const btnAmbushStart = document.getElementById('btn-ambush-start');
         if (btnAmbushStart) btnAmbushStart.onclick = () => this.startAmbush();
-        
+
         const btnAmbushEscape = document.getElementById('btn-ambush-escape');
         if (btnAmbushEscape) btnAmbushEscape.onclick = () => this.escapeAmbush();
 
         // Chase buttons
         const btnChaseStart = document.getElementById('btn-chase-start');
         if (btnChaseStart) btnChaseStart.onclick = () => this.startChase();
-        
+
         const btnChaseGiveup = document.getElementById('btn-chase-giveup');
         if (btnChaseGiveup) btnChaseGiveup.onclick = () => this.giveupChase();
     }
@@ -260,13 +280,13 @@ export class Game {
     showCreationScreen() {
         state.ui.toggleOverlay(document.getElementById('screen-creation'), true);
         state.ui.toggleOverlay(document.getElementById('screen-main'), false);
-        
+
         const elementsToHide = ['header', '#time-hud', 'nav'];
         elementsToHide.forEach(selector => {
             const el = document.querySelector(selector);
             if (el) el.classList.add('hidden');
         });
-        
+
         // window.renderCreationScreen() should still exist or be moved
         if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
     }
@@ -274,11 +294,11 @@ export class Game {
     loadGame(savedData) {
         state.player = new Player();
         state.player.load(savedData);
-        
+
         this.initSystems(state.player, savedData);
-        
+
         state.ui.toggleOverlay(document.getElementById('screen-creation'), false);
-        
+
         const elementsToShow = ['header', '#time-hud', 'nav'];
         elementsToShow.forEach(selector => {
             const el = document.querySelector(selector);
@@ -343,17 +363,17 @@ export class Game {
         // Cập nhật giao diện cơ bản
         const elName = document.getElementById('player-name-header');
         if (elName) elName.textContent = player.name;
-        
+
         // Cập nhật chân dung dựa trên avatar
         const portraitKey = player.avatar || (player.gender === 'Nữ' ? 'player_female' : 'player_male');
         const portraitUrl = ASSETS.portraits[portraitKey];
 
         const elPortrait = document.getElementById('header-portrait');
         if (elPortrait) elPortrait.src = portraitUrl;
-        
+
         const mainPortrait = document.getElementById('main-player-portrait');
         if (mainPortrait) mainPortrait.src = portraitUrl;
-        
+
         // Also update character screen portrait if it exists
         const charPortrait = document.querySelector('#screen-character img');
         if (charPortrait) charPortrait.src = portraitUrl;
@@ -373,10 +393,10 @@ export class Game {
             if (state.player) {
                 const now = Date.now();
                 const delta = (now - state.player.lastUpdate) / 1000;
-                
+
                 // Cập nhật logic game
                 this.update(delta);
-                
+
                 // Render frame hiện tại
                 this.render();
             }
@@ -395,7 +415,7 @@ export class Game {
         if (state.systems.npc && state.systems.time) state.systems.npc.update(delta, state.systems.time.totalMinutes);
         if (state.systems.social) state.systems.social.update(delta);
         if (state.systems.fate) state.systems.fate.checkTribulation();
-        
+
         if (state.player.hp <= 0) this.handleDeath();
     }
 
@@ -412,7 +432,7 @@ export class Game {
         this.screens.map.renderWorldList();
         this.screens.inventory.render();
         this.screens.character.render();
-        
+
         // Render các hệ thống khác (Alchemy, Shop, v.v.)
         if (this.screens.systems) {
             this.screens.systems.renderAlchemy();
@@ -550,7 +570,7 @@ export class Game {
         if (!state.player) return;
         const result = state.player.cultivate();
         const message = result?.msg || result?.reason;
-        
+
         if (state.autoCultivateInterval) {
             if (!result.success) {
                 this.toggleAutoCultivate(false);
@@ -561,7 +581,7 @@ export class Game {
         } else {
             if (message) state.ui.toast(message, result.success ? 'success' : 'error');
         }
-        
+
         this.refreshUI();
     }
 
@@ -590,7 +610,7 @@ export class Game {
     }
 
     // Các hàm helper để gọi từ HTML (window.game.xxx)
-    openShop(view, shopId = null, section = null) { 
+    openShop(view, shopId = null, section = null) {
         if (state.systems.shop) {
             state.views.shop = view || 'buy';
             if (shopId) state.systems.shop.currentShopId = shopId;
@@ -599,23 +619,23 @@ export class Game {
             if (this.screens.systems) this.screens.systems.renderShop();
         }
     }
-    
-    openSect() { 
+
+    openSect() {
         state.ui.toggleOverlay(document.getElementById('sects-overlay'), true);
         if (this.screens.systems) this.screens.systems.renderSects();
     }
-    
-    openGuild() { 
+
+    openGuild() {
         state.ui.toggleOverlay(document.getElementById('guild-overlay'), true);
         if (this.screens.systems) this.screens.systems.renderGuild();
     }
-    
-    openTower() { 
+
+    openTower() {
         state.ui.toggleOverlay(document.getElementById('tower-overlay'), true);
         if (this.screens.systems) this.screens.systems.renderTower();
     }
-    
-    openMountain() { 
+
+    openMountain() {
         state.ui.toggleOverlay(document.getElementById('mountain-overlay'), true);
         if (state.systems.mountain) state.systems.mountain.start();
         if (this.screens.systems) this.screens.systems.renderMountain();
@@ -672,13 +692,13 @@ export class Game {
         const menu = document.getElementById('garden-menu-content');
         const title = document.getElementById('garden-menu-title');
         const subtitle = document.getElementById('garden-menu-subtitle');
-        
+
         if (!menu || !title || !subtitle) return;
 
         title.textContent = 'Gieo Hạt Linh Thảo';
         subtitle.textContent = `Ô đất số ${index + 1}`;
         menu.innerHTML = '';
-        
+
         if (seeds.length === 0) {
             menu.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Túi đồ không có hạt giống nào...</div>';
         } else {
@@ -713,7 +733,7 @@ export class Game {
         const menu = document.getElementById('garden-menu-content');
         const title = document.getElementById('garden-menu-title');
         const subtitle = document.getElementById('garden-menu-subtitle');
-        
+
         if (!menu || !title || !subtitle) return;
 
         title.textContent = 'Quản Lý Linh Điền';
@@ -822,7 +842,7 @@ export class Game {
         try {
             if (!this.pendingEncounter) return;
             state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
-            
+
             const perc = (state.player && state.player.advancedStats && state.player.advancedStats.perception) || 5;
             const successChance = 0.6 + (perc / 100);
             const success = Math.random() < successChance;
@@ -868,10 +888,10 @@ export class Game {
     startBattle(worldId, locId, ambushType = null, providedEnemy = null) {
         const loc = getLocationById(worldId, locId);
         const enemy = providedEnemy || EnemyGenerator.generate(loc.dangerLevel || 1);
-        
+
         state.currentCombat = new CombatEngine(
-            state.player, 
-            enemy, 
+            state.player,
+            enemy,
             (type, data) => this.screens.battle.render(type, data),
             (result) => {
                 this.screens.battle.close();
@@ -879,7 +899,7 @@ export class Game {
             },
             ambushType
         );
-        
+
         this.screens.battle.render('start');
         state.currentCombat.start();
     }
@@ -893,33 +913,33 @@ export class Game {
     openNPCDialogue(npcId) {
         const npc = state.systems.npc.npcs.find(n => n.id === npcId);
         if (!npc) return;
-        
+
         // Dynamic Dialogue based on AI
         const dialogue = npc.generateDialogue(state.player);
         state.ui.alert(dialogue, npc.name);
     }
 
-    openNPCGift(npcId) {
+    async openNPCGift(npcId) {
         const npc = state.systems.npc.npcs.find(n => n.id === npcId);
         if (!npc) return;
 
         // Tìm vật phẩm có thể tặng (ví dụ Linh Thạch hoặc Đan Dược)
         const giftItem = state.player.inventory.items.find(i => i.id.includes('ling_thach') || i.id.includes('dan'));
-        
+
         if (!giftItem) {
             state.ui.toast("Ngươi không có vật phẩm nào giá trị để tặng.", "warning");
             return;
         }
 
         const itemName = giftItem.name || giftItem.id;
-        state.ui.confirm(`Ngươi có muốn tặng 1x ${itemName} cho ${npc.name}?`, (confirmed) => {
-            if (confirmed) {
-                state.player.inventory.removeItem(giftItem.id, 1);
-                npc.addMemory(giftItem.id.includes('thuong') ? 'gift_high' : 'gift_low');
-                state.ui.toast(`Ngươi đã tặng ${itemName} cho ${npc.name}. Hảo cảm tăng lên!`, "success");
-                if (window.npcScreen) window.npcScreen.render();
-            }
-        });
+        const confirmed = await state.ui.confirm(`Ngươi có muốn tặng 1x ${itemName} cho ${npc.name}?`, 'TẶNG LỄ VẬT');
+
+        if (confirmed) {
+            state.player.inventory.removeItem(giftItem.id, 1);
+            npc.addMemory(giftItem.id.includes('thuong') ? 'gift_high' : 'gift_low');
+            state.ui.toast(`Ngươi đã tặng ${itemName} cho ${npc.name}. Hảo cảm tăng lên!`, "success");
+            if (window.npcScreen) window.npcScreen.render();
+        }
     }
 
     openNPCTrade(npcId) {
@@ -928,7 +948,7 @@ export class Game {
 
         state.currentNPC = npc;
         state.ui.toggleOverlay(document.getElementById('npc-trade-overlay'), true);
-        
+
         // Update Header
         const elPortrait = document.getElementById('npc-trade-portrait');
         const elName = document.getElementById('npc-trade-name');
@@ -950,7 +970,7 @@ export class Game {
 
         // Render NPC Stock
         if (elStock) {
-            elStock.innerHTML = npc.inventory.length === 0 ? 
+            elStock.innerHTML = npc.inventory.length === 0 ?
                 '<div class="text-center py-10 text-gray-600 italic text-[10px]">Đạo hữu này không có vật phẩm gì để bán...</div>' :
                 npc.inventory.map(item => {
                     const data = getItemById(item.id);
@@ -1202,7 +1222,7 @@ export class Game {
         if (state.systems.creation) {
             const nameInput = document.getElementById('creation-name-input');
             if (nameInput) state.systems.creation.playerName = nameInput.value || "Phàm Nhân";
-            
+
             const newPlayer = state.systems.creation.buildPlayer();
             if (newPlayer) {
                 this.loadGame(newPlayer.save());
@@ -1261,7 +1281,7 @@ export class Game {
             state.ui.toast(msg || "Không thể đột phá!", 'warning');
         }
     }
-    
+
     /**
      * Khởi tạo trận chiến đặc biệt (Thiên Kiếp, Sự kiện cốt truyện)
      */
@@ -1271,7 +1291,7 @@ export class Game {
                 id: 'heavenly_lightning',
                 name: 'Thiên Kiếp Lôi Phạt',
                 portrait: 'player_male', // Placeholder
-                realmId: state.player.realmId + 2, 
+                realmId: state.player.realmId + 2,
                 hp: 5000 + (intensity * 2),
                 maxHp: 5000 + (intensity * 2),
                 atk: 100 + (intensity / 10),
@@ -1283,5 +1303,30 @@ export class Game {
             };
             this.screens.battle.startCombat(enemy);
         }
+    }
+
+    emergencyUIReset() {
+        console.warn('--- EMERGENCY UI RESET TRIGGERED ---');
+        if (state.ui) state.ui.logActiveOverlays();
+        state.ui.showLoading(false);
+
+        // Hide all major overlays
+        const overlays = [
+            'shop-overlay', 'guild-overlay', 'mountain-overlay',
+            'tower-overlay', 'sect-overlay', 'modal-overlay',
+            'battle-overlay', 'spirit-stone-overlay', 'item-detail',
+            'chase-overlay', 'guide-overlay'
+        ];
+
+        overlays.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) state.ui.toggleOverlay(el, false);
+        });
+
+        // Force clear body lock
+        document.body.classList.remove('modal-open');
+
+        state.ui.toast('Đã cưỡng chế khôi phục giao diện!', 'success');
+        this.refreshUI();
     }
 }

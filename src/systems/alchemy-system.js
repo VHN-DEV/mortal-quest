@@ -1,5 +1,4 @@
-import { getRecipeById, getCauldronById, getFlameById, getAlchemyLevelInfo, ALCHEMY_TECHNIQUES } from '../configs/alchemy-data.js';
-import { ALCHEMY_ROOMS } from '../configs/guild-data.js';
+import { getRecipeById, getCauldronById, getFlameById, ALCHEMY_TECHNIQUES, getAlchemyLevelInfo } from '../configs/alchemy-data.js';
 import { getItemById } from '../configs/item-data.js';
 
 export class AlchemySystem {
@@ -9,49 +8,43 @@ export class AlchemySystem {
         this.isCrafting = false;
     }
 
-    /**
-     * Calculate success probability and quality
-     */
     calculateResult(recipeId, cauldronId, flameId) {
         const recipe = getRecipeById(recipeId);
-        if (!recipe) return { success: false, msg: 'Phương thuốc không tồn tại!' };
         const cauldron = getCauldronById(cauldronId);
-        if (!cauldron) return { success: false, msg: 'Ngươi chưa trang bị Đan Lư!' };
         const flame = getFlameById(flameId);
-        if (!flame) return { success: false, msg: 'Ngươi chưa có Linh Hỏa!' };
-        const levelInfo = getAlchemyLevelInfo(this.player.alchemyLevel || 1);
-        const room = ALCHEMY_ROOMS.find(r => r.id === this.player.currentAlchemyRoom);
 
-        // Success Probability
-        let successRate = recipe.baseSuccessRate;
-        successRate += levelInfo.bonusRate;
-        successRate += cauldron.successBonus;
-        successRate += flame.successBonus;
-        if (room) successRate += room.successBonus;
+        // Success rate calculation
+        let successRate = recipe.successRate || 0.7;
         
-        // Stability check (risk of explosion)
-        let stability = cauldron.stability;
-        if (room) stability += room.stabilityBonus;
-        
-        const rollSuccess = Math.random() < successRate;
-        const rollExplosion = Math.random() > stability;
+        // Cauldron and flame influence
+        if (cauldron && cauldron.successBonus) successRate += cauldron.successBonus;
+        if (flame && flame.successBonus) successRate += flame.successBonus;
 
-        if (!rollSuccess) {
-            return { 
-                success: false, 
-                exploded: rollExplosion, 
-                msg: rollExplosion ? 'NỔ LÒ! Nguyên liệu tan tành, lò luyện bị tổn hại!' : 'Luyện chế thất bại, dược tính tiêu tan.'
-            };
+        // Player level bonus
+        const levelDiff = this.player.alchemyLevel - recipe.level;
+        successRate += (levelDiff * 0.05);
+
+        // Technique bonuses
+        Object.keys(this.player.knownAlchemyTechniques || {}).forEach(tid => {
+            const tech = ALCHEMY_TECHNIQUES[tid];
+            if (tech && tech.bonus.success) successRate += tech.bonus.success;
+        });
+
+        successRate = Math.max(0.1, Math.min(0.95, successRate));
+
+        if (Math.random() > successRate) {
+            return { success: false, msg: 'Luyện đan thất bại, dược liệu hóa thành tro bụi.' };
         }
 
-        // Quality determination
-        let qualityScore = Math.random();
-        qualityScore += levelInfo.bonusRate;
-        qualityScore += cauldron.qualityBonus;
-        qualityScore += flame.qualityBonus;
-        if (room && room.qualityBonus) qualityScore += room.qualityBonus;
+        // Quality calculation
+        let qualityScore = 1.0;
+        if (cauldron && cauldron.qualityBonus) qualityScore += cauldron.qualityBonus;
+        if (flame && flame.qualityBonus) qualityScore += flame.qualityBonus;
+        
+        // Add some randomness
+        qualityScore += (Math.random() * 0.4 - 0.2);
 
-        let quality = 'Hạ Phẩm';
+        let quality = 'Phàm Phẩm';
         let danVeins = 0;
         let poisonValue = 10;
         let isDanLinh = false;
@@ -131,71 +124,73 @@ export class AlchemySystem {
         this.isCrafting = true;
         this.ui.showLoading(true, `Đang tinh luyện ${recipe.name}...`);
 
-        // Simulate time
-        await new Promise(resolve => setTimeout(resolve, Math.max(1000, craftTime * 1000)));
+        try {
+            // Simulate time
+            await new Promise(resolve => setTimeout(resolve, Math.max(1000, craftTime * 1000)));
 
-        // Consume materials
-        recipe.materials.forEach(mat => {
-            this.player.inventory.removeItem(mat.id, mat.quantity);
-        });
+            // Consume materials
+            recipe.materials.forEach(mat => {
+                this.player.inventory.removeItem(mat.id, mat.quantity);
+            });
 
-        const result = this.calculateResult(recipeId, this.player.currentCauldron, this.player.currentFlame);
-        
-        this.ui.showLoading(false);
-        this.isCrafting = false;
-
-        if (result.success) {
-            // ... (Dan Tribulation logic remains)
-            if (result.hasTribulation) {
-                const survived = await this.ui.confirm(
-                    `Linh đan xuất thế dẫn động Đan Kiếp! Ngươi có muốn dùng linh lực che chắn lò luyện? (Rủi ro: Nổ lò)`, 
-                    'ĐAN KIẾP GIÁNG LÂM'
-                );
-                
-                if (survived) {
-                    if (Math.random() < 0.7) {
-                        this.ui.toast("Vượt qua Đan Kiếp! Linh đan thăng hoa!", "success");
-                        result.danVeins += 1;
+            const result = this.calculateResult(recipeId, this.player.currentCauldron, this.player.currentFlame);
+            
+            if (result.success) {
+                // Dan Tribulation logic
+                if (result.hasTribulation) {
+                    const survived = await this.ui.confirm(
+                        `Linh đan xuất thế dẫn động Đan Kiếp! Ngươi có muốn dùng linh lực che chắn lò luyện? (Rủi ro: Nổ lò)`, 
+                        'ĐAN KIẾP GIÁNG LÂM'
+                    );
+                    
+                    if (survived) {
+                        if (Math.random() < 0.7) {
+                            this.ui.toast("Vượt qua Đan Kiếp! Linh đan thăng hoa!", "success");
+                            result.danVeins += 1;
+                        } else {
+                            result.success = false;
+                            result.msg = "Đan Kiếp quá mạnh, linh đan và lò luyện đều hóa thành tro bụi!";
+                        }
                     } else {
                         result.success = false;
-                        result.msg = "Đan Kiếp quá mạnh, linh đan và lò luyện đều hóa thành tro bụi!";
+                        result.msg = "Đan Kiếp đánh xuống, luyện đan thất bại!";
                     }
-                } else {
-                    result.success = false;
-                    result.msg = "Đan Kiếp đánh xuống, luyện đan thất bại!";
                 }
             }
-        }
 
-        if (result.success) {
-            // Output quantity
-            let quantity = 1;
-            if (cauldron && cauldron.outputBonus) quantity += cauldron.outputBonus;
+            if (result.success) {
+                // Output quantity
+                let quantity = 1;
+                if (cauldron && cauldron.outputBonus) quantity += cauldron.outputBonus;
 
-            // Create item with metadata
-            const itemMetadata = {
-                id: result.resultId,
-                quality: result.quality,
-                danVeins: result.danVeins,
-                poison: result.poisonValue
-            };
-            
-            this.player.inventory.addItem(result.resultId, quantity, itemMetadata);
-            if (this.player.addAlchemyExp(recipe.level * 10)) {
-                const levelInfo = getAlchemyLevelInfo(this.player.alchemyLevel);
-                this.ui.alert(`Đẳng cấp Luyện Dược Sư tăng lên ${levelInfo.name}!`, "Đan Đạo Tấn Thăng");
+                // Create item with metadata
+                const itemMetadata = {
+                    id: result.resultId,
+                    quality: result.quality,
+                    danVeins: result.danVeins,
+                    poison: result.poisonValue
+                };
+                
+                this.player.inventory.addItem(result.resultId, quantity, itemMetadata);
+                if (this.player.addAlchemyExp(recipe.level * 10)) {
+                    const levelInfo = getAlchemyLevelInfo(this.player.alchemyLevel);
+                    this.ui.alert(`Đẳng cấp Luyện Dược Sư tăng lên ${levelInfo.name}!`, "Đan Đạo Tấn Thăng");
+                }
+                
+                if (quantity > 1) {
+                    result.msg += ` (Số lượng: ${quantity} viên)`;
+                }
             }
-            
-            if (quantity > 1) {
-                result.msg += ` (Số lượng: ${quantity} viên)`;
-            }
+
+            this.ui.showLoading(false);
+            this.isCrafting = false;
             return result;
-        } else {
-            if (result.exploded) {
-                this.player.hp -= 20; // Take damage
-                this.ui.toast("Ngươi bị phản phệ từ vụ nổ lò!", "error");
-            }
-            return result;
+
+        } catch (error) {
+            console.error('Alchemy Craft Error:', error);
+            this.ui.showLoading(false);
+            this.isCrafting = false;
+            return { success: false, msg: 'Quá trình luyện đan bị gián đoạn bởi ngoại lực!' };
         }
     }
 }

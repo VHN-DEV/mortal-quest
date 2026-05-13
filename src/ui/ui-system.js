@@ -229,7 +229,7 @@ export class UISystem {
             }
 
             // Add to stack if it's a major overlay
-            if (el.id && el.id.includes('overlay')) {
+            if (el.id && (el.id.includes('overlay') || el.id === 'item-detail')) {
                 document.body.classList.add('modal-open');
             }
         } else {
@@ -237,11 +237,36 @@ export class UISystem {
             el.classList.remove('flex', 'animate-fade-in', 'animate-zoom-in');
 
             // Check if any other overlays are still visible
-            const visibleOverlays = document.querySelectorAll('.overlay-full:not(.hidden), .absolute.inset-0:not(.hidden)');
+            // Filter more carefully to avoid background vignettes
+            const visibleOverlays = Array.from(document.querySelectorAll('.overlay-full:not(.hidden), .absolute.inset-0:not(.hidden)'))
+                .filter(node => {
+                    const id = node.id || '';
+                    return id.includes('overlay') || id === 'item-detail' || node.classList.contains('overlay-full');
+                });
+
             if (visibleOverlays.length === 0) {
                 document.body.classList.remove('modal-open');
             }
         }
+    }
+
+    /**
+     * Diagnostic tool to log all currently visible overlays and potential blockers.
+     */
+    logActiveOverlays() {
+        const overlays = Array.from(document.querySelectorAll('.overlay-full:not(.hidden), .absolute.inset-0:not(.hidden), [id*="overlay"]:not(.hidden)'));
+        console.group('--- UI DIAGNOSTIC: ACTIVE OVERLAYS ---');
+        if (overlays.length === 0) {
+            console.log('No visible overlays detected.');
+        } else {
+            overlays.forEach(el => {
+                const zIndex = window.getComputedStyle(el).zIndex;
+                const pointerEvents = window.getComputedStyle(el).pointerEvents;
+                console.log(`ID: %c${el.id || 'N/A'}%c, Class: ${el.className}, Z-Index: ${zIndex}, Pointer-Events: ${pointerEvents}`, 'color: #d4af37; font-weight: bold', 'color: inherit');
+            });
+        }
+        console.log('Body classes:', document.body.className);
+        console.groupEnd();
     }
 
     /**
