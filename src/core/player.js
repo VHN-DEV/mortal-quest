@@ -5,6 +5,7 @@ import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_Q
 import { getPhysiqueById, getPhysiqueAwakenBonus, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../configs/physique-data.js';
 import { ARTIFACT_SETS } from '../configs/artifact-data.js';
 import { CREATION_TRAITS } from '../configs/creation-data.js';
+import { TITLES } from '../configs/fate-data.js';
 
 export class Player {
     constructor() {
@@ -138,6 +139,17 @@ export class Player {
             { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' }
         ];
         this.mountainSurvival = { oxygen: 100, toxicity: 0 };
+        
+        // --- Fate System (Nhân Quả - Danh Tiếng - Thiện Ác) ---
+        this.fate = {
+            reputation: 0,
+            morality: 0, // Thiện (+) / Ác (-)
+            merit: 0,    // Công đức
+            sin: 0,      // Nghiệp lực
+            karmaLinks: [], // { id, npcId, type, strength, description }
+            titles: [],
+            activeTitleId: null
+        };
 
         // Talisman System
         this.talismanLevel = 1;
@@ -420,6 +432,45 @@ export class Player {
         this.calculateStats();
     }
 
+    // --- Fate Methods ---
+    addReputation(amount) {
+        this.fate.reputation += amount;
+    }
+
+    addMorality(amount) {
+        this.fate.morality = Math.max(-2000, Math.min(2000, this.fate.morality + amount));
+    }
+
+    addKarma(sin, merit) {
+        this.fate.sin += sin;
+        this.fate.merit += merit;
+    }
+
+    addKarmaLink(link) {
+        // link: { id, type, npcId, description }
+        this.fate.karmaLinks.push({
+            ...link,
+            timestamp: Date.now()
+        });
+    }
+
+    unlockTitle(titleId) {
+        if (!this.fate.titles.includes(titleId)) {
+            this.fate.titles.push(titleId);
+            return true;
+        }
+        return false;
+    }
+
+    equipTitle(titleId) {
+        if (this.fate.titles.includes(titleId) || titleId === null) {
+            this.fate.activeTitleId = titleId;
+            this.calculateStats();
+            return true;
+        }
+        return false;
+    }
+
     cultivate(efficiency = 1.0) {
         const focus = this.cultivationFocus || 'tuvi';
         
@@ -518,6 +569,10 @@ export class Player {
             // Check for Qi Deviation risk
             let stability = this.getStability();
             if (isForced) stability *= 0.5; // Double risk for forced breakthrough
+            
+            // Apply Karma Penalty: Accumulated sins weigh down the soul
+            const fatePenalty = window.game?.systems?.fate?.getBreakthroughPenalty() || 1.0;
+            stability *= fatePenalty;
             
             const roll = Math.random() * 100;
             if (roll > stability) {
@@ -752,6 +807,25 @@ export class Player {
         this.atk = this.baseStats.atk + this.bonusStats.atk;
         this.def = this.baseStats.def + this.bonusStats.def;
         this.spd = this.baseStats.spd + this.bonusStats.spd;
+
+        // 4. Apply TITLE bonuses
+        if (this.fate.activeTitleId) {
+            const title = TITLES.find(t => t.id === this.fate.activeTitleId);
+            if (title && title.bonus) {
+                Object.entries(title.bonus).forEach(([key, val]) => {
+                    if (this.baseStats.hasOwnProperty(key)) this.baseStats[key] *= val;
+                    else if (this.bonusStats.hasOwnProperty(key)) {
+                        if (['tuViSpeed', 'bodyExpSpeed', 'soulExpSpeed'].includes(key)) {
+                            this.bonusStats[key] *= val;
+                        } else {
+                            this.bonusStats[key] += val;
+                        }
+                    } else if (this.advancedStats.hasOwnProperty(key)) {
+                        this.advancedStats[key] += val;
+                    }
+                });
+            }
+        }
 
         // Apply Sect bonuses (Multiplier on total)
         if (this.sectId) {

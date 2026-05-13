@@ -157,15 +157,43 @@ export class NPC {
     }
 
     generateDialogue(player) {
-        // AI Logic: Check memory first
+        const fate = player.fate;
+        const fateSys = window.game?.systems?.fate;
+        
+        if (!fateSys) {
+            return "Chào đạo hữu, con đường tu tiên vốn dĩ cô độc, gặp được nhau cũng là một cái duyên.";
+        }
+
+        const rep = fateSys.getReputationTier();
+        const morality = fateSys.getMoralityScale();
+
+        // 1. Memory priority
         if (this.memory.some(m => m.type === 'saved_life')) {
-            return "Đa tạ đạo hữu đã cứu mạng, ân tình này tại hạ khắc cốt ghi tâm.";
+            return "Đa tạ đạo hữu đã cứu mạng, ân tình này tại hạ khắc cốt ghi tâm. Sau này nếu có việc gì cần, cứ việc phân phó.";
         }
         
-        if (this.relationship >= 50) return "Gặp lại đạo hữu thật là có duyên, không biết hôm nay có nhã hứng đàm đạo không?";
-        if (this.relationship <= -50) return "Cút ngay! Ta không có gì để nói với hạng người như ngươi.";
+        // 2. High Sin reaction (Moral conflict)
+        if (fate.sin > 100) {
+             if (morality.id.includes('ac') || morality.id === 'ma_dau') {
+                 if (this.daoHeart > 70) return `Hừ, sát khí trên người ngươi nồng nặc như vậy, chắc chắn đã làm không ít chuyện thương thiên hại lý! Đạo bất đồng bất tương vi mưu, tránh xa ta ra!`;
+                 return `Ha ha, sát khí thật nồng đậm! Đúng là đồng đạo trung nhân, nhìn ngươi ta lại thấy hứng khởi vô cùng. Có muốn cùng ta làm một vố lớn không?`;
+             }
+        }
+
+        // 3. High Reputation reaction
+        if (rep.min >= 10000) {
+            return `Hóa ra là danh sĩ ${player.name} danh chấn thiên hạ! Quả nhiên khí độ bất phàm, trăm nghe không bằng một thấy. Tiền bối có gì chỉ giáo cho vãn bối không?`;
+        }
         
-        return "Chào đạo hữu, con đường tu tiên vốn dĩ cô độc, gặp được nhau cũng là một cái duyên.";
+        // 4. Relationship priority
+        if (this.relationship >= 50) return "Gặp lại đạo hữu thật là có duyên, cảm giác như gặp lại cố nhân vậy. Không biết hôm nay đạo hữu có nhã hứng đàm đạo không?";
+        if (this.relationship <= -50) return "Cút ngay! Ta không có gì để nói với hạng người như ngươi. Đừng để ta phải ra tay!";
+        
+        // 5. Default based on player morality
+        if (morality.id.includes('thien')) return "Khí độ của đạo hữu thật chính trực, hào quang chính đạo lấp lánh, khiến tại hạ cảm thấy vô cùng tin tưởng. Tu tiên giới đầy rẫy hiểm ác, hiếm có người như ngươi.";
+        if (morality.id.includes('ac') || morality.id === 'ma_dau') return "Nhìn ngươi không giống hạng người tốt lành gì, sát khí âm u, tốt nhất đừng có ý đồ xấu với ta. Ta không phải là kẻ dễ bị bắt nạt đâu.";
+        
+        return "Chào đạo hữu, con đường tu tiên vốn dĩ cô độc, gặp được nhau cũng là một cái duyên. Không biết đạo hữu tìm ta có việc gì?";
     }
 
     getRelationshipStatus() {

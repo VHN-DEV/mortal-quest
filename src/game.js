@@ -16,6 +16,7 @@ import { SystemsScreen } from './ui/screens/SystemsScreen.js';
 import { BattleScreen } from './ui/screens/BattleScreen.js';
 import { SpiritStoneUI } from './ui/spirit-stone-ui.js';
 import { TreasureScreen } from './ui/screens/TreasureScreen.js';
+import { FateScreen } from './ui/screens/FateScreen.js';
 
 // Import Systems
 import { ShopSystem } from './systems/shop-system.js';
@@ -40,6 +41,7 @@ import { PuppetSystem } from './systems/puppet-system.js';
 import { TreasureSystem } from './systems/treasure-system.js';
 import { NPCSystem } from './systems/npc-system.js';
 import { SocialSystem } from './systems/social-system.js';
+import { FateSystem } from './systems/fate-system.js';
 
 
 export class Game {
@@ -63,6 +65,7 @@ export class Game {
         this.screens.battle = new BattleScreen();
         this.screens.spiritStone = new SpiritStoneUI();
         this.screens.treasure = new TreasureScreen();
+        this.screens.fate = new FateScreen(state.player, state.ui);
 
         // 3. Khởi tạo Creation System (cho màn hình mới)
         state.systems.creation = new CreationSystem();
@@ -147,7 +150,8 @@ export class Game {
             'nav-character': 'screen-character',
             'nav-technique': 'screen-technique',
             'nav-crafting-hub': 'screen-crafting-hub',
-            'nav-npc': 'screen-npc'
+            'nav-npc': 'screen-npc',
+            'nav-fate': 'screen-fate'
         };
 
         Object.entries(navMappings).forEach(([btnId, screenId]) => {
@@ -159,6 +163,8 @@ export class Game {
                         this.screens.systems.renderTechniques(state.activeTechTab || 'cultivation');
                     } else if (screenId === 'screen-crafting-hub') {
                         this.screens.systems.renderCraftingHub();
+                    } else if (screenId === 'screen-fate') {
+                        this.screens.fate.render();
                     }
                 };
             }
@@ -307,8 +313,11 @@ export class Game {
             puppet: new PuppetSystem(player, state.ui),
             treasure: new TreasureSystem(player, state.ui),
             npc: new NPCSystem(),
-            social: new SocialSystem()
+            social: new SocialSystem(),
+            fate: new FateSystem(player, state.ui)
         });
+
+        this.screens.fate.player = player;
 
         if (savedData) {
             if (savedData.npcData) state.systems.npc.loadData(savedData.npcData);
@@ -386,6 +395,7 @@ export class Game {
         if (state.systems.mountain && state.systems.mountain.isActive) state.systems.mountain.update(delta);
         if (state.systems.npc && state.systems.time) state.systems.npc.update(delta, state.systems.time.totalMinutes);
         if (state.systems.social) state.systems.social.update(delta);
+        if (state.systems.fate) state.systems.fate.checkTribulation();
         
         if (state.player.hp <= 0) this.handleDeath();
     }
@@ -1249,6 +1259,29 @@ export class Game {
             state.ui.updateHUD();
         } else {
             state.ui.toast(msg || "Không thể đột phá!", 'warning');
+        }
+    }
+    
+    /**
+     * Khởi tạo trận chiến đặc biệt (Thiên Kiếp, Sự kiện cốt truyện)
+     */
+    startSpecialCombat(type, intensity) {
+        if (type === 'heavenly_lightning') {
+            const enemy = {
+                id: 'heavenly_lightning',
+                name: 'Thiên Kiếp Lôi Phạt',
+                portrait: 'player_male', // Placeholder
+                realmId: state.player.realmId + 2, 
+                hp: 5000 + (intensity * 2),
+                maxHp: 5000 + (intensity * 2),
+                atk: 100 + (intensity / 10),
+                def: 50,
+                spd: 150,
+                skills: [
+                    { name: 'Cửu Thiên Thần Lôi', damage: 2.0, type: 'thunder' }
+                ]
+            };
+            this.screens.battle.startCombat(enemy);
         }
     }
 }
