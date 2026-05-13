@@ -265,7 +265,10 @@ window.renderCreationScreen = () => {
 
     if (elStatsPreview) {
         // Base stats for a new player (starting realm)
-        const base = { atk: 10, def: 5, maxHp: 100, spd: 10, mana: 50, luck: 50 };
+        const base = { 
+            atk: 10, def: 5, maxHp: 100, spd: 10, mana: 50, luck: 50, 
+            karma: 0, maxAge: 100, critRate: 0.05, alchemySuccess: 0, qiAbsorb: 1.0 
+        };
         
         const rootBonus = CREATION_ROOTS[sys.selectedRoot]?.bonus || {};
         const physBonus = PHYSIQUES[sys.selectedPhysique]?.bonus || {};
@@ -283,19 +286,22 @@ window.renderCreationScreen = () => {
 
         const sumFlat = (key) => (rootBonus[key] || 0) + (physBonus[key] || 0) + (traitBonus[key] || 0);
         
-        // Multiplier logic: Base 1.0, then add the "extra" from each source
-        const tvpsBonus = 1 + 
-            ((rootBonus.tvps || 1) - 1) + 
-            ((physBonus.tvps || 1) - 1) + 
-            ((traitBonus.tvps || 1) - 1);
+        // Multiplier logic for TVPS & Qi Absorb
+        const tvpsBonus = 1 + ((rootBonus.tvps || 1) - 1) + ((physBonus.tvps || 1) - 1) + ((traitBonus.tvps || 1) - 1);
+        const qiBonus = 1 + ((rootBonus.qiAbsorb || 1) - 1) + ((physBonus.qiAbsorb || 1) - 1) + ((traitBonus.qiAbsorb || 1) - 1);
 
         const previewStats = [
             { label: 'Công', value: base.atk + sumFlat('atk'), color: 'text-red-400' },
             { label: 'Thủ', value: base.def + sumFlat('def'), color: 'text-blue-400' },
             { label: 'Sinh lực', value: base.maxHp + sumFlat('maxHp'), color: 'text-emerald-400' },
-            { label: 'Tốc', value: base.spd + sumFlat('spd'), color: 'text-yellow-400' },
             { label: 'Mana', value: base.mana + sumFlat('mana') + sumFlat('maxMana'), color: 'text-purple-400' },
+            { label: 'Tốc', value: base.spd + sumFlat('spd'), color: 'text-yellow-400' },
+            { label: 'Thọ nguyên', value: base.maxAge + sumFlat('maxAge'), color: 'text-orange-400' },
             { label: 'May mắn', value: base.luck + sumFlat('luck'), color: 'text-cyan-400' },
+            { label: 'Nghiệp lực', value: base.karma + sumFlat('karma'), color: 'text-rose-500' },
+            { label: 'Bạo kích', value: `${Math.round((base.critRate + sumFlat('critRate')) * 100)}%`, color: 'text-red-500' },
+            { label: 'Hấp thu', value: `x${qiBonus.toFixed(1)}`, color: 'text-qi-jade' },
+            { label: 'Luyện đan', value: `+${Math.round(sumFlat('alchemySuccess') * 100)}%`, color: 'text-emerald-500' },
             { label: 'Tu vi/s', value: `+${Math.round((tvpsBonus - 1) * 100)}%`, color: 'text-cultivation-gold' }
         ];
 
@@ -303,13 +309,20 @@ window.renderCreationScreen = () => {
             const numVal = typeof stat.value === 'number' ? stat.value : null;
             const text = numVal !== null ? `${numVal}` : stat.value;
             // Highlight if stat is boosted above base
-            const baseVal = base[Object.keys(base).find(k => CREATION_BONUS_LABELS[k] === stat.label)] || 0;
-            const isBoosted = numVal !== null ? numVal > baseVal : stat.value !== '+0%';
+            let isBoosted = false;
+            const key = Object.keys(base).find(k => CREATION_BONUS_LABELS[k] === stat.label);
+            if (key) {
+                if (numVal !== null) isBoosted = numVal > base[key];
+                else if (stat.label === 'Tu vi/s') isBoosted = stat.value !== '+0%';
+                else if (stat.label === 'Hấp thu') isBoosted = qiBonus > 1.0;
+                else if (stat.label === 'Luyện đan') isBoosted = sumFlat('alchemySuccess') > 0;
+                else if (stat.label === 'Bạo kích') isBoosted = (base.critRate + sumFlat('critRate')) > base.critRate;
+            }
             
             return `
-                <div class="rounded-xl border border-white/10 bg-black/35 px-2 py-2 text-center">
-                    <div class="text-[8px] text-gray-400 uppercase tracking-wider">${stat.label}</div>
-                    <div class="text-xs font-bold ${isBoosted ? stat.color : 'text-gray-500'}">${text}</div>
+                <div class="rounded-xl border border-white/10 bg-black/35 px-2 py-2 text-center transition-all hover:border-white/20">
+                    <div class="text-[7px] text-gray-500 uppercase tracking-tighter mb-0.5">${stat.label}</div>
+                    <div class="text-[10px] md:text-xs font-bold ${isBoosted ? stat.color : 'text-gray-400'}">${text}</div>
                 </div>
             `;
         }).join('');

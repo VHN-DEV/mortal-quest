@@ -5,23 +5,23 @@ export const CREATION_CONFIG = {
 };
 
 export const CREATION_ROOTS = {
-    'thien_linh_can': { id: 'thien_linh_can', name: 'Thiên Linh Căn', cost: 80, type: 'special', desc: 'Đơn linh căn thuần khiết nhất. Tốc độ tu luyện x4.', bonus: { tvps: 4.0 } },
-    'di_linh_can': { id: 'di_linh_can', name: 'Dị Linh Căn', cost: 60, type: 'special', desc: 'Lôi/Băng/Phong... Tăng tốc tu luyện x2.5 và sát thương thuộc tính.', bonus: { tvps: 2.5, atk: 20 } },
+    'thien_linh_can': { id: 'thien_linh_can', name: 'Thiên Linh Căn', cost: 100, type: 'special', desc: 'Đơn linh căn thuần khiết nhất. Tốc độ tu luyện x4, tăng mạnh khả năng hấp thu.', bonus: { tvps: 4.0, qiAbsorb: 1.5, luck: 10 } },
+    'di_linh_can': { id: 'di_linh_can', name: 'Dị Linh Căn', cost: 70, type: 'special', desc: 'Lôi/Băng/Phong... Tăng mạnh sát thương và tốc độ tu luyện x2.5.', bonus: { tvps: 2.5, atk: 25, qiAbsorb: 1.2 } },
     'song_linh_can': { id: 'song_linh_can', name: 'Song Linh Căn', cost: 30, type: 'normal', desc: 'Hai loại linh căn. Tốc độ tu luyện x1.8.', bonus: { tvps: 1.8 } },
     'tam_linh_can': { id: 'tam_linh_can', name: 'Tam Linh Căn', cost: 10, type: 'normal', desc: 'Ba loại linh căn. Tốc độ tu luyện x1.2.', bonus: { tvps: 1.2 } },
-    'ngu_hanh_linh_can': { id: 'ngu_hanh_linh_can', name: 'Ngũ Hành Linh Căn', cost: 0, type: 'normal', desc: 'Đầy đủ ngũ hành. Tu luyện cân bằng nhưng chậm.', bonus: { tvps: 1.0 } },
-    'tap_linh_can': { id: 'tap_linh_can', name: 'Tạp Linh Căn', cost: -30, type: 'debuff', desc: 'Linh căn hỗn tạp. Tu luyện cực chậm nhưng ý chí bền bỉ.', bonus: { tvps: 0.5, maxHp: 50 } }
+    'ngu_hanh_linh_can': { id: 'ngu_hanh_linh_can', name: 'Ngũ Hành Linh Căn', cost: 0, type: 'normal', desc: 'Đầy đủ ngũ hành. Tu luyện cân bằng nhưng chậm.', bonus: { tvps: 1.0, qiAbsorb: 1.1 } },
+    'tap_linh_can': { id: 'tap_linh_can', name: 'Tạp Linh Căn', cost: -40, type: 'debuff', desc: 'Linh căn hỗn tạp. Tu luyện cực chậm nhưng ý chí bền bỉ, thọ nguyên dài.', bonus: { tvps: 0.5, maxHp: 80, maxAge: 50 } }
 };
 
 export const CREATION_PHYSIQUES = {
-    'hoang_co_thanh_the': { id: 'hoang_co_thanh_the', name: 'Hoang Cổ Thánh Thể', cost: 120, desc: 'Thân thể mạnh nhất thế gian. HP và Phòng thủ cực cao.' },
-    'tien_thien_dao_the': { id: 'tien_thien_dao_the', name: 'Tiên Thiên Đạo Thể', cost: 100, desc: 'Gần gũi đại đạo. Tăng mạnh tốc độ tu luyện và thần thức.' },
-    'thai_duong_thanh_the': { id: 'thai_duong_thanh_the', name: 'Thái Dương Thánh Thể', cost: 80, desc: 'Mang trong mình sức mạnh của mặt trời. Phù hợp hỏa hệ.' },
-    'thien_ma_the': { id: 'thien_ma_the', name: 'Thiên Ma Thể', cost: 70, desc: 'Ma khí bẩm sinh, chiến lực tăng mạnh.' },
-    'thai_hu_hon_the': { id: 'thai_hu_hon_the', name: 'Thái Hư Hồn Thể', cost: 60, desc: 'Linh hồn cường đại, thần thức vô biên.' },
-    'loi_linh_the': { id: 'loi_linh_the', name: 'Lôi Linh Thể', cost: 40, desc: 'Sát thương lôi cực mạnh.' },
-    'kim_cuong_bao_the': { id: 'kim_cuong_bao_the', name: 'Kim Cương Bảo Thể', cost: 30, desc: 'Phòng ngự cực mạnh.' },
-    'binh_thuong': { id: 'binh_thuong', name: 'Phàm Thể', cost: 0, desc: 'Cơ thể bình thường của con người.' }
+    'hoang_co_thanh_the': { id: 'hoang_co_thanh_the', name: 'Hoang Cổ Thánh Thể', cost: 150, desc: 'Thân thể mạnh nhất thế gian. HP, Phòng thủ cực cao và thọ nguyên vô biên.', bonus: { maxHp: 500, def: 50, maxAge: 500, qiAbsorb: 0.8 } },
+    'tien_thien_dao_the': { id: 'tien_thien_dao_the', name: 'Tiên Thiên Đạo Thể', cost: 120, desc: 'Gần gũi đại đạo. Tăng mạnh tốc độ tu luyện, hấp thu linh khí và thần thức.', bonus: { tvps: 2.0, qiAbsorb: 2.0, luck: 20 } },
+    'thai_duong_thanh_the': { id: 'thai_duong_thanh_the', name: 'Thái Dương Thánh Thể', cost: 90, desc: 'Mang trong mình sức mạnh của mặt trời. Tăng mạnh sát thương Hỏa.', bonus: { fireDmg: 2.0, atk: 50 } },
+    'thien_ma_the': { id: 'thien_ma_the', name: 'Thiên Ma Thể', cost: 80, desc: 'Ma khí bẩm sinh, chiến lực tăng mạnh nhưng nghiệp lực sâu nặng.', bonus: { atk: 100, karma: -200, murderQi: 50 } },
+    'thai_hu_hon_the': { id: 'thai_hu_hon_the', name: 'Thái Hư Hồn Thể', cost: 70, desc: 'Linh hồn cường đại, thần thức vô biên.', bonus: { soulExpSpeed: 2.0, critRate: 0.1 } },
+    'loi_linh_the': { id: 'loi_linh_the', name: 'Lôi Linh Thể', cost: 50, desc: 'Sát thương lôi cực mạnh.', bonus: { thunderDmg: 2.0, spd: 20 } },
+    'kim_cuong_bao_the': { id: 'kim_cuong_bao_the', name: 'Kim Cương Bảo Thể', cost: 40, desc: 'Phòng ngự cực mạnh.', bonus: { def: 100, maxHp: 200 } },
+    'binh_thuong': { id: 'binh_thuong', name: 'Phàm Thể', cost: 0, desc: 'Cơ thể bình thường của con người.', bonus: {} }
 };
 
 export const CREATION_ORIGINS = {
@@ -36,16 +36,16 @@ export const CREATION_ORIGINS = {
 
 export const CREATION_TRAITS = {
     // Advantages
-    'dai_khi_van': { id: 'dai_khi_van', name: 'Đại Khí Vận', cost: 50, type: 'advantage', desc: 'Vận khí cực tốt, dễ gặp kỳ ngộ.', bonus: { luck: 50 } },
-    'kiem_dao_ky_tai': { id: 'kiem_dao_ky_tai', name: 'Kiếm Đạo Kỳ Tài', cost: 30, type: 'advantage', desc: 'Lĩnh ngộ kiếm pháp cực nhanh.', bonus: { atk: 15 } },
-    'di_hoa_tan_diem': { id: 'di_hoa_tan_diem', name: 'Dị Hỏa Tàn Diễm', cost: 40, type: 'advantage', desc: 'Mang theo ngọn lửa thần bí, hỗ trợ luyện đan.', bonus: { alchemySuccess: 0.2 } },
-    'thong_minh': { id: 'thong_minh', name: 'Thất Khiếu Linh Lung', cost: 20, type: 'advantage', desc: 'Thông minh bẩm sinh, tăng tốc độ học tập.', bonus: { tvps: 1.2 } },
+    'dai_khi_van': { id: 'dai_khi_van', name: 'Đại Khí Vận', cost: 60, type: 'advantage', desc: 'Vận khí cực tốt, dễ gặp kỳ ngộ.', bonus: { luck: 80, karma: 50 } },
+    'kiem_dao_ky_tai': { id: 'kiem_dao_ky_tai', name: 'Kiếm Đạo Kỳ Tài', cost: 40, type: 'advantage', desc: 'Lĩnh ngộ kiếm pháp cực nhanh, tăng tỉ lệ bạo kích.', bonus: { atk: 20, critRate: 0.1, critDmg: 0.5 } },
+    'di_hoa_tan_diem': { id: 'di_hoa_tan_diem', name: 'Dị Hỏa Tàn Diễm', cost: 40, type: 'advantage', desc: 'Mang theo ngọn lửa thần bí, hỗ trợ luyện đan.', bonus: { alchemySuccess: 0.25, fireDmg: 1.2 } },
+    'thong_minh': { id: 'thong_minh', name: 'Thất Khiếu Linh Lung', cost: 30, type: 'advantage', desc: 'Thông minh bẩm sinh, tăng tốc độ học tập và thọ nguyên.', bonus: { tvps: 1.3, maxAge: 20 } },
     
     // Disadvantages
-    'kinh_mach_tan_khuyet': { id: 'kinh_mach_tan_khuyet', name: 'Kinh Mạch Tàn Khuyết', cost: -60, type: 'disadvantage', desc: 'Kinh mạch bị tổn thương, tu luyện chậm.', bonus: { tvps: 0.6 } },
-    'thien_sat_co_tinh': { id: 'thien_sat_co_tinh', name: 'Thiên Sát Cô Tinh', cost: -50, type: 'disadvantage', desc: 'Khắc người thân, dễ gây thù hận.', bonus: { luck: -50, karma: -100 } },
-    'han_doc_nhap_the': { id: 'han_doc_nhap_the', name: 'Hàn Độc Nhập Thể', cost: -70, type: 'disadvantage', desc: 'Trúng độc từ nhỏ, HP giảm nhẹ mỗi giây.', bonus: { maxHp: -30, spd: -5 } },
-    'bi_truy_sat': { id: 'bi_truy_sat', name: 'Bị Truy Sát', cost: -40, type: 'disadvantage', desc: 'Có cừu gia mạnh mẽ từ khi bắt đầu.', bonus: { atk: 5 } }
+    'kinh_mach_tan_khuyet': { id: 'kinh_mach_tan_khuyet', name: 'Kinh Mạch Tàn Khuyết', cost: -80, type: 'disadvantage', desc: 'Kinh mạch bị tổn thương, tu luyện chậm.', bonus: { tvps: 0.5, qiAbsorb: 0.5 } },
+    'thien_sat_co_tinh': { id: 'thien_sat_co_tinh', name: 'Thiên Sát Cô Tinh', cost: -70, type: 'disadvantage', desc: 'Khắc người thân, dễ gây thù hận, nghiệp lực sâu dày.', bonus: { luck: -70, karma: -200, murderQi: 100 } },
+    'han_doc_nhap_the': { id: 'han_doc_nhap_the', name: 'Hàn Độc Nhập Thể', cost: -90, type: 'disadvantage', desc: 'Trúng độc từ nhỏ, HP và thọ nguyên bị ảnh hưởng.', bonus: { maxHp: -50, maxAge: -30, spd: -10 } },
+    'bi_truy_sat': { id: 'bi_truy_sat', name: 'Bị Truy Sát', cost: -50, type: 'disadvantage', desc: 'Có cừu gia mạnh mẽ từ khi bắt đầu.', bonus: { atk: 10, karma: -50 } }
 };
 
 export const CREATION_SCENARIOS = {

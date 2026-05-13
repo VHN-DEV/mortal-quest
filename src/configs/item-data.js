@@ -647,7 +647,25 @@ export const ITEMS = {
         quality: 'Huyền',
         price: 1000,
         effect: { type: 'unlock_profession', profession: 'alchemy', secretId: 'bp_luyen_dan' },
-        description: 'Ghi chép các kiến thức cơ bản về dược lý và kỹ thuật ngự hỏa để luyện chế đan dược.'
+        description: 'Gia tăng vĩnh viễn tỉ lệ luyện đan thành công.'
+    },
+    'truong_sinh_quyet_book': {
+        id: 'truong_sinh_quyet_book',
+        name: 'Trường Sinh Quyết',
+        type: 'consumable',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 1000,
+        description: 'Bí tịch dưỡng sinh cổ xưa, tăng mạnh Thọ Nguyên.'
+    },
+    'huyet_don_thuat_book': {
+        id: 'huyet_don_thuat_book',
+        name: 'Huyết Độn Thuật',
+        type: 'consumable',
+        icon: '🩸',
+        quality: 'Huyền',
+        price: 1500,
+        description: 'Ma đạo bí pháp, dùng tinh huyết để độn tẩu cực nhanh.'
     },
     'bp_luyen_khi': {
         id: 'bp_luyen_khi',

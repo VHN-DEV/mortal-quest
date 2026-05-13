@@ -95,6 +95,8 @@ export class Player {
         this.sectContribution = 0;
 
         // Destiny properties
+        this.age = 18;
+        this.maxAge = 100;
         this.spiritualRoot = null;
         this.physique = {
             id: 'binh_thuong',
@@ -560,6 +562,20 @@ export class Player {
         this.bodyExpPerSecond = 0;
         this.soulExpPerSecond = 0;
 
+        // 0. Initialize BONUS & ADVANCED STATS
+        this.bonusStats = {
+            atk: 0, def: 0, spd: 0, maxHp: 0, maxMana: 0,
+            tuViSpeed: 1, bodyExpSpeed: 1, soulExpSpeed: 1,
+            maxAge: 0 
+        };
+        
+        this.advancedStats = {
+            pierce: 0, soulPierce: 0, critRate: 0.05, critDmg: 1.5,
+            fireDmg: 1.0, waterDmg: 1.0, thunderDmg: 1.0,
+            qiAbsorb: 1.0, lifeSteal: 0, alchemySuccess: 0,
+            soulRepress: 0, perception: 5 + (soulLevel * 2), daoVun: 0, murderQi: 0
+        };
+
         // 1. Calculate BASE STATS (from Realms)
         const realmMult = Math.pow(1.8, realmLevel - 1);
         
@@ -588,19 +604,8 @@ export class Player {
             this.advancedStats.soulRepress += 0.05 * this.specializedPaths.soul_path.realmId;
         }
 
-        // 2. Initialize BONUS & ADVANCED STATS
-        this.bonusStats = {
-            atk: 0, def: 0, spd: 0, maxHp: 0, maxMana: 0,
-            tuViSpeed: 1, bodyExpSpeed: 1, soulExpSpeed: 1
-        };
-        
-        this.advancedStats = {
-            pierce: 0, soulPierce: 0, critRate: 0.05, critDmg: 1.5,
-            fireDmg: 1.0, qiAbsorb: 1.0, lifeSteal: 0,
-            soulRepress: 0, perception: 5 + (soulLevel * 2), daoVun: 0, murderQi: 0
-        };
 
-        // 2.1 Apply SPIRITUAL ROOT bonuses
+        // 2.3 Apply SPIRITUAL ROOT bonuses
         if (this.spiritualRoot) {
             if (this.spiritualRoot.multiplier) this.bonusStats.tuViSpeed *= this.spiritualRoot.multiplier;
             if (this.spiritualRoot.bonus) {
@@ -608,6 +613,8 @@ export class Player {
                 if (b.atk) this.baseStats.atk += b.atk;
                 if (b.def) this.baseStats.def += b.def;
                 if (b.maxHp) this.baseStats.maxHp += b.maxHp;
+                if (b.maxAge) this.bonusStats.maxAge += b.maxAge;
+                if (b.qiAbsorb) this.advancedStats.qiAbsorb *= b.qiAbsorb;
             }
         }
 
@@ -624,7 +631,14 @@ export class Player {
                         else if (key === 'maxHp') this.baseStats.maxHp += val;
                         else if (key === 'spd') this.baseStats.spd += val;
                         else if (key === 'luck') this.luck += val;
-                        else if (this.advancedStats.hasOwnProperty(key)) this.advancedStats[key] += val;
+                        else if (key === 'maxAge') this.bonusStats.maxAge += val;
+                        else if (this.advancedStats.hasOwnProperty(key)) {
+                            if (['qiAbsorb', 'fireDmg', 'waterDmg', 'thunderDmg'].includes(key)) {
+                                this.advancedStats[key] *= val;
+                            } else {
+                                this.advancedStats[key] += val;
+                            }
+                        }
                     });
                 }
             });
@@ -802,6 +816,10 @@ export class Player {
             this.spd += energyBonuses.spd || 0;
         }
         
+        // 5. Finalize Secondary Stats
+        const baseLifespan = raceInfo.baseLifespan || 100;
+        this.maxAge = baseLifespan + (this.realmId * 50) + this.bonusStats.maxAge;
+
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);
     }
