@@ -26,6 +26,12 @@ export class TalismanSystem {
             return { success: false, msg: 'Trạng thái không đủ để vẽ phù!' };
         }
 
+        // Check tool
+        const pen = getItemById(this.player.currentTalismanPen);
+        if (!pen) {
+            return { success: false, msg: 'Ngươi cần có Phù Bút để vẽ phù!' };
+        }
+
         // Consume resources
         recipe.materials.forEach(mat => this.player.inventory.removeItem(mat.id, mat.quantity));
         this.player.stamina -= recipe.staminaCost;
@@ -35,7 +41,6 @@ export class TalismanSystem {
         let successRate = recipe.baseSuccessRate;
         
         // Add bonus from Talisman Pen
-        const pen = getItemById(this.player.currentTalismanPen);
         if (pen && pen.stats && pen.stats.successRate) {
             successRate += pen.stats.successRate;
         }

@@ -136,8 +136,24 @@ export class SystemsScreen {
 
         const cauldronName = document.getElementById('alchemy-cauldron-name');
         const flameName = document.getElementById('alchemy-flame-name');
-        if (cauldronName) cauldronName.textContent = getCauldronById(state.player.currentCauldron)?.name || 'Phàm Lư';
-        if (flameName) flameName.textContent = getFlameById(state.player.currentFlame)?.name || 'Linh Hỏa';
+        
+        if (cauldronName) {
+            const cauldron = getCauldronById(state.player.currentCauldron);
+            if (cauldron) {
+                cauldronName.innerHTML = `<span class="text-white">${cauldron.name}</span>`;
+            } else {
+                cauldronName.innerHTML = `<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'phap_bao')" class="ml-2 text-[8px] text-qi-blue underline hover:text-white transition-colors">MUA NGAY</button>`;
+            }
+        }
+        
+        if (flameName) {
+            const flame = getFlameById(state.player.currentFlame);
+            if (flame) {
+                flameName.innerHTML = `<span class="text-white">${flame.name}</span>`;
+            } else {
+                flameName.innerHTML = `<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'phap_bao')" class="ml-2 text-[8px] text-qi-blue underline hover:text-white transition-colors">MUA NGAY</button>`;
+            }
+        }
     }
 
     renderRecipes() {
@@ -711,8 +727,24 @@ export class SystemsScreen {
 
         const toolName = document.getElementById('smithing-tool-name');
         const flameName = document.getElementById('smithing-flame-name');
-        if (toolName) toolName.textContent = state.player.smithingTool ? getItemById(state.player.smithingTool)?.name : 'Chưa có';
-        if (flameName) flameName.textContent = getFlameById(state.player.currentFlame)?.name || 'Linh Hỏa Cơ Bản';
+        
+        if (toolName) {
+            const tool = state.player.smithingTool ? getItemById(state.player.smithingTool) : null;
+            if (tool) {
+                toolName.innerHTML = `<span class="text-white">${tool.name}</span>`;
+            } else {
+                toolName.innerHTML = `<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'luyen_khi')" class="ml-2 text-[8px] text-red-400 underline hover:text-white transition-colors">MUA NGAY</button>`;
+            }
+        }
+        
+        if (flameName) {
+            const flame = getFlameById(state.player.currentFlame);
+            if (flame) {
+                flameName.innerHTML = `<span class="text-white">${flame.name}</span>`;
+            } else {
+                flameName.innerHTML = `<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'phap_bao')" class="ml-2 text-[8px] text-red-400 underline hover:text-white transition-colors">MUA NGAY</button>`;
+            }
+        }
 
         const lvlInfo = getSmithingLevelInfo(state.player.smithingLevel);
         const lvlText = document.getElementById('smithing-level-text');
@@ -880,6 +912,17 @@ export class SystemsScreen {
         if (elBar) {
             const nextLevelExp = state.player.talismanLevel * 100 * Math.pow(1.5, state.player.talismanLevel - 1);
             elBar.style.width = `${(state.player.talismanExp / nextLevelExp) * 100}%`;
+        }
+
+        // Update Pen Name
+        const penName = document.getElementById('current-pen-name');
+        if (penName) {
+            const pen = state.player.currentTalismanPen ? getItemById(state.player.currentTalismanPen) : null;
+            if (pen) {
+                penName.innerHTML = `<span class="text-white">${pen.name}</span>`;
+            } else {
+                penName.innerHTML = `<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'phu_luc')" class="ml-2 text-[8px] text-qi-blue underline hover:text-white transition-colors">MUA NGAY</button>`;
+            }
         }
 
         if (view) {

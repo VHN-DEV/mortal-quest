@@ -32,6 +32,14 @@ export class SmithingSystem {
             return { success: false, msg: 'Không đủ trạng thái để bắt đầu rèn!' };
         }
 
+        // Check tool & flame
+        const tool = getItemById(this.player.smithingTool);
+        const flame = getFlameById(this.player.currentFlame);
+        
+        if (!tool || !flame) {
+            return { success: false, msg: 'Ngươi cần có Đinh Sắt và Linh Hỏa để rèn đúc!' };
+        }
+
         // Consume
         recipe.materials.forEach(mat => this.player.inventory.removeItem(mat.id, mat.quantity));
         this.player.stamina -= recipe.staminaCost;
@@ -44,7 +52,6 @@ export class SmithingSystem {
         if (this.player.smithingTool === 'luyen_khi_dai') successRate += 0.1;
         
         // Bonus from flame power
-        const flame = getFlameById(this.player.currentFlame || 'linh_hoa');
         if (flame && flame.type === 'di_hoa') {
             successRate += (flame.power * 0.05); // Each power level adds 5%
         }

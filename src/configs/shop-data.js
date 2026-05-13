@@ -54,6 +54,7 @@ export const SHOPS = {
                 { id: 'kim_cuong_phu', stock: 5, minVip: 1 }
             ],
             'luyen_khi': [
+                { id: 'de_khi_dai', stock: 5 },
                 { id: 'huyen_thiet', stock: 50 },
                 { id: 'tinh_kim', stock: 20 },
                 { id: 'luyen_khi_dai', stock: 1, minVip: 1 }

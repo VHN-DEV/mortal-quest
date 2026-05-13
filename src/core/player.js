@@ -154,9 +154,9 @@ export class Player {
         // Talisman System
         this.talismanLevel = 1;
         this.talismanExp = 0;
-        this.currentTalismanPen = 'truc_phu_but';
+        this.currentTalismanPen = null;
         this.knownTalismanRecipes = [];
-        this.ownedTalismanPens = ['truc_phu_but'];
+        this.ownedTalismanPens = [];
 
         // Puppet System
         this.puppetLevel = 1;
@@ -756,7 +756,7 @@ export class Player {
             const isLifeBound = item.isLifeBound === true;
             const isRecognized = isLifeBound || (this.recognizedItems && this.recognizedItems.includes(itemId)) || item.isRecognized !== false;
             
-            const mult = isRecognized ? 1.0 : 0.3; // 70% penalty if not recognized
+            let mult = isRecognized ? 1.0 : 0.3; // 70% penalty if not recognized
 
             if (item.stats.atk) this.bonusStats.atk += item.stats.atk * mult;
             if (item.stats.def) this.bonusStats.def += item.stats.def * mult;
@@ -1180,12 +1180,12 @@ export class Player {
 
         this.alchemyLevel = data.alchemyLevel || 1;
         this.alchemyExp = data.alchemyExp || 0;
-        this.currentCauldron = data.currentCauldron || 'pham_lu';
-        this.currentFlame = data.currentFlame || 'linh_hoa';
+        this.currentCauldron = data.currentCauldron || null;
+        this.currentFlame = data.currentFlame || null;
         this.danPoison = data.danPoison || 0;
-        this.knownRecipes = data.knownRecipes || ['ngung_khi_dan'];
-        this.ownedFlames = data.ownedFlames || ['linh_hoa'];
-        this.ownedCauldrons = data.ownedCauldrons || ['pham_lu'];
+        this.knownRecipes = data.knownRecipes || [];
+        this.ownedFlames = data.ownedFlames || [];
+        this.ownedCauldrons = data.ownedCauldrons || [];
         this.alchemyReputation = data.alchemyReputation || 0;
         this.currentAlchemyRoom = data.currentAlchemyRoom || null;
         if (data.gardenPlots) {
@@ -1214,7 +1214,7 @@ export class Player {
         this.corpseExp = data.corpseExp || 0;
         this.puppetLevel = data.puppetLevel || 1;
         this.puppetExp = data.puppetExp || 0;
-        this.knownPuppetRecipes = data.knownPuppetRecipes || ['thiet_giap_khoi_loi'];
+        this.knownPuppetRecipes = data.knownPuppetRecipes || [];
         this.refinedCorpses = data.refinedCorpses || [];
 
         this.formationLevel = data.formationLevel || 1;
@@ -1226,9 +1226,9 @@ export class Player {
         this.knownSmithingRecipes = data.knownSmithingRecipes || [];
         this.ownedSmithingTools = data.ownedSmithingTools || [];
 
-        this.currentTalismanPen = data.currentTalismanPen || 'truc_phu_but';
-        this.knownTalismanRecipes = data.knownTalismanRecipes || ['hoa_cau_phu'];
-        this.ownedTalismanPens = data.ownedTalismanPens || ['truc_phu_but'];
+        this.currentTalismanPen = data.currentTalismanPen || null;
+        this.knownTalismanRecipes = data.knownTalismanRecipes || [];
+        this.ownedTalismanPens = data.ownedTalismanPens || [];
         
         this.mainTechniqueId = data.mainTechniqueId || null;
         this.mainBodyTechniqueId = data.mainBodyTechniqueId || null;

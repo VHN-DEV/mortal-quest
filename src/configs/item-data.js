@@ -998,6 +998,15 @@ export const ITEMS = {
     },
 
     // --- SMITHING TOOLS ---
+    'de_khi_dai': {
+        id: 'de_khi_dai',
+        name: 'Đế Khí Đài',
+        type: 'smithing_tool',
+        icon: '⚒️',
+        quality: 'Phàm',
+        price: 200,
+        description: 'Bệ rèn thô sơ cho người mới học luyện khí.'
+    },
     'luyen_khi_dai': {
         id: 'luyen_khi_dai',
         name: 'Luyện Khí Đài',

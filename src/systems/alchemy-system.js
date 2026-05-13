@@ -15,10 +15,10 @@ export class AlchemySystem {
     calculateResult(recipeId, cauldronId, flameId) {
         const recipe = getRecipeById(recipeId);
         if (!recipe) return { success: false, msg: 'Phương thuốc không tồn tại!' };
-        const cauldron = getCauldronById(cauldronId || 'pham_lu');
-        if (!cauldron) return { success: false, msg: 'Lò luyện không hợp lệ!' };
-        const flame = getFlameById(flameId || 'linh_hoa');
-        if (!flame) return { success: false, msg: 'Linh hỏa không hợp lệ!' };
+        const cauldron = getCauldronById(cauldronId);
+        if (!cauldron) return { success: false, msg: 'Ngươi chưa trang bị Đan Lư!' };
+        const flame = getFlameById(flameId);
+        if (!flame) return { success: false, msg: 'Ngươi chưa có Linh Hỏa!' };
         const levelInfo = getAlchemyLevelInfo(this.player.alchemyLevel || 1);
         const room = ALCHEMY_ROOMS.find(r => r.id === this.player.currentAlchemyRoom);
 
@@ -111,8 +111,12 @@ export class AlchemySystem {
             }
         }
 
-        const cauldron = getCauldronById(this.player.currentCauldron || 'pham_lu');
-        const flame = getFlameById(this.player.currentFlame || 'linh_hoa');
+        const cauldron = getCauldronById(this.player.currentCauldron);
+        const flame = getFlameById(this.player.currentFlame);
+
+        if (!cauldron || !flame) {
+            return { success: false, msg: 'Ngươi cần có Đan Lư và Linh Hỏa để luyện đan!' };
+        }
         
         let craftTime = recipe.time;
         if (cauldron && cauldron.heatRate) craftTime /= cauldron.heatRate;
