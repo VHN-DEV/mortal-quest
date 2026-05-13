@@ -4,6 +4,7 @@ import { getItemById } from '../configs/item-data.js';
 import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_QUALITIES, MASTERY_LEVELS } from '../configs/technique-data.js';
 import { getPhysiqueById, getPhysiqueAwakenBonus, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../configs/physique-data.js';
 import { ARTIFACT_SETS } from '../configs/artifact-data.js';
+import { CREATION_TRAITS } from '../configs/creation-data.js';
 
 export class Player {
     constructor() {
@@ -599,11 +600,34 @@ export class Player {
             soulRepress: 0, perception: 5 + (soulLevel * 2), daoVun: 0, murderQi: 0
         };
 
-        // Apply Destiny Bonuses to Base or Bonus? Let's add to Base
-        if (this.destinyStats) {
-            if (this.destinyStats.atk) this.baseStats.atk += this.destinyStats.atk;
-            if (this.destinyStats.def) this.baseStats.def += this.destinyStats.def;
-            if (this.destinyStats.maxHp) this.baseStats.maxHp += this.destinyStats.maxHp;
+        // 2.1 Apply SPIRITUAL ROOT bonuses
+        if (this.spiritualRoot) {
+            if (this.spiritualRoot.multiplier) this.bonusStats.tuViSpeed *= this.spiritualRoot.multiplier;
+            if (this.spiritualRoot.bonus) {
+                const b = this.spiritualRoot.bonus;
+                if (b.atk) this.baseStats.atk += b.atk;
+                if (b.def) this.baseStats.def += b.def;
+                if (b.maxHp) this.baseStats.maxHp += b.maxHp;
+            }
+        }
+
+        // 2.2 Apply TALENT (Traits) bonuses
+        if (this.talents && this.talents.length > 0) {
+            this.talents.forEach(talent => {
+                const trait = CREATION_TRAITS[talent.id];
+                if (trait && trait.bonus) {
+                    const b = trait.bonus;
+                    Object.entries(b).forEach(([key, val]) => {
+                        if (key === 'tvps') this.bonusStats.tuViSpeed *= val;
+                        else if (key === 'atk') this.baseStats.atk += val;
+                        else if (key === 'def') this.baseStats.def += val;
+                        else if (key === 'maxHp') this.baseStats.maxHp += val;
+                        else if (key === 'spd') this.baseStats.spd += val;
+                        else if (key === 'luck') this.luck += val;
+                        else if (this.advancedStats.hasOwnProperty(key)) this.advancedStats[key] += val;
+                    });
+                }
+            });
         }
 
         // 2.5 Apply PHYSIQUE BONUSES

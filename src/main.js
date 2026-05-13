@@ -186,12 +186,11 @@ const formatCreationBonus = (bonus = {}) => {
             const label = CREATION_BONUS_LABELS[key] || key;
             
             if (multiplierStats.includes(key)) {
-                // If it's a multiplier like 1.5, show +50%. If it's a flat rate like 0.1, show +10%.
-                // For critRate/critDmg it might be 0.1 meaning +10%
                 let percent;
                 if (['critRate', 'critDmg', 'lifeSteal', 'pierce', 'soulPierce', 'fireDmg', 'waterDmg', 'thunderDmg'].includes(key)) {
                     percent = Math.round(value * 100);
                 } else {
+                    // For tvps, 1.2 means +20%, 4.0 means +300%
                     percent = Math.round((value - 1) * 100);
                 }
                 
@@ -265,34 +264,52 @@ window.renderCreationScreen = () => {
     }
 
     if (elStatsPreview) {
+        // Base stats for a new player (starting realm)
+        const base = { atk: 10, def: 5, maxHp: 100, spd: 10, mana: 50, luck: 50 };
+        
         const rootBonus = CREATION_ROOTS[sys.selectedRoot]?.bonus || {};
+        const physBonus = PHYSIQUES[sys.selectedPhysique]?.bonus || {};
         const traitBonus = sys.selectedTraits.reduce((acc, traitId) => {
             const bonus = CREATION_TRAITS[traitId]?.bonus || {};
             Object.entries(bonus).forEach(([k, v]) => {
-                acc[k] = (acc[k] || 0) + v;
+                if (k === 'stats') {
+                    Object.entries(v).forEach(([sk, sv]) => acc[sk] = (acc[sk] || 0) + sv);
+                } else {
+                    acc[k] = (acc[k] || 0) + v;
+                }
             });
             return acc;
         }, {});
 
-        const sumBonus = (key) => (rootBonus[key] || 0) + (traitBonus[key] || 0);
+        const sumFlat = (key) => (rootBonus[key] || 0) + (physBonus[key] || 0) + (traitBonus[key] || 0);
+        
+        // Multiplier logic: Base 1.0, then add the "extra" from each source
+        const tvpsBonus = 1 + 
+            ((rootBonus.tvps || 1) - 1) + 
+            ((physBonus.tvps || 1) - 1) + 
+            ((traitBonus.tvps || 1) - 1);
+
         const previewStats = [
-            { label: 'Công', value: sumBonus('atk'), color: 'text-red-400' },
-            { label: 'Thủ', value: sumBonus('def'), color: 'text-blue-400' },
-            { label: 'Sinh lực', value: sumBonus('maxHp'), color: 'text-emerald-400' },
-            { label: 'Tốc', value: sumBonus('spd'), color: 'text-yellow-400' },
-            { label: 'Mana', value: sumBonus('mana'), color: 'text-purple-400' },
-            { label: 'May mắn', value: sumBonus('luck'), color: 'text-cyan-400' },
-            { label: 'Tu vi/s', value: `${sumBonus('tvps') >= 0 ? '+' : ''}${Math.round(sumBonus('tvps') * 100)}%`, color: 'text-cultivation-gold' }
+            { label: 'Công', value: base.atk + sumFlat('atk'), color: 'text-red-400' },
+            { label: 'Thủ', value: base.def + sumFlat('def'), color: 'text-blue-400' },
+            { label: 'Sinh lực', value: base.maxHp + sumFlat('maxHp'), color: 'text-emerald-400' },
+            { label: 'Tốc', value: base.spd + sumFlat('spd'), color: 'text-yellow-400' },
+            { label: 'Mana', value: base.mana + sumFlat('mana') + sumFlat('maxMana'), color: 'text-purple-400' },
+            { label: 'May mắn', value: base.luck + sumFlat('luck'), color: 'text-cyan-400' },
+            { label: 'Tu vi/s', value: `+${Math.round((tvpsBonus - 1) * 100)}%`, color: 'text-cultivation-gold' }
         ];
 
         elStatsPreview.innerHTML = previewStats.map(stat => {
             const numVal = typeof stat.value === 'number' ? stat.value : null;
-            const text = numVal !== null ? `${numVal >= 0 ? '+' : ''}${numVal}` : stat.value;
-            const isNeutral = (numVal !== null && numVal === 0) || stat.value === '+0%';
+            const text = numVal !== null ? `${numVal}` : stat.value;
+            // Highlight if stat is boosted above base
+            const baseVal = base[Object.keys(base).find(k => CREATION_BONUS_LABELS[k] === stat.label)] || 0;
+            const isBoosted = numVal !== null ? numVal > baseVal : stat.value !== '+0%';
+            
             return `
                 <div class="rounded-xl border border-white/10 bg-black/35 px-2 py-2 text-center">
                     <div class="text-[8px] text-gray-400 uppercase tracking-wider">${stat.label}</div>
-                    <div class="text-xs font-bold ${isNeutral ? 'text-gray-500' : stat.color}">${text}</div>
+                    <div class="text-xs font-bold ${isBoosted ? stat.color : 'text-gray-500'}">${text}</div>
                 </div>
             `;
         }).join('');
