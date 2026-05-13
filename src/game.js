@@ -515,7 +515,18 @@ export class Game {
         if (!state.player) return;
         const result = state.player.cultivate();
         const message = result?.msg || result?.reason;
-        if (message) state.ui.toast(message, result.success ? 'success' : 'error');
+        
+        if (state.autoCultivateInterval) {
+            if (!result.success) {
+                this.toggleAutoCultivate(false);
+                const toggleBtn = document.getElementById('auto-cultivate-toggle');
+                if (toggleBtn) toggleBtn.checked = false;
+                if (message) state.ui.toast("Tự động tu luyện dừng lại: " + message, 'error');
+            }
+        } else {
+            if (message) state.ui.toast(message, result.success ? 'success' : 'error');
+        }
+        
         this.refreshUI();
     }
 

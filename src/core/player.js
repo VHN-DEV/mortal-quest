@@ -690,7 +690,7 @@ export class Player {
 
         // 3. Apply EQUIPMENT & ARTIFACT BONUSES
         const equippedIds = [];
-        Object.values(this.equipment).forEach(itemId => {
+        Object.entries(this.equipment).forEach(([slot, itemId]) => {
             if (!itemId) return;
             equippedIds.push(itemId);
             const item = getItemById(itemId);
