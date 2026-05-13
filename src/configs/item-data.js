@@ -796,6 +796,88 @@ export const ITEMS = {
     },
 
     // --- ORES & MINERALS ---
+    'linh_thao_van_nam': {
+        id: 'linh_thao_van_nam',
+        name: 'Linh Thảo (Vạn năm)',
+        type: 'material',
+        icon: '🌺',
+        quality: 'Thiên',
+        price: 50000,
+        description: 'Linh thảo sinh trưởng vạn năm, đã thông linh tính, có thể luyện chế Tiên đan.'
+    },
+    'huyen_thiet': {
+        id: 'huyen_thiet',
+        name: 'Huyền Thiết',
+        type: 'material',
+        icon: '⬛',
+        quality: 'Huyền',
+        price: 800,
+        description: 'Sắt đen cực nặng và cứng, dùng để rèn vũ khí hạng nặng.'
+    },
+    'tinh_kim': {
+        id: 'tinh_kim',
+        name: 'Tinh Kim',
+        type: 'material',
+        icon: '✨',
+        quality: 'Địa',
+        price: 3000,
+        description: 'Vàng tinh khiết chứa linh lực, dẫn linh cực tốt.'
+    },
+    'vân_thiết': {
+        id: 'vân_thiết',
+        name: 'Thiên Ngoại Vẫn Thiết',
+        type: 'material',
+        icon: '☄️',
+        quality: 'Thiên',
+        price: 25000,
+        description: 'Mảnh vỡ thiên thạch từ ngoài không gian, chứa sức mạnh tinh thần.'
+    },
+    'yeu_cot': {
+        id: 'yeu_cot',
+        name: 'Yêu Thú Cốt',
+        type: 'material',
+        icon: '🦴',
+        quality: 'Hoàng',
+        price: 150,
+        description: 'Xương của yêu thú, dùng làm nguyên liệu chế tác hoặc luyện thi.'
+    },
+    'da_lan_giap': {
+        id: 'da_lan_giap',
+        name: 'Da Lân Giáp',
+        type: 'material',
+        icon: '🛡️',
+        quality: 'Huyền',
+        price: 1200,
+        description: 'Lớp da hoặc vảy của yêu thú phòng ngự cao.'
+    },
+    'long_huyet_tinh': {
+        id: 'long_huyet_tinh',
+        name: 'Long Huyết Tinh',
+        type: 'material',
+        icon: '🩸',
+        quality: 'Địa',
+        price: 10000,
+        description: 'Tinh hoa máu rồng ngưng kết, chứa sức mạnh huyết mạch kinh người.'
+    },
+    'tien_tinh': {
+        id: 'tien_tinh',
+        name: 'Tiên Tinh',
+        type: 'material',
+        icon: '💎',
+        quality: 'Thiên',
+        price: 100000,
+        description: 'Tinh thể kết tinh từ Tiên khí, chỉ có ở những nơi tiên phàm giao giới.'
+    },
+    'trung_than_thu': {
+        id: 'trung_than_thu',
+        name: 'Trứng Thần Thú',
+        type: 'consumable',
+        icon: '🥚',
+        quality: 'Thần',
+        price: 1000000,
+        description: 'Trứng của sinh vật cổ đại, có thể ấp nở thành linh thú hộ mệnh.',
+        effect: { type: 'hatch' }
+    },
     'hoa_tinh_thach': {
         id: 'hoa_tinh_thach',
         name: 'Hỏa Tinh Thạch',

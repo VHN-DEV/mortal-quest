@@ -7,7 +7,7 @@ import { SMITHING_RECIPES, getSmithingLevelInfo } from '../../configs/smithing-d
 import { SEEDS, SOILS, FIELD_GRADES, FIELD_ATTRIBUTES, HERB_AGE_MILESTONES } from '../../configs/garden-data.js';
 import { ALCHEMY_CERTIFICATIONS, GUILD_MISSIONS, ALCHEMY_ROOMS } from '../../configs/guild-data.js';
 import { TOWER_LEVELS } from '../../configs/tower-data.js';
-import { MOUNTAIN_LAYERS } from '../../configs/mountain-data.js';
+import { MOUNTAIN_LAYERS, MOUNTAIN_TIERS } from '../../configs/mountain-data.js';
 import { SECTS, getSectById } from '../../configs/sect-data.js';
 import { getRealmById } from '../../configs/realm-data.js';
 import { CORPSE_TYPES, getCorpseLevelInfo } from '../../configs/corpse-data.js';
@@ -527,21 +527,49 @@ export class SystemsScreen {
         const elOxyBar = document.getElementById('mountain-oxygen-bar');
         const elToxText = document.getElementById('mountain-toxicity-text');
         const elToxBar = document.getElementById('mountain-toxicity-bar');
+        const elEventLog = document.getElementById('mountain-event-log');
 
         if (!state.player.mountainSurvival) return;
 
         const mSys = state.systems.mountain;
         const layer = MOUNTAIN_LAYERS.find(l => l.id === mSys.currentLayer);
+        const tier = MOUNTAIN_TIERS.find(t => t.id === layer.tier);
 
-        if (elLayerName) elLayerName.textContent = layer.name;
+        if (elLayerName) {
+            const tierColor = {
+                'ngoai_son': 'text-green-400',
+                'trung_son': 'text-blue-400',
+                'noi_son': 'text-purple-400',
+                'cam_khu': 'text-red-500'
+            }[layer.tier] || 'text-red-400';
+            
+            elLayerName.innerHTML = `<span class="text-[10px] block opacity-60 uppercase tracking-tighter">${tier.name}</span>${layer.name}`;
+            elLayerName.className = `text-2xl font-ancient ${tierColor} mb-1`;
+        }
+        
         if (elLayerDesc) elLayerDesc.textContent = layer.description;
-        if (elLayerProgText) elLayerProgText.textContent = `${Math.floor(mSys.layerProgress)}%`;
+        
+        // Progress display (Global Discovery for this layer)
+        const discovery = mSys.discovery[mSys.currentLayer] || 0;
+        if (elLayerProgText) elLayerProgText.textContent = `${Math.floor(mSys.layerProgress)}% (Khám phá: ${Math.floor(discovery)}%)`;
         if (elLayerProgBar) elLayerProgBar.style.width = `${mSys.layerProgress}%`;
 
+        // Survival Bars
         if (elOxyText) elOxyText.textContent = `${Math.ceil(state.player.mountainSurvival.oxygen)}%`;
         if (elOxyBar) elOxyBar.style.width = `${state.player.mountainSurvival.oxygen}%`;
         if (elToxText) elToxText.textContent = `${Math.ceil(state.player.mountainSurvival.toxicity)}%`;
         if (elToxBar) elToxBar.style.width = `${state.player.mountainSurvival.toxicity}%`;
+
+        // Boss Status Indicator (Optional UI update)
+        const btnDeeper = document.getElementById('btn-mountain-deeper');
+        if (btnDeeper) {
+            const bossDefeated = mSys.bossDefeated[layer.tier];
+            if (mSys.layerProgress >= 100 && !bossDefeated) {
+                btnDeeper.innerHTML = `<span class="relative z-10 text-xs font-bold text-red-500 uppercase tracking-[0.2em] animate-pulse">KHIÊU CHIẾN THỦ LĨNH</span>`;
+            } else {
+                btnDeeper.innerHTML = `<span class="relative z-10 text-xs font-bold text-red-400 uppercase tracking-[0.2em]">TẦNG KẾ TIẾP</span>`;
+            }
+        }
 
         // Check if player is dying
         if (state.player.hp <= 0) {

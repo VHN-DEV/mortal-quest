@@ -325,6 +325,13 @@ export class Game {
             state.systems.time.load(savedData.time);
         }
 
+        if (savedData && savedData.mountain) {
+            state.systems.mountain.discovery = savedData.mountain.discovery || {};
+            state.systems.mountain.bossDefeated = savedData.mountain.bossDefeated || {};
+            state.systems.mountain.reputation = savedData.mountain.reputation || 0;
+            state.systems.mountain.currentLayer = savedData.mountain.currentLayer || 'chan_nui';
+        }
+
         // Cập nhật giao diện cơ bản
         const elName = document.getElementById('player-name-header');
         if (elName) elName.textContent = player.name;
@@ -418,6 +425,14 @@ export class Game {
             state.player.explorationProgress = state.explorationProgress;
             const data = state.player.save();
             if (state.systems.time) data.time = state.systems.time.save();
+            if (state.systems.mountain) {
+                data.mountain = {
+                    discovery: state.systems.mountain.discovery,
+                    bossDefeated: state.systems.mountain.bossDefeated,
+                    reputation: state.systems.mountain.reputation,
+                    currentLayer: state.systems.mountain.currentLayer
+                };
+            }
             SaveSystem.save(data);
         }
     }

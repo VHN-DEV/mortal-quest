@@ -2,62 +2,176 @@
  * DỮ LIỆU THẬP VẠN ĐẠI SƠN (100,000 GREAT MOUNTAINS)
  */
 
+export const MOUNTAIN_TIERS = [
+    { 
+        id: 'ngoai_son', 
+        name: 'Ngoại Sơn', 
+        minRealm: 1, 
+        description: 'Dành cho tu sĩ Luyện Khí và Trúc Cơ. Nơi tập trung nhiều tán tu và thương đội.',
+        hazardScale: 1.0
+    },
+    { 
+        id: 'trung_son', 
+        name: 'Trung Sơn', 
+        minRealm: 18, 
+        description: 'Dành cho tu sĩ Kết Đan và Nguyên Anh. Có nhiều di tích cổ và bí động.',
+        hazardScale: 2.5
+    },
+    { 
+        id: 'noi_son', 
+        name: 'Nội Sơn', 
+        minRealm: 26, 
+        description: 'Dành cho tu sĩ Hóa Thần đến Hợp Thể. Đại yêu chiếm cứ, không gian vỡ vụn.',
+        hazardScale: 5.0
+    },
+    { 
+        id: 'cam_khu', 
+        name: 'Cấm Khu Thâm Xử', 
+        minRealm: 38, 
+        description: 'Dành cho tu sĩ Đại Thừa trở lên. Sinh vật cổ đại ngủ say, thiên đạo tàn vực.',
+        hazardScale: 10.0
+    }
+];
+
 export const MOUNTAIN_LAYERS = [
+    // --- NGOẠI SƠN ---
     {
         id: 'chan_nui',
+        tier: 'ngoai_son',
         name: 'Chân Núi (Ngoại Vi)',
-        minRealm: 1,
         difficulty: 1.0,
         survivalFactor: 0.1,
-        description: 'Vùng ngoài cùng, linh khí loãng, nơi tập trung nhiều thảo dược bậc thấp và yêu thú sơ khai.'
+        description: 'Vùng ngoài cùng, linh khí loãng, nơi tập trung nhiều thảo dược bậc thấp và yêu thú sơ khai.',
+        resources: ['linh_thao_thap', 'ling_thach_ha', 'yeu_huyet']
     },
     {
         id: 'suong_mu',
-        name: 'Sương Mù Lâm (Trung Tầng 1)',
-        minRealm: 10,
+        tier: 'ngoai_son',
+        name: 'Sương Mù Lâm',
         difficulty: 1.5,
         survivalFactor: 0.2,
-        description: 'Rừng sương mù dày đặc, linh giác bị hạn chế, ẩn chứa nhiều loại linh quả sơ cấp.'
+        description: 'Rừng sương mù dày đặc, linh giác bị hạn chế, ẩn chứa nhiều loại linh quả sơ cấp.',
+        resources: ['linh_thao_10y', 'seed_linh_thao', 'yeu_dan_so']
     },
     {
-        id: 'thuy_dong',
-        name: 'U Thủy Động (Trung Tầng 2)',
-        minRealm: 20,
+        id: 'u_thuy_dong',
+        tier: 'ngoai_son',
+        name: 'U Thủy Động',
         difficulty: 2.2,
         survivalFactor: 0.35,
-        description: 'Hệ thống hang động ẩm ướt, nơi cư ngụ của các loài yêu trùng và khoáng thạch hiếm.'
+        description: 'Hệ thống hang động ẩm ướt, nơi cư ngụ của các loài yêu trùng và khoáng thạch hiếm.',
+        resources: ['thuy_tinh', 'ma_thach', 'linh_thao_100y']
     },
+
+    // --- TRUNG SƠN ---
     {
         id: 'loi_phong',
-        name: 'Lôi Phong Đỉnh (Nội Vực 1)',
-        minRealm: 35,
+        tier: 'trung_son',
+        name: 'Lôi Phong Đỉnh',
         difficulty: 3.5,
-        survivalFactor: 0.5,
-        description: 'Đỉnh núi quanh năm sấm chớp và gió lốc, linh khí bắt đầu trở nên cuồng bạo.'
+        survivalFactor: 0.6,
+        description: 'Đỉnh núi quanh năm sấm chớp và gió lốc, linh khí bắt đầu trở nên cuồng bạo.',
+        resources: ['loi_linh_thach', 'yeu_dan_trung', 'linh_thao_100y']
     },
+    {
+        id: 'co_tu_dong',
+        tier: 'trung_son',
+        name: 'Cổ Tu Động Phủ',
+        difficulty: 4.5,
+        survivalFactor: 0.8,
+        description: 'Dãy hang động nơi các tu sĩ cổ đại từng cư ngụ, ẩn chứa nhiều tàn hồn và pháp bảo.',
+        resources: ['ling_thach_trung', 'bp_luyen_dan', 'bp_phu_luc']
+    },
+
+    // --- NỘI SƠN ---
     {
         id: 'huyet_nguyet',
-        name: 'Huyết Nguyệt Cốc (Nội Vực 2)',
-        minRealm: 50,
-        difficulty: 5.0,
-        survivalFactor: 0.75,
-        description: 'Thung lũng bị nguyền rủa, nơi chôn cất các tu sĩ thượng cổ, linh khí mang theo sát ý.'
+        tier: 'noi_son',
+        name: 'Huyết Nguyệt Cốc',
+        difficulty: 6.0,
+        survivalFactor: 1.2,
+        description: 'Thung lũng bị nguyền rủa, linh khí mang theo sát ý cực mạnh.',
+        resources: ['linh_thao_1000y', 'ma_tinh', 'yeu_dan_cao']
     },
     {
-        id: 'long_mach',
-        name: 'Long Mạch Uyên (Thâm Vực)',
-        minRealm: 70,
-        difficulty: 7.5,
-        survivalFactor: 1.2,
-        description: 'Vực sâu vạn trượng, nơi tụ hội của long mạch chi lực, đầy rẫy các cấm chế cổ đại.'
+        id: 'hu_khong_khe',
+        tier: 'noi_son',
+        name: 'Hư Không Liệt Ph縫',
+        difficulty: 8.0,
+        survivalFactor: 1.8,
+        description: 'Nơi không gian vỡ vụn, thường xuyên xuất hiện không gian loạn lưu.',
+        resources: ['hon_don_tinh_thach', 'linh_thao_van_nam', 'tien_ngoc']
+    },
+
+    // --- CẤM KHU ---
+    {
+        id: 'long_mach_uyen',
+        tier: 'cam_khu',
+        name: 'Long Mạch Uyên',
+        difficulty: 12.0,
+        survivalFactor: 3.0,
+        description: 'Vực sâu vạn trượng, nơi tụ hội của long mạch chi lực.',
+        resources: ['long_huyet_tinh', 'than_thú_trung', 'tien_tinh']
     },
     {
         id: 'thanh_son',
-        name: 'Thánh Sơn (Cấm Địa)',
-        minRealm: 90,
-        difficulty: 10.0,
-        survivalFactor: 2.0,
-        description: 'Nơi tối cao của Đại Sơn, chỉ những bậc đại năng mới có thể đặt chân đến.'
+        tier: 'cam_khu',
+        name: 'Thánh Sơn (Cực Thâm)',
+        difficulty: 20.0,
+        survivalFactor: 5.0,
+        description: 'Nơi tối cao của Đại Sơn, thiên đạo tàn khuyết, áp lực khủng khiếp.',
+        resources: ['hong_mong_chi_bao', 'tien_nhan_truyen_thua', 'hon_don_khi']
+    }
+];
+
+export const MOUNTAIN_BOSSES = [
+    {
+        id: 'boss_ngoai_son',
+        name: 'Thiên Độc Lang Vương',
+        tier: 'ngoai_son',
+        level: 25,
+        hp: 50000,
+        atk: 800,
+        def: 500,
+        icon: '🐺',
+        description: 'Chúa tể vùng Ngoại Sơn, nọc độc có thể ăn mòn linh lực.',
+        rewards: ['yeu_dan_trung', 'linh_thao_100y']
+    },
+    {
+        id: 'boss_trung_son',
+        name: 'Cổ Tu Tàn Hồn',
+        tier: 'trung_son',
+        level: 50,
+        hp: 250000,
+        atk: 3500,
+        def: 2000,
+        icon: '👻',
+        description: 'Một vị đại năng thời thượng cổ còn sót lại ý chí, canh giữ di tích.',
+        rewards: ['bp_tran_phap', 'ling_thach_thuong']
+    },
+    {
+        id: 'boss_noi_son',
+        name: 'Huyết Nguyệt Yêu Đế',
+        tier: 'noi_son',
+        level: 80,
+        hp: 1200000,
+        atk: 15000,
+        def: 8000,
+        icon: '🐲',
+        description: 'Hóa hình đại yêu, thống lĩnh vạn thú vùng Nội Sơn.',
+        rewards: ['tien_ngoc', 'linh_thao_van_nam']
+    },
+    {
+        id: 'boss_cam_khu',
+        name: 'Hỗn Độn Thần Thú',
+        tier: 'cam_khu',
+        level: 120,
+        hp: 10000000,
+        atk: 100000,
+        def: 50000,
+        icon: '🌌',
+        description: 'Sinh vật sinh ra từ hỗn độn, canh giữ ranh giới thiên đạo.',
+        rewards: ['hong_mong_chi_bao', 'tien_tinh']
     }
 ];
 
@@ -81,7 +195,7 @@ export const MOUNTAIN_BEASTS = [
     {
         id: 'u_minh_nhen',
         name: 'U Minh Nhện',
-        layer: 'thuy_dong',
+        layer: 'u_thuy_dong',
         level: 30,
         icon: '🕷️',
         description: 'Phát ra tơ nhện mang theo âm khí, cực kỳ khó chịu.'
@@ -93,30 +207,6 @@ export const MOUNTAIN_BEASTS = [
         level: 45,
         icon: '🐗',
         description: 'Hấp thụ lôi điện để cường hóa cơ thể.'
-    },
-    {
-        id: 'huyet_nghiet',
-        name: 'Huyết Nghiệt Oán Linh',
-        layer: 'huyet_nguyet',
-        level: 60,
-        icon: '👻',
-        description: 'Oán khí ngưng kết thành hình, chuyên tấn công thần hồn.'
-    },
-    {
-        id: 'long_ve',
-        name: 'Long Mạch Thủ Vệ',
-        layer: 'long_mach',
-        level: 80,
-        icon: '🗿',
-        description: 'Khối thạch linh được long mạch nuôi dưỡng, phòng ngự tuyệt đối.'
-    },
-    {
-        id: 'thanh_hac',
-        name: 'Thần Sơn Thanh Hạc',
-        layer: 'thanh_son',
-        level: 100,
-        icon: '🦢',
-        description: 'Linh vật canh giữ Thánh Sơn, mang theo uy áp thượng cổ.'
     }
 ];
 
@@ -126,27 +216,29 @@ export const MOUNTAIN_EVENTS = [
         name: 'Bí Cảnh Thượng Cổ Mở Ra',
         type: 'treasure',
         layer: 'any',
-        chance: 0.05
+        chance: 0.05,
+        description: 'Một vết nứt không gian mở ra dẫn đến một bí cảnh nhỏ.'
     },
     {
         id: 'suong_doc',
         name: 'Sương Độc Bao Phủ',
         type: 'hazard',
         layer: 'suong_mu',
-        chance: 0.12
+        chance: 0.12,
+        description: 'Chướng khí độc hại bất ngờ bùng phát.'
     },
     {
-        id: 'loi_kiep',
-        name: 'Thiên Lôi Giáng Lâm',
-        type: 'hazard',
-        layer: 'loi_phong',
-        chance: 0.15
-    },
-    {
-        id: 'huyet_nguyet',
-        name: 'Huyết Nguyệt Giáng Lâm',
-        type: 'weather',
-        layer: 'huyet_nguyet',
-        chance: 0.08
+        id: 'ky_ngo_tan_tu',
+        name: 'Gặp Gỡ Tán Tu',
+        type: 'encounter',
+        layer: 'any',
+        chance: 0.1,
+        description: 'Ngươi tình cờ bắt gặp một vị tán tu đang đơn độc hành tẩu. Ánh mắt người này lộ vẻ cảnh giác nhưng cũng đầy mệt mỏi.',
+        options: [
+            { label: 'Trao đổi tài nguyên', value: 'trade', icon: '🤝' },
+            { label: 'Cướp bóc (Tăng Ma tính)', value: 'rob', icon: '⚔️' },
+            { label: 'Bỏ đi', value: 'leave', icon: '🚶' }
+        ]
     }
 ];
+

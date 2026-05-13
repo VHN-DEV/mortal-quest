@@ -202,7 +202,7 @@ export const PHOENIX_REALMS = [
 export const SWORD_PATH_REALMS = [
     { id: 1, name: "Kiếm Khí", expRequired: 1000 },
     { id: 2, name: "Kiếm Ý", expRequired: 10000 },
-    { id: 3, name: "Kiếm Tâm", expRequired: 100000 },
+    { id: 3, name: "Kiếm Tâm Thông Linh", expRequired: 100000 },
     { id: 4, name: "Kiếm Vực", expRequired: 1000000 },
     { id: 5, name: "Kiếm Hồn", expRequired: 10000000 },
     { id: 6, name: "Nhân Kiếm Hợp Nhất", expRequired: 100000000 },
