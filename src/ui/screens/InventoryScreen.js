@@ -19,6 +19,7 @@ export class InventoryScreen {
         this.elDetailName = document.getElementById('detail-name');
         this.elDetailType = document.getElementById('detail-type');
         this.elDetailDesc = document.getElementById('detail-desc');
+        this.elDetailStats = document.getElementById('detail-stats');
         this.btnUseItem = document.getElementById('btn-use-item');
         this.btnEquipItem = document.getElementById('btn-equip-item');
         this.equipmentSlots = document.querySelectorAll('.equipment-slot');
@@ -30,6 +31,8 @@ export class InventoryScreen {
         this.btnQtyMinus = document.getElementById('detail-qty-minus');
         this.btnQtyPlus = document.getElementById('detail-qty-plus');
         this.btnQtyMax = document.getElementById('detail-qty-max');
+        this.btnBuyItem = document.getElementById('btn-buy-item');
+        this.btnSellItem = document.getElementById('btn-sell-item');
     }
 
     initEvents() {
@@ -94,6 +97,33 @@ export class InventoryScreen {
                     state.selectedItemId = null;
                     state.ui.toggleOverlay(this.elItemDetail, false);
                     this.render();
+                }
+            };
+        }
+
+        if (this.btnBuyItem) {
+            this.btnBuyItem.onclick = () => {
+                if (state.selectedItemId && state.systems.shop) {
+                    const res = state.systems.shop.buyItem(state.selectedItemId, 1);
+                    state.ui.toast(res.msg, res.success ? 'success' : 'error');
+                    if (res.success) {
+                        state.ui.toggleOverlay(this.elItemDetail, false);
+                        window.game.refreshUI();
+                    }
+                }
+            };
+        }
+
+        if (this.btnSellItem) {
+            this.btnSellItem.onclick = () => {
+                const qty = parseInt(this.elQtyInput.value) || 1;
+                if (state.selectedItemId && state.systems.shop) {
+                    const res = state.systems.shop.sellItem(state.selectedItemId, qty);
+                    state.ui.toast(res.msg, res.success ? 'success' : 'error');
+                    if (res.success) {
+                        state.ui.toggleOverlay(this.elItemDetail, false);
+                        window.game.refreshUI();
+                    }
                 }
             };
         }
@@ -176,7 +206,7 @@ export class InventoryScreen {
         });
     }
 
-    selectItem(id) {
+    selectItem(id, fromShop = false, fromSell = false) {
         state.selectedItemId = id;
         const itemData = getItemById(id);
         if (!itemData) return;
@@ -213,7 +243,8 @@ export class InventoryScreen {
 
         this.elDetailType.textContent = `${displayQuality} Phẩm | ${typeNames[itemData.type] || itemData.type}`;
 
-        let desc = itemData.description;
+        this.elDetailDesc.textContent = itemData.description;
+        if (this.elDetailStats) this.elDetailStats.innerHTML = '';
         
         // Puppet specific
         if (itemData.type === 'puppet' && playerItem && playerItem.metadata) {
@@ -241,23 +272,47 @@ export class InventoryScreen {
             desc += `\nNhận chủ: ${isBound ? 'ĐÃ NHẬN CHỦ' : 'CHƯA NHẬN CHỦ'}`;
             
             if (itemData.stats) {
-                desc += `\n\n[CHỈ SỐ]`;
                 Object.entries(itemData.stats).forEach(([key, val]) => {
-                    desc += `\n- ${key}: +${val}`;
+                    if (this.elDetailStats) {
+                        const statEl = document.createElement('div');
+                        statEl.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                        statEl.innerHTML = `<span>${this.getStatLabel(key)}</span><span class="text-qi-blue font-mono">+${val}</span>`;
+                        this.elDetailStats.appendChild(statEl);
+                    }
                 });
             }
         }
 
-        this.elDetailDesc.textContent = desc;
-
         // Show/Hide Quantity Container
         const isStackable = ['spirit_stone', 'consumable'].includes(itemData.type);
         if (this.elQtyContainer) {
-            this.elQtyContainer.classList.toggle('hidden', !isStackable);
-            if (isStackable && playerItem) {
+            this.elQtyContainer.classList.toggle('hidden', !isStackable || fromShop);
+            if (isStackable && playerItem && !fromShop) {
                 this.elQtyInput.value = 1;
                 this.elQtyMaxText.textContent = `Tối đa: ${playerItem.quantity}`;
             }
+        }
+
+        if (fromShop || fromSell) {
+            this.btnUseItem.style.display = 'none';
+            this.btnEquipItem.style.display = 'none';
+            if (this.btnBuyItem) this.btnBuyItem.style.display = fromShop ? 'block' : 'none';
+            if (this.btnSellItem) this.btnSellItem.style.display = fromSell ? 'block' : 'none';
+            
+            // Re-show quantity for selling
+            if (fromSell && isStackable) {
+                this.elQtyContainer.classList.remove('hidden');
+                if (playerItem) {
+                    this.elQtyInput.value = 1;
+                    this.elQtyMaxText.textContent = `Tối đa: ${playerItem.quantity}`;
+                }
+            }
+
+            state.ui.toggleOverlay(this.elItemDetail, true);
+            return;
+        } else {
+            if (this.btnBuyItem) this.btnBuyItem.style.display = 'none';
+            if (this.btnSellItem) this.btnSellItem.style.display = 'none';
         }
 
         this.btnUseItem.style.display = (['consumable', 'book', 'spirit_stone'].includes(itemData.type)) ? 'block' : 'none';
@@ -274,7 +329,7 @@ export class InventoryScreen {
 
         if (equippable) {
             this.btnEquipItem.textContent = itemData.type.includes('Artifact') ? 'KHỞI ĐỘNG' : 'TRANG BỊ';
-            this.elDetailDesc.textContent += this.buildEquipPreview(itemData, mappedSlot);
+            this.buildEquipPreview(itemData, mappedSlot);
         }
         this.btnEquipItem.style.display = equippable ? 'block' : 'none';
 
@@ -307,22 +362,28 @@ export class InventoryScreen {
         const statKeys = new Set([...Object.keys(itemData.stats), ...Object.keys(currentStats)]);
         if (statKeys.size === 0) return '';
 
-        let preview = `\n\n--- DỰ KIẾN CHỈ SỐ KHI TRANG BỊ ---`;
         statKeys.forEach((key) => {
             const nextVal = itemData.stats[key] || 0;
             const curVal = currentStats[key] || 0;
             const diff = nextVal - curVal;
             const sign = diff >= 0 ? '+' : '';
-            preview += `
-- ${this.getStatLabel(key)}: ${sign}${diff}`;
+            
+            if (this.elDetailStats) {
+                const statEl = document.createElement('div');
+                statEl.className = 'flex justify-between items-center text-[10px] py-1 border-b border-white/5';
+                const label = this.getStatLabel(key);
+                const diffColor = diff > 0 ? 'text-qi-jade' : (diff < 0 ? 'text-red-500' : 'text-gray-500');
+                statEl.innerHTML = `<span>${label}</span><span class="${diffColor} font-mono">${sign}${diff}</span>`;
+                this.elDetailStats.appendChild(statEl);
+            }
         });
 
-        if (currentEquipped) {
-            preview += `
-Đang trang bị: ${currentEquipped.name}`;
+        if (currentEquipped && this.elDetailStats) {
+            const infoEl = document.createElement('div');
+            infoEl.className = 'text-[8px] text-gray-600 italic mt-2 text-center';
+            infoEl.textContent = `Đang trang bị: ${currentEquipped.name}`;
+            this.elDetailStats.appendChild(infoEl);
         }
-
-        return preview;
     }
 
     getQualityClass(quality) {

@@ -351,7 +351,12 @@ export class SystemsScreen {
             const qClass = this.getQualityClass(itemData.quality);
 
             const el = document.createElement('div');
-            el.className = `flex items-center justify-between p-3 bg-black/40 border border-gray-800 rounded-xl hover:border-${qClass}`;
+            el.className = `flex items-center justify-between p-3 bg-black/40 border border-gray-800 rounded-xl hover:border-${qClass} cursor-pointer transition-all`;
+            el.onclick = () => {
+                if (window.game.screens.inventory) {
+                    window.game.screens.inventory.selectItem(item.id, true);
+                }
+            };
 
             const info = document.createElement('div');
             info.className = 'flex items-center space-x-3';
@@ -377,7 +382,10 @@ export class SystemsScreen {
             const btn = document.createElement('button');
             btn.className = `px-4 py-2 btn-gold text-[10px] font-bold rounded-lg ${item.stock <= 0 ? 'opacity-50 grayscale pointer-events-none' : ''}`;
             btn.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>TRAO ĐỔI`;
-            btn.onclick = () => window.game.buyItem(item.id);
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                window.game.buyItem(item.id);
+            };
 
             btnContainer.appendChild(btn);
             el.appendChild(info);
@@ -422,10 +430,9 @@ export class SystemsScreen {
                 <div class="text-[8px] text-cultivation-gold mt-1">${Math.floor(itemData.price * sellMult)} LT</div>
             `;
             el.onclick = () => {
-                const res = state.systems.shop.sellItem(item.id, 1);
-                state.ui.toast(res.msg, res.success ? 'success' : 'error');
-                this.renderShopSell();
-                this.elShopLingShi.innerHTML = state.player.getFormattedLingShi();
+                if (window.game.screens.inventory) {
+                    window.game.screens.inventory.selectItem(item.id, false, true);
+                }
             };
             this.elShopSellGrid.appendChild(el);
         });

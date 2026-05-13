@@ -26,7 +26,7 @@
             <div class="flex items-center space-x-3">
                 <div id="header-portrait-container"
                     class="w-10 h-10 rounded-full border border-cultivation-gold p-0.5 relative cursor-pointer active:scale-90 transition-all hover:shadow-[0_0_15px_rgba(212,175,55,0.4)]">
-                    <img id="header-portrait" src="./src/assets/images/portraits/player_male.png"
+                    <img id="header-portrait" src="./src/assets/images/players/player_male.png"
                         class="w-full h-full object-cover rounded-full">
                 </div>
                 <div>
@@ -88,7 +88,7 @@
 
                         <!-- Mode Selection -->
                         <div class="creation-mode-wrap space-y-2">
-                            <div id="creation-reroll-container" class="hidden">
+                            <div id="creation-reroll-container" class="pt-4 hidden">
                                 <button id="creation-reroll-btn"
                                     class="w-full py-2.5 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all bg-qi-purple/15 border border-qi-purple/30 text-qi-purple hover:bg-qi-purple/25">
                                     Gợi ý ngẫu nhiên
@@ -363,7 +363,7 @@
 
                             <div id="aura-border"
                                 class="relative w-56 h-56 rounded-full overflow-hidden border border-cultivation-gold/30 shadow-[0_0_60px_rgba(212,175,55,0.15)] group aura-border">
-                                <img id="main-player-portrait" src="./src/assets/images/portraits/player_male.png"
+                                <img id="main-player-portrait" src="./src/assets/images/players/player_male.png"
                                     class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110">
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-qi-ink via-transparent to-transparent">
@@ -535,7 +535,7 @@
                 <div class="grid grid-cols-2 gap-6 mb-6">
                     <!-- Avatar & Equipment Slots -->
                     <div class="relative aspect-[3/4] bg-white/5 rounded-2xl border border-white/10 p-2">
-                        <img src="./src/assets/images/portraits/player_male.png"
+                        <img src="./src/assets/images/players/player_male.png"
                             class="w-full h-full object-cover rounded-xl opacity-60">
                         <!-- Slots -->
                         <!-- Top -->
@@ -1097,6 +1097,14 @@
                             <button id="btn-equip-item"
                                 class="flex-grow py-5 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold text-xs font-bold rounded-2xl active:scale-95 transition-all uppercase tracking-[0.2em] border border-cultivation-gold/20 hidden">
                                 KHỞI ĐỘNG
+                            </button>
+                            <button id="btn-buy-item"
+                                class="flex-grow py-5 bg-qi-purple/10 hover:bg-qi-purple/20 text-qi-purple text-xs font-bold rounded-2xl active:scale-95 transition-all uppercase tracking-[0.2em] border border-qi-purple/20 hidden">
+                                TRAO ĐỔI
+                            </button>
+                            <button id="btn-sell-item"
+                                class="flex-grow py-5 bg-red-900/20 hover:bg-red-900/40 text-red-400 text-xs font-bold rounded-2xl active:scale-95 transition-all uppercase tracking-[0.2em] border border-red-500/20 hidden">
+                                GIAO DỊCH
                             </button>
                         </div>
 
