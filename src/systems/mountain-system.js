@@ -54,7 +54,7 @@ export class MountainSystem {
         this.eventCooldown -= delta;
         if (this.eventCooldown <= 0) {
             // Passive events are triggered by the update loop occasionally
-            this.triggerLayerEvent(layer);
+            this.triggerLayerEvent(layer, true);
             this.eventCooldown = 15 + Math.random() * 15;
         }
     }
@@ -96,7 +96,7 @@ export class MountainSystem {
         return true;
     }
 
-    triggerLayerEvent(layer) {
+    triggerLayerEvent(layer, isPassive = false) {
         const luck = this.player.luck || 50;
         const karma = this.player.karma || 0;
         const fateBias = Math.max(-0.25, Math.min(0.25, (luck - 50) / 200 + karma / 4000));
@@ -124,6 +124,8 @@ export class MountainSystem {
             }
             return;
         }
+
+        if (isPassive) return; // Không kích hoạt quái thú phục kích khi đang đứng im
 
         const layerBeasts = MOUNTAIN_BEASTS.filter(b => b.layer === layer.id);
         if (layerBeasts.length > 0 && Math.random() < 0.15) {
