@@ -17,8 +17,8 @@ export class SaveScreen {
         }
     }
 
-    render() {
-        const metadata = SaveSystem.getAllMetadata();
+    async render() {
+        const metadata = await SaveSystem.getAllMetadata();
         
         this.container.innerHTML = `
             <div class="flex flex-col h-full p-6 space-y-8">

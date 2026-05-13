@@ -29,8 +29,8 @@ window.game = game; // Global access cho onclick trong HTML
 window.state = state;
 
 // Khi DOM sẵn sàng, bắt đầu game
-document.addEventListener('DOMContentLoaded', () => {
-    game.init();
+document.addEventListener('DOMContentLoaded', async () => {
+    await game.init();
 });
 
 // --- COMPATIBILITY LAYER ---

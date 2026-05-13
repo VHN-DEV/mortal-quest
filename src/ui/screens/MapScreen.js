@@ -4,6 +4,7 @@ import { getRealmById } from '../../configs/realm-data.js';
 import { ASSETS } from '../../configs/asset-data.js';
 import { getRandomEvent } from '../../configs/event-data.js';
 import { SECTS } from '../../configs/sect-data.js';
+import { Preferences } from '@capacitor/preferences';
 
 /**
  * Quản lý giao diện và logic của màn hình Khám phá / Bản đồ.
@@ -55,27 +56,27 @@ export class MapScreen {
         }
         
         if (this.btnBackToLocs) {
-            this.btnBackToLocs.onclick = () => {
+            this.btnBackToLocs.onclick = async () => {
                 state.ui.toggleOverlay(this.viewExplore, false);
                 state.ui.toggleOverlay(this.viewLocations, true);
-                localStorage.setItem('mortal_quest_map_view', 'locations');
+                await Preferences.set({ key: 'mortal_quest_map_view', value: 'locations' });
                 if (state.systems.time) state.systems.time.timeMultiplier = 1.0;
             };
         }
 
         if (this.btnBackToWorlds) {
-            this.btnBackToWorlds.onclick = () => {
+            this.btnBackToWorlds.onclick = async () => {
                 state.ui.toggleOverlay(this.viewLocations, false);
                 state.ui.toggleOverlay(this.viewWorlds, true);
-                localStorage.setItem('mortal_quest_map_view', 'worlds');
+                await Preferences.set({ key: 'mortal_quest_map_view', value: 'worlds' });
             };
         }
 
         if (this.btnLeaveLoc) {
-            this.btnLeaveLoc.onclick = () => {
+            this.btnLeaveLoc.onclick = async () => {
                 state.ui.toggleOverlay(this.viewExplore, false);
                 state.ui.toggleOverlay(this.viewLocations, true);
-                localStorage.setItem('mortal_quest_map_view', 'locations');
+                await Preferences.set({ key: 'mortal_quest_map_view', value: 'locations' });
                 if (state.systems.time) state.systems.time.timeMultiplier = 1.0;
             };
         }
@@ -84,22 +85,23 @@ export class MapScreen {
     /**
      * Khôi phục chế độ xem từ trạng thái đã lưu
      */
-    restoreView() {
+    async restoreView() {
         if (!state.player) return;
         
-        const savedView = localStorage.getItem('mortal_quest_map_view') || 'worlds';
+        const { value } = await Preferences.get({ key: 'mortal_quest_map_view' });
+        const savedView = value || 'worlds';
         
         // Luôn render world list làm nền nếu cần quay lại
         this.renderWorldList();
 
         if (savedView === 'locations' && state.currentWorldId) {
-            this.selectWorld(state.currentWorldId);
+            await this.selectWorld(state.currentWorldId);
         } else if (savedView === 'explore' && state.currentWorldId && state.currentLocId) {
             // Restore location info and show explore view
             const w = getWorlds()[state.currentWorldId];
             if (w) this.elCurrentWorldName.textContent = w.name;
             
-            this.startExploration(state.currentLocId, false);
+            await this.startExploration(state.currentLocId, false);
         } else {
             // Default to world list
             state.ui.toggleOverlay(this.viewWorlds, true);
@@ -143,13 +145,13 @@ export class MapScreen {
         });
     }
 
-    selectWorld(id) {
+    async selectWorld(id) {
         state.currentWorldId = id;
         const w = getWorlds()[id];
         this.elCurrentWorldName.textContent = w.name;
         state.ui.toggleOverlay(this.viewWorlds, false);
         state.ui.toggleOverlay(this.viewLocations, true);
-        localStorage.setItem('mortal_quest_map_view', 'locations');
+        await Preferences.set({ key: 'mortal_quest_map_view', value: 'locations' });
         this.renderLocationList();
         if (state.systems.time) state.systems.time.timeMultiplier = 1.0;
     }
@@ -188,7 +190,7 @@ export class MapScreen {
         return `danger-${danger}`;
     }
 
-    startExploration(locId, resetProgress = true) {
+    async startExploration(locId, resetProgress = true) {
         state.currentLocId = locId;
         const loc = getLocationById(state.currentWorldId, locId);
         
@@ -220,7 +222,7 @@ export class MapScreen {
         state.ui.toggleOverlay(this.viewWorlds, false);
         state.ui.toggleOverlay(this.viewLocations, false);
         state.ui.toggleOverlay(this.viewExplore, true);
-        localStorage.setItem('mortal_quest_map_view', 'explore');
+        await Preferences.set({ key: 'mortal_quest_map_view', value: 'explore' });
         
         this.updateExplorationUI();
         this.updateEventDisplay('Ngươi đã tới địa điểm.', '🚶');

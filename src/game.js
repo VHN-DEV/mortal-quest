@@ -7,6 +7,7 @@ import { EnemyGenerator } from './core/enemy.js';
 import { getLocationById } from './configs/map-data.js';
 import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
+import { Preferences } from '@capacitor/preferences';
 
 // Import Screens
 import { MapScreen } from './ui/screens/MapScreen.js';
@@ -52,7 +53,7 @@ export class Game {
         this.screens = {};
     }
 
-    init() {
+    async init() {
         console.log("%c🌌 Mortal Quest: Tái cấu trúc thành công!", "color: #4fd1c5; font-size: 14px; font-weight: bold;");
 
         // 1. Khởi tạo UI Core
@@ -75,18 +76,18 @@ export class Game {
         state.systems.creation = new CreationSystem();
 
         // 4. Load dữ liệu & Khởi động
-        SaveSystem.migrateLegacySave();
-        this.showStartScreen();
+        await SaveSystem.migrateLegacySave();
+        await this.showStartScreen();
 
         // 5. Vòng lặp game
         this.startLoop();
 
         // 6. Navigation & Global Events
-        this.initNavigation();
+        await this.initNavigation();
         this.initGlobalEvents();
 
         // 7. Tự động lưu
-        setInterval(() => this.saveGame(), 30000);
+        setInterval(async () => await this.saveGame(), 30000);
     }
 
     initGlobalEvents() {
@@ -161,7 +162,7 @@ export class Game {
         });
     }
 
-    initNavigation() {
+    async initNavigation() {
         const navMappings = {
             'nav-main': 'screen-main',
             'nav-adventure': 'screen-adventure',
@@ -190,14 +191,15 @@ export class Game {
 
         // Restore saved screen if player exists (game is loaded)
         if (state.player) {
-            let savedScreen = localStorage.getItem('mortal_quest_current_screen');
+            const { value } = await Preferences.get({ key: 'mortal_quest_current_screen' });
+            let savedScreen = value;
 
             // Special case: If we were in battle, we reset to adventure screen at the current location
             if (savedScreen === 'screen-battle') {
                 savedScreen = 'screen-adventure';
-                localStorage.setItem('mortal_quest_current_screen', 'screen-adventure');
+                await Preferences.set({ key: 'mortal_quest_current_screen', value: 'screen-adventure' });
                 // Ensure we go back to the explore view
-                localStorage.setItem('mortal_quest_map_view', 'explore');
+                await Preferences.set({ key: 'mortal_quest_map_view', value: 'explore' });
             }
 
             if (savedScreen) {
@@ -208,7 +210,7 @@ export class Game {
                         btn.click();
                         // If it's the adventure screen, we need to restore its sub-view
                         if (savedScreen === 'screen-adventure') {
-                            this.screens.map.restoreView();
+                            await this.screens.map.restoreView();
                         }
                         return;
                     }
@@ -276,9 +278,9 @@ export class Game {
         if (btnChaseGiveup) btnChaseGiveup.onclick = () => this.giveupChase();
     }
 
-    showStartScreen() {
+    async showStartScreen() {
         state.ui.switchScreen('screen-start');
-        this.screens.start.render();
+        await this.screens.start.render();
 
         const elementsToHide = ['header', '#time-hud', 'nav'];
         elementsToHide.forEach(selector => {
@@ -461,7 +463,7 @@ export class Game {
         }
     }
 
-    saveGame() {
+    async saveGame() {
         if (state.player) {
             state.player.currentWorldId = state.currentWorldId;
             state.player.currentLocId = state.currentLocId;
@@ -489,12 +491,12 @@ export class Game {
                 updatedAt: Date.now()
             };
 
-            SaveSystem.save(SaveSystem.currentSlot, data, metadata);
+            await SaveSystem.save(SaveSystem.currentSlot, data, metadata);
         }
     }
 
-    loadSlot(slot) {
-        const savedData = SaveSystem.load(slot);
+    async loadSlot(slot) {
+        const savedData = await SaveSystem.load(slot);
         if (savedData) {
             SaveSystem.currentSlot = slot;
             this.loadGame(savedData);
@@ -518,21 +520,21 @@ export class Game {
         ];
 
         state.ui.promptOptions('Lựa Chọn Hành Trình', options, `Quản lý ô lưu số ${slot}`)
-            .then(action => {
-                if (action === 'load') this.loadSlot(slot);
+            .then(async action => {
+                if (action === 'load') await this.loadSlot(slot);
                 else if (action === 'delete') {
                     state.ui.confirm(`Ngươi có chắc muốn xóa bỏ đạo quả ở ô lưu số ${slot}? Hành động này không thể hoàn tác!`, 'Cảnh Báo Diệt Môn')
-                        .then(confirmed => {
+                        .then(async confirmed => {
                             if (confirmed) {
-                                SaveSystem.deleteSave(slot);
-                                this.screens.save.render();
+                                await SaveSystem.deleteSave(slot);
+                                await this.screens.save.render();
                             }
                         });
                 } else if (action === 'rename') {
                     const newName = prompt('Nhập tên mới:');
                     if (newName) {
-                        SaveSystem.renameSave(slot, newName);
-                        this.screens.save.render();
+                        await SaveSystem.renameSave(slot, newName);
+                        await this.screens.save.render();
                     }
                 } else if (action === 'backup') {
                     state.ui.toast('Tính năng sao lưu đám mây đang được phát triển.', 'info');
@@ -544,9 +546,9 @@ export class Game {
 
     resetGame() {
         state.ui.confirm("Ngươi có chắc chắn muốn xóa sạch toàn bộ dữ liệu (cả 3 slot) để bắt đầu lại từ đầu? Hành động này không thể hoàn tác!", "Xác Nhận Luân Hồi")
-            .then(confirmed => {
+            .then(async confirmed => {
                 if (confirmed) {
-                    SaveSystem.clearAll();
+                    await SaveSystem.clearAll();
                     location.reload();
                 }
             });
@@ -661,12 +663,12 @@ export class Game {
         this.refreshUI();
     }
 
-    breakthrough() {
+    async breakthrough() {
         if (!state.player) return;
         const focus = state.player.cultivationFocus || 'tuvi';
         const result = state.player.breakthrough(focus);
         if (result && result.msg) state.ui.toast(result.msg, result.success ? 'success' : 'error');
-        if (result && result.success) this.saveGame();
+        if (result && result.success) await this.saveGame();
         this.refreshUI();
     }
 

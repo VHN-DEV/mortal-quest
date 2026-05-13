@@ -1,3 +1,5 @@
+import { Preferences } from '@capacitor/preferences';
+
 export class UISystem {
     constructor() {
         this.notifContainer = document.getElementById('notification-container');
@@ -320,7 +322,7 @@ export class UISystem {
     /**
      * Switch between main screens
      */
-    switchScreen(screenId, btn) {
+    async switchScreen(screenId, btn) {
         const screens = document.querySelectorAll('.screen');
         const navButtons = document.querySelectorAll('.nav-item');
         
@@ -344,8 +346,11 @@ export class UISystem {
             btn.classList.remove('text-gray-500');
         }
 
-        // Save current screen to localStorage
-        localStorage.setItem('mortal_quest_current_screen', screenId);
+        // Save current screen to Preferences
+        await Preferences.set({
+            key: 'mortal_quest_current_screen',
+            value: screenId
+        });
 
         // Specific screen refresh logic
         if (screenId === 'screen-main') {

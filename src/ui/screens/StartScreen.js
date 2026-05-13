@@ -18,9 +18,9 @@ export class StartScreen {
         }
     }
 
-    render() {
+    async render() {
         // Highest realm logic for dynamic background
-        const metadata = SaveSystem.getAllMetadata();
+        const metadata = await SaveSystem.getAllMetadata();
         let highestRealmId = 1;
         Object.values(metadata).forEach(meta => {
             if (meta.realmId > highestRealmId) highestRealmId = meta.realmId;
@@ -85,9 +85,9 @@ export class StartScreen {
     bindEvents() {
         const btnStart = document.getElementById('btn-start-new');
         if (btnStart) {
-            btnStart.onclick = () => {
+            btnStart.onclick = async () => {
                 // Find first empty slot or ask to overwrite
-                const metadata = SaveSystem.getAllMetadata();
+                const metadata = await SaveSystem.getAllMetadata();
                 let targetSlot = 1;
                 for (let i = 1; i <= 3; i++) {
                     if (!metadata[i]) {
@@ -103,8 +103,8 @@ export class StartScreen {
 
         const btnContinue = document.getElementById('btn-continue-game');
         if (btnContinue) {
-            btnContinue.onclick = () => {
-                window.game.screens.save.render();
+            btnContinue.onclick = async () => {
+                await window.game.screens.save.render();
                 state.ui.switchScreen('screen-save');
             };
         }
