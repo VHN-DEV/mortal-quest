@@ -280,6 +280,10 @@ export class Game {
             if (el) el.classList.remove('hidden');
         });
 
+        // Switch to the main cultivation screen and render it
+        const mainNavBtn = document.querySelector('.nav-item[onclick*="screen-main"]');
+        state.ui.switchScreen('screen-main', mainNavBtn);
+
         this.refreshUI();
     }
 
@@ -387,6 +391,8 @@ export class Game {
 
     refreshUI() {
         if (!state.player) return;
+        // Render main cultivation screen stats
+        if (typeof window.renderMainStats === 'function') window.renderMainStats();
         this.screens.map.renderWorldList();
         this.screens.inventory.render();
         this.screens.character.render();
