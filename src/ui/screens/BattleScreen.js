@@ -2,6 +2,7 @@ import { state } from '../../state.js';
 import { getFlameById } from '../../configs/alchemy-data.js';
 import { getSecretTechniqueById } from '../../configs/technique-data.js';
 import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
+import { gsap } from 'gsap';
 
 /**
  * Quản lý giao diện và logic của màn hình Chiến Đấu.
@@ -173,9 +174,15 @@ export class BattleScreen {
         const playerHpPercent = (state.player.hp / state.player.maxHp) * 100;
         const playerManaPercent = (state.player.mana / state.player.maxMana) * 100;
         
-        if (this.enemyHpBar) this.enemyHpBar.style.width = `${Math.max(0, enemyHpPercent)}%`;
-        if (this.playerHpBar) this.playerHpBar.style.width = `${Math.max(0, playerHpPercent)}%`;
-        if (this.playerManaBar) this.playerManaBar.style.width = `${Math.max(0, playerManaPercent)}%`;
+        if (this.enemyHpBar) {
+            gsap.to(this.enemyHpBar, { width: `${Math.max(0, enemyHpPercent)}%`, duration: 0.5, ease: "power2.out" });
+        }
+        if (this.playerHpBar) {
+            gsap.to(this.playerHpBar, { width: `${Math.max(0, playerHpPercent)}%`, duration: 0.5, ease: "power2.out" });
+        }
+        if (this.playerManaBar) {
+            gsap.to(this.playerManaBar, { width: `${Math.max(0, playerManaPercent)}%`, duration: 0.5, ease: "power2.out" });
+        }
         
         if (this.enemyHpText) this.enemyHpText.textContent = `${Math.floor(combat.enemy.hp)}/${Math.floor(combat.enemy.maxHp)}`;
         if (this.playerHpText) this.playerHpText.textContent = `${Math.floor(state.player.hp)}/${Math.floor(state.player.maxHp)}`;
@@ -256,6 +263,22 @@ export class BattleScreen {
     showDamage(data) {
         const anchor = data.target === 'enemy' ? this.enemyHpBar : this.playerHpBar;
         state.ui.createDamagePopup(anchor, data.value, data.crit);
+
+        // Shake the target portrait
+        const targetImg = data.target === 'enemy' ? this.enemyImg : this.playerImg;
+        if (targetImg && data.value > 0) {
+            gsap.fromTo(targetImg, 
+                { x: -5 }, 
+                { x: 5, duration: 0.05, repeat: 5, yoyo: true, ease: "none", onComplete: () => {
+                    gsap.set(targetImg, { x: 0 });
+                }}
+            );
+            // Flash red
+            gsap.fromTo(targetImg, 
+                { filter: "brightness(1) sepia(1) saturate(10) hue-rotate(-50deg)" }, 
+                { filter: "brightness(1) sepia(0) saturate(1) hue-rotate(0deg)", duration: 0.4 }
+            );
+        }
     }
 
     updateProfessionTabs() {

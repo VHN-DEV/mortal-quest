@@ -1,4 +1,5 @@
 import { Preferences } from '@capacitor/preferences';
+import { gsap } from 'gsap';
 
 export class UISystem {
     constructor() {
@@ -21,7 +22,7 @@ export class UISystem {
      */
     toast(message, type = 'info', duration = 5000) {
         const toast = document.createElement('div');
-        toast.className = `w-full p-4 bg-cultivation-dark/95 border-l-4 rounded-r-xl shadow-2xl relative overflow-hidden transform translate-y-[-10px] opacity-0 transition-all duration-500 pointer-events-auto flex items-center space-x-3`;
+        toast.className = `w-full p-4 bg-cultivation-dark/95 border-l-4 rounded-r-xl shadow-2xl relative overflow-hidden transform pointer-events-auto flex items-center space-x-3 opacity-0`;
 
         const colors = {
             info: 'border-qi-blue text-qi-blue',
@@ -51,30 +52,33 @@ export class UISystem {
         `;
 
         const closeBtn = toast.querySelector('.toast-close');
+        const closeToast = () => {
+            gsap.to(toast, {
+                y: -20,
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.in",
+                onComplete: () => toast.remove()
+            });
+        };
+
         closeBtn.onclick = (e) => {
             e.stopPropagation();
-            toast.style.transform = 'translateY(-10px)';
-            toast.style.opacity = '0';
-            setTimeout(() => toast.remove(), 500);
+            closeToast();
         };
 
         this.notifContainer.appendChild(toast);
 
-        // Animate in
-        requestAnimationFrame(() => {
-            toast.style.transform = 'translateY(0)';
-            toast.style.opacity = '1';
-        });
+        // Animate in using GSAP
+        gsap.fromTo(toast, 
+            { y: -20, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }
+        );
 
-        // Animate out and remove
-        setTimeout(() => {
-            if (toast.parentElement) {
-                toast.style.transform = 'translateY(-10px)';
-                toast.style.opacity = '0';
-                toast.style.pointerEvents = 'none';
-                setTimeout(() => toast.remove(), 500);
-            }
-        }, duration);
+        // Auto remove after duration
+        gsap.delayedCall(duration / 1000, () => {
+            if (toast.parentElement) closeToast();
+        });
     }
 
     /**
@@ -221,13 +225,17 @@ export class UISystem {
         if (show) {
             el.classList.remove('hidden');
             el.classList.add('flex');
-            // Force reflow for animation
-            el.offsetHeight;
             
             if (el.id === 'guide-overlay' || el.id === 'modal-overlay') {
-                el.classList.add('animate-zoom-in');
+                gsap.fromTo(el, 
+                    { opacity: 0, scale: 0.9, backdropFilter: "blur(0px)" }, 
+                    { opacity: 1, scale: 1, backdropFilter: "blur(8px)", duration: 0.4, ease: "power2.out" }
+                );
             } else {
-                el.classList.add('animate-fade-in');
+                gsap.fromTo(el, 
+                    { opacity: 0 }, 
+                    { opacity: 1, duration: 0.3, ease: "power1.out" }
+                );
             }
 
             // Add to stack if it's a major overlay
@@ -235,20 +243,25 @@ export class UISystem {
                 document.body.classList.add('modal-open');
             }
         } else {
-            el.classList.add('hidden');
-            el.classList.remove('flex', 'animate-fade-in', 'animate-zoom-in');
+            gsap.to(el, {
+                opacity: 0,
+                duration: 0.2,
+                onComplete: () => {
+                    el.classList.add('hidden');
+                    el.classList.remove('flex');
+                    
+                    // Check if any other overlays are still visible
+                    const visibleOverlays = Array.from(document.querySelectorAll('.overlay-full:not(.hidden), .absolute.inset-0:not(.hidden)'))
+                        .filter(node => {
+                            const id = node.id || '';
+                            return id.includes('overlay') || id === 'item-detail' || node.classList.contains('overlay-full');
+                        });
 
-            // Check if any other overlays are still visible
-            // Filter more carefully to avoid background vignettes
-            const visibleOverlays = Array.from(document.querySelectorAll('.overlay-full:not(.hidden), .absolute.inset-0:not(.hidden)'))
-                .filter(node => {
-                    const id = node.id || '';
-                    return id.includes('overlay') || id === 'item-detail' || node.classList.contains('overlay-full');
-                });
-
-            if (visibleOverlays.length === 0) {
-                document.body.classList.remove('modal-open');
-            }
+                    if (visibleOverlays.length === 0) {
+                        document.body.classList.remove('modal-open');
+                    }
+                }
+            });
         }
     }
 
@@ -276,8 +289,8 @@ export class UISystem {
      */
     createDamagePopup(anchor, value, crit) {
         const popup = document.createElement('div');
-        popup.className = `damage-popup ${crit ? 'text-2xl text-yellow-400 scale-125' : 'text-red-500'}`;
-        popup.textContent = `-${value}`;
+        popup.className = `damage-popup font-ancient font-bold pointer-events-none ${crit ? 'text-3xl text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]' : 'text-xl text-red-500'}`;
+        popup.textContent = (value > 0 ? '-' : '+') + Math.abs(value);
 
         const app = document.getElementById('app');
         const appRect = app.getBoundingClientRect();
@@ -287,9 +300,41 @@ export class UISystem {
         popup.style.left = `${rect.left - appRect.left + rect.width / 2}px`;
         popup.style.top = `${rect.top - appRect.top}px`;
         popup.style.zIndex = '1000';
+        popup.style.transform = 'translate(-50%, -50%)';
 
         app.appendChild(popup);
-        setTimeout(() => popup.remove(), 1000);
+
+        // GSAP Animation for damage popup
+        const timeline = gsap.timeline({
+            onComplete: () => popup.remove()
+        });
+
+        if (crit) {
+            timeline.fromTo(popup, 
+                { scale: 0.5, opacity: 0 }, 
+                { scale: 1.5, opacity: 1, duration: 0.2, ease: "back.out(2)" }
+            )
+            .to(popup, {
+                y: -60,
+                x: (Math.random() - 0.5) * 40,
+                opacity: 0,
+                scale: 1,
+                duration: 1.2,
+                ease: "power1.in"
+            }, "+=0.3");
+        } else {
+            timeline.fromTo(popup, 
+                { y: 0, opacity: 0 }, 
+                { y: -30, opacity: 1, duration: 0.3, ease: "power2.out" }
+            )
+            .to(popup, {
+                y: -80,
+                x: (Math.random() - 0.5) * 30,
+                opacity: 0,
+                duration: 0.8,
+                ease: "power1.in"
+            }, "+=0.2");
+        }
     }
 
     /**
@@ -297,26 +342,72 @@ export class UISystem {
      */
     createClickParticle(x, y, type = 'tuvi') {
         const p = document.createElement('div');
-        p.className = 'qi-particle w-2 h-2';
+        p.className = 'qi-particle w-1.5 h-1.5 rounded-full pointer-events-none';
         
         const colors = {
-            tuvi: 'var(--qi-blue)',
-            body: 'var(--qi-red)',
-            soul: 'var(--qi-purple)'
+            tuvi: '#4fd1c5', // qi-blue
+            body: '#ef4444', // qi-red
+            soul: '#a855f7'  // qi-purple
         };
         
         const app = document.getElementById('app');
         const appRect = app.getBoundingClientRect();
+        const color = colors[type] || colors.tuvi;
         
         p.style.position = 'absolute';
         p.style.left = `${x - appRect.left}px`;
         p.style.top = `${y - appRect.top}px`;
         p.style.zIndex = '9999';
-        p.style.background = `radial-gradient(circle, ${colors[type] || colors.tuvi} 0%, transparent 70%)`;
-        p.style.boxShadow = `0 0 10px ${colors[type] || colors.tuvi}`;
+        p.style.background = color;
+        p.style.boxShadow = `0 0 10px ${color}`;
 
         app.appendChild(p);
-        setTimeout(() => p.remove(), 2000);
+
+        // Burst animation with GSAP
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 50 + Math.random() * 100;
+        const targetX = Math.cos(angle) * velocity;
+        const targetY = Math.sin(angle) * velocity;
+
+        gsap.to(p, {
+            x: targetX,
+            y: targetY,
+            opacity: 0,
+            scale: 0,
+            duration: 0.6 + Math.random() * 0.4,
+            ease: "power2.out",
+            onComplete: () => p.remove()
+        });
+    }
+
+    /**
+     * Show a flashy breakthrough effect
+     */
+    showBreakthroughEffect(realmName) {
+        const effect = document.createElement('div');
+        effect.className = 'absolute inset-0 z-[300] flex flex-col items-center justify-center pointer-events-none';
+        effect.innerHTML = `
+            <div class="breakthrough-glow absolute w-64 h-64 bg-cultivation-gold/20 rounded-full blur-[100px] opacity-0"></div>
+            <div class="breakthrough-title opacity-0 scale-50">
+                <h2 class="text-5xl font-charm text-cultivation-gold drop-shadow-[0_0_20px_rgba(212,175,55,0.8)]">ĐỘT PHÁ</h2>
+                <p class="text-xl font-ancient text-white text-center mt-2 tracking-[0.5em] uppercase">${realmName}</p>
+            </div>
+        `;
+        
+        const app = document.getElementById('app');
+        app.appendChild(effect);
+
+        const glow = effect.querySelector('.breakthrough-glow');
+        const title = effect.querySelector('.breakthrough-title');
+
+        const tl = gsap.timeline({
+            onComplete: () => effect.remove()
+        });
+
+        tl.to(glow, { opacity: 1, scale: 2, duration: 0.8, ease: "power2.out" })
+          .to(title, { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" }, "-=0.6")
+          .to(glow, { opacity: 0, scale: 3, duration: 1.5, ease: "power1.in" }, "+=0.5")
+          .to(title, { opacity: 0, y: -50, duration: 0.8, ease: "power2.in" }, "-=1");
     }
 
     /**

@@ -1,6 +1,7 @@
 // import './styles/main.css'; // Removed for static server compatibility
 import { state } from './state.js';
 import { Game } from './game.js';
+import { gsap } from 'gsap';
 
 // Legacy / Specialized Logic Imports (Will be modularized later)
 import { EnemyGenerator, Enemy } from './core/enemy.js';
@@ -63,7 +64,13 @@ window.renderMainStats = () => {
     const elBtnCultivateText = document.getElementById('cultivate-btn-text');
 
     if (elRealm) elRealm.textContent = realm.name;
-    if (elProgress) elProgress.style.width = `${Math.min(100, progress)}%`;
+    if (elProgress) {
+        gsap.to(elProgress, { 
+            width: `${Math.min(100, progress)}%`, 
+            duration: 0.6, 
+            ease: "power2.out" 
+        });
+    }
     if (elTuViText) elTuViText.textContent = `${Math.floor(player.tuVi).toLocaleString()} / ${realm.expRequired.toLocaleString()}`;
 
     let tvps = player.tuViPerSecond;
@@ -79,8 +86,13 @@ window.renderMainStats = () => {
     const soulRealm = player.getCurrentRealm('soul');
     const bodyPercent = Math.min(100, (player.bodyExp / bodyRealm.expRequired) * 100);
     const soulPercent = Math.min(100, (player.soulExp / soulRealm.expRequired) * 100);
-    if (elBodyProgress) elBodyProgress.style.width = `${bodyPercent}%`;
-    if (elSoulProgress) elSoulProgress.style.width = `${soulPercent}%`;
+    
+    if (elBodyProgress) {
+        gsap.to(elBodyProgress, { width: `${bodyPercent}%`, duration: 0.8, ease: "power2.out" });
+    }
+    if (elSoulProgress) {
+        gsap.to(elSoulProgress, { width: `${soulPercent}%`, duration: 0.8, ease: "power2.out" });
+    }
     if (elBodyText) elBodyText.textContent = `${Math.floor(bodyPercent)}%`;
     if (elSoulText) elSoulText.textContent = `${Math.floor(soulPercent)}%`;
 

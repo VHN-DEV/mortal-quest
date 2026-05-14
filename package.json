@@ -27,6 +27,7 @@
     "@fontsource/charm": "^5.2.7",
     "@fontsource/eb-garamond": "^5.2.7",
     "@fontsource/noto-serif": "^5.2.9",
-    "@phosphor-icons/web": "^2.1.2"
+    "@phosphor-icons/web": "^2.1.2",
+    "gsap": "^3.15.0"
   }
 }

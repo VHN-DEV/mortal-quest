@@ -729,7 +729,10 @@ export class Game {
         const focus = state.player.cultivationFocus || 'tuvi';
         const result = state.player.breakthrough(focus);
         if (result && result.msg) state.ui.toast(result.msg, result.success ? 'success' : 'error');
-        if (result && result.success) await this.saveGame();
+        if (result && result.success) {
+            state.ui.showBreakthroughEffect(state.player.getCurrentRealm(focus).name);
+            await this.saveGame();
+        }
         this.refreshUI();
     }
 
