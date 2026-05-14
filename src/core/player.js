@@ -389,7 +389,7 @@ export class Player {
     }
 
     crushStone(itemId, count = 1) {
-        const ss = window.game?.systems.spiritStone;
+        const ss = state.systems.spiritStone;
         if (ss) {
             return ss.crushStone(itemId, count);
         }

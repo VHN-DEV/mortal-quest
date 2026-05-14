@@ -103,7 +103,7 @@ export class SpiritStoneSystem {
         const totalQi = baseQi * quality.multiplier * attrBonus * count;
 
         // Hấp thụ qua Energy System
-        const es = window.energySystem || this.player.energySystem;
+        const es = state.systems.energy;
         if (es) {
             const qiType = this.mapAttributeToQiType(item.attribute);
             const result = es.absorbQi(qiType, totalQi, item.quality_tier || 'TINH_THUAN');

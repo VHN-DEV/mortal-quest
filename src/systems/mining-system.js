@@ -79,7 +79,7 @@ export class MiningSystem {
 
         this.player.stamina -= action.staminaCost;
         
-        const now = window.game?.systems.time?.totalMinutes || 0;
+        const now = state.systems.time?.totalMinutes || 0;
         this.player.miningState.occupiedNodes.push({
             nodeId: nodeId,
             startTime: now,
@@ -101,7 +101,7 @@ export class MiningSystem {
         if (!occupied) return { success: false, msg: "Bạn không chiếm lĩnh linh mạch này." };
 
         const node = MINING_NODES.find(n => n.id === nodeId);
-        const now = window.game?.systems.time?.totalMinutes || 0;
+        const now = state.systems.time?.totalMinutes || 0;
         const elapsedMinutes = now - occupied.lastClaimTime;
 
         if (elapsedMinutes < 60) {

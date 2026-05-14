@@ -52,7 +52,7 @@ export class MiningScreen {
         const nextLevelExp = ms.miningLevel * 1000;
         this.elExpBar.style.width = `${(ms.miningExp / nextLevelExp) * 100}%`;
         
-        const mSystem = window.game.systems.mining;
+        const mSystem = state.systems.mining;
         this.elSlotsText.textContent = `${ms.occupiedNodes.length} / ${mSystem.getMaxOccupiedSlots()}`;
         this.elStaminaText.textContent = `${Math.floor(state.player.stamina)} / ${state.player.maxStamina}`;
 
@@ -131,7 +131,7 @@ export class MiningScreen {
             const el = document.createElement('div');
             el.className = 'p-4 bg-white/5 border border-qi-blue/30 rounded-2xl space-y-4';
             
-            const now = window.game?.systems.time?.totalMinutes || 0;
+            const now = state.systems.time?.totalMinutes || 0;
             const elapsed = now - occupied.lastClaimTime;
             const hours = Math.floor(elapsed / 60);
 
