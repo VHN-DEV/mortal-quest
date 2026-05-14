@@ -301,7 +301,7 @@ window.renderCreationScreen = () => {
                 <div class="flex justify-between items-start border-b border-white/5 pb-1">
                     <span class="opacity-60">Linh căn</span>
                     <div class="text-right">
-                        <div class="font-medium">${root.name}</div>
+                        <div class="font-medium">${root.name} <span class="text-[8px] text-qi-blue">(${root.purity}%)</span></div>
                         <div class="text-[8px] text-qi-blue opacity-80">${rootElementsStr}</div>
                     </div>
                 </div>
@@ -335,11 +335,26 @@ window.renderCreationScreen = () => {
             return acc;
         }, {});
 
-        const sumFlat = (key) => (raceBonus[key] || 0) + (rootBonus[key] || 0) + (physBonus[key] || 0) + (traitBonus[key] || 0);
+        // Elemental bonuses
+        const elementBonus = sys.selectedRootElements.reduce((acc, elName) => {
+            const el = ROOT_ELEMENTS[elName] || SPECIAL_ELEMENTS[elName];
+            if (el && el.bonus) {
+                Object.entries(el.bonus).forEach(([k, v]) => {
+                    if (['fireDmg', 'waterDmg', 'thunderDmg', 'poisonDmg', 'skillDmg', 'dotDmg', 'qiAbsorb'].includes(k)) {
+                        acc[k] = (acc[k] || 1) * v;
+                    } else {
+                        acc[k] = (acc[k] || 0) + v;
+                    }
+                });
+            }
+            return acc;
+        }, {});
+
+        const sumFlat = (key) => (raceBonus[key] || 0) + (rootBonus[key] || 0) + (physBonus[key] || 0) + (traitBonus[key] || 0) + (elementBonus[key] || 0);
 
         // Multiplier logic for TVPS & Qi Absorb
-        const tvpsBonus = (raceBonus.tvps || 1) * (rootBonus.tvps || 1) * (physBonus.tvps || 1) * (traitBonus.tvps || 1);
-        const qiBonus = (raceBonus.qiAbsorb || 1) * (rootBonus.qiAbsorb || 1) * (physBonus.qiAbsorb || 1) * (traitBonus.qiAbsorb || 1);
+        const tvpsBonus = (raceBonus.tvps || 1) * (rootBonus.tvps || 1) * (physBonus.tvps || 1) * (traitBonus.tvps || 1) * (elementBonus.tvps || 1);
+        const qiBonus = (raceBonus.qiAbsorb || 1) * (rootBonus.qiAbsorb || 1) * (physBonus.qiAbsorb || 1) * (traitBonus.qiAbsorb || 1) * (elementBonus.qiAbsorb || 1);
 
         const previewStats = [
             { label: 'Công', value: base.atk + sumFlat('atk'), color: 'text-red-400' },
@@ -507,10 +522,13 @@ window.renderCreationScreen = () => {
                                 const elActive = sys.selectedRootElements.includes(e.name);
                                 return `
                                     <button onclick="event.stopPropagation(); window.game.toggleCreationRootElement('${e.name}')" 
-                                        class="px-2 py-1 rounded-md border text-[8px] flex items-center gap-1 transition-all
+                                        class="px-2 py-1 rounded-md border text-[8px] flex flex-col items-center gap-0.5 transition-all
                                         ${elActive ? 'bg-qi-blue/20 border-qi-blue text-white shadow-[0_0_8px_rgba(77,158,255,0.2)]' : 'bg-black/40 border-white/10 text-gray-400 opacity-60 hover:opacity-100'}">
-                                        <span>${e.icon}</span>
-                                        <span class="font-ancient">${e.name}</span>
+                                        <div class="flex items-center gap-1">
+                                            <span>${e.icon}</span>
+                                            <span class="font-ancient">${e.name}</span>
+                                        </div>
+                                        <div class="text-[6px] opacity-60 italic text-center w-full max-w-[50px] truncate">${e.orientation}</div>
                                     </button>
                                 `;
                             }).join('')}

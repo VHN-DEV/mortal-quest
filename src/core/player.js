@@ -5,7 +5,7 @@ import { getItemById } from '../configs/item-data.js';
 import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_QUALITIES, MASTERY_LEVELS } from '../configs/technique-data.js';
 import { getPhysiqueById, getPhysiqueAwakenBonus, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../configs/physique-data.js';
 import { ARTIFACT_SETS } from '../configs/artifact-data.js';
-import { CREATION_TRAITS } from '../configs/creation-data.js';
+import { CREATION_TRAITS, ROOT_ELEMENTS, SPECIAL_ELEMENTS } from '../configs/creation-data.js';
 import { TITLES } from '../configs/fate-data.js';
 
 export class Player {
@@ -216,18 +216,31 @@ export class Player {
         this.qiAccumulated = {}; // { [qiId]: { amount: 0, purity: 'TINH_THUAN' } }
         this.currentEnvironmentalQi = null; // { type, concentration, purity }
 
-        // --- Advanced Stats (Artifacts) ---
+        // --- Advanced Stats (Artifacts & Elements) ---
         this.advancedStats = {
             pierce: 0,
             soulPierce: 0,
             critRate: 0.05, 
             critDmg: 1.5,   
             fireDmg: 1.0,   
+            waterDmg: 1.0,
+            thunderDmg: 1.0,
+            poisonDmg: 1.0,
             qiAbsorb: 1.0,  
             lifeSteal: 0,
             soulRepress: 0,
             daoVun: 0,
-            murderQi: 0
+            murderQi: 0,
+            armorPen: 0,
+            hpRegen: 0,
+            poisonRes: 0,
+            avoidRate: 0,
+            crowdControl: 0,
+            skillDmg: 1.0,
+            statusRes: 0,
+            iceControl: 0,
+            dotDmg: 1.0,
+            lifesteal: 0
         };
 
         this.equipmentMetadata = {}; // { [slot]: { spirit, level, durability, extraStat: { type, value } } }
@@ -812,6 +825,28 @@ export class Player {
                 if (b.maxHp) this.baseStats.maxHp += b.maxHp;
                 if (b.maxAge) this.bonusStats.maxAge += b.maxAge;
                 if (b.qiAbsorb) this.advancedStats.qiAbsorb *= b.qiAbsorb;
+            }
+
+            // Apply Elemental Bonuses
+            if (this.spiritualRoot.elements) {
+                this.spiritualRoot.elements.forEach(elName => {
+                    const elData = ROOT_ELEMENTS[elName] || SPECIAL_ELEMENTS[elName];
+                    if (elData && elData.bonus) {
+                        Object.entries(elData.bonus).forEach(([key, val]) => {
+                            if (this.advancedStats.hasOwnProperty(key)) {
+                                if (['fireDmg', 'waterDmg', 'thunderDmg', 'poisonDmg', 'skillDmg', 'dotDmg', 'qiAbsorb'].includes(key)) {
+                                    this.advancedStats[key] *= val;
+                                } else {
+                                    this.advancedStats[key] += val;
+                                }
+                            } else if (this.baseStats.hasOwnProperty(key)) {
+                                this.baseStats[key] += val;
+                            } else if (this.bonusStats.hasOwnProperty(key)) {
+                                this.bonusStats[key] += val;
+                            }
+                        });
+                    }
+                });
             }
         }
 

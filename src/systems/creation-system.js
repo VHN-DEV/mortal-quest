@@ -45,6 +45,8 @@ export class CreationSystem {
             this.selectedRootElements = ['Hỏa']; // Default
         } else if (rootId === 'di_linh_can') {
             this.selectedRootElements = ['Lôi']; // Default
+        } else if (rootId === 'don_linh_can') {
+            this.selectedRootElements = ['Hỏa'];
         } else if (rootId === 'song_linh_can') {
             this.selectedRootElements = ['Kim', 'Mộc'];
         } else if (rootId === 'tam_linh_can') {
@@ -62,6 +64,7 @@ export class CreationSystem {
         const maxElements = {
             'thien_linh_can': 1,
             'di_linh_can': 1,
+            'don_linh_can': 1,
             'song_linh_can': 2,
             'tam_linh_can': 3,
             'tap_linh_can': 4

@@ -12,27 +12,99 @@ export const CREATION_RACES = {
 };
 
 export const CREATION_ROOTS = {
-    'thien_linh_can': { id: 'thien_linh_can', name: 'Thiên Linh Căn', cost: 100, type: 'special', desc: 'Đơn linh căn thuần khiết nhất. Tốc độ tu luyện x4, tăng mạnh khả năng hấp thu linh khí thuộc tính.', bonus: { tvps: 4.0, qiAbsorb: 1.5, luck: 10 } },
-    'di_linh_can': { id: 'di_linh_can', name: 'Dị Linh Căn', cost: 70, type: 'special', desc: 'Lôi/Băng/Phong... Thuộc tính hiếm thấy. Tăng mạnh sát thương và tốc độ tu luyện x2.5.', bonus: { tvps: 2.5, atk: 25, qiAbsorb: 1.2 } },
-    'song_linh_can': { id: 'song_linh_can', name: 'Song Linh Căn', cost: 30, type: 'normal', desc: 'Hai loại linh căn. Tốc độ tu luyện x1.8.', bonus: { tvps: 1.8 } },
-    'tam_linh_can': { id: 'tam_linh_can', name: 'Tam Linh Căn', cost: 10, type: 'normal', desc: 'Ba loại linh căn. Tốc độ tu luyện x1.2.', bonus: { tvps: 1.2 } },
-    'ngu_hanh_linh_can': { id: 'ngu_hanh_linh_can', name: 'Ngũ Hành Linh Căn', cost: 0, type: 'normal', desc: 'Đầy đủ ngũ hành. Tu luyện cân bằng nhưng chậm.', bonus: { tvps: 1.0, qiAbsorb: 1.1 } },
-    'tap_linh_can': { id: 'tap_linh_can', name: 'Tạp Linh Căn', cost: -40, type: 'debuff', desc: 'Linh căn hỗn tạp. Tu luyện cực chậm nhưng ý chí bền bỉ, thọ nguyên dài.', bonus: { tvps: 0.5, maxHp: 80, maxAge: 50 } }
+    'thien_linh_can': { 
+        id: 'thien_linh_can', name: 'Thiên Linh Căn', cost: 100, type: 'special', 
+        purity: 100,
+        desc: 'Linh căn hoàn mỹ, thiên tài tuyệt thế. Hấp thu linh khí gần như không hao tổn.', 
+        bonus: { tvps: 4.0, qiAbsorb: 2.0, luck: 20, breakthroughChance: 0.2, heartDemonRes: 0.3 } 
+    },
+    'di_linh_can': { 
+        id: 'di_linh_can', name: 'Dị Linh Căn', cost: 70, type: 'special', 
+        purity: 90,
+        desc: 'Linh căn biến dị hiếm gặp (Lôi/Băng/Phong/Độc). Sức mạnh vượt xa tu sĩ bình thường.', 
+        bonus: { tvps: 2.5, atk: 25, qiAbsorb: 1.2 } 
+    },
+    'don_linh_can': { 
+        id: 'don_linh_can', name: 'Đơn Linh Căn', cost: 50, type: 'basic', 
+        purity: 85,
+        desc: 'Chỉ một thuộc tính tinh thuần cực cao. Tốc độ tu luyện vượt trội.', 
+        bonus: { tvps: 2.0, qiAbsorb: 1.1 } 
+    },
+    'song_linh_can': { 
+        id: 'song_linh_can', name: 'Song Linh Căn', cost: 30, type: 'basic', 
+        purity: 60,
+        desc: 'Hai thuộc tính chính. Tu luyện khá nhanh, có thể build song hệ.', 
+        bonus: { tvps: 1.8 } 
+    },
+    'tam_linh_can': { 
+        id: 'tam_linh_can', name: 'Tam Linh Căn', cost: 10, type: 'basic', 
+        purity: 40,
+        desc: 'Ba loại linh căn. Tốc độ tu luyện trung bình.', 
+        bonus: { tvps: 1.2 } 
+    },
+    'ngu_hanh_linh_can': { 
+        id: 'ngu_hanh_linh_can', name: 'Ngũ Hành', cost: 0, type: 'basic', 
+        purity: 50,
+        desc: 'Đầy đủ ngũ hành. Tốc độ tu luyện bình thường nhưng căn cơ vững chắc.', 
+        bonus: { qiAbsorb: 1.1 } 
+    },
+    'tap_linh_can': { 
+        id: 'tap_linh_can', name: 'Tạp Linh Căn', cost: -20, type: 'basic', 
+        purity: 20,
+        desc: 'Nhiều thuộc tính pha tạp, hấp thu linh khí chậm, khó đột phá.', 
+        bonus: { tvps: 0.7, breakthroughChance: -0.1 } 
+    }
 };
 
 export const ROOT_ELEMENTS = {
-    'Kim': { id: 'Kim', name: 'Kim', color: '#ffd700', icon: '⚔️' },
-    'Mộc': { id: 'Mộc', name: 'Mộc', color: '#4ade80', icon: '🌿' },
-    'Thủy': { id: 'Thủy', name: 'Thủy', color: '#3b82f6', icon: '💧' },
-    'Hỏa': { id: 'Hỏa', name: 'Hỏa', color: '#f87171', icon: '🔥' },
-    'Thổ': { id: 'Thổ', name: 'Thổ', color: '#a855f7', icon: '⛰️' }
+    'Kim': { 
+        id: 'Kim', name: 'Kim', color: '#ffd700', icon: '⚔️',
+        orientation: 'Công kích, Sắc bén',
+        bonus: { atk: 50, critRate: 0.05, armorPen: 0.1 } 
+    },
+    'Mộc': { 
+        id: 'Mộc', name: 'Mộc', color: '#4ade80', icon: '🌿',
+        orientation: 'Sinh mệnh, Hồi phục',
+        bonus: { maxHp: 200, hpRegen: 10, poisonRes: 0.2 } 
+    },
+    'Thủy': { 
+        id: 'Thủy', name: 'Thủy', color: '#3b82f6', icon: '💧',
+        orientation: 'Mềm dẻo, Khống chế',
+        bonus: { maxMana: 300, avoidRate: 0.05, crowdControl: 0.1 } 
+    },
+    'Hỏa': { 
+        id: 'Hỏa', name: 'Hỏa', color: '#f87171', icon: '🔥',
+        orientation: 'Bộc phát, Hủy diệt',
+        bonus: { skillDmg: 0.15, fireDmg: 1.5, spd: 20 } 
+    },
+    'Thổ': { 
+        id: 'Thổ', name: 'Thổ', color: '#a855f7', icon: '⛰️',
+        orientation: 'Phòng ngự, Ổn định',
+        bonus: { def: 40, maxHp: 300, statusRes: 0.15 } 
+    }
 };
 
 export const SPECIAL_ELEMENTS = {
-    'Lôi': { id: 'Lôi', name: 'Lôi', color: '#fbbf24', icon: '⚡' },
-    'Băng': { id: 'Băng', name: 'Băng', color: '#60a5fa', icon: '❄️' },
-    'Phong': { id: 'Phong', name: 'Phong', color: '#94a3b8', icon: '🌪️' },
-    'Độc': { id: 'Độc', name: 'Độc', color: '#c084fc', icon: '☠️' }
+    'Lôi': { 
+        id: 'Lôi', name: 'Lôi', color: '#fbbf24', icon: '⚡',
+        orientation: 'Tốc độ, Bạo phát',
+        bonus: { spd: 50, critRate: 0.1, thunderDmg: 2.5 } 
+    },
+    'Băng': { 
+        id: 'Băng', name: 'Băng', color: '#60a5fa', icon: '❄️',
+        orientation: 'Đóng băng, Khống chế',
+        bonus: { def: 60, waterDmg: 2.0, iceControl: 0.2 } 
+    },
+    'Phong': { 
+        id: 'Phong', name: 'Phong', color: '#94a3b8', icon: '🌪️',
+        orientation: 'Né tránh, Ám sát',
+        bonus: { avoidRate: 0.15, spd: 80, critDmg: 0.3 } 
+    },
+    'Độc': { 
+        id: 'Độc', name: 'Độc', color: '#c084fc', icon: '☠️',
+        orientation: 'Nguyền rủa, Hấp thụ',
+        bonus: { poisonDmg: 2.0, lifesteal: 0.1, dotDmg: 0.2 } 
+    }
 };
 
 export const CREATION_PHYSIQUES = {
