@@ -336,7 +336,7 @@ export class Game {
                     currentLayer: state.systems.mountain.currentLayer
                 };
             }
-            
+
             const metadata = {
                 name: state.player.name,
                 realm: state.player.getCurrentRealm().name,
@@ -349,7 +349,6 @@ export class Game {
             };
 
             await SaveSystem.save(SaveSystem.currentSlot, data, metadata);
-            state.ui.toast(`Đã lưu Đạo Quả vào ô số ${SaveSystem.currentSlot}`, 'success');
         }
     }
 
