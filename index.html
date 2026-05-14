@@ -2493,45 +2493,137 @@
                 <!-- Battle Log & Actions -->
                 <div class="flex-none p-6 space-y-4 bg-gradient-to-t from-black to-transparent">
                     <div id="battle-log"
-                        class="h-20 overflow-y-auto text-[10px] text-gray-400 font-serif italic space-y-1 custom-scroll mask-fade-top">
+                        class="h-16 overflow-y-auto text-[10px] text-gray-400 font-serif italic space-y-1 custom-scroll mask-fade-top mb-2">
                         <p>Bắt đầu cuộc chiến...</p>
                     </div>
 
-                    <div id="battle-actions" class="grid grid-cols-4 gap-2">
-                        <button id="btn-attack" class="battle-action-btn bg-qi-blue/10 border-qi-blue/30 text-qi-blue">
-                            <i class="ph ph-sword mb-1 text-lg"></i>
-                            <span>CÔNG</span>
-                        </button>
-                        <button id="btn-defend" class="battle-action-btn bg-qi-jade/10 border-qi-jade/30 text-qi-jade">
-                            <i class="ph ph-shield mb-1 text-lg"></i>
-                            <span>THỦ</span>
-                        </button>
-                        <button id="btn-skill"
-                            class="battle-action-btn bg-qi-purple/10 border-qi-purple/30 text-qi-purple">
-                            <i class="ph ph-sparkles mb-1 text-lg"></i>
-                            <span>THUẬT</span>
-                        </button>
-                        <button id="btn-secret"
-                            class="battle-action-btn bg-cultivation-gold/10 border-cultivation-gold/30 text-cultivation-gold">
-                            <i class="ph ph-scroll mb-1 text-lg"></i>
-                            <span>BÍ PHÁP</span>
-                        </button>
+                    <!-- Chanting / Preparation Bar -->
+                    <div id="battle-chanting-container" class="hidden w-full space-y-1 mb-2">
+                        <div class="flex justify-between items-center px-1">
+                            <span class="text-[8px] text-cultivation-gold uppercase tracking-widest font-bold animate-pulse">Đang Niệm Chú...</span>
+                            <span id="chanting-turns" class="text-[9px] font-mono text-cultivation-gold">Còn 2 lượt</span>
+                        </div>
+                        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                            <div id="chanting-progress" class="h-full bg-gradient-to-r from-cultivation-gold to-orange-500 transition-all duration-700" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <div class="relative bg-black/40 rounded-2xl border border-white/5 p-2">
+                        <!-- Combat Tabs -->
+                        <div id="battle-tabs" class="flex space-x-1 overflow-x-auto custom-scrollbar-hidden pb-1 mb-2 border-b border-white/5">
+                            <button data-tab="cong" class="combat-tab active" title="Công kích cơ bản">CÔNG</button>
+                            <button data-tab="thuat" class="combat-tab" title="Thuật pháp & Bí thuật">THUẬT</button>
+                            <button data-tab="thu" class="combat-tab" title="Phòng thủ & Hộ thân">THỦ</button>
+                            <button data-tab="dan" class="combat-tab" title="Sử dụng đan dược">ĐAN</button>
+                            <button data-tab="phu" class="combat-tab hidden" title="Phù lục">PHÙ</button>
+                            <button data-tab="tran" class="combat-tab hidden" title="Trận pháp">TRẬN</button>
+                            <button data-tab="loi" class="combat-tab hidden" title="Khôi lỗi">LỖI</button>
+                            <button data-tab="thi" class="combat-tab hidden" title="Luyện thi">THI</button>
+                            <button data-tab="thu-thu" class="combat-tab hidden" title="Ngự thú">THÚ</button>
+                            <button data-tab="trung" class="combat-tab hidden" title="Kỳ trùng">TRÙNG</button>
+                            <button data-tab="hon" class="combat-tab hidden" title="Hồn đạo">HỒN</button>
+                            <button data-tab="khac" class="combat-tab" title="Khác (Đào tẩu)">KHÁC</button>
+                        </div>
+
+                        <!-- Tab Content Areas -->
+                        <div id="battle-tab-content" class="min-h-[100px]">
+                            <!-- Tab: CÔNG -->
+                            <div id="tab-cong" class="tab-pane grid grid-cols-2 gap-2">
+                                <button id="btn-attack" class="battle-action-btn-new">
+                                    <i class="ph ph-sword"></i>
+                                    <span>Tấn Công</span>
+                                </button>
+                                <button id="btn-sword-intent" class="battle-action-btn-new hidden">
+                                    <i class="ph ph-flame"></i>
+                                    <span>Kiếm Ý</span>
+                                </button>
+                            </div>
+
+                            <!-- Tab: THUẬT -->
+                            <div id="tab-thuat" class="tab-pane hidden grid grid-cols-2 gap-2">
+                                <button id="btn-skill" class="battle-action-btn-new">
+                                    <i class="ph ph-sparkles"></i>
+                                    <span>Linh Thuật</span>
+                                </button>
+                                <button id="btn-secret" class="battle-action-btn-new">
+                                    <i class="ph ph-scroll"></i>
+                                    <span>Bí Pháp</span>
+                                </button>
+                                <button id="btn-flame" class="battle-action-btn-new hidden">
+                                    <i class="ph ph-fire"></i>
+                                    <span>Dị Hỏa</span>
+                                </button>
+                            </div>
+
+                            <!-- Tab: THỦ -->
+                            <div id="tab-thu" class="tab-pane hidden grid grid-cols-2 gap-2">
+                                <button id="btn-defend" class="battle-action-btn-new">
+                                    <i class="ph ph-shield"></i>
+                                    <span>Phòng Thủ</span>
+                                </button>
+                                <button id="btn-dodge" class="battle-action-btn-new">
+                                    <i class="ph ph-sneaker"></i>
+                                    <span>Né Tránh</span>
+                                </button>
+                            </div>
+
+                            <!-- Tab: ĐAN -->
+                            <div id="tab-dan" class="tab-pane hidden grid grid-cols-1 gap-2">
+                                <button id="btn-potion" class="battle-action-btn-new">
+                                    <i class="ph ph-flask"></i>
+                                    <span>Dùng Đan Dược</span>
+                                </button>
+                            </div>
+
+                            <!-- Other tabs will follow the same pattern, rendered dynamically or kept hidden -->
+                            <div id="tab-phu" class="tab-pane hidden grid grid-cols-1 gap-2">
+                                <button id="btn-talisman" class="battle-action-btn-new">
+                                    <i class="ph ph-note"></i>
+                                    <span>Kích Hoạt Phù</span>
+                                </button>
+                            </div>
+                            <div id="tab-tran" class="tab-pane hidden grid grid-cols-1 gap-2">
+                                <button id="btn-formation" class="battle-action-btn-new">
+                                    <i class="ph ph-circles-three"></i>
+                                    <span>Bố Trận</span>
+                                </button>
+                            </div>
+                            <div id="tab-loi" class="tab-pane hidden grid grid-cols-1 gap-2">
+                                <button id="btn-puppet" class="battle-action-btn-new">
+                                    <i class="ph ph-robot"></i>
+                                    <span>Điều Khiển Lỗi</span>
+                                </button>
+                            </div>
+                            <div id="tab-thi" class="tab-pane hidden grid grid-cols-1 gap-2">
+                                <button id="btn-corpse" class="battle-action-btn-new">
+                                    <i class="ph ph-skull"></i>
+                                    <span>Triệu Hồi Thi</span>
+                                </button>
+                            </div>
+                            <div id="tab-thu-thu" class="tab-pane hidden grid grid-cols-1 gap-2">
+                                <button id="btn-beast" class="battle-action-btn-new">
+                                    <i class="ph ph-dog"></i>
+                                    <span>Linh Thú</span>
+                                </button>
+                            </div>
+                            <div id="tab-trung" class="tab-pane hidden grid grid-cols-1 gap-2">
+                                <button id="btn-insect" class="battle-action-btn-new">
+                                    <i class="ph ph-bug"></i>
+                                    <span>Kỳ Trùng</span>
+                                </button>
+                            </div>
+                            <div id="tab-khac" class="tab-pane hidden grid grid-cols-1 gap-2">
+                                <button id="btn-escape" class="battle-action-btn-new">
+                                    <i class="ph ph-running"></i>
+                                    <span>Đào Tẩu</span>
+                                </button>
+                            </div>
+                        </div>
 
                         <!-- Hidden List for Secrets -->
                         <div id="battle-secret-list"
-                            class="hidden absolute bottom-40 left-6 right-6 p-4 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl z-50 space-y-2 max-h-48 overflow-y-auto custom-scroll">
+                            class="hidden absolute bottom-full left-0 right-0 mb-2 p-4 bg-black/95 backdrop-blur-2xl border border-white/10 rounded-2xl z-50 space-y-2 max-h-48 overflow-y-auto custom-scroll shadow-2xl">
                         </div>
-
-                        <!-- Profession Buttons (Dynamic) -->
-                        <button id="btn-potion" class="battle-action-btn-sm">ĐAN</button>
-                        <button id="btn-talisman" class="battle-action-btn-sm">PHÙ</button>
-                        <button id="btn-beast" class="battle-action-btn-sm">THÚ</button>
-                        <button id="btn-flame" class="battle-action-btn-sm hidden">HỎA</button>
-                        <button id="btn-formation" class="battle-action-btn-sm">TRẬN</button>
-                        <button id="btn-puppet" class="battle-action-btn-sm">LỖI</button>
-                        <button id="btn-corpse" class="battle-action-btn-sm">THI</button>
-                        <button id="btn-insect" class="battle-action-btn-sm">TRÙNG</button>
-                        <button id="btn-escape" class="battle-action-btn-sm col-span-2">ĐÀO TẨU</button>
                     </div>
                 </div>
             </div>

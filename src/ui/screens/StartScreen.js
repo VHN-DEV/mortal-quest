@@ -43,7 +43,7 @@ export class StartScreen {
                 <div class="flex flex-col items-center space-y-4 animate-fade-in">
                     <div class="w-32 h-32 md:w-48 md:h-48 relative">
                         <div class="absolute inset-0 bg-cultivation-gold/20 blur-3xl rounded-full animate-pulse"></div>
-                        <img src="${ASSETS.logos.main}" class="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(212,175,55,0.5)]">
+                        <img src="${ASSETS.logos.main}" class="w-full h-full rounded-2xl object-contain relative z-10 drop-shadow-[0_0_20px_rgba(212,175,55,0.5)]">
                     </div>
                     <h1 class="text-4xl md:text-6xl font-charm text-white tracking-tighter text-glow text-center">
                         PHÀM NHÂN <span class="text-cultivation-gold">VẤN ĐẠO</span>

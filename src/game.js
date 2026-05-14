@@ -988,8 +988,10 @@ export class Game {
     }
 
     startBattle(worldId, locId, ambushType = null, providedEnemy = null) {
-        const loc = getLocationById(worldId, locId);
-        const enemy = providedEnemy || EnemyGenerator.generate(loc.dangerLevel || 1);
+        const loc = (typeof getLocationById === 'function') ? getLocationById(worldId, locId) : { dangerLevel: 1 };
+        const enemy = providedEnemy || (typeof EnemyGenerator !== 'undefined' ? EnemyGenerator.generate(loc.dangerLevel || 1) : { name: 'Yêu Thú', hp: 100, maxHp: 100, atk: 10, def: 10, spd: 10 });
+
+        const environment = loc.environment || 'NORMAL';
 
         state.currentCombat = new CombatEngine(
             state.player,
@@ -999,7 +1001,8 @@ export class Game {
                 this.screens.battle.close();
                 this.refreshUI();
             },
-            ambushType
+            ambushType,
+            environment
         );
 
         this.screens.battle.render('start');

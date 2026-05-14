@@ -38,10 +38,15 @@ export class BattleScreen {
         this.battleBg = document.getElementById('battle-bg');
         this.timeline = document.getElementById('battle-timeline');
         
-        // Actions
-        this.actionContainer = document.getElementById('battle-actions');
+        // Actions & Tabs
+        this.tabs = document.querySelectorAll('.combat-tab');
+        this.panes = document.querySelectorAll('.tab-pane');
+        this.actionContainer = document.querySelector('#battle-tab-content').parentElement;
+
         this.btnAttack = document.getElementById('btn-attack');
+        this.btnSwordIntent = document.getElementById('btn-sword-intent');
         this.btnDefend = document.getElementById('btn-defend');
+        this.btnDodge = document.getElementById('btn-dodge');
         this.btnSkill = document.getElementById('btn-skill');
         this.btnFlame = document.getElementById('btn-flame');
         this.btnSecret = document.getElementById('btn-secret');
@@ -53,13 +58,25 @@ export class BattleScreen {
         this.btnCorpse = document.getElementById('btn-corpse');
         this.btnInsect = document.getElementById('btn-insect');
         this.btnEscape = document.getElementById('btn-escape');
-        this.secretCursor = 0;
+
+        this.chantingContainer = document.getElementById('battle-chanting-container');
+        this.chantingText = document.getElementById('chanting-turns');
+        this.chantingBar = document.getElementById('chanting-progress');
+
         this.secretList = document.getElementById('battle-secret-list');
     }
 
     initEvents() {
+        // Tab switching
+        this.tabs.forEach(tab => {
+            tab.onclick = () => this.switchTab(tab.dataset.tab);
+        });
+
+        // Actions
         if (this.btnAttack) this.btnAttack.onclick = () => this.handleAction('attack');
+        if (this.btnSwordIntent) this.btnSwordIntent.onclick = () => this.handleAction('sword-intent');
         if (this.btnDefend) this.btnDefend.onclick = () => this.handleAction('defend');
+        if (this.btnDodge) this.btnDodge.onclick = () => this.handleAction('dodge');
         if (this.btnSkill) this.btnSkill.onclick = () => this.handleAction('skill');
         if (this.btnFlame) this.btnFlame.onclick = () => this.handleAction('flame');
         if (this.btnPotion) this.btnPotion.onclick = () => this.handleAction('potion');
@@ -71,6 +88,11 @@ export class BattleScreen {
         if (this.btnInsect) this.btnInsect.onclick = () => this.handleAction('insect');
         if (this.btnEscape) this.btnEscape.onclick = () => this.handleAction('escape');
         if (this.btnSecret) this.btnSecret.onclick = () => this.toggleSecretList();
+    }
+
+    switchTab(tabId) {
+        this.tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
+        this.panes.forEach(p => p.classList.toggle('hidden', p.id !== `tab-${tabId}`));
     }
 
     handleAction(type, payload = null) {
@@ -99,12 +121,13 @@ export class BattleScreen {
                 this.updateHPs();
                 this.updateStatusEffects();
                 this.logEl.innerHTML = '';
-                this.checkFlameButton();
-                this.updateProfessionButtons();
+                this.updateProfessionTabs();
+                this.updateSpecialActions();
                 this.updateSecretButton();
                 this.updateTurnIndicator(combat.turn);
                 this.updateTimeline();
-                if (this.btnEscape) this.btnEscape.classList.remove('hidden');
+                this.updateChantingUI();
+                this.switchTab('cong');
                 break;
             case 'log':
                 this.updateLog(combat.log);
@@ -116,9 +139,10 @@ export class BattleScreen {
                 break;
             case 'player-turn-start':
                 this.actionContainer.classList.remove('hidden');
-                this.updateProfessionButtons();
+                this.updateProfessionTabs();
                 this.hideSecretList();
                 this.updateTurnIndicator(0);
+                this.updateChantingUI();
                 break;
             case 'player-turn-end':
                 this.actionContainer.classList.add('hidden');
@@ -135,6 +159,7 @@ export class BattleScreen {
             case 'turn':
                 this.updateTimeline();
                 this.updateTurnIndicator(data.turn);
+                this.updateChantingUI();
                 break;
             case 'end':
                 this.actionContainer.classList.add('hidden');
@@ -172,10 +197,7 @@ export class BattleScreen {
         if (!this.timeline || !state.currentCombat) return;
         
         const combat = state.currentCombat;
-        const order = combat.turnOrder || [
-            { id: 'player', name: 'Ngươi', spd: state.player.spd },
-            { id: 'enemy', name: combat.enemy.name, spd: combat.enemy.spd }
-        ];
+        const order = combat.turnOrder || [];
 
         this.timeline.innerHTML = order.map(entity => {
             const isActive = (entity.id === 'player' && combat.turn === 0) || (entity.id === 'enemy' && combat.turn === 1);
@@ -201,19 +223,25 @@ export class BattleScreen {
 
         if (this.enemyStatusContainer) {
             this.enemyStatusContainer.innerHTML = '';
-            if (combat.status.enemy.burn > 0) {
-                this.enemyStatusContainer.innerHTML += `<div class="w-4 h-4 bg-red-500/20 border border-red-500/50 rounded flex items-center justify-center text-[8px] text-red-500" title="Thiêu đốt"><i class="ph ph-fire"></i></div>`;
-            }
-            if (combat.status.enemy.stun > 0) {
-                this.enemyStatusContainer.innerHTML += `<div class="w-4 h-4 bg-yellow-500/20 border border-yellow-500/50 rounded flex items-center justify-center text-[8px] text-yellow-500" title="Choáng"><i class="ph ph-lightning"></i></div>`;
-            }
+            Object.entries(combat.status.enemy).forEach(([key, value]) => {
+                if (value > 0) {
+                    let icon = 'ph-fire';
+                    let color = 'text-red-500';
+                    if (key === 'stun') { icon = 'ph-lightning'; color = 'text-yellow-500'; }
+                    this.enemyStatusContainer.innerHTML += `<div class="w-4 h-4 bg-black/40 border border-white/10 rounded flex items-center justify-center text-[8px] ${color}" title="${key}"><i class="ph ${icon}"></i></div>`;
+                }
+            });
         }
 
         if (this.playerStatusContainer) {
             this.playerStatusContainer.innerHTML = '';
-            if (combat.status.player.stun > 0) {
-                this.playerStatusContainer.innerHTML += `<div class="w-4 h-4 bg-yellow-500/20 border border-yellow-500/50 rounded flex items-center justify-center text-[8px] text-yellow-500" title="Choáng"><i class="ph ph-lightning"></i></div>`;
-            }
+            Object.entries(combat.status.player).forEach(([key, value]) => {
+                if (value > 0) {
+                    let icon = 'ph-lightning';
+                    let color = 'text-yellow-500';
+                    this.playerStatusContainer.innerHTML += `<div class="w-4 h-4 bg-black/40 border border-white/10 rounded flex items-center justify-center text-[8px] ${color}" title="${key}"><i class="ph ${icon}"></i></div>`;
+                }
+            });
             if (combat.playerDefending) {
                 this.playerStatusContainer.innerHTML += `<div class="w-4 h-4 bg-blue-500/20 border border-blue-500/50 rounded flex items-center justify-center text-[8px] text-blue-500" title="Phòng thủ"><i class="ph ph-shield"></i></div>`;
             }
@@ -230,41 +258,53 @@ export class BattleScreen {
         state.ui.createDamagePopup(anchor, data.value, data.crit);
     }
 
-    checkFlameButton() {
+    updateProfessionTabs() {
+        const unlocked = new Set(state.player?.unlockedProfessions || []);
+        const tabs = {
+            'talisman': 'phu',
+            'beast': 'thu-thu',
+            'formation': 'tran',
+            'puppet': 'loi',
+            'corpse': 'thi',
+            'insect': 'trung',
+            'soul_path': 'hon'
+        };
+
+        Object.entries(tabs).forEach(([prof, tabId]) => {
+            const tabBtn = document.querySelector(`.combat-tab[data-tab="${tabId}"]`);
+            if (tabBtn) tabBtn.classList.toggle('hidden', !unlocked.has(prof));
+        });
+    }
+
+    updateSpecialActions() {
+        // Sword intent
+        if (state.player.specializedPaths?.sword?.realmId > 0) {
+            this.btnSwordIntent.classList.remove('hidden');
+        }
+
+        // Flame
         const flame = getFlameById(state.player.currentFlame);
         if (flame && flame.type === 'di_hoa') {
             this.btnFlame.classList.remove('hidden');
-        } else {
-            this.btnFlame.classList.add('hidden');
         }
-    }
-
-    updateProfessionButtons() {
-        const unlocked = new Set(state.player?.unlockedProfessions || []);
-        const mapping = [
-            ['talisman', this.btnTalisman],
-            ['beast', this.btnBeast],
-            ['formation', this.btnFormation],
-            ['puppet', this.btnPuppet],
-            ['corpse', this.btnCorpse],
-            ['insect', this.btnInsect]
-        ];
-        mapping.forEach(([profession, button]) => {
-            if (!button) return;
-            button.classList.toggle('hidden', !unlocked.has(profession));
-        });
     }
 
     updateSecretButton() {
         if (!this.btnSecret) return;
         const secrets = (state.player?.equippedSecretTechniqueIds || []).filter(Boolean);
-        if (secrets.length === 0) {
-            this.btnSecret.classList.add('hidden');
-            return;
+        this.btnSecret.classList.toggle('hidden', secrets.length === 0);
+    }
+
+    updateChantingUI() {
+        const combat = state.currentCombat;
+        if (combat && combat.playerChanting) {
+            this.chantingContainer.classList.remove('hidden');
+            this.chantingText.textContent = `Còn ${combat.playerChanting.turns} lượt`;
+            const percent = (1 - combat.playerChanting.turns / combat.playerChanting.maxTurns) * 100;
+            this.chantingBar.style.width = `${percent}%`;
+        } else {
+            this.chantingContainer.classList.add('hidden');
         }
-        this.btnSecret.classList.remove('hidden');
-        this.btnSecret.textContent = `BÍ PHÁP (${secrets.length})`;
-        this.btnSecret.title = `Mở danh sách bí pháp đã trang bị`;
     }
 
     toggleSecretList() {
@@ -284,7 +324,10 @@ export class BattleScreen {
             const remainMs = (item?.cooldown || 0) * 1000 - (now - cd);
             const remain = Math.max(0, Math.ceil(remainMs / 1000));
             const disabled = remain > 0;
-            return `<button data-secret-id="${id}" ${disabled ? 'disabled' : ''} class="w-full text-left px-2 py-1 rounded border border-white/10 ${disabled ? 'opacity-50' : 'hover:bg-white/10'} text-[10px]">${name}${disabled ? ` (CD: ${remain}s)` : ''}</button>`;
+            return `<button data-secret-id="${id}" ${disabled ? 'disabled' : ''} class="w-full text-left px-3 py-2 rounded border border-white/5 ${disabled ? 'opacity-50' : 'hover:bg-white/5'} text-[10px] font-ancient flex justify-between items-center">
+                <span>${name}</span>
+                ${disabled ? `<span class="text-gray-500 italic">${remain}s</span>` : ''}
+            </button>`;
         }).join('');
         this.secretList.querySelectorAll('button[data-secret-id]').forEach(btn => {
             btn.onclick = () => {
