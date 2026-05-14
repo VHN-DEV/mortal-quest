@@ -27,7 +27,11 @@ class GameState {
             energy: null,
             puppet: null,
             npc: null,
-            social: null
+            social: null,
+            mining: null,
+            spiritStone: null,
+            treasure: null,
+            fate: null
         };
 
         // Trạng thái hiện tại

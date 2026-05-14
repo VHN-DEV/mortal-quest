@@ -1,5 +1,6 @@
 import { getRealmById, RACE_DATA } from '../configs/realm-data.js';
 import { Inventory } from './inventory.js';
+import { state } from '../state.js';
 import { getItemById } from '../configs/item-data.js';
 import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_QUALITIES, MASTERY_LEVELS } from '../configs/technique-data.js';
 import { getPhysiqueById, getPhysiqueAwakenBonus, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../configs/physique-data.js';
@@ -287,7 +288,7 @@ export class Player {
         if (this.lingShi < amount) return false;
 
         let remaining = amount;
-        const priority = this.spiritStoneSettings.autoUsePriority;
+        const priority = this.spiritStoneSettings?.autoUsePriority || ['HA', 'TRUNG', 'THUONG'];
         const mappings = {
             'HA': { id: 'ling_thach_ha', val: 1 },
             'TRUNG': { id: 'ling_thach_trung', val: 100 },
@@ -295,74 +296,49 @@ export class Player {
             'CUC': { id: 'ling_thach_cuc', val: 1000000 }
         };
 
-        // Tiêu thụ theo thứ tự ưu tiên
         for (const gradeId of priority) {
-            if (gradeId === 'CUC' && this.spiritStoneSettings.lockCucPham && amount < 1000000) continue;
+            if (gradeId === 'CUC' && this.spiritStoneSettings?.lockCucPham && amount < 1000000) continue;
             
-            const gradeInfo = mappings[gradeId];
-            const item = this.inventory.items.find(i => i.id === gradeInfo.id);
+            const info = mappings[gradeId];
+            const item = this.inventory.items.find(i => i.id === info.id);
             
             if (item && item.quantity > 0) {
-                const totalValAvailable = item.quantity * gradeInfo.val;
+                const totalValAvailable = item.quantity * info.val;
                 if (totalValAvailable >= remaining) {
-                    const countToUse = Math.ceil(remaining / gradeInfo.val);
-                    const overpaid = (countToUse * gradeInfo.val) - remaining;
+                    const countToUse = Math.ceil(remaining / info.val);
+                    const overpaid = (countToUse * info.val) - remaining;
                     
-                    this.inventory.removeItem(gradeInfo.id, countToUse);
+                    this.inventory.removeItem(info.id, countToUse);
                     remaining = 0;
                     
-                    // Thối lại (Refund) nếu dùng đá cấp cao cho số lẻ
                     if (overpaid > 0) {
                         this.addLingShi(overpaid);
                     }
                     break;
                 } else {
                     remaining -= totalValAvailable;
-                    this.inventory.removeItem(gradeInfo.id, item.quantity);
+                    this.inventory.removeItem(info.id, item.quantity);
                 }
             }
         }
 
-        if (remaining === 0) {
-            this.totalSpent += amount;
-            this.updateVipLevel();
-            return true;
-        }
-
-        // Nếu vẫn còn nợ (do khóa Cực Phẩm hoặc logic khác), thử dùng nốt các loại khác không trong priority
-        // (Implementation omitted for brevity, but recommended)
-        
-        return false;
+        return remaining === 0;
     }
 
-    addLingShi(amount, gradeId = 'HA') {
-        if (amount === 0) return;
-        
-        if (amount > 0) {
-            // Intelligent distribution if amount is large and no specific grade requested
-            if (amount >= 1000000 && gradeId === 'HA') {
-                const peak = Math.floor(amount / 1000000);
-                if (peak > 0) this.inventory.addItem('ling_thach_cuc', peak);
-                amount %= 1000000;
-            }
-            if (amount >= 10000 && gradeId === 'HA') {
-                const high = Math.floor(amount / 10000);
-                if (high > 0) this.inventory.addItem('ling_thach_thuong', high);
-                amount %= 10000;
-            }
-            if (amount >= 100 && gradeId === 'HA') {
-                const mid = Math.floor(amount / 100);
-                if (mid > 0) this.inventory.addItem('ling_thach_trung', mid);
-                amount %= 100;
-            }
-            
-            if (amount > 0) {
-                const itemId = gradeId === 'HA' ? 'ling_thach_ha' : 
-                               gradeId === 'TRUNG' ? 'ling_thach_trung' : 
-                               gradeId === 'THUONG' ? 'ling_thach_thuong' : 'ling_thach_cuc';
-                this.inventory.addItem(itemId, amount);
-            }
+    addLingShi(amount) {
+        if (amount <= 0) return;
+        this.inventory.addItem('ling_thach_ha', amount);
+    }
+
+    addTuVi(amount) {
+        this.tuVi += amount;
+    }
+
+    crushStone(itemId, count = 1) {
+        if (state.systems.spiritStone) {
+            return state.systems.spiritStone.crushStone(itemId, count);
         }
+        return { success: false, msg: "Hệ thống Linh Thạch chưa khởi tạo." };
     }
 
     refineSpiritStone(itemId) {
