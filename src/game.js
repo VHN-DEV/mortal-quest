@@ -368,6 +368,11 @@ export class Game {
         state.player = new Player();
         state.player.load(savedData);
 
+        // Đồng bộ trạng thái toàn cục từ dữ liệu đã load
+        state.currentWorldId = state.player.currentWorldId;
+        state.currentLocId = state.player.currentLocId;
+        state.explorationProgress = state.player.explorationProgress;
+
         this.initSystems(state.player, savedData);
 
         // Hide non-game screens
@@ -536,6 +541,8 @@ export class Game {
             state.player.explorationProgress = state.explorationProgress;
             const data = state.player.save();
             if (state.systems.time) data.time = state.systems.time.save();
+            if (state.systems.npc) data.npcData = state.systems.npc.saveData();
+            if (state.systems.social) data.socialData = state.systems.social.getData();
             if (state.systems.mountain) {
                 data.mountain = {
                     discovery: state.systems.mountain.discovery,

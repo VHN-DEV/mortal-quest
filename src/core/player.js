@@ -1756,4 +1756,272 @@ export class Player {
         }
         return { leveledUp: false };
     }
+
+    /**
+     * Chuyển đổi đối tượng Player thành dữ liệu JSON để lưu trữ
+     */
+    save() {
+        return {
+            name: this.name,
+            gender: this.gender,
+            avatar: this.avatar,
+            race: this.race,
+            realmId: this.realmId,
+            tuVi: this.tuVi,
+            age: this.age,
+            maxAge: this.maxAge,
+            path: this.path,
+            hp: this.hp,
+            maxHp: this.maxHp,
+            mana: this.mana,
+            maxMana: this.maxMana,
+            stamina: this.stamina,
+            maxStamina: this.maxStamina,
+            lastUpdate: this.lastUpdate || Date.now(),
+            playTime: this.playTime || 0,
+            
+            // Stats
+            baseStats: { ...this.baseStats },
+            bonusStats: { ...this.bonusStats },
+            stats: { ...this.stats },
+            advancedStats: { ...this.advancedStats },
+            
+            // Realms & Exp
+            bodyRealmId: this.bodyRealmId,
+            bodyExp: this.bodyExp,
+            soulRealmId: this.soulRealmId,
+            soulExp: this.soulExp,
+            specializedPaths: JSON.parse(JSON.stringify(this.specializedPaths)),
+            cultivationFocus: this.cultivationFocus,
+            
+            // Background & Destiny
+            spiritualRoot: this.spiritualRoot,
+            spiritRoot: this.spiritRoot ? [...this.spiritRoot] : [],
+            physique: this.physique ? { ...this.physique } : null,
+            origin: this.origin,
+            talents: [...(this.talents || [])],
+            destinyRating: this.destinyRating,
+            luck: this.luck,
+            karma: this.karma,
+            fame: this.fame,
+            evil: this.evil,
+            fate: JSON.parse(JSON.stringify(this.fate)),
+            
+            // Resources
+            spiritStoneSettings: { ...this.spiritStoneSettings },
+            totalSpent: this.totalSpent,
+            vipLevel: this.vipLevel,
+            inventory: this.inventory.save(),
+            
+            // Techniques
+            mainTechniqueId: this.mainTechniqueId,
+            mainBodyTechniqueId: this.mainBodyTechniqueId,
+            mainSoulTechniqueId: this.mainSoulTechniqueId,
+            learnedTechniques: [...this.learnedTechniques],
+            learnedSecretTechniques: [...this.learnedSecretTechniques],
+            equippedSecretTechniqueIds: [...this.equippedSecretTechniqueIds],
+            techniquePoints: this.techniquePoints,
+            
+            // Professions & Systems
+            unlockedProfessions: [...this.unlockedProfessions],
+            alchemyLevel: this.alchemyLevel,
+            alchemyExp: this.alchemyExp,
+            currentCauldron: this.currentCauldron,
+            currentFlame: this.currentFlame,
+            knownRecipes: [...this.knownRecipes],
+            ownedFlames: [...this.ownedFlames],
+            ownedCauldrons: [...this.ownedCauldrons],
+            alchemyReputation: this.alchemyReputation,
+            danPoison: this.danPoison,
+            
+            smithingLevel: this.smithingLevel,
+            smithingExp: this.smithingExp,
+            smithingTool: this.smithingTool,
+            knownSmithingRecipes: [...this.knownSmithingRecipes],
+            
+            talismanLevel: this.talismanLevel,
+            talismanExp: this.talismanExp,
+            currentTalismanPen: this.currentTalismanPen,
+            knownTalismanRecipes: [...this.knownTalismanRecipes],
+            
+            formationLevel: this.formationLevel,
+            formationExp: this.formationExp,
+            activeFormations: [...this.activeFormations],
+            formationSlots: this.formationSlots,
+            
+            puppetLevel: this.puppetLevel,
+            puppetExp: this.puppetExp,
+            knownPuppetRecipes: [...this.knownPuppetRecipes],
+            
+            corpseLevel: this.corpseLevel,
+            corpseExp: this.corpseExp,
+            refinedCorpses: [...this.refinedCorpses],
+            
+            beastLevel: this.beastLevel,
+            beastExp: this.beastExp,
+            insectLevel: this.insectLevel,
+            insectExp: this.insectExp,
+            beasts: [...this.beasts],
+            hatchingBeasts: [...this.hatchingBeasts],
+            
+            gardenPlots: JSON.parse(JSON.stringify(this.gardenPlots)),
+            mountainSurvival: { ...this.mountainSurvival },
+            
+            miningState: { ...this.miningState },
+            equipment: { ...this.equipment },
+            equipmentMetadata: { ...this.equipmentMetadata },
+            recognizedItems: [...this.recognizedItems],
+            
+            // Social & Organization
+            sectId: this.sectId,
+            sectContribution: this.sectContribution,
+            activeTitleId: this.activeTitleId,
+            titles: [...this.titles],
+            
+            // Misc
+            buffs: [...this.buffs],
+            isSecluded: this.isSecluded,
+            currentWorldId: this.currentWorldId,
+            currentLocId: this.currentLocId,
+            explorationProgress: this.explorationProgress
+        };
+    }
+
+    /**
+     * Khôi phục trạng thái Player từ dữ liệu JSON
+     */
+    load(data) {
+        if (!data) return;
+
+        // Basic Info
+        this.name = data.name || this.name;
+        this.gender = data.gender || this.gender;
+        this.avatar = data.avatar || this.avatar;
+        this.race = data.race || this.race;
+        this.realmId = data.realmId || this.realmId;
+        this.tuVi = data.tuVi || 0;
+        this.age = data.age || this.age;
+        this.maxAge = data.maxAge || this.maxAge;
+        this.path = data.path || this.path;
+        
+        // Vitals
+        this.maxHp = data.maxHp || this.maxHp;
+        this.hp = data.hp !== undefined ? data.hp : this.maxHp;
+        this.maxMana = data.maxMana || this.maxMana;
+        this.mana = data.mana !== undefined ? data.mana : this.maxMana;
+        this.maxStamina = data.maxStamina || this.maxStamina;
+        this.stamina = data.stamina !== undefined ? data.stamina : this.maxStamina;
+        
+        this.lastUpdate = data.lastUpdate || Date.now();
+        this.playTime = data.playTime || 0;
+
+        // Stats
+        if (data.baseStats) this.baseStats = { ...this.baseStats, ...data.baseStats };
+        if (data.bonusStats) this.bonusStats = { ...this.bonusStats, ...data.bonusStats };
+        if (data.stats) this.stats = { ...this.stats, ...data.stats };
+        if (data.advancedStats) this.advancedStats = { ...this.advancedStats, ...data.advancedStats };
+        
+        // Realms
+        this.bodyRealmId = data.bodyRealmId || 1;
+        this.bodyExp = data.bodyExp || 0;
+        this.soulRealmId = data.soulRealmId || 1;
+        this.soulExp = data.soulExp || 0;
+        if (data.specializedPaths) this.specializedPaths = data.specializedPaths;
+        this.cultivationFocus = data.cultivationFocus || 'tuvi';
+
+        // Background
+        this.spiritualRoot = data.spiritualRoot;
+        this.spiritRoot = data.spiritRoot || [];
+        this.physique = data.physique || null;
+        this.origin = data.origin || null;
+        this.talents = data.talents || [];
+        this.destinyRating = data.destinyRating || "Phàm mệnh";
+        
+        this.luck = data.luck || 50;
+        this.karma = data.karma || 0;
+        this.fame = data.fame || 0;
+        this.evil = data.evil || 0;
+        if (data.fate) this.fate = { ...this.fate, ...data.fate };
+
+        // Resources
+        if (data.spiritStoneSettings) this.spiritStoneSettings = { ...this.spiritStoneSettings, ...data.spiritStoneSettings };
+        this.totalSpent = data.totalSpent || 0;
+        this.vipLevel = data.vipLevel || 0;
+        if (data.inventory) this.inventory.load(data.inventory);
+        
+        // Techniques
+        this.mainTechniqueId = data.mainTechniqueId || null;
+        this.mainBodyTechniqueId = data.mainBodyTechniqueId || null;
+        this.mainSoulTechniqueId = data.mainSoulTechniqueId || null;
+        this.learnedTechniques = data.learnedTechniques || [];
+        this.learnedSecretTechniques = data.learnedSecretTechniques || [];
+        this.equippedSecretTechniqueIds = data.equippedSecretTechniqueIds || [];
+        this.techniquePoints = data.techniquePoints || 0;
+        
+        // Professions
+        this.unlockedProfessions = data.unlockedProfessions || [];
+        this.alchemyLevel = data.alchemyLevel || 1;
+        this.alchemyExp = data.alchemyExp || 0;
+        this.currentCauldron = data.currentCauldron || null;
+        this.currentFlame = data.currentFlame || null;
+        this.knownRecipes = data.knownRecipes || [];
+        this.ownedFlames = data.ownedFlames || [];
+        this.ownedCauldrons = data.ownedCauldrons || [];
+        this.alchemyReputation = data.alchemyReputation || 0;
+        this.danPoison = data.danPoison || 0;
+        
+        this.smithingLevel = data.smithingLevel || 1;
+        this.smithingExp = data.smithingExp || 0;
+        this.smithingTool = data.smithingTool || null;
+        this.knownSmithingRecipes = data.knownSmithingRecipes || [];
+        
+        this.talismanLevel = data.talismanLevel || 1;
+        this.talismanExp = data.talismanExp || 0;
+        this.currentTalismanPen = data.currentTalismanPen || null;
+        this.knownTalismanRecipes = data.knownTalismanRecipes || [];
+        
+        this.formationLevel = data.formationLevel || 1;
+        this.formationExp = data.formationExp || 0;
+        this.activeFormations = data.activeFormations || [];
+        this.formationSlots = data.formationSlots || 1;
+        
+        this.puppetLevel = data.puppetLevel || 1;
+        this.puppetExp = data.puppetExp || 0;
+        this.knownPuppetRecipes = data.knownPuppetRecipes || [];
+        
+        this.corpseLevel = data.corpseLevel || 1;
+        this.corpseExp = data.corpseExp || 0;
+        this.refinedCorpses = data.refinedCorpses || [];
+        
+        this.beastLevel = data.beastLevel || 1;
+        this.beastExp = data.beastExp || 0;
+        this.insectLevel = data.insectLevel || 1;
+        this.insectExp = data.insectExp || 0;
+        this.beasts = data.beasts || [];
+        this.hatchingBeasts = data.hatchingBeasts || [];
+        
+        if (data.gardenPlots) this.gardenPlots = data.gardenPlots;
+        if (data.mountainSurvival) this.mountainSurvival = { ...this.mountainSurvival, ...data.mountainSurvival };
+        
+        this.miningState = data.miningState || this.miningState;
+        if (data.equipment) this.equipment = { ...this.equipment, ...data.equipment };
+        this.equipmentMetadata = data.equipmentMetadata || {};
+        this.recognizedItems = data.recognizedItems || [];
+        
+        // Organization
+        this.sectId = data.sectId || null;
+        this.sectContribution = data.sectContribution || 0;
+        this.activeTitleId = data.activeTitleId || null;
+        this.titles = data.titles || [];
+        
+        // Misc
+        this.buffs = data.buffs || [];
+        this.isSecluded = data.isSecluded || false;
+        
+        this.currentWorldId = data.currentWorldId || 'nhan_gioi';
+        this.currentLocId = data.currentLocId || 'thanh_van_tran';
+        this.explorationProgress = data.explorationProgress || 0;
+
+        this.calculateStats();
+    }
 }
