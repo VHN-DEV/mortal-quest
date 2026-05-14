@@ -1,6 +1,7 @@
 import { state } from '../../state.js';
 import { SaveSystem } from '../../core/save-system.js';
 import { ASSETS } from '../../configs/asset-data.js';
+import { findLocationName } from '../../configs/map-data.js';
 
 export class SaveScreen {
     constructor() {
@@ -32,7 +33,7 @@ export class SaveScreen {
                 </div>
 
                 <div class="flex-grow space-y-4 overflow-y-auto custom-scroll pb-10">
-                    ${[1, 2, 3].map(slot => this.renderSlot(slot, metadata[slot])).join('')}
+                    ${[1, 2, 3, 4, 5].map(slot => this.renderSlot(slot, metadata[slot])).join('')}
                 </div>
             </div>
         `;
@@ -110,7 +111,7 @@ export class SaveScreen {
                             
                             <div class="flex items-center space-x-2 text-gray-400 bg-black/40 px-3 py-1.5 rounded-xl border border-white/5">
                                 <i class="ph ph-map-pin-line text-qi-jade/70"></i>
-                                <span class="text-[10px] text-gray-300 truncate font-ancient tracking-wider uppercase">${data.area || 'Thanh Vân Trấn'}</span>
+                                <span class="text-[10px] text-gray-300 truncate font-ancient tracking-wider uppercase">${findLocationName(data.area)}</span>
                             </div>
                         </div>
                     </div>

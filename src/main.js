@@ -552,19 +552,18 @@ window.renderCreationScreen = () => {
         btnStart.style.opacity = sys.points < 0 ? '0.5' : '1';
     }
 
-    const btnGuide = document.getElementById('btn-open-guide');
-    if (btnGuide) {
-        btnGuide.onclick = () => {
-            const guide = document.getElementById('guide-overlay');
-            if (guide) guide.classList.remove('hidden');
+    const btnCreationBack = document.getElementById('btn-creation-back');
+    if (btnCreationBack) {
+        btnCreationBack.onclick = () => {
+            window.game.showStartScreen();
         };
     }
 
     const btnCloseGuide = document.getElementById('btn-close-guide');
     const btnGuideGotIt = document.getElementById('btn-guide-got-it');
     const guideOverlay = document.getElementById('guide-overlay');
-    if (btnCloseGuide && guideOverlay) btnCloseGuide.onclick = () => guideOverlay.classList.add('hidden');
-    if (btnGuideGotIt && guideOverlay) btnGuideGotIt.onclick = () => guideOverlay.classList.add('hidden');
+    if (btnCloseGuide && guideOverlay) btnCloseGuide.onclick = () => state.ui.toggleOverlay(guideOverlay, false);
+    if (btnGuideGotIt && guideOverlay) btnGuideGotIt.onclick = () => state.ui.toggleOverlay(guideOverlay, false);
 };
 
 // Global error handler

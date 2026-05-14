@@ -66,9 +66,9 @@ export class StartScreen {
                     </button>
                     
                     <div class="flex justify-center space-x-6 pt-4 text-gray-500 text-sm">
-                        <i class="ph ph-gear-six hover:text-white cursor-pointer transition-colors"></i>
-                        <i class="ph ph-info hover:text-white cursor-pointer transition-colors"></i>
-                        <i class="ph ph-discord-logo hover:text-white cursor-pointer transition-colors"></i>
+                        <i id="btn-start-settings" class="ph ph-gear-six hover:text-white cursor-pointer transition-colors" title="Cài đặt"></i>
+                        <i id="btn-start-info" class="ph ph-info hover:text-white cursor-pointer transition-colors" title="Hướng dẫn"></i>
+                        <i id="btn-start-discord" class="ph ph-discord-logo hover:text-white cursor-pointer transition-colors" title="Cộng đồng"></i>
                     </div>
                 </div>
 
@@ -88,7 +88,7 @@ export class StartScreen {
             btnStart.onclick = async () => {
                 const metadata = await SaveSystem.getAllMetadata();
                 let targetSlot = null;
-                for (let i = 1; i <= 3; i++) {
+                for (let i = 1; i <= 5; i++) {
                     if (!metadata[i]) {
                         targetSlot = i;
                         break;
@@ -112,6 +112,45 @@ export class StartScreen {
             btnContinue.onclick = async () => {
                 await window.game.screens.save.render();
                 state.ui.switchScreen('screen-save');
+            };
+        }
+
+        // Info Button -> Guide Overlay
+        const btnInfo = document.getElementById('btn-start-info');
+        if (btnInfo) {
+            btnInfo.onclick = () => {
+                const guide = document.getElementById('guide-overlay');
+                if (guide) state.ui.toggleOverlay(guide, true);
+            };
+        }
+
+        // Settings Button -> Prompt Options (Sound Toggle)
+        const btnSettings = document.getElementById('btn-start-settings');
+        if (btnSettings) {
+            btnSettings.onclick = () => {
+                const isMuted = state.settings?.isMuted || false;
+                const options = [
+                    { 
+                        label: isMuted ? 'Bật Âm Thanh' : 'Tắt Âm Thanh', 
+                        value: 'toggle-mute', 
+                        icon: isMuted ? 'ph-speaker-high' : 'ph-speaker-slash' 
+                    }
+                ];
+                state.ui.promptOptions('Cài Đặt Hệ Thống', options, 'Tùy chỉnh các thiết lập cơ bản của trò chơi.')
+                    .then(action => {
+                        if (action === 'toggle-mute') {
+                            if (!state.settings) state.settings = {};
+                            state.settings.isMuted = !state.settings.isMuted;
+                            state.ui.toast(state.settings.isMuted ? 'Đã tắt âm thanh' : 'Đã bật âm thanh', 'info');
+                        }
+                    });
+            };
+        }
+
+        const btnDiscord = document.getElementById('btn-start-discord');
+        if (btnDiscord) {
+            btnDiscord.onclick = () => {
+                state.ui.toast('Tính năng cộng đồng đang được phát triển.', 'info');
             };
         }
 

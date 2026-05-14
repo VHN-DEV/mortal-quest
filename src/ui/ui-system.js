@@ -116,12 +116,10 @@ export class UISystem {
         this.modalBtnCancel.textContent = cancelText;
         this.modalBtnCancel.style.display = showCancel ? 'block' : 'none';
 
-        this.modalOverlay.classList.remove('hidden');
-        this.modalOverlay.classList.add('flex');
+        this.toggleOverlay(this.modalOverlay, true);
 
         const cleanup = () => {
-            this.modalOverlay.classList.add('hidden');
-            this.modalOverlay.classList.remove('flex');
+            this.toggleOverlay(this.modalOverlay, false);
             this.modalBtnConfirm.onclick = null;
             this.modalBtnCancel.onclick = null;
         };
@@ -221,6 +219,9 @@ export class UISystem {
     toggleOverlay(overlay, show) {
         const el = typeof overlay === 'string' ? document.getElementById(overlay) : overlay;
         if (!el) return;
+
+        // Kill any existing animations to prevent race conditions
+        gsap.killTweensOf(el);
 
         if (show) {
             el.classList.remove('hidden');

@@ -602,13 +602,15 @@ export class Game {
             .then(async action => {
                 if (action === 'load') await this.loadSlot(slot);
                 else if (action === 'delete') {
-                    state.ui.confirm(`Ngươi có chắc muốn xóa bỏ đạo quả ở ô lưu số ${slot}? Hành động này không thể hoàn tác!`, 'Cảnh Báo Diệt Môn')
-                        .then(async confirmed => {
-                            if (confirmed) {
-                                await SaveSystem.deleteSave(slot);
-                                await this.screens.save.render();
-                            }
-                        });
+                    await this.deleteSlot(slot);
+
+
+
+
+
+
+
+
                 } else if (action === 'rename') {
                     const newName = prompt('Nhập tên mới:');
                     if (newName) {

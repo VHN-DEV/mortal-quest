@@ -192,3 +192,11 @@ export const WORLDS = {
 export const getWorlds = () => WORLDS;
 export const getWorldById = (id) => WORLDS[id];
 export const getLocationById = (worldId, locId) => WORLDS[worldId]?.locations.find(l => l.id === locId);
+export const findLocationName = (locId) => {
+    if (!locId) return 'Thanh Vân Trấn';
+    for (const world of Object.values(WORLDS)) {
+        const loc = world.locations.find(l => l.id === locId);
+        if (loc) return loc.name;
+    }
+    return locId; // Return ID if not found, but it should be found
+};

@@ -141,7 +141,7 @@ export const SaveSystem = {
      * Xóa sạch toàn bộ dữ liệu (Reset hoàn toàn)
      */
     clearAll: async () => {
-        for (let slot of [1, 2, 3]) {
+        for (let slot of [1, 2, 3, 4, 5]) {
             await Preferences.remove({ key: `${SAVE_PREFIX}${slot}` });
         }
         await Preferences.remove({ key: METADATA_KEY });
