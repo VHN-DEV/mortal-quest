@@ -396,6 +396,7 @@ export class SystemsScreen {
 
         if (subFilters.length === 0) {
             this.elShopSubFilterNav.classList.add('hidden');
+            this.elShopSubFilterNav.innerHTML = '';
             return;
         }
 

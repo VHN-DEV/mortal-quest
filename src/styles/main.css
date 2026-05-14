@@ -363,7 +363,7 @@ body {
 .custom-scroll-x {
   overflow-x: auto !important;
   overflow-y: hidden !important;
-  display: flex !important;
+  display: flex;
   flex-wrap: nowrap !important;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x;
