@@ -86,9 +86,8 @@ export class StartScreen {
         const btnStart = document.getElementById('btn-start-new');
         if (btnStart) {
             btnStart.onclick = async () => {
-                // Find first empty slot or ask to overwrite
                 const metadata = await SaveSystem.getAllMetadata();
-                let targetSlot = 1;
+                let targetSlot = null;
                 for (let i = 1; i <= 3; i++) {
                     if (!metadata[i]) {
                         targetSlot = i;
@@ -96,8 +95,15 @@ export class StartScreen {
                     }
                 }
 
-                SaveSystem.currentSlot = targetSlot;
-                window.game.showCreationScreen();
+                if (targetSlot) {
+                    SaveSystem.currentSlot = targetSlot;
+                    window.game.showCreationScreen();
+                } else {
+                    // All slots full
+                    state.ui.toast('Toàn bộ Mệnh Đồ Lục đã đầy. Hãy chọn một ô để ghi đè hoặc xóa bớt.', 'warning');
+                    await window.game.screens.save.render();
+                    state.ui.switchScreen('screen-save');
+                }
             };
         }
 

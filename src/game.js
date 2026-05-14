@@ -513,6 +513,7 @@ export class Game {
             };
 
             await SaveSystem.save(SaveSystem.currentSlot, data, metadata);
+            state.ui.toast(`Đã lưu Đạo Quả vào ô số ${SaveSystem.currentSlot}`, 'success');
         }
     }
 
@@ -526,9 +527,23 @@ export class Game {
         }
     }
 
-    startNewAtSlot(slot) {
+    async startNewAtSlot(slot) {
+        const metadata = await SaveSystem.getAllMetadata();
+        if (metadata[slot]) {
+            const confirmed = await state.ui.confirm(`Ô lưu số ${slot} đã có dữ liệu. Ngươi có chắc muốn xóa bỏ hành trình cũ để bắt đầu lại từ đầu không?`, 'Xác Nhận Ghi Đè');
+            if (!confirmed) return;
+        }
         SaveSystem.currentSlot = slot;
         this.showCreationScreen();
+    }
+
+    async deleteSlot(slot) {
+        const confirmed = await state.ui.confirm(`Ngươi có chắc muốn xóa bỏ đạo quả ở ô lưu số ${slot}? Hành động này không thể hoàn tác!`, 'Cảnh Báo Diệt Môn');
+        if (confirmed) {
+            await SaveSystem.deleteSave(slot);
+            await this.screens.save.render();
+            state.ui.toast(`Đã xóa dữ liệu ở ô số ${slot}`, 'info');
+        }
     }
 
     showSaveMenu(slot) {

@@ -92,8 +92,14 @@ export class SaveScreen {
                     </div>
                 </div>
 
+                <!-- Delete Button -->
+                <button class="absolute top-4 right-14 w-8 h-8 flex items-center justify-center text-red-500/50 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-all"
+                        onclick="event.stopPropagation(); window.game.deleteSlot(${slot})">
+                    <i class="ph ph-trash text-lg"></i>
+                </button>
+
                 <!-- Context Menu Button -->
-                <button class="btn-save-menu absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-white"
+                <button class="btn-save-menu absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all"
                         onclick="event.stopPropagation(); window.game.showSaveMenu(${slot})">
                     <i class="ph ph-dots-three-vertical-bold text-xl"></i>
                 </button>
