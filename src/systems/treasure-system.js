@@ -138,4 +138,51 @@ export class TreasureSystem {
         }
         return { success: false, msg: 'Không đủ Linh Thạch để tẩy luyện.' };
     }
+
+    /**
+     * Cập nhật logic theo thời gian (VD: Chưởng Thiên Bình sinh linh dịch)
+     */
+    update(delta) {
+        // Kiểm tra xem có trang bị Chưởng Thiên Bình không
+        const equippedArtifacts = Object.values(this.player.equipment || {});
+        if (equippedArtifacts.includes('chuong_thien_binh')) {
+            if (!this.player.artifactData) this.player.artifactData = {};
+            if (!this.player.artifactData.chuong_thien_binh) {
+                this.player.artifactData.chuong_thien_binh = { progress: 0 };
+            }
+
+            const data = this.player.artifactData.chuong_thien_binh;
+            // Mỗi 10 phút game sinh 1 giọt linh dịch (tỉ lệ 1/600 progress mỗi giây delta)
+            // Giả sử 1 giây thực = 1 phút game? Tùy TimeSystem.
+            // Ở đây dùng một hằng số tạm thời: 1 giọt mỗi 5 phút thực (300s)
+            data.progress += delta;
+            if (data.progress >= 300) {
+                data.progress -= 300;
+                this.player.inventory.addItem('linh_dich', 1);
+                if (this.ui) this.ui.toast("Chưởng Thiên Bình đã ngưng tụ được 1 giọt Linh Dịch!", "success");
+            }
+        }
+    }
+
+    /**
+     * Kết hợp các ngọn Cực Sơn thành Nguyên Hợp Ngũ Cực Sơn
+     */
+    combineMountains() {
+        const requiredMountains = ['nguyen_tu_cuc_son', 'bac_cuc_cuc_son']; // Có thể thêm nhiều hơn sau này
+        for (const mountainId of requiredMountains) {
+            if (!this.player.inventory.hasItem(mountainId)) {
+                return { success: false, msg: `Thiếu ngọn núi: ${getItemById(mountainId).name}!` };
+            }
+        }
+
+        // Tiêu tốn linh thạch khổng lồ
+        const cost = 1000000;
+        if (this.player.lingShi < cost) return { success: false, msg: "Cần 1.000.000 Linh Thạch để dung hợp Cực Sơn!" };
+
+        this.player.spendLingShi(cost);
+        requiredMountains.forEach(id => this.player.inventory.removeItem(id, 1));
+        
+        this.player.inventory.addItem('nguyen_hop_ngu_cuc_son', 1);
+        return { success: true, msg: "Chúc mừng! Ngươi đã dung hợp thành công Nguyên Hợp Ngũ Cực Sơn!" };
+    }
 }

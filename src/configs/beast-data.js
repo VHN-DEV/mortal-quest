@@ -86,6 +86,39 @@ export const BEASTS = {
         description: 'Thần thú trấn giữ phương Đông, đứng đầu tứ linh.',
         baseStats: { hp: 20000, atk: 2500, def: 1500, spd: 200 },
         abilities: ['Long Uy Trấn Áp', 'Thiên Phạt']
+    },
+    'phe_kim_trung': {
+        id: 'phe_kim_trung',
+        name: 'Phệ Kim Trùng',
+        type: BEAST_TYPES.KY_TRUNG,
+        bloodline: 'THIEN',
+        image: 'aberrations/phe-kim-trung.svg',
+        description: 'Loài kỳ trùng hung hãn nhất thượng cổ, có khả năng cắn nuốt cả pháp bảo.',
+        baseStats: { hp: 500, atk: 150, def: 200, spd: 60 },
+        abilities: ['Cắn Nuốt', 'Kim Giáp Hộ Thể'],
+        evolutions: [
+            { levelRequired: 50, toId: 'phe_kim_trung_vuong', newName: 'Phệ Kim Trùng Vương', statMult: 2.5, materials: [{ id: 'tinh_kim', quantity: 100 }] }
+        ]
+    },
+    'bang_tam': {
+        id: 'bang_tam',
+        name: 'Băng Tàm',
+        type: BEAST_TYPES.KY_TRUNG,
+        bloodline: 'DIA',
+        image: 'aberrations/bang-tam.svg',
+        description: 'Tằm băng nghìn năm, nhả ra băng ti có thể đóng băng linh lực.',
+        baseStats: { hp: 800, atk: 80, def: 150, spd: 30 },
+        abilities: ['Băng Ti Phun Trào', 'Hàn Khí Chướng'],
+    },
+    'huyet_ngoc_tri_chu': {
+        id: 'huyet_ngoc_tri_chu',
+        name: 'Huyết Ngọc Tri Chu',
+        type: BEAST_TYPES.KY_TRUNG,
+        bloodline: 'LINH',
+        image: 'aberrations/huyet-ngoc-tri-chu.svg',
+        description: 'Nhện ngọc máu, chuyên sống trong các cổ mộ, tơ nhện cực kỳ dẻo dai và có độc.',
+        baseStats: { hp: 600, atk: 120, def: 100, spd: 80 },
+        abilities: ['Huyết Ma Võng', 'Kịch Độc'],
     }
 };
 

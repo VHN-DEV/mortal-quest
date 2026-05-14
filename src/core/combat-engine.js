@@ -648,15 +648,18 @@ export class CombatEngine {
             this.addLog("Chưa mở khóa Ngự Thú nên không thể triệu hồi linh thú!");
             return;
         }
-        const beast = this.player.beasts?.[0];
+        // Tìm linh thú (không phải kỳ trùng)
+        const beast = (this.player.beasts || []).find(b => b.type !== 'Kỳ Trùng' && b.type !== 'Linh Trùng');
         if (!beast) {
             this.addLog("Chưa có linh thú chiến đấu để triệu hồi!");
             return;
         }
-        const levelBonus = (this.player.beastLevel || 1) * 10;
-        const dmg = Math.max(1, Math.floor((beast.stats?.atk || this.player.atk * 0.4) * 0.7 + levelBonus));
+        const levelBonus = (beast.level || 1) * 5;
+        const beastAtk = beast.stats?.atk || 50;
+        const dmg = Math.max(1, Math.floor(beastAtk * 0.8 + levelBonus + (this.player.beastLevel || 1) * 10));
+        
         this.enemy.hp -= dmg;
-        this.addLog(`Linh thú ${beast.name} xuất chiến, gây ${dmg} sát thương!`);
+        this.addLog(`Linh thú <span class="text-green-400">${beast.name}</span> (Cấp ${beast.level}) xuất chiến, gây ${dmg} sát thương!`);
         this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
         this.endPlayerTurn();
     }
@@ -724,13 +727,25 @@ export class CombatEngine {
             this.addLog("Chưa mở khóa Khu Trùng Thuật!");
             return;
         }
-        const lvl = this.player.insectLevel || 1;
-        const swarmDmg = Math.max(1, Math.floor(this.player.atk * 0.5 + lvl * 20));
+        // Tìm kỳ trùng
+        const insect = (this.player.beasts || []).find(b => b.type === 'Kỳ Trùng' || b.type === 'Linh Trùng');
+        if (!insect) {
+            this.addLog("Chưa có kỳ trùng để điều khiển!");
+            return;
+        }
+        
+        const lvl = insect.level || 1;
+        const insectAtk = insect.stats?.atk || 40;
+        const swarmDmg = Math.max(1, Math.floor(insectAtk * 0.6 + lvl * 15 + (this.player.insectLevel || 1) * 10));
+        
         this.enemy.hp -= swarmDmg;
-        this.addLog(`Kỳ trùng bầy đàn cắn xé gây ${swarmDmg} sát thương!`);
+        this.addLog(`Bầy kỳ trùng <span class="text-yellow-500">${insect.name}</span> (Cấp ${insect.level}) cắn xé, gây ${swarmDmg} sát thương!`);
         this.onUpdate('damage', { target: 'enemy', value: swarmDmg, crit: false });
-        this.status.enemy.burn = Math.max(this.status.enemy.burn, 1);
-        this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, lvl * 8);
+        
+        // Hiệu ứng phụ: Độc (Burn)
+        this.status.enemy.burn = Math.max(this.status.enemy.burn, 2);
+        this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, (insect.stats?.atk || 10) * 0.2);
+        
         this.endPlayerTurn();
     }
 

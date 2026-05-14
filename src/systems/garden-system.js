@@ -147,4 +147,23 @@ export class GardenSystem {
             status: 'empty'
         };
     }
+
+    /**
+     * Sử dụng Linh Dịch từ Chưởng Thiên Bình để kích phát linh thảo
+     */
+    useSpiritualLiquid(plotIndex) {
+        const plot = this.player.gardenPlots[plotIndex];
+        if (!plot || plot.status !== 'growing') return { success: false, msg: 'Ô đất này đang trống!' };
+
+        if (!this.player.inventory.hasItem('linh_dich')) {
+            return { success: false, msg: 'Ngươi không có Linh Dịch!' };
+        }
+
+        this.player.inventory.removeItem('linh_dich', 1);
+        
+        // Tăng mạnh tuổi thọ linh thảo (Ví dụ: +100 năm ngay lập tức)
+        plot.age += 100;
+        
+        return { success: true, msg: 'Linh Dịch đã ngấm vào đất, linh thảo lớn nhanh như thổi!' };
+    }
 }

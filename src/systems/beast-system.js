@@ -128,6 +128,45 @@ export class BeastSystem {
         return { success: true, msg: "Lai tạo thành công! Thu được một quả trứng biến dị." };
     }
 
+    /**
+     * Huấn luyện Kỳ trùng/Linh thú
+     * Tiêu tốn tài nguyên đặc thù để cường hóa chỉ số
+     */
+    train(beastUniqueId, materialId) {
+        const beast = this.player.beasts.find(b => b.uniqueId === beastUniqueId);
+        if (!beast) return { success: false, msg: 'Không tìm thấy linh thú!' };
+
+        const material = getItemById(materialId);
+        if (!material) return { success: false, msg: 'Vật liệu không hợp lệ!' };
+
+        if (!this.player.inventory.hasItem(materialId, 1)) {
+            return { success: false, msg: 'Hết vật liệu huấn luyện rồi!' };
+        }
+
+        this.player.inventory.removeItem(materialId, 1);
+
+        // Logic tăng chỉ số dựa trên loại vật liệu
+        // Phệ Kim Trùng thích ăn kim thạch (huyen_thiet, tinh_kim)
+        let statGain = '';
+        if (materialId === 'huyen_thiet' || materialId === 'tinh_kim') {
+            const gain = materialId === 'tinh_kim' ? 10 : 2;
+            beast.stats.atk += gain;
+            beast.stats.def += Math.floor(gain / 2);
+            statGain = `Công kích +${gain}, Phòng ngự +${Math.floor(gain / 2)}`;
+        } else if (material.type === 'beast_food') {
+            beast.stats.hp += 50;
+            statGain = 'Máu +50';
+        } else {
+            // Mặc định tăng nhẹ ngẫu nhiên
+            beast.stats.atk += 1;
+            statGain = 'Công kích +1';
+        }
+
+        beast.loyalty = Math.min(100, beast.loyalty + 1);
+        
+        return { success: true, msg: `Huấn luyện thành công! ${statGain}` };
+    }
+
     update(delta) {
         // Handle hatching timers
     }

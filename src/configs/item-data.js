@@ -539,6 +539,146 @@ export const ITEMS = {
         price: 12000,
         stats: { soul: 150, def: 20 }
     },
+    'chuong_thien_binh': {
+        id: 'chuong_thien_binh',
+        name: 'Chưởng Thiên Bình',
+        type: 'supportArtifact',
+        quality: 'Thần Thoại',
+        tier: 'HONG_MONG',
+        image: 'artifacts/chuong-thien-binh.svg',
+        description: 'Chí bảo đệ nhất Tiên giới, có khả năng ngưng tụ linh dịch thiên địa.',
+        price: 9999999,
+        stats: { tuViSpeed: 2.0, luck: 50 },
+        specialEffect: 'generate_spiritual_liquid'
+    },
+    'hu_thien_dinh': {
+        id: 'hu_thien_dinh',
+        name: 'Hư Thiên Đỉnh',
+        type: 'supportArtifact',
+        quality: 'Cực Phẩm',
+        tier: 'THONG_THIEN',
+        image: 'artifacts/hu-thien-dinh.svg',
+        description: 'Đỉnh quý chứa đựng không gian quy tắc, hỗ trợ luyện đan và trấn áp.',
+        price: 500000,
+        stats: { alchemySuccess: 0.2, soulRepress: 30 }
+    },
+    'bat_linh_xich': {
+        id: 'bat_linh_xich',
+        name: 'Bát Linh Xích',
+        type: 'attackArtifact',
+        quality: 'Hoàn Mỹ',
+        tier: 'HUYEN_THIEN',
+        image: 'artifacts/bat-linh-xich.svg',
+        description: 'Pháp bảo hình thước, có khả năng phong ấn linh lực đối phương.',
+        price: 300000,
+        stats: { atk: 500, soulRepress: 20 }
+    },
+    'binh_son_an': {
+        id: 'binh_son_an',
+        name: 'Bình Sơn Ấn',
+        type: 'attackArtifact',
+        quality: 'Tinh Phẩm',
+        tier: 'HUYEN_THIEN',
+        image: 'artifacts/binh-son-an.svg',
+        description: 'Pháp bảo dạng ấn ký, mang theo sức mạnh của vạn quân sơn nhạc.',
+        price: 250000,
+        stats: { atk: 800, spd: -10 }
+    },
+    'phong_loi_si': {
+        id: 'phong_loi_si',
+        name: 'Phong Lôi Sí',
+        type: 'flightArtifact',
+        quality: 'Hoàn Mỹ',
+        tier: 'HUYEN_THIEN',
+        image: 'artifacts/phong-loi-si.svg',
+        description: 'Quạt lông vũ mang theo sức mạnh phong lôi, tăng mạnh tốc độ độn tẩu.',
+        price: 400000,
+        stats: { spd: 150, atk: 200 }
+    },
+    'huyet_sac_phi_phong': {
+        id: 'huyet_sac_phi_phong',
+        name: 'Huyết Sắc Phi Phong',
+        type: 'defenseArtifact',
+        quality: 'Tinh Phẩm',
+        tier: 'HUYEN_THIEN',
+        image: 'artifacts/huyet-sac-phi-phong.svg',
+        description: 'Áo choàng máu, tăng khả năng né tránh và phòng ngự.',
+        price: 200000,
+        stats: { def: 300, spd: 50 }
+    },
+    'nguyen_tu_cuc_son': {
+        id: 'nguyen_tu_cuc_son',
+        name: 'Nguyên Từ Cực Sơn',
+        type: 'attackArtifact',
+        quality: 'Hoàn Mỹ',
+        tier: 'HUYEN_THIEN',
+        image: 'artifacts/nguyen-tu-cuc-son.svg',
+        description: 'Ngọn núi chứa đựng nguyên từ thần quang, khắc chế ngũ hành pháp bảo.',
+        price: 600000,
+        stats: { atk: 1200, def: 500, pierce: 0.3 }
+    },
+    'bac_cuc_cuc_son': {
+        id: 'bac_cuc_cuc_son',
+        name: 'Bắc Cực Cực Sơn',
+        type: 'attackArtifact',
+        quality: 'Hoàn Mỹ',
+        tier: 'HUYEN_THIEN',
+        image: 'artifacts/bac-cuc-nguyen-quang-cuc-son.png',
+        description: 'Ngọn núi chứa đựng Bắc Cực Nguyên Quang, đóng băng vạn vật.',
+        price: 600000,
+        stats: { atk: 1100, def: 600, iceDmg: 200 }
+    },
+    'nguyen_hop_ngu_cuc_son': {
+        id: 'nguyen_hop_ngu_cuc_son',
+        name: 'Nguyên Hợp Ngũ Cực Sơn',
+        type: 'attackArtifact',
+        quality: 'Truyền Thuyết',
+        tier: 'THONG_THIEN',
+        image: 'artifacts/nguyen-hop-ngu-cuc-son.svg',
+        description: 'Sự kết hợp của năm ngọn cực sơn, uy lực chấn động thiên địa.',
+        price: 5000000,
+        stats: { atk: 5000, def: 2500, pierce: 0.5, daoVun: 10 }
+    },
+    'linh_dich': {
+        id: 'linh_dich',
+        name: 'Linh Dịch (Chưởng Thiên Bình)',
+        type: 'consumable',
+        quality: 'Thần Thoại',
+        icon: '🧪',
+        description: 'Linh dịch ngưng tụ từ Chưởng Thiên Bình, có khả năng kích phát linh thảo trưởng thành cực nhanh.',
+        price: 0,
+        effect: { type: 'garden_boost', value: 1000 } // Rút ngắn 1000 giây hoặc 100%?
+    },
+    'egg_phe_kim_trung': {
+        id: 'egg_phe_kim_trung',
+        name: 'Trứng Phệ Kim Trùng',
+        type: 'beast_egg',
+        beastId: 'phe_kim_trung',
+        quality: 'Truyền Thuyết',
+        image: 'aberrations/phe-kim-trung.svg',
+        description: 'Trứng của loài hung trùng thượng cổ, có thể cắn nuốt vạn vật.',
+        price: 50000
+    },
+    'egg_bang_tam': {
+        id: 'egg_bang_tam',
+        name: 'Trứng Băng Tàm',
+        type: 'beast_egg',
+        beastId: 'bang_tam',
+        quality: 'Cực Phẩm',
+        image: 'aberrations/bang-tam.svg',
+        description: 'Trứng của loài tằm băng vùng cực hàn, nhả tơ chứa hàn khí thấu xương.',
+        price: 20000
+    },
+    'egg_huyet_ngoc_tri_chu': {
+        id: 'egg_huyet_ngoc_tri_chu',
+        name: 'Trứng Huyết Ngọc Tri Chu',
+        type: 'beast_egg',
+        beastId: 'huyet_ngoc_tri_chu',
+        quality: 'Tinh Phẩm',
+        image: 'aberrations/huyet-ngoc-tri-chu.svg',
+        description: 'Trứng nhện ngọc máu, có khả năng phun tơ dính và độc tố cực mạnh.',
+        price: 15000
+    },
     'tui_tru_vat_trung': {
         id: 'tui_tru_vat_trung',
         name: 'Túi Trữ Vật (Trung)',

@@ -499,6 +499,7 @@ export class Game {
         if (state.systems.npc && state.systems.time) state.systems.npc.update(delta, state.systems.time.totalMinutes);
         if (state.systems.social) state.systems.social.update(delta);
         if (state.systems.fate) state.systems.fate.checkTribulation();
+        if (state.systems.treasure) state.systems.treasure.update(delta);
 
         if (state.player.hp <= 0) this.handleDeath();
     }
