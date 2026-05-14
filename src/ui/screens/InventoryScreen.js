@@ -267,7 +267,7 @@ export class InventoryScreen {
             'soulArtifact': 'Hồn Đạo Pháp Bảo'
         };
 
-        this.elDetailType.textContent = `${displayQuality} Phẩm | ${typeNames[itemData.type] || itemData.type}`;
+        this.elDetailType.textContent = `${displayQuality}${ (displayQuality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(displayQuality)) ? '' : ' Phẩm' } | ${typeNames[itemData.type] || itemData.type}`;
 
         this.elDetailDesc.textContent = itemData.description;
         if (this.elDetailStats) this.elDetailStats.innerHTML = '';

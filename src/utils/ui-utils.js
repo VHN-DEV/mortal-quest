@@ -7,13 +7,8 @@ import { getItemById } from '../configs/item-data.js';
  */
 export function getQualityClass(quality) {
     const map = { 
-        'Phàm': 'pham', 
-        'Hoàng': 'hoang', 
-        'Huyền': 'huyen', 
-        'Địa': 'dia', 
-        'Thiên': 'thien', 
-        'Tiên': 'tien', 
-        'Thần': 'than' 
+        'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than',
+        'Tàn Khuyết': 'pham', 'Thường': 'hoang', 'Tinh Phẩm': 'huyen', 'Hoàn Mỹ': 'dia', 'Cực Phẩm': 'thien', 'Truyền Thuyết': 'tien', 'Thần Thoại': 'than'
     };
     return map[quality] || 'pham';
 }
@@ -46,7 +41,7 @@ export function renderItemCard(item, options = {}) {
                 <div>
                     <div class="text-sm font-bold text-white">${item.name}</div>
                     <div class="text-[9px] font-bold quality-${qClass}">
-                        ${item.quality} phẩm 
+                        ${item.quality}${ (item.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(item.quality)) ? '' : ' phẩm' } 
                         ${showStock ? `| Kho: ${stock}` : ''}
                         ${showQuantity ? `| x${quantity}` : ''}
                     </div>

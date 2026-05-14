@@ -463,7 +463,7 @@ export class SystemsScreen {
                 <div class="text-2xl bg-black/60 p-2 rounded-lg border border-${qClass}/30">${itemData.image ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
                 <div>
                     <div class="text-sm font-bold text-white">${itemData.name}</div>
-                    <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality} phẩm | Kho: ${item.stock}</div>
+                    <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality}${ (itemData.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(itemData.quality)) ? '' : ' phẩm' } | Kho: ${item.stock}</div>
                 </div>
             `;
 
@@ -819,7 +819,10 @@ export class SystemsScreen {
     }
 
     getQualityClass(quality) {
-        const map = { 'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than' };
+        const map = { 
+            'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than',
+            'Tàn Khuyết': 'pham', 'Thường': 'hoang', 'Tinh Phẩm': 'huyen', 'Hoàn Mỹ': 'dia', 'Cực Phẩm': 'thien', 'Truyền Thuyết': 'tien', 'Thần Thoại': 'than'
+        };
         return map[quality] || 'pham';
     }
 
@@ -1489,7 +1492,7 @@ export class SystemsScreen {
                 <div class="text-6xl p-6 bg-white/5 rounded-full border border-white/10">${data.icon || '📜'}</div>
                 <div>
                     <h3 class="text-2xl font-ancient text-white">${data.name}</h3>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${data.quality || 'Phàm'} Phẩm | ${stageName}</p>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${data.quality || 'Phàm'}${ ((data.quality || 'Phàm').toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(data.quality || 'Phàm')) ? '' : ' Phẩm' } | ${stageName}</p>
                 </div>
             </div>
 
