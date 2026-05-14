@@ -1,5 +1,6 @@
 import { state } from '../../state.js';
 import { getItemById } from '../../configs/item-data.js';
+import { getAssetUrl } from '../../configs/asset-data.js';
 
 export class TreasureScreen {
     constructor() {
@@ -85,7 +86,11 @@ export class TreasureScreen {
         const item = getItemById(itemId);
         const meta = state.player.equipmentMetadata[this.currentSlot] || { level: 1, spirit: 0, durability: 100 };
 
-        this.elIcon.textContent = item.icon;
+        if (item.image) {
+            this.elIcon.innerHTML = `<img src="${getAssetUrl(item.image)}" class="w-16 h-16 object-contain mx-auto">`;
+        } else {
+            this.elIcon.textContent = item.icon || '';
+        }
         this.elName.textContent = item.name;
         this.elTier.textContent = `${item.tier || 'PHAM_KHI'} | ${item.quality || 'Thường'}`;
         

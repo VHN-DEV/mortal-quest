@@ -12,7 +12,7 @@ import { SECTS, getSectById } from '../../configs/sect-data.js';
 import { getRealmById } from '../../configs/realm-data.js';
 import { CORPSE_TYPES, getCorpseLevelInfo } from '../../configs/corpse-data.js';
 import { SHOPS } from '../../configs/shop-data.js';
-import { ASSETS } from '../../configs/asset-data.js';
+import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 import { PUPPET_RECIPES, PUPPET_GRADES } from '../../configs/puppet-data.js';
 import { TALISMAN_RECIPES, getTalismanLevelInfo } from '../../configs/talisman-data.js';
 import { BEASTS, BEAST_TYPES, BLOODLINES, getBeastLevelInfo } from '../../configs/beast-data.js';
@@ -136,7 +136,7 @@ export class SystemsScreen {
 
         const cauldronName = document.getElementById('alchemy-cauldron-name');
         const flameName = document.getElementById('alchemy-flame-name');
-        
+
         if (cauldronName) {
             const cauldron = getCauldronById(state.player.currentCauldron);
             if (cauldron) {
@@ -145,7 +145,7 @@ export class SystemsScreen {
                 cauldronName.innerHTML = `<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'phap_bao')" class="ml-2 text-[8px] text-qi-blue underline hover:text-white transition-colors">MUA NGAY</button>`;
             }
         }
-        
+
         if (flameName) {
             const flame = getFlameById(state.player.currentFlame);
             if (flame) {
@@ -187,7 +187,7 @@ export class SystemsScreen {
             el.innerHTML = `
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
-                        <span class="text-xl mr-2">${resultItem.icon}</span>
+                        <span class="text-xl mr-2">${resultItem.image ? `<img src="${getAssetUrl(resultItem.image)}" class="w-6 h-6 object-contain inline-block">` : (resultItem.icon || '')}</span>
                         <span class="font-bold quality-${qClass} font-ancient">${resultItem.name}</span>
                     </div>
                     ${locked ?
@@ -330,7 +330,8 @@ export class SystemsScreen {
             'phu_luc': 'Phù Lục',
             'luyen_khi': 'Luyện Khí',
             'bi_tich': 'Bí Tịch',
-            'linh_dien': 'Linh Điện'
+            'linh_dien': 'Linh Điện',
+            'ky_trung': 'Kỳ Trùng'
         };
 
         // If buttons count doesn't match or shop changed, rebuild
@@ -377,7 +378,7 @@ export class SystemsScreen {
             const info = document.createElement('div');
             info.className = 'flex items-center space-x-3';
             info.innerHTML = `
-                <div class="text-2xl bg-black/60 p-2 rounded-lg border border-${qClass}/30">${itemData.icon}</div>
+                <div class="text-2xl bg-black/60 p-2 rounded-lg border border-${qClass}/30">${itemData.image ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
                 <div>
                     <div class="text-sm font-bold text-white">${itemData.name}</div>
                     <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality} phẩm | Kho: ${item.stock}</div>
@@ -441,7 +442,7 @@ export class SystemsScreen {
             const el = document.createElement('div');
             el.className = `p-2 border border-gray-800 rounded-lg bg-black/20 flex flex-col items-center cursor-pointer hover:border-${qClass} transition-all active:scale-95`;
             el.innerHTML = `
-                <div class="text-2xl mb-1">${itemData.icon}</div>
+                <div class="text-2xl mb-1">${itemData.image ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
                 <div class="text-[9px] text-gray-400">x${item.quantity}</div>
                 <div class="text-[8px] text-cultivation-gold mt-1">${Math.floor(itemData.price * sellMult)} LT</div>
             `;
@@ -558,13 +559,13 @@ export class SystemsScreen {
                 'noi_son': 'text-purple-400',
                 'cam_khu': 'text-red-500'
             }[layer.tier] || 'text-red-400';
-            
+
             elLayerName.innerHTML = `<span class="text-[10px] block opacity-60 uppercase tracking-tighter">${tier.name}</span>${layer.name}`;
             elLayerName.className = `text-2xl font-ancient ${tierColor} mb-1`;
         }
-        
+
         if (elLayerDesc) elLayerDesc.textContent = layer.description;
-        
+
         // Progress display (Global Discovery for this layer)
         const discovery = mSys.discovery[mSys.currentLayer] || 0;
         if (elLayerProgText) elLayerProgText.textContent = `${Math.floor(mSys.layerProgress)}% (Khám phá: ${Math.floor(discovery)}%)`;
@@ -727,7 +728,7 @@ export class SystemsScreen {
 
         const toolName = document.getElementById('smithing-tool-name');
         const flameName = document.getElementById('smithing-flame-name');
-        
+
         if (toolName) {
             const tool = state.player.smithingTool ? getItemById(state.player.smithingTool) : null;
             if (tool) {
@@ -736,7 +737,7 @@ export class SystemsScreen {
                 toolName.innerHTML = `<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'luyen_khi')" class="ml-2 text-[8px] text-red-400 underline hover:text-white transition-colors">MUA NGAY</button>`;
             }
         }
-        
+
         if (flameName) {
             const flame = getFlameById(state.player.currentFlame);
             if (flame) {
@@ -777,7 +778,7 @@ export class SystemsScreen {
             el.innerHTML = `
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
-                        <span class="text-xl mr-2">${item.icon}</span>
+                        <span class="text-xl mr-2">${item.image ? `<img src="${getAssetUrl(item.image)}" class="w-6 h-6 object-contain inline-block">` : (item.icon || '')}</span>
                         <span class="font-bold quality-${qClass} font-ancient">${item.name}</span>
                     </div>
                     ${locked ?
