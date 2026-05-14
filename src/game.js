@@ -23,6 +23,8 @@ import { FateScreen } from './ui/screens/FateScreen.js';
 import { StartScreen } from './ui/screens/StartScreen.js';
 import { SaveScreen } from './ui/screens/SaveScreen.js';
 import { MiningScreen } from './ui/screens/MiningScreen.js';
+import { logger } from './utils/logger.js';
+import { audioManager } from './utils/audio-manager.js';
 
 // Import Systems
 import { ShopSystem } from './systems/shop-system.js';
@@ -56,7 +58,7 @@ export class Game {
     }
 
     async init() {
-        console.log("%c🌌 Mortal Quest: Tái cấu trúc thành công!", "color: #4fd1c5; font-size: 14px; font-weight: bold;");
+        await logger.init();
 
         state.ui = new UISystem();
         window.ui = state.ui;
@@ -76,11 +78,31 @@ export class Game {
         state.systems.creation = new CreationSystem();
 
         await SaveSystem.migrateLegacySave();
-        await this.showStartScreen();
+        
+        const lastSlot = await SaveSystem.getLastSlot();
+        
+        if (lastSlot) {
+            const savedData = await SaveSystem.load(lastSlot);
+            if (savedData) {
+                SaveSystem.currentSlot = lastSlot;
+                await this.loadGame(savedData);
+            } else {
+                await this.showStartScreen();
+            }
+        } else {
+            await this.showStartScreen();
+        }
 
         this.startLoop();
         await this.initNavigation();
         this.initGlobalEvents();
+
+        // Add global click sound
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('button') || e.target.closest('.nav-item') || e.target.closest('.clickable')) {
+                audioManager.playClick();
+            }
+        }, true);
 
         setInterval(async () => await this.saveGame(), 30000);
     }
@@ -139,6 +161,16 @@ export class Game {
             else this.enterSeclusion();
         };
 
+        const muteBtn = document.getElementById('btn-toggle-mute');
+        if (muteBtn) {
+            muteBtn.onclick = async () => {
+                const muted = await audioManager.toggleMute();
+                this.updateMuteIcon(muted);
+            };
+            // Initial state
+            this.updateMuteIcon(audioManager.isMuted);
+        }
+
         this.bindPlaceholderButtons();
     }
 
@@ -175,8 +207,8 @@ export class Game {
         Object.entries(navMappings).forEach(([btnId, screenId]) => {
             const btn = document.getElementById(btnId);
             if (btn) {
-                btn.onclick = () => {
-                    state.ui.switchScreen(screenId, btn);
+                btn.onclick = async () => {
+                    await state.ui.switchScreen(screenId, btn);
                     if (screenId === 'screen-technique') {
                         this.screens.systems.renderTechniques(state.activeTechTab || 'cultivation');
                     } else if (screenId === 'screen-crafting-hub') {
@@ -188,39 +220,37 @@ export class Game {
             }
         });
 
-        if (state.player) {
-            const { value } = await Preferences.get({ key: 'mortal_quest_current_screen' });
-            let savedScreen = value;
-
-            if (savedScreen === 'screen-battle') {
-                savedScreen = 'screen-adventure';
-                await Preferences.set({ key: 'mortal_quest_current_screen', value: 'screen-adventure' });
-                await Preferences.set({ key: 'mortal_quest_map_view', value: 'explore' });
-            }
-
-            if (savedScreen) {
-                const btnId = Object.keys(navMappings).find(key => navMappings[key] === savedScreen);
-                if (btnId) {
-                    const btn = document.getElementById(btnId);
-                    if (btn) {
-                        btn.click();
-                        if (savedScreen === 'screen-adventure') {
-                            await this.screens.map.restoreView();
-                        }
-                        return;
-                    }
-                }
-            }
-            const mainBtn = document.getElementById('nav-main');
-            if (mainBtn) mainBtn.click();
-        }
-
+        // Global UI events
         const elHeaderPortraitContainer = document.getElementById('header-portrait-container');
         if (elHeaderPortraitContainer) {
             elHeaderPortraitContainer.onclick = () => {
                 const btnChar = document.getElementById('nav-character');
                 state.ui.switchScreen('screen-character', btnChar);
             };
+        }
+
+        // Restore last screen if exists
+        if (state.player) {
+            const { value: savedScreen } = await Preferences.get({ key: 'mortal_quest_current_screen' });
+
+            if (savedScreen && savedScreen !== 'screen-start' && savedScreen !== 'screen-creation') {
+                const btnId = Object.keys(navMappings).find(key => navMappings[key] === savedScreen);
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    await btn.onclick();
+
+                    // If we are on adventure, ensure the sub-view is also restored
+                    if (savedScreen === 'screen-adventure' && this.screens.map) {
+                        await this.screens.map.restoreView();
+                    }
+                    this.initOverlayButtons();
+                    return;
+                }
+            }
+
+            // Default to main screen if no valid saved screen
+            const mainBtn = document.getElementById('nav-main');
+            if (mainBtn) await mainBtn.onclick();
         }
 
         this.initOverlayButtons();
@@ -349,16 +379,18 @@ export class Game {
             };
 
             await SaveSystem.save(SaveSystem.currentSlot, data, metadata);
+            await SaveSystem.setLastSlot(SaveSystem.currentSlot);
         }
     }
 
-    loadGame(savedData) {
+    async loadGame(savedData) {
         state.player = new Player();
         state.player.load(savedData);
 
-        state.currentWorldId = state.player.currentWorldId;
-        state.currentLocId = state.player.currentLocId;
-        state.explorationProgress = state.player.explorationProgress;
+        // SYNC STATE IMMEDIATELY
+        state.currentWorldId = state.player.currentWorldId || 'nhan_gioi';
+        state.currentLocId = state.player.currentLocId || 'thanh_van_tran';
+        state.explorationProgress = state.player.explorationProgress || 0;
 
         this.initSystems(state.player, savedData);
 
@@ -374,9 +406,21 @@ export class Game {
             if (el) el.classList.remove('hidden');
         });
 
-        const mainNavBtn = document.querySelector('.nav-item[onclick*="screen-main"]');
-        state.ui.switchScreen('screen-main', mainNavBtn);
+        // Ensure we don't restore to a start/creation screen after loading
+        const { value: currentStoredScreen } = await Preferences.get({ key: 'mortal_quest_current_screen' });
+        
+        // Fix: If we are in a boot state or no screen saved, default to main
+        if (!currentStoredScreen || ['screen-start', 'screen-creation', 'screen-save'].includes(currentStoredScreen)) {
+            await Preferences.set({ key: 'mortal_quest_current_screen', value: 'screen-main' });
+            state.ui.switchScreen('screen-main', document.getElementById('nav-main'));
+        } else {
+            // If we have a stored screen, switch to it (useful for startCreationGame)
+            state.ui.switchScreen(currentStoredScreen, document.querySelector(`.nav-item[onclick*="${currentStoredScreen}"]`));
+        }
 
+        await SaveSystem.setLastSlot(SaveSystem.currentSlot);
+
+        audioManager.playBgm('main');
         this.refreshUI();
     }
 
@@ -384,7 +428,7 @@ export class Game {
         const savedData = await SaveSystem.load(slot);
         if (savedData) {
             SaveSystem.currentSlot = slot;
-            this.loadGame(savedData);
+            await this.loadGame(savedData);
         } else {
             state.ui.toast(`Không tìm thấy dữ liệu ở Slot ${slot}`, 'error');
         }
@@ -398,7 +442,9 @@ export class Game {
             state.autoCultivateInterval = null;
         }
         state.player = null;
+        await SaveSystem.setLastSlot(null);
         await this.showStartScreen();
+        audioManager.playBgm('start');
         state.ui.toast('Đã lưu và thoát về màn hình chính', 'success');
     }
 
@@ -531,6 +577,24 @@ export class Game {
         } else {
             if (message) state.ui.toast(message, result.success ? 'success' : 'error');
         }
+
+        if (result.success && result.gain > 0) {
+            const btn = document.getElementById('cultivate-btn');
+            if (btn) {
+                state.ui.showStatUpEffect(btn, `+${Math.floor(result.gain)} ${result.type === 'tuvi' ? 'Tu Vi' : (result.type === 'body' ? 'Khí Huyết' : 'Thần Niệm')}`);
+                
+                // Spawn particles from center of portrait to outward
+                const portrait = document.getElementById('aura-border');
+                if (portrait) {
+                    const rect = portrait.getBoundingClientRect();
+                    const appRect = document.getElementById('app').getBoundingClientRect();
+                    const centerX = rect.left - appRect.left + rect.width / 2;
+                    const centerY = rect.top - appRect.top + rect.height / 2;
+                    state.ui.spawnQiParticles(centerX, centerY, 15, result.type === 'tuvi' ? '#4FD1C5' : (result.type === 'body' ? '#F87171' : '#A78BFA'));
+                }
+            }
+        }
+
         this.refreshUI();
     }
 
@@ -585,6 +649,8 @@ export class Game {
         const result = state.player.refineSpiritStone(itemId);
         if (result.success) {
             state.ui.toast(result.msg, 'success');
+            const btn = document.querySelector(`[onclick*="refine('${itemId}')"]`);
+            if (btn) state.ui.showStatUpEffect(btn, `+${Math.floor(result.gain)} Tu Vi`, 'text-cyan-400');
             this.refreshUI();
         } else {
             state.ui.toast(result.msg, 'error');
@@ -1198,6 +1264,13 @@ export class Game {
         }
     }
 
+    updateMuteIcon(muted) {
+        const icon = document.getElementById('mute-icon');
+        if (icon) {
+            icon.className = muted ? 'ph ph-speaker-slash' : 'ph ph-speaker-high';
+        }
+    }
+
     // --- Utility ---
     emergencyUIReset() {
         console.warn('--- EMERGENCY UI RESET TRIGGERED ---');
@@ -1215,6 +1288,7 @@ export class Game {
     async showStartScreen() {
         state.ui.switchScreen('screen-start');
         await this.screens.start.render();
+        audioManager.playBgm('start');
         ['header', '#time-hud', 'nav'].forEach(s => document.querySelector(s)?.classList.add('hidden'));
     }
 
@@ -1224,13 +1298,13 @@ export class Game {
         if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
     }
 
-    startCreationGame() {
+    async startCreationGame() {
         if (state.systems.creation) {
             const nameInput = document.getElementById('creation-name-input');
             state.systems.creation.playerName = nameInput?.value || "Phàm Nhân";
             const newPlayer = state.systems.creation.buildPlayer();
             if (newPlayer) {
-                this.loadGame(newPlayer.save());
+                await this.loadGame(newPlayer.save());
                 state.ui.toast("Bắt đầu hành trình tu tiên!", "success");
             } else {
                 state.ui.toast("Không đủ điểm Thiên Duyên!", "error");

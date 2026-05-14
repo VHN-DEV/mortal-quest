@@ -362,7 +362,7 @@ export class Player {
         const gain = config.gain * (this.advancedStats.qiAbsorb || 1.0);
         this.tuVi += gain;
         
-        return { success: true, msg: config.msg + ` (Tu vi +${Math.floor(gain).toLocaleString()})` };
+        return { success: true, msg: config.msg + ` (Tu vi +${Math.floor(gain).toLocaleString()})`, gain };
     }
 
     crushStone(itemId, count = 1) {
@@ -541,17 +541,18 @@ export class Player {
             
             const totalMult = rootMult * (1 + luckBonus) * variance * efficiency;
 
+            let gain = 0;
             if (focus === 'tuvi') {
-                const gain = this.tuViPerSecond * 3 * totalMult;
+                gain = this.tuViPerSecond * 3 * totalMult;
                 this.tuVi += gain;
             } else if (focus === 'body') {
-                const gain = this.bodyExpPerSecond * 12 * totalMult;
+                gain = this.bodyExpPerSecond * 12 * totalMult;
                 this.bodyExp += gain;
             } else if (focus === 'soul') {
-                const gain = this.soulExpPerSecond * 12 * totalMult;
+                gain = this.soulExpPerSecond * 12 * totalMult;
                 this.soulExp += gain;
             }
-            return { success: true, msg: "Tu luyện thành công." };
+            return { success: true, msg: "Tu luyện thành công.", gain, type: focus };
         }
         return { success: false, reason: `Không đủ tiêu hao để tu luyện (${cost.stamina} thể lực, ${cost.mana} linh lực).` };
     }

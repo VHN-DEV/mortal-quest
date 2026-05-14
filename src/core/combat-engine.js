@@ -5,7 +5,13 @@ import { getItemById } from '../configs/item-data.js';
 export class CombatEngine {
     constructor(player, enemy, onUpdate, onEnd, ambushType = null, environment = 'NORMAL') {
         this.player = player;
-        this.enemy = enemy;
+        this.enemy = enemy || { name: 'Vô Danh Kẻ Địch', hp: 100, maxHp: 100, atk: 10, def: 10, spd: 10, inventory: [] };
+        
+        if (typeof this.enemy === 'string') {
+            console.error('CombatEngine: enemy is a string! This is a bug in the caller.', this.enemy);
+            this.enemy = { name: 'Lỗi Dữ Liệu (' + this.enemy + ')', hp: 100, maxHp: 100, atk: 1, def: 1, spd: 1, inventory: [] };
+        }
+        
         this.onUpdate = onUpdate;
         this.onEnd = onEnd;
         this.ambushType = ambushType; 
@@ -165,7 +171,7 @@ export class CombatEngine {
 
         // 2. Check for healing pills if HP is low (< 30%)
         if (this.enemy.hp < this.enemy.maxHp * 0.3) {
-            const pillIndex = this.enemy.inventory.findIndex(i => {
+            const pillIndex = (this.enemy.inventory || []).findIndex(i => {
                 const data = getItemById(i.id);
                 return data?.type === 'consumable' && data.effect?.type === 'heal';
             });
@@ -187,7 +193,7 @@ export class CombatEngine {
         }
 
         // 3. Check for offensive items (Talismans)
-        const offensiveItemIndex = this.enemy.inventory.findIndex(i => {
+        const offensiveItemIndex = (this.enemy.inventory || []).findIndex(i => {
             const data = getItemById(i.id);
             return data?.type === 'talisman' && (data.effect?.type === 'damage' || data.effect?.stat === 'def');
         });

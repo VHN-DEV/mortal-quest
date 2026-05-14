@@ -1,8 +1,10 @@
 import { Preferences } from '@capacitor/preferences';
+import { logger } from '../utils/logger.js';
 
 const SAVE_PREFIX = 'mortal_quest_save_';
 const METADATA_KEY = 'mortal_quest_metadata';
 const LEGACY_SAVE_KEY = 'mortal_quest_save';
+const LAST_SLOT_KEY = 'mortal_quest_last_slot';
 
 /**
  * Hệ thống quản lý lưu trữ (Save System)
@@ -11,6 +13,34 @@ const LEGACY_SAVE_KEY = 'mortal_quest_save';
  */
 export const SaveSystem = {
     currentSlot: 1,
+
+    /**
+     * Lưu slot cuối cùng được sử dụng
+     */
+    setLastSlot: async (slot) => {
+        try {
+            await Preferences.set({
+                key: LAST_SLOT_KEY,
+                value: slot === null ? 'null' : String(slot)
+            });
+        } catch (e) {
+            console.error('Lỗi khi lưu last slot:', e);
+        }
+    },
+
+    /**
+     * Lấy slot cuối cùng được sử dụng
+     */
+    getLastSlot: async () => {
+        try {
+            const { value } = await Preferences.get({ key: LAST_SLOT_KEY });
+            if (!value || value === 'null') return null;
+            return parseInt(value, 10);
+        } catch (e) {
+            console.error('Lỗi khi lấy last slot:', e);
+            return null;
+        }
+    },
 
     /**
      * Lưu dữ liệu vào một slot cụ thể
@@ -130,7 +160,7 @@ export const SaveSystem = {
                 localStorage.removeItem(LEGACY_SAVE_KEY);
                 await Preferences.remove({ key: LEGACY_SAVE_KEY });
                 
-                console.log('Đã di cư dữ liệu cũ sang Slot 1 thành công.');
+                logger.info('save', 'Đã di cư dữ liệu cũ sang Slot 1 thành công.');
             } catch (e) {
                 console.error('Lỗi khi di cư dữ liệu cũ:', e);
             }
@@ -145,6 +175,7 @@ export const SaveSystem = {
             await Preferences.remove({ key: `${SAVE_PREFIX}${slot}` });
         }
         await Preferences.remove({ key: METADATA_KEY });
+        await Preferences.remove({ key: LAST_SLOT_KEY });
         await Preferences.remove({ key: 'mortal_quest_current_screen' });
         await Preferences.remove({ key: 'mortal_quest_map_view' });
         

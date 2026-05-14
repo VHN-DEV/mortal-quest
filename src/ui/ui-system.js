@@ -1,5 +1,7 @@
 import { Preferences } from '@capacitor/preferences';
 import { gsap } from 'gsap';
+import { audioManager } from '../utils/audio-manager.js';
+import { logger } from '../utils/logger.js';
 
 export class UISystem {
     constructor() {
@@ -79,6 +81,10 @@ export class UISystem {
         gsap.delayedCall(duration / 1000, () => {
             if (toast.parentElement) closeToast();
         });
+
+        if (type === 'success') {
+            audioManager.playSfx('success');
+        }
     }
 
     /**
@@ -273,15 +279,15 @@ export class UISystem {
         const overlays = Array.from(document.querySelectorAll('.overlay-full:not(.hidden), .absolute.inset-0:not(.hidden), [id*="overlay"]:not(.hidden)'));
         console.group('--- UI DIAGNOSTIC: ACTIVE OVERLAYS ---');
         if (overlays.length === 0) {
-            console.log('No visible overlays detected.');
+            logger.info('ui', 'No visible overlays detected.');
         } else {
             overlays.forEach(el => {
                 const zIndex = window.getComputedStyle(el).zIndex;
                 const pointerEvents = window.getComputedStyle(el).pointerEvents;
-                console.log(`ID: %c${el.id || 'N/A'}%c, Class: ${el.className}, Z-Index: ${zIndex}, Pointer-Events: ${pointerEvents}`, 'color: #d4af37; font-weight: bold', 'color: inherit');
+                logger.debug('ui', `Overlay diagnostic - ID: ${el.id || 'N/A'}, Class: ${el.className}, Z-Index: ${window.getComputedStyle(el).zIndex}`);
             });
         }
-        console.log('Body classes:', document.body.className);
+        logger.debug('ui', `Body classes: ${document.body.className}`);
         console.groupEnd();
     }
 
@@ -409,10 +415,79 @@ export class UISystem {
             .to(title, { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" }, "-=0.6")
             .to(glow, { opacity: 0, scale: 3, duration: 1.5, ease: "power1.in" }, "+=0.5")
             .to(title, { opacity: 0, y: -50, duration: 0.8, ease: "power2.in" }, "-=1");
+
+        audioManager.playSfx('breakthrough');
     }
 
     /**
-     * Switch between main screens
+     * Show a subtle stat increase effect
+     */
+    showStatUpEffect(anchor, text, color = 'text-green-400') {
+        const el = document.createElement('div');
+        el.className = `absolute z-[500] font-ancient font-bold ${color} pointer-events-none opacity-0 whitespace-nowrap`;
+        el.textContent = text;
+        
+        const app = document.getElementById('app');
+        const appRect = app.getBoundingClientRect();
+        const rect = anchor.getBoundingClientRect();
+
+        el.style.left = `${rect.left - appRect.left + rect.width / 2}px`;
+        el.style.top = `${rect.top - appRect.top}px`;
+        el.style.transform = 'translateX(-50%)';
+
+        app.appendChild(el);
+
+        gsap.to(el, {
+            y: -40,
+            opacity: 1,
+            duration: 0.5,
+            ease: "power2.out"
+        });
+        gsap.to(el, {
+            y: -60,
+            opacity: 0,
+            duration: 0.5,
+            delay: 0.8,
+            onComplete: () => el.remove()
+        });
+    }
+
+    /**
+     * Spawn QI particles at a specific position
+     */
+    spawnQiParticles(x, y, count = 10, color = '#4FD1C5') {
+        const container = document.querySelector('.qi-particles');
+        if (!container) return;
+
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('div');
+            p.className = 'absolute w-1 h-1 rounded-full pointer-events-none z-[60]';
+            p.style.backgroundColor = color;
+            p.style.boxShadow = `0 0 5px ${color}`;
+            p.style.left = `${x}px`;
+            p.style.top = `${y}px`;
+            
+            container.appendChild(p);
+
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 50 + Math.random() * 100;
+            const destX = Math.cos(angle) * distance;
+            const destY = Math.sin(angle) * distance;
+
+            gsap.to(p, {
+                x: destX,
+                y: destY,
+                opacity: 0,
+                scale: 0,
+                duration: 0.8 + Math.random() * 0.7,
+                ease: "power2.out",
+                onComplete: () => p.remove()
+            });
+        }
+    }
+
+    /**
+     * Smoothly transition screen
      */
     async switchScreen(screenId, btn) {
         const screens = document.querySelectorAll('.screen');
@@ -426,6 +501,8 @@ export class UISystem {
         if (targetScreen) {
             targetScreen.classList.remove('hidden');
             targetScreen.classList.add('flex');
+        } else {
+            console.warn('[DEBUG] Screen element NOT FOUND:', screenId);
         }
 
         navButtons.forEach(b => {

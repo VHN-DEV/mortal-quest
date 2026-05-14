@@ -2,10 +2,13 @@ import { state } from '../../state.js';
 import { getWorlds, getLocationById, DANGER_LEVELS } from '../../configs/map-data.js';
 import { getRealmById } from '../../configs/realm-data.js';
 import { ASSETS } from '../../configs/asset-data.js';
+import { logger } from '../../utils/logger.js';
 import { getRandomEvent } from '../../configs/event-data.js';
 import { SECTS } from '../../configs/sect-data.js';
 import { Preferences } from '@capacitor/preferences';
 import { MINING_NODES } from '../../configs/mining-data.js';
+import { audioManager } from '../../utils/audio-manager.js';
+import { gsap } from 'gsap';
 
 /**
  * Quản lý giao diện và logic của màn hình Khám phá / Bản đồ.
@@ -87,24 +90,31 @@ export class MapScreen {
      * Khôi phục chế độ xem từ trạng thái đã lưu
      */
     async restoreView() {
-        if (!state.player) return;
+        if (!state.player) {
+            logger.warn('game', 'MapScreen: No player found during restoreView');
+            return;
+        }
 
-        const { value } = await Preferences.get({ key: 'mortal_quest_map_view' });
-        const savedView = value || 'worlds';
-
-        // Luôn render world list làm nền nếu cần quay lại
-        this.renderWorldList();
-
+        const { value: savedView } = await Preferences.get({ key: 'mortal_quest_map_view' });
         if (savedView === 'locations' && state.currentWorldId) {
             await this.selectWorld(state.currentWorldId);
         } else if (savedView === 'explore' && state.currentWorldId && state.currentLocId) {
             // Restore location info and show explore view
             const w = getWorlds()[state.currentWorldId];
             if (w) this.elCurrentWorldName.textContent = w.name;
-
-            await this.startExploration(state.currentLocId, false);
+            const loc = getLocationById(state.currentWorldId, state.currentLocId);
+            if (loc) {
+                await this.startExploration(state.currentLocId, false);
+            } else {
+                logger.warn('game', 'MapScreen: Location not found, falling back to world list');
+                this.renderWorldList();
+                state.ui.toggleOverlay(this.viewWorlds, true);
+                state.ui.toggleOverlay(this.viewLocations, false);
+                state.ui.toggleOverlay(this.viewExplore, false);
+            }
         } else {
             // Default to world list
+            this.renderWorldList();
             state.ui.toggleOverlay(this.viewWorlds, true);
             state.ui.toggleOverlay(this.viewLocations, false);
             state.ui.toggleOverlay(this.viewExplore, false);
@@ -256,9 +266,10 @@ export class MapScreen {
         this.elCurrentLocName.textContent = loc.name;
         if (resetProgress) state.explorationProgress = 0;
 
-        state.ui.toggleOverlay(this.viewWorlds, false);
-        state.ui.toggleOverlay(this.viewLocations, false);
         state.ui.toggleOverlay(this.viewExplore, true);
+        
+        gsap.fromTo(this.viewExplore, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
+        
         await Preferences.set({ key: 'mortal_quest_map_view', value: 'explore' });
 
         this.updateExplorationUI();
@@ -309,6 +320,7 @@ export class MapScreen {
         state.player.stamina -= 5;
 
         if (state.systems.time) state.systems.time.advanceTime(1);
+        audioManager.playSfx('move');
 
         state.explorationProgress += 5 + Math.random() * 5;
         if (state.explorationProgress >= 100) state.explorationProgress = 100;

@@ -3,6 +3,7 @@ import { getFlameById } from '../../configs/alchemy-data.js';
 import { getSecretTechniqueById } from '../../configs/technique-data.js';
 import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 import { gsap } from 'gsap';
+import { audioManager } from '../../utils/audio-manager.js';
 
 /**
  * Quản lý giao diện và logic của màn hình Chiến Đấu.
@@ -110,6 +111,7 @@ export class BattleScreen {
         switch(type) {
             case 'start':
                 state.ui.toggleOverlay(this.overlay, true);
+                audioManager.playBgm('battle');
                 this.enemyName.textContent = combat.enemy.name;
                 this.playerName.textContent = state.player.name;
                 if (this.playerImg) this.playerImg.src = ASSETS.portraits.player;
@@ -137,6 +139,9 @@ export class BattleScreen {
                 this.updateHPs();
                 this.showDamage(data);
                 this.updateStatusEffects();
+                if (data.value > 0) {
+                    audioManager.playSfx(data.crit ? 'combat_crit' : 'combat_hit');
+                }
                 break;
             case 'player-turn-start':
                 this.actionContainer.classList.remove('hidden');
@@ -164,6 +169,7 @@ export class BattleScreen {
                 break;
             case 'end':
                 this.actionContainer.classList.add('hidden');
+                audioManager.playBgm('main');
                 break;
         }
     }

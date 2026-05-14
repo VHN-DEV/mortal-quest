@@ -214,7 +214,7 @@ export class MountainSystem {
         this.ui.toast(`${isNpc ? 'Tu sĩ phục kích' : 'Yêu thú xuất hiện'}: ${enemyData.name}!`, "warning");
         
         if (window?.game?.startBattle) {
-            window.game.startBattle(state.currentWorldId, state.currentLocId, null, enemy);
+            window.game.startBattle(enemy);
         }
     }
 
@@ -268,7 +268,7 @@ export class MountainSystem {
         this.ui.toast(`PHỤC KÍCH: ${bossData.name} xuất hiện!`, "error");
         
         if (window?.game?.startBattle) {
-            window.game.startBattle(state.currentWorldId, state.currentLocId, null, enemy, (win) => {
+            window.game.startBattle(enemy, null, (win) => {
                 if (win) {
                     this.bossDefeated[tierId] = true;
                     this.ui.toast(`Chúc mừng! Ngươi đã đánh bại ${bossData.name} và có thể tiến sâu hơn.`, "success");
