@@ -83,11 +83,24 @@ export class SpiritStoneSystem {
 
         const grade = SPIRIT_STONE_GRADES[item.grade];
         const attr = SPIRIT_STONE_ATTRIBUTES[item.attribute || 'NORMAL'];
-        const quality = SPIRIT_STONE_QUALITIES[item.quality_tier || 'BINH_THUONG']; // metadata if available
+        const quality = SPIRIT_STONE_QUALITIES[item.quality_tier || 'BINH_THUONG']; 
 
         // Tính toán hiệu quả
-        const baseQi = grade.multiplier * 10; // Base value per grade
-        const totalQi = baseQi * quality.multiplier * count;
+        // Cấp càng cao linh lực càng tinh thuần
+        const baseQi = grade.multiplier * 10; 
+        
+        // Bonus thuộc tính: Nếu thuộc tính linh thạch trùng với linh căn của người chơi
+        let attrBonus = 1.0;
+        if (item.attribute !== 'NORMAL') {
+            const playerRoot = this.player.spiritRoot || []; // Giả sử player có mảng linh căn
+            if (playerRoot.includes(item.attribute)) {
+                attrBonus = 1.5; // Tăng 50% hiệu quả nếu đúng thuộc tính
+            } else if (item.attribute === 'DEMON' && this.player.path === 'MA') {
+                attrBonus = 2.0;
+            }
+        }
+
+        const totalQi = baseQi * quality.multiplier * attrBonus * count;
 
         // Hấp thụ qua Energy System
         const es = window.energySystem || this.player.energySystem;
@@ -97,8 +110,11 @@ export class SpiritStoneSystem {
             
             if (result.success) {
                 this.player.inventory.removeItem(itemId, count);
-                // Tạo phế thạch
-                this.player.inventory.addItem('phe_thach', count);
+                // Tạo phế thạch (chỉ cấp thấp mới để lại phế thạch, cấp cao hóa hư không)
+                if (['HA', 'TRUNG'].includes(item.grade)) {
+                    this.player.inventory.addItem('phe_thach', count);
+                }
+                
                 this.ui?.toast(`Hấp thụ ${count} viên ${item.name}, nhận ${Math.floor(result.gain)} linh khí.`, 'success');
                 return { success: true };
             } else {
@@ -107,6 +123,31 @@ export class SpiritStoneSystem {
         }
 
         return { success: false, msg: "Hệ thống năng lượng chưa sẵn sàng." };
+    }
+
+    /**
+     * Bóp nát linh thạch để hồi phục Linh Lực (Mana) tức thời
+     * Thường dùng trong chiến đấu
+     */
+    crushStone(itemId, count = 1) {
+        const item = getItemById(itemId);
+        if (!item || item.type !== 'spirit_stone') return { success: false, msg: "Không thể bóp nát vật phẩm này." };
+
+        if (!this.player.inventory.hasItem(itemId, count)) return { success: false, msg: "Không đủ linh thạch." };
+
+        const grade = SPIRIT_STONE_GRADES[item.grade];
+        // Hồi phục Mana dựa trên phẩm cấp
+        const manaGain = grade.multiplier * 5 * count;
+        
+        this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
+        this.player.inventory.removeItem(itemId, count);
+        
+        if (['HA', 'TRUNG'].includes(item.grade)) {
+            this.player.inventory.addItem('phe_thach', count);
+        }
+
+        this.ui?.toast(`Bóp nát ${count} viên ${item.name}, hồi phục ${manaGain} Linh Lực!`, 'success');
+        return { success: true, gain: manaGain };
     }
 
     /**
@@ -119,6 +160,7 @@ export class SpiritStoneSystem {
 
         for (const gradeId of priority) {
             if (gradeId === 'CUC' && this.player.spiritStoneSettings.lockCucPham) continue;
+            if (['TIEN', 'HON_DON', 'HONG_MONG'].includes(gradeId)) continue; // Never auto-use supreme crystals
 
             const itemId = this.getItemIdByGrade(gradeId);
             const gradeData = SPIRIT_STONE_GRADES[gradeId];
@@ -131,7 +173,9 @@ export class SpiritStoneSystem {
 
                 provided += stonesToUse * energyPerStone;
                 this.player.inventory.removeItem(itemId, stonesToUse);
-                this.player.inventory.addItem('phe_thach', stonesToUse);
+                if (['HA', 'TRUNG'].includes(gradeId)) {
+                    this.player.inventory.addItem('phe_thach', stonesToUse);
+                }
 
                 if (provided >= requiredEnergy) break;
             }
@@ -146,6 +190,9 @@ export class SpiritStoneSystem {
             case 'TRUNG': return 'ling_thach_trung';
             case 'THUONG': return 'ling_thach_thuong';
             case 'CUC': return 'ling_thach_cuc';
+            case 'TIEN': return 'tien_tinh';
+            case 'HON_DON': return 'hon_don_tinh';
+            case 'HONG_MONG': return 'hong_mong_tinh';
             default: return 'ling_thach_ha';
         }
     }
@@ -156,10 +203,13 @@ export class SpiritStoneSystem {
             'FIRE': 'viem_khi',
             'ICE': 'han_khi',
             'LIGHTNING': 'loi_khi',
-            'WOOD': 'linh_khi', // Placeholder if no wood qi yet
+            'WOOD': 'linh_khi', 
+            'METAL': 'linh_khi', // Placeholder
+            'EARTH': 'linh_khi', // Placeholder
             'DEMON': 'ma_khi',
             'IMMORTAL': 'tien_khi'
         };
         return mapping[attr] || 'linh_khi';
     }
 }
+

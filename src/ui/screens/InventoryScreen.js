@@ -33,6 +33,7 @@ export class InventoryScreen {
         this.btnQtyMax = document.getElementById('detail-qty-max');
         this.btnBuyItem = document.getElementById('btn-buy-item');
         this.btnSellItem = document.getElementById('btn-sell-item');
+        this.btnCrushStone = document.getElementById('btn-crush-stone');
     }
 
     initEvents() {
@@ -54,6 +55,18 @@ export class InventoryScreen {
                     window.game.refreshUI();
                 } else if (state.selectedItemId) {
                     state.ui.toast('Không thể luyện hóa/sử dụng vật phẩm này lúc này.', 'error');
+                }
+            };
+        }
+
+        if (this.btnCrushStone) {
+            this.btnCrushStone.onclick = () => {
+                if (state.selectedItemId && state.player.crushStone(state.selectedItemId, 1).success) {
+                    if (!state.player.inventory.items.find(i => i.id === state.selectedItemId)) {
+                        state.selectedItemId = null;
+                        state.ui.toggleOverlay(this.elItemDetail, false);
+                    }
+                    window.game.refreshUI();
                 }
             };
         }
@@ -312,10 +325,14 @@ export class InventoryScreen {
         } else {
             if (this.btnBuyItem) this.btnBuyItem.classList.add('hidden');
             if (this.btnSellItem) this.btnSellItem.classList.add('hidden');
+            if (this.btnCrushStone) this.btnCrushStone.classList.add('hidden');
         }
 
+        const isSpiritStone = itemData.type === 'spirit_stone';
         this.btnUseItem.classList.toggle('hidden', !(['consumable', 'book', 'spirit_stone'].includes(itemData.type)));
-        if (itemData.type === 'spirit_stone') {
+        if (this.btnCrushStone) this.btnCrushStone.classList.toggle('hidden', !isSpiritStone || fromShop || fromSell);
+
+        if (isSpiritStone) {
             this.btnUseItem.textContent = 'LUYỆN HÓA';
         } else {
             this.btnUseItem.textContent = (itemData.type === 'book') ? 'LĨNH NGỘ' : 'SỬ DỤNG';

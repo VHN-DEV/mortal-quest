@@ -20,6 +20,7 @@ import { TreasureScreen } from './ui/screens/TreasureScreen.js';
 import { FateScreen } from './ui/screens/FateScreen.js';
 import { StartScreen } from './ui/screens/StartScreen.js';
 import { SaveScreen } from './ui/screens/SaveScreen.js';
+import { MiningScreen } from './ui/screens/MiningScreen.js';
 
 // Import Systems
 import { ShopSystem } from './systems/shop-system.js';
@@ -45,6 +46,7 @@ import { TreasureSystem } from './systems/treasure-system.js';
 import { NPCSystem } from './systems/npc-system.js';
 import { SocialSystem } from './systems/social-system.js';
 import { FateSystem } from './systems/fate-system.js';
+import { MiningSystem } from './systems/mining-system.js';
 
 
 export class Game {
@@ -71,6 +73,7 @@ export class Game {
         this.screens.fate = new FateScreen(state.player, state.ui);
         this.screens.start = new StartScreen();
         this.screens.save = new SaveScreen();
+        this.screens.mining = new MiningScreen();
 
         // 3. Khởi tạo Creation System (cho màn hình mới)
         state.systems.creation = new CreationSystem();
@@ -135,6 +138,9 @@ export class Game {
 
         const autoCultivate = document.getElementById('auto-cultivate-toggle');
         if (autoCultivate) autoCultivate.onchange = (e) => this.toggleAutoCultivate(e.target.checked);
+
+        const btnBattleCrush = document.getElementById('btn-battle-crush');
+        if (btnBattleCrush) btnBattleCrush.onclick = () => this.playerCrushStone();
 
         const seclusionBtn = document.getElementById('seclusion-btn');
         if (seclusionBtn) seclusionBtn.onclick = () => {
@@ -403,7 +409,8 @@ export class Game {
             treasure: new TreasureSystem(player, state.ui),
             npc: new NPCSystem(),
             social: new SocialSystem(),
-            fate: new FateSystem(player, state.ui)
+            fate: new FateSystem(player, state.ui),
+            mining: new MiningSystem(player, state.ui)
         });
 
         this.screens.fate.player = player;
@@ -514,6 +521,9 @@ export class Game {
         }
         if (this.screens.spiritStone) {
             this.screens.spiritStone.render();
+        }
+        if (this.screens.mining) {
+            this.screens.mining.render();
         }
     }
 
@@ -1478,9 +1488,75 @@ export class Game {
         });
 
         // Force clear body lock
-        document.body.classList.remove('modal-open');
+        document.body.classList.remove('overflow-hidden');
+        state.ui.toast('Đã hoàn tác giao diện khẩn cấp!', 'success');
+    }
 
-        state.ui.toast('Đã cưỡng chế khôi phục giao diện!', 'success');
-        this.refreshUI();
+    // --- Mining Actions ---
+    openMining() {
+        if (this.screens.mining) this.screens.mining.open();
+    }
+
+    mineManual(nodeId) {
+        if (state.systems.mining) {
+            const res = state.systems.mining.mineManual(nodeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    occupyNode(nodeId) {
+        if (state.systems.mining) {
+            const res = state.systems.mining.occupyNode(nodeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    claimMiningResources(nodeId) {
+        if (state.systems.mining) {
+            const res = state.systems.mining.claimResources(nodeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    abandonNode(nodeId) {
+        state.ui.confirm('Ngươi có chắc muốn từ bỏ linh mạch này? Tất cả sản lượng chưa thu thập sẽ biến mất!', 'Xác Nhận')
+            .then(confirmed => {
+                if (confirmed && state.systems.mining) {
+                    const res = state.systems.mining.abandonNode(nodeId);
+                    state.ui.toast(res.msg, res.success ? 'info' : 'error');
+                    this.refreshUI();
+                }
+            });
+    }
+
+    // --- Combat Spirit Stone Action ---
+    playerCrushStone() {
+        if (state.currentCombat && state.player) {
+            // Find first available spirit stone to crush for mana
+            const stones = state.player.inventory.items.filter(i => {
+                const data = getItemById(i.id);
+                return data && data.type === 'spirit_stone';
+            });
+            
+            if (stones.length === 0) {
+                state.ui.toast('Ngươi không có Linh Thạch để bóp nát!', 'error');
+                return;
+            }
+
+            // Open a small selection or just crush the lowest grade one
+            const stoneToCrush = stones[0]; // For now just take the first one
+            const res = state.player.crushStone(stoneToCrush.id, 1);
+            if (res.success) {
+                state.ui.toast(res.msg, 'success');
+                if (state.currentCombat.engine) {
+                    state.currentCombat.engine.doAction('spirit_stone');
+                }
+            } else {
+                state.ui.toast(res.msg, 'error');
+            }
+        }
     }
 }

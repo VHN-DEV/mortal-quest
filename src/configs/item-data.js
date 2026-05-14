@@ -395,6 +395,66 @@ export const ITEMS = {
         weight: 0.01,
         description: 'Chứa ma khí loãng, dùng cho ma tu hoặc các tà thuật.'
     },
+    'kim_linh_thach': {
+        id: 'kim_linh_thach',
+        name: 'Kim Linh Thạch',
+        type: 'spirit_stone',
+        grade: 'HA',
+        attribute: 'METAL',
+        icon: '📀',
+        quality: 'Phàm',
+        price: 5,
+        weight: 0.01,
+        description: 'Chứa kim hệ linh khí, vô cùng sắc bén và kiên cố.'
+    },
+    'tho_linh_thach': {
+        id: 'tho_linh_thach',
+        name: 'Thổ Linh Thạch',
+        type: 'spirit_stone',
+        grade: 'HA',
+        attribute: 'EARTH',
+        icon: '🟤',
+        quality: 'Phàm',
+        price: 5,
+        weight: 0.01,
+        description: 'Chứa thổ hệ linh khí, trầm ổn và dày nặng.'
+    },
+    'tien_tinh': {
+        id: 'tien_tinh',
+        name: 'Tiên Tinh',
+        type: 'spirit_stone',
+        grade: 'TIEN',
+        attribute: 'IMMORTAL',
+        icon: '✨',
+        quality: 'Tiên',
+        price: 100000000,
+        weight: 0.2,
+        description: 'Tinh thể ngưng tụ từ Tiên Khí, tài nguyên chiến lược của Tiên Giới.'
+    },
+    'hon_don_tinh': {
+        id: 'hon_don_tinh',
+        name: 'Hỗn Độn Tinh',
+        type: 'spirit_stone',
+        grade: 'HON_DON',
+        attribute: 'NORMAL',
+        icon: '🌌',
+        quality: 'Thần',
+        price: 500000000,
+        weight: 0.5,
+        description: 'Chứa đựng Hỗn Độn Khí thuở sơ khai, vô cùng quý giá.'
+    },
+    'hong_mong_tinh': {
+        id: 'hong_mong_tinh',
+        name: 'Hồng Mông Linh Tinh',
+        type: 'spirit_stone',
+        grade: 'HONG_MONG',
+        attribute: 'IMMORTAL',
+        icon: '💜',
+        quality: 'Thần',
+        price: 2000000000,
+        weight: 1.0,
+        description: 'Chí bảo từ thời Hồng Mông, chứa đựng quy tắc của đại đạo.'
+    },
     'phe_thach': {
         id: 'phe_thach',
         name: 'Phế Linh Thạch',

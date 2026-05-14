@@ -41,9 +41,39 @@ export const SPIRIT_STONE_GRADES = {
         shortName: 'Cực',
         value: 1000000,
         multiplier: 1000000,
-        nextGrade: null,
+        nextGrade: 'TIEN',
         color: '#f472b6',
         cssClass: 'text-pink-400'
+    },
+    'TIEN': {
+        id: 'TIEN',
+        name: 'Tiên Tinh',
+        shortName: 'Tiên',
+        value: 100000000,
+        multiplier: 100000000,
+        nextGrade: 'HON_DON',
+        color: '#10b981',
+        cssClass: 'text-emerald-400'
+    },
+    'HON_DON': {
+        id: 'HON_DON',
+        name: 'Hỗn Độn Tinh',
+        shortName: 'Hỗn',
+        value: 10000000000,
+        multiplier: 10000000000,
+        nextGrade: 'HONG_MONG',
+        color: '#6366f1',
+        cssClass: 'text-indigo-400'
+    },
+    'HONG_MONG': {
+        id: 'HONG_MONG',
+        name: 'Hồng Mông Linh Tinh',
+        shortName: 'Hồng',
+        value: 1000000000000,
+        multiplier: 1000000000000,
+        nextGrade: null,
+        color: '#a855f7',
+        cssClass: 'text-purple-500'
     }
 };
 

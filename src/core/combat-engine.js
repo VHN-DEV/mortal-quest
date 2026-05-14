@@ -369,6 +369,9 @@ export class CombatEngine {
             case 'escape':
                 this.playerEscape();
                 break;
+            case 'spirit_stone':
+                this.playerCrushStone();
+                break;
         }
     }
 
@@ -622,6 +625,22 @@ export class CombatEngine {
             return;
         }
         this.endPlayerTurn();
+    }
+
+    playerCrushStone() {
+        const stone = this.player.inventory.items.find(i => getItemById(i.id)?.type === 'spirit_stone');
+        if (!stone) {
+            this.addLog("Không có linh thạch để bóp nát!");
+            return;
+        }
+        
+        const res = this.player.crushStone(stone.id, 1);
+        if (res.success) {
+            this.addLog(`Ngươi bóp nát <span class="text-qi-blue">${getItemById(stone.id).name}</span>, hồi phục ${res.gain} Linh Lực!`);
+            this.endPlayerTurn();
+        } else {
+            this.addLog(res.msg);
+        }
     }
 
     playerSummonBeast() {

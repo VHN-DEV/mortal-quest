@@ -230,6 +230,14 @@ export class Player {
 
         this.equipmentMetadata = {}; // { [slot]: { spirit, level, durability, extraStat: { type, value } } }
         this.recognizedItems = [];
+
+        // Mining System
+        this.miningState = {
+            occupiedNodes: [], // { nodeId, startTime, lastClaimTime, health }
+            discoveredNodes: ['mo_hoang_tho'], // Nodes player has found
+            miningExp: 0,
+            miningLevel: 1
+        };
     }
 
     get lingShi() {
@@ -378,6 +386,14 @@ export class Player {
         this.tuVi += gain;
         
         return { success: true, msg: config.msg + ` (Tu vi +${Math.floor(gain).toLocaleString()})` };
+    }
+
+    crushStone(itemId, count = 1) {
+        const ss = window.game?.systems.spiritStone;
+        if (ss) {
+            return ss.crushStone(itemId, count);
+        }
+        return { success: false, msg: "Hệ thống linh thạch chưa sẵn sàng." };
     }
 
     updateVipLevel() {

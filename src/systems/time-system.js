@@ -48,6 +48,11 @@ export class TimeSystem {
 
         this.totalMinutes += minutes;
         
+        // Process Mining Events
+        if (window.game?.systems.mining) {
+            window.game.systems.mining.processTimeEvents(minutes);
+        }
+
         // Age the player (simplified: 1 game year = some age increment)
         // Let's say 1 game year = 1 year of life
         const yearsPassed = this.getYear() - oldYear;

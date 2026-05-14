@@ -5,6 +5,7 @@ import { ASSETS } from '../../configs/asset-data.js';
 import { getRandomEvent } from '../../configs/event-data.js';
 import { SECTS } from '../../configs/sect-data.js';
 import { Preferences } from '@capacitor/preferences';
+import { MINING_NODES } from '../../configs/mining-data.js';
 
 /**
  * Quản lý giao diện và logic của màn hình Khám phá / Bản đồ.
@@ -20,12 +21,12 @@ export class MapScreen {
         this.viewWorlds = document.getElementById('map-world-view');
         this.viewLocations = document.getElementById('map-location-view');
         this.viewExplore = document.getElementById('map-explore-view');
-        
+
         // Lists & Containers
         this.elWorldList = document.getElementById('world-list');
         this.elLocList = document.getElementById('location-list');
         this.elLocSpecialActions = document.getElementById('loc-special-actions');
-        
+
         // Info Displays
         this.elCurrentWorldName = document.getElementById('current-world-name');
         this.elCurrentLocName = document.getElementById('current-location-name');
@@ -33,7 +34,7 @@ export class MapScreen {
         this.elEventText = document.getElementById('event-text');
         this.elExploreBg = document.getElementById('explore-bg');
         this.elExploreNpcList = document.getElementById('explore-npc-list');
-        
+
         // Progress Bars
         this.elExploreBar = document.getElementById('explore-bar');
         this.elExploreProgress = document.getElementById('explore-progress');
@@ -42,7 +43,7 @@ export class MapScreen {
         this.elEnvConcentration = document.getElementById('env-concentration');
         this.elEnvTimeRate = document.getElementById('env-timerate');
         this.elEnvPurityTag = document.getElementById('env-purity-tag');
-        
+
         // Buttons
         this.btnMove = document.getElementById('btn-move');
         this.btnBackToLocs = document.getElementById('back-to-locations');
@@ -54,7 +55,7 @@ export class MapScreen {
         if (this.btnMove) {
             this.btnMove.onclick = () => this.handleMove();
         }
-        
+
         if (this.btnBackToLocs) {
             this.btnBackToLocs.onclick = async () => {
                 state.ui.toggleOverlay(this.viewExplore, false);
@@ -87,10 +88,10 @@ export class MapScreen {
      */
     async restoreView() {
         if (!state.player) return;
-        
+
         const { value } = await Preferences.get({ key: 'mortal_quest_map_view' });
         const savedView = value || 'worlds';
-        
+
         // Luôn render world list làm nền nếu cần quay lại
         this.renderWorldList();
 
@@ -100,7 +101,7 @@ export class MapScreen {
             // Restore location info and show explore view
             const w = getWorlds()[state.currentWorldId];
             if (w) this.elCurrentWorldName.textContent = w.name;
-            
+
             await this.startExploration(state.currentLocId, false);
         } else {
             // Default to world list
@@ -114,13 +115,13 @@ export class MapScreen {
         if (!state.player) return;
         const worlds = getWorlds();
         this.elWorldList.innerHTML = '';
-        
+
         Object.keys(worlds).forEach(id => {
             const w = worlds[id];
             const locked = state.player.realmId < w.minRealm;
             const el = document.createElement('div');
             el.className = `group relative overflow-hidden p-6 rounded-[2rem] border transition-all duration-500 active:scale-[0.98] ${locked ? 'bg-black/20 border-white/5 opacity-60' : 'bg-qi-ink/40 border-white/10 hover:border-qi-blue/50 hover:bg-black/60 shadow-xl'}`;
-            
+
             el.innerHTML = `
                 <div class="absolute -top-10 -right-10 w-24 h-24 bg-qi-blue/5 rounded-full blur-2xl group-hover:bg-qi-blue/20 transition-all"></div>
                 <div class="relative z-10 flex flex-col space-y-3">
@@ -163,7 +164,7 @@ export class MapScreen {
             const locked = state.player.realmId < loc.minRealm;
             const el = document.createElement('div');
             el.className = `location-card h-40 p-6 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
-            
+
             const dangerInfo = DANGER_LEVELS[loc.danger] || { name: loc.danger };
             const dangerClass = `danger-${loc.danger}`;
 
@@ -193,7 +194,7 @@ export class MapScreen {
     async startExploration(locId, resetProgress = true) {
         state.currentLocId = locId;
         const loc = getLocationById(state.currentWorldId, locId);
-        
+
         // LOGIC: If it's a direct-entry special location, skip the dashboard
         if (loc.special === 'mountain') {
             window.game.openMountain();
@@ -218,12 +219,12 @@ export class MapScreen {
 
         this.elCurrentLocName.textContent = loc.name;
         if (resetProgress) state.explorationProgress = 0;
-        
+
         state.ui.toggleOverlay(this.viewWorlds, false);
         state.ui.toggleOverlay(this.viewLocations, false);
         state.ui.toggleOverlay(this.viewExplore, true);
         await Preferences.set({ key: 'mortal_quest_map_view', value: 'explore' });
-        
+
         this.updateExplorationUI();
         this.updateEventDisplay('Ngươi đã tới địa điểm.', '🚶');
 
@@ -247,7 +248,7 @@ export class MapScreen {
             const mainEnergy = loc.energies[0];
             this.elEnvConcentration.textContent = `${mainEnergy.concentration}%`;
             this.elEnvConcentration.className = `dashboard-stat-value env-glow-${mainEnergy.type.replace(/_/g, '-')}`;
-            
+
             if (this.elEnvPurityTag) {
                 const purityMap = {
                     'TINH_THUAN': 'Tinh Thuần',
@@ -264,11 +265,11 @@ export class MapScreen {
     }
 
     handleMove() {
-        if (state.player.stamina < 5) { 
-            state.ui.toast('Thể lực khô cạn!', 'error'); 
-            return; 
+        if (state.player.stamina < 5) {
+            state.ui.toast('Thể lực khô cạn!', 'error');
+            return;
         }
-        
+
         state.player.stamina -= 5;
 
         if (state.systems.time) state.systems.time.advanceTime(1);
@@ -289,12 +290,12 @@ export class MapScreen {
                 const resultMsg = event.result(state.player);
                 const droppedShi = Math.floor(Math.random() * 10 * state.player.realmId);
                 state.player.addLingShi(droppedShi);
-                setTimeout(() => { 
-                    this.updateEventDisplay(resultMsg + ` (+${droppedShi} LT)`, '🎁'); 
+                setTimeout(() => {
+                    this.updateEventDisplay(resultMsg + ` (+${droppedShi} LT)`, '🎁');
                     if (window.game) window.game.saveGame();
                 }, 1000);
             } else if (event.type === 'npc') {
-                setTimeout(() => { 
+                setTimeout(() => {
                     window.game.openNPC();
                 }, 1000);
             } else if (event.type === 'shop') {
@@ -368,6 +369,17 @@ export class MapScreen {
             `;
         }
 
+        // Add Mining button if there are mining nodes here
+        const hasNodes = MINING_NODES.some(n => n.locationId === loc.id);
+        if (hasNodes) {
+            hasSpecial = true;
+            const btnMining = document.createElement('button');
+            btnMining.className = "col-span-2 py-4 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2 mt-2";
+            btnMining.innerHTML = '<i class="ph ph-pickaxe text-lg"></i><span>KHAI KHOÁNG</span>';
+            btnMining.onclick = () => window.game.openMining();
+            this.elLocSpecialActions.appendChild(btnMining);
+        }
+
         state.ui.toggleOverlay(this.elLocSpecialActions, hasSpecial);
     }
 
@@ -376,8 +388,8 @@ export class MapScreen {
     }
 
     updateExplorationUI() {
-        if (this.elExploreProgress) this.elExploreProgress.textContent = `${Math.floor(state.explorationProgress)}%`;
-        if (this.elExploreBar) this.elExploreBar.style.width = `${state.explorationProgress}%`;
+        if (this.elExploreProgress) this.elExploreProgress.textContent = `${ Math.floor(state.explorationProgress) }% `;
+        if (this.elExploreBar) this.elExploreBar.style.width = `${ state.explorationProgress }% `;
     }
 
     renderExplore() {
@@ -413,7 +425,7 @@ export class MapScreen {
                 <span class="text-[8px] text-gray-500 uppercase tracking-widest font-bold">Cường Giả Hiện Diện (${npcs.length})</span>
             </div>
             <div class="flex flex-col space-y-2">
-                ${npcs.map(npc => `
+                    ${npcs.map(npc => `
                     <div class="flex items-center justify-between p-3 bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl group hover:border-qi-blue/30 transition-all cursor-pointer"
                          onclick="window.game.openNPCDialogue('${npc.id}')">
                         <div class="flex items-center space-x-3">
@@ -429,7 +441,7 @@ export class MapScreen {
                         <i class="ph ph-chat-circle-dots text-qi-blue opacity-40 group-hover:opacity-100 transition-opacity"></i>
                     </div>
                 `).join('')}
-            </div>
-        `;
+                </div>
+            `;
     }
 }
