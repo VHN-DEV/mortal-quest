@@ -13,7 +13,7 @@ import { getRealmById, HUMAN_REALMS } from './configs/realm-data.js';
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
 import { SEEDS } from './configs/garden-data.js';
 import { SECTS, getSectById } from './configs/sect-data.js';
-import { CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS } from './configs/creation-data.js';
+import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS } from './configs/creation-data.js';
 import { PHYSIQUES } from './configs/physique-data.js';
 import { NPCScreen } from './ui/screens/NPCScreen.js';
 
@@ -282,6 +282,39 @@ window.renderCreationScreen = () => {
 
     if (elStatsPreview) {
         // Base stats for a new player (starting realm)
+               const root = CREATION_ROOTS[sys.selectedRoot] || {};
+        const phys = PHYSIQUES[sys.selectedPhysique] || {};
+        const origin = CREATION_ORIGINS[sys.selectedOrigin] || {};
+        const race = CREATION_RACES[sys.selectedRace] || {};
+        
+        const rootElementsStr = sys.selectedRootElements.map(e => {
+            const el = ROOT_ELEMENTS[e] || SPECIAL_ELEMENTS[e] || { icon: '✨' };
+            return `${el.icon} ${e}`;
+        }).join(', ');
+
+        elStatsPreview.innerHTML = `
+            <div class="space-y-2">
+                <div class="flex justify-between items-center border-b border-white/5 pb-1">
+                    <span class="opacity-60">Chủng tộc</span>
+                    <span class="font-medium">${race.name}</span>
+                </div>
+                <div class="flex justify-between items-start border-b border-white/5 pb-1">
+                    <span class="opacity-60">Linh căn</span>
+                    <div class="text-right">
+                        <div class="font-medium">${root.name}</div>
+                        <div class="text-[8px] text-qi-blue opacity-80">${rootElementsStr}</div>
+                    </div>
+                </div>
+                    <span class="opacity-60">Thể chất</span>
+                    <span class="font-medium">${phys.name || 'Phàm Thể'}</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-white/5 pb-1">
+                    <span class="opacity-60">Xuất thân</span>
+                    <span class="font-medium">${origin.name}</span>
+                </div>
+            </div>
+        `;
+
         const base = {
             atk: 10, def: 5, maxHp: 100, spd: 10, mana: 50, luck: 50,
             karma: 0, maxAge: 100, critRate: 0.05, alchemySuccess: 0, qiAbsorb: 1.0
@@ -447,7 +480,7 @@ window.renderCreationScreen = () => {
                             ${r.cost}
                         </div>
                     </div>
-                    <div class="q-desc text-[8px] opacity-70">${r.desc}</div>
+                    <div class="q-desc">${r.desc}</div>
                     <div class="q-bonus-list">
                         ${bonuses.map(b => `<span class="q-bonus-tag" style="color: #f87171; background: rgba(248, 113, 113, 0.1); border-color: rgba(248, 113, 113, 0.2)">${b}</span>`).join('')}
                     </div>
@@ -460,9 +493,35 @@ window.renderCreationScreen = () => {
         elRoots.innerHTML = Object.values(CREATION_ROOTS).map(r => {
             const active = sys.selectedRoot === r.id;
             const bonuses = (formatCreationBonus(r.bonus) || 'Chỉ số cơ bản').split(' · ');
+            
+            // Element selection for active root (excluding Ngu Hanh)
+            let elementsHtml = '';
+            if (active && r.id !== 'ngu_hanh_linh_can') {
+                const isSpecial = r.type === 'special';
+                const elements = isSpecial ? { ...ROOT_ELEMENTS, ...SPECIAL_ELEMENTS } : ROOT_ELEMENTS;
+                elementsHtml = `
+                    <div class="mt-3 pt-3 border-t border-white/5">
+                        <div class="text-[8px] uppercase tracking-wider text-qi-blue font-bold opacity-60 mb-2">Chọn Thuộc Tính</div>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${Object.values(elements).map(e => {
+                                const elActive = sys.selectedRootElements.includes(e.name);
+                                return `
+                                    <button onclick="event.stopPropagation(); window.game.toggleCreationRootElement('${e.name}')" 
+                                        class="px-2 py-1 rounded-md border text-[8px] flex items-center gap-1 transition-all
+                                        ${elActive ? 'bg-qi-blue/20 border-qi-blue text-white shadow-[0_0_8px_rgba(77,158,255,0.2)]' : 'bg-black/40 border-white/10 text-gray-400 opacity-60 hover:opacity-100'}">
+                                        <span>${e.icon}</span>
+                                        <span class="font-ancient">${e.name}</span>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
             return `
-                <button onclick="window.game.selectCreationRoot('${r.id}')" 
-                    class="q-card ${active ? 'active text-qi-blue border-qi-blue' : 'text-gray-400 border-white/10'}">
+                <div onclick="window.game.selectCreationRoot('${r.id}')" 
+                    class="q-card cursor-pointer ${active ? 'active text-qi-blue border-qi-blue' : 'text-gray-400 border-white/10'}">
                     <div class="flex justify-between items-start gap-2">
                         <div class="q-title ${active ? 'text-qi-blue' : ''}">${r.name}</div>
                         <div class="q-cost">
@@ -472,9 +531,10 @@ window.renderCreationScreen = () => {
                     </div>
                     <div class="q-desc">${r.desc}</div>
                     <div class="q-bonus-list">
-                        ${bonuses.map(b => `<span class="q-bonus-tag">${b}</span>`).join('')}
+                        ${bonuses.map(b => `<span class="q-bonus-tag" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2)">${b}</span>`).join('')}
                     </div>
-                </button>
+                    ${elementsHtml}
+                </div>
             `;
         }).join('');
     }
@@ -487,7 +547,7 @@ window.renderCreationScreen = () => {
             return `
                 <button onclick="window.game.selectCreationPhysique('${p.id}')" 
                     class="q-card ${active ? 'active text-qi-purple border-qi-purple' : 'text-gray-400 border-white/10'} w-full">
-                    <div class="flex justify-between items-center gap-2">
+                    <div class="flex justify-between items-start gap-2">
                         <div class="q-title ${active ? 'text-qi-purple' : ''}">${p.name}</div>
                         <div class="q-cost">
                             <i class="ph ph-sparkle"></i>
@@ -510,7 +570,7 @@ window.renderCreationScreen = () => {
             return `
                 <button onclick="window.game.selectCreationOrigin('${o.id}')" 
                     class="q-card ${active ? 'active text-qi-blue border-qi-blue' : 'text-gray-400 border-white/10'} w-full">
-                    <div class="flex justify-between items-center gap-2">
+                    <div class="flex justify-between items-start gap-2">
                         <div class="q-title ${active ? 'text-qi-blue' : ''}">${o.name}</div>
                         <div class="q-cost">
                             <i class="ph ph-scroll"></i>

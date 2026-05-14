@@ -1344,8 +1344,14 @@ export class Game {
 
     selectCreationRoot(rootId) {
         if (state.systems.creation) {
-            state.systems.creation.selectedRoot = rootId;
-            state.systems.creation.calculatePoints();
+            state.systems.creation.selectRoot(rootId);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    toggleCreationRootElement(element) {
+        if (state.systems.creation) {
+            state.systems.creation.toggleRootElement(element);
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }

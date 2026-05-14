@@ -1,4 +1,4 @@
-import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS } from '../configs/creation-data.js';
+import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS } from '../configs/creation-data.js';
 import { Player } from '../core/player.js';
 
 const RANDOM_NAMES = [
@@ -16,6 +16,7 @@ export class CreationSystem {
         this.points = CREATION_CONFIG.BASE_POINTS;
         this.selectedRace = 'HUMAN';
         this.selectedRoot = 'ngu_hanh_linh_can';
+        this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
         this.selectedPhysique = 'binh_thuong';
         this.selectedOrigin = 'tan_tu';
         this.selectedTraits = [];
@@ -33,6 +34,51 @@ export class CreationSystem {
         this.selectedOrigin = originId;
         this.startingLingShi = origin.resources.lingShi;
         this.calculatePoints();
+    }
+
+    selectRoot(rootId) {
+        this.selectedRoot = rootId;
+        // Reset elements based on root type
+        if (rootId === 'ngu_hanh_linh_can') {
+            this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+        } else if (rootId === 'thien_linh_can') {
+            this.selectedRootElements = ['Hỏa']; // Default
+        } else if (rootId === 'di_linh_can') {
+            this.selectedRootElements = ['Lôi']; // Default
+        } else if (rootId === 'song_linh_can') {
+            this.selectedRootElements = ['Kim', 'Mộc'];
+        } else if (rootId === 'tam_linh_can') {
+            this.selectedRootElements = ['Kim', 'Mộc', 'Thủy'];
+        } else if (rootId === 'tap_linh_can') {
+            this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Thổ'];
+        }
+        this.calculatePoints();
+    }
+
+    toggleRootElement(element) {
+        const root = CREATION_ROOTS[this.selectedRoot];
+        if (root.id === 'ngu_hanh_linh_can') return; // Fixed
+
+        const maxElements = {
+            'thien_linh_can': 1,
+            'di_linh_can': 1,
+            'song_linh_can': 2,
+            'tam_linh_can': 3,
+            'tap_linh_can': 4
+        }[this.selectedRoot] || 1;
+
+        if (this.selectedRootElements.includes(element)) {
+            // Can't remove if only 1
+            if (this.selectedRootElements.length > 1) {
+                this.selectedRootElements = this.selectedRootElements.filter(e => e !== element);
+            }
+        } else {
+            if (this.selectedRootElements.length < maxElements) {
+                this.selectedRootElements.push(element);
+            } else if (maxElements === 1) {
+                this.selectedRootElements = [element];
+            }
+        }
     }
 
     calculatePoints() {
@@ -157,8 +203,9 @@ export class CreationSystem {
         // Apply Root
         player.spiritualRoot = {
             type: root.name,
+            elements: [...this.selectedRootElements],
             multiplier: root.bonus.tvps || 1.0,
-            bonus: root.bonus, // Pass the whole bonus for calculateStats
+            bonus: root.bonus, 
             color: this.getRootColor(this.selectedRoot)
         };
         

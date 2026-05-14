@@ -12,12 +12,27 @@ export const CREATION_RACES = {
 };
 
 export const CREATION_ROOTS = {
-    'thien_linh_can': { id: 'thien_linh_can', name: 'Thiên Linh Căn', cost: 100, type: 'special', desc: 'Đơn linh căn thuần khiết nhất. Tốc độ tu luyện x4, tăng mạnh khả năng hấp thu.', bonus: { tvps: 4.0, qiAbsorb: 1.5, luck: 10 } },
-    'di_linh_can': { id: 'di_linh_can', name: 'Dị Linh Căn', cost: 70, type: 'special', desc: 'Lôi/Băng/Phong... Tăng mạnh sát thương và tốc độ tu luyện x2.5.', bonus: { tvps: 2.5, atk: 25, qiAbsorb: 1.2 } },
+    'thien_linh_can': { id: 'thien_linh_can', name: 'Thiên Linh Căn', cost: 100, type: 'special', desc: 'Đơn linh căn thuần khiết nhất. Tốc độ tu luyện x4, tăng mạnh khả năng hấp thu linh khí thuộc tính.', bonus: { tvps: 4.0, qiAbsorb: 1.5, luck: 10 } },
+    'di_linh_can': { id: 'di_linh_can', name: 'Dị Linh Căn', cost: 70, type: 'special', desc: 'Lôi/Băng/Phong... Thuộc tính hiếm thấy. Tăng mạnh sát thương và tốc độ tu luyện x2.5.', bonus: { tvps: 2.5, atk: 25, qiAbsorb: 1.2 } },
     'song_linh_can': { id: 'song_linh_can', name: 'Song Linh Căn', cost: 30, type: 'normal', desc: 'Hai loại linh căn. Tốc độ tu luyện x1.8.', bonus: { tvps: 1.8 } },
     'tam_linh_can': { id: 'tam_linh_can', name: 'Tam Linh Căn', cost: 10, type: 'normal', desc: 'Ba loại linh căn. Tốc độ tu luyện x1.2.', bonus: { tvps: 1.2 } },
     'ngu_hanh_linh_can': { id: 'ngu_hanh_linh_can', name: 'Ngũ Hành Linh Căn', cost: 0, type: 'normal', desc: 'Đầy đủ ngũ hành. Tu luyện cân bằng nhưng chậm.', bonus: { tvps: 1.0, qiAbsorb: 1.1 } },
     'tap_linh_can': { id: 'tap_linh_can', name: 'Tạp Linh Căn', cost: -40, type: 'debuff', desc: 'Linh căn hỗn tạp. Tu luyện cực chậm nhưng ý chí bền bỉ, thọ nguyên dài.', bonus: { tvps: 0.5, maxHp: 80, maxAge: 50 } }
+};
+
+export const ROOT_ELEMENTS = {
+    'Kim': { id: 'Kim', name: 'Kim', color: '#ffd700', icon: '⚔️' },
+    'Mộc': { id: 'Mộc', name: 'Mộc', color: '#4ade80', icon: '🌿' },
+    'Thủy': { id: 'Thủy', name: 'Thủy', color: '#3b82f6', icon: '💧' },
+    'Hỏa': { id: 'Hỏa', name: 'Hỏa', color: '#f87171', icon: '🔥' },
+    'Thổ': { id: 'Thổ', name: 'Thổ', color: '#a855f7', icon: '⛰️' }
+};
+
+export const SPECIAL_ELEMENTS = {
+    'Lôi': { id: 'Lôi', name: 'Lôi', color: '#fbbf24', icon: '⚡' },
+    'Băng': { id: 'Băng', name: 'Băng', color: '#60a5fa', icon: '❄️' },
+    'Phong': { id: 'Phong', name: 'Phong', color: '#94a3b8', icon: '🌪️' },
+    'Độc': { id: 'Độc', name: 'Độc', color: '#c084fc', icon: '☠️' }
 };
 
 export const CREATION_PHYSIQUES = {
