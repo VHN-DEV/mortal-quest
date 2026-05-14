@@ -240,6 +240,11 @@ export class Player {
             miningExp: 0,
             miningLevel: 1
         };
+
+        // --- New Enhanced Stats ---
+        this.comprehension = 10; // Ngộ tính: Ảnh hưởng tốc độ lĩnh ngộ và tu luyện
+        this.stability = 100;    // Độ ổn định: 0-100%
+        this.heartDemon = 0;     // Tâm ma: 0-100%
     }
 
     get lingShi() {
@@ -396,30 +401,44 @@ export class Player {
     update(delta, multiplier = 1.0) {
         this.lastUpdate = Date.now();
 
-        // Independent progression for all three paths
-        // Focused path gets full exp; non-focused paths only get 20% if they have their own technique.
+        // 1. Calculate Stability & Heart Demon progression
+        this.calculateStability();
+
+        // 2. Apply Stability Effects
+        let stabilityMult = 1.0;
+        if (this.stability > 90) stabilityMult = 1.2;
+        else if (this.stability < 40) stabilityMult = 0.8;
+        
+        // 3. Independent progression for all three paths
         const focus = this.cultivationFocus || 'tuvi';
 
         const hasTuviTech = !!this.mainTechniqueId;
         const hasBodyTech = !!this.mainBodyTechniqueId;
         const hasSoulTech = !!this.mainSoulTechniqueId;
 
-        const tuViGain = hasTuviTech ? this.tuViPerSecond * (focus === 'tuvi' ? 1.0 : 0.2) * multiplier * delta : 0;
-        const bodyGain = hasBodyTech ? this.bodyExpPerSecond * (focus === 'body' ? 1.0 : 0.2) * multiplier * delta : 0;
-        const soulGain = hasSoulTech ? this.soulExpPerSecond * (focus === 'soul' ? 1.0 : 0.2) * multiplier * delta : 0;
+        // Comprehension Multiplier
+        const compMult = 1 + (this.comprehension / 100);
 
-        let finalMultiplier = multiplier;
+        let finalMultiplier = multiplier * stabilityMult * compMult;
         if (this.isSecluded) finalMultiplier *= 5.0; // 5x gain during seclusion
 
-        this.tuVi += tuViGain * (this.isSecluded ? 5.0 : 1.0);
-        this.bodyExp += bodyGain * (this.isSecluded ? 5.0 : 1.0);
-        this.soulExp += soulGain * (this.isSecluded ? 5.0 : 1.0);
+        const tuViGain = hasTuviTech ? this.tuViPerSecond * (focus === 'tuvi' ? 1.0 : 0.2) * finalMultiplier * delta : 0;
+        const bodyGain = hasBodyTech ? this.bodyExpPerSecond * (focus === 'body' ? 1.0 : 0.2) * finalMultiplier * delta : 0;
+        const soulGain = hasSoulTech ? this.soulExpPerSecond * (focus === 'soul' ? 1.0 : 0.2) * finalMultiplier * delta : 0;
+
+        this.tuVi += tuViGain;
+        this.bodyExp += bodyGain;
+        this.soulExp += soulGain;
+
+        // 4. Seclusion Events (Randomized)
+        if (this.isSecluded && Math.random() < 0.02 * delta) { // ~2% chance per second
+            this.triggerSeclusionEvent();
+        }
         
-        // Forced Breakthrough Check (Heavenly Dao)
-        // If exp exceeds 150% of required, force breakthrough with higher risk
+        // 5. Forced Breakthrough Check (Heavenly Dao)
         const realm = this.getCurrentRealm(focus);
         const exp = focus === 'tuvi' ? this.tuVi : (focus === 'body' ? this.bodyExp : this.soulExp);
-        if (exp >= realm.expRequired * 1.5) {
+        if (exp >= realm.expRequired * 2.0) { // Increased threshold for forced
             const result = this.breakthrough(focus, true);
             this.pendingEvents.push({ 
                 type: 'forced_breakthrough', 
@@ -429,14 +448,49 @@ export class Player {
             });
         }
         
-        // Regen
-        this.stamina = Math.min(this.maxStamina, this.stamina + 0.1 * delta);
-        this.mana = Math.min(this.maxMana, this.mana + 0.05 * delta);
-        // Base regen is 0.2% per second, increased to 1% for better experience
-        this.hp = Math.min(this.maxHp, this.hp + 0.01 * this.maxHp * delta);
+        // 6. Regen
+        let regenMult = 1.0;
+        if (this.stability < 20) regenMult = 0.2; // Heart Demon suppresses regen
+
+        this.stamina = Math.min(this.maxStamina, this.stamina + 0.1 * delta * regenMult);
+        this.mana = Math.min(this.maxMana, this.mana + 0.05 * delta * regenMult);
+        this.hp = Math.min(this.maxHp, this.hp + 0.01 * this.maxHp * delta * regenMult);
 
         // Update Buffs
         this.updateBuffs(delta);
+    }
+
+    triggerSeclusionEvent() {
+        const events = [
+            { type: 'insight', msg: "Ngươi đột nhiên ngộ ra một tia thiên địa quy tắc, tu vi tinh tiến!", effect: () => { this.tuVi += this.tuViPerSecond * 300; } },
+            { type: 'qi_riot', msg: "Linh khí bạo động! Kinh mạch bị tổn thương nhẹ.", effect: () => { this.hp -= this.maxHp * 0.1; this.stability -= 10; } },
+            { type: 'heart_demon', msg: "Tâm ma xuất hiện quấy nhiễu, đạo tâm lung lay.", effect: () => { this.heartDemon += 5; this.stability -= 15; } },
+            { type: 'deep_trance', msg: "Ngươi rơi vào trạng thái thâm tầng định cảnh, ngộ tính tăng nhẹ.", effect: () => { this.comprehension += 0.1; } }
+        ];
+        const event = events[Math.floor(Math.random() * events.length)];
+        event.effect();
+        this.pendingEvents.push({ type: 'seclusion_event', msg: event.msg, eventType: event.type });
+    }
+
+    calculateStability() {
+        // Stability decreases if Tu Vi is too far ahead of Body or Soul
+        const avgOthers = (this.bodyRealmId + this.soulRealmId) / 2;
+        const diff = this.realmId - avgOthers;
+        
+        let targetStability = 100;
+        if (diff > 2) targetStability = 100 - (diff - 2) * 10;
+        targetStability = Math.max(0, Math.min(100, targetStability));
+
+        // Smooth transition
+        if (this.stability > targetStability) this.stability -= 0.1;
+        else if (this.stability < targetStability) this.stability += 0.05;
+
+        // Heart Demon growth if stability is low
+        if (this.stability < 30) {
+            this.heartDemon += 0.01;
+        } else {
+            this.heartDemon = Math.max(0, this.heartDemon - 0.005);
+        }
     }
 
     updateBuffs(delta) {
@@ -593,13 +647,7 @@ export class Player {
     }
 
     getStability() {
-        // Stability decreases if Tu Vi is too far ahead of Body or Soul
-        const avgOthers = (this.bodyRealmId + this.soulRealmId) / 2;
-        const diff = this.realmId - avgOthers;
-        if (diff <= 2) return 100; // Stable
-        if (diff <= 5) return 80;  // Slightly unstable
-        if (diff <= 10) return 50; // Unstable - Risk of Qi Deviation
-        return 20; // Critical instability
+        return this.stability;
     }
 
     breakthrough(type = 'tuvi', isForced = false) {
@@ -614,16 +662,32 @@ export class Player {
             stability *= fatePenalty;
             
             const roll = Math.random() * 100;
-            if (roll > stability) {
+            if (roll > this.stability) {
                 // Qi Deviation!
-                this.hp *= 0.3; // Heavy damage
-                const penalty = isForced ? 0.6 : 0.8;
+                this.hp *= 0.1; // More severe damage
+                const penalty = isForced ? 0.5 : 0.7;
+                
+                // Imbalance Penalty
+                const tuViDiffBody = this.realmId - this.bodyRealmId;
+                const tuViDiffSoul = this.realmId - this.soulRealmId;
+                
+                let extraMsg = "";
+                if (tuViDiffBody > 5) {
+                    this.hp *= 0.5;
+                    extraMsg += " Thân thể không chịu nổi linh lực bạo tẩu!";
+                }
+                if (tuViDiffSoul > 5) {
+                    this.stability -= 20;
+                    this.heartDemon += 10;
+                    extraMsg += " Thần thức lung lay, tâm ma thừa cơ xâm nhập!";
+                }
+
                 if (type === 'tuvi') this.tuVi *= penalty;
                 else if (type === 'body') this.bodyExp *= penalty;
                 else if (type === 'soul') this.soulExp *= penalty;
                 else if (this.specializedPaths[type]) this.specializedPaths[type].exp *= penalty;
                 
-                return { success: false, msg: isForced ? "Thiên Đạo cưỡng ép đột phá thất bại! Kinh mạch đứt đoạn, tu vi tổn thất nặng nề!" : "Tẩu hỏa nhập ma! Linh lực bạo tẩu làm tổn thương kinh mạch." };
+                return { success: false, msg: (isForced ? "Thiên Đạo cưỡng ép đột phá thất bại! " : "Tẩu hỏa nhập ma! ") + extraMsg };
             }
 
             const realm = this.getCurrentRealm(type);
@@ -701,13 +765,33 @@ export class Player {
         this.baseStats.def = 5 * realmMult * raceMults.def;
         this.baseStats.spd = (15 + (realmLevel * 5)) * raceMults.spd;
 
-        // Body Realm adds to HP and Def
-        this.baseStats.maxHp += 50 * (bodyLevel - 1) * Math.sqrt(realmLevel);
-        this.baseStats.def += 10 * (bodyLevel - 1) * Math.sqrt(realmLevel);
-        
-        // Soul Realm adds to Mana and Spd
-        this.baseStats.maxMana += 30 * (soulLevel - 1) * Math.sqrt(realmLevel);
-        this.baseStats.spd += 5 * (soulLevel - 1);
+        // --- Body Realm Enhancement ---
+        // Body Realm adds to HP and Def, and now Damage Reduction
+        const bodyMult = Math.pow(1.2, bodyLevel - 1);
+        this.baseStats.maxHp += 100 * (bodyLevel - 1) * bodyMult;
+        this.baseStats.def += 20 * (bodyLevel - 1) * bodyMult;
+        this.advancedStats.damageReduction = 1 - (1 / (1 + (bodyLevel * 0.05))); // Logarithmic DR
+
+        // --- Soul Realm Enhancement ---
+        // Soul Realm adds to Mana, Spd, Crit and Perception
+        const soulMult = Math.pow(1.15, soulLevel - 1);
+        this.baseStats.maxMana += 60 * (soulLevel - 1) * soulMult;
+        this.baseStats.spd += 10 * (soulLevel - 1) * soulMult;
+        this.advancedStats.critRate += (soulLevel - 1) * 0.01;
+        this.advancedStats.perception = 10 + (soulLevel * 5) + (this.comprehension * 0.5);
+
+        // --- Stability & Heart Demon Penalties ---
+        if (this.stability < 40) {
+            const penalty = 1 - (40 - this.stability) / 100;
+            this.baseStats.atk *= penalty;
+            this.baseStats.def *= penalty;
+            this.baseStats.spd *= penalty;
+        }
+        if (this.heartDemon > 10) {
+            const hdPenalty = 1 - (this.heartDemon / 200);
+            this.baseStats.atk *= hdPenalty;
+            this.advancedStats.critRate *= hdPenalty;
+        }
 
         // 1.5 Specialized Path Bonuses
         if (this.specializedPaths.sword.realmId > 0) {

@@ -25,6 +25,7 @@ import { getTechniqueById, getSecretTechniqueById, MASTERY_LEVELS } from '../../
  */
 export class SystemsScreen {
     constructor() {
+        this.shopSubFilter = 'all';
         this.initElements();
         this.initEvents();
     }
@@ -45,6 +46,7 @@ export class SystemsScreen {
         this.elShopSellView = document.getElementById('shop-sell-view');
         this.elShopSellGrid = document.getElementById('shop-sell-grid');
         this.elShopSectionNav = document.getElementById('shop-section-nav');
+        this.elShopSubFilterNav = document.getElementById('shop-subfilter-nav');
         this.btnShopTabBuy = document.getElementById('shop-tab-buy');
         this.btnShopTabSell = document.getElementById('shop-tab-sell');
 
@@ -289,6 +291,7 @@ export class SystemsScreen {
         }
 
         this.renderShopSections();
+        this.renderShopSubFilters();
 
         // Cập nhật style cho tab
         if (this.btnShopTabBuy && this.btnShopTabSell) {
@@ -325,7 +328,7 @@ export class SystemsScreen {
             'dan_duoc': 'Đan Dược',
             'phap_bao': 'Pháp Bảo',
             'nguyen_lieu': 'Nguyên Liệu',
-            'cong_phap': 'Công Pháp',
+            'cong_phap': 'Kinh Thư',
             'tran_phap': 'Trận Pháp',
             'phu_luc': 'Phù Lục',
             'luyen_khi': 'Luyện Khí',
@@ -339,12 +342,15 @@ export class SystemsScreen {
             this.elShopSectionNav.innerHTML = '';
             this.elShopSectionNav.dataset.shopId = shop.currentShopId;
 
-            sections.forEach(sectionKey => {
+            sections.filter(s => s !== 'bi_tich').forEach(sectionKey => {
                 const el = document.createElement('button');
                 el.dataset.section = sectionKey;
                 el.onclick = () => {
-                    shop.currentSection = sectionKey;
-                    this.renderShop();
+                    if (state.systems.shop) {
+                        state.systems.shop.currentSection = sectionKey;
+                        this.shopSubFilter = 'all'; // Reset sub-filter
+                        this.renderShop();
+                    }
                 };
                 this.elShopSectionNav.appendChild(el);
             });
@@ -359,12 +365,87 @@ export class SystemsScreen {
         });
     }
 
+    renderShopSubFilters() {
+        if (!this.elShopSubFilterNav) return;
+        const shop = state.systems.shop;
+        if (!shop) return;
+
+        const section = shop.currentSection;
+        let subFilters = [];
+
+        if (section === 'phap_bao') {
+            subFilters = [
+                { id: 'all', name: 'Tất Cả' },
+                { id: 'weapon', name: 'Linh Khí' },
+                { id: 'armor', name: 'Pháp Y' },
+                { id: 'accessory', name: 'Trang Sức' },
+                { id: 'attackArtifact', name: 'Chủ Chiến' },
+                { id: 'defenseArtifact', name: 'Hộ Thân' },
+                { id: 'flightArtifact', name: 'Phi Hành' },
+                { id: 'spaceArtifact', name: 'Càn Khôn' },
+                { id: 'formationArtifact', name: 'Trận Đạo' },
+                { id: 'supportArtifact', name: 'Phụ Trợ' },
+                { id: 'soulArtifact', name: 'Hồn Đạo' }
+            ];
+        } else if (section === 'cong_phap') {
+            subFilters = [
+                { id: 'all', name: 'Tất Cả' },
+                { id: 'cultivation', name: 'Công Pháp' },
+                { id: 'manual', name: 'Bí Tịch/Đan Phương' }
+            ];
+        }
+
+        if (subFilters.length === 0) {
+            this.elShopSubFilterNav.classList.add('hidden');
+            return;
+        }
+
+        this.elShopSubFilterNav.classList.remove('hidden');
+        this.elShopSubFilterNav.innerHTML = '';
+
+        subFilters.forEach(filter => {
+            const el = document.createElement('button');
+            const active = this.shopSubFilter === filter.id;
+            el.className = `px-3 py-1.5 rounded-lg text-[9px] font-ancient uppercase tracking-widest transition-all whitespace-nowrap shrink-0 ${active ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500 border border-transparent'}`;
+            el.textContent = filter.name;
+            el.onclick = () => {
+                this.shopSubFilter = filter.id;
+                this.renderShop();
+            };
+            this.elShopSubFilterNav.appendChild(el);
+        });
+    }
+
     renderShopBuy() {
-        const inv = state.systems.shop.getShopInventory();
+        const shop = state.systems.shop;
+        let inv = shop.getShopInventory();
+        
+        // Virtual Merge for Công Pháp and Bí Tịch
+        if (shop.currentSection === 'cong_phap') {
+            const shopData = SHOPS[shop.currentShopId];
+            if (shopData.sections.bi_tich) {
+                inv = [...inv, ...shopData.sections.bi_tich];
+            }
+        }
+
         this.elShopBuyView.innerHTML = '';
+        
         inv.forEach(item => {
             const itemData = getItemById(item.id);
             if (!itemData) return;
+
+            // Apply Sub-filter
+            if (this.shopSubFilter !== 'all') {
+                if (shop.currentSection === 'phap_bao') {
+                    if (itemData.type !== this.shopSubFilter) return;
+                } else if (shop.currentSection === 'cong_phap') {
+                    const isBook = itemData.type === 'book' || itemData.type === 'technique';
+                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || (itemData.type === 'consumable' && itemData.effect?.type === 'unlock_profession');
+                    
+                    if (this.shopSubFilter === 'cultivation' && !isBook) return;
+                    if (this.shopSubFilter === 'manual' && !isRecipe) return;
+                }
+            }
             const qClass = this.getQualityClass(itemData.quality);
 
             const el = document.createElement('div');
@@ -416,6 +497,7 @@ export class SystemsScreen {
         if (!state.player || !state.player.inventory) return;
 
         const sectionType = state.systems.shop.currentSection;
+        const subFilter = this.shopSubFilter;
 
         state.player.inventory.items.forEach(item => {
             const itemData = getItemById(item.id);
@@ -424,15 +506,33 @@ export class SystemsScreen {
             // Simple mapping for filtering
             const typeMap = {
                 'dan_duoc': ['consumable'],
-                'phap_bao': ['weapon', 'armor', 'accessory', 'treasure'],
+                'phap_bao': ['weapon', 'armor', 'accessory', 'treasure', 'head', 'necklace', 'shoes', 'attackArtifact', 'defenseArtifact', 'flightArtifact', 'spaceArtifact', 'formationArtifact', 'supportArtifact', 'soulArtifact'],
                 'nguyen_lieu': ['material', 'herb', 'ore', 'wood'],
-                'cong_phap': ['technique'],
+                'cong_phap': ['book', 'technique', 'recipe', 'talisman_recipe', 'consumable'], // Merged types
                 'tran_phap': ['formation'],
                 'phu_luc': ['talisman'],
                 'luyen_khi': ['material', 'smithing_tool']
             };
 
-            if (sectionType && typeMap[sectionType] && !typeMap[sectionType].includes(itemData.type)) return;
+            if (sectionType && typeMap[sectionType]) {
+                if (!typeMap[sectionType].includes(itemData.type)) return;
+                
+                // Specific filter for merged Công Pháp
+                if (sectionType === 'cong_phap') {
+                    const isBook = itemData.type === 'book' || itemData.type === 'technique';
+                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || (itemData.type === 'consumable' && itemData.effect?.type === 'unlock_profession');
+                    
+                    if (subFilter === 'cultivation' && !isBook) return;
+                    if (subFilter === 'manual' && isBook) return;
+                    if (subFilter === 'manual' && !isRecipe && !isBook) return; // Fallback
+                    
+                    // If no subfilter, only show books and recipes
+                    if (subFilter === 'all' && !isBook && !isRecipe) return;
+                }
+
+                // Sub-filter for Pháp Bảo
+                if (sectionType === 'phap_bao' && subFilter !== 'all' && itemData.type !== subFilter) return;
+            }
 
             const qClass = this.getQualityClass(itemData.quality);
 

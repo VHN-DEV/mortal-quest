@@ -21,6 +21,8 @@ export class CharacterScreen {
         this.elCharSpd = document.getElementById('char-spd');
         this.elCharMana = document.getElementById('char-mana');
         this.elCharAge = document.getElementById('char-age');
+        this.elCharStability = document.getElementById('char-stability');
+        this.elCharComprehension = document.getElementById('char-comprehension');
         
         // Realms
         this.elCharRealmTuvi = document.getElementById('char-realm-tuvi');
@@ -95,6 +97,13 @@ export class CharacterScreen {
 
         if (this.elCharMana) this.elCharMana.textContent = `${Math.floor(state.player.mana)} / ${Math.floor(state.player.maxMana)}`;
         if (this.elCharAge) this.elCharAge.textContent = `${Math.floor(state.player.age)} / ${state.player.maxAge}`;
+
+        if (this.elCharStability) {
+            const stability = state.player.stability;
+            this.elCharStability.textContent = `${Math.floor(stability)}%`;
+            this.elCharStability.className = stability > 90 ? 'text-green-400' : (stability < 40 ? 'text-red-500' : 'text-cultivation-gold');
+        }
+        if (this.elCharComprehension) this.elCharComprehension.textContent = Math.floor(state.player.comprehension);
 
         // Render Realms & Progress
         const tuviRealm = state.player.getCurrentRealm('tuvi');

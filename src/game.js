@@ -314,6 +314,21 @@ export class Game {
 
     update(delta) {
         state.player.update(delta, 1.0);
+        
+        // Handle Pending Events
+        if (state.player.pendingEvents && state.player.pendingEvents.length > 0) {
+            const events = [...state.player.pendingEvents];
+            state.player.pendingEvents = [];
+            
+            events.forEach(ev => {
+                if (ev.type === 'seclusion_event') {
+                    state.ui.toast(ev.msg, ev.eventType === 'insight' ? 'success' : 'warning');
+                } else if (ev.type === 'forced_breakthrough') {
+                    state.ui.alert(ev.msg, ev.success ? 'Thiên Đạo Ban Ân' : 'Thiên Đạo Phạt Tội');
+                }
+            });
+        }
+
         if (state.systems.time) state.systems.time.update(delta);
         if (state.systems.garden) state.systems.garden.update(delta);
         if (state.systems.mountain && state.systems.mountain.isActive) state.systems.mountain.update(delta);
@@ -595,6 +610,7 @@ export class Game {
             }
         }
 
+        if (typeof window.renderMainStats === 'function') window.renderMainStats();
         this.refreshUI();
     }
 
