@@ -40,7 +40,7 @@ export class StartScreen {
 
             <div class="relative z-10 flex flex-col h-full items-center justify-between p-8 py-20">
                 <!-- Logo Section -->
-                <div class="flex flex-col items-center space-y-4 animate-fade-in">
+                <div class="flex flex-col items-center space-y-4 animate-fade-in py-4">
                     <div class="w-32 h-32 md:w-48 md:h-48 relative">
                         <div class="absolute inset-0 bg-cultivation-gold/20 blur-3xl rounded-full animate-pulse"></div>
                         <img src="${ASSETS.logos.main}" class="w-full h-full rounded-2xl object-contain relative z-10 drop-shadow-[0_0_20px_rgba(212,175,55,0.5)]">
@@ -48,9 +48,6 @@ export class StartScreen {
                     <h1 class="text-4xl md:text-6xl font-charm text-white tracking-tighter text-glow text-center">
                         PHÀM NHÂN <span class="text-cultivation-gold">VẤN ĐẠO</span>
                     </h1>
-                    <p class="text-[10px] md:text-xs font-ancient text-gray-400 uppercase tracking-[0.5em]">
-                        Mortal Quest: Path to Immortality
-                    </p>
                 </div>
 
                 <!-- Main Menu Section -->
@@ -61,14 +58,14 @@ export class StartScreen {
                     </button>
                     
                     <button id="btn-continue-game" 
-                        class="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-white text-xs font-bold uppercase tracking-[0.2em] transition-all">
+                        class="w-full py-4 bg-black/40 hover:bg-black/60 border border-white/20 rounded-2xl text-white text-xs font-bold uppercase tracking-[0.2em] backdrop-blur-md transition-all shadow-xl">
                         TIẾP TỤC HÀNH TRÌNH
                     </button>
                     
-                    <div class="flex justify-center space-x-6 pt-4 text-gray-500 text-sm">
-                        <i id="btn-start-settings" class="ph ph-gear-six hover:text-white cursor-pointer transition-colors" title="Cài đặt"></i>
-                        <i id="btn-start-info" class="ph ph-info hover:text-white cursor-pointer transition-colors" title="Hướng dẫn"></i>
-                        <i id="btn-start-discord" class="ph ph-discord-logo hover:text-white cursor-pointer transition-colors" title="Cộng đồng"></i>
+                    <div class="flex justify-center space-x-8 pt-4 text-gray-400 text-sm">
+                        <i id="btn-start-settings" class="ph ph-gear-six hover:text-cultivation-gold cursor-pointer transition-all hover:scale-125 drop-shadow-md" title="Cài đặt"></i>
+                        <i id="btn-start-info" class="ph ph-info hover:text-cultivation-gold cursor-pointer transition-all hover:scale-125 drop-shadow-md" title="Hướng dẫn"></i>
+                        <i id="btn-start-discord" class="ph ph-discord-logo hover:text-cultivation-gold cursor-pointer transition-all hover:scale-125 drop-shadow-md" title="Cộng đồng"></i>
                     </div>
                 </div>
 
@@ -130,10 +127,10 @@ export class StartScreen {
             btnSettings.onclick = () => {
                 const isMuted = state.settings?.isMuted || false;
                 const options = [
-                    { 
-                        label: isMuted ? 'Bật Âm Thanh' : 'Tắt Âm Thanh', 
-                        value: 'toggle-mute', 
-                        icon: isMuted ? 'ph-speaker-high' : 'ph-speaker-slash' 
+                    {
+                        label: isMuted ? 'Bật Âm Thanh' : 'Tắt Âm Thanh',
+                        value: 'toggle-mute',
+                        icon: isMuted ? 'ph-speaker-high' : 'ph-speaker-slash'
                     }
                 ];
                 state.ui.promptOptions('Cài Đặt Hệ Thống', options, 'Tùy chỉnh các thiết lập cơ bản của trò chơi.')
