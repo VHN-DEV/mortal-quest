@@ -277,7 +277,7 @@ window.renderCreationScreen = () => {
 
     if (elPointsLabel && elPointsNote) {
         elPointsLabel.textContent = 'Điểm Tiên Duyên:';
-        elPointsNote.textContent = 'Điểm dùng để tùy chỉnh xuất thân/tài nguyên.';
+        elPointsNote.textContent = 'Điểm dùng để tùy chỉnh. Điểm thừa sẽ chuyển hóa thành May mắn và Ngộ tính.';
     }
 
     if (elStatsPreview) {
@@ -392,6 +392,22 @@ window.renderCreationScreen = () => {
                 </div>
             `;
         }).join('');
+
+        // --- Bonus from leftover points preview ---
+        if (sys.points > 0) {
+            const luckBonus = Math.floor(sys.points * 0.5);
+            const compBonus = (sys.points * 0.1).toFixed(1);
+            const tuviBonus = sys.points * 100;
+            const rating = sys.getDestinyRating(sys.points);
+
+            const bonusEl = document.createElement('div');
+            bonusEl.className = 'col-span-full mt-2 p-2 bg-qi-blue/10 border border-qi-blue/20 rounded-xl text-[8px] text-qi-blue italic text-center animate-pulse';
+            bonusEl.innerHTML = `
+                <i class="ph ph-sparkle mr-1"></i> Nghịch Thiên Cải Mệnh: ${rating} 
+                (May mắn +${luckBonus}, Ngộ tính +${compBonus}, Tu vi +${tuviBonus})
+            `;
+            elStatsPreview.appendChild(bonusEl);
+        }
     }
     // Starting Resources Panel (Custom only)
     const elResourcesPanel = document.getElementById('creation-resources-panel');

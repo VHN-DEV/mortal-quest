@@ -236,6 +236,19 @@ export class CreationSystem {
             const trait = CREATION_TRAITS[traitId];
             player.talents.push({ id: trait.id, name: trait.name });
         });
+
+        // --- Handle leftover points conversion ---
+        if (this.points > 0) {
+            // 1 point = 0.5 Luck
+            player.luck += Math.floor(this.points * 0.5);
+            // 10 points = 1 Comprehension
+            player.comprehension += this.points * 0.1;
+            // 1 point = 100 starting Tu Vi
+            player.addTuVi(this.points * 100);
+        }
+        
+        // Apply Destiny Rating based on leftover points
+        player.destinyRating = this.getDestinyRating(this.points);
         
         // Finalize stats (player.calculateStats will look at root, physique, and talents)
         player.calculateStats();
@@ -243,6 +256,14 @@ export class CreationSystem {
         player.mana = player.maxMana;
         
         return player;
+    }
+
+    getDestinyRating(points) {
+        if (points >= 90) return "Chí tôn mệnh";
+        if (points >= 60) return "Thần mệnh";
+        if (points >= 30) return "Tiên mệnh";
+        if (points >= 10) return "Linh mệnh";
+        return "Phàm mệnh";
     }
 
     getRootColor(rootId) {
