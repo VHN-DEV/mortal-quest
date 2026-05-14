@@ -122,6 +122,8 @@ export class MapScreen {
             const el = document.createElement('div');
             el.className = `group relative overflow-hidden p-6 rounded-[2rem] border transition-all duration-500 active:scale-[0.98] ${locked ? 'bg-black/20 border-white/5 opacity-60' : 'bg-qi-ink/40 border-white/10 hover:border-qi-blue/50 hover:bg-black/60 shadow-xl'}`;
 
+            const reqRealmName = getRealmById(w.minRealm).name;
+
             el.innerHTML = `
                 <div class="absolute -top-10 -right-10 w-24 h-24 bg-qi-blue/5 rounded-full blur-2xl group-hover:bg-qi-blue/20 transition-all"></div>
                 <div class="relative z-10 flex flex-col space-y-3">
@@ -131,7 +133,7 @@ export class MapScreen {
                             <div class="text-[9px] text-gray-500 font-ancient tracking-[0.2em] uppercase opacity-60">Cõi Giới</div>
                         </div>
                         <span class="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest ${locked ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-qi-blue/10 text-qi-blue border border-qi-blue/20'}">
-                            ${locked ? '<i class="ph ph-lock mr-1"></i> ' + getRealmById(w.minRealm).name : '<i class="ph ph-check-circle mr-1"></i> Đã mở'}
+                            ${locked ? '<i class="ph ph-lock mr-1"></i> ' + reqRealmName : '<i class="ph ph-check-circle mr-1"></i> Đã mở'}
                         </span>
                     </div>
                     <p class="text-xs text-gray-400 font-ancient leading-relaxed opacity-80">${w.description}</p>
@@ -141,14 +143,28 @@ export class MapScreen {
                     </div>
                 </div>
             `;
-            if (!locked) el.onclick = () => this.selectWorld(id);
+
+            el.onclick = () => {
+                if (locked) {
+                    state.ui.toast(`Cảnh giới không đủ! Yêu cầu: ${reqRealmName}`, 'warning');
+                    return;
+                }
+                this.selectWorld(id);
+            };
+
             this.elWorldList.appendChild(el);
         });
     }
 
     async selectWorld(id) {
-        state.currentWorldId = id;
+        if (!id) return;
         const w = getWorlds()[id];
+        if (!w) {
+            state.ui.toast("Không tìm thấy dữ liệu thế giới!", "error");
+            return;
+        }
+
+        state.currentWorldId = id;
         this.elCurrentWorldName.textContent = w.name;
         state.ui.toggleOverlay(this.viewWorlds, false);
         state.ui.toggleOverlay(this.viewLocations, true);
@@ -159,14 +175,18 @@ export class MapScreen {
 
     renderLocationList() {
         const w = getWorlds()[state.currentWorldId];
+        if (!w) return;
         this.elLocList.innerHTML = '';
+        
         w.locations.forEach(loc => {
+            const playerRealm = state.player.getRealmById ? state.player.getRealmById(state.player.realmId) : getRealmById(state.player.realmId);
             const locked = state.player.realmId < loc.minRealm;
             const el = document.createElement('div');
             el.className = `location-card h-40 p-6 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
 
             const dangerInfo = DANGER_LEVELS[loc.danger] || { name: loc.danger };
             const dangerClass = `danger-${loc.danger}`;
+            const reqRealmName = getRealmById(loc.minRealm).name;
 
             el.innerHTML = `
                 <img src="${loc.image || ASSETS.backgrounds.cultivation}" class="location-card-image">
@@ -178,11 +198,19 @@ export class MapScreen {
                     <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">${loc.description}</p>
                     <div class="flex items-center space-x-2 pt-1">
                         <span class="px-2 py-0.5 rounded border text-[7px] uppercase font-bold tracking-widest ${dangerClass}">${dangerInfo.name}</span>
-                        <span class="text-[7px] text-gray-500 uppercase tracking-widest">Yêu cầu: ${getRealmById(loc.minRealm).name}</span>
+                        <span class="text-[7px] text-gray-500 uppercase tracking-widest">Yêu cầu: ${reqRealmName}</span>
                     </div>
                 </div>
             `;
-            if (!locked) el.onclick = () => this.startExploration(loc.id);
+
+            el.onclick = () => {
+                if (locked) {
+                    state.ui.toast(`Cảnh giới không đủ! Yêu cầu: ${reqRealmName}`, 'warning');
+                    return;
+                }
+                this.startExploration(loc.id);
+            };
+
             this.elLocList.appendChild(el);
         });
     }
@@ -192,28 +220,36 @@ export class MapScreen {
     }
 
     async startExploration(locId, resetProgress = true) {
-        state.currentLocId = locId;
+        if (!locId) return;
+        
         const loc = getLocationById(state.currentWorldId, locId);
+        if (!loc) {
+            console.error(`Location not found: ${locId} in world ${state.currentWorldId}`);
+            state.ui.toast("Không tìm thấy dữ liệu địa điểm!", "error");
+            return;
+        }
+
+        state.currentLocId = locId;
 
         // LOGIC: If it's a direct-entry special location, skip the dashboard
         if (loc.special === 'mountain') {
-            window.game.openMountain();
+            if (window.game.openMountain) window.game.openMountain();
             return;
         }
         if (loc.id === 'van_bao_cac' || loc.id === 'linh_bao_lau') {
-            window.game.openShop(null, loc.id);
+            if (window.game.openShop) window.game.openShop(null, loc.id);
             return;
         }
         if (loc.special === 'tower') {
-            window.game.openTower();
+            if (window.game.openTower) window.game.openTower();
             return;
         }
         if (loc.special === 'guild') {
-            window.game.openGuild();
+            if (window.game.openGuild) window.game.openGuild();
             return;
         }
         if (SECTS[loc.id]) {
-            window.game.openSect();
+            if (window.game.openSect) window.game.openSect();
             return;
         }
 

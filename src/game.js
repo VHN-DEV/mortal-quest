@@ -38,7 +38,6 @@ import { TalismanSystem } from './systems/talisman-system.js';
 import { SmithingSystem } from './systems/smithing-system.js';
 import { BeastSystem } from './systems/beast-system.js';
 import { CorpseSystem } from './systems/corpse-system.js';
-import { CREATION_ORIGINS } from './configs/creation-data.js';
 import { TechniqueSystem } from './systems/technique-system.js';
 import { CreationSystem } from './systems/creation-system.js';
 import { EnergySystem } from './systems/energy-system.js';
@@ -50,21 +49,18 @@ import { SocialSystem } from './systems/social-system.js';
 import { FateSystem } from './systems/fate-system.js';
 import { MiningSystem } from './systems/mining-system.js';
 
-
 export class Game {
     constructor() {
-        window.game = this; // Đảm bảo khả năng tương thích với các onclick trong HTML
+        window.game = this;
         this.screens = {};
     }
 
     async init() {
         console.log("%c🌌 Mortal Quest: Tái cấu trúc thành công!", "color: #4fd1c5; font-size: 14px; font-weight: bold;");
 
-        // 1. Khởi tạo UI Core
         state.ui = new UISystem();
-        window.ui = state.ui; // Compatibility with index.html onclicks
+        window.ui = state.ui;
 
-        // 2. Khởi tạo Screen Controllers
         this.screens.map = new MapScreen();
         this.screens.inventory = new InventoryScreen();
         this.screens.character = new CharacterScreen();
@@ -77,26 +73,19 @@ export class Game {
         this.screens.save = new SaveScreen();
         this.screens.mining = new MiningScreen();
 
-        // 3. Khởi tạo Creation System (cho màn hình mới)
         state.systems.creation = new CreationSystem();
 
-        // 4. Load dữ liệu & Khởi động
         await SaveSystem.migrateLegacySave();
         await this.showStartScreen();
 
-        // 5. Vòng lặp game
         this.startLoop();
-
-        // 6. Navigation & Global Events
         await this.initNavigation();
         this.initGlobalEvents();
 
-        // 7. Tự động lưu
         setInterval(async () => await this.saveGame(), 30000);
     }
 
     initGlobalEvents() {
-        // Emergency UI Reset: Triple-click character portrait
         const portrait = document.getElementById('header-portrait-container');
         if (portrait) {
             let clickCount = 0;
@@ -105,7 +94,7 @@ export class Game {
                 const now = Date.now();
                 if (now - lastClick < 500) {
                     clickCount++;
-                    if (clickCount >= 2) { // 3 clicks total
+                    if (clickCount >= 2) {
                         this.emergencyUIReset();
                         clickCount = 0;
                     }
@@ -153,42 +142,11 @@ export class Game {
         this.bindPlaceholderButtons();
     }
 
-    enterSeclusion() {
-        if (!state.player) return;
-        if (state.player.isSecluded) return;
-
-        state.player.isSecluded = true;
-        state.ui.toast("Ngươi đã bắt đầu bế quan, tâm thần tĩnh lặng...", "success");
-        this.refreshUI();
-    }
-
-    exitSeclusion() {
-        if (!state.player) return;
-        if (!state.player.isSecluded) return;
-
-        state.player.isSecluded = false;
-        state.ui.toast("Ngươi đã xuất quan, cảm thấy tu vi có chút tinh tiến.", "info");
-        this.refreshUI();
-    }
-
-    refine(itemId) {
-        if (!state.player) return;
-        const result = state.player.refineSpiritStone(itemId);
-        if (result.success) {
-            state.ui.toast(result.msg, 'success');
-            this.refreshUI();
-        } else {
-            state.ui.toast(result.msg, 'error');
-        }
-    }
-
     bindPlaceholderButtons() {
         const placeholderBinds = {
             'btn-npc-talk': 'Tương tác hội thoại NPC đang được bảo trì.',
-            'btn-npc-gift': 'Tính năng tặng quà NPC đang được phát triển.',
             'btn-npc-party': 'Tính năng mời NPC vào đội đang được phát triển.',
             'btn-npc-dual': 'Tính năng luận bàn với NPC đang được phát triển.',
-            'btn-npc-trade': 'Tính năng giao dịch NPC đang được phát triển.',
             'btn-npc-attack': 'Tính năng khiêu chiến NPC đang được phát triển.',
             'btn-npc-leave': 'Tính năng NPC hiện chưa mở.',
             'btn-reroll-destiny': 'Tính năng quay lại Thiên Mệnh đang được phát triển.',
@@ -230,16 +188,13 @@ export class Game {
             }
         });
 
-        // Restore saved screen if player exists (game is loaded)
         if (state.player) {
             const { value } = await Preferences.get({ key: 'mortal_quest_current_screen' });
             let savedScreen = value;
 
-            // Special case: If we were in battle, we reset to adventure screen at the current location
             if (savedScreen === 'screen-battle') {
                 savedScreen = 'screen-adventure';
                 await Preferences.set({ key: 'mortal_quest_current_screen', value: 'screen-adventure' });
-                // Ensure we go back to the explore view
                 await Preferences.set({ key: 'mortal_quest_map_view', value: 'explore' });
             }
 
@@ -249,7 +204,6 @@ export class Game {
                     const btn = document.getElementById(btnId);
                     if (btn) {
                         btn.click();
-                        // If it's the adventure screen, we need to restore its sub-view
                         if (savedScreen === 'screen-adventure') {
                             await this.screens.map.restoreView();
                         }
@@ -257,12 +211,10 @@ export class Game {
                     }
                 }
             }
-            // Default to main screen if no saved screen
             const mainBtn = document.getElementById('nav-main');
             if (mainBtn) mainBtn.click();
         }
 
-        // Specific character portrait click
         const elHeaderPortraitContainer = document.getElementById('header-portrait-container');
         if (elHeaderPortraitContainer) {
             elHeaderPortraitContainer.onclick = () => {
@@ -294,7 +246,6 @@ export class Game {
             }
         });
 
-        // Mountain buttons
         const btnExplore = document.getElementById('btn-mountain-explore');
         if (btnExplore) btnExplore.onclick = () => this.mountainExplore();
 
@@ -304,14 +255,12 @@ export class Game {
         const btnRetreat = document.getElementById('btn-mountain-retreat');
         if (btnRetreat) btnRetreat.onclick = () => this.mountainRetreat();
 
-        // Ambush buttons
         const btnAmbushStart = document.getElementById('btn-ambush-start');
         if (btnAmbushStart) btnAmbushStart.onclick = () => this.startAmbush();
 
         const btnAmbushEscape = document.getElementById('btn-ambush-escape');
         if (btnAmbushEscape) btnAmbushEscape.onclick = () => this.escapeAmbush();
 
-        // Chase buttons
         const btnChaseStart = document.getElementById('btn-chase-start');
         if (btnChaseStart) btnChaseStart.onclick = () => this.startChase();
 
@@ -319,169 +268,13 @@ export class Game {
         if (btnChaseGiveup) btnChaseGiveup.onclick = () => this.giveupChase();
     }
 
-    async saveAndExit() {
-        if (!state.player) return;
-
-        // 1. Lưu game trước khi thoát
-        await this.saveGame();
-        
-        // 2. Dừng các vòng lặp tự động nếu có
-        if (state.autoCultivateInterval) {
-            clearInterval(state.autoCultivateInterval);
-            state.autoCultivateInterval = null;
-        }
-        
-        // 3. Xóa dữ liệu phiên chơi hiện tại
-        state.player = null;
-        
-        // 4. Quay về màn hình bắt đầu
-        await this.showStartScreen();
-        
-        state.ui.toast('Đã lưu và thoát về màn hình chính', 'success');
-    }
-
-    async showStartScreen() {
-        state.ui.switchScreen('screen-start');
-        await this.screens.start.render();
-
-        const elementsToHide = ['header', '#time-hud', 'nav'];
-        elementsToHide.forEach(selector => {
-            const el = document.querySelector(selector);
-            if (el) el.classList.add('hidden');
-        });
-    }
-
-    showCreationScreen() {
-        state.ui.switchScreen('screen-creation');
-        state.ui.toggleOverlay(document.getElementById('screen-main'), false);
-
-        const elementsToHide = ['header', '#time-hud', 'nav'];
-        elementsToHide.forEach(selector => {
-            const el = document.querySelector(selector);
-            if (el) el.classList.add('hidden');
-        });
-
-        if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
-    }
-
-    loadGame(savedData) {
-        state.player = new Player();
-        state.player.load(savedData);
-
-        // Đồng bộ trạng thái toàn cục từ dữ liệu đã load
-        state.currentWorldId = state.player.currentWorldId;
-        state.currentLocId = state.player.currentLocId;
-        state.explorationProgress = state.player.explorationProgress;
-
-        this.initSystems(state.player, savedData);
-
-        // Hide non-game screens
-        const nonGameScreens = ['screen-creation', 'screen-start', 'screen-save'];
-        nonGameScreens.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.classList.add('hidden');
-        });
-
-        const elementsToShow = ['header', '#time-hud', 'nav'];
-        elementsToShow.forEach(selector => {
-            const el = document.querySelector(selector);
-            if (el) el.classList.remove('hidden');
-        });
-
-        // Switch to the main cultivation screen and render it
-        const mainNavBtn = document.querySelector('.nav-item[onclick*="screen-main"]');
-        state.ui.switchScreen('screen-main', mainNavBtn);
-
-        this.refreshUI();
-    }
-
-    initSystems(player, savedData = null) {
-        state.initSystems({
-            shop: new ShopSystem(player),
-            alchemy: new AlchemySystem(player, state.ui),
-            guild: new GuildSystem(player, state.ui),
-            garden: new GardenSystem(player, state.ui),
-            mountain: new MountainSystem(player, state.ui),
-            time: new TimeSystem(player, state.ui),
-            crafting: new CraftingSystem(player),
-            formation: new FormationSystem(player, state.ui),
-            talisman: new TalismanSystem(player, state.ui),
-            smithing: new SmithingSystem(player, state.ui),
-            beast: new BeastSystem(player, state.ui),
-            corpse: new CorpseSystem(player, state.ui),
-            energy: new EnergySystem(player, state.ui),
-            technique: new TechniqueSystem(player),
-            spiritStone: new SpiritStoneSystem(player, state.ui),
-            puppet: new PuppetSystem(player, state.ui),
-            treasure: new TreasureSystem(player, state.ui),
-            npc: new NPCSystem(),
-            social: new SocialSystem(),
-            fate: new FateSystem(player, state.ui),
-            mining: new MiningSystem(player, state.ui)
-        });
-
-        this.screens.fate.player = player;
-
-        if (savedData) {
-            if (savedData.npcData) state.systems.npc.loadData(savedData.npcData);
-            if (savedData.socialData) state.systems.social.loadData(savedData.socialData);
-        } else {
-            // Khởi tạo một số NPC mặc định cho thế giới mới
-            state.systems.npc.generate('tan_tu', 1, 'thanh_van_tran');
-            state.systems.npc.generate('thuong_nhan', 3, 'thanh_van_tran');
-            state.systems.npc.generate('sect_elder', 10, 'thanh_van_tong');
-            state.systems.npc.generate('thien_kieu', 5, 'linh_vong_son');
-        }
-
-        if (savedData && savedData.time) {
-            state.systems.time.load(savedData.time);
-        }
-
-        if (savedData && savedData.mountain) {
-            state.systems.mountain.discovery = savedData.mountain.discovery || {};
-            state.systems.mountain.bossDefeated = savedData.mountain.bossDefeated || {};
-            state.systems.mountain.reputation = savedData.mountain.reputation || 0;
-            state.systems.mountain.currentLayer = savedData.mountain.currentLayer || 'chan_nui';
-        }
-
-        // Cập nhật giao diện cơ bản
-        const elName = document.getElementById('player-name-header');
-        if (elName) elName.textContent = player.name;
-
-        // Cập nhật chân dung dựa trên avatar
-        const portraitKey = player.avatar || (player.gender === 'Nữ' ? 'player_female' : 'player_male');
-        const portraitUrl = ASSETS.portraits[portraitKey];
-
-        const elPortrait = document.getElementById('header-portrait');
-        if (elPortrait) elPortrait.src = portraitUrl;
-
-        const mainPortrait = document.getElementById('main-player-portrait');
-        if (mainPortrait) mainPortrait.src = portraitUrl;
-
-        // Also update character screen portrait if it exists
-        const charPortrait = document.querySelector('#screen-character img');
-        if (charPortrait) charPortrait.src = portraitUrl;
-
-
-        // Restore location
-        if (player.currentWorldId) {
-            state.currentWorldId = player.currentWorldId;
-            state.currentLocId = player.currentLocId;
-            state.explorationProgress = player.explorationProgress || 0;
-            // Note: restoreView() is called in initNavigation to avoid redundant renders
-        }
-    }
-
+    // --- Core Lifecycle ---
     startLoop() {
         const loop = () => {
             if (state.player) {
                 const now = Date.now();
                 const delta = (now - state.player.lastUpdate) / 1000;
-
-                // Cập nhật logic game
                 this.update(delta);
-
-                // Render frame hiện tại
                 this.render();
             }
             requestAnimationFrame(loop);
@@ -490,9 +283,7 @@ export class Game {
     }
 
     update(delta) {
-        // Logic tu luyện, thời gian, v.v. (giống trong main.js cũ)
-        // Tôi sẽ chuyển dần các phần này sang các system chuyên biệt
-        state.player.update(delta, 1.0); // Simple for now
+        state.player.update(delta, 1.0);
         if (state.systems.time) state.systems.time.update(delta);
         if (state.systems.garden) state.systems.garden.update(delta);
         if (state.systems.mountain && state.systems.mountain.isActive) state.systems.mountain.update(delta);
@@ -505,20 +296,16 @@ export class Game {
     }
 
     render() {
-        // Render thanh trạng thái chính (Top Bar)
-        // Phần này có thể tách ra thành TopBarComponent.js
         if (typeof window.renderMainStats === 'function') window.renderMainStats();
     }
 
     refreshUI() {
         if (!state.player) return;
-        // Render main cultivation screen stats
         if (typeof window.renderMainStats === 'function') window.renderMainStats();
         this.screens.map.renderWorldList();
         this.screens.inventory.render();
         this.screens.character.render();
 
-        // Render các hệ thống khác (Alchemy, Shop, v.v.)
         if (this.screens.systems) {
             this.screens.systems.renderAlchemy();
             this.screens.systems.renderShop();
@@ -527,14 +314,11 @@ export class Game {
             this.screens.systems.renderGuild();
             this.screens.systems.renderTower();
         }
-        if (this.screens.spiritStone) {
-            this.screens.spiritStone.render();
-        }
-        if (this.screens.mining) {
-            this.screens.mining.render();
-        }
+        if (this.screens.spiritStone) this.screens.spiritStone.render();
+        if (this.screens.mining) this.screens.mining.render();
     }
 
+    // --- Persistence ---
     async saveGame() {
         if (state.player) {
             state.player.currentWorldId = state.currentWorldId;
@@ -553,7 +337,6 @@ export class Game {
                 };
             }
             
-            // Create metadata for save screen
             const metadata = {
                 name: state.player.name,
                 realm: state.player.getCurrentRealm().name,
@@ -570,6 +353,34 @@ export class Game {
         }
     }
 
+    loadGame(savedData) {
+        state.player = new Player();
+        state.player.load(savedData);
+
+        state.currentWorldId = state.player.currentWorldId;
+        state.currentLocId = state.player.currentLocId;
+        state.explorationProgress = state.player.explorationProgress;
+
+        this.initSystems(state.player, savedData);
+
+        const nonGameScreens = ['screen-creation', 'screen-start', 'screen-save'];
+        nonGameScreens.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        });
+
+        const elementsToShow = ['header', '#time-hud', 'nav'];
+        elementsToShow.forEach(selector => {
+            const el = document.querySelector(selector);
+            if (el) el.classList.remove('hidden');
+        });
+
+        const mainNavBtn = document.querySelector('.nav-item[onclick*="screen-main"]');
+        state.ui.switchScreen('screen-main', mainNavBtn);
+
+        this.refreshUI();
+    }
+
     async loadSlot(slot) {
         const savedData = await SaveSystem.load(slot);
         if (savedData) {
@@ -578,6 +389,18 @@ export class Game {
         } else {
             state.ui.toast(`Không tìm thấy dữ liệu ở Slot ${slot}`, 'error');
         }
+    }
+
+    async saveAndExit() {
+        if (!state.player) return;
+        await this.saveGame();
+        if (state.autoCultivateInterval) {
+            clearInterval(state.autoCultivateInterval);
+            state.autoCultivateInterval = null;
+        }
+        state.player = null;
+        await this.showStartScreen();
+        state.ui.toast('Đã lưu và thoát về màn hình chính', 'success');
     }
 
     async startNewAtSlot(slot) {
@@ -611,17 +434,8 @@ export class Game {
         state.ui.promptOptions('Lựa Chọn Hành Trình', options, `Quản lý ô lưu số ${slot}`)
             .then(async action => {
                 if (action === 'load') await this.loadSlot(slot);
-                else if (action === 'delete') {
-                    await this.deleteSlot(slot);
-
-
-
-
-
-
-
-
-                } else if (action === 'rename') {
+                else if (action === 'delete') await this.deleteSlot(slot);
+                else if (action === 'rename') {
                     const newName = prompt('Nhập tên mới:');
                     if (newName) {
                         await SaveSystem.renameSave(slot, newName);
@@ -635,12 +449,176 @@ export class Game {
             });
     }
 
+    // --- Systems Initialization ---
+    initSystems(player, savedData = null) {
+        state.initSystems({
+            shop: new ShopSystem(player),
+            alchemy: new AlchemySystem(player, state.ui),
+            guild: new GuildSystem(player, state.ui),
+            garden: new GardenSystem(player, state.ui),
+            mountain: new MountainSystem(player, state.ui),
+            time: new TimeSystem(player, state.ui),
+            crafting: new CraftingSystem(player),
+            formation: new FormationSystem(player, state.ui),
+            talisman: new TalismanSystem(player, state.ui),
+            smithing: new SmithingSystem(player, state.ui),
+            beast: new BeastSystem(player, state.ui),
+            corpse: new CorpseSystem(player, state.ui),
+            energy: new EnergySystem(player, state.ui),
+            technique: new TechniqueSystem(player),
+            spiritStone: new SpiritStoneSystem(player, state.ui),
+            puppet: new PuppetSystem(player, state.ui),
+            treasure: new TreasureSystem(player, state.ui),
+            npc: new NPCSystem(),
+            social: new SocialSystem(),
+            fate: new FateSystem(player, state.ui),
+            mining: new MiningSystem(player, state.ui)
+        });
 
+        this.screens.fate.player = player;
+
+        if (savedData) {
+            if (savedData.npcData) state.systems.npc.loadData(savedData.npcData);
+            if (savedData.socialData) state.systems.social.loadData(savedData.socialData);
+            if (savedData.time) state.systems.time.load(savedData.time);
+            if (savedData.mountain) {
+                state.systems.mountain.discovery = savedData.mountain.discovery || {};
+                state.systems.mountain.bossDefeated = savedData.mountain.bossDefeated || {};
+                state.systems.mountain.reputation = savedData.mountain.reputation || 0;
+                state.systems.mountain.currentLayer = savedData.mountain.currentLayer || 'chan_nui';
+            }
+        } else {
+            state.systems.npc.generate('tan_tu', 1, 'thanh_van_tran');
+            state.systems.npc.generate('thuong_nhan', 3, 'thanh_van_tran');
+            state.systems.npc.generate('sect_elder', 10, 'thanh_van_tong');
+            state.systems.npc.generate('thien_kieu', 5, 'linh_vong_son');
+        }
+
+        const elName = document.getElementById('player-name-header');
+        if (elName) elName.textContent = player.name;
+
+        const portraitKey = player.avatar || (player.gender === 'Nữ' ? 'player_female' : 'player_male');
+        const portraitUrl = ASSETS.portraits[portraitKey];
+
+        const elPortrait = document.getElementById('header-portrait');
+        if (elPortrait) elPortrait.src = portraitUrl;
+
+        const mainPortrait = document.getElementById('main-player-portrait');
+        if (mainPortrait) mainPortrait.src = portraitUrl;
+
+        const charPortrait = document.querySelector('#screen-character img');
+        if (charPortrait) charPortrait.src = portraitUrl;
+
+        if (player.currentWorldId) {
+            state.currentWorldId = player.currentWorldId;
+            state.currentLocId = player.currentLocId;
+            state.explorationProgress = player.explorationProgress || 0;
+        }
+    }
+
+    // --- Character Actions ---
+    cultivate() {
+        if (!state.player) return;
+        const result = state.player.cultivate();
+        const message = result?.msg || result?.reason;
+
+        if (state.autoCultivateInterval) {
+            if (!result.success) {
+                this.toggleAutoCultivate(false);
+                const toggleBtn = document.getElementById('auto-cultivate-toggle');
+                if (toggleBtn) toggleBtn.checked = false;
+                if (message) state.ui.toast("Tự động tu luyện dừng lại: " + message, 'error');
+            }
+        } else {
+            if (message) state.ui.toast(message, result.success ? 'success' : 'error');
+        }
+        this.refreshUI();
+    }
+
+    async breakthrough() {
+        if (!state.player) return;
+        const focus = state.player.cultivationFocus || 'tuvi';
+        const result = state.player.breakthrough(focus);
+        if (result && result.msg) state.ui.toast(result.msg, result.success ? 'success' : 'error');
+        if (result && result.success) {
+            state.ui.showBreakthroughEffect(state.player.getCurrentRealm(focus).name);
+            await this.saveGame();
+        }
+        this.refreshUI();
+    }
+
+    setCultivationFocus(focus) {
+        if (!state.player || !['tuvi', 'body', 'soul'].includes(focus)) return;
+        state.player.cultivationFocus = focus;
+        this.refreshUI();
+    }
+
+    toggleAutoCultivate(enabled) {
+        if (!state.player) return;
+        if (enabled) {
+            if (!state.autoCultivateInterval) {
+                state.autoCultivateInterval = setInterval(() => this.cultivate(), 1200);
+            }
+        } else if (state.autoCultivateInterval) {
+            clearInterval(state.autoCultivateInterval);
+            state.autoCultivateInterval = null;
+        }
+    }
+
+    enterSeclusion() {
+        if (!state.player) return;
+        if (state.player.isSecluded) return;
+        state.player.isSecluded = true;
+        state.ui.toast("Ngươi đã bắt đầu bế quan, tâm thần tĩnh lặng...", "success");
+        this.refreshUI();
+    }
+
+    exitSeclusion() {
+        if (!state.player) return;
+        if (!state.player.isSecluded) return;
+        state.player.isSecluded = false;
+        state.ui.toast("Ngươi đã xuất quan, cảm thấy tu vi có chút tinh tiến.", "info");
+        this.refreshUI();
+    }
+
+    refine(itemId) {
+        if (!state.player) return;
+        const result = state.player.refineSpiritStone(itemId);
+        if (result.success) {
+            state.ui.toast(result.msg, 'success');
+            this.refreshUI();
+        } else {
+            state.ui.toast(result.msg, 'error');
+        }
+    }
+
+    handleDeath() {
+        const source = this.getRebirthProtectionSource();
+        if (source && this.consumeRebirthProtection(source)) {
+            state.player.hp = Math.max(1, Math.floor(state.player.maxHp * 0.2));
+            state.player.mana = Math.floor(state.player.maxMana * 0.1);
+            state.ui.toast('Ngươi đã chết, nhưng nhờ thủ đoạn bảo mệnh/trùng sinh nên thoát kiếp.', 'warning', 7000);
+            this.refreshUI();
+            return;
+        }
+        this.restartFromDeath();
+    }
+
+    restartFromDeath() {
+        state.ui.alert("Thân thể của ngươi đã tan biến giữa hồng trần... Tu vi cả đời hóa thành hư không.", "VÔ THƯỜNG")
+            .then(() => {
+                SaveSystem.deleteSave(SaveSystem.currentSlot);
+                state.player = null;
+                state.currentCombat = null;
+                state.currentLocId = null;
+                state.explorationProgress = 0;
+                location.reload();
+            });
+    }
 
     getRebirthProtectionSource() {
         const p = state.player;
         if (!p) return null;
-
         const lifeSavingArtifactIds = ['phap_bao_bao_menh', 'truong_sinh_phu'];
         const rebirthArtifactIds = ['trung_sinh_chau', 'nirvana_linh_chau'];
         const soulSeizureTechniqueIds = ['doat_xa_bi_phap', 'linh_hon_neo'];
@@ -661,7 +639,6 @@ export class Game {
 
         if (p.explorationProxy?.active) return { type: 'clone_proxy', id: 'exploration_proxy' };
         if (p.activeCloneExploration) return { type: 'clone_proxy', id: 'active_clone' };
-
         return null;
     }
 
@@ -671,7 +648,6 @@ export class Game {
 
         if (source.type === 'artifact') {
             if (p.inventory?.removeItem && p.inventory.removeItem(source.id, 1)) return true;
-            // If currently equipped directly, also allow consume as one-time trigger
             const equippedSlot = Object.entries(p.equipment || {}).find(([, itemId]) => itemId === source.id);
             if (equippedSlot) {
                 p.equipment[equippedSlot[0]] = null;
@@ -679,7 +655,6 @@ export class Game {
             }
             return false;
         }
-
         if (source.type === 'clone_proxy') {
             if (p.explorationProxy?.active) {
                 p.explorationProxy.active = false;
@@ -691,90 +666,11 @@ export class Game {
             }
             return false;
         }
-
-        // Soul-retention technique: non-consumable by design
         if (source.type === 'technique') return true;
-
         return false;
     }
 
-    restartFromDeath() {
-        SaveSystem.deleteSave(SaveSystem.currentSlot);
-        state.player = null;
-        state.currentCombat = null;
-        state.currentLocId = null;
-        state.explorationProgress = 0;
-        this.showCreationScreen();
-        state.ui.toast('Thân tử đạo tiêu. Không có bảo mệnh, ngươi phải bắt đầu lại từ đầu.', 'error', 8000);
-    }
-
-    handleDeath() {
-        const source = this.getRebirthProtectionSource();
-        if (source && this.consumeRebirthProtection(source)) {
-            state.player.hp = Math.max(1, Math.floor(state.player.maxHp * 0.2));
-            state.player.mana = Math.floor(state.player.maxMana * 0.1);
-            state.ui.toast('Ngươi đã chết, nhưng nhờ thủ đoạn bảo mệnh/trùng sinh nên thoát kiếp.', 'warning', 7000);
-            this.refreshUI();
-            return;
-        }
-
-        this.restartFromDeath();
-    }
-
-    setCultivationFocus(focus) {
-        if (!state.player || !['tuvi', 'body', 'soul'].includes(focus)) return;
-        state.player.cultivationFocus = focus;
-        this.refreshUI();
-    }
-
-    cultivate() {
-        if (!state.player) return;
-        const result = state.player.cultivate();
-        const message = result?.msg || result?.reason;
-
-        if (state.autoCultivateInterval) {
-            if (!result.success) {
-                this.toggleAutoCultivate(false);
-                const toggleBtn = document.getElementById('auto-cultivate-toggle');
-                if (toggleBtn) toggleBtn.checked = false;
-                if (message) state.ui.toast("Tự động tu luyện dừng lại: " + message, 'error');
-            }
-        } else {
-            if (message) state.ui.toast(message, result.success ? 'success' : 'error');
-        }
-
-        this.refreshUI();
-    }
-
-    async breakthrough() {
-        if (!state.player) return;
-        const focus = state.player.cultivationFocus || 'tuvi';
-        const result = state.player.breakthrough(focus);
-        if (result && result.msg) state.ui.toast(result.msg, result.success ? 'success' : 'error');
-        if (result && result.success) {
-            state.ui.showBreakthroughEffect(state.player.getCurrentRealm(focus).name);
-            await this.saveGame();
-        }
-        this.refreshUI();
-    }
-
-    toggleAutoCultivate(enabled) {
-        if (!state.player) return;
-        if (enabled) {
-            if (!state.autoCultivateInterval) {
-                state.autoCultivateInterval = setInterval(() => this.cultivate(), 1200);
-            }
-        } else if (state.autoCultivateInterval) {
-            clearInterval(state.autoCultivateInterval);
-            state.autoCultivateInterval = null;
-        }
-    }
-
-    enterSeclusion() {
-        state.ui.toast("Tính năng Bế Quan đang được hoàn thiện. Hiện tại hãy dùng Tu luyện thường hoặc Auto.", "info");
-    }
-
-    // Các hàm helper để gọi từ HTML (window.game.xxx)
+    // --- World & Navigation Actions ---
     openShop(view, shopId = null, section = null) {
         if (state.systems.shop) {
             state.views.shop = view || 'buy';
@@ -810,6 +706,12 @@ export class Game {
         state.ui.toast("Vạn Bảo Thiên Các hiện chưa mở cuộc đấu giá nào. Hãy quay lại sau!", "info");
     }
 
+    openMining() {
+        if (this.screens.mining) this.screens.mining.render();
+        state.ui.switchScreen('screen-mining', null);
+    }
+
+    // --- System Actions ---
     buyItem(itemId, quantity = 1) {
         if (state.systems.shop) {
             const res = state.systems.shop.buyItem(itemId, quantity);
@@ -824,136 +726,6 @@ export class Game {
             state.ui.toast(res.msg, res.success ? 'success' : 'error');
             this.refreshUI();
         }
-    }
-
-    openShop() {
-        if (this.screens.systems) {
-            this.screens.systems.renderShop();
-            state.ui.switchScreen('systems', document.querySelector('[data-screen="systems"]'));
-        }
-    }
-
-    openSect() {
-        if (this.screens.systems) {
-            this.screens.systems.renderSect();
-            state.ui.switchScreen('systems', document.querySelector('[data-screen="systems"]'));
-        }
-    }
-
-    openGuild() {
-        if (this.screens.systems) {
-            this.screens.systems.renderGuild();
-            state.ui.switchScreen('systems', document.querySelector('[data-screen="systems"]'));
-        }
-    }
-
-    openTower() {
-        state.ui.toast("Tháp Thử Thách hiện đang đóng cửa để tu bổ phong ấn.", "info");
-    }
-
-    openMountain() {
-        if (state.systems.mountain) {
-            state.systems.mountain.start();
-            this.refreshUI();
-        }
-    }
-
-    mountainExplore() {
-        if (state.systems.mountain) {
-            state.systems.mountain.explore();
-            this.refreshUI();
-        }
-    }
-
-    mountainDeeper() {
-        if (state.systems.mountain) {
-            state.systems.mountain.moveDeeper();
-            this.refreshUI();
-        }
-    }
-
-    mountainRetreat() {
-        if (state.systems.mountain) {
-            state.systems.mountain.retreat();
-            this.refreshUI();
-        }
-    }
-
-    openMining() {
-        if (this.screens.mining) {
-            this.screens.mining.render();
-            state.ui.switchScreen('mining', null);
-        }
-    }
-
-    mineManual() {
-        if (state.systems.mining) {
-            const res = state.systems.mining.mineManual();
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    occupyNode(nodeId) {
-        if (state.systems.mining) {
-            const res = state.systems.mining.occupyNode(nodeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    claimMiningResources(nodeId) {
-        if (state.systems.mining) {
-            const res = state.systems.mining.claimResources(nodeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    abandonNode(nodeId) {
-        if (state.systems.mining) {
-            state.ui.confirm('Ngươi có chắc muốn từ bỏ linh mạch này?', 'Xác Nhận')
-                .then(confirmed => {
-                    if (confirmed) {
-                        const res = state.systems.mining.abandonNode(nodeId);
-                        state.ui.toast(res.msg, res.success ? 'success' : 'error');
-                        this.refreshUI();
-                    }
-                });
-        }
-    }
-
-    playerCrushStone(itemId, count = 1) {
-        if (state.player) {
-            const res = state.player.crushStone(itemId, count);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    upgradeField(index) {
-        if (state.systems.garden) {
-            const res = state.systems.garden.upgradeField(index);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    resetField(index) {
-        if (state.systems.garden) {
-            state.ui.confirm('Ngươi có chắc muốn nhổ bỏ linh thảo này?', 'Xác Nhận')
-                .then(confirmed => {
-                    if (confirmed) {
-                        state.systems.garden.resetPlot(index);
-                        state.ui.toast('Đã dọn dẹp ô đất.', 'info');
-                        this.refreshUI();
-                    }
-                });
-        }
-    }
-
-    renderEnergy() {
-        if (this.screens.systems) this.screens.systems.renderEnergy();
     }
 
     mountainExplore() {
@@ -977,21 +749,179 @@ export class Game {
         }
     }
 
-    // Specialized actions
-    craft(recipeId) {
-        if (state.systems.alchemy) {
-            const res = state.systems.alchemy.craft(recipeId);
+    mineManual(nodeId) {
+        if (state.systems.mining) {
+            const res = state.systems.mining.mineManual(nodeId);
             state.ui.toast(res.msg, res.success ? 'success' : 'error');
             this.refreshUI();
         }
     }
 
-    harvest(index) {
-        if (state.systems.garden) {
-            const res = state.systems.garden.harvest(index);
+    occupyNode(nodeId) {
+        if (state.systems.mining) {
+            const res = state.systems.mining.occupyNode(nodeId);
             state.ui.toast(res.msg, res.success ? 'success' : 'error');
             this.refreshUI();
         }
+    }
+
+    claimMiningResources(nodeId) {
+        if (state.systems.mining) {
+            const res = state.systems.mining.claimResources(nodeId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+        }
+    }
+
+    abandonNode(nodeId) {
+        state.ui.confirm('Ngươi có chắc muốn từ bỏ linh mạch này? Tất cả sản lượng chưa thu thập sẽ biến mất!', 'Xác Nhận')
+            .then(confirmed => {
+                if (confirmed && state.systems.mining) {
+                    const res = state.systems.mining.abandonNode(nodeId);
+                    state.ui.toast(res.msg, res.success ? 'info' : 'error');
+                    this.refreshUI();
+                }
+            });
+    }
+
+    playerCrushStone() {
+        if (state.player) {
+            const stones = state.player.inventory.items.filter(i => {
+                const data = getItemById(i.id);
+                return data && data.type === 'spirit_stone';
+            });
+            if (stones.length === 0) {
+                state.ui.toast('Ngươi không có Linh Thạch để bóp nát!', 'error');
+                return;
+            }
+            const stoneToCrush = stones[0];
+            const res = state.player.crushStone(stoneToCrush.id, 1);
+            if (res.success) {
+                state.ui.toast(res.msg, 'success');
+                if (state.currentCombat && state.currentCombat.engine) {
+                    state.currentCombat.engine.doAction('spirit_stone');
+                }
+            } else {
+                state.ui.toast(res.msg, 'error');
+            }
+            this.refreshUI();
+        }
+    }
+
+    upgradeField(index) {
+        if (state.systems.garden) {
+            const res = state.systems.garden.upgradeField(index);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success) this.showFieldMenu(index);
+            this.refreshUI();
+        }
+    }
+
+    resetField(index) {
+        if (state.systems.garden) {
+            state.ui.confirm('Ngươi có chắc muốn nhổ bỏ linh thảo này?', 'Xác Nhận')
+                .then(confirmed => {
+                    if (confirmed) {
+                        state.systems.garden.resetPlot(index);
+                        state.ui.toast('Đã dọn dẹp ô đất.', 'info');
+                        this.refreshUI();
+                    }
+                });
+        }
+    }
+
+    showPlantMenu(index) {
+        const seeds = state.player.inventory.items.filter(i => i.id.startsWith('seed_'));
+        const menu = document.getElementById('garden-menu-content');
+        const title = document.getElementById('garden-menu-title');
+        const subtitle = document.getElementById('garden-menu-subtitle');
+        if (!menu || !title || !subtitle) return;
+
+        title.textContent = 'Gieo Hạt Linh Thảo';
+        subtitle.textContent = `Ô đất số ${index + 1}`;
+        menu.innerHTML = '';
+
+        if (seeds.length === 0) {
+            menu.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Túi đồ không có hạt giống nào...</div>';
+        } else {
+            seeds.forEach(seed => {
+                const itemData = getItemById(seed.id);
+                const el = document.createElement('div');
+                el.className = 'p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between hover:bg-white/10 cursor-pointer transition-all';
+                el.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">${itemData.icon || '🌱'}</span>
+                        <div>
+                            <div class="text-xs font-bold text-white">${itemData.name}</div>
+                            <div class="text-[9px] text-gray-500 uppercase tracking-tighter">Số lượng: ${seed.quantity}</div>
+                        </div>
+                    </div>
+                    <button class="px-4 py-2 bg-qi-jade/20 text-qi-jade text-[10px] font-bold rounded-xl border border-qi-jade/20">CHỌN</button>
+                `;
+                el.onclick = () => {
+                    const res = state.systems.garden.plant(index, seed.id);
+                    state.ui.toast(res.msg, res.success ? 'success' : 'error');
+                    state.ui.toggleOverlay('garden-menu-overlay', false);
+                    this.refreshUI();
+                };
+                menu.appendChild(el);
+            });
+        }
+        state.ui.toggleOverlay('garden-menu-overlay', true);
+    }
+
+    showFieldMenu(index) {
+        const plot = state.player.gardenPlots[index];
+        const menu = document.getElementById('garden-menu-content');
+        const title = document.getElementById('garden-menu-title');
+        const subtitle = document.getElementById('garden-menu-subtitle');
+        if (!menu || !title || !subtitle) return;
+
+        title.textContent = 'Quản Lý Linh Điền';
+        subtitle.textContent = `Ô đất số ${index + 1}`;
+        menu.innerHTML = '';
+
+        const grades = Object.keys(FIELD_GRADES);
+        const curGradeIdx = grades.indexOf(plot.grade);
+        if (curGradeIdx < grades.length - 1) {
+            const nextGrade = grades[curGradeIdx + 1];
+            const gInfo = FIELD_GRADES[nextGrade];
+            const upEl = document.createElement('div');
+            upEl.className = 'p-5 bg-gradient-to-r from-qi-jade/10 to-transparent border border-qi-jade/20 rounded-3xl space-y-3';
+            upEl.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <h4 class="text-xs font-bold text-qi-jade uppercase">Nâng cấp phẩm cấp</h4>
+                    <span class="text-[10px] font-mono text-white">${gInfo.cost} LT</span>
+                </div>
+                <p class="text-[9px] text-gray-500">Nâng cấp lên ${gInfo.name} để tăng tốc độ sinh trưởng (${gInfo.speedMult}x).</p>
+                <button class="w-full py-2.5 bg-qi-jade text-black text-[10px] font-bold rounded-xl active:scale-95 transition-all" onclick="window.game.upgradeField(${index})">NÂNG CẤP NGAY</button>
+            `;
+            menu.appendChild(upEl);
+        }
+
+        const attrTitle = document.createElement('h4');
+        attrTitle.className = 'text-[9px] text-gray-500 uppercase font-bold px-2 mt-4';
+        attrTitle.textContent = 'Thay đổi thuộc tính (500 LT)';
+        menu.appendChild(attrTitle);
+
+        const attrGrid = document.createElement('div');
+        attrGrid.className = 'grid grid-cols-2 gap-2';
+        Object.values(FIELD_ATTRIBUTES).forEach(attr => {
+            const isCurrent = plot.attribute === attr.id;
+            const btn = document.createElement('button');
+            btn.className = `p-3 rounded-2xl border text-[10px] font-bold flex items-center justify-center space-x-2 transition-all ${isCurrent ? 'bg-white/10 border-white/40 text-white' : 'bg-white/5 border-white/5 text-gray-500 hover:bg-white/10'}`;
+            btn.innerHTML = `<span>${attr.icon}</span> <span>${attr.name}</span>`;
+            btn.onclick = () => {
+                if (isCurrent) return;
+                const res = state.systems.garden.setAttribute(index, attr.id);
+                state.ui.toast(res.msg, res.success ? 'success' : 'error');
+                if (res.success) this.showFieldMenu(index);
+                this.refreshUI();
+            };
+            attrGrid.appendChild(btn);
+        });
+        menu.appendChild(attrGrid);
+        state.ui.toggleOverlay('garden-menu-overlay', true);
     }
 
     async craft(recipeId) {
@@ -1002,218 +932,11 @@ export class Game {
         }
     }
 
-    // --- Combat System ---
-    startBattle(enemy, ambushType = null, onEndOverride = null) {
-        if (!state.player) return;
-
-        // Handle legacy call signature: startBattle(worldId, locId, type, enemyObj, callback)
-        if (typeof enemy === 'string') {
-            const args = Array.from(arguments);
-            enemy = args[3];
-            ambushType = args[2];
-            onEndOverride = args[4];
-        }
-
-        if (!enemy) return;
-
-        state.currentCombat = new CombatEngine(
-            state.player,
-            enemy,
-            (type, data) => {
-                if (this.screens.battle) this.screens.battle.render(type, data);
-            },
-            (result) => {
-                if (typeof onEndOverride === 'function') {
-                    onEndOverride(result === 'win');
-                }
-                this.handleCombatEnd(result);
-            },
-            ambushType
-        );
-        state.ui.switchScreen('battle', null);
-        if (this.screens.battle) this.screens.battle.render('start');
-        state.currentCombat.start();
-    }
-
-    handleCombatEncounter(worldId, locId) {
-        const enemy = EnemyGenerator.generate(state.player.realmId);
-        this.startBattle(enemy);
-    }
-
-    resolveInitialCombatPhase(type) {
-        if (!state.currentCombat) return;
-
-        if (type === 'attack') {
-            if (state.currentCombat.resolveInitialPhase) {
-                state.currentCombat.resolveInitialPhase('attack');
-            }
-            this.refreshUI();
-        } else if (type === 'evade') {
-            if (state.currentCombat.resolveInitialPhase) {
-                const success = state.currentCombat.resolveInitialPhase('evade');
-                if (success) {
-                    state.ui.toast("Ngươi đã né tránh thành công!", "success");
-                    state.currentCombat = null;
-                    state.ui.switchScreen('map', null);
-                }
-            }
-            this.refreshUI();
-        }
-    }
-
-    handleCombatEnd(result) {
-        if (result === 'win') {
-            const combat = state.currentCombat;
-            if (combat && combat.enemy) {
-                // Award loot
-                combat.enemy.inventory.forEach(item => {
-                    state.player.inventory.addItem(item.id, item.quantity);
-                    state.ui.toast(`Thu được ${getItemById(item.id)?.name} x${item.quantity}`, 'success');
-                });
-                // Tu vi reward
-                const tuvi = combat.enemy.realmId * 50;
-                state.player.addTuVi(tuvi);
-                state.ui.toast(`Chiến thắng! Nhận được ${tuvi} Tu Vi.`, 'success');
-            }
-            state.ui.switchScreen('map', null);
-        } else if (result === 'lose') {
-            this.restartFromDeath();
-        } else if (result === 'escape') {
-            state.ui.switchScreen('map', null);
-        }
-        state.currentCombat = null;
-        this.refreshUI();
-    }
-
-    restartFromDeath() {
-        state.ui.alert("Thân thể của ngươi đã tan biến giữa hồng trần... Tu vi cả đời hóa thành hư không.", "VÔ THƯỜNG")
-            .then(() => {
-                const slot = state.currentSaveSlot || 1;
-                this.saveSystem.deleteSave(slot);
-                location.reload();
-            });
-    }
-
-    startAmbush() {
-        if (state.currentCombat) {
-            state.currentCombat.isAmbushed = true;
-            this.refreshUI();
-        }
-    }
-
-    escapeAmbush() {
-        if (state.currentCombat) {
-            const res = state.currentCombat.resolveEscape();
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            if (res.success) {
-                state.currentCombat = null;
-                state.ui.switchScreen('map', null);
-            }
-            this.refreshUI();
-        }
-    }
-
-    startChase() {
-        if (state.currentCombat) {
-            state.currentCombat.isChasing = true;
-            this.refreshUI();
-        }
-    }
-
-    giveupChase() {
-        if (state.currentCombat) {
-            state.ui.toast("Ngươi đã từ bỏ truy kích.", "info");
-            state.currentCombat = null;
-            state.ui.switchScreen('map', null);
-            this.refreshUI();
-        }
-    }
-
-    // --- NPC Interactions ---
-    openNPC(npcId) {
-        if (state.systems.npc) {
-            const npc = state.systems.npc.getNPC(npcId);
-            if (npc) {
-                this.openNPCDialogue(npc);
-            }
-        }
-    }
-
-    openNPCDialogue(npc) {
-        if (this.screens.systems) {
-            this.screens.systems.renderNPCDialogue(npc);
-            state.ui.switchScreen('systems', null);
-        }
-    }
-
-    openNPCGift(npcId) {
-        if (state.systems.social) {
-            state.systems.social.openGiftMenu(npcId);
-        }
-    }
-
-    openNPCTrade(npcId) {
-        if (state.systems.shop) {
-            state.systems.shop.openNPCTrade(npcId);
-            this.renderNPCTrade();
-        }
-    }
-
-    renderNPCTrade() {
-        if (this.screens.systems) {
-            this.screens.systems.renderNPCTrade();
-        }
-    }
-
-    buyNPCItem(itemId) {
-        if (state.systems.shop) {
-            const res = state.systems.shop.buyNPCItem(itemId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.renderNPCTrade();
-            this.refreshUI();
-        }
-    }
-
-    sellNPCItem(itemId) {
-        if (state.systems.shop) {
-            const res = state.systems.shop.sellNPCItem(itemId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.renderNPCTrade();
-            this.refreshUI();
-        }
-    }
-
-    socialAction(npcId, actionType) {
-        if (state.systems.social) {
-            const res = state.systems.social.performAction(npcId, actionType);
+    harvest(index) {
+        if (state.systems.garden) {
+            const res = state.systems.garden.harvest(index);
             state.ui.toast(res.msg, res.success ? 'success' : 'error');
             this.refreshUI();
-            if (this.screens.systems && state.activeSystemTab === 'npc') {
-                const npc = state.systems.npc.getNPC(npcId);
-                if (npc) this.openNPCDialogue(npc);
-            }
-        }
-    }
-
-    cultivateTechnique(id, isSecret) {
-        if (state.systems.technique) {
-            const res = state.systems.technique.cultivate(id, isSecret);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-            if (this.screens.systems && state.activeSystemTab === 'technique') {
-                this.screens.systems.renderTechniqueDetail(id, isSecret);
-            }
-        }
-    }
-
-    breakthroughTechnique(id, isSecret) {
-        if (state.systems.technique) {
-            const res = state.systems.technique.breakthrough(id, isSecret);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-            if (this.screens.systems && state.activeSystemTab === 'technique') {
-                this.screens.systems.renderTechniqueDetail(id, isSecret);
-            }
         }
     }
 
@@ -1257,821 +980,261 @@ export class Game {
         }
     }
 
-    emergencyUIReset() {
-        state.ui.confirm('Phát hiện Thiên Cơ nhiễu loạn? Ngươi có muốn tái lập giao diện (không mất dữ liệu)?', 'Khắc Phục Sự Cố')
-            .then(confirmed => {
-                if (confirmed) {
-                    location.reload();
-                }
-            });
+    openCrafting(type) {
+        if (this.screens.systems) this.screens.systems.openCrafting(type);
     }
 
-    showPlantMenu(index) {
-        const seeds = state.player.inventory.items.filter(i => i.id.startsWith('seed_'));
-        const menu = document.getElementById('garden-menu-content');
-        const title = document.getElementById('garden-menu-title');
-        const subtitle = document.getElementById('garden-menu-subtitle');
-
-        if (!menu || !title || !subtitle) return;
-
-        title.textContent = 'Gieo Hạt Linh Thảo';
-        subtitle.textContent = `Ô đất số ${index + 1}`;
-        menu.innerHTML = '';
-
-        if (seeds.length === 0) {
-            menu.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Túi đồ không có hạt giống nào...</div>';
-        } else {
-            seeds.forEach(seed => {
-                const itemData = getItemById(seed.id);
-                const el = document.createElement('div');
-                el.className = 'p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between hover:bg-white/10 cursor-pointer transition-all';
-                el.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <span class="text-2xl">${itemData.icon || '🌱'}</span>
-                        <div>
-                            <div class="text-xs font-bold text-white">${itemData.name}</div>
-                            <div class="text-[9px] text-gray-500 uppercase tracking-tighter">Số lượng: ${seed.quantity}</div>
-                        </div>
-                    </div>
-                    <button class="px-4 py-2 bg-qi-jade/20 text-qi-jade text-[10px] font-bold rounded-xl border border-qi-jade/20">CHỌN</button>
-                `;
-                el.onclick = () => {
-                    const res = state.systems.garden.plant(index, seed.id);
-                    state.ui.toast(res.msg, res.success ? 'success' : 'error');
-                    state.ui.toggleOverlay('garden-menu-overlay', false);
-                    this.refreshUI();
-                };
-                menu.appendChild(el);
-            });
-        }
-        state.ui.toggleOverlay('garden-menu-overlay', true);
+    openCraftingHub() {
+        if (this.screens.systems) this.screens.systems.openCraftingHub();
     }
 
-    showFieldMenu(index) {
-        const plot = state.player.gardenPlots[index];
-        const menu = document.getElementById('garden-menu-content');
-        const title = document.getElementById('garden-menu-title');
-        const subtitle = document.getElementById('garden-menu-subtitle');
-
-        if (!menu || !title || !subtitle) return;
-
-        title.textContent = 'Quản Lý Linh Điền';
-        subtitle.textContent = `Ô đất số ${index + 1}`;
-        menu.innerHTML = '';
-
-        // Upgrade Section
-        const grades = Object.keys(FIELD_GRADES);
-        const curGradeIdx = grades.indexOf(plot.grade);
-        if (curGradeIdx < grades.length - 1) {
-            const nextGrade = grades[curGradeIdx + 1];
-            const gInfo = FIELD_GRADES[nextGrade];
-            const upEl = document.createElement('div');
-            upEl.className = 'p-5 bg-gradient-to-r from-qi-jade/10 to-transparent border border-qi-jade/20 rounded-3xl space-y-3';
-            upEl.innerHTML = `
-                <div class="flex justify-between items-center">
-                    <h4 class="text-xs font-bold text-qi-jade uppercase">Nâng cấp phẩm cấp</h4>
-                    <span class="text-[10px] font-mono text-white">${gInfo.cost} LT</span>
-                </div>
-                <p class="text-[9px] text-gray-500">Nâng cấp lên ${gInfo.name} để tăng tốc độ sinh trưởng (${gInfo.speedMult}x).</p>
-                <button class="w-full py-2.5 bg-qi-jade text-black text-[10px] font-bold rounded-xl active:scale-95 transition-all" onclick="window.game.upgradeField(${index})">NÂNG CẤP NGAY</button>
-            `;
-            menu.appendChild(upEl);
-        }
-
-        // Attribute Section
-        const attrTitle = document.createElement('h4');
-        attrTitle.className = 'text-[9px] text-gray-500 uppercase font-bold px-2 mt-4';
-        attrTitle.textContent = 'Thay đổi thuộc tính (500 LT)';
-        menu.appendChild(attrTitle);
-
-        const attrGrid = document.createElement('div');
-        attrGrid.className = 'grid grid-cols-2 gap-2';
-        Object.values(FIELD_ATTRIBUTES).forEach(attr => {
-            const isCurrent = plot.attribute === attr.id;
-            const btn = document.createElement('button');
-            btn.className = `p-3 rounded-2xl border text-[10px] font-bold flex items-center justify-center space-x-2 transition-all ${isCurrent ? 'bg-white/10 border-white/40 text-white' : 'bg-white/5 border-white/5 text-gray-500 hover:bg-white/10'}`;
-            btn.innerHTML = `<span>${attr.icon}</span> <span>${attr.name}</span>`;
-            btn.onclick = () => {
-                if (isCurrent) return;
-                const res = state.systems.garden.setAttribute(index, attr.id);
-                state.ui.toast(res.msg, res.success ? 'success' : 'error');
-                if (res.success) this.showFieldMenu(index);
-                this.refreshUI();
-            };
-            attrGrid.appendChild(btn);
-        });
-        menu.appendChild(attrGrid);
-
-        state.ui.toggleOverlay('garden-menu-overlay', true);
-    }
-
-    upgradeField(index) {
-        if (state.systems.garden) {
-            const res = state.systems.garden.upgradeField(index);
+    cultivateTechnique(id, isSecret) {
+        if (state.systems.technique) {
+            const res = state.systems.technique.cultivate(id, isSecret);
             state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            if (res.success) this.showFieldMenu(index);
-            this.refreshUI();
-        }
-    }
-
-    buyItem(id) {
-        if (state.systems.shop) {
-            const res = state.systems.shop.buyItem(id, 1);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    sellItem(id, qty) {
-        if (state.systems.shop) {
-            const res = state.systems.shop.sellItem(id, qty);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    handleCombatEncounter(worldId, locId) {
-        const loc = getLocationById(worldId, locId);
-        const enemy = EnemyGenerator.generate(loc.dangerLevel || 1);
-        this.pendingEncounter = { worldId, locId, enemy };
-
-        const playerPerc = state.player.advancedStats.perception || 5;
-        const enemyPerc = enemy.perception || 5;
-
-        // Kiểm tra phát hiện (Thần thức đối kháng)
-        const roll = Math.random() * 10 - 5; // -5 to +5 variance
-        if (playerPerc > enemyPerc + roll) {
-            // Người chơi phát hiện quái trước
-            const elDesc = document.getElementById('ambush-desc');
-            if (elDesc) elDesc.textContent = `Thần thức nhạy bén giúp ngươi phát hiện một con ${enemy.name} đang ẩn nấp phía trước. Ngươi có muốn tập kích nó không?`;
-            state.ui.toggleOverlay(document.getElementById('ambush-overlay'), true);
-        } else if (enemyPerc > playerPerc + (Math.random() * 10)) {
-            // Quái tập kích người chơi (xác suất cao hơn nếu thần thức thấp)
-            state.ui.toast(`Ngươi bị một con ${enemy.name} tập kích bất ngờ!`, 'error');
-            setTimeout(() => {
-                this.startBattle(worldId, locId, 'enemy', enemy);
-            }, 1000);
-        } else {
-            // Chạm trán bình thường
-            this.startBattle(worldId, locId, null, enemy);
-        }
-    }
-
-    startAmbush() {
-        try {
-            if (!this.pendingEncounter) return;
-            state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
-
-            const perc = (state.player && state.player.advancedStats && state.player.advancedStats.perception) || 5;
-            const successChance = 0.6 + (perc / 100);
-            const success = Math.random() < successChance;
-
-            if (success) {
-                this.startBattle(this.pendingEncounter.worldId, this.pendingEncounter.locId, 'player', this.pendingEncounter.enemy);
-            } else {
-                state.ui.toast("Tập kích thất bại! Ngươi đã bị đối phương phát hiện.", "warning");
-                this.startBattle(this.pendingEncounter.worldId, this.pendingEncounter.locId, null, this.pendingEncounter.enemy);
+            if (res.success) {
+                this.screens.systems.renderTechniqueDetail(id, isSecret);
+                state.player.calculateStats();
             }
-            this.pendingEncounter = null;
-        } catch (e) {
-            console.error(e);
-            state.ui.toast("Lỗi khi tập kích!", "error");
-        }
-    }
-
-    escapeAmbush() {
-        try {
-            state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
-            state.ui.toast("Ngươi lặng lẽ lách mình qua kẻ địch, tránh được một cuộc chiến.", "info");
-            this.pendingEncounter = null;
             this.refreshUI();
-        } catch (e) {
-            console.error(e);
-            state.ui.toast("Lỗi khi lánh mặt!", "error");
         }
     }
 
-    startChase() {
-        if (!state.currentCombat) return;
-        state.ui.toggleOverlay(document.getElementById('chase-overlay'), false);
-        state.currentCombat.chaseEnemy();
+    breakthroughTechnique(id, isSecret) {
+        if (state.systems.technique) {
+            const res = state.systems.technique.breakthrough(id, isSecret);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success) {
+                this.screens.systems.renderTechniqueDetail(id, isSecret);
+                state.player.calculateStats();
+            }
+            this.refreshUI();
+        }
     }
 
-    giveupChase() {
-        if (!state.currentCombat) return;
-        state.ui.toggleOverlay(document.getElementById('chase-overlay'), false);
-        state.ui.toast("Ngươi quyết định không đuổi theo, kẻ địch đã trốn thoát thành công.", "info");
-        state.currentCombat.onEnd('escape');
-    }
-
-    startBattle(worldId, locId, ambushType = null, providedEnemy = null) {
-        const loc = (typeof getLocationById === 'function') ? getLocationById(worldId, locId) : { dangerLevel: 1 };
-        const enemy = providedEnemy || (typeof EnemyGenerator !== 'undefined' ? EnemyGenerator.generate(loc.dangerLevel || 1) : { name: 'Yêu Thú', hp: 100, maxHp: 100, atk: 10, def: 10, spd: 10 });
-
-        const environment = loc.environment || 'NORMAL';
-
+    // --- Combat Actions ---
+    startBattle(enemy, ambushType = null, onEndOverride = null) {
+        if (!state.player || !enemy) return;
         state.currentCombat = new CombatEngine(
             state.player,
             enemy,
             (type, data) => this.screens.battle.render(type, data),
             (result) => {
-                this.screens.battle.close();
-                this.refreshUI();
+                if (typeof onEndOverride === 'function') onEndOverride(result === 'win');
+                this.handleCombatEnd(result);
             },
-            ambushType,
-            environment
+            ambushType
         );
-
+        state.ui.switchScreen('battle', null);
         this.screens.battle.render('start');
         state.currentCombat.start();
     }
 
-    openCrafting(type) {
-        this.screens.systems.openCrafting(type);
-    }
+    handleCombatEncounter(worldId, locId) {
+        const loc = getLocationById(worldId, locId);
+        const enemy = EnemyGenerator.generate(loc?.dangerLevel || 1);
+        this.pendingEncounter = { worldId, locId, enemy };
 
+        const playerPerc = state.player.advancedStats.perception || 5;
+        const enemyPerc = enemy.perception || 5;
+        const roll = Math.random() * 10 - 5;
 
-
-    openNPCDialogue(npcId) {
-        const npc = state.systems.npc.npcs.find(n => n.id === npcId);
-        if (!npc) return;
-
-        // Dynamic Dialogue based on AI
-        const dialogue = npc.generateDialogue(state.player);
-        state.ui.alert(dialogue, npc.name);
-    }
-
-    async openNPCGift(npcId) {
-        const npc = state.systems.npc.npcs.find(n => n.id === npcId);
-        if (!npc) return;
-
-        // Tìm vật phẩm có thể tặng (ví dụ Linh Thạch hoặc Đan Dược)
-        const giftItem = state.player.inventory.items.find(i => i.id.includes('ling_thach') || i.id.includes('dan'));
-
-        if (!giftItem) {
-            state.ui.toast("Ngươi không có vật phẩm nào giá trị để tặng.", "warning");
-            return;
-        }
-
-        const itemName = giftItem.name || giftItem.id;
-        const confirmed = await state.ui.confirm(`Ngươi có muốn tặng 1x ${itemName} cho ${npc.name}?`, 'TẶNG LỄ VẬT');
-
-        if (confirmed) {
-            state.player.inventory.removeItem(giftItem.id, 1);
-            npc.addMemory(giftItem.id.includes('thuong') ? 'gift_high' : 'gift_low');
-            state.ui.toast(`Ngươi đã tặng ${itemName} cho ${npc.name}. Hảo cảm tăng lên!`, "success");
-            if (window.npcScreen) window.npcScreen.render();
+        if (playerPerc > enemyPerc + roll) {
+            const elDesc = document.getElementById('ambush-desc');
+            if (elDesc) elDesc.textContent = `Thần thức nhạy bén giúp ngươi phát hiện một con ${enemy.name} đang ẩn nấp phía trước. Ngươi có muốn tập kích nó không?`;
+            state.ui.toggleOverlay(document.getElementById('ambush-overlay'), true);
+        } else if (enemyPerc > playerPerc + (Math.random() * 10)) {
+            state.ui.toast(`Ngươi bị một con ${enemy.name} tập kích bất ngờ!`, 'error');
+            setTimeout(() => this.startBattle(enemy), 1000);
+        } else {
+            this.startBattle(enemy);
         }
     }
 
-    openNPCTrade(npcId) {
-        const npc = state.systems.npc.npcs.find(n => n.id === npcId);
-        if (!npc) return;
-
-        state.currentNPC = npc;
-        state.ui.toggleOverlay(document.getElementById('npc-trade-overlay'), true);
-
-        // Update Header
-        const elPortrait = document.getElementById('npc-trade-portrait');
-        const elName = document.getElementById('npc-trade-name');
-        if (elPortrait) elPortrait.src = npc.portrait;
-        if (elName) elName.textContent = `${npc.title} ${npc.name}`;
-
-        this.renderNPCTrade();
-    }
-
-    renderNPCTrade() {
-        const npc = state.currentNPC;
-        if (!npc) return;
-
-        const elStock = document.getElementById('npc-trade-stock');
-        const elPlayerInv = document.getElementById('player-trade-inventory');
-        const elLingshi = document.getElementById('player-trade-lingshi');
-
-        if (elLingshi) elLingshi.innerHTML = state.player.getFormattedLingShi();
-
-        // Render NPC Stock
-        if (elStock) {
-            elStock.innerHTML = npc.inventory.length === 0 ?
-                '<div class="text-center py-10 text-gray-600 italic text-[10px]">Đạo hữu này không có vật phẩm gì để bán...</div>' :
-                npc.inventory.map(item => {
-                    const data = getItemById(item.id);
-                    // Adjust price based on relationship and personality
-                    let price = item.price;
-                    if (npc.relationship > 50) price *= 0.8; // 20% discount for friends
-                    if (npc.personalityIds.includes('tham_lam')) price *= 1.5; // 50% extra for greedy NPCs
-
-                    return `
-                        <div class="p-3 bg-white/5 border border-white/5 rounded-xl flex items-center space-x-3 hover:bg-white/10 transition-all">
-                            <div class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center">
-                                <i class="ph-package text-xl text-qi-blue"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="text-xs font-bold text-white">${data?.name || item.id}</div>
-                                <div class="text-[9px] text-gray-500">Số lượng: ${item.quantity}</div>
-                            </div>
-                            <button class="px-4 py-2 bg-qi-blue/20 hover:bg-qi-blue/30 border border-qi-blue/30 rounded-lg text-[10px] font-bold text-qi-blue" 
-                                onclick="window.game.buyNPCItem('${item.id}', ${price})">
-                                ${price} Linh Thạch
-                            </button>
-                        </div>
-                    `;
-                }).join('');
-        }
-
-        // Render Player Inventory (Simple version: only tradable things)
-        if (elPlayerInv) {
-            const tradableItems = state.player.inventory.items.filter(i => !i.id.includes('ling_thach'));
-            elPlayerInv.innerHTML = tradableItems.length === 0 ?
-                '<div class="text-center py-10 text-gray-600 italic text-[10px]">Ngươi không có vật phẩm gì để bán...</div>' :
-                tradableItems.map(item => {
-                    const price = 50; // Simple flat sell price to NPC for now
-                    return `
-                        <div class="p-3 bg-white/5 border border-white/5 rounded-xl flex items-center space-x-3 hover:bg-white/10 transition-all">
-                            <div class="w-10 h-10 rounded-lg bg-black border border-white/10 flex items-center justify-center">
-                                <i class="ph-package text-xl text-qi-jade"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="text-xs font-bold text-white">${item.name || item.id}</div>
-                                <div class="text-[9px] text-gray-500">Số lượng: ${item.quantity}</div>
-                            </div>
-                            <button class="px-4 py-2 bg-qi-jade/20 hover:bg-qi-jade/30 border border-qi-jade/30 rounded-lg text-[10px] font-bold text-qi-jade" 
-                                onclick="window.game.sellNPCItem('${item.id}', ${price})">
-                                Bán: ${price} LT
-                            </button>
-                        </div>
-                    `;
-                }).join('');
-        }
-    }
-
-    buyNPCItem(itemId, price) {
-        const npc = state.currentNPC;
-        if (!npc || !state.player.spendLingShi(price)) {
-            state.ui.toast("Không đủ Linh Thạch!", "error");
-            return;
-        }
-
-        const stockItem = npc.inventory.find(i => i.id === itemId);
-        if (stockItem && stockItem.quantity > 0) {
-            stockItem.quantity--;
-            if (stockItem.quantity <= 0) {
-                npc.inventory = npc.inventory.filter(i => i.id !== itemId);
-            }
-            state.player.inventory.addItem(itemId, 1);
-            state.ui.toast(`Giao dịch thành công! Nhận được ${itemId}.`, "success");
-            this.renderNPCTrade();
+    resolveInitialCombatPhase(type) {
+        if (!state.currentCombat) return;
+        if (type === 'attack') {
+            if (state.currentCombat.resolveInitialPhase) state.currentCombat.resolveInitialPhase('attack');
             this.refreshUI();
-        }
-    }
-
-    sellNPCItem(itemId, price) {
-        if (state.player.inventory.removeItem(itemId, 1)) {
-            state.player.addLingShi(price);
-            state.ui.toast(`Bán thành công! Nhận được ${price} Linh Thạch.`, "success");
-            this.renderNPCTrade();
-            this.refreshUI();
-        }
-    }
-
-    socialAction(npcId, type) {
-        const npc = state.systems.npc.npcs.find(n => n.id === npcId);
-        if (!npc) return;
-
-        if (type === 'dao_lu') {
-            if (state.systems.social.proposeDaoLu(npc)) {
-                if (window.npcScreen) window.npcScreen.render();
-            }
-        } else if (type === 'su_do') {
-            if (state.systems.social.requestMentorship(npc)) {
-                if (window.npcScreen) window.npcScreen.render();
-            }
-        } else if (type === 'double_cultivate') {
-            state.systems.social.performDoubleCultivation();
-            if (window.npcScreen) window.npcScreen.render();
-        }
-    }
-
-    openNPC() {
-        state.ui.toast('Hệ thống NPC đang được bảo trì...', 'info');
-    }
-
-
-
-
-
-
-
-
-
-
-
-    forge(recipeId) {
-        if (state.systems.smithing) {
-            const res = state.systems.smithing.forge(recipeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    craftPuppet(recipeId) {
-        if (state.systems.puppet) {
-            const res = state.systems.puppet.craft(recipeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    drawTalisman(recipeId) {
-        if (state.systems.talisman) {
-            const res = state.systems.talisman.draw(recipeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    activateFormation(diagramId) {
-        if (state.systems.formation) {
-            const res = state.systems.formation.activateFormation(diagramId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    deactivateFormation(diagramId) {
-        if (state.systems.formation) {
-            const res = state.systems.formation.deactivateFormation(diagramId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    hatchBeast(eggId) {
-        if (state.systems.beast) {
-            const res = state.systems.beast.hatch(eggId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    feedBeast(uniqueId, foodId) {
-        if (state.systems.beast) {
-            const res = state.systems.beast.feed(uniqueId, foodId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    guildCertify(level) {
-        if (state.systems.guild) {
-            const res = state.systems.guild.certify(level);
-            if (res && res.success !== undefined) {
-                state.ui.toast(res.msg, res.success ? 'success' : 'error');
+        } else if (type === 'evade') {
+            const success = state.currentCombat.resolveInitialPhase?.('evade');
+            if (success) {
+                state.ui.toast("Ngươi đã né tránh thành công!", "success");
+                state.currentCombat = null;
+                state.ui.switchScreen('screen-adventure', null);
             }
             this.refreshUI();
         }
     }
 
-    guildMission(missionId) {
-        if (state.systems.guild) {
-            const res = state.systems.guild.completeMission(missionId);
-            if (res) this.refreshUI();
+    handleCombatEnd(result) {
+        if (result === 'win') {
+            const combat = state.currentCombat;
+            if (combat?.enemy) {
+                combat.enemy.inventory.forEach(item => {
+                    state.player.inventory.addItem(item.id, item.quantity);
+                    state.ui.toast(`Thu được ${getItemById(item.id)?.name} x${item.quantity}`, 'success');
+                });
+                const tuvi = combat.enemy.realmId * 50;
+                state.player.addTuVi(tuvi);
+                state.ui.toast(`Chiến thắng! Nhận được ${tuvi} Tu Vi.`, 'success');
+            }
+        } else if (result === 'lose') {
+            this.handleDeath();
         }
-    }
-
-    guildRent(roomId) {
-        if (state.systems.guild) {
-            const res = state.systems.guild.rentRoom(roomId);
-            if (res) this.refreshUI();
-        }
-    }
-
-    joinSect(sectId) {
-        const sect = getSectById(sectId);
-        if (!sect) return;
-
-        if (state.player.realmId < sect.minRealm) {
-            state.ui.toast(`Cảnh giới chưa đủ để bái nhập ${sect.name}!`, "error");
-            return;
-        }
-
-        state.player.sectId = sectId;
-        state.ui.toast(`Chúc mừng! Ngươi đã trở thành đệ tử của ${sect.name}.`, "success");
+        state.currentCombat = null;
+        state.ui.switchScreen('screen-adventure', null);
         this.refreshUI();
     }
 
-    doMission(missionId) {
-        if (!state.player.sectId) return;
-        const sect = getSectById(state.player.sectId);
-        if (!sect) return;
-        const mission = sect.missions.find(m => m.id === missionId);
-        if (!mission) return;
+    startAmbush() {
+        if (!this.pendingEncounter) return;
+        state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
+        const successChance = 0.6 + ((state.player.advancedStats.perception || 5) / 100);
+        if (Math.random() < successChance) {
+            this.startBattle(this.pendingEncounter.enemy, 'player');
+        } else {
+            state.ui.toast("Tập kích thất bại! Ngươi đã bị đối phương phát hiện.", "warning");
+            this.startBattle(this.pendingEncounter.enemy);
+        }
+        this.pendingEncounter = null;
+    }
 
-        // Simple mission logic for now
-        state.player.sectContribution += 50;
-        state.ui.toast(`Hoàn thành ủy thác: ${mission.name}. Nhận 50 điểm cống hiến.`, "success");
+    escapeAmbush() {
+        state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
+        state.ui.toast("Ngươi lặng lẽ lách mình qua kẻ địch, tránh được một cuộc chiến.", "info");
+        this.pendingEncounter = null;
         this.refreshUI();
     }
 
-    showFieldMenu(index) {
-        const options = [
-            { label: 'Nâng Cấp Ô Đất', value: 'upgrade', icon: 'ph-arrow-up' },
-            { label: 'Đổi Thuộc Tính', value: 'attribute', icon: 'ph-swatches' },
-            { label: 'Phá Bỏ Cây', value: 'clear', icon: 'ph-trash' }
-        ];
-
-        state.ui.promptOptions(`Quản Lý Ô Đất #${index + 1}`, options)
-            .then(action => {
-                if (action === 'upgrade') {
-                    const res = state.systems.garden.upgradeField(index);
-                    state.ui.toast(res.msg, res.success ? 'success' : 'error');
-                    this.refreshUI();
-                } else if (action === 'attribute') {
-                    const attrOptions = Object.entries(FIELD_ATTRIBUTES).map(([id, data]) => ({
-                        label: `${data.icon} ${data.name}`,
-                        value: id
-                    }));
-                    state.ui.promptOptions('Chọn Thuộc Tính (Phí: 500 LT)', attrOptions)
-                        .then(attrId => {
-                            if (attrId) {
-                                const res = state.systems.garden.setAttribute(index, attrId);
-                                state.ui.toast(res.msg, res.success ? 'success' : 'error');
-                                this.refreshUI();
-                            }
-                        });
-                } else if (action === 'clear') {
-                    state.ui.confirm('Ngươi có chắc muốn nhổ bỏ linh thảo này?', 'Xác Nhận')
-                        .then(confirmed => {
-                            if (confirmed) {
-                                state.systems.garden.resetPlot(index);
-                                state.ui.toast('Đã dọn dẹp ô đất.', 'info');
-                                this.refreshUI();
-                            }
-                        });
-                }
-            });
-    }
-
-    refineCorpse(typeId) {
-        if (state.systems.corpse) {
-            const res = state.systems.corpse.refine(typeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
+    startChase() {
+        if (state.currentCombat) {
+            state.ui.toggleOverlay(document.getElementById('chase-overlay'), false);
+            state.currentCombat.chaseEnemy?.();
         }
     }
 
-    // --- Creation Methods ---
-    selectCreationRoot(id) {
-        if (state.systems.creation) {
-            state.systems.creation.selectedRoot = id;
-            state.systems.creation.calculatePoints();
-            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+    giveupChase() {
+        if (state.currentCombat) {
+            state.ui.toggleOverlay(document.getElementById('chase-overlay'), false);
+            state.ui.toast("Ngươi quyết định không đuổi theo, kẻ địch đã trốn thoát thành công.", "info");
+            state.currentCombat.onEnd?.('escape');
         }
     }
 
-    selectCreationPhysique(id) {
-        if (state.systems.creation) {
-            state.systems.creation.selectedPhysique = id;
-            state.systems.creation.calculatePoints();
-            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
-        }
-    }
-
-    selectCreationOrigin(id) {
-        if (state.systems.creation) {
-            state.systems.creation.selectedOrigin = id;
-            // Sync starting resources from origin
-            const origin = CREATION_ORIGINS[id];
-            if (origin) {
-                state.systems.creation.startingLingShi = origin.resources.lingShi;
-            }
-            state.systems.creation.calculatePoints();
-            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
-        }
-    }
-
-    toggleCreationTrait(id) {
-        if (state.systems.creation) {
-            state.systems.creation.toggleTrait(id);
-            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
-        }
-    }
-
-    selectCreationGender(gender) {
-        if (state.systems.creation) {
-            state.systems.creation.playerGender = gender;
-            state.systems.creation.playerAvatar = (gender === 'Nữ' ? 'player_female' : 'player_male');
-            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
-        }
-    }
-
-    selectCreationAvatar(avatarKey) {
-        if (state.systems.creation) {
-            state.systems.creation.playerAvatar = avatarKey;
-            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
-        }
-    }
-
-    selectCreationRace(raceId) {
-        if (state.systems.creation) {
-            state.systems.creation.selectedRace = raceId;
-            state.systems.creation.calculatePoints();
-            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
-        }
-    }
-
-    selectCreationMode(mode) {
-        if (state.systems.creation) {
-            state.systems.creation.mode = mode === 'custom' ? 'custom' : 'custom';
-            state.systems.creation.calculatePoints();
-            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
-        }
-    }
-
-    adjustStartingLingShi(amount) {
-        if (state.systems.creation) {
-            state.systems.creation.startingLingShi += amount;
-            // Limit minimum to -10,000 (huge debt) and maximum to 1,000,000
-            state.systems.creation.startingLingShi = Math.max(-10000, Math.min(1000000, state.systems.creation.startingLingShi));
-            state.systems.creation.calculatePoints();
-            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
-        }
-    }
-
-    startCreationGame() {
-        if (state.systems.creation) {
-            const nameInput = document.getElementById('creation-name-input');
-            if (nameInput) state.systems.creation.playerName = nameInput.value || "Phàm Nhân";
-
-            const newPlayer = state.systems.creation.buildPlayer();
-            if (newPlayer) {
-                this.loadGame(newPlayer.save());
-                state.ui.toast("Bắt đầu hành trình tu tiên!", "success");
-            } else {
-                state.ui.toast("Không đủ điểm Thiên Duyên!", "error");
-            }
-        }
-    }
-
-
-    openCrafting(type) {
-        if (this.screens.systems) {
-            this.screens.systems.openCrafting(type);
-        }
-    }
-
-    openCraftingHub() {
-        if (this.screens.systems) {
-            this.screens.systems.openCraftingHub();
-        }
-    }
-
-    cultivateTechnique(id, isSecret) {
-        const result = state.systems.technique.cultivate(id, isSecret);
-        if (result.success) {
-            state.ui.toast(result.msg, 'success');
-            this.screens.systems.renderTechniqueDetail(id, isSecret);
-            state.player.calculateStats();
-            state.ui.updateHUD();
-        } else {
-            state.ui.toast(result.msg, 'error');
-        }
-    }
-
-    breakthroughTechnique(id, isSecret) {
-        let success = false;
-        let msg = "";
-
-        if (isSecret) {
-            const res = state.player.breakthroughSecretTechnique(id);
-            success = res.success;
-            msg = res.msg;
-        } else {
-            // Main technique breakthrough (if implemented)
-            success = false;
-            msg = "Công pháp này hiện chưa hỗ trợ đột phá tầng.";
-        }
-
-        if (success) {
-            state.ui.toast(msg, 'success');
-            this.screens.systems.renderTechniqueDetail(id, isSecret);
-            state.player.calculateStats();
-            state.ui.updateHUD();
-        } else {
-            state.ui.toast(msg || "Không thể đột phá!", 'warning');
-        }
-    }
-
-    /**
-     * Khởi tạo trận chiến đặc biệt (Thiên Kiếp, Sự kiện cốt truyện)
-     */
     startSpecialCombat(type, intensity) {
         if (type === 'heavenly_lightning') {
             const enemy = {
                 id: 'heavenly_lightning',
                 name: 'Thiên Kiếp Lôi Phạt',
-                portrait: 'player_male', // Placeholder
                 realmId: state.player.realmId + 2,
                 hp: 5000 + (intensity * 2),
                 maxHp: 5000 + (intensity * 2),
                 atk: 100 + (intensity / 10),
                 def: 50,
                 spd: 150,
-                skills: [
-                    { name: 'Cửu Thiên Thần Lôi', damage: 2.0, type: 'thunder' }
-                ]
+                skills: [{ name: 'Cửu Thiên Thần Lôi', damage: 2.0, type: 'thunder' }]
             };
-            this.screens.battle.startCombat(enemy);
+            this.startBattle(enemy);
         }
     }
 
+    // --- NPC Actions ---
+    openNPC(npcId) {
+        const npc = state.systems.npc?.getNPC(npcId);
+        if (npc) this.openNPCDialogue(npc);
+    }
+
+    openNPCDialogue(npc) {
+        if (this.screens.systems) {
+            this.screens.systems.renderNPCDialogue(npc);
+            state.ui.switchScreen('systems', null);
+        }
+    }
+
+    openNPCGift(npcId) {
+        state.systems.social?.openGiftMenu(npcId);
+    }
+
+    openNPCTrade(npcId) {
+        if (state.systems.shop) {
+            state.systems.shop.openNPCTrade(npcId);
+            state.currentNPC = state.systems.npc?.getNPC(npcId);
+            state.ui.toggleOverlay(document.getElementById('npc-trade-overlay'), true);
+            this.renderNPCTrade();
+        }
+    }
+
+    renderNPCTrade() {
+        if (this.screens.systems) this.screens.systems.renderNPCTrade();
+    }
+
+    buyNPCItem(itemId) {
+        if (state.systems.shop) {
+            const res = state.systems.shop.buyNPCItem(itemId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.renderNPCTrade();
+            this.refreshUI();
+        }
+    }
+
+    sellNPCItem(itemId) {
+        if (state.systems.shop) {
+            const res = state.systems.shop.sellNPCItem(itemId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.renderNPCTrade();
+            this.refreshUI();
+        }
+    }
+
+    socialAction(npcId, actionType) {
+        if (state.systems.social) {
+            const res = state.systems.social.performAction(npcId, actionType);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (this.screens.systems && state.activeSystemTab === 'npc') {
+                const npc = state.systems.npc.getNPC(npcId);
+                if (npc) this.openNPCDialogue(npc);
+            }
+            this.refreshUI();
+        }
+    }
+
+    // --- Utility ---
     emergencyUIReset() {
         console.warn('--- EMERGENCY UI RESET TRIGGERED ---');
-        if (state.ui) state.ui.logActiveOverlays();
-        state.ui.showLoading(false);
-
-        // Hide all major overlays
-        const overlays = [
-            'shop-overlay', 'guild-overlay', 'mountain-overlay',
-            'tower-overlay', 'sect-overlay', 'modal-overlay',
-            'battle-overlay', 'spirit-stone-overlay', 'item-detail',
-            'chase-overlay', 'guide-overlay'
-        ];
-
+        state.ui?.logActiveOverlays();
+        state.ui?.showLoading(false);
+        const overlays = ['shop-overlay', 'guild-overlay', 'mountain-overlay', 'tower-overlay', 'sects-overlay', 'modal-overlay', 'battle-overlay', 'spirit-stone-overlay', 'item-detail', 'chase-overlay', 'guide-overlay'];
         overlays.forEach(id => {
             const el = document.getElementById(id);
             if (el) state.ui.toggleOverlay(el, false);
         });
-
-        // Force clear body lock
         document.body.classList.remove('overflow-hidden');
-        state.ui.toast('Đã hoàn tác giao diện khẩn cấp!', 'success');
+        state.ui?.toast('Đã hoàn tác giao diện khẩn cấp!', 'success');
     }
 
-    // --- Mining Actions ---
-    openMining() {
-        if (this.screens.mining) this.screens.mining.open();
+    async showStartScreen() {
+        state.ui.switchScreen('screen-start');
+        await this.screens.start.render();
+        ['header', '#time-hud', 'nav'].forEach(s => document.querySelector(s)?.classList.add('hidden'));
     }
 
-    mineManual(nodeId) {
-        if (state.systems.mining) {
-            const res = state.systems.mining.mineManual(nodeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
+    showCreationScreen() {
+        state.ui.switchScreen('screen-creation');
+        ['header', '#time-hud', 'nav'].forEach(s => document.querySelector(s)?.classList.add('hidden'));
+        if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
     }
 
-    occupyNode(nodeId) {
-        if (state.systems.mining) {
-            const res = state.systems.mining.occupyNode(nodeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    claimMiningResources(nodeId) {
-        if (state.systems.mining) {
-            const res = state.systems.mining.claimResources(nodeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
-            this.refreshUI();
-        }
-    }
-
-    abandonNode(nodeId) {
-        state.ui.confirm('Ngươi có chắc muốn từ bỏ linh mạch này? Tất cả sản lượng chưa thu thập sẽ biến mất!', 'Xác Nhận')
-            .then(confirmed => {
-                if (confirmed && state.systems.mining) {
-                    const res = state.systems.mining.abandonNode(nodeId);
-                    state.ui.toast(res.msg, res.success ? 'info' : 'error');
-                    this.refreshUI();
-                }
-            });
-    }
-
-    // --- Combat Spirit Stone Action ---
-    playerCrushStone() {
-        if (state.currentCombat && state.player) {
-            // Find first available spirit stone to crush for mana
-            const stones = state.player.inventory.items.filter(i => {
-                const data = getItemById(i.id);
-                return data && data.type === 'spirit_stone';
-            });
-            
-            if (stones.length === 0) {
-                state.ui.toast('Ngươi không có Linh Thạch để bóp nát!', 'error');
-                return;
-            }
-
-            // Open a small selection or just crush the lowest grade one
-            const stoneToCrush = stones[0]; // For now just take the first one
-            const res = state.player.crushStone(stoneToCrush.id, 1);
-            if (res.success) {
-                state.ui.toast(res.msg, 'success');
-                if (state.currentCombat.engine) {
-                    state.currentCombat.engine.doAction('spirit_stone');
-                }
+    startCreationGame() {
+        if (state.systems.creation) {
+            const nameInput = document.getElementById('creation-name-input');
+            state.systems.creation.playerName = nameInput?.value || "Phàm Nhân";
+            const newPlayer = state.systems.creation.buildPlayer();
+            if (newPlayer) {
+                this.loadGame(newPlayer.save());
+                state.ui.toast("Bắt đầu hành trình tu tiên!", "success");
             } else {
-                state.ui.toast(res.msg, 'error');
+                state.ui.toast("Không đủ điểm Thiên Duyên!", "error");
             }
         }
     }
