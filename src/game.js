@@ -23,6 +23,9 @@ import { FateScreen } from './ui/screens/FateScreen.js';
 import { StartScreen } from './ui/screens/StartScreen.js';
 import { SaveScreen } from './ui/screens/SaveScreen.js';
 import { MiningScreen } from './ui/screens/MiningScreen.js';
+import { DiHoaBangScreen } from './ui/screens/DiHoaBangScreen.js';
+import { DiLoiBangScreen } from './ui/screens/DiLoiBangScreen.js';
+import { LinhTheLucScreen } from './ui/screens/LinhTheLucScreen.js';
 import { logger } from './utils/logger.js';
 import { audioManager } from './utils/audio-manager.js';
 
@@ -74,6 +77,9 @@ export class Game {
         this.screens.start = new StartScreen();
         this.screens.save = new SaveScreen();
         this.screens.mining = new MiningScreen();
+        this.screens.diHoaBang = new DiHoaBangScreen();
+        this.screens.diLoiBang = new DiLoiBangScreen();
+        this.screens.linhTheLuc = new LinhTheLucScreen();
 
         state.systems.creation = new CreationSystem();
 

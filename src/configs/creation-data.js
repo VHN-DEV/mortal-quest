@@ -28,6 +28,19 @@ export const CREATION_PHYSIQUES = {
     'thai_hu_hon_the': { id: 'thai_hu_hon_the', name: 'Thái Hư Hồn Thể', cost: 70, desc: 'Linh hồn cường đại, thần thức vô biên.', bonus: { soulExpSpeed: 2.0, critRate: 0.1 } },
     'loi_linh_the': { id: 'loi_linh_the', name: 'Lôi Linh Thể', cost: 50, desc: 'Sát thương lôi cực mạnh.', bonus: { thunderDmg: 2.0, spd: 20 } },
     'kim_cuong_bao_the': { id: 'kim_cuong_bao_the', name: 'Kim Cương Bảo Thể', cost: 40, desc: 'Phòng ngự cực mạnh.', bonus: { def: 100, maxHp: 200 } },
+    'hon_don_the': { id: 'hon_don_the', name: 'Hỗn Độn Thể', cost: 500, desc: 'Thể chất mạnh nhất, dung hợp vạn pháp.', bonus: { tvps: 15.0, atk: 1000 } },
+    'tien_thien_thanh_the_dao_thai': { id: 'tien_thien_thanh_the_dao_thai', name: 'Thánh Thể Đạo Thai', cost: 400, desc: 'Thiên sinh cận Đạo, tu luyện cực tốc.', bonus: { tvps: 12.0, qiAbsorb: 8.0 } },
+    'vinh_hang_tien_the': { id: 'vinh_hang_tien_the', name: 'Vĩnh Hằng Tiên Thể', cost: 350, desc: 'Bất tử bất diệt, thọ nguyên vô hạn.', bonus: { maxAge: 10000, maxHp: 20000 } },
+    'hong_mong_dao_the': { id: 'hong_mong_dao_the', name: 'Hồng Mông Đạo Thể', cost: 300, desc: 'Khí Hồng Mông hộ thể, vạn tà bất xâm.', bonus: { allRes: 0.5, luck: 100 } },
+    'than_vuong_the': { id: 'than_vuong_the', name: 'Thần Vương Thể', cost: 200, desc: 'Vương giả thiên sinh, trấn áp vạn vạn vật.', bonus: { atk: 500, spd: 100 } },
+    'thuong_thien_phach_the': { id: 'thuong_thien_phach_the', name: 'Thương Thiên Phách Thể', cost: 200, desc: 'Bá đạo vô song, chiến ý ngợp trời.', bonus: { atk: 800, critDmg: 1.5 } },
+    'luan_hoi_the': { id: 'luan_hoi_the', name: 'Luân Hồi Thể', cost: 250, desc: 'Chấp chưởng sinh tử, luân hồi bất diệt.', bonus: { soulExpSpeed: 4.0, karma: 500 } },
+    'van_menh_hu_vo': { id: 'van_menh_hu_vo', name: 'Vận Mệnh Hư Vô Giả', cost: 300, desc: 'Biến số thiên địa, nhân quả bất dính.', bonus: { luck: 500, spd: 200 } },
+    'thon_thien_the': { id: 'thon_thien_the', name: 'Thôn Thiên Thể', cost: 180, desc: 'Thôn phệ vạn vật để cường hóa bản thân.', bonus: { qiAbsorb: 15.0, tvps: 5.0 } },
+    'tu_la_huyet_the': { id: 'tu_la_huyet_the', name: 'Tu La Huyết Thể', cost: 180, desc: 'Sát lục thành đạo, chiến lực cực cao.', bonus: { atk: 1000, murderQi: 500 } },
+    'thai_am_tien_the': { id: 'thai_am_tien_the', name: 'Thái Âm Tiên Thể', cost: 150, desc: 'Cực âm chi chủ, đông cứng vạn pháp.', bonus: { waterDmg: 3.0, spd: 150 } },
+    'hu_khong_the': { id: 'hu_khong_the', name: 'Hư Không Thể', cost: 120, desc: 'Hành giả không gian, vạn pháp bất khả chạm.', bonus: { spd: 300, avoidRate: 0.3 } },
+    'thien_loi_the': { id: 'thien_loi_the', name: 'Thiên Lôi Chi Thể', cost: 100, desc: 'Lôi phạt hóa thân, điều khiển thiên kiếp.', bonus: { thunderDmg: 2.5, tvps: 3.0 } },
     'binh_thuong': { id: 'binh_thuong', name: 'Phàm Thể', cost: 0, desc: 'Cơ thể bình thường của con người.', bonus: {} }
 };
 
@@ -35,7 +48,7 @@ export const CREATION_ORIGINS = {
     'tan_tu': { id: 'tan_tu', name: 'Tán Tu', cost: 0, desc: 'Tự do tự tại, không có tài nguyên khởi đầu.', resources: { lingShi: 100, items: [] }, monthlyResources: { lingShi: 0 } },
     'vo_gia_cu': { id: 'vo_gia_cu', name: 'Vô Gia Cư', cost: -20, desc: 'Không nơi nương tựa, bắt đầu với hai bàn tay trắng.', resources: { lingShi: 0, items: [] }, monthlyResources: { lingShi: 0 } },
     'no_nan': { id: 'no_nan', name: 'Nợ Nần Chồng Chất', cost: -50, desc: 'Gánh trên vai món nợ lớn của gia tộc.', resources: { lingShi: -500, items: [] }, monthlyResources: { lingShi: 0 } },
-    'gia_toc': { id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 40, desc: 'Sinh ra trong gia tộc, có sẵn linh thạch và công pháp.', resources: { lingShi: 1000, items: ['truong_sinh_quyet_book'] }, monthlyResources: { lingShi: 100 } },
+    'gia_toc': { id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 40, desc: 'Sinh ra trong gia tộc, có sẵn linh thạch và công pháp.', resources: { lingShi: 1000, items: ['truong_sinh_quyet_book', 'di_hoa_bang', 'di_loi_bang', 'linh_the_luc'] }, monthlyResources: { lingShi: 100 } },
     'tong_mon': { id: 'tong_mon', name: 'Đệ Tử Tông Môn', cost: 60, desc: 'Được tông môn che chở, có pháp bảo phòng thân.', resources: { lingShi: 500, items: ['phi_kiem_go', 'ao_bo_so_cap'] }, monthlyResources: { lingShi: 50 } },
     'ma_dao': { id: 'ma_dao', name: 'Hậu Nhân Ma Đạo', cost: 30, desc: 'Công pháp bá đạo nhưng bị chính đạo truy quét.', resources: { lingShi: 500, items: ['huyet_don_thuat_book'], karma: -50 }, monthlyResources: { lingShi: 0 } },
     'dai_gia_toc': { id: 'dai_gia_toc', name: 'Đại Thế Gia', cost: 100, desc: 'Con cháu thế gia danh tiếng, tài lực dồi dào.', resources: { lingShi: 10000, items: ['ngung_khi_dan', 'ngung_khi_dan'] }, monthlyResources: { lingShi: 1000 } }

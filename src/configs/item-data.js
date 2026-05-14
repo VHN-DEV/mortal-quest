@@ -17,6 +17,38 @@ export const ITEMS = {
     'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh', price: 150, description: 'Linh chủng linh thảo băng hệ.' },
     'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Huyền', price: 300, description: 'Linh chủng linh thảo âm hệ.' },
 
+    // Vật phẩm đặc biệt
+    'di_hoa_bang': {
+        id: 'di_hoa_bang',
+        name: 'Dị Hỏa Bảng',
+        type: 'book',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 1700,
+        description: 'Bản danh sách ghi chép về 23 loại Dị Hỏa kỳ dị nhất trong thiên địa. Bấm vào để xem chi tiết.',
+        action: 'open_di_hoa_bang'
+    },
+    'di_loi_bang': {
+        id: 'di_loi_bang',
+        name: 'Dị Lôi Bảng',
+        type: 'book',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 1500,
+        description: 'Bản danh sách ghi chép về 10 loại Dị Lôi cường hãn nhất trong thiên địa. Bấm vào để xem chi tiết.',
+        action: 'open_di_loi_bang'
+    },
+    'linh_the_luc': {
+        id: 'linh_the_luc',
+        name: 'Chư Thiên Linh Thể Lục',
+        type: 'book',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 2000,
+        description: 'Bản danh sách ghi chép về 15 loại Linh Thể mạnh mẽ nhất chư thiên. Bấm vào để xem chi tiết.',
+        action: 'open_linh_the_luc'
+    },
+
     // Tiêu hao
     'tich_coc_dan': {
         id: 'tich_coc_dan',

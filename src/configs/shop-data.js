@@ -64,6 +64,9 @@ export const SHOPS = {
                 { id: 'luyen_khi_dai', stock: 1, minVip: 1 }
             ],
             'bi_tich': [
+                { id: 'di_hoa_bang', stock: 1 },
+                { id: 'di_loi_bang', stock: 1 },
+                { id: 'linh_the_luc', stock: 1 },
                 { id: 'bp_luyen_dan', stock: 1 },
                 { id: 'bp_luyen_khi', stock: 1 },
                 { id: 'bp_phu_luc', stock: 1 },

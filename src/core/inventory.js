@@ -70,6 +70,23 @@ export class Inventory {
                 const res = ss.absorb(itemId, quantity);
                 return res.success;
             }
+        } else if (itemData.action) {
+            if (itemData.action === 'open_di_hoa_bang') {
+                if (window.game && window.game.screens.diHoaBang) {
+                    window.game.screens.diHoaBang.open();
+                    return true;
+                }
+            } else if (itemData.action === 'open_di_loi_bang') {
+                if (window.game && window.game.screens.diLoiBang) {
+                    window.game.screens.diLoiBang.open();
+                    return true;
+                }
+            } else if (itemData.action === 'open_linh_the_luc') {
+                if (window.game && window.game.screens.linhTheLuc) {
+                    window.game.screens.linhTheLuc.open();
+                    return true;
+                }
+            }
         }
         return false;
     }

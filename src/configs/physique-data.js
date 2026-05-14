@@ -146,12 +146,122 @@ export const PHYSIQUES = {
     'hon_don_the': {
         id: 'hon_don_the',
         name: 'Hỗn Độn Thể',
-        category: 'DAO',
+        category: 'CAM_KY',
         grade: 'HONG_MONG',
         desc: 'Thể chất vạn cổ vô nhất, dung hợp mọi loại linh lực.',
-        bonus: { tvps: 10.0, atk: 500, def: 300, maxHp: 5000, qiAbsorb: 5.0 },
+        bonus: { tvps: 15.0, atk: 1000, def: 500, maxHp: 10000, qiAbsorb: 10.0, daoVun: 200 },
         phenomenon: 'Hỗn Độn Khai Thiên',
         needAwaken: true
+    },
+    'tien_thien_thanh_the_dao_thai': {
+        id: 'tien_thien_thanh_the_dao_thai',
+        name: 'Tiên Thiên Thánh Thể Đạo Thai',
+        category: 'DAO',
+        grade: 'TIEN',
+        desc: 'Sự kết hợp hoàn hảo giữa Thánh Thể và Đạo Thai. Thiên sinh cận Đạo.',
+        bonus: { tvps: 12.0, qiAbsorb: 8.0, soulExpSpeed: 5.0, daoVun: 150 },
+        phenomenon: 'Vạn Đạo Cộng Minh'
+    },
+    'vinh_hang_tien_the': {
+        id: 'vinh_hang_tien_the',
+        name: 'Vĩnh Hằng Tiên Thể',
+        category: 'DAO',
+        grade: 'TIEN',
+        desc: 'Thân thể bất hủ bất diệt, thọ nguyên vô biên.',
+        bonus: { maxAge: 10000, maxHp: 20000, def: 1000, lifeSteal: 0.2 },
+        phenomenon: 'Vĩnh Hằng Bất Diệt'
+    },
+    'hong_mong_dao_the': {
+        id: 'hong_mong_dao_the',
+        name: 'Hồng Mông Đạo Thể',
+        category: 'DAO',
+        grade: 'TIEN',
+        desc: 'Mang trong mình khí Hồng Mông khởi nguyên.',
+        bonus: { tvps: 10.0, qiAbsorb: 5.0, allRes: 0.5, luck: 100 },
+        phenomenon: 'Hồng Mông Sơ Khai'
+    },
+    'than_vuong_the': {
+        id: 'than_vuong_the',
+        name: 'Thần Vương Thể',
+        category: 'THANH',
+        grade: 'THANH',
+        desc: 'Vương giả thiên sinh, uy áp trấn vạn cổ.',
+        bonus: { atk: 500, def: 300, spd: 100, critRate: 0.3 },
+        phenomenon: 'Thần Vương Tịnh Thổ'
+    },
+    'thuong_thien_phach_the': {
+        id: 'thuong_thien_phach_the',
+        name: 'Thương Thiên Phách Thể',
+        category: 'THANH',
+        grade: 'THANH',
+        desc: 'Bá đạo vô song, càng đánh càng mạnh.',
+        bonus: { atk: 800, critDmg: 1.5, lifeSteal: 0.1 },
+        phenomenon: 'Bá Vương Chinh Phạt'
+    },
+    'luan_hoi_the': {
+        id: 'luan_hoi_the',
+        name: 'Luân Hồi Thể',
+        category: 'DAO',
+        grade: 'THANH',
+        desc: 'Chấp chưởng sinh tử, luân hồi bất diệt.',
+        bonus: { soulExpSpeed: 4.0, karma: 500, lifeSteal: 0.15 },
+        phenomenon: 'Lục Đạo Luân Hồi'
+    },
+    'van_menh_hu_vo': {
+        id: 'van_menh_hu_vo',
+        name: 'Vận Mệnh Hư Vô Giả',
+        category: 'CAM_KY',
+        grade: 'THANH',
+        desc: 'Nằm ngoài vận mệnh, thiên cơ bất khả tiết lộ.',
+        bonus: { luck: 500, karma: 1000, spd: 200 },
+        phenomenon: 'Vận Mệnh Hư Vô'
+    },
+    'thon_thien_the': {
+        id: 'thon_thien_the',
+        name: 'Thôn Thiên Thể',
+        category: 'MA',
+        grade: 'THANH',
+        desc: 'Thôn phệ vạn vật để cường hóa bản thân.',
+        bonus: { qiAbsorb: 15.0, tvps: 5.0, atk: 400 },
+        phenomenon: 'Thôn Phệ Thiên Địa'
+    },
+    'tu_la_huyet_the': {
+        id: 'tu_la_huyet_the',
+        name: 'Tu La Huyết Thể',
+        category: 'MA',
+        grade: 'CHIEN',
+        desc: 'Sát lục thành đạo, huyết khí ngợp trời.',
+        bonus: { atk: 1000, murderQi: 500, lifeSteal: 0.25 },
+        phenomenon: 'Tu La Huyết Hải'
+    },
+    'thai_am_tien_the': {
+        id: 'thai_am_tien_the',
+        name: 'Thái Âm Tiên Thể',
+        category: 'LINH',
+        grade: 'TIEN',
+        element: 'Thái Âm',
+        desc: 'Cực âm chi chủ, đông cứng vạn pháp.',
+        bonus: { waterDmg: 3.0, tvps: 6.0, spd: 150 },
+        phenomenon: 'Thái Âm Nguyệt Lạnh'
+    },
+    'hu_khong_the': {
+        id: 'hu_khong_the',
+        name: 'Hư Không Thể',
+        category: 'BAO',
+        grade: 'BAO',
+        desc: 'Hành giả không gian, vạn pháp bất khả chạm.',
+        bonus: { spd: 300, spdPercent: 0.5, avoidRate: 0.3 },
+        phenomenon: 'Hư Không Thúy Bộ'
+    },
+    'thien_loi_the': {
+        id: 'thien_loi_the',
+        name: 'Thiên Lôi Chi Thể',
+        category: 'LINH',
+        grade: 'BAO',
+        element: 'Lôi',
+        desc: 'Lôi phạt hóa thân, điều khiển thiên kiếp.',
+        bonus: { thunderDmg: 2.5, tvps: 3.0, atk: 200 },
+        phenomenon: 'Lôi Đình Vạn Quân'
     },
 
     // 7. Ma Thể

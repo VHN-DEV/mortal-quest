@@ -18,7 +18,14 @@ export class ShopSystem {
         if (!itemData) return { success: false, msg: 'Bảo vật không tồn tại!' };
 
         // Check VIP requirement
-        const section = SHOPS[this.currentShopId].sections[this.currentSection];
+        const shopData = SHOPS[this.currentShopId];
+        let section = shopData.sections[this.currentSection] || [];
+        
+        // Virtual Merge for Công Pháp and Bí Tịch (Matching UI logic)
+        if (this.currentSection === 'cong_phap' && shopData.sections.bi_tich) {
+            section = [...section, ...shopData.sections.bi_tich];
+        }
+
         const shopItem = section.find(i => i.id === itemId);
         if (!shopItem) return { success: false, msg: 'Bảo vật không có sẵn trong nơi này!' };
         

@@ -328,12 +328,11 @@ export class SystemsScreen {
             'dan_duoc': 'Đan Dược',
             'phap_bao': 'Pháp Bảo',
             'nguyen_lieu': 'Nguyên Liệu',
-            'cong_phap': 'Kinh Thư',
+            'cong_phap': 'Bí Tịch',
             'tran_phap': 'Trận Pháp',
             'phu_luc': 'Phù Lục',
             'luyen_khi': 'Luyện Khí',
-            'bi_tich': 'Bí Tịch',
-            'linh_dien': 'Linh Điện',
+            'linh_dien': 'Linh Điền',
             'ky_trung': 'Kỳ Trùng'
         };
 
@@ -391,7 +390,7 @@ export class SystemsScreen {
             subFilters = [
                 { id: 'all', name: 'Tất Cả' },
                 { id: 'cultivation', name: 'Công Pháp' },
-                { id: 'manual', name: 'Bí Tịch/Đan Phương' }
+                { id: 'manual', name: 'Bí Tịch' }
             ];
         }
 
@@ -419,7 +418,7 @@ export class SystemsScreen {
     renderShopBuy() {
         const shop = state.systems.shop;
         let inv = shop.getShopInventory();
-        
+
         // Virtual Merge for Công Pháp and Bí Tịch
         if (shop.currentSection === 'cong_phap') {
             const shopData = SHOPS[shop.currentShopId];
@@ -429,7 +428,7 @@ export class SystemsScreen {
         }
 
         this.elShopBuyView.innerHTML = '';
-        
+
         inv.forEach(item => {
             const itemData = getItemById(item.id);
             if (!itemData) return;
@@ -439,9 +438,10 @@ export class SystemsScreen {
                 if (shop.currentSection === 'phap_bao') {
                     if (itemData.type !== this.shopSubFilter) return;
                 } else if (shop.currentSection === 'cong_phap') {
-                    const isBook = itemData.type === 'book' || itemData.type === 'technique';
-                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || (itemData.type === 'consumable' && itemData.effect?.type === 'unlock_profession');
-                    
+                    const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc'));
+                    const isBook = (itemData.type === 'book' || itemData.type === 'technique') && !isManualAction;
+                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || (itemData.type === 'consumable' && itemData.effect?.type === 'unlock_profession') || isManualAction;
+
                     if (this.shopSubFilter === 'cultivation' && !isBook) return;
                     if (this.shopSubFilter === 'manual' && !isRecipe) return;
                 }
@@ -516,16 +516,17 @@ export class SystemsScreen {
 
             if (sectionType && typeMap[sectionType]) {
                 if (!typeMap[sectionType].includes(itemData.type)) return;
-                
+
                 // Specific filter for merged Công Pháp
                 if (sectionType === 'cong_phap') {
-                    const isBook = itemData.type === 'book' || itemData.type === 'technique';
-                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || (itemData.type === 'consumable' && itemData.effect?.type === 'unlock_profession');
-                    
+                    const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc'));
+                    const isBook = (itemData.type === 'book' || itemData.type === 'technique') && !isManualAction;
+                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || (itemData.type === 'consumable' && itemData.effect?.type === 'unlock_profession') || isManualAction;
+
                     if (subFilter === 'cultivation' && !isBook) return;
                     if (subFilter === 'manual' && isBook) return;
                     if (subFilter === 'manual' && !isRecipe && !isBook) return; // Fallback
-                    
+
                     // If no subfilter, only show books and recipes
                     if (subFilter === 'all' && !isBook && !isRecipe) return;
                 }

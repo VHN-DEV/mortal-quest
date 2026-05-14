@@ -48,8 +48,14 @@ export class InventoryScreen {
         if (this.btnUseItem) {
             this.btnUseItem.onclick = () => {
                 const qty = parseInt(this.elQtyInput.value) || 1;
+                const itemData = getItemById(state.selectedItemId);
+                const isManual = itemData && itemData.action && itemData.action.startsWith('open_');
+
                 if (state.selectedItemId && state.player.inventory.useItem(state.selectedItemId, qty)) {
-                    if (!state.player.inventory.items.find(i => i.id === state.selectedItemId)) {
+                    // Nếu là vật phẩm xem (manual), đóng popup chi tiết để hiện popup danh lục
+                    if (isManual) {
+                        state.ui.toggleOverlay(this.elItemDetail, false);
+                    } else if (!state.player.inventory.items.find(i => i.id === state.selectedItemId)) {
                         state.selectedItemId = null;
                         state.ui.toggleOverlay(this.elItemDetail, false);
                     }
@@ -336,13 +342,15 @@ export class InventoryScreen {
         }
 
         const isSpiritStone = itemData.type === 'spirit_stone';
-        this.btnUseItem.classList.toggle('hidden', !(['consumable', 'book', 'spirit_stone'].includes(itemData.type)));
+        const isManual = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc'));
+        
+        this.btnUseItem.classList.toggle('hidden', !(['consumable', 'book', 'spirit_stone'].includes(itemData.type)) || (fromShop && !isManual));
         if (this.btnCrushStone) this.btnCrushStone.classList.toggle('hidden', !isSpiritStone || fromShop || fromSell);
 
         if (isSpiritStone) {
             this.btnUseItem.textContent = 'LUYỆN HÓA';
         } else {
-            this.btnUseItem.textContent = (itemData.type === 'book') ? 'LĨNH NGỘ' : 'SỬ DỤNG';
+            this.btnUseItem.textContent = isManual ? 'XEM' : (itemData.type === 'book' ? 'LĨNH NGỘ' : 'SỬ DỤNG');
         }
         
         const mappedSlot = state.player.getEquipSlotForItemType
