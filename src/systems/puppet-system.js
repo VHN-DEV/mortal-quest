@@ -11,6 +11,10 @@ export class PuppetSystem {
         const recipe = PUPPET_RECIPES.find(r => r.id === recipeId);
         if (!recipe) return { success: false, msg: "Bản vẽ không tồn tại!" };
 
+        if (!this.player.knownPuppetRecipes.includes(recipeId)) {
+            return { success: false, msg: "Ngươi chưa có bản thiết kế của khôi lỗi này!" };
+        }
+
         if (this.player.puppetLevel < recipe.skillLevel) {
             return { success: false, msg: `Cần Khôi Lỗi Thuật cấp ${recipe.skillLevel}!` };
         }

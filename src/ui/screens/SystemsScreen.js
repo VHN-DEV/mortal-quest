@@ -960,7 +960,14 @@ export class SystemsScreen {
 
         if (view) {
             view.innerHTML = '';
-            PUPPET_RECIPES.forEach(recipe => {
+            const known = PUPPET_RECIPES.filter(r => state.player.knownPuppetRecipes.includes(r.id));
+            
+            if (known.length === 0) {
+                view.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa có bản thiết kế khôi lỗi nào...</div>';
+                return;
+            }
+
+            known.forEach(recipe => {
                 const el = document.createElement('div');
                 el.className = 'p-5 border border-white/5 rounded-3xl bg-white/[0.02] space-y-4 group hover:border-qi-blue/30 transition-all';
 
@@ -1030,7 +1037,14 @@ export class SystemsScreen {
 
         if (view) {
             view.innerHTML = '';
-            Object.values(TALISMAN_RECIPES).forEach(recipe => {
+            const known = Object.values(TALISMAN_RECIPES).filter(r => state.player.knownTalismanRecipes.includes(r.id));
+
+            if (known.length === 0) {
+                view.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ được phù văn nào...</div>';
+                return;
+            }
+
+            known.forEach(recipe => {
                 const el = document.createElement('div');
                 el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3';
 
@@ -1267,27 +1281,28 @@ export class SystemsScreen {
             });
         }
 
-        // Diagrams in Inventory
-        const diagrams = state.player.inventory.items.filter(i => getItemById(i.id).type === 'formation_diagram');
+        // Learned Diagrams
+        const knownFormations = state.player.knownFormations || [];
         const diagramHeader = document.createElement('h3');
         diagramHeader.className = 'text-[10px] text-gray-500 uppercase tracking-widest mt-6 mb-2';
-        diagramHeader.textContent = 'Trận Đồ Trong Túi';
+        diagramHeader.textContent = 'Trận Đồ Đã Lĩnh Ngộ';
         view.appendChild(diagramHeader);
-
-        if (diagrams.length === 0) {
+        
+        if (knownFormations.length === 0) {
             const empty = document.createElement('div');
             empty.className = 'text-center py-6 text-gray-700 italic text-xs';
             empty.textContent = 'Trống rỗng...';
             view.appendChild(empty);
         } else {
-            diagrams.forEach(d => {
-                const item = getItemById(d.id);
-                const isActive = state.player.activeFormations.some(af => af.id === d.id);
+            knownFormations.forEach(fid => {
+                const item = getItemById(fid);
+                if (!item) return;
+                const isActive = state.player.activeFormations.some(af => af.id === fid);
                 const el = document.createElement('div');
                 el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 flex justify-between items-center';
                 el.innerHTML = `
                     <div class="flex items-center space-x-3">
-                        <div class="text-2xl">📜</div>
+                        <div class="text-2xl">${item.icon || '📜'}</div>
                         <div>
                             <h4 class="text-sm font-bold text-white">${item.name}</h4>
                             <p class="text-[9px] text-gray-500">${item.description || ''}</p>
@@ -1295,7 +1310,7 @@ export class SystemsScreen {
                     </div>
                     ${isActive ?
                         '<span class="text-[9px] text-qi-purple font-bold">ĐÃ KÍCH HOẠT</span>' :
-                        `<button class="px-4 py-2 bg-qi-purple/10 text-qi-purple text-[10px] rounded-xl border border-qi-purple/20" onclick="window.game.activateFormation('${d.id}')">KÍCH HOẠT</button>`
+                        `<button class="px-4 py-2 bg-qi-purple/10 text-qi-purple text-[10px] rounded-xl border border-qi-purple/20" onclick="window.game.activateFormation('${fid}')">KÍCH HOẠT</button>`
                     }
                 `;
                 view.appendChild(el);
@@ -1343,13 +1358,20 @@ export class SystemsScreen {
             });
         }
 
-        // Available Refining Types
         const refiningHeader = document.createElement('h3');
         refiningHeader.className = 'text-[10px] text-gray-500 uppercase tracking-widest mt-6 mb-3 border-b border-white/5 pb-1';
         refiningHeader.textContent = 'Bản Vẽ Luyện Thi';
         view.appendChild(refiningHeader);
 
-        Object.values(CORPSE_TYPES).forEach(type => {
+        const known = Object.values(CORPSE_TYPES).filter(t => state.player.knownCorpseRecipes.includes(t.id));
+
+        if (known.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'text-center py-6 text-gray-700 italic text-xs';
+            empty.textContent = 'Ngươi chưa có bí phương luyện thi nào...';
+            view.appendChild(empty);
+        } else {
+            known.forEach(type => {
             const el = document.createElement('div');
             el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 space-y-3';
 
@@ -1381,7 +1403,8 @@ export class SystemsScreen {
                 </div>
             `;
             view.appendChild(el);
-        });
+            });
+        }
     }
 
     renderTechniques(tab = 'cultivation') {

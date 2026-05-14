@@ -49,6 +49,310 @@ export const ITEMS = {
         action: 'open_linh_the_luc'
     },
 
+    // --- PROFESSION MANUALS ---
+    'dan_dao_chan_giai': {
+        id: 'dan_dao_chan_giai',
+        name: 'Đan Đạo Chân Giải',
+        type: 'book',
+        icon: '📔',
+        quality: 'Hoàng',
+        price: 1000,
+        description: 'Sách nhập môn về Luyện Đan, giúp mở khóa nghề Luyện Dược Sư.',
+        effect: { type: 'unlock_profession', profession: 'alchemy' }
+    },
+    'luyen_khi_tong_cuong': {
+        id: 'luyen_khi_tong_cuong',
+        name: 'Luyện Khí Tổng Cương',
+        type: 'book',
+        icon: '📔',
+        quality: 'Hoàng',
+        price: 1200,
+        description: 'Nguyên lý cơ bản về rèn đúc pháp bảo, mở khóa nghề Luyện Khí Sư.',
+        effect: { type: 'unlock_profession', profession: 'smithing' }
+    },
+    'thai_thuong_phu_kinh': {
+        id: 'thai_thuong_phu_kinh',
+        name: 'Thái Thượng Phù Kinh',
+        type: 'book',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 800,
+        description: 'Ghi chép về cách dẫn linh hồn vào phù giấy, mở khóa nghề Phù Sư.',
+        effect: { type: 'unlock_profession', profession: 'talisman' }
+    },
+    'tran_dao_thien_thu': {
+        id: 'tran_dao_thien_thu',
+        name: 'Trận Đạo Thiên Thư',
+        type: 'book',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 2500,
+        description: 'Thiên thư ghi chép về các loại trận pháp, mở khóa nghề Trận Pháp Sư.',
+        effect: { type: 'unlock_profession', profession: 'formation' }
+    },
+    'co_quan_linh_ky': {
+        id: 'co_quan_linh_ky',
+        name: 'Cơ Quan Linh Kỹ',
+        type: 'book',
+        icon: '📔',
+        quality: 'Huyền',
+        price: 3000,
+        description: 'Bí tịch về cách chế tạo khôi lỗi, mở khóa nghề Khôi Lỗi Sư.',
+        effect: { type: 'unlock_profession', profession: 'puppet' }
+    },
+    'cuu_u_luyen_thi_thuat': {
+        id: 'cuu_u_luyen_thi_thuat',
+        name: 'Cửu U Luyện Thi Thuật',
+        type: 'book',
+        icon: '💀',
+        quality: 'Huyền',
+        price: 1500,
+        description: 'Tà thuật luyện chế xác chết, mở khóa nghề Luyện Thi Sư.',
+        effect: { type: 'unlock_profession', profession: 'corpse' }
+    },
+
+    // --- ALCHEMY RECIPE SCROLLS ---
+    'dp_ngung_khi_dan': {
+        id: 'dp_ngung_khi_dan',
+        name: 'Đan Phương: Ngưng Khí Đan',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 300,
+        description: 'Ghi chép cách luyện chế Ngưng Khí Đan.',
+        effect: { type: 'learn_recipe', value: 'ngung_khi_dan' }
+    },
+    'dp_than_tam_dan': {
+        id: 'dp_than_tam_dan',
+        name: 'Đan Phương: Thanh Tâm Đan',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 500,
+        description: 'Ghi chép cách luyện chế Thanh Tâm Đan.',
+        effect: { type: 'learn_recipe', value: 'than_tam_dan' }
+    },
+    'dp_truc_co_dan': {
+        id: 'dp_truc_co_dan',
+        name: 'Đan Phương: Trúc Cơ Đan',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 2000,
+        description: 'Ghi chép cách luyện chế Trúc Cơ Đan cực kỳ quan trọng.',
+        effect: { type: 'learn_recipe', value: 'truc_co_dan' }
+    },
+    'dp_bo_nguyen_dan': {
+        id: 'dp_bo_nguyen_dan',
+        name: 'Đan Phương: Bổ Nguyên Đan',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 600,
+        description: 'Ghi chép cách luyện chế Bổ Nguyên Đan.',
+        effect: { type: 'learn_recipe', value: 'bo_nguyen_dan' }
+    },
+    'dp_ngung_anh_dan': {
+        id: 'dp_ngung_anh_dan',
+        name: 'Đan Phương: Ngưng Anh Đan',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Địa',
+        price: 10000,
+        description: 'Đan phương quý hiếm dùng để đột phá Nguyên Anh.',
+        effect: { type: 'learn_recipe', value: 'ngung_anh_dan' }
+    },
+
+    // --- SMITHING BLUEPRINTS ---
+    'bv_thanh_hong_kiem': {
+        id: 'bv_thanh_hong_kiem',
+        name: 'Bản Vẽ: Thanh Hồng Kiếm',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 400,
+        description: 'Bản vẽ rèn đúc Thanh Hồng Kiếm.',
+        effect: { type: 'learn_smithing_recipe', value: 'thanh_hong_kiem' }
+    },
+    'bv_phi_kiem_tinh_ha': {
+        id: 'bv_phi_kiem_tinh_ha',
+        name: 'Bản Vẽ: Tinh Hà Phi Kiếm',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 1500,
+        description: 'Bản vẽ rèn đúc Tinh Hà Phi Kiếm.',
+        effect: { type: 'learn_smithing_recipe', value: 'phi_kiem_tinh_ha' }
+    },
+    'bv_long_lan_giap': {
+        id: 'bv_long_lan_giap',
+        name: 'Bản Vẽ: Long Lân Giáp',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 2500,
+        description: 'Bản vẽ rèn đúc Long Lân Giáp.',
+        effect: { type: 'learn_smithing_recipe', value: 'long_lan_giap' }
+    },
+    'bv_bat_quai_kinh': {
+        id: 'bv_bat_quai_kinh',
+        name: 'Bản Vẽ: Bát Quái Kính',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 800,
+        description: 'Bản vẽ rèn đúc Bát Quái Kính.',
+        effect: { type: 'learn_smithing_recipe', value: 'bat_quai_kinh' }
+    },
+
+    // --- TALISMAN PATTERNS ---
+    'pv_hoa_cau_phu': {
+        id: 'pv_hoa_cau_phu',
+        name: 'Phù Văn: Hỏa Cầu Phù',
+        type: 'talisman_recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 200,
+        description: 'Phù văn cơ bản của hỏa hệ.',
+        effect: { type: 'learn_talisman_recipe', value: 'hoa_cau_phu' }
+    },
+    'pv_kim_cuong_phu': {
+        id: 'pv_kim_cuong_phu',
+        name: 'Phù Văn: Kim Cương Phù',
+        type: 'talisman_recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 500,
+        description: 'Phù văn tăng phòng ngự.',
+        effect: { type: 'learn_talisman_recipe', value: 'kim_cuong_phu' }
+    },
+    'pv_than_hanh_phu': {
+        id: 'pv_than_hanh_phu',
+        name: 'Phù Văn: Thần Hành Phù',
+        type: 'talisman_recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 400,
+        description: 'Phù văn tăng tốc độ di chuyển.',
+        effect: { type: 'learn_talisman_recipe', value: 'than_hanh_phu' }
+    },
+    'pv_thun_di_phu': {
+        id: 'pv_thun_di_phu',
+        name: 'Phù Văn: Thuấn Di Phù',
+        type: 'talisman_recipe',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 1500,
+        description: 'Phù văn dịch chuyển tức thời.',
+        effect: { type: 'learn_talisman_recipe', value: 'thun_di_phu' }
+    },
+    'pv_thien_loi_phu': {
+        id: 'pv_thien_loi_phu',
+        name: 'Phù Văn: Thiên Lôi Phù',
+        type: 'talisman_recipe',
+        icon: '📜',
+        quality: 'Địa',
+        price: 5000,
+        description: 'Phù văn dẫn lôi đình chi lực.',
+        effect: { type: 'learn_talisman_recipe', value: 'thien_loi_phu' }
+    },
+
+    // --- FORMATION DIAGRAMS ---
+    'td_tu_linh_tran': {
+        id: 'td_tu_linh_tran',
+        name: 'Trận Đồ: Tụ Linh Trận',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 1000,
+        description: 'Học cách bố trí Tụ Linh Trận.',
+        effect: { type: 'learn_formation', value: 'tran_do_tu_linh' }
+    },
+    'td_ao_anh_tran': {
+        id: 'td_ao_anh_tran',
+        name: 'Trận Đồ: Ảo Ảnh Trận',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 1500,
+        description: 'Học cách bố trí Ảo Ảnh Trận.',
+        effect: { type: 'learn_formation', value: 'tran_do_ao_anh' }
+    },
+    'td_sat_kiem_tran': {
+        id: 'td_sat_kiem_tran',
+        name: 'Trận Đồ: Sát Kiếm Trận',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Học cách bố trí Sát Kiếm Trận.',
+        effect: { type: 'learn_formation', value: 'tran_do_sat_kiem' }
+    },
+    'td_ho_tong_dai_tran': {
+        id: 'td_ho_tong_dai_tran',
+        name: 'Trận Đồ: Hộ Tông Đại Trận',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Địa',
+        price: 20000,
+        description: 'Học cách bố trí Hộ Tông Đại Trận.',
+        effect: { type: 'learn_formation', value: 'ho_tong_dai_tran' }
+    },
+
+    // --- PUPPET BLUEPRINTS ---
+    'bv_thiet_giap_khoi_loi': {
+        id: 'bv_thiet_giap_khoi_loi',
+        name: 'Bản Vẽ: Thiết Giáp Khôi Lỗi',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 1000,
+        description: 'Hướng dẫn chế tạo Thiết Giáp Khôi Lỗi.',
+        effect: { type: 'learn_puppet_recipe', value: 'thiet_giap_khoi_loi' }
+    },
+    'bv_kiem_khoi': {
+        id: 'bv_kiem_khoi',
+        name: 'Bản Vẽ: Kiếm Khôi',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 3000,
+        description: 'Hướng dẫn chế tạo Kiếm Khôi.',
+        effect: { type: 'learn_puppet_recipe', value: 'kiem_khoi' }
+    },
+
+    // --- CORPSE REFINING RECIPES ---
+    'bp_thi_binh': {
+        id: 'bp_thi_binh',
+        name: 'Bí Phương: Luyện Chế Thi Binh',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Hoàng',
+        price: 500,
+        description: 'Ghi chép cách luyện chế Thi Binh cơ bản.',
+        effect: { type: 'learn_corpse_recipe', value: 'thi_binh' }
+    },
+    'bp_thi_tuong': {
+        id: 'bp_thi_tuong',
+        name: 'Bí Phương: Luyện Chế Thi Tướng',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 2000,
+        description: 'Ghi chép cách luyện chế Thi Tướng hung hãn.',
+        effect: { type: 'learn_corpse_recipe', value: 'thi_tuong' }
+    },
+    'bp_dong_giap_thi': {
+        id: 'bp_dong_giap_thi',
+        name: 'Bí Phương: Luyện Chế Đồng Giáp Thi',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Huyền',
+        price: 5000,
+        description: 'Ghi chép cách luyện chế Đồng Giáp Thi đao thương bất nhập.',
+        effect: { type: 'learn_corpse_recipe', value: 'dong_giap_thi' }
+    },
+
     // Tiêu hao
     'tich_coc_dan': {
         id: 'tich_coc_dan',

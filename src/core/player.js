@@ -186,6 +186,7 @@ export class Player {
         this.formationSlots = 1;
         this.formationLevel = 1;
         this.formationExp = 0;
+        this.knownFormations = [];
 
         // Beast & Insect System
         this.beasts = [];
@@ -199,6 +200,7 @@ export class Player {
         this.corpseLevel = 1;
         this.corpseExp = 0;
         this.refinedCorpses = [];
+        this.knownCorpseRecipes = [];
 
         // Unlock System
         this.unlockedProfessions = []; // Start with empty to follow the doc.
@@ -1768,6 +1770,7 @@ export class Player {
             formationExp: this.formationExp,
             activeFormations: [...this.activeFormations],
             formationSlots: this.formationSlots,
+            knownFormations: [...this.knownFormations],
             
             puppetLevel: this.puppetLevel,
             puppetExp: this.puppetExp,
@@ -1776,6 +1779,7 @@ export class Player {
             corpseLevel: this.corpseLevel,
             corpseExp: this.corpseExp,
             refinedCorpses: [...this.refinedCorpses],
+            knownCorpseRecipes: [...this.knownCorpseRecipes],
             
             beastLevel: this.beastLevel,
             beastExp: this.beastExp,
@@ -1920,6 +1924,7 @@ export class Player {
         this.formationExp = data.formationExp || 0;
         this.activeFormations = data.activeFormations || [];
         this.formationSlots = data.formationSlots || 1;
+        this.knownFormations = data.knownFormations || [];
         
         this.puppetLevel = data.puppetLevel || 1;
         this.puppetExp = data.puppetExp || 0;
@@ -1928,6 +1933,7 @@ export class Player {
         this.corpseLevel = data.corpseLevel || 1;
         this.corpseExp = data.corpseExp || 0;
         this.refinedCorpses = data.refinedCorpses || [];
+        this.knownCorpseRecipes = data.knownCorpseRecipes || [];
         
         this.beastLevel = data.beastLevel || 1;
         this.beastExp = data.beastExp || 0;

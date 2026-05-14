@@ -133,6 +133,22 @@ export class Inventory {
             if (!this.player.knownTalismanRecipes.includes(effect.value)) {
                 this.player.knownTalismanRecipes.push(effect.value);
             }
+        } else if (effect.type === 'learn_puppet_recipe') {
+            if (!this.player.knownPuppetRecipes.includes(effect.value)) {
+                this.player.knownPuppetRecipes.push(effect.value);
+            }
+        } else if (effect.type === 'learn_corpse_recipe') {
+            if (!this.player.knownCorpseRecipes.includes(effect.value)) {
+                this.player.knownCorpseRecipes.push(effect.value);
+            }
+        } else if (effect.type === 'learn_formation') {
+            if (!this.player.knownFormations.includes(effect.value)) {
+                this.player.knownFormations.push(effect.value);
+            }
+        } else if (effect.type === 'learn_multiple_recipes') {
+            if (Array.isArray(effect.value)) {
+                effect.value.forEach(subEffect => this.applyEffect(subEffect));
+            }
         } else if (effect.type === 'refine_flame') {
             if (!this.player.ownedFlames.includes(effect.value)) {
                 this.player.ownedFlames.push(effect.value);

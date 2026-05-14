@@ -56,8 +56,9 @@ export class FormationSystem {
             return { success: false, msg: 'Đã đạt giới hạn số lượng trận pháp kích hoạt!' };
         }
 
-        if (!this.player.inventory.hasItem(diagramId)) {
-            return { success: false, msg: 'Bạn không có trận đồ này!' };
+        // Deployment: check if diagram is known
+        if (!this.player.knownFormations.includes(diagramId)) {
+            return { success: false, msg: 'Bạn chưa lĩnh ngộ được trận đồ này!' };
         }
 
         if (this.player.stamina < formation.staminaCost || this.player.mana < formation.manaCost) {

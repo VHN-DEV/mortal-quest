@@ -1334,6 +1334,15 @@ export class Game {
         }
     }
 
+    selectCreationGender(gender) {
+        if (state.systems.creation) {
+            state.systems.creation.playerGender = gender;
+            // Also update avatar to match gender
+            state.systems.creation.playerAvatar = gender === 'Nam' ? 'player_male' : 'player_female';
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
     selectCreationRace(raceId) {
         if (state.systems.creation) {
             state.systems.creation.selectedRace = raceId;
@@ -1374,6 +1383,14 @@ export class Game {
     toggleCreationTrait(traitId) {
         if (state.systems.creation) {
             state.systems.creation.toggleTrait(traitId);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    adjustStartingLingShi(amount) {
+        if (state.systems.creation) {
+            state.systems.creation.startingLingShi = Math.max(0, state.systems.creation.startingLingShi + amount);
+            state.systems.creation.calculatePoints();
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }

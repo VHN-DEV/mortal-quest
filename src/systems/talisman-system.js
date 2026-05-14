@@ -10,6 +10,10 @@ export class TalismanSystem {
     draw(recipeId) {
         const recipe = TALISMAN_RECIPES[recipeId];
         if (!recipe) return { success: false, msg: 'Bí pháp không tồn tại!' };
+        
+        if (!this.player.knownTalismanRecipes.includes(recipeId)) {
+            return { success: false, msg: 'Ngươi chưa lĩnh ngộ được phù lục này!' };
+        }
 
         if (this.player.talismanLevel < recipe.level) {
             return { success: false, msg: `Cần cấp Phù Sư ${recipe.level} để vẽ loại phù này!` };
