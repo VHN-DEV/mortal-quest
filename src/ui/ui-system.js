@@ -70,8 +70,8 @@ export class UISystem {
         this.notifContainer.appendChild(toast);
 
         // Animate in using GSAP
-        gsap.fromTo(toast, 
-            { y: -20, opacity: 0 }, 
+        gsap.fromTo(toast,
+            { y: -20, opacity: 0 },
             { y: 0, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }
         );
 
@@ -148,7 +148,7 @@ export class UISystem {
             const originalCancelText = this.modalBtnCancel.textContent;
 
             this.modalTitle.textContent = title;
-            this.modalIcon.className = `ph ph-list text-5xl text-qi-blue mb-4 animate-bounce-subtle`;
+            this.modalIcon.className = `ph ph-list text-5xl text-qi-blue animate-bounce-subtle`;
 
             const optionsContainer = document.createElement('div');
             optionsContainer.className = 'flex flex-col space-y-2 w-full mt-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar';
@@ -157,7 +157,7 @@ export class UISystem {
                 const btn = document.createElement('button');
                 btn.className = 'w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-ancient text-gray-300 transition-all active:scale-95 flex items-center justify-center space-x-2 group';
                 btn.innerHTML = `
-                    ${opt.icon ? `<span class="text-lg group-hover:scale-110 transition-transform">${opt.icon}</span>` : ''}
+                    ${opt.icon ? `<i class="ph ${opt.icon} text-lg group-hover:scale-110 transition-transform"></i>` : ''}
                     <span>${opt.label}</span>
                 `;
                 btn.onclick = () => {
@@ -169,7 +169,7 @@ export class UISystem {
                 optionsContainer.appendChild(btn);
             });
 
-            this.modalMessage.innerHTML = description ? 
+            this.modalMessage.innerHTML = description ?
                 `<div class="text-xs text-gray-400 mb-4 px-2 italic leading-relaxed border-l-2 border-qi-blue/30 pl-4">${description}</div>` : '';
             this.modalMessage.appendChild(optionsContainer);
             this.modalBtnConfirm.style.display = 'none';
@@ -225,15 +225,15 @@ export class UISystem {
         if (show) {
             el.classList.remove('hidden');
             el.classList.add('flex');
-            
+
             if (el.id === 'guide-overlay' || el.id === 'modal-overlay') {
-                gsap.fromTo(el, 
-                    { opacity: 0, scale: 0.9, backdropFilter: "blur(0px)" }, 
+                gsap.fromTo(el,
+                    { opacity: 0, scale: 0.9, backdropFilter: "blur(0px)" },
                     { opacity: 1, scale: 1, backdropFilter: "blur(8px)", duration: 0.4, ease: "power2.out" }
                 );
             } else {
-                gsap.fromTo(el, 
-                    { opacity: 0 }, 
+                gsap.fromTo(el,
+                    { opacity: 0 },
                     { opacity: 1, duration: 0.3, ease: "power1.out" }
                 );
             }
@@ -249,7 +249,7 @@ export class UISystem {
                 onComplete: () => {
                     el.classList.add('hidden');
                     el.classList.remove('flex');
-                    
+
                     // Check if any other overlays are still visible
                     const visibleOverlays = Array.from(document.querySelectorAll('.overlay-full:not(.hidden), .absolute.inset-0:not(.hidden)'))
                         .filter(node => {
@@ -295,7 +295,7 @@ export class UISystem {
         const app = document.getElementById('app');
         const appRect = app.getBoundingClientRect();
         const rect = anchor.getBoundingClientRect();
-        
+
         popup.style.position = 'absolute';
         popup.style.left = `${rect.left - appRect.left + rect.width / 2}px`;
         popup.style.top = `${rect.top - appRect.top}px`;
@@ -310,30 +310,30 @@ export class UISystem {
         });
 
         if (crit) {
-            timeline.fromTo(popup, 
-                { scale: 0.5, opacity: 0 }, 
+            timeline.fromTo(popup,
+                { scale: 0.5, opacity: 0 },
                 { scale: 1.5, opacity: 1, duration: 0.2, ease: "back.out(2)" }
             )
-            .to(popup, {
-                y: -60,
-                x: (Math.random() - 0.5) * 40,
-                opacity: 0,
-                scale: 1,
-                duration: 1.2,
-                ease: "power1.in"
-            }, "+=0.3");
+                .to(popup, {
+                    y: -60,
+                    x: (Math.random() - 0.5) * 40,
+                    opacity: 0,
+                    scale: 1,
+                    duration: 1.2,
+                    ease: "power1.in"
+                }, "+=0.3");
         } else {
-            timeline.fromTo(popup, 
-                { y: 0, opacity: 0 }, 
+            timeline.fromTo(popup,
+                { y: 0, opacity: 0 },
                 { y: -30, opacity: 1, duration: 0.3, ease: "power2.out" }
             )
-            .to(popup, {
-                y: -80,
-                x: (Math.random() - 0.5) * 30,
-                opacity: 0,
-                duration: 0.8,
-                ease: "power1.in"
-            }, "+=0.2");
+                .to(popup, {
+                    y: -80,
+                    x: (Math.random() - 0.5) * 30,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: "power1.in"
+                }, "+=0.2");
         }
     }
 
@@ -343,17 +343,17 @@ export class UISystem {
     createClickParticle(x, y, type = 'tuvi') {
         const p = document.createElement('div');
         p.className = 'qi-particle w-1.5 h-1.5 rounded-full pointer-events-none';
-        
+
         const colors = {
             tuvi: '#4fd1c5', // qi-blue
             body: '#ef4444', // qi-red
             soul: '#a855f7'  // qi-purple
         };
-        
+
         const app = document.getElementById('app');
         const appRect = app.getBoundingClientRect();
         const color = colors[type] || colors.tuvi;
-        
+
         p.style.position = 'absolute';
         p.style.left = `${x - appRect.left}px`;
         p.style.top = `${y - appRect.top}px`;
@@ -393,7 +393,7 @@ export class UISystem {
                 <p class="text-xl font-ancient text-white text-center mt-2 tracking-[0.5em] uppercase">${realmName}</p>
             </div>
         `;
-        
+
         const app = document.getElementById('app');
         app.appendChild(effect);
 
@@ -405,9 +405,9 @@ export class UISystem {
         });
 
         tl.to(glow, { opacity: 1, scale: 2, duration: 0.8, ease: "power2.out" })
-          .to(title, { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" }, "-=0.6")
-          .to(glow, { opacity: 0, scale: 3, duration: 1.5, ease: "power1.in" }, "+=0.5")
-          .to(title, { opacity: 0, y: -50, duration: 0.8, ease: "power2.in" }, "-=1");
+            .to(title, { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" }, "-=0.6")
+            .to(glow, { opacity: 0, scale: 3, duration: 1.5, ease: "power1.in" }, "+=0.5")
+            .to(title, { opacity: 0, y: -50, duration: 0.8, ease: "power2.in" }, "-=1");
     }
 
     /**
@@ -416,7 +416,7 @@ export class UISystem {
     async switchScreen(screenId, btn) {
         const screens = document.querySelectorAll('.screen');
         const navButtons = document.querySelectorAll('.nav-item');
-        
+
         screens.forEach(s => {
             s.classList.add('hidden');
             s.classList.remove('flex');
