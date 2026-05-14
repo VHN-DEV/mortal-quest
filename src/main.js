@@ -1,4 +1,4 @@
-import './styles/main.css';
+// import './styles/main.css'; // Removed for static server compatibility
 import { state } from './state.js';
 import { Game } from './game.js';
 
@@ -12,7 +12,7 @@ import { getRealmById, HUMAN_REALMS } from './configs/realm-data.js';
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
 import { SEEDS } from './configs/garden-data.js';
 import { SECTS, getSectById } from './configs/sect-data.js';
-import { CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS } from './configs/creation-data.js';
+import { CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS } from './configs/creation-data.js';
 import { PHYSIQUES } from './configs/physique-data.js';
 import { NPCScreen } from './ui/screens/NPCScreen.js';
 
@@ -175,8 +175,8 @@ const formatCreationBonus = (bonus = {}) => {
     delete normalized.stats;
 
     const multiplierStats = [
-        'tvps', 'alchemySuccess', 'bodyExpSpeed', 'soulExpSpeed', 
-        'qiAbsorb', 'critRate', 'critDmg', 'lifeSteal', 
+        'tvps', 'alchemySuccess', 'bodyExpSpeed', 'soulExpSpeed',
+        'qiAbsorb', 'critRate', 'critDmg', 'lifeSteal',
         'pierce', 'soulPierce', 'fireDmg', 'waterDmg', 'thunderDmg'
     ];
 
@@ -184,7 +184,7 @@ const formatCreationBonus = (bonus = {}) => {
         .map(([key, value]) => {
             if (typeof value !== 'number') return null;
             const label = CREATION_BONUS_LABELS[key] || key;
-            
+
             if (multiplierStats.includes(key)) {
                 let percent;
                 if (['critRate', 'critDmg', 'lifeSteal', 'pierce', 'soulPierce', 'fireDmg', 'waterDmg', 'thunderDmg'].includes(key)) {
@@ -193,11 +193,11 @@ const formatCreationBonus = (bonus = {}) => {
                     // For tvps, 1.2 means +20%, 4.0 means +300%
                     percent = Math.round((value - 1) * 100);
                 }
-                
+
                 if (percent === 0) return null;
                 return `${label} ${percent > 0 ? '+' : ''}${percent}%`;
             }
-            
+
             if (value === 0) return null;
             return `${label} ${value > 0 ? '+' : ''}${value}`;
         })
@@ -210,12 +210,12 @@ const formatOriginResources = (origin) => {
     const monthly = origin?.monthlyResources?.lingShi || 0;
     const items = origin?.resources?.items || [];
     const karma = origin?.resources?.karma || 0;
-    
+
     const lines = [];
     if (lingShi !== 0) lines.push(`Linh thạch ${lingShi > 0 ? '+' : ''}${lingShi}`);
     if (monthly !== 0) lines.push(`Bổng lộc/tháng ${monthly > 0 ? '+' : ''}${monthly}`);
     if (karma !== 0) lines.push(`Nghiệp lực ${karma > 0 ? '+' : ''}${karma}`);
-    
+
     if (items.length > 0) {
         const itemNames = items.map(id => {
             const item = getItemById(id);
@@ -223,7 +223,7 @@ const formatOriginResources = (origin) => {
         });
         lines.push(`Vật phẩm: ${itemNames.join(', ')}`);
     }
-    
+
     return lines.join(' · ');
 };
 
@@ -265,11 +265,12 @@ window.renderCreationScreen = () => {
 
     if (elStatsPreview) {
         // Base stats for a new player (starting realm)
-        const base = { 
-            atk: 10, def: 5, maxHp: 100, spd: 10, mana: 50, luck: 50, 
-            karma: 0, maxAge: 100, critRate: 0.05, alchemySuccess: 0, qiAbsorb: 1.0 
+        const base = {
+            atk: 10, def: 5, maxHp: 100, spd: 10, mana: 50, luck: 50,
+            karma: 0, maxAge: 100, critRate: 0.05, alchemySuccess: 0, qiAbsorb: 1.0
         };
-        
+
+        const raceBonus = CREATION_RACES[sys.selectedRace]?.bonus || {};
         const rootBonus = CREATION_ROOTS[sys.selectedRoot]?.bonus || {};
         const physBonus = PHYSIQUES[sys.selectedPhysique]?.bonus || {};
         const traitBonus = sys.selectedTraits.reduce((acc, traitId) => {
@@ -284,11 +285,11 @@ window.renderCreationScreen = () => {
             return acc;
         }, {});
 
-        const sumFlat = (key) => (rootBonus[key] || 0) + (physBonus[key] || 0) + (traitBonus[key] || 0);
-        
+        const sumFlat = (key) => (raceBonus[key] || 0) + (rootBonus[key] || 0) + (physBonus[key] || 0) + (traitBonus[key] || 0);
+
         // Multiplier logic for TVPS & Qi Absorb
-        const tvpsBonus = 1 + ((rootBonus.tvps || 1) - 1) + ((physBonus.tvps || 1) - 1) + ((traitBonus.tvps || 1) - 1);
-        const qiBonus = 1 + ((rootBonus.qiAbsorb || 1) - 1) + ((physBonus.qiAbsorb || 1) - 1) + ((traitBonus.qiAbsorb || 1) - 1);
+        const tvpsBonus = (raceBonus.tvps || 1) * (rootBonus.tvps || 1) * (physBonus.tvps || 1) * (traitBonus.tvps || 1);
+        const qiBonus = (raceBonus.qiAbsorb || 1) * (rootBonus.qiAbsorb || 1) * (physBonus.qiAbsorb || 1) * (traitBonus.qiAbsorb || 1);
 
         const previewStats = [
             { label: 'Công', value: base.atk + sumFlat('atk'), color: 'text-red-400' },
@@ -318,7 +319,7 @@ window.renderCreationScreen = () => {
                 else if (stat.label === 'Luyện đan') isBoosted = sumFlat('alchemySuccess') > 0;
                 else if (stat.label === 'Bạo kích') isBoosted = (base.critRate + sumFlat('critRate')) > base.critRate;
             }
-            
+
             return `
                 <div class="rounded-xl border border-white/10 bg-black/35 px-2 py-2 text-center transition-all hover:border-white/20">
                     <div class="text-[7px] text-gray-500 uppercase tracking-tighter mb-0.5">${stat.label}</div>
@@ -349,7 +350,7 @@ window.renderCreationScreen = () => {
 
     const elStartingRealmSelect = document.getElementById('creation-starting-realm-select');
     if (elStartingRealmSelect) {
-        const availableRealms = HUMAN_REALMS.filter(realm => realm.id <= 13);
+        const availableRealms = HUMAN_REALMS.filter(realm => realm.id <= 64);
         elStartingRealmSelect.innerHTML = availableRealms.map(realm => `
             <option value="${realm.id}">${realm.name}</option>
         `).join('');
@@ -409,6 +410,31 @@ window.renderCreationScreen = () => {
                     class="w-16 h-16 shrink-0 rounded-xl border-2 ${active ? 'border-qi-blue' : 'border-transparent'} overflow-hidden cursor-pointer hover:border-qi-blue/50 transition-all">
                     <img src="${url}" class="w-full h-full object-cover">
                 </div>
+            `;
+        }).join('');
+    }
+
+    // Race List
+    const elRaces = document.getElementById('creation-races-list');
+    if (elRaces) {
+        elRaces.innerHTML = Object.values(CREATION_RACES).map(r => {
+            const active = sys.selectedRace === r.id;
+            const bonuses = (formatCreationBonus(r.bonus) || 'Chỉ số cơ bản').split(' · ');
+            return `
+                <button onclick="window.game.selectCreationRace('${r.id}')" 
+                    class="q-card min-w-[140px] ${active ? 'active text-red-400 border-red-400' : 'text-gray-400 border-white/10'}">
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="q-title ${active ? 'text-red-400' : ''}">${r.name}</div>
+                        <div class="q-cost">
+                            <i class="ph ph-users"></i>
+                            ${r.cost}
+                        </div>
+                    </div>
+                    <div class="q-desc text-[8px] opacity-70">${r.desc}</div>
+                    <div class="q-bonus-list">
+                        ${bonuses.map(b => `<span class="q-bonus-tag" style="color: #f87171; background: rgba(248, 113, 113, 0.1); border-color: rgba(248, 113, 113, 0.2)">${b}</span>`).join('')}
+                    </div>
+                </button>
             `;
         }).join('');
     }

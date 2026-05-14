@@ -4,6 +4,13 @@ export const CREATION_CONFIG = {
     MAX_DISADVANTAGES: 3
 };
 
+export const CREATION_RACES = {
+    'HUMAN': { id: 'HUMAN', name: 'Nhân Tộc', cost: 0, desc: 'Linh hồn hoàn chỉnh nhất, thích hợp tu luyện mọi loại công pháp. Tốc độ lĩnh ngộ ổn định.', bonus: { tvps: 1.0, soulExpSpeed: 1.1 } },
+    'DEMON': { id: 'DEMON', name: 'Ma Tộc', cost: 30, desc: 'Thân thể cường đại, chiến lực bẩm sinh cao nhưng dễ bị tâm ma quấy phá.', bonus: { atk: 30, def: 20, tvps: 1.1, karma: -100 } },
+    'SPIRIT_BEAST': { id: 'SPIRIT_BEAST', name: 'Linh Thú', cost: 40, desc: 'Hóa hình từ yêu thú, thọ nguyên cực dài nhưng tu luyện chậm hơn nhân tộc.', bonus: { maxAge: 200, maxHp: 150, tvps: 0.8, def: 40 } },
+    'DRAGON': { id: 'DRAGON', name: 'Long Tộc', cost: 120, desc: 'Chủng tộc thượng cổ tôn quý nhất. Thân thể, linh lực, thần thức đều cực kỳ mạnh mẽ.', bonus: { allRes: 0.2, atk: 100, def: 100, tvps: 2.0, maxAge: 1000 } }
+};
+
 export const CREATION_ROOTS = {
     'thien_linh_can': { id: 'thien_linh_can', name: 'Thiên Linh Căn', cost: 100, type: 'special', desc: 'Đơn linh căn thuần khiết nhất. Tốc độ tu luyện x4, tăng mạnh khả năng hấp thu.', bonus: { tvps: 4.0, qiAbsorb: 1.5, luck: 10 } },
     'di_linh_can': { id: 'di_linh_can', name: 'Dị Linh Căn', cost: 70, type: 'special', desc: 'Lôi/Băng/Phong... Tăng mạnh sát thương và tốc độ tu luyện x2.5.', bonus: { tvps: 2.5, atk: 25, qiAbsorb: 1.2 } },

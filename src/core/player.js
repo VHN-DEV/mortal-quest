@@ -150,6 +150,8 @@ export class Player {
             titles: [],
             activeTitleId: null
         };
+        
+        this.isSecluded = false;
 
         // Talisman System
         this.talismanLevel = 1;
@@ -325,17 +327,57 @@ export class Player {
         return false;
     }
 
-    addLingShi(amount) {
+    addLingShi(amount, gradeId = 'HA') {
         if (amount === 0) return;
         
-        // Nếu số lượng lớn (ví dụ > 10,000), có thể cân nhắc chia nhỏ hoặc giữ nguyên Hạ Phẩm.
-        // Theo yêu cầu "không nên làm tròn", ta sẽ thêm trực tiếp vào loại tương ứng hoặc mặc định là Hạ Phẩm.
         if (amount > 0) {
-            this.inventory.addItem('ling_thach_ha', amount);
-        } else {
-            // Trường hợp số âm (nợ), ta không thêm item mà trừ đi (nếu có logic xử lý nợ riêng)
-            // Hiện tại spendLingShi đã xử lý việc trừ.
+            // Intelligent distribution if amount is large and no specific grade requested
+            if (amount >= 1000000 && gradeId === 'HA') {
+                const peak = Math.floor(amount / 1000000);
+                if (peak > 0) this.inventory.addItem('ling_thach_cuc', peak);
+                amount %= 1000000;
+            }
+            if (amount >= 10000 && gradeId === 'HA') {
+                const high = Math.floor(amount / 10000);
+                if (high > 0) this.inventory.addItem('ling_thach_thuong', high);
+                amount %= 10000;
+            }
+            if (amount >= 100 && gradeId === 'HA') {
+                const mid = Math.floor(amount / 100);
+                if (mid > 0) this.inventory.addItem('ling_thach_trung', mid);
+                amount %= 100;
+            }
+            
+            if (amount > 0) {
+                const itemId = gradeId === 'HA' ? 'ling_thach_ha' : 
+                               gradeId === 'TRUNG' ? 'ling_thach_trung' : 
+                               gradeId === 'THUONG' ? 'ling_thach_thuong' : 'ling_thach_cuc';
+                this.inventory.addItem(itemId, amount);
+            }
         }
+    }
+
+    refineSpiritStone(itemId) {
+        if (!this.inventory.hasItem(itemId, 1)) return { success: false, msg: "Không có linh thạch này." };
+        
+        const item = getItemById(itemId);
+        if (!item || item.type !== 'spirit_stone') return { success: false, msg: "Vật phẩm không phải linh thạch." };
+
+        const mappings = {
+            'ling_thach_ha': { gain: 50, msg: "Hấp thu linh khí từ Hạ Phẩm Linh Thạch." },
+            'ling_thach_trung': { gain: 5000, msg: "Luyện hóa Trung Phẩm Linh Thạch, linh lực tràn đầy!" },
+            'ling_thach_thuong': { gain: 500000, msg: "Thượng Phẩm Linh Thạch tan chảy, tu vi tăng mạnh!" },
+            'ling_thach_cuc': { gain: 50000000, msg: "Cực Phẩm Linh Thạch! Đại đạo chí giản, tu vi tiến triển cực nhanh!" }
+        };
+
+        const config = mappings[itemId];
+        if (!config) return { success: false, msg: "Loại linh thạch này không thể luyện hóa trực tiếp." };
+
+        this.inventory.removeItem(itemId, 1);
+        const gain = config.gain * (this.advancedStats.qiAbsorb || 1.0);
+        this.tuVi += gain;
+        
+        return { success: true, msg: config.msg + ` (Tu vi +${Math.floor(gain).toLocaleString()})` };
     }
 
     updateVipLevel() {
@@ -373,9 +415,12 @@ export class Player {
         const bodyGain = hasBodyTech ? this.bodyExpPerSecond * (focus === 'body' ? 1.0 : 0.2) * multiplier * delta : 0;
         const soulGain = hasSoulTech ? this.soulExpPerSecond * (focus === 'soul' ? 1.0 : 0.2) * multiplier * delta : 0;
 
-        this.tuVi += tuViGain;
-        this.bodyExp += bodyGain;
-        this.soulExp += soulGain;
+        let finalMultiplier = multiplier;
+        if (this.isSecluded) finalMultiplier *= 5.0; // 5x gain during seclusion
+
+        this.tuVi += tuViGain * (this.isSecluded ? 5.0 : 1.0);
+        this.bodyExp += bodyGain * (this.isSecluded ? 5.0 : 1.0);
+        this.soulExp += soulGain * (this.isSecluded ? 5.0 : 1.0);
         
         // Forced Breakthrough Check (Heavenly Dao)
         // If exp exceeds 150% of required, force breakthrough with higher risk
@@ -636,6 +681,25 @@ export class Player {
         
         const raceInfo = RACE_DATA[this.race || 'HUMAN'] || RACE_DATA.HUMAN;
         const raceMults = raceInfo.statMult;
+
+        // Apply Racial Bonus from creation
+        if (this.racialBonus) {
+            Object.entries(this.racialBonus).forEach(([key, val]) => {
+                if (this.advancedStats.hasOwnProperty(key)) {
+                    if (['tvps', 'qiAbsorb', 'allRes', 'soulExpSpeed'].includes(key)) this.advancedStats[key] *= val;
+                    else this.advancedStats[key] += val;
+                } else if (this.bonusStats.hasOwnProperty(key)) {
+                    if (key === 'tvps') this.bonusStats.tuViSpeed *= val;
+                    else this.bonusStats[key] += val;
+                } else if (this.baseStats.hasOwnProperty(key)) {
+                    this.baseStats[key] += val;
+                } else if (key === 'karma') {
+                    this.karma += val;
+                } else if (key === 'maxAge') {
+                    this.bonusStats.maxAge += val;
+                }
+            });
+        }
 
         this.baseStats.maxMana = 50 * realmMult;
         this.baseStats.maxHp = 100 * realmMult * raceMults.hp;

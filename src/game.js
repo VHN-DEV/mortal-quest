@@ -122,7 +122,13 @@ export class Game {
         });
 
         const cultivateBtn = document.getElementById('cultivate-btn');
-        if (cultivateBtn) cultivateBtn.onclick = () => this.cultivate();
+        if (cultivateBtn) cultivateBtn.onclick = () => {
+            if (state.player.isSecluded) {
+                state.ui.toast("Đang bế quan, không thể tu luyện tích cực!", "warning");
+                return;
+            }
+            this.cultivate();
+        };
 
         const breakthroughBtn = document.getElementById('breakthrough-btn');
         if (breakthroughBtn) breakthroughBtn.onclick = () => this.breakthrough();
@@ -131,9 +137,41 @@ export class Game {
         if (autoCultivate) autoCultivate.onchange = (e) => this.toggleAutoCultivate(e.target.checked);
 
         const seclusionBtn = document.getElementById('seclusion-btn');
-        if (seclusionBtn) seclusionBtn.onclick = () => this.enterSeclusion();
+        if (seclusionBtn) seclusionBtn.onclick = () => {
+            if (state.player.isSecluded) this.exitSeclusion();
+            else this.enterSeclusion();
+        };
 
         this.bindPlaceholderButtons();
+    }
+
+    enterSeclusion() {
+        if (!state.player) return;
+        if (state.player.isSecluded) return;
+
+        state.player.isSecluded = true;
+        state.ui.toast("Ngươi đã bắt đầu bế quan, tâm thần tĩnh lặng...", "success");
+        this.refreshUI();
+    }
+
+    exitSeclusion() {
+        if (!state.player) return;
+        if (!state.player.isSecluded) return;
+
+        state.player.isSecluded = false;
+        state.ui.toast("Ngươi đã xuất quan, cảm thấy tu vi có chút tinh tiến.", "info");
+        this.refreshUI();
+    }
+
+    refine(itemId) {
+        if (!state.player) return;
+        const result = state.player.refineSpiritStone(itemId);
+        if (result.success) {
+            state.ui.toast(result.msg, 'success');
+            this.refreshUI();
+        } else {
+            state.ui.toast(result.msg, 'error');
+        }
     }
 
     bindPlaceholderButtons() {
@@ -1301,6 +1339,14 @@ export class Game {
     selectCreationAvatar(avatarKey) {
         if (state.systems.creation) {
             state.systems.creation.playerAvatar = avatarKey;
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationRace(raceId) {
+        if (state.systems.creation) {
+            state.systems.creation.selectedRace = raceId;
+            state.systems.creation.calculatePoints();
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }

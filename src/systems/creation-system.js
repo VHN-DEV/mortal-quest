@@ -1,4 +1,4 @@
-import { CREATION_CONFIG, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS } from '../configs/creation-data.js';
+import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS } from '../configs/creation-data.js';
 import { Player } from '../core/player.js';
 
 const RANDOM_NAMES = [
@@ -14,6 +14,7 @@ export class CreationSystem {
     reset() {
         this.mode = 'custom';
         this.points = CREATION_CONFIG.BASE_POINTS;
+        this.selectedRace = 'HUMAN';
         this.selectedRoot = 'ngu_hanh_linh_can';
         this.selectedPhysique = 'binh_thuong';
         this.selectedOrigin = 'tan_tu';
@@ -29,6 +30,9 @@ export class CreationSystem {
     calculatePoints() {
         let total = CREATION_CONFIG.BASE_POINTS;
         
+        // Race cost
+        total -= CREATION_RACES[this.selectedRace].cost;
+
         // Root cost
         total -= CREATION_ROOTS[this.selectedRoot].cost;
         
@@ -78,6 +82,7 @@ export class CreationSystem {
         const scenario = CREATION_SCENARIOS[scenarioId];
         if (!scenario) return;
         
+        this.selectedRace = scenario.setup.race || 'HUMAN';
         this.selectedRoot = scenario.setup.root;
         this.selectedPhysique = scenario.setup.physique;
         this.selectedOrigin = scenario.setup.origin;
@@ -95,6 +100,9 @@ export class CreationSystem {
         this.playerGender = Math.random() < 0.5 ? 'Nam' : 'Nữ';
         this.playerAge = Math.floor(Math.random() * 41) + 12;
         this.playerAvatar = this.playerGender === 'Nam' ? 'player_male' : 'player_female';
+
+        const raceKeys = Object.keys(CREATION_RACES);
+        this.selectedRace = raceKeys[Math.floor(Math.random() * raceKeys.length)];
 
         const rootKeys = Object.keys(CREATION_ROOTS);
         this.selectedRoot = rootKeys[Math.floor(Math.random() * rootKeys.length)];
@@ -128,11 +136,16 @@ export class CreationSystem {
         player.gender = this.playerGender;
         player.age = this.playerAge;
         player.avatar = this.playerAvatar;
+        player.race = this.selectedRace;
         
+        const race = CREATION_RACES[this.selectedRace];
         const root = CREATION_ROOTS[this.selectedRoot];
         const phys = CREATION_PHYSIQUES[this.selectedPhysique];
         const origin = CREATION_ORIGINS[this.selectedOrigin];
         
+        // Apply Race
+        player.racialBonus = race.bonus;
+
         // Apply Root
         player.spiritualRoot = {
             type: root.name,
