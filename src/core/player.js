@@ -153,6 +153,7 @@ export class Player {
         };
         
         this.isSecluded = false;
+        this.party = [];
 
         // Talisman System
         this.talismanLevel = 1;
@@ -1674,6 +1675,12 @@ export class Player {
             // Social & Organization
             sectId: this.sectId,
             sectContribution: this.sectContribution,
+            knownNPCs: { ...this.knownNPCs },
+            party: [...this.party],
+            
+            // Energy & Environment
+            qiAccumulated: { ...this.qiAccumulated },
+            currentEnvironmentalQi: this.currentEnvironmentalQi ? { ...this.currentEnvironmentalQi } : null,
             
             // Misc
             buffs: [...this.buffs],
@@ -1727,7 +1734,7 @@ export class Player {
         this.bodyExp = data.bodyExp || 0;
         this.soulRealmId = data.soulRealmId || 1;
         this.soulExp = data.soulExp || 0;
-        if (data.specializedPaths) this.specializedPaths = data.specializedPaths;
+        if (data.specializedPaths) this.specializedPaths = { ...this.specializedPaths, ...data.specializedPaths };
         this.cultivationFocus = data.cultivationFocus || 'tuvi';
 
         // Background
@@ -1833,6 +1840,12 @@ export class Player {
         // Organization
         this.sectId = data.sectId || null;
         this.sectContribution = data.sectContribution || 0;
+        this.knownNPCs = data.knownNPCs || {};
+        this.party = data.party || [];
+        
+        // Energy & Environment
+        this.qiAccumulated = data.qiAccumulated || {};
+        this.currentEnvironmentalQi = data.currentEnvironmentalQi || null;
         
         // Misc
         this.buffs = data.buffs || [];
