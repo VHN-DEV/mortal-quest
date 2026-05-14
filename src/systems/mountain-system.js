@@ -188,8 +188,9 @@ export class MountainSystem {
             this.ui.toast("Đang mở giao diện giao dịch...", "info");
             // Logic for trading NPC
         } else if (choice === 'rob') {
-            if (window.game?.systems.fate) {
-                window.game.systems.fate.processAction('ROB_NPC');
+            const fateSystem = state.systems.fate;
+            if (fateSystem) {
+                fateSystem.processAction('ROB_NPC');
             }
             this.ui.toast("Ngươi đã ra tay cướp bóc! Danh tiếng sụt giảm, sát khí tăng cao.", "error");
             this.triggerBattle(null, true); // Trigger combat with NPC

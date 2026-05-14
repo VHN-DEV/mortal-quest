@@ -1,4 +1,5 @@
 import { HOURS, SEASONS, PHENOMENA } from '../configs/time-data.js';
+import { state } from '../state.js';
 
 export class TimeSystem {
     constructor(player, ui) {
@@ -49,8 +50,9 @@ export class TimeSystem {
         this.totalMinutes += minutes;
         
         // Process Mining Events
-        if (window.game?.systems.mining) {
-            window.game.systems.mining.processTimeEvents(minutes);
+        const mSystem = state.systems.mining;
+        if (mSystem) {
+            mSystem.processTimeEvents(minutes);
         }
 
         // Age the player (simplified: 1 game year = some age increment)

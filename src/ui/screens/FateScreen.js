@@ -1,4 +1,5 @@
 import { MORALITY_SCALES, TITLES, REPUTATION_TIERS } from '../../configs/fate-data.js';
+import { state } from '../../state.js';
 
 export class FateScreen {
     constructor(player, ui) {
@@ -12,9 +13,9 @@ export class FateScreen {
         if (!container) return;
 
         const fate = this.player.fate;
-        const moralityScale = window.game.systems.fate.getMoralityScale();
-        const reputationTier = window.game.systems.fate.getReputationTier();
-        const debt = window.game.systems.fate.getKarmaDebt();
+        const moralityScale = state.systems.fate.getMoralityScale();
+        const reputationTier = state.systems.fate.getReputationTier();
+        const debt = state.systems.fate.getKarmaDebt();
 
         container.innerHTML = `
             <div class="space-y-6 animate-fade-in">
@@ -99,7 +100,7 @@ export class FateScreen {
 
                             <p class="text-[10px] text-white/40 italic leading-relaxed">
                                 ${debt > 0 ? 
-                                    `<span class="text-red-400 font-bold">Cảnh báo:</span> Nghiệp lực quấn thân sẽ khiến Thiên Kiếp trở nên cuồng bạo hơn, tỉ lệ đột phá giảm <span class="text-red-400">${Math.round((1 - window.game.systems.fate.getBreakthroughPenalty()) * 100)}%</span>.` : 
+                                    `<span class="text-red-400 font-bold">Cảnh báo:</span> Nghiệp lực quấn thân sẽ khiến Thiên Kiếp trở nên cuồng bạo hơn, tỉ lệ đột phá giảm <span class="text-red-400">${Math.round((1 - state.systems.fate.getBreakthroughPenalty()) * 100)}%</span>.` : 
                                     `<span class="text-qi-jade font-bold">Thanh thản:</span> Ngươi không có nghiệp lực, tâm ma khó xâm, đột phá thuận lợi.`
                                 }
                             </p>
