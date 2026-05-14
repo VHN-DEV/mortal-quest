@@ -27,6 +27,14 @@ export class CreationSystem {
         this.startingRealmId = 1;
     }
 
+    selectOrigin(originId) {
+        const origin = CREATION_ORIGINS[originId];
+        if (!origin) return;
+        this.selectedOrigin = originId;
+        this.startingLingShi = origin.resources.lingShi;
+        this.calculatePoints();
+    }
+
     calculatePoints() {
         let total = CREATION_CONFIG.BASE_POINTS;
         

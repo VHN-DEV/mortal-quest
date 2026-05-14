@@ -41,6 +41,13 @@ export const CREATION_PHYSIQUES = {
     'thai_am_tien_the': { id: 'thai_am_tien_the', name: 'Thái Âm Tiên Thể', cost: 150, desc: 'Cực âm chi chủ, đông cứng vạn pháp.', bonus: { waterDmg: 3.0, spd: 150 } },
     'hu_khong_the': { id: 'hu_khong_the', name: 'Hư Không Thể', cost: 120, desc: 'Hành giả không gian, vạn pháp bất khả chạm.', bonus: { spd: 300, avoidRate: 0.3 } },
     'thien_loi_the': { id: 'thien_loi_the', name: 'Thiên Lôi Chi Thể', cost: 100, desc: 'Lôi phạt hóa thân, điều khiển thiên kiếp.', bonus: { thunderDmg: 2.5, tvps: 3.0 } },
+    'hoa_linh_the': { id: 'hoa_linh_the', name: 'Hỏa Linh Thể', cost: 30, desc: 'Tăng mạnh hấp thu linh khí hỏa hệ.', bonus: { fireDmg: 1.2 } },
+    'thuy_linh_the': { id: 'thuy_linh_the', name: 'Thủy Linh Thể', cost: 30, desc: 'Tăng mạnh hấp thu linh khí thủy hệ.', bonus: { waterDmg: 1.2 } },
+    'ba_vuong_chien_the': { id: 'ba_vuong_chien_the', name: 'Bá Vương Chiến Thể', cost: 100, desc: 'Chiến đấu thiên bẩm, càng đánh càng mạnh.', bonus: { atk: 100, critRate: 0.1 } },
+    'truong_sinh_the': { id: 'truong_sinh_the', name: 'Trường Sinh Thể', cost: 60, desc: 'Sinh mệnh lực dồi dào, thọ nguyên cực dài.', bonus: { maxAge: 500, maxHp: 500 } },
+    'dau_chien_thanh_the': { id: 'dau_chien_thanh_the', name: 'Đấu Chiến Thánh Thể', cost: 150, desc: 'Uy áp thiên hạ, chiến thần bất bại.', bonus: { atk: 300, spd: 50 } },
+    'chan_long_the': { id: 'chan_long_the', name: 'Chân Long Thể', cost: 300, desc: 'Huyết mạch Chân Long, thân thể cường hãn.', bonus: { maxHp: 10000, atk: 1000 } },
+    'tuyet_mach_phe_the': { id: 'tuyet_mach_phe_the', name: 'Tuyệt Mạch Phế Thể', cost: -50, desc: 'Kinh mạch bế tắc, tu luyện gian nan nhưng ẩn chứa bí mật.', bonus: { tvps: 0.1, luck: 200 } },
     'binh_thuong': { id: 'binh_thuong', name: 'Phàm Thể', cost: 0, desc: 'Cơ thể bình thường của con người.', bonus: {} }
 };
 

@@ -1320,6 +1320,58 @@ export class Game {
         if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
     }
 
+    selectCreationMode(mode) {
+        if (state.systems.creation) {
+            state.systems.creation.mode = mode;
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationAvatar(avatar) {
+        if (state.systems.creation) {
+            state.systems.creation.playerAvatar = avatar;
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationRace(raceId) {
+        if (state.systems.creation) {
+            state.systems.creation.selectedRace = raceId;
+            state.systems.creation.calculatePoints();
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationRoot(rootId) {
+        if (state.systems.creation) {
+            state.systems.creation.selectedRoot = rootId;
+            state.systems.creation.calculatePoints();
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationPhysique(physId) {
+        if (state.systems.creation) {
+            state.systems.creation.selectedPhysique = physId;
+            state.systems.creation.calculatePoints();
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationOrigin(originId) {
+        if (state.systems.creation) {
+            state.systems.creation.selectOrigin(originId);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    toggleCreationTrait(traitId) {
+        if (state.systems.creation) {
+            state.systems.creation.toggleTrait(traitId);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
     async startCreationGame() {
         if (state.systems.creation) {
             const nameInput = document.getElementById('creation-name-input');

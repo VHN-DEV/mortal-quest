@@ -179,7 +179,12 @@ const CREATION_BONUS_LABELS = {
     fireDmg: 'ST Hỏa',
     waterDmg: 'ST Thủy',
     thunderDmg: 'ST Lôi',
-    maxAge: 'Thọ nguyên'
+    maxAge: 'Thọ nguyên',
+    spdPercent: 'Tốc độ (%)',
+    avoidRate: 'Né tránh',
+    maxMana: 'Mana tối đa',
+    daoVun: 'Đạo vận',
+    murderQi: 'Sát khí'
 };
 
 const formatCreationBonus = (bonus = {}) => {
@@ -477,8 +482,8 @@ window.renderCreationScreen = () => {
     if (elPhysiques) {
         elPhysiques.innerHTML = Object.values(CREATION_PHYSIQUES).map(p => {
             const active = sys.selectedPhysique === p.id;
-            const physData = PHYSIQUES[p.id] || {};
-            const bonuses = (formatCreationBonus(physData.bonus) || 'Không có chỉ số').split(' · ');
+            const physData = PHYSIQUES[p.id] || p; // Fallback to p if not in PHYSIQUES
+            const bonuses = (formatCreationBonus(physData.bonus) || 'Chỉ số cơ bản').split(' · ');
             return `
                 <button onclick="window.game.selectCreationPhysique('${p.id}')" 
                     class="q-card ${active ? 'active text-qi-purple border-qi-purple' : 'text-gray-400 border-white/10'} w-full">
