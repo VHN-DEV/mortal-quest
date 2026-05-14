@@ -91,11 +91,6 @@ export class Game {
     }
 
     initGlobalEvents() {
-        const btnReset = document.getElementById('reset-game-btn');
-        if (btnReset) {
-            btnReset.onclick = () => this.resetGame();
-        }
-
         // Emergency UI Reset: Triple-click character portrait
         const portrait = document.getElementById('header-portrait-container');
         if (portrait) {
@@ -580,15 +575,7 @@ export class Game {
             });
     }
 
-    resetGame() {
-        state.ui.confirm("Ngươi có chắc chắn muốn xóa sạch toàn bộ dữ liệu (cả 3 slot) để bắt đầu lại từ đầu? Hành động này không thể hoàn tác!", "Xác Nhận Luân Hồi")
-            .then(async confirmed => {
-                if (confirmed) {
-                    await SaveSystem.clearAll();
-                    location.reload();
-                }
-            });
-    }
+
 
     getRebirthProtectionSource() {
         const p = state.player;
