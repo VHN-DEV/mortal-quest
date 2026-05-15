@@ -959,7 +959,7 @@ export const ITEMS = {
         type: 'attackArtifact',
         quality: 'Hoàn Mỹ',
         tier: 'HUYEN_THIEN',
-        image: 'artifacts/bac-cuc-nguyen-quang-cuc-son.png',
+        image: 'artifacts/bac-cuc-nguyen-quang-cuc-son.webp',
         description: 'Ngọn núi chứa đựng Bắc Cực Nguyên Quang, đóng băng vạn vật.',
         price: 600000,
         stats: { atk: 1100, def: 600, iceDmg: 200 }

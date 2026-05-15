@@ -4,7 +4,7 @@
  */
 
 // Tự động quét toàn bộ thư mục assets/images
-const allImages = import.meta.glob('../assets/images/**/*.{png,jpg,jpeg,webp,gif,svg}', { eager: true, query: '?url', import: 'default' });
+const allImages = import.meta.glob('../assets/images/**/*.{webp,gif,svg}', { eager: true, query: '?url', import: 'default' });
 
 /**
  * Lấy URL của tài nguyên dựa trên đường dẫn tương đối.
@@ -13,7 +13,7 @@ const allImages = import.meta.glob('../assets/images/**/*.{png,jpg,jpeg,webp,gif
 export const getAssetUrl = (path) => {
     if (!path) return '';
     
-    const extensions = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'svg'];
+    const extensions = ['webp', 'png', 'jpg', 'jpeg', 'gif', 'svg'];
     
     // Nếu path đã có phần mở rộng
     if (path.includes('.')) {
