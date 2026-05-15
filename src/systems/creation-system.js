@@ -258,13 +258,14 @@ export class CreationSystem {
         }
 
         // --- Handle leftover points conversion ---
+        // Leftover points convert to Luck & Comprehension only.
+        // Tu Vi bonus is intentionally excluded to prevent inflated starting values
+        // that would break the cultivation bar display (e.g. 10,650 / 6,000).
         if (this.points > 0) {
             // 1 point = 0.5 Luck
             player.luck += Math.floor(this.points * 0.5);
             // 10 points = 1 Comprehension
             player.comprehension += this.points * 0.1;
-            // 1 point = 100 starting Tu Vi
-            player.addTuVi(this.points * 100);
         }
         
         // Apply Destiny Rating based on leftover points
