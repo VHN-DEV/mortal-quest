@@ -6,13 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-Dbkwrw9s.js"></script>
+  <script type="module" crossorigin src="./assets/index-DiAczRak.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-BJhcDn8B.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-Bmlkxg2T.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
+
+    <!-- Loading Screen (Splash) -->
+    <div id="loading-screen" class="fixed inset-0 z-[1000] bg-black flex flex-col items-center justify-center transition-all duration-700">
+        <div class="relative w-48 h-48 mb-8">
+            <div class="absolute inset-0 border-2 border-cultivation-gold/20 rounded-full animate-spin-slow"></div>
+            <div class="absolute inset-4 border border-qi-blue/20 rounded-full animate-spin-slow" style="animation-direction: reverse;"></div>
+            <img src="./assets/logo-ttLQTlIv.webp" class="absolute inset-8 w-32 h-32 object-contain animate-pulse">
+        </div>
+        <div class="w-64 space-y-4">
+            <div class="flex justify-between items-end">
+                <span id="loading-text" class="text-[10px] font-ancient text-cultivation-gold uppercase tracking-[0.3em] animate-pulse">Đang thu nạp linh khí...</span>
+                <span id="loading-percent" class="text-xs font-mono text-qi-blue">0%</span>
+            </div>
+            <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 shadow-[0_0_10px_rgba(79,209,197,0.1)]">
+                <div id="loading-bar" class="h-full bg-gradient-to-r from-qi-blue to-qi-purple transition-all duration-300 shadow-[0_0_15px_rgba(79,209,197,0.5)]" style="width: 0%"></div>
+            </div>
+        </div>
+        <p class="absolute bottom-12 text-[9px] text-gray-600 italic font-ancient opacity-60">"Đường tu tiên vạn dặm, khởi đầu tự bước chân..."</p>
+    </div>
 
     <!-- Desktop Vignette & Background Overlay -->
     <div

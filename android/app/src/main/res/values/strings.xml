@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">mortal-quest</string>
-    <string name="title_activity_main">mortal-quest</string>
+    <string name="app_name">Phàm Nhân Vấn Đạo</string>
+    <string name="title_activity_main">Phàm Nhân Vấn Đạo</string>
     <string name="package_name">com.mortalquest.app</string>
     <string name="custom_url_scheme">com.mortalquest.app</string>
 </resources>

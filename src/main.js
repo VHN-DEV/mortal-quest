@@ -8,7 +8,7 @@ import { EnemyGenerator, Enemy } from './core/enemy.js';
 import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
 import { getWorlds, getLocationById } from './configs/map-data.js';
-import { ASSETS } from './configs/asset-data.js';
+import { ASSETS, preloadAssets } from './configs/asset-data.js';
 import { getRealmById, HUMAN_REALMS } from './configs/realm-data.js';
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
 import { SEEDS } from './configs/garden-data.js';
@@ -31,7 +31,32 @@ window.state = state;
 
 // Khi DOM sẵn sàng, bắt đầu game
 document.addEventListener('DOMContentLoaded', async () => {
-    await game.init();
+    const elLoading = document.getElementById('loading-screen');
+    const elBar = document.getElementById('loading-bar');
+    const elPercent = document.getElementById('loading-percent');
+    const elText = document.getElementById('loading-text');
+
+    try {
+        // Bắt đầu preload tài nguyên
+        await preloadAssets((percent, text) => {
+            if (elBar) elBar.style.width = `${percent}%`;
+            if (elPercent) elPercent.textContent = `${percent}%`;
+            if (elText) elText.textContent = text;
+        });
+
+        // Khởi tạo game engine
+        await game.init();
+
+        // Ẩn màn hình loading với hiệu ứng mượt mà
+        if (elLoading) {
+            elLoading.style.opacity = '0';
+            elLoading.style.pointerEvents = 'none';
+            setTimeout(() => elLoading.remove(), 700);
+        }
+    } catch (err) {
+        console.error('Lỗi khởi động game:', err);
+        if (elText) elText.textContent = 'Lỗi nạp linh khí. Vui lòng làm mới trang.';
+    }
 });
 
 // --- COMPATIBILITY LAYER ---

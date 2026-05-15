@@ -7,6 +7,41 @@
 const allImages = import.meta.glob('../assets/images/**/*.{webp,gif,svg}', { eager: true, query: '?url', import: 'default' });
 
 /**
+ * Preload all essential assets and track progress
+ * @param {Function} onProgress - Callback(percent, text)
+ */
+export const preloadAssets = async (onProgress) => {
+    const images = Object.keys(allImages);
+    const total = images.length;
+    let loaded = 0;
+
+    const loadingTexts = [
+        "Đang thu nạp linh khí...",
+        "Đang ngưng tụ căn cốt...",
+        "Đang khai mở thần thức...",
+        "Đang kết nối thiên địa...",
+        "Đang ổn định kinh mạch..."
+    ];
+
+    // Try to load images in batches to not overwhelm the browser
+    const promises = images.map(async (key) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = img.onerror = () => {
+                loaded++;
+                const percent = Math.round((loaded / total) * 100);
+                const text = loadingTexts[Math.floor(percent / 21)] || loadingTexts[0];
+                onProgress(percent, text);
+                resolve();
+            };
+            img.src = allImages[key];
+        });
+    });
+
+    await Promise.all(promises);
+};
+
+/**
  * Lấy URL của tài nguyên dựa trên đường dẫn tương đối.
  * @param {string} path - Đường dẫn tính từ thư mục assets/images/ (VD: 'portraits/player_male')
  */
