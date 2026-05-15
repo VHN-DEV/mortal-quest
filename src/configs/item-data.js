@@ -478,7 +478,7 @@ export const ITEMS = {
     'thanh_hong_kiem': {
         id: 'thanh_hong_kiem',
         name: 'Thanh Hồng Kiếm',
-        type: 'weapon',
+        type: 'attackArtifact',
         quality: 'Linh Khí',
         icon: '⚔️',
         description: 'Thanh kiếm tỏa ra ánh sáng xanh lục, sắc bén vô cùng.',
@@ -500,7 +500,7 @@ export const ITEMS = {
     'phi_kiem_go': {
         id: 'phi_kiem_go',
         name: 'Phi Kiếm Gỗ',
-        type: 'weapon',
+        type: 'attackArtifact',
         quality: 'Phàm Khí',
         icon: '🗡️',
         description: 'Kiếm gỗ dành cho đệ tử nhập môn, sát thương không đáng kể.',
@@ -510,7 +510,7 @@ export const ITEMS = {
     'ao_bo_so_cap': {
         id: 'ao_bo_so_cap',
         name: 'Áo Bố Sơ Cấp',
-        type: 'armor',
+        type: 'defenseArtifact',
         quality: 'Phàm Khí',
         icon: '👘',
         description: 'Áo vải thô sơ, chỉ có tác dụng che thân.',
@@ -520,7 +520,7 @@ export const ITEMS = {
     'nhan_dong_nat': {
         id: 'nhan_dong_nat',
         name: 'Nhẫn Đồng Nát',
-        type: 'accessory',
+        type: 'soulArtifact',
         quality: 'Phàm Khí',
         icon: '💍',
         description: 'Một chiếc nhẫn bằng đồng cũ kỹ.',
@@ -866,7 +866,7 @@ export const ITEMS = {
     'phi_kiem_thanh_tuyen': {
         id: 'phi_kiem_thanh_tuyen',
         name: 'Thanh Tuyền Kiếm',
-        type: 'weapon',
+        type: 'attackArtifact',
         quality: 'Pháp Khí',
         icon: '🗡️',
         description: 'Phi kiếm cấp thấp, tăng nhẹ công kích và tốc độ.',
@@ -876,7 +876,7 @@ export const ITEMS = {
     'bat_quai_kinh': {
         id: 'bat_quai_kinh',
         name: 'Bát Quái Kính',
-        type: 'treasure',
+        type: 'supportArtifact',
         quality: 'Linh Khí',
         icon: '🪞',
         description: 'Phòng ngự pháp bảo, tạo lớp chắn linh khí giảm sát thương.',
@@ -886,7 +886,7 @@ export const ITEMS = {
     'u_minh_chuong': {
         id: 'u_minh_chuong',
         name: 'U Minh Chuông',
-        type: 'treasure',
+        type: 'supportArtifact',
         quality: 'Pháp Bảo',
         icon: '🔔',
         description: 'Hồn hệ pháp bảo, tăng mạnh Thần Thức và kháng ảo cảnh.',
@@ -1575,7 +1575,7 @@ export const ITEMS = {
     'phi_kiem_tinh_ha': {
         id: 'phi_kiem_tinh_ha',
         name: 'Tinh Hà Phi Kiếm',
-        type: 'weapon',
+        type: 'attackArtifact',
         icon: '🗡️',
         quality: 'Linh Khí',
         price: 15000,
@@ -1585,7 +1585,7 @@ export const ITEMS = {
     'long_lan_giap': {
         id: 'long_lan_giap',
         name: 'Long Lân Giáp',
-        type: 'armor',
+        type: 'defenseArtifact',
         icon: '🛡️',
         quality: 'Pháp Bảo',
         price: 85000,
@@ -1652,7 +1652,7 @@ export const ITEMS = {
     'van_thu_lenh': {
         id: 'van_thu_lenh',
         name: 'Vạn Thú Lệnh',
-        type: 'treasure',
+        type: 'supportArtifact',
         icon: '📜',
         quality: 'Pháp Bảo',
         price: 50000,
@@ -1982,12 +1982,12 @@ export const ITEMS = {
         recipeId: 'long_lan_giap'
     },
 
-    // --- TIÊN KHÍ / THÔNG THIÊN LINH BẢO (POEM ARTIFACTS) ---
+    // --- DANH KHÍ / TIÊN KHÍ / THÔNG THIÊN LINH BẢO (POEM ARTIFACTS) ---
     'vo_dinh_tieu_dao_cam': {
         id: 'vo_dinh_tieu_dao_cam',
         name: 'Vô Định Tiêu Dao Cầm',
         type: 'soulArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/vo_dinh_tieu_dao_cam.png',
         description: 'Cây cầm thần bí, tiếng đàn có thể tàng hình sơn hà, tiêu diêu tự tại giữa trời đất.',
         price: 1000000,
@@ -1998,7 +1998,7 @@ export const ITEMS = {
         id: 'van_tinh_nho_quan',
         name: 'Văn Tinh Nho Quán',
         type: 'defenseArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/van_tinh_nho_quan.png',
         description: 'Mũ nho sĩ chứa đựng tinh túy của văn chương, hạo nhiên chính khí trấn áp tà ma.',
         price: 800000,
@@ -2009,7 +2009,7 @@ export const ITEMS = {
         id: 'that_thai_huyen_nghien',
         name: 'Thất Thái Huyền Nghiên',
         type: 'supportArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/that_thai_huyen_nghien.png',
         description: 'Nghiên mực bảy màu, một điểm có thể định hình sơn hà, ghi chép thiên đạo.',
         price: 1500000,
@@ -2020,7 +2020,7 @@ export const ITEMS = {
         id: 'te_hon_toa',
         name: 'Tế Hồn Tỏa',
         type: 'attackArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/te_hon_toa.png',
         description: 'Xiềng xích tế hồn, nhiếp lấy phách của vạn vật, khóa chặt u minh.',
         price: 1200000,
@@ -2031,7 +2031,7 @@ export const ITEMS = {
         id: 'luyen_phong_thach',
         name: 'Luyện Phong Thạch',
         type: 'attackArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/luyen_phong_thach.png',
         description: 'Viên đá luyện từ cuồng phong, bách luyện thành binh, trảm phá càn khôn.',
         price: 900000,
@@ -2042,7 +2042,7 @@ export const ITEMS = {
         id: 'kim_than_xa_loi',
         name: 'Kim Thân Xá Lợi',
         type: 'defenseArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/kim_than_xa_loi.png',
         description: 'Hạt xá lợi kim thân, vạn pháp bất xâm, trấn giữ tâm ma.',
         price: 2000000,
@@ -2053,7 +2053,7 @@ export const ITEMS = {
         id: 'duong_kiem_ho',
         name: 'Dưỡng Kiếm Hồ',
         type: 'supportArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/duong_kiem_ho.png',
         description: 'Bầu rượu dưỡng kiếm, tàng chứa kiếm tiên, phong mang thấu càn khôn.',
         price: 1300000,
@@ -2064,7 +2064,7 @@ export const ITEMS = {
         id: 'cuu_mach_linh_cham',
         name: 'Cửu Mạch Linh Châm',
         type: 'attackArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/cuu_mach_linh_cham.png',
         description: 'Châm thần chín mạch, nghịch chuyển âm dương, hồi thiên tục mệnh.',
         price: 1100000,
@@ -2075,7 +2075,7 @@ export const ITEMS = {
         id: 'co_luyen_lung',
         name: 'Cổ Luyện Lũng',
         type: 'supportArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/co_luyen_lung.png',
         description: 'Lồng nuôi cổ trùng cổ xưa, thực nhật nguyệt, chứa vạn độc thiên trùng.',
         price: 950000,
@@ -2106,7 +2106,7 @@ export const ITEMS = {
         id: 'chan_vu_nho_quan',
         name: 'Chân Vũ Nho Quán (Hoàn Thiện)',
         type: 'defenseArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/chan_vu_nho_quan_huu.webp', // Using right hand as representative
         description: 'Bản hoàn thiện của Chân Vũ Nho Quán, thập diện mai phục cũng bất cụ, chiến bát hoang.',
         price: 1700000,
@@ -2117,7 +2117,7 @@ export const ITEMS = {
         id: 'bo_thien_lang',
         name: 'Bộ Thiên Lăng',
         type: 'flightArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/bo_thien_lang.png',
         description: 'Dải lụa bước lên trời, tùy phong khởi vũ, đạp vân tiêu. Cùng cấp với [[phong_loi_si|Phong Lôi Sí]].',
         price: 1800000,
@@ -2128,7 +2128,7 @@ export const ITEMS = {
         id: 'phong_loi_si',
         name: 'Phong Lôi Sí',
         type: 'flightArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/phong-loi-si.svg',
         description: 'Đôi cánh được luyện từ lông vũ của yêu thú lôi hệ và phong hệ cực hiếm. Tốc độ độn thuật vô song, nhưng yêu cầu người sử dụng phải lĩnh ngộ [[phong_loi_quyet_book|Phong Lôi Quyết]] hoặc các [[loi_phap|Lôi Pháp]] để làm nguồn năng lượng kích hoạt.',
         price: 2500000,
@@ -2205,7 +2205,7 @@ export const ITEMS = {
         id: 'nguyen_hop_ngu_cuc_son',
         name: 'Nguyên Hợp Ngũ Cực Sơn',
         type: 'attackArtifact',
-        quality: 'Tiên Khí',
+        quality: 'Danh Khí',
         image: 'artifacts/nguyen-hop-ngu-cuc-son.svg',
         description: 'Bảo vật trấn phái được hợp nhất từ: [[nguyen_tu_cuc_son|Nguyên Từ]], [[bac_cuc_nguyen_quang_cuc_son|Bắc Cực]], [[hao_am_han_phach_cuc_son|Hạo Âm]], [[thai_at_thanh_quang_cuc_son|Thái Ất]] và [[am_duong_dai_ngu_hanh_cuc_son|Âm Dương]]. Uy lực trấn áp càn khôn.',
         price: 10000000,
@@ -2216,3 +2216,4 @@ export const ITEMS = {
 };
 
 export const getItemById = (id) => ITEMS[id];
+

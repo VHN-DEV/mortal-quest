@@ -1270,13 +1270,7 @@ export class Player {
     }
 
     getEquipSlotForItemType(itemType) {
-        const legacyMap = {
-            weapon: 'attackArtifact',
-            armor: 'defenseArtifact',
-            treasure: 'supportArtifact',
-            accessory: 'soulArtifact'
-        };
-        return legacyMap[itemType] || itemType;
+        return itemType;
     }
 
     recognizeArtifact(slot) {
@@ -1895,10 +1889,6 @@ export class Player {
         this.totalSpent = data.totalSpent || 0;
         this.vipLevel = data.vipLevel || 0;
         
-        // Migration for old numeric lingShi
-        if (typeof data.lingShi === 'number' && data.lingShi > 0) {
-            this._legacyLingShi = data.lingShi;
-        }
 
         if (data.inventory) {
             this.inventory.load(data.inventory);

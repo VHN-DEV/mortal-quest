@@ -586,15 +586,8 @@ export class UISystem {
             'Cổ Bảo': { color: '#f59e0b', label: 'CỔ BẢO', sfx: 'breakthrough', shake: 'medium' },
             'Linh Bảo': { color: '#ef4444', label: 'LINH BẢO', sfx: 'breakthrough', shake: 'high' },
             'Thông Thiên Linh Bảo': { color: '#d4af37', label: 'THÔNG THIÊN', sfx: 'breakthrough', shake: 'high', flash: true },
-            'Tiên Khí': { color: '#ef4444', label: 'TIÊN KHÍ', sfx: 'breakthrough', shake: 'high', flash: true, rainbow: true },
-            // Legacy/Mapping support
-            'PHAM': { color: '#ffffff', label: 'PHÀM KHÍ', sfx: 'click' },
-            'HOANG': { color: '#10b981', label: 'PHÁP KHÍ', sfx: 'success' },
-            'HUYEN': { color: '#3b82f6', label: 'LINH KHÍ', sfx: 'success' },
-            'DIA': { color: '#8b5cf6', label: 'PHÁP BẢO', sfx: 'breakthrough' },
-            'THIEN': { color: '#f59e0b', label: 'CỔ BẢO', sfx: 'breakthrough' },
-            'TIEN': { color: '#ef4444', label: 'LINH BẢO', sfx: 'breakthrough' },
-            'THAN': { color: '#d4af37', label: 'THÔNG THIÊN', sfx: 'breakthrough' }
+            'Tiên Khí': { color: '#4fd1c5', label: 'TIÊN KHÍ', sfx: 'breakthrough', shake: 'high', flash: true, rainbow: true },
+            'Danh Khí': { color: '#f87171', label: 'DANH KHÍ', sfx: 'thunder', shake: 'high', flash: true, premium: true },
         };
 
         return new Promise(async (resolve) => {
@@ -602,7 +595,7 @@ export class UISystem {
             overlay.classList.add('flex', 'opacity-100');
 
             for (const item of lootItems) {
-                const config = rarityConfigs[item.quality] || rarityConfigs.PHAM;
+                const config = rarityConfigs[item.quality] || rarityConfigs['Phàm Khí'];
                 
                 // Clear previous item
                 container.innerHTML = '';

@@ -3,7 +3,6 @@ import { logger } from '../utils/logger.js';
 
 const SAVE_PREFIX = 'mortal_quest_save_';
 const METADATA_KEY = 'mortal_quest_metadata';
-const LEGACY_SAVE_KEY = 'mortal_quest_save';
 const LAST_SLOT_KEY = 'mortal_quest_last_slot';
 
 /**
@@ -131,41 +130,6 @@ export const SaveSystem = {
         return false;
     },
 
-    /**
-     * Di cư dữ liệu cũ (Legacy) sang Slot 1 nếu có
-     */
-    migrateLegacySave: async () => {
-        // Kiểm tra cả localStorage (cho web cũ) và Preferences
-        let legacyData = localStorage.getItem(LEGACY_SAVE_KEY);
-        
-        if (!legacyData) {
-            const { value } = await Preferences.get({ key: LEGACY_SAVE_KEY });
-            legacyData = value;
-        }
-
-        if (legacyData) {
-            try {
-                const data = JSON.parse(legacyData);
-                const metadata = {
-                    name: data.name || 'Vô Danh',
-                    realm: data.realmName || 'Phàm Nhân',
-                    age: data.age || 18,
-                    area: data.currentLocId || 'Thanh Vân Trấn',
-                    playTime: data.playTime || 0,
-                    avatar: data.avatar || 'player_male'
-                };
-                await SaveSystem.save(1, data, metadata);
-                
-                // Xóa dữ liệu cũ
-                localStorage.removeItem(LEGACY_SAVE_KEY);
-                await Preferences.remove({ key: LEGACY_SAVE_KEY });
-                
-                logger.info('save', 'Đã di cư dữ liệu cũ sang Slot 1 thành công.');
-            } catch (e) {
-                console.error('Lỗi khi di cư dữ liệu cũ:', e);
-            }
-        }
-    },
 
     /**
      * Xóa sạch toàn bộ dữ liệu (Reset hoàn toàn)

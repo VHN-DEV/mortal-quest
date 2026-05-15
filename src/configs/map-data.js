@@ -181,7 +181,7 @@ export const WORLDS = {
                 danger: 'tu_dia',
                 image: getLocImg('cuu_trong_thien'),
                 description: 'Nơi ở của các Tiên nhân và Đạo tổ vĩnh hằng.',
-                resources: ['Tiên Khí', 'Đạo Quả'],
+                resources: ['Tiên Khí', 'Đạo Quả', 'Danh Khí'],
                 energies: [{ type: 'tien_khi', concentration: 300, purity: 'DAO' }, { type: 'hong_mong_tu_khi', concentration: 5, purity: 'DAO' }, { type: 'hon_don_khi', concentration: 2, purity: 'DAO' }],
                 eventProbs: { combat: 0.6, loot: 0.2, npc: 0.1, empty: 0.1 }
             }

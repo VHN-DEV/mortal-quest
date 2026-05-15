@@ -267,7 +267,7 @@ export class InventoryScreen {
             'soulArtifact': 'Hồn Đạo Pháp Bảo'
         };
 
-        const qualitySuffix = (displayQuality.toLowerCase().includes('khí') || displayQuality.toLowerCase().includes('bảo') || displayQuality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo'].includes(displayQuality)) ? '' : ' Phẩm';
+        const qualitySuffix = (displayQuality.toLowerCase().includes('khí') || displayQuality.toLowerCase().includes('bảo') || displayQuality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(displayQuality)) ? '' : ' Phẩm';
         this.elDetailType.textContent = `${displayQuality}${qualitySuffix} | ${typeNames[itemData.type] || itemData.type}`;
 
         this.elDetailDesc.textContent = itemData.description;
@@ -443,6 +443,7 @@ export class InventoryScreen {
             'Linh Bảo': 'linh-bao', 
             'Thông Thiên Linh Bảo': 'thong-thien', 
             'Tiên Khí': 'tien-khi',
+            'Danh Khí': 'danh-khi',
             // Compatibility for sub-qualities if they appear in metadata
             'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
         };

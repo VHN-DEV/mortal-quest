@@ -194,71 +194,71 @@ export const CREATION_ARTIFACTS = {
     'chuong_thien_binh': {
         id: 'chuong_thien_binh', name: 'Chưởng Thiên Bình', cost: 150,
         desc: 'Bình thần hấp thụ tinh hoa nhật nguyệt, sinh linh dịch thúc đẩy linh thảo trưởng thành nhanh chóng.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'hu_thien_dinh': {
         id: 'hu_thien_dinh', name: 'Hư Thiên Đỉnh', cost: 150,
         desc: 'Bên trong chứa không gian bí ẩn, có thể trấn áp vạn pháp, luyện hóa vạn vật.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'vo_dinh_tieu_dao_cam': {
         id: 'vo_dinh_tieu_dao_cam', name: 'Vô Định Tiêu Dao Cầm', cost: 150,
         desc: 'Tiếng đàn có thể tàng hình sơn hà, giúp đạo hữu tiêu diêu tự tại giữa trời đất.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'van_tinh_nho_quan': {
         id: 'van_tinh_nho_quan', name: 'Văn Tinh Nho Quán', cost: 150,
         desc: 'Mũ nho sĩ chứa hạo nhiên chính khí, giúp tăng ngộ tính và trấn áp tà ma.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'that_thai_huyen_nghien': {
         id: 'that_thai_huyen_nghien', name: 'Thất Thái Huyền Nghiên', cost: 150,
         desc: 'Nghiên mực bảy màu, giúp tăng tốc độ tu luyện và lĩnh ngộ thiên đạo.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'te_hon_toa': {
         id: 'te_hon_toa', name: 'Tế Hồn Tỏa', cost: 150,
         desc: 'Xiềng xích tế hồn, tăng mạnh khả năng xuyên thấu linh hồn và hút máu.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'luyen_phong_thach': {
         id: 'luyen_phong_thach', name: 'Luyện Phong Thạch', cost: 150,
         desc: 'Viên đá luyện từ cuồng phong, tăng mạnh công kích và tốc độ độn thuật.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'kim_than_xa_loi': {
         id: 'kim_than_xa_loi', name: 'Kim Thân Xá Lợi', cost: 150,
         desc: 'Hạt xá lợi vạn pháp bất xâm, tăng mạnh phòng thủ và sinh mệnh.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'duong_kiem_ho': {
         id: 'duong_kiem_ho', name: 'Dưỡng Kiếm Hồ', cost: 150,
         desc: 'Bầu rượu dưỡng kiếm, tăng mạnh tỉ lệ bạo kích và sát thương bạo kích.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'cuu_mach_linh_cham': {
         id: 'cuu_mach_linh_cham', name: 'Cửu Mạch Linh Châm', cost: 150,
         desc: 'Châm thần nghịch chuyển âm dương, có khả năng hồi thiên tục mệnh.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'co_luyen_lung': {
         id: 'co_luyen_lung', name: 'Cổ Luyện Lũng', cost: 150,
         desc: 'Lồng nuôi cổ trùng, tăng mạnh sát khí và kháng độc tố.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'chan_vu_nho_quan': {
         id: 'chan_vu_nho_quan', name: 'Chân Vũ Nho Quán', cost: 150,
         desc: 'Bản hoàn thiện của Chân Vũ Nho Quán, cung cấp phòng ngự tuyệt đối.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'bo_thien_lang': {
         id: 'bo_thien_lang', name: 'Bộ Thiên Lăng', cost: 150,
         desc: 'Dải lụa bước lên trời, tăng mạnh tốc độ và vận khí.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     },
     'phong_loi_si': {
         id: 'phong_loi_si', name: 'Phong Lôi Sí', cost: 150,
         desc: 'Đôi cánh Phong Lôi, mang lại tốc độ độn thuật vô song.',
-        rarity: 'Tiên Khí'
+        rarity: 'Danh Khí'
     }
 };

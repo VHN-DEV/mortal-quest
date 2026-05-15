@@ -103,8 +103,6 @@ export class Game {
 
         state.systems.creation = new CreationSystem();
 
-        await SaveSystem.migrateLegacySave();
-        
         const lastSlot = await SaveSystem.getLastSlot();
         
         if (lastSlot) {
@@ -1499,7 +1497,7 @@ export class Game {
             }
 
             const quality = (metadata && metadata.quality) || itemData.quality || 'Phàm Khí';
-            const flashyQualities = ['Pháp Bảo', 'Cổ Bảo', 'Linh Bảo', 'Thông Thiên Linh Bảo', 'Tiên Khí'];
+            const flashyQualities = ['Pháp Bảo', 'Cổ Bảo', 'Linh Bảo', 'Thông Thiên Linh Bảo', 'Tiên Khí', 'Danh Khí'];
             
             // Check for legendary appearance trigger (items with poem)
             if (itemData.poem) {

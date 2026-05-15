@@ -15,7 +15,31 @@ export function getQualityClass(quality) {
         'Linh Bảo': 'linh-bao', 
         'Thông Thiên Linh Bảo': 'thong-thien', 
         'Tiên Khí': 'tien-khi',
-        // Compatibility for sub-qualities if they appear in metadata
+        'Danh Khí': 'danh-khi',
+        
+        // Công Pháp (Giai system)
+        'Phàm Giai': 'pham-khi',
+        'Hoàng Giai': 'phap-khi',
+        'Huyền Giai': 'linh-khi',
+        'Địa Giai': 'phap-bao',
+        'Thiên Giai': 'co-bao',
+        'Linh Giai': 'linh-bao',
+        'Thánh Giai': 'thong-thien',
+        'Tiên Giai': 'tien-khi',
+        'Đế Giai': 'danh-khi',
+        'Đạo Giai': 'danh-khi',
+
+        // Dị Hỏa / Dị Lôi
+        'Phàm Hỏa': 'pham-khi', 'Phàm Lôi': 'pham-khi',
+        'Linh Hỏa': 'linh-khi', 'Linh Lôi': 'linh-khi',
+        'Địa Hỏa': 'phap-bao', 'Địa Lôi': 'phap-bao',
+        'Thiên Hỏa': 'co-bao', 'Thiên Lôi': 'co-bao',
+        'Thánh Hỏa': 'thong-thien', 'Thánh Lôi': 'thong-thien',
+        'Tiên Hỏa': 'tien-khi', 'Tiên Lôi': 'tien-khi',
+        'Đạo Hỏa': 'danh-khi', 'Đạo Lôi': 'danh-khi',
+        'Hồng Mông Tổ Hỏa': 'danh-khi', 'Tổ Lôi': 'danh-khi',
+
+        // Compatibility
         'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
     };
     return map[quality] || 'pham';
@@ -49,7 +73,7 @@ export function renderItemCard(item, options = {}) {
                 <div>
                     <div class="text-sm font-bold text-white">${item.name}</div>
                     <div class="text-[9px] font-bold quality-${qClass}">
-                        ${item.quality}${(item.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo'].includes(item.quality)) ? '' : ' phẩm'} 
+                        ${item.quality}${(item.quality.toLowerCase().includes('khí') || item.quality.toLowerCase().includes('bảo') || item.quality.toLowerCase().includes('phẩm') || item.quality.toLowerCase().includes('giai') || item.quality.toLowerCase().includes('hỏa') || item.quality.toLowerCase().includes('lôi') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(item.quality)) ? '' : ' phẩm'} 
                         ${showStock ? `| Kho: ${stock}` : ''}
                         ${showQuantity ? `| x${quantity}` : ''}
                     </div>

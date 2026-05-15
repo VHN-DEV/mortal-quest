@@ -10,7 +10,8 @@ export const ARTIFACT_TIERS = {
     CO_BAO: { id: 'Cổ Bảo', name: 'Cổ Bảo', requirement: 'Nguyên Anh', color: '#f59e0b' },
     LINH_BAO: { id: 'Linh Bảo', name: 'Linh Bảo', requirement: 'Hóa Thần', color: '#ef4444' },
     THONG_THIEN: { id: 'Thông Thiên Linh Bảo', name: 'Thông Thiên Linh Bảo', requirement: 'Luyện Hư', color: '#d4af37' },
-    TIEN_KHI: { id: 'Tiên Khí', name: 'Tiên Khí', requirement: 'Đại Thừa', color: 'rainbow' }
+    TIEN_KHI: { id: 'Tiên Khí', name: 'Tiên Khí', requirement: 'Đại Thừa', color: 'rainbow' },
+    DANH_KHI: { id: 'Danh Khí', name: 'Danh Khí', requirement: 'Chân Tiên', color: '#f87171' }
 };
 
 export const ARTIFACT_QUALITIES = {

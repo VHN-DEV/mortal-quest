@@ -12,7 +12,7 @@ export const DI_HOA_DATA = [
         description: "Vị thế tối cao trong vạn hỏa, là vua của các loài lửa. Thực tế nó là một loại dị hỏa sinh ra từ linh khí thiên địa, sau đó thôn phệ toàn bộ 22 loại dị hỏa khác để đạt đến cảnh giới tối cao.",
         origin: "Thiên địa linh khí tích tụ",
         special: "Thao túng vạn hỏa, thực lực tương đương Đấu Đế. Tự xưng là Đế Viêm.",
-        rarity: "Thần Thoại"
+        rarity: "Hồng Mông Tổ Hỏa"
     },
     {
         rank: 2,
@@ -22,7 +22,7 @@ export const DI_HOA_DATA = [
         description: "Sinh ra trong hư vô, không có hình dạng cố định, có khả năng thôn phệ vạn vật, ngay cả không gian và thời gian cũng không ngoại lệ.",
         origin: "Hư vô không gian",
         special: "Thôn phệ linh hồn và đấu khí, giúp người sở hữu duy trì huyết mạch gia tộc.",
-        rarity: "Thần"
+        rarity: "Đạo Hỏa"
     },
     {
         rank: 3,
@@ -32,7 +32,7 @@ export const DI_HOA_DATA = [
         description: "Dị hỏa thần bí có khả năng tịnh hóa vạn vật. Bất kỳ thứ gì dính phải đều bị thanh lọc thành hư vô. Có linh trí cực cao, có thể hóa thành hình người.",
         origin: "Yêu Hỏa không gian",
         special: "Tịnh hóa vạn vật, thi triển Mộng Yểm Thiên Vụ khiến hàng triệu người chìm trong ảo giác.",
-        rarity: "Thần"
+        rarity: "Đạo Hỏa"
     },
     {
         rank: 4,
@@ -42,7 +42,7 @@ export const DI_HOA_DATA = [
         description: "Ngọn lửa truyền thừa của Cổ tộc, nổi tiếng với khả năng đốt cháy cả không gian và đấu khí. Là một trong những loại dị hỏa đáng sợ nhất thời cổ đại.",
         origin: "Cổ giới truyền thừa",
         special: "Thiêu rụi không gian cường giả Đấu Thánh tạo ra.",
-        rarity: "Thần"
+        rarity: "Đạo Hỏa"
     },
     {
         rank: 5,
@@ -132,7 +132,7 @@ export const DI_HOA_DATA = [
         description: "Ngọn lửa có hình dạng như mai rùa khổng lồ, ẩn chứa sức phòng ngự địa chất ngàn năm.",
         origin: "Địa tầng nham thạch",
         special: "Phòng ngự tuyệt đối, khắc chế thủy hệ.",
-        rarity: "Thiên"
+        rarity: "Thiên Hỏa"
     },
     {
         rank: 14,
@@ -142,7 +142,7 @@ export const DI_HOA_DATA = [
         description: "Được mệnh danh là 'Công cụ gian lận tu luyện', ngọn lửa này sinh ra từ tâm, có thể tôi luyện đấu khí ngày đêm không ngừng.",
         origin: "Địa tâm nham tương",
         special: "Tăng tốc độ tu luyện cực lớn, triệu hồi hỏa tâm thiêu đốt nội tạng đối thủ.",
-        rarity: "Thiên"
+        rarity: "Thiên Hỏa"
     },
     {
         rank: 15,
@@ -152,7 +152,7 @@ export const DI_HOA_DATA = [
         description: "Ngọn lửa kỳ lạ sinh ra từ đáy biển sâu, nơi giao thoa giữa thủy và hỏa linh khí.",
         origin: "Vực thẳm đại dương",
         special: "Hỏa lực mang đặc tính của nước, biến hóa khôn lường.",
-        rarity: "Thiên"
+        rarity: "Thiên Hỏa"
     },
     {
         rank: 16,
@@ -162,7 +162,7 @@ export const DI_HOA_DATA = [
         description: "Ngọn lửa trông như đám mây trôi nổi trên mặt nước, mang vẻ đẹp thoát tục nhưng chứa đựng sức nóng đáng sợ.",
         origin: "Vân hải mịt mù",
         special: "Khả năng ẩn nấp và tấn công bất ngờ.",
-        rarity: "Thiên"
+        rarity: "Thiên Hỏa"
     },
     {
         rank: 17,
@@ -172,7 +172,7 @@ export const DI_HOA_DATA = [
         description: "Sinh ra từ tâm núi lửa hoạt động hàng vạn năm, mang theo cơn giận dữ của lòng đất.",
         origin: "Miệng núi lửa cổ đại",
         special: "Diện tích sát thương cực rộng, có thể gây ra núi lửa phun trào.",
-        rarity: "Thiên"
+        rarity: "Thiên Hỏa"
     },
     {
         rank: 18,
@@ -182,7 +182,7 @@ export const DI_HOA_DATA = [
         description: "Ra đời trong mắt bão của những cơn lốc xoáy sa mạc, kết hợp sức mạnh của gió và lửa.",
         origin: "Sa mạc bão tố",
         special: "Tốc độ và sức xuyên phá cực cao.",
-        rarity: "Địa"
+        rarity: "Địa Hỏa"
     },
     {
         rank: 19,
@@ -192,7 +192,7 @@ export const DI_HOA_DATA = [
         description: "Ngàn năm nở một đóa sen xanh dưới lòng đất. Uy lực có thể gây ra chấn động địa tầng.",
         origin: "Địa tâm dung nham",
         special: "Giúp bình tâm tĩnh khí khi tu luyện, tránh tẩu hỏa nhập ma.",
-        rarity: "Địa"
+        rarity: "Địa Hỏa"
     },
     {
         rank: 20,
@@ -202,7 +202,7 @@ export const DI_HOA_DATA = [
         description: "Truyền thuyết kể rằng ngọn lửa này sinh ra từ nơi táng thân của Long tộc và Phượng tộc cổ đại.",
         origin: "Viễn cổ di tích",
         special: "Mang theo uy áp viễn cổ, áp chế ma thú.",
-        rarity: "Địa"
+        rarity: "Địa Hỏa"
     },
     {
         rank: 21,
@@ -212,7 +212,7 @@ export const DI_HOA_DATA = [
         description: "Ngọn lửa chứa đựng quy luật luân hồi, có thể khiến đối thủ rơi vào vòng xoáy thời gian.",
         origin: "Luân hồi chi địa",
         special: "Khả năng tước đoạt sinh mệnh lực.",
-        rarity: "Huyền"
+        rarity: "Linh Hỏa"
     },
     {
         rank: 22,
@@ -222,7 +222,7 @@ export const DI_HOA_DATA = [
         description: "Sinh ra từ linh hồn của vạn con ma thú, mang theo bản năng chiến đấu hoang dã.",
         origin: "Vạn Thú cương",
         special: "Triệu hồi linh ảnh ma thú hỗ trợ chiến đấu.",
-        rarity: "Huyền"
+        rarity: "Linh Hỏa"
     },
     {
         rank: 23,
@@ -232,7 +232,7 @@ export const DI_HOA_DATA = [
         description: "Ngọn lửa mang khí tức của đất trời sơ khai, tuy xếp cuối bảng nhưng vẫn vượt xa phàm hỏa.",
         origin: "Địa mạch sơ khai",
         special: "Căn cơ vững chãi, hỗ trợ rèn luyện thể chất.",
-        rarity: "Hoàng"
+        rarity: "Phàm Hỏa"
     }
 ];
 

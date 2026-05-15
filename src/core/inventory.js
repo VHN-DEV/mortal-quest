@@ -232,11 +232,21 @@ export class Inventory {
     }
 
     sortItems() {
+        const qualityMap = {
+            'Phàm Khí': 1, 'Pháp Khí': 2, 'Linh Khí': 3, 'Pháp Bảo': 4, 'Cổ Bảo': 5, 'Linh Bảo': 6, 'Thông Thiên Linh Bảo': 7, 'Tiên Khí': 8, 'Danh Khí': 9
+        };
+
         this.items.sort((a, b) => {
             const itemA = getItemById(a.id);
             const itemB = getItemById(b.id);
             if (!itemA || !itemB) return 0;
+            
             if (itemA.type !== itemB.type) return itemA.type.localeCompare(itemB.type);
+            
+            const qA = qualityMap[itemA.quality] || 0;
+            const qB = qualityMap[itemB.quality] || 0;
+            if (qA !== qB) return qB - qA; // Higher quality first
+            
             return itemA.name.localeCompare(itemB.name);
         });
     }

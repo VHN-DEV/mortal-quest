@@ -446,7 +446,8 @@ export class SystemsScreen {
             { id: 'Cổ Bảo', name: 'Cổ Bảo' },
             { id: 'Linh Bảo', name: 'Linh Bảo' },
             { id: 'Thông Thiên Linh Bảo', name: 'Thông Thiên Linh Bảo' },
-            { id: 'Tiên Khí', name: 'Tiên Khí' }
+            { id: 'Tiên Khí', name: 'Tiên Khí' },
+            { id: 'Danh Khí', name: 'Danh Khí' }
         ];
 
         this.elShopQualityFilterNav.classList.remove('hidden');
@@ -516,7 +517,7 @@ export class SystemsScreen {
                 <div class="text-2xl bg-black/60 p-2 rounded-lg border border-${qClass}/30">${itemData.image ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
                 <div>
                     <div class="text-sm font-bold text-white">${itemData.name}</div>
-                    <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality}${(itemData.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo'].includes(itemData.quality)) ? '' : ' phẩm'} | Kho: ${item.stock}</div>
+                    <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality}${(itemData.quality.toLowerCase().includes('khí') || itemData.quality.toLowerCase().includes('bảo') || itemData.quality.toLowerCase().includes('phẩm') || itemData.quality.toLowerCase().includes('giai') || itemData.quality.toLowerCase().includes('hỏa') || itemData.quality.toLowerCase().includes('lôi') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(itemData.quality)) ? '' : ' phẩm'} | Kho: ${item.stock}</div>
                 </div>
             `;
 
@@ -887,6 +888,7 @@ export class SystemsScreen {
             'Linh Bảo': 'linh-bao', 
             'Thông Thiên Linh Bảo': 'thong-thien', 
             'Tiên Khí': 'tien-khi',
+            'Danh Khí': 'danh-khi',
             // Compatibility for sub-qualities if they appear in metadata
             'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
         };
@@ -1559,7 +1561,7 @@ export class SystemsScreen {
                 <div class="text-6xl p-6 bg-white/5 rounded-full border border-white/10">${data.icon || '📜'}</div>
                 <div>
                     <h3 class="text-2xl font-ancient text-white">${data.name}</h3>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${data.quality || 'Phàm Khí'}${((data.quality || 'Phàm Khí').toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo'].includes(data.quality || 'Phàm Khí')) ? '' : ' Phẩm'} | ${stageName}</p>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${data.quality || 'Phàm Khí'}${((data.quality || 'Phàm Khí').toLowerCase().includes('khí') || (data.quality || 'Phàm Khí').toLowerCase().includes('bảo') || (data.quality || 'Phàm Khí').toLowerCase().includes('phẩm') || (data.quality || 'Phàm Khí').toLowerCase().includes('giai') || (data.quality || 'Phàm Khí').toLowerCase().includes('hỏa') || (data.quality || 'Phàm Khí').toLowerCase().includes('lôi') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(data.quality || 'Phàm Khí')) ? '' : ' Phẩm'} | ${stageName}</p>
                 </div>
             </div>
 

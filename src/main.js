@@ -644,14 +644,14 @@ window.renderCreationScreen = () => {
     const elArtifacts = document.getElementById('creation-artifacts-list');
     if (elArtifacts) {
         const RARITY_COLOR = {
-            'Tiên Khí':             { text: 'text-cyan-400', bg: 'rgba(34,211,238,0.1)', border: 'rgba(34,211,238,0.4)' },
-            'Thông Thiên Linh Bảo': { text: 'text-pink-400', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)' },
-            'Linh Bảo':             { text: 'text-cultivation-gold', bg: 'rgba(212,175,55,0.1)', border: 'rgba(212,175,55,0.3)' },
-            'Cổ Bảo':               { text: 'text-purple-400', bg: 'rgba(168,85,247,0.1)', border: 'rgba(168,85,247,0.3)' },
-            'Kỳ Trùng':             { text: 'text-emerald-400', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)' },
+            'Danh Khí':             { text: 'text-red-400', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' },
+            'Tiên Khí':             { text: 'text-cyan-400', bg: 'rgba(34,211,238,0.1)', border: 'rgba(34,211,238,0.3)' },
+            'Thông Thiên Linh Bảo': { text: 'text-amber-400', bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.3)' },
         };
 
-        elArtifacts.innerHTML = Object.values(CREATION_ARTIFACTS).map(a => {
+        elArtifacts.innerHTML = Object.values(CREATION_ARTIFACTS)
+            .filter(a => a.id === 'none' || a.rarity === 'Danh Khí')
+            .map(a => {
             const active = sys.selectedArtifact === a.id;
             const isNone = a.id === 'none';
             const col = RARITY_COLOR[a.rarity] || { text: 'text-gray-400', bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.1)' };

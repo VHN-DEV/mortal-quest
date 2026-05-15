@@ -19,7 +19,8 @@ export class PhapBaoLucScreen {
             'Cổ Bảo',
             'Linh Bảo',
             'Thông Thiên Linh Bảo',
-            'Tiên Khí'
+            'Tiên Khí',
+            'Danh Khí'
         ];
 
         this.typeNames = {
@@ -176,7 +177,8 @@ export class PhapBaoLucScreen {
             'Cổ Bảo': '#f59e0b',
             'Linh Bảo': '#ef4444',
             'Thông Thiên Linh Bảo': '#d4af37',
-            'Tiên Khí': '#facc15'
+            'Tiên Khí': '#facc15',
+            'Danh Khí': '#f87171'
         };
         return colors[quality] || '#ffffff';
     }
