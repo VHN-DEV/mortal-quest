@@ -19,6 +19,14 @@ export const getAssetUrl = (path) => {
     if (path.includes('.')) {
         const fullPath = `../assets/images/${path}`;
         if (allImages[fullPath]) return allImages[fullPath];
+
+        // Nếu không tìm thấy, thử tìm phiên bản .webp của nó (đặc biệt cho dữ liệu cũ từ save)
+        const webpPath = path.replace(/\.(png|jpg|jpeg)$/i, '.webp');
+        if (webpPath !== path) {
+            const fullWebpPath = `../assets/images/${webpPath}`;
+            if (allImages[fullWebpPath]) return allImages[fullWebpPath];
+        }
+
         // Thử fix path nếu nó bắt đầu bằng / hoặc ./
         const cleanPath = path.replace(/^\.?\//, '');
         const fullCleanPath = `../assets/images/${cleanPath}`;
