@@ -5,12 +5,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
-    <link rel="icon" type="image/png" href="./assets/logo-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-CbIWUkip.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BxmV3ulA.css">
+    <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
+  <script type="module" crossorigin src="./assets/index-D3akzUNH.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
+  <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
+  <link rel="stylesheet" crossorigin href="./assets/index-Cox1mf2q.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
+
+    <!-- Loading Screen (Splash) -->
+    <div id="loading-screen"
+        class="fixed inset-0 z-[1000] bg-black flex flex-col items-center justify-center transition-all duration-700">
+        <div class="relative w-48 h-48 mb-8">
+            <div class="absolute inset-0 border-2 border-cultivation-gold/20 rounded-full animate-spin-slow"></div>
+            <div class="absolute inset-4 border border-qi-blue/20 rounded-full animate-spin-slow"
+                style="animation-direction: reverse;"></div>
+            <img src="./assets/logo-ttLQTlIv.webp"
+                class="absolute inset-8 w-32 h-32 object-contain animate-pulse">
+        </div>
+        <div class="w-64 space-y-4">
+            <div class="flex justify-between items-end">
+                <span id="loading-text"
+                    class="text-[10px] font-ancient text-cultivation-gold uppercase tracking-[0.3em] animate-pulse">Đang
+                    thu nạp linh khí...</span>
+                <span id="loading-percent" class="text-xs font-mono text-qi-blue">0%</span>
+            </div>
+            <div
+                class="h-1 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 shadow-[0_0_10px_rgba(79,209,197,0.1)]">
+                <div id="loading-bar"
+                    class="h-full bg-gradient-to-r from-qi-blue to-qi-purple transition-all duration-300 shadow-[0_0_15px_rgba(79,209,197,0.5)]"
+                    style="width: 0%"></div>
+            </div>
+        </div>
+        <p class="absolute bottom-12 text-[9px] text-gray-600 italic font-ancient opacity-60">"Đường tu tiên vạn dặm,
+            khởi đầu tự bước chân..."</p>
+    </div>
 
     <!-- Desktop Vignette & Background Overlay -->
     <div
@@ -22,13 +52,85 @@
     <div id="app"
         class="relative h-screen w-full max-w-md mx-auto bg-black flex flex-col shadow-2xl shadow-qi-purple/20">
 
+        <!-- Loot Acquired Overlay -->
+        <div id="loot-overlay"
+            class="fixed inset-0 z-[1200] hidden flex-col items-center justify-center bg-black/90 backdrop-blur-md transition-all duration-500 pointer-events-auto">
+            <div id="loot-magic-circle"
+                class="absolute w-[600px] h-[600px] pointer-events-none opacity-0 transition-opacity duration-1000">
+                <svg viewBox="0 0 200 200" class="w-full h-full animate-spin-slow opacity-20">
+                    <circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="0.5"
+                        stroke-dasharray="1,2" />
+                    <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="1" />
+                    <path d="M100 10 L110 90 L190 100 L110 110 L100 190 L90 110 L10 100 L90 90 Z" fill="none"
+                        stroke="currentColor" stroke-width="0.5" />
+                    <circle cx="100" cy="100" r="40" fill="none" stroke="currentColor" stroke-width="0.5"
+                        stroke-dasharray="4,4" />
+                </svg>
+            </div>
+            <div id="loot-container" class="relative z-10 flex flex-col items-center w-full">
+                <!-- Content injected via JS -->
+            </div>
+            <div id="loot-continue-hint"
+                class="absolute bottom-12 text-white/40 text-[9px] font-ancient uppercase tracking-[0.5em] animate-pulse opacity-0">
+                Chạm để tiếp tục
+            </div>
+        </div>
+
+        <!-- Appearance (Xuất Thế) Overlay for Legendary Items -->
+        <div id="appearance-overlay"
+            class="fixed inset-0 z-[1300] hidden flex-col items-center justify-center bg-black transition-all duration-1000 pointer-events-auto overflow-hidden">
+            <div
+                class="appearance-bg-anomaly absolute inset-0 opacity-0 bg-gradient-to-b from-transparent via-cultivation-gold/5 to-transparent">
+            </div>
+
+            <!-- Magic Circle -->
+            <div class="appearance-magic-circle absolute w-[800px] h-[800px] opacity-0 pointer-events-none">
+                <svg viewBox="0 0 200 200" class="w-full h-full text-cultivation-gold/40">
+                    <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="0.2" />
+                    <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" stroke-width="0.5"
+                        stroke-dasharray="4 2" />
+                    <path d="M100 5 L105 30 L130 30 L110 45 L115 70 L100 55 L85 70 L90 45 L70 30 L95 30 Z" fill="none"
+                        stroke="currentColor" stroke-width="0.2" />
+                </svg>
+            </div>
+
+            <!-- Item Display -->
+            <div class="appearance-item-container relative z-10 flex flex-col items-center">
+                <div class="appearance-item-image-wrapper relative w-48 h-48 mb-12 opacity-0 scale-50">
+                    <div
+                        class="appearance-item-glow absolute inset-[-60px] rounded-full blur-[100px] bg-cultivation-gold/30">
+                    </div>
+                    <img id="appearance-item-img" src="" class="w-full h-full object-contain relative z-10">
+                </div>
+
+                <div class="appearance-info text-center space-y-6">
+                    <h2 id="appearance-item-name"
+                        class="text-5xl font-charm text-cultivation-gold text-glow opacity-0 translate-y-4"></h2>
+
+                    <div class="appearance-poem-container space-y-4 min-h-[100px]">
+                        <p id="appearance-poem-1"
+                            class="text-xl font-ancient text-white/90 italic tracking-widest opacity-0"></p>
+                        <p id="appearance-poem-2"
+                            class="text-xl font-ancient text-white/90 italic tracking-widest opacity-0"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="appearance-continue"
+                class="absolute bottom-16 opacity-0 translate-y-4 transition-all duration-500">
+                <button
+                    class="px-12 py-3 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold text-white/40 tracking-[0.6em] uppercase hover:bg-white/10 hover:text-white transition-all">Nghịch
+                    Thiên Cải Mệnh</button>
+            </div>
+        </div>
+
         <!-- Global Header -->
         <header
             class="p-4 bg-gradient-to-b from-black to-transparent border-b border-white/5 flex items-center justify-between z-50">
             <div class="flex items-center space-x-3">
                 <div id="header-portrait-container"
                     class="w-10 h-10 rounded-full border border-cultivation-gold p-0.5 relative cursor-pointer active:scale-90 transition-all hover:shadow-[0_0_15px_rgba(212,175,55,0.4)]">
-                    <img id="header-portrait" src="./assets/player_male-BLeIBiiT.png"
+                    <img id="header-portrait" src="./assets/player_male-DpNHBHn2.webp"
                         class="w-full h-full object-cover rounded-full">
                 </div>
                 <div>
@@ -41,7 +143,8 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <button id="btn-toggle-mute" class="w-8 h-8 flex items-center justify-center bg-black/40 border border-white/5 rounded-full text-gray-500 hover:text-white transition-all active:scale-90">
+                <button id="btn-toggle-mute"
+                    class="w-8 h-8 flex items-center justify-center bg-black/40 border border-white/5 rounded-full text-gray-500 hover:text-white transition-all active:scale-90">
                     <i id="mute-icon" class="ph ph-speaker-high"></i>
                 </button>
                 <div id="header-lingshi-container"
@@ -93,7 +196,8 @@
                     <div class="p-6 md:p-8 space-y-6 md:space-y-8">
                         <div class="relative text-center space-y-1 pt-4">
                             <h2 class="text-3xl md:text-4xl font-charm text-cultivation-gold">Định Hình Tiên Duyên</h2>
-                            <p class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest">Mỗi lựa chọn là một nhân quả</p>
+                            <p class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest">Mỗi lựa chọn là
+                                một nhân quả</p>
                         </div>
 
                         <!-- Mode Selection -->
@@ -184,7 +288,8 @@
                                     class="text-[10px] md:text-xs font-ancient text-cultivation-gold uppercase tracking-widest border-l-2 border-cultivation-gold pl-3">
                                     Linh Căn</h3>
                                 <div id="creation-roots-grid" class="grid gap-2 md:gap-3"></div>
-                                <div id="creation-root-elements" class="grid grid-cols-1 gap-2 md:gap-3 mt-4 hidden"></div>
+                                <div id="creation-root-elements" class="grid grid-cols-1 gap-2 md:gap-3 mt-4 hidden">
+                                </div>
                             </section>
 
                             <!-- Physiques -->
@@ -286,60 +391,81 @@
                             <!-- Intro -->
                             <section class="space-y-3">
                                 <div class="flex items-center space-x-3 text-cultivation-gold mb-2">
-                                    <div class="w-10 h-10 bg-cultivation-gold/10 rounded-xl flex items-center justify-center">
+                                    <div
+                                        class="w-10 h-10 bg-cultivation-gold/10 rounded-xl flex items-center justify-center">
                                         <i class="ph ph-scroll text-xl"></i>
                                     </div>
                                     <h4 class="text-sm font-ancient uppercase tracking-widest">Khởi Đầu Hành Trình</h4>
                                 </div>
                                 <p class="text-[11px] text-gray-400 leading-relaxed italic">
-                                    Chào mừng đạo hữu bước chân vào thế giới của <span class="text-white font-bold">Mortal Quest</span>. Một thế giới tu tiên rộng lớn nơi mỗi quyết định của bạn đều dẫn đến những nhân quả khác nhau.
+                                    Chào mừng đạo hữu bước chân vào thế giới của <span
+                                        class="text-white font-bold">Mortal Quest</span>. Một thế giới tu tiên rộng lớn
+                                    nơi mỗi quyết định của bạn đều dẫn đến những nhân quả khác nhau.
                                 </p>
                             </section>
 
                             <!-- Cultivation Systems -->
                             <section class="space-y-4">
-                                <h4 class="text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">Hệ Thống Tu Luyện</h4>
+                                <h4
+                                    class="text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">
+                                    Hệ Thống Tu Luyện</h4>
                                 <div class="grid grid-cols-1 gap-3">
-                                    <div class="p-3 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
+                                    <div
+                                        class="p-3 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
                                         <div class="flex items-center space-x-2 mb-1">
                                             <i class="ph ph-sparkle text-qi-blue"></i>
-                                            <span class="text-[11px] font-bold text-white uppercase">Tam Đại Cảnh Giới</span>
+                                            <span class="text-[11px] font-bold text-white uppercase">Tam Đại Cảnh
+                                                Giới</span>
                                         </div>
-                                        <p class="text-[10px] text-gray-500">Gồm <span class="text-qi-blue">Tu Vi</span> (tăng công kích), <span class="text-red-400">Luyện Thể</span> (tăng máu/phòng thủ) và <span class="text-qi-purple">Thần Thức</span> (tăng chính xác/may mắn). Hãy cân bằng cả ba để đạt sức mạnh tối thượng.</p>
+                                        <p class="text-[10px] text-gray-500">Gồm <span class="text-qi-blue">Tu Vi</span>
+                                            (tăng công kích), <span class="text-red-400">Luyện Thể</span> (tăng
+                                            máu/phòng thủ) và <span class="text-qi-purple">Thần Thức</span> (tăng chính
+                                            xác/may mắn). Hãy cân bằng cả ba để đạt sức mạnh tối thượng.</p>
                                     </div>
-                                    <div class="p-3 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
+                                    <div
+                                        class="p-3 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
                                         <div class="flex items-center space-x-2 mb-1">
                                             <i class="ph ph-lightning text-cultivation-gold"></i>
-                                            <span class="text-[11px] font-bold text-white uppercase">Đột Phá & Thọ Nguyên</span>
+                                            <span class="text-[11px] font-bold text-white uppercase">Đột Phá & Thọ
+                                                Nguyên</span>
                                         </div>
-                                        <p class="text-[10px] text-gray-500">Mỗi khi đạt giới hạn, bạn cần thực hiện <span class="text-cultivation-gold">Đột Phá</span> để thăng cấp. Mỗi lần thăng cấp sẽ gia tăng <span class="text-green-400">Tuổi Thọ</span>. Hãy cẩn thận, nếu hết thọ nguyên mà chưa đột phá, hành trình sẽ kết thúc.</p>
+                                        <p class="text-[10px] text-gray-500">Mỗi khi đạt giới hạn, bạn cần thực hiện
+                                            <span class="text-cultivation-gold">Đột Phá</span> để thăng cấp. Mỗi lần
+                                            thăng cấp sẽ gia tăng <span class="text-green-400">Tuổi Thọ</span>. Hãy cẩn
+                                            thận, nếu hết thọ nguyên mà chưa đột phá, hành trình sẽ kết thúc.</p>
                                     </div>
                                 </div>
                             </section>
 
                             <!-- Features -->
                             <section class="space-y-4">
-                                <h4 class="text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">Khám Phá & Chiến Đấu</h4>
+                                <h4
+                                    class="text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">
+                                    Khám Phá & Chiến Đấu</h4>
                                 <div class="grid grid-cols-2 gap-2">
                                     <div class="p-3 bg-black/40 rounded-xl border border-white/5">
                                         <i class="ph ph-map-trifold text-qi-purple mb-2 text-lg"></i>
                                         <div class="text-[10px] font-bold text-white mb-1">Đại Giới Khung</div>
-                                        <p class="text-[9px] text-gray-500">Chu du qua nhiều thế giới, từ Phàm Trần đến Tiên Giới.</p>
+                                        <p class="text-[9px] text-gray-500">Chu du qua nhiều thế giới, từ Phàm Trần đến
+                                            Tiên Giới.</p>
                                     </div>
                                     <div class="p-3 bg-black/40 rounded-xl border border-white/5">
                                         <i class="ph ph-sword text-red-400 mb-2 text-lg"></i>
                                         <div class="text-[10px] font-bold text-white mb-1">Chiến Đấu Theo Lượt</div>
-                                        <p class="text-[9px] text-gray-500">Sử dụng bí pháp, pháp bảo để đánh bại yêu thú và địch nhân.</p>
+                                        <p class="text-[9px] text-gray-500">Sử dụng bí pháp, pháp bảo để đánh bại yêu
+                                            thú và địch nhân.</p>
                                     </div>
                                     <div class="p-3 bg-black/40 rounded-xl border border-white/5">
                                         <i class="ph ph-house-line text-qi-jade mb-2 text-lg"></i>
                                         <div class="text-[10px] font-bold text-white mb-1">Tông Môn & Xã Giao</div>
-                                        <p class="text-[9px] text-gray-500">Gia nhập môn phái, kết giao đạo hữu, thành lập thế lực.</p>
+                                        <p class="text-[9px] text-gray-500">Gia nhập môn phái, kết giao đạo hữu, thành
+                                            lập thế lực.</p>
                                     </div>
                                     <div class="p-3 bg-black/40 rounded-xl border border-white/5">
                                         <i class="ph ph-flask text-qi-blue mb-2 text-lg"></i>
                                         <div class="text-[10px] font-bold text-white mb-1">Bách Nghệ</div>
-                                        <p class="text-[9px] text-gray-500">Luyện Đan, Luyện Khí, Chế Phù, Nuôi Thú, Trận Pháp.</p>
+                                        <p class="text-[9px] text-gray-500">Luyện Đan, Luyện Khí, Chế Phù, Nuôi Thú,
+                                            Trận Pháp.</p>
                                     </div>
                                 </div>
                             </section>
@@ -353,15 +479,18 @@
                                 <ul class="text-[10px] text-gray-400 space-y-2 list-none">
                                     <li class="flex items-start">
                                         <span class="text-qi-blue mr-2">●</span>
-                                        <span>Ưu tiên gia tăng <span class="text-white">Linh Thạch</span> thông qua làm nhiệm vụ hoặc cướp bóc để mua tài nguyên.</span>
+                                        <span>Ưu tiên gia tăng <span class="text-white">Linh Thạch</span> thông qua làm
+                                            nhiệm vụ hoặc cướp bóc để mua tài nguyên.</span>
                                     </li>
                                     <li class="flex items-start">
                                         <span class="text-qi-blue mr-2">●</span>
-                                        <span>Sử dụng <span class="text-white">Bế Quan</span> khi muốn tu luyện thụ động hiệu quả cao hơn.</span>
+                                        <span>Sử dụng <span class="text-white">Bế Quan</span> khi muốn tu luyện thụ động
+                                            hiệu quả cao hơn.</span>
                                     </li>
                                     <li class="flex items-start">
                                         <span class="text-qi-blue mr-2">●</span>
-                                        <span>Đừng quên trang bị <span class="text-white">Pháp Bảo</span>, chúng cung cấp những chỉ số cực lớn trong chiến đấu.</span>
+                                        <span>Đừng quên trang bị <span class="text-white">Pháp Bảo</span>, chúng cung
+                                            cấp những chỉ số cực lớn trong chiến đấu.</span>
                                     </li>
                                 </ul>
                             </section>
@@ -369,29 +498,37 @@
                             <!-- Developer Credits -->
                             <section class="mt-10 pt-8 border-t border-white/5 space-y-4">
                                 <div class="flex flex-col items-center text-center">
-                                    <div class="text-[9px] text-gray-500 uppercase tracking-[0.3em] mb-2">Người Sáng Lập</div>
+                                    <div class="text-[9px] text-gray-500 uppercase tracking-[0.3em] mb-2">Người Sáng Lập
+                                    </div>
                                     <h4 class="text-lg font-ancient text-cultivation-gold">VŨ HOÀI NAM</h4>
                                     <div class="w-12 h-0.5 bg-cultivation-gold/30 my-3"></div>
-                                    
+
                                     <div class="flex flex-col space-y-2 w-full max-w-[240px]">
 
-                                        <a href="mailto:vhnam18032002@gmail.com" class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all group">
+                                        <a href="mailto:vhnam18032002@gmail.com"
+                                            class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all group">
                                             <div class="flex items-center">
-                                                <i class="ph ph-envelope text-lg text-gray-400 group-hover:text-white mr-3"></i>
-                                                <span class="text-[10px] text-gray-400 group-hover:text-white">Email</span>
+                                                <i
+                                                    class="ph ph-envelope text-lg text-gray-400 group-hover:text-white mr-3"></i>
+                                                <span
+                                                    class="text-[10px] text-gray-400 group-hover:text-white">Email</span>
                                             </div>
                                             <span class="text-[10px] text-qi-blue">vhnam...</span>
                                         </a>
-                                        <div class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all group">
+                                        <div
+                                            class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all group">
                                             <div class="flex items-center">
-                                                <i class="ph ph-phone text-lg text-gray-400 group-hover:text-white mr-3"></i>
-                                                <span class="text-[10px] text-gray-400 group-hover:text-white">Phone</span>
+                                                <i
+                                                    class="ph ph-phone text-lg text-gray-400 group-hover:text-white mr-3"></i>
+                                                <span
+                                                    class="text-[10px] text-gray-400 group-hover:text-white">Phone</span>
                                             </div>
                                             <span class="text-[10px] text-qi-blue">0382158065</span>
                                         </div>
                                     </div>
-                                    
-                                    <p class="text-[9px] text-gray-600 mt-6 italic">"Đạo khả đạo, phi thường đạo. Danh khả danh, phi thường danh."</p>
+
+                                    <p class="text-[9px] text-gray-600 mt-6 italic">"Đạo khả đạo, phi thường đạo. Danh
+                                        khả danh, phi thường danh."</p>
                                 </div>
                             </section>
                         </div>
@@ -428,7 +565,7 @@
 
                             <div id="aura-border"
                                 class="relative w-56 h-56 rounded-full overflow-hidden border border-cultivation-gold/30 shadow-[0_0_60px_rgba(212,175,55,0.15)] group aura-border">
-                                <img id="main-player-portrait" src="./assets/player_male-BLeIBiiT.png"
+                                <img id="main-player-portrait" src="./assets/player_male-DpNHBHn2.webp"
                                     class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110">
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-qi-ink via-transparent to-transparent">
@@ -600,7 +737,7 @@
                 <div class="grid grid-cols-2 gap-6 mb-6">
                     <!-- Avatar & Equipment Slots -->
                     <div class="relative aspect-[3/4] bg-white/5 rounded-2xl border border-white/10">
-                        <img src="./assets/player_male-BLeIBiiT.png"
+                        <img src="./assets/player_male-DpNHBHn2.webp"
                             class="w-full h-full object-cover rounded-xl opacity-60">
                         <!-- Slots -->
                         <!-- Top -->
@@ -674,9 +811,12 @@
                                         class="text-gray-500 font-ancient">Linh
                                         Lực:</span> <span id="char-mana" class="text-[10px]">50/50</span></div>
                                 <div class="flex justify-between items-center"><span
-                                        class="text-gray-500 font-ancient">Độ Ổn Định:</span> <span id="char-stability" class="text-green-400 text-[10px]">100%</span></div>
+                                        class="text-gray-500 font-ancient">Độ Ổn Định:</span> <span id="char-stability"
+                                        class="text-green-400 text-[10px]">100%</span></div>
                                 <div class="flex justify-between items-center"><span
-                                        class="text-gray-500 font-ancient">Ngộ Tính:</span> <span id="char-comprehension" class="text-cultivation-gold text-[10px]">10</span></div>
+                                        class="text-gray-500 font-ancient">Ngộ Tính:</span> <span
+                                        id="char-comprehension" class="text-cultivation-gold text-[10px]">10</span>
+                                </div>
                                 <div class="flex justify-between pt-2 border-t border-white/5"><span
                                         class="text-gray-500 font-ancient">Tuổi Thọ:</span> <span id="char-age"
                                         class="text-cultivation-gold">18 / 100</span></div>
@@ -2017,8 +2157,10 @@
             <div id="shop-section-nav"
                 class="flex-none w-full min-w-0 custom-scroll-x border-b border-white/5 bg-black/30">
             </div>
-            <div id="shop-subfilter-nav"
-                class="flex-none w-full min-w-0 custom-scroll-x border-b border-white/5 bg-black/20 hidden">
+            <div id="shop-filters-wrap"
+                class="flex-none flex w-full border-b border-white/5 bg-black/20 hidden overflow-hidden px-2">
+                <div id="shop-subfilter-nav" class="flex-1 min-w-0"></div>
+                <div id="shop-quality-filter-nav" class="flex-1 min-w-0"></div>
             </div>
             <div id="shop-buy-view" class="flex-grow min-h-0 overflow-y-auto p-4 space-y-3 custom-scroll"></div>
             <div id="shop-sell-view" class="hidden flex-grow min-h-0 overflow-y-auto p-4 custom-scroll">
@@ -2204,14 +2346,16 @@
         <div id="mining-overlay" class="hidden overlay-full animate-fade-in bg-[#05070a] z-[150]">
             <div class="absolute inset-0 opacity-10 pointer-events-none">
                 <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-qi-blue rounded-full blur-[120px]"></div>
-                <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-qi-purple rounded-full blur-[120px]"></div>
+                <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-qi-purple rounded-full blur-[120px]">
+                </div>
             </div>
-            
+
             <div class="relative z-10 flex flex-col h-full">
                 <!-- Header -->
                 <div class="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
                     <div>
-                        <h2 class="text-2xl font-ancient text-cultivation-gold uppercase tracking-widest">Khai Khoáng Linh Mạch</h2>
+                        <h2 class="text-2xl font-ancient text-cultivation-gold uppercase tracking-widest">Khai Khoáng
+                            Linh Mạch</h2>
                         <div class="flex items-center space-x-2 mt-1">
                             <span id="mining-level-text" class="text-[9px] text-qi-blue font-bold">Cấp 1</span>
                             <div class="w-20 h-1 bg-white/5 rounded-full overflow-hidden">
@@ -2219,15 +2363,20 @@
                             </div>
                         </div>
                     </div>
-                    <button onclick="ui.toggleOverlay('mining-overlay', false)" class="p-2 hover:bg-white/5 rounded-full transition-colors">
+                    <button onclick="ui.toggleOverlay('mining-overlay', false)"
+                        class="p-2 hover:bg-white/5 rounded-full transition-colors">
                         <i class="ph ph-x text-2xl text-gray-500"></i>
                     </button>
                 </div>
 
                 <!-- Tabs -->
                 <div class="flex p-4 space-x-2 bg-black/40 border-b border-white/5">
-                    <button id="mining-tab-nodes" class="flex-grow py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest">Tìm Linh Mạch</button>
-                    <button id="mining-tab-occupied" class="flex-grow py-3 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest">Đang Chiếm Lĩnh</button>
+                    <button id="mining-tab-nodes"
+                        class="flex-grow py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest">Tìm
+                        Linh Mạch</button>
+                    <button id="mining-tab-occupied"
+                        class="flex-grow py-3 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest">Đang
+                        Chiếm Lĩnh</button>
                 </div>
 
                 <!-- Content -->
@@ -2361,19 +2510,29 @@
         </div>
 
         <!-- Dị Hỏa Bảng Overlay -->
-        <div id="di-hoa-bang-overlay" class="hidden overlay-full z-[450] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
-            <div class="w-full max-w-md h-[90vh] bg-[#050505] border border-red-900/30 rounded-[2.5rem] flex flex-col shadow-[0_0_100px_rgba(153,27,27,0.15)] overflow-hidden relative">
+        <div id="di-hoa-bang-overlay"
+            class="hidden overlay-full z-[450] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
+            <div
+                class="w-full max-w-md h-[90vh] bg-[#050505] border border-red-900/30 rounded-[2.5rem] flex flex-col shadow-[0_0_100px_rgba(153,27,27,0.15)] overflow-hidden relative">
                 <!-- Decorative background elements -->
-                <div class="absolute -top-32 -right-32 w-64 h-64 bg-red-600/10 rounded-full blur-[100px] pointer-events-none"></div>
-                <div class="absolute -bottom-32 -left-32 w-64 h-64 bg-orange-600/10 rounded-full blur-[100px] pointer-events-none"></div>
-                
+                <div
+                    class="absolute -top-32 -right-32 w-64 h-64 bg-red-600/10 rounded-full blur-[100px] pointer-events-none">
+                </div>
+                <div
+                    class="absolute -bottom-32 -left-32 w-64 h-64 bg-orange-600/10 rounded-full blur-[100px] pointer-events-none">
+                </div>
+
                 <!-- Header -->
-                <div class="relative z-10 p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-b from-red-950/20 to-transparent">
+                <div
+                    class="relative z-10 p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-b from-red-950/20 to-transparent">
                     <div>
-                        <h2 class="text-3xl font-ancient text-red-500 uppercase tracking-widest drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">Dị Hỏa Bảng</h2>
+                        <h2
+                            class="text-3xl font-ancient text-red-500 uppercase tracking-widest drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+                            Dị Hỏa Bảng</h2>
                         <p class="text-[9px] text-gray-500 uppercase tracking-[0.4em] mt-1">Thiên Địa Kỳ Hỏa Lục</p>
                     </div>
-                    <button id="close-di-hoa-bang-btn" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-500 hover:text-white transition-all active:scale-90">
+                    <button id="close-di-hoa-bang-btn"
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-500 hover:text-white transition-all active:scale-90">
                         <i class="ph ph-x text-2xl"></i>
                     </button>
                 </div>
@@ -2384,21 +2543,27 @@
                 </div>
 
                 <!-- Detail View (Initially Hidden) -->
-                <div id="di-hoa-detail-view" class="hidden relative z-10 flex-grow flex flex-col overflow-y-auto custom-scroll p-6 animate-fade-in">
-                    <button id="back-to-list-btn" class="absolute top-4 left-4 text-gray-500 hover:text-white flex items-center space-x-2 text-[10px] uppercase tracking-widest transition-all">
+                <div id="di-hoa-detail-view"
+                    class="hidden relative z-10 flex-grow flex flex-col overflow-y-auto custom-scroll p-6 animate-fade-in">
+                    <button id="back-to-list-btn"
+                        class="absolute top-4 left-4 text-gray-500 hover:text-white flex items-center space-x-2 text-[10px] uppercase tracking-widest transition-all">
                         <i class="ph ph-arrow-left"></i>
                         <span>Quay lại</span>
                     </button>
-                    
+
                     <div class="mt-8 flex flex-col items-center text-center space-y-6">
-                        <div id="di-hoa-detail-icon-wrap" class="w-32 h-32 rounded-full border-2 border-red-500/30 flex items-center justify-center bg-black/60 shadow-[0_0_30px_rgba(239,68,68,0.2)] relative">
-                             <div class="absolute inset-0 rounded-full animate-ping bg-red-500/5"></div>
-                             <span id="di-hoa-detail-icon" class="text-6xl filter drop-shadow-[0_0_15px_rgba(239,68,68,0.6)]">🔥</span>
+                        <div id="di-hoa-detail-icon-wrap"
+                            class="w-32 h-32 rounded-full border-2 border-red-500/30 flex items-center justify-center bg-black/60 shadow-[0_0_30px_rgba(239,68,68,0.2)] relative">
+                            <div class="absolute inset-0 rounded-full animate-ping bg-red-500/5"></div>
+                            <span id="di-hoa-detail-icon"
+                                class="text-6xl filter drop-shadow-[0_0_15px_rgba(239,68,68,0.6)]">🔥</span>
                         </div>
-                        
+
                         <div class="space-y-1">
-                            <div id="di-hoa-detail-rank" class="text-[10px] font-ancient text-red-500 uppercase tracking-[0.3em]">Hạng 1</div>
-                            <h3 id="di-hoa-detail-name" class="text-3xl font-ancient text-white tracking-widest">Đà Xá Cổ Đế</h3>
+                            <div id="di-hoa-detail-rank"
+                                class="text-[10px] font-ancient text-red-500 uppercase tracking-[0.3em]">Hạng 1</div>
+                            <h3 id="di-hoa-detail-name" class="text-3xl font-ancient text-white tracking-widest">Đà Xá
+                                Cổ Đế</h3>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 w-full">
@@ -2408,21 +2573,28 @@
                             </div>
                             <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
                                 <div class="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Đẳng cấp</div>
-                                <div id="di-hoa-detail-rarity" class="text-xs font-bold text-cultivation-gold">Thần Thoại</div>
+                                <div id="di-hoa-detail-rarity" class="text-xs font-bold text-cultivation-gold">Thần
+                                    Thoại</div>
                             </div>
                         </div>
 
                         <div class="w-full space-y-4 text-left">
                             <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
-                                <h4 class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">Nguồn gốc</h4>
+                                <h4
+                                    class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">
+                                    Nguồn gốc</h4>
                                 <p id="di-hoa-detail-origin" class="text-xs text-gray-300 leading-relaxed italic"></p>
                             </div>
                             <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
-                                <h4 class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">Đặc tính chi tiết</h4>
+                                <h4
+                                    class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">
+                                    Đặc tính chi tiết</h4>
                                 <p id="di-hoa-detail-desc" class="text-xs text-gray-300 leading-relaxed"></p>
                             </div>
                             <div class="bg-red-950/20 rounded-2xl p-5 border border-red-900/20">
-                                <h4 class="text-[9px] text-red-400 uppercase tracking-widest mb-3 border-b border-red-900/10 pb-2">Hiệu ứng đặc biệt</h4>
+                                <h4
+                                    class="text-[9px] text-red-400 uppercase tracking-widest mb-3 border-b border-red-900/10 pb-2">
+                                    Hiệu ứng đặc biệt</h4>
                                 <p id="di-hoa-detail-special" class="text-xs text-red-300 font-bold italic"></p>
                             </div>
                         </div>
@@ -2437,19 +2609,29 @@
         </div>
 
         <!-- Dị Lôi Bảng Overlay -->
-        <div id="di-loi-bang-overlay" class="hidden overlay-full z-[450] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
-            <div class="w-full max-w-md h-[90vh] bg-[#050505] border border-blue-900/30 rounded-[2.5rem] flex flex-col shadow-[0_0_100px_rgba(30,58,138,0.15)] overflow-hidden relative">
+        <div id="di-loi-bang-overlay"
+            class="hidden overlay-full z-[450] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
+            <div
+                class="w-full max-w-md h-[90vh] bg-[#050505] border border-blue-900/30 rounded-[2.5rem] flex flex-col shadow-[0_0_100px_rgba(30,58,138,0.15)] overflow-hidden relative">
                 <!-- Decorative background elements -->
-                <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none"></div>
-                <div class="absolute -bottom-32 -left-32 w-64 h-64 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
-                
+                <div
+                    class="absolute -top-32 -right-32 w-64 h-64 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none">
+                </div>
+                <div
+                    class="absolute -bottom-32 -left-32 w-64 h-64 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none">
+                </div>
+
                 <!-- Header -->
-                <div class="relative z-10 p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-b from-blue-950/20 to-transparent">
+                <div
+                    class="relative z-10 p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-b from-blue-950/20 to-transparent">
                     <div>
-                        <h2 class="text-3xl font-ancient text-blue-500 uppercase tracking-widest drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">Dị Lôi Bảng</h2>
+                        <h2
+                            class="text-3xl font-ancient text-blue-500 uppercase tracking-widest drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                            Dị Lôi Bảng</h2>
                         <p class="text-[9px] text-gray-500 uppercase tracking-[0.4em] mt-1">Cửu Thiên Lôi Đình Lục</p>
                     </div>
-                    <button id="close-di-loi-bang-btn" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-500 hover:text-white transition-all active:scale-90">
+                    <button id="close-di-loi-bang-btn"
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-500 hover:text-white transition-all active:scale-90">
                         <i class="ph ph-x text-2xl"></i>
                     </button>
                 </div>
@@ -2460,21 +2642,27 @@
                 </div>
 
                 <!-- Detail View (Initially Hidden) -->
-                <div id="di-loi-detail-view" class="hidden relative z-10 flex-grow flex flex-col overflow-y-auto custom-scroll p-6 animate-fade-in">
-                    <button id="back-to-loi-list-btn" class="absolute top-4 left-4 text-gray-500 hover:text-white flex items-center space-x-2 text-[10px] uppercase tracking-widest transition-all">
+                <div id="di-loi-detail-view"
+                    class="hidden relative z-10 flex-grow flex flex-col overflow-y-auto custom-scroll p-6 animate-fade-in">
+                    <button id="back-to-loi-list-btn"
+                        class="absolute top-4 left-4 text-gray-500 hover:text-white flex items-center space-x-2 text-[10px] uppercase tracking-widest transition-all">
                         <i class="ph ph-arrow-left"></i>
                         <span>Quay lại</span>
                     </button>
-                    
+
                     <div class="mt-8 flex flex-col items-center text-center space-y-6">
-                        <div id="di-loi-detail-icon-wrap" class="w-32 h-32 rounded-full border-2 border-blue-500/30 flex items-center justify-center bg-black/60 shadow-[0_0_30px_rgba(59,130,246,0.2)] relative">
-                             <div class="absolute inset-0 rounded-full animate-pulse bg-blue-500/5"></div>
-                             <span id="di-loi-detail-icon" class="text-6xl filter drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]">⚡</span>
+                        <div id="di-loi-detail-icon-wrap"
+                            class="w-32 h-32 rounded-full border-2 border-blue-500/30 flex items-center justify-center bg-black/60 shadow-[0_0_30px_rgba(59,130,246,0.2)] relative">
+                            <div class="absolute inset-0 rounded-full animate-pulse bg-blue-500/5"></div>
+                            <span id="di-loi-detail-icon"
+                                class="text-6xl filter drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]">⚡</span>
                         </div>
-                        
+
                         <div class="space-y-1">
-                            <div id="di-loi-detail-rank" class="text-[10px] font-ancient text-blue-500 uppercase tracking-[0.3em]">Hạng 1</div>
-                            <h3 id="di-loi-detail-name" class="text-3xl font-ancient text-white tracking-widest">Hỗn Độn Tử Tiêu Thần Lôi</h3>
+                            <div id="di-loi-detail-rank"
+                                class="text-[10px] font-ancient text-blue-500 uppercase tracking-[0.3em]">Hạng 1</div>
+                            <h3 id="di-loi-detail-name" class="text-3xl font-ancient text-white tracking-widest">Hỗn Độn
+                                Tử Tiêu Thần Lôi</h3>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 w-full">
@@ -2484,21 +2672,28 @@
                             </div>
                             <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
                                 <div class="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Đẳng cấp</div>
-                                <div id="di-loi-detail-rarity" class="text-xs font-bold text-cultivation-gold">Thần Thoại</div>
+                                <div id="di-loi-detail-rarity" class="text-xs font-bold text-cultivation-gold">Thần
+                                    Thoại</div>
                             </div>
                         </div>
 
                         <div class="w-full space-y-4 text-left">
                             <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
-                                <h4 class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">Nguồn gốc</h4>
+                                <h4
+                                    class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">
+                                    Nguồn gốc</h4>
                                 <p id="di-loi-detail-origin" class="text-xs text-gray-300 leading-relaxed italic"></p>
                             </div>
                             <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
-                                <h4 class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">Đặc tính chi tiết</h4>
+                                <h4
+                                    class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">
+                                    Đặc tính chi tiết</h4>
                                 <p id="di-loi-detail-desc" class="text-xs text-gray-300 leading-relaxed"></p>
                             </div>
                             <div class="bg-blue-950/20 rounded-2xl p-5 border border-blue-900/20">
-                                <h4 class="text-[9px] text-blue-400 uppercase tracking-widest mb-3 border-b border-blue-900/10 pb-2">Hiệu ứng đặc biệt</h4>
+                                <h4
+                                    class="text-[9px] text-blue-400 uppercase tracking-widest mb-3 border-b border-blue-900/10 pb-2">
+                                    Hiệu ứng đặc biệt</h4>
                                 <p id="di-loi-detail-special" class="text-xs text-blue-300 font-bold italic"></p>
                             </div>
                         </div>
@@ -2513,61 +2708,86 @@
         </div>
 
         <!-- Linh Thể Lục Overlay -->
-        <div id="linh-the-luc-overlay" class="hidden overlay-full z-[450] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
-            <div class="w-full max-w-md h-[90vh] bg-[#020617] border border-purple-900/30 rounded-[2.5rem] flex flex-col shadow-[0_0_100px_rgba(126,34,206,0.15)] overflow-hidden relative">
+        <div id="linh-the-luc-overlay"
+            class="hidden overlay-full z-[450] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
+            <div
+                class="w-full max-w-md h-[90vh] bg-[#020617] border border-purple-900/30 rounded-[2.5rem] flex flex-col shadow-[0_0_100px_rgba(126,34,206,0.15)] overflow-hidden relative">
                 <!-- Decorative background elements -->
-                <div class="absolute -top-32 -right-32 w-64 h-64 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
-                <div class="absolute -bottom-32 -left-32 w-64 h-64 bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
-                
+                <div
+                    class="absolute -top-32 -right-32 w-64 h-64 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none">
+                </div>
+                <div
+                    class="absolute -bottom-32 -left-32 w-64 h-64 bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none">
+                </div>
+
                 <!-- Header -->
-                <div class="relative z-10 p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-b from-purple-950/20 to-transparent">
+                <div
+                    class="relative z-10 p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-b from-purple-950/20 to-transparent">
                     <div>
-                        <h2 class="text-3xl font-ancient text-purple-400 uppercase tracking-widest drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">Linh Thể Lục</h2>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-[0.4em] mt-1">Chư Thiên Vạn Thể Chi Quyển</p>
+                        <h2
+                            class="text-3xl font-ancient text-purple-400 uppercase tracking-widest drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">
+                            Linh Thể Lục</h2>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-[0.4em] mt-1">Chư Thiên Vạn Thể Chi Quyển
+                        </p>
                     </div>
-                    <button id="close-linh-the-luc-btn" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-500 hover:text-white transition-all active:scale-90">
+                    <button id="close-linh-the-luc-btn"
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-500 hover:text-white transition-all active:scale-90">
                         <i class="ph ph-x text-2xl"></i>
                     </button>
                 </div>
 
                 <!-- List View -->
-                <div id="linh-the-list-view" class="relative z-10 flex-grow overflow-y-auto p-4 space-y-3 custom-scroll">
+                <div id="linh-the-list-view"
+                    class="relative z-10 flex-grow overflow-y-auto p-4 space-y-3 custom-scroll">
                     <!-- Dynamic list items -->
                 </div>
 
                 <!-- Detail View (Initially Hidden) -->
-                <div id="linh-the-detail-view" class="hidden relative z-10 flex-grow flex flex-col overflow-y-auto custom-scroll p-6 animate-fade-in">
-                    <button id="back-to-the-list-btn" class="absolute top-4 left-4 text-gray-500 hover:text-white flex items-center space-x-2 text-[10px] uppercase tracking-widest transition-all">
+                <div id="linh-the-detail-view"
+                    class="hidden relative z-10 flex-grow flex flex-col overflow-y-auto custom-scroll p-6 animate-fade-in">
+                    <button id="back-to-the-list-btn"
+                        class="absolute top-4 left-4 text-gray-500 hover:text-white flex items-center space-x-2 text-[10px] uppercase tracking-widest transition-all">
                         <i class="ph ph-arrow-left"></i>
                         <span>Quay lại</span>
                     </button>
-                    
+
                     <div class="mt-8 flex flex-col items-center text-center space-y-6">
-                        <div id="linh-the-detail-icon-wrap" class="w-32 h-32 rounded-full border-2 border-purple-500/30 flex items-center justify-center bg-black/60 shadow-[0_0_30px_rgba(168,85,247,0.2)] relative">
-                             <div class="absolute inset-0 rounded-full animate-pulse bg-purple-500/5"></div>
-                             <span id="linh-the-detail-icon" class="text-6xl filter drop-shadow-[0_0_15px_rgba(168,85,247,0.6)]">🌌</span>
+                        <div id="linh-the-detail-icon-wrap"
+                            class="w-32 h-32 rounded-full border-2 border-purple-500/30 flex items-center justify-center bg-black/60 shadow-[0_0_30px_rgba(168,85,247,0.2)] relative">
+                            <div class="absolute inset-0 rounded-full animate-pulse bg-purple-500/5"></div>
+                            <span id="linh-the-detail-icon"
+                                class="text-6xl filter drop-shadow-[0_0_15px_rgba(168,85,247,0.6)]">🌌</span>
                         </div>
-                        
+
                         <div class="space-y-1">
-                            <div id="linh-the-detail-rank" class="text-[10px] font-ancient text-purple-400 uppercase tracking-[0.3em]">Hạng 1</div>
-                            <h3 id="linh-the-detail-name" class="text-3xl font-ancient text-white tracking-widest">Hỗn Độn Thể</h3>
-                            <div id="linh-the-detail-title" class="text-[11px] text-cultivation-gold italic tracking-widest">"Vạn Thể Chi Tổ"</div>
+                            <div id="linh-the-detail-rank"
+                                class="text-[10px] font-ancient text-purple-400 uppercase tracking-[0.3em]">Hạng 1</div>
+                            <h3 id="linh-the-detail-name" class="text-3xl font-ancient text-white tracking-widest">Hỗn
+                                Độn Thể</h3>
+                            <div id="linh-the-detail-title"
+                                class="text-[11px] text-cultivation-gold italic tracking-widest">"Vạn Thể Chi Tổ"</div>
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 w-full">
                             <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
-                                <div class="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Đẳng cấp tiềm năng</div>
-                                <div id="linh-the-detail-rarity" class="text-xs font-bold text-cultivation-gold">Thần Thoại</div>
+                                <div class="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Đẳng cấp tiềm năng
+                                </div>
+                                <div id="linh-the-detail-rarity" class="text-xs font-bold text-cultivation-gold">Thần
+                                    Thoại</div>
                             </div>
                         </div>
 
                         <div class="w-full space-y-4 text-left">
                             <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
-                                <h4 class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">Mô tả thể chất</h4>
+                                <h4
+                                    class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">
+                                    Mô tả thể chất</h4>
                                 <p id="linh-the-detail-desc" class="text-xs text-gray-300 leading-relaxed"></p>
                             </div>
                             <div class="bg-purple-950/20 rounded-2xl p-5 border border-purple-900/20">
-                                <h4 class="text-[9px] text-purple-400 uppercase tracking-widest mb-3 border-b border-purple-900/10 pb-2">Thiên phú đặc biệt</h4>
+                                <h4
+                                    class="text-[9px] text-purple-400 uppercase tracking-widest mb-3 border-b border-purple-900/10 pb-2">
+                                    Thiên phú đặc biệt</h4>
                                 <p id="linh-the-detail-special" class="text-xs text-purple-300 font-bold italic"></p>
                             </div>
                         </div>
