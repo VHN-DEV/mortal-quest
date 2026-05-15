@@ -11,21 +11,7 @@ import { Preferences } from '@capacitor/preferences';
 import { getSectById } from './configs/sect-data.js';
 import { getRealmById } from './configs/realm-data.js';
 
-// Import Screens
-import { MapScreen } from './ui/screens/MapScreen.js';
-import { InventoryScreen } from './ui/screens/InventoryScreen.js';
-import { CharacterScreen } from './ui/screens/CharacterScreen.js';
-import { SystemsScreen } from './ui/screens/SystemsScreen.js';
-import { BattleScreen } from './ui/screens/BattleScreen.js';
-import { SpiritStoneUI } from './ui/spirit-stone-ui.js';
-import { TreasureScreen } from './ui/screens/TreasureScreen.js';
-import { FateScreen } from './ui/screens/FateScreen.js';
-import { StartScreen } from './ui/screens/StartScreen.js';
-import { SaveScreen } from './ui/screens/SaveScreen.js';
-import { MiningScreen } from './ui/screens/MiningScreen.js';
-import { DiHoaBangScreen } from './ui/screens/DiHoaBangScreen.js';
-import { DiLoiBangScreen } from './ui/screens/DiLoiBangScreen.js';
-import { LinhTheLucScreen } from './ui/screens/LinhTheLucScreen.js';
+// Screens will be loaded dynamically
 import { logger } from './utils/logger.js';
 import { audioManager } from './utils/audio-manager.js';
 
@@ -66,6 +52,29 @@ export class Game {
 
         state.ui = new UISystem();
         window.ui = state.ui;
+
+        // Load Screens Dynamically
+        const [
+            { MapScreen }, { InventoryScreen }, { CharacterScreen }, { SystemsScreen },
+            { BattleScreen }, { SpiritStoneUI }, { TreasureScreen }, { FateScreen },
+            { StartScreen }, { SaveScreen }, { MiningScreen }, { DiHoaBangScreen },
+            { DiLoiBangScreen }, { LinhTheLucScreen }
+        ] = await Promise.all([
+            import('./ui/screens/MapScreen.js'),
+            import('./ui/screens/InventoryScreen.js'),
+            import('./ui/screens/CharacterScreen.js'),
+            import('./ui/screens/SystemsScreen.js'),
+            import('./ui/screens/BattleScreen.js'),
+            import('./ui/spirit-stone-ui.js'),
+            import('./ui/screens/TreasureScreen.js'),
+            import('./ui/screens/FateScreen.js'),
+            import('./ui/screens/StartScreen.js'),
+            import('./ui/screens/SaveScreen.js'),
+            import('./ui/screens/MiningScreen.js'),
+            import('./ui/screens/DiHoaBangScreen.js'),
+            import('./ui/screens/DiLoiBangScreen.js'),
+            import('./ui/screens/LinhTheLucScreen.js')
+        ]);
 
         this.screens.map = new MapScreen();
         this.screens.inventory = new InventoryScreen();
