@@ -1441,6 +1441,13 @@ export class Game {
         }
     }
 
+    selectCreationArtifact(artifactId) {
+        if (state.systems.creation) {
+            state.systems.creation.selectArtifact(artifactId);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
     toggleCreationTrait(traitId) {
         if (state.systems.creation) {
             state.systems.creation.toggleTrait(traitId);

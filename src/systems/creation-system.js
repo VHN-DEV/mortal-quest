@@ -1,4 +1,4 @@
-import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS } from '../configs/creation-data.js';
+import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS } from '../configs/creation-data.js';
 import { Player } from '../core/player.js';
 
 const RANDOM_NAMES = [
@@ -26,6 +26,7 @@ export class CreationSystem {
         this.playerAvatar = "player_male";
         this.startingLingShi = 0;
         this.startingRealmId = 1;
+        this.selectedArtifact = 'none';
     }
 
     selectOrigin(originId) {
@@ -33,6 +34,11 @@ export class CreationSystem {
         if (!origin) return;
         this.selectedOrigin = originId;
         this.startingLingShi = origin.resources.lingShi;
+        this.calculatePoints();
+    }
+
+    selectArtifact(artifactId) {
+        this.selectedArtifact = artifactId;
         this.calculatePoints();
     }
 
@@ -103,6 +109,11 @@ export class CreationSystem {
         this.selectedTraits.forEach(traitId => {
             total -= CREATION_TRAITS[traitId].cost;
         });
+
+        // Artifact cost
+        if (this.selectedArtifact !== 'none') {
+            total -= (CREATION_ARTIFACTS[this.selectedArtifact]?.cost || 0);
+        }
 
         // Starting Ling Shi cost (1 point per 100 Ling Shi, if positive)
         if (this.startingLingShi > 0) {
@@ -236,6 +247,11 @@ export class CreationSystem {
             const trait = CREATION_TRAITS[traitId];
             player.talents.push({ id: trait.id, name: trait.name });
         });
+
+        // Apply Artifact
+        if (this.selectedArtifact !== 'none') {
+            player.inventory.addItem(this.selectedArtifact, 1);
+        }
 
         // --- Handle leftover points conversion ---
         if (this.points > 0) {

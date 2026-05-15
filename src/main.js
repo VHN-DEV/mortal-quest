@@ -13,7 +13,7 @@ import { getRealmById, HUMAN_REALMS } from './configs/realm-data.js';
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
 import { SEEDS } from './configs/garden-data.js';
 import { SECTS, getSectById } from './configs/sect-data.js';
-import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS } from './configs/creation-data.js';
+import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS } from './configs/creation-data.js';
 import { PHYSIQUES } from './configs/physique-data.js';
 import { NPCScreen } from './ui/screens/NPCScreen.js';
 
@@ -635,6 +635,42 @@ window.renderCreationScreen = () => {
                     <div class="q-bonus-list">
                         ${resources.map(r => `<span class="q-bonus-tag" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2)">${r}</span>`).join('')}
                     </div>
+                </button>
+            `;
+        }).join('');
+    }
+
+    // --- Artifacts List ---
+    const elArtifacts = document.getElementById('creation-artifacts-list');
+    if (elArtifacts) {
+        const RARITY_COLOR = {
+            'Thông Thiên Linh Bảo': { text: 'text-pink-400', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)' },
+            'Linh Bảo':             { text: 'text-cultivation-gold', bg: 'rgba(212,175,55,0.1)', border: 'rgba(212,175,55,0.3)' },
+            'Cổ Bảo':               { text: 'text-purple-400', bg: 'rgba(168,85,247,0.1)', border: 'rgba(168,85,247,0.3)' },
+            'Kỳ Trùng':             { text: 'text-emerald-400', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)' },
+        };
+
+        elArtifacts.innerHTML = Object.values(CREATION_ARTIFACTS).map(a => {
+            const active = sys.selectedArtifact === a.id;
+            const isNone = a.id === 'none';
+            const col = RARITY_COLOR[a.rarity] || { text: 'text-gray-400', bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.1)' };
+            return `
+                <button onclick="window.game.selectCreationArtifact('${a.id}')"
+                    class="q-card w-full ${active ? 'active' : 'border-white/10'}"
+                    style="${active ? `border-color: ${col.border}; box-shadow: 0 0 12px ${col.border};` : ''}"
+                >
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="q-title ${active ? col.text : ''}">${a.name}</div>
+                        <div class="q-cost" style="${!isNone ? `color: #f87171;` : 'color: #6b7280;'}">
+                            <i class="ph ph-star"></i>
+                            ${isNone ? '0' : `-${a.cost}`}
+                        </div>
+                    </div>
+                    <div class="q-desc">${a.desc}</div>
+                    ${!isNone ? `
+                    <div class="q-bonus-list mt-2">
+                        <span class="q-bonus-tag" style="color: ${col.text.replace('text-', '')}; background: ${col.bg}; border-color: ${col.border}">${a.rarity}</span>
+                    </div>` : ''}
                 </button>
             `;
         }).join('');

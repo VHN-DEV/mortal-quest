@@ -188,3 +188,42 @@ export const CREATION_SCENARIOS = {
         setup: { root: 'di_linh_can', physique: 'binh_thuong', origin: 'tan_tu', traits: ['thong_minh'] }
     }
 };
+
+export const CREATION_ARTIFACTS = {
+    'none': { id: 'none', name: 'Không Chọn', cost: 0, desc: 'Bắt đầu hành trình với hai bàn tay trắng. Điểm Tiên Duyên không bị trừ.' },
+    'chuong_thien_binh': {
+        id: 'chuong_thien_binh', name: 'Chưởng Thiên Bình', cost: 150,
+        desc: 'Bình thần hấp thụ tinh hoa nhật nguyệt, sinh linh dịch thúc đẩy linh thảo trưởng thành nhanh chóng.',
+        rarity: 'Thông Thiên Linh Bảo'
+    },
+    'hu_thien_dinh': {
+        id: 'hu_thien_dinh', name: 'Hư Thiên Đỉnh', cost: 150,
+        desc: 'Thông Thiên Linh Bảo lừng danh, bên trong chứa không gian bí ẩn, có thể trấn áp vạn pháp.',
+        rarity: 'Thông Thiên Linh Bảo'
+    },
+    'phong_loi_si': {
+        id: 'phong_loi_si', name: 'Phong Lôi Sí', cost: 150,
+        desc: 'Cánh của thần điểu Phong Lôi, khi thi triển kết hợp với lôi thuật giúp độn thuật vượt cực hạn.',
+        rarity: 'Linh Bảo'
+    },
+    'huyet_sac_phi_phong': {
+        id: 'huyet_sac_phi_phong', name: 'Huyết Sắc Phi Phong', cost: 150,
+        desc: 'Áo choàng màu huyết, tăng mạnh sát khí và khả năng ẩn mình trong bóng tối.',
+        rarity: 'Cổ Bảo'
+    },
+    'egg_bang_tam': {
+        id: 'egg_bang_tam', name: 'Trứng Băng Tâm', cost: 150,
+        desc: 'Trứng của kỳ trùng huyền thoại Băng Tâm. Sau khi nở sẽ là trợ thủ đắc lực băng hệ.',
+        rarity: 'Kỳ Trùng'
+    },
+    'bat_linh_xich': {
+        id: 'bat_linh_xich', name: 'Bát Linh Xích', cost: 150,
+        desc: 'Dây xích bát linh của phái Thông Thiên, có thể phong ấn linh lực và trói buộc kẻ địch.',
+        rarity: 'Linh Bảo'
+    },
+    'binh_son_an': {
+        id: 'binh_son_an', name: 'Bình Sơn Ấn', cost: 150,
+        desc: 'Đại ấn nặng tựa thái sơn, uy lực kinh thiên, một lần oanh kích có thể nghiền nát sơn hà.',
+        rarity: 'Linh Bảo'
+    }
+};
