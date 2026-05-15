@@ -4,11 +4,106 @@ export const CREATION_CONFIG = {
     MAX_DISADVANTAGES: 3
 };
 
+export const BLOODLINES = {
+    'PHAM': { id: 'PHAM', name: 'Phàm Huyết', multiplier: 1.0 },
+    'LINH': { id: 'LINH', name: 'Linh Huyết', multiplier: 1.5 },
+    'DIA': { id: 'DIA', name: 'Địa Huyết', multiplier: 2.5 },
+    'THIEN': { id: 'THIEN', name: 'Thiên Huyết', multiplier: 4.0 },
+    'VUONG': { id: 'VUONG', name: 'Vương Huyết', multiplier: 6.5 },
+    'HOANG': { id: 'HOANG', name: 'Hoàng Huyết', multiplier: 10.0 },
+    'THANH': { id: 'THANH', name: 'Thánh Huyết', multiplier: 18.0 },
+    'DE': { id: 'DE', name: 'Đế Huyết', multiplier: 35.0 },
+    'TIEN_LINH': { id: 'TIEN_LINH', name: 'Tiên Linh Huyết', multiplier: 70.0 },
+    'THAI_CO': { id: 'THAI_CO', name: 'Thái Cổ Huyết', multiplier: 150.0 }
+};
+
+export const TRANSFORMATION_STAGES = [
+    'Chưa Khai Trí',
+    'Khai Linh Trí',
+    'Bán Hóa Hình',
+    'Hoàn Toàn Hóa Hình',
+    'Tiên Thiên Đạo Thể'
+];
+
+export const AWAKENING_STAGES = [
+    'Chưa Thức Tỉnh',
+    'Sơ Bộ Thức Tỉnh',
+    'Tiểu Thành',
+    'Đại Thành',
+    'Phản Tổ',
+    'Chân Linh Hóa'
+];
+
+export const DEMON_BLOODLINES = {
+    'PHAM': { id: 'PHAM', name: 'Phàm Ma Huyết', multiplier: 1.0 },
+    'CHAN': { id: 'CHAN', name: 'Chân Ma Huyết', multiplier: 1.8 },
+    'THIEN': { id: 'THIEN', name: 'Thiên Ma Huyết', multiplier: 3.5 },
+    'CO': { id: 'CO', name: 'Cổ Ma Huyết', multiplier: 7.0 },
+    'THANH': { id: 'THANH', name: 'Thánh Ma Huyết', multiplier: 15.0 },
+    'THAN': { id: 'THAN', name: 'Ma Thần Huyết', multiplier: 40.0 },
+    'NGUYEN_SO': { id: 'NGUYEN_SO', name: 'Nguyên Sơ Ma Huyết', multiplier: 100.0 }
+};
+
+export const DEMON_FACTIONS = {
+    'HUYET': { id: 'HUYET', name: 'Huyết Ma', focus: 'Hút máu & Hồi phục', bonus: { lifesteal: 0.15, hpRegen: 1.5 } },
+    'THIEN': { id: 'THIEN', name: 'Thiên Ma', focus: 'Tâm ma & Thần hồn', bonus: { soulAtk: 0.2, innerDemonRes: -0.2 } },
+    'COT': { id: 'COT', name: 'Cốt Ma', focus: 'Luyện xương & Bất tử', bonus: { def: 100, deathRes: 0.1 } },
+    'ANH': { id: 'ANH', name: 'Ảnh Ma', focus: 'Ám sát & Không gian', bonus: { critDmg: 0.5, dodge: 0.1 } },
+    'VIEM': { id: 'VIEM', name: 'Viêm Ma', focus: 'Ma hỏa & Hủy diệt', bonus: { fireDmg: 0.3, atk: 50 } }
+};
+
+export const DEMON_TRANSFORMATION = [
+    'Bán Ma',
+    'Ma Hóa',
+    'Chân Ma Hóa',
+    'Cổ Ma Chân Thân',
+    'Ma Thần Thể'
+];
+
+export const DEMON_KARMA = [
+    'Vô Nghiệp',
+    'Tiểu Sát Nghiệp',
+    'Huyết Sát',
+    'Tu La Sát',
+    'Diệt Thế Sát'
+];
+
 export const CREATION_RACES = {
-    'HUMAN': { id: 'HUMAN', name: 'Nhân Tộc', cost: 0, desc: 'Linh hồn hoàn chỉnh nhất, thích hợp tu luyện mọi loại công pháp. Tốc độ lĩnh ngộ ổn định.', bonus: { tvps: 1.0, soulExpSpeed: 1.1 } },
-    'DEMON': { id: 'DEMON', name: 'Ma Tộc', cost: 30, desc: 'Thân thể cường đại, chiến lực bẩm sinh cao nhưng dễ bị tâm ma quấy phá.', bonus: { atk: 30, def: 20, tvps: 1.1, karma: -100 } },
-    'SPIRIT_BEAST': { id: 'SPIRIT_BEAST', name: 'Linh Thú', cost: 40, desc: 'Hóa hình từ yêu thú, thọ nguyên cực dài nhưng tu luyện chậm hơn nhân tộc.', bonus: { maxAge: 200, maxHp: 150, tvps: 0.8, def: 40 } },
-    'DRAGON': { id: 'DRAGON', name: 'Long Tộc', cost: 120, desc: 'Chủng tộc thượng cổ tôn quý nhất. Thân thể, linh lực, thần thức đều cực kỳ mạnh mẽ.', bonus: { allRes: 0.2, atk: 100, def: 100, tvps: 2.0, maxAge: 1000 } }
+    'HUMAN': { 
+        id: 'HUMAN', name: 'Nhân Tộc', cost: 0, 
+        desc: 'Linh hồn hoàn chỉnh nhất, thích hợp tu luyện mọi loại công pháp. Tốc độ lĩnh ngộ ổn định.', 
+        bonus: { tvps: 1.0, soulExpSpeed: 1.1 } 
+    },
+    'YAO_LOW': { 
+        id: 'YAO_LOW', name: 'Yêu Tộc (Thấp Cấp)', cost: 20, 
+        desc: 'Yêu thú cấp thấp (Lang/Xà/Hổ). Thân thể khỏe, thọ nguyên dài hơn nhân tộc.', 
+        bloodline: 'PHAM',
+        bonus: { maxHp: 100, def: 20, maxAge: 100, tvps: 0.8 } 
+    },
+    'YAO_MID': { 
+        id: 'YAO_MID', name: 'Yêu Tộc (Trung Cấp)', cost: 50, 
+        desc: 'Dị chủng tiềm năng (Huyết Lang/Thanh Lân Mãng). Huyết mạch bắt đầu có linh tính.', 
+        bloodline: 'LINH',
+        bonus: { maxHp: 300, atk: 50, def: 50, maxAge: 300, tvps: 1.0 } 
+    },
+    'YAO_HIGH': { 
+        id: 'YAO_HIGH', name: 'Yêu Tộc (Cao Cấp)', cost: 100, 
+        desc: 'Thái Cổ Dị Chủng/Hung Thú. Sức mạnh bẩm sinh cực lớn, áp chế cấp thấp.', 
+        bloodline: 'THIEN',
+        bonus: { maxHp: 1000, atk: 200, def: 200, maxAge: 1000, tvps: 1.5, allRes: 0.1 } 
+    },
+    'YAO_PEAK': { 
+        id: 'YAO_PEAK', name: 'Chân Linh (Đỉnh Cấp)', cost: 250, 
+        desc: 'Thái Cổ Thần Thú (Long/Phượng/Kỳ Lân). Đứng đầu vạn tộc, thần thông quảng đại.', 
+        bloodline: 'DE',
+        bonus: { maxHp: 5000, atk: 1000, def: 1000, maxAge: 10000, tvps: 3.0, allRes: 0.3 } 
+    },
+    'DEMON': { 
+        id: 'DEMON', name: 'Ma Tộc', cost: 60, 
+        desc: 'Chủng tộc của bản năng và sức mạnh hủy diệt. Tốc độ thăng tiến cực nhanh nhưng đầy rủi ro.', 
+        bloodline: 'CHAN',
+        bonus: { atk: 150, tvps: 1.3, karma: -200, maxAge: 500 } 
+    }
 };
 
 export const CREATION_ROOTS = {

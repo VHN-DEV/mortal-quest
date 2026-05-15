@@ -78,47 +78,145 @@ export const HUMAN_REALMS = [
 ];
 
 export const SPIRIT_BEAST_REALMS = [
-    { id: 1, name: "Khai Linh Sơ Kỳ", expRequired: 100 },
-    { id: 2, name: "Khai Linh Trung Kỳ", expRequired: 500 },
-    { id: 3, name: "Khai Linh Hậu Kỳ", expRequired: 2000 },
-    { id: 4, name: "Khai Linh Viên Mãn", expRequired: 5000 },
-    { id: 5, name: "Tụ Yêu Sơ Kỳ", expRequired: 15000 },
-    { id: 6, name: "Tụ Yêu Trung Kỳ", expRequired: 50000 },
-    { id: 7, name: "Tụ Yêu Hậu Kỳ", expRequired: 150000 },
-    { id: 8, name: "Tụ Yêu Viên Mãn", expRequired: 500000 },
-    { id: 9, name: "Yêu Đan Sơ Kỳ", expRequired: 1500000 },
-    { id: 10, name: "Yêu Đan Trung Kỳ", expRequired: 4000000 },
-    { id: 11, name: "Yêu Đan Hậu Kỳ", expRequired: 10000000 },
-    { id: 12, name: "Yêu Đan Viên Mãn", expRequired: 25000000 },
-    { id: 13, name: "Hóa Hình Sơ Kỳ", expRequired: 70000000 },
-    { id: 14, name: "Hóa Hình Trung Kỳ", expRequired: 200000000 },
-    { id: 15, name: "Hóa Hình Hậu Kỳ", expRequired: 500000000 },
-    { id: 16, name: "Hóa Hình Viên Mãn", expRequired: 1200000000 },
-    { id: 17, name: "Yêu Vương", expRequired: 5000000000 },
-    { id: 18, name: "Yêu Hoàng", expRequired: 20000000000 },
-    { id: 19, name: "Yêu Tôn", expRequired: 80000000000 },
-    { id: 20, name: "Đại Yêu", expRequired: 300000000000 },
-    { id: 21, name: "Yêu Tiên", expRequired: 1000000000000 },
+    // Yêu Thú (Equivalent to Luyện Khí - 13 stages)
+    { id: 1, name: "Yêu Thú Giai 1", expRequired: 100 },
+    { id: 2, name: "Yêu Thú Giai 2", expRequired: 250 },
+    { id: 3, name: "Yêu Thú Giai 3", expRequired: 500 },
+    { id: 4, name: "Yêu Thú Giai 4", expRequired: 1000 },
+    { id: 5, name: "Yêu Thú Giai 5", expRequired: 2500 },
+    { id: 6, name: "Yêu Thú Giai 6", expRequired: 6000 },
+    { id: 7, name: "Yêu Thú Giai 7", expRequired: 15000 },
+    { id: 8, name: "Yêu Thú Giai 8", expRequired: 35000 },
+    { id: 9, name: "Yêu Thú Giai 9", expRequired: 80000 },
+    { id: 10, name: "Yêu Thú Giai 10", expRequired: 180000 },
+    { id: 11, name: "Yêu Thú Giai 11", expRequired: 400000 },
+    { id: 12, name: "Yêu Thú Giai 12", expRequired: 900000 },
+    { id: 13, name: "Yêu Thú Đại Viên Mãn", expRequired: 2000000 },
+
+    // Yêu Linh (Equivalent to Trúc Cơ)
+    { id: 14, name: "Yêu Linh Sơ Kỳ", expRequired: 5000000 },
+    { id: 15, name: "Yêu Linh Trung Kỳ", expRequired: 12000000 },
+    { id: 16, name: "Yêu Linh Hậu Kỳ", expRequired: 30000000 },
+    { id: 17, name: "Yêu Linh Viên Mãn", expRequired: 80000000 },
+
+    // Yêu Tướng (Equivalent to Kết Đan)
+    { id: 18, name: "Yêu Tướng Sơ Kỳ", expRequired: 200000000 },
+    { id: 19, name: "Yêu Tướng Trung Kỳ", expRequired: 500000000 },
+    { id: 20, name: "Yêu Tướng Hậu Kỳ", expRequired: 1200000000 },
+    { id: 21, name: "Yêu Tướng Viên Mãn", expRequired: 3000000000 },
+
+    // Yêu Soái (Equivalent to Nguyên Anh)
+    { id: 22, name: "Yêu Soái Sơ Kỳ", expRequired: 8000000000 },
+    { id: 23, name: "Yêu Soái Trung Kỳ", expRequired: 20000000000 },
+    { id: 24, name: "Yêu Soái Hậu Kỳ", expRequired: 50000000000 },
+    { id: 25, name: "Yêu Soái Viên Mãn", expRequired: 120000000000 },
+
+    // Yêu Vương (Equivalent to Hóa Thần)
+    { id: 26, name: "Yêu Vương Sơ Kỳ", expRequired: 300000000000 },
+    { id: 27, name: "Yêu Vương Trung Kỳ", expRequired: 750000000000 },
+    { id: 28, name: "Yêu Vương Hậu Kỳ", expRequired: 1800000000000 },
+    { id: 29, name: "Yêu Vương Viên Mãn", expRequired: 4500000000000 },
+
+    // Yêu Hoàng (Equivalent to Luyện Hư)
+    { id: 30, name: "Yêu Hoàng Sơ Kỳ", expRequired: 12000000000000 },
+    { id: 31, name: "Yêu Hoàng Trung Kỳ", expRequired: 30000000000000 },
+    { id: 32, name: "Yêu Hoàng Hậu Kỳ", expRequired: 75000000000000 },
+    { id: 33, name: "Yêu Hoàng Viên Mãn", expRequired: 200000000000000 },
+
+    // Yêu Tôn (Equivalent to Hợp Thể)
+    { id: 34, name: "Yêu Tôn Sơ Kỳ", expRequired: 500000000000000 },
+    { id: 35, name: "Yêu Tôn Trung Kỳ", expRequired: 1200000000000000 },
+    { id: 36, name: "Yêu Tôn Hậu Kỳ", expRequired: 3000000000000000 },
+    { id: 37, name: "Yêu Tôn Viên Mãn", expRequired: 8000000000000000 },
+
+    // Yêu Thánh (Equivalent to Đại Thừa)
+    { id: 38, name: "Yêu Thánh Sơ Kỳ", expRequired: 20000000000000000 },
+    { id: 39, name: "Yêu Thánh Trung Kỳ", expRequired: 50000000000000000 },
+    { id: 40, name: "Yêu Thánh Hậu Kỳ", expRequired: 120000000000000000 },
+    { id: 41, name: "Yêu Thánh Viên Mãn", expRequired: 300000000000000000 },
+
+    // Yêu Đế (Equivalent to Độ Kiếp)
+    { id: 42, name: "Yêu Đế Sơ Kỳ", expRequired: 1000000000000000000 },
+    { id: 43, name: "Yêu Đế Trung Kỳ", expRequired: 2500000000000000000 },
+    { id: 44, name: "Yêu Đế Hậu Kỳ", expRequired: 6000000000000000000 },
+    { id: 45, name: "Yêu Đế Viên Mãn", expRequired: 15000000000000000000 },
+
+    // Yêu Tiên (Equivalent to Chân Tiên)
+    { id: 46, name: "Yêu Tiên Sơ Kỳ", expRequired: 40000000000000000000 },
+    { id: 47, name: "Yêu Tiên Trung Kỳ", expRequired: 100000000000000000000 },
+    { id: 48, name: "Yêu Tiên Hậu Kỳ", expRequired: 250000000000000000000 },
+    { id: 49, name: "Yêu Tiên Viên Mãn", expRequired: 600000000000000000000 },
 ];
 
 export const DEMON_REALMS = [
-    { id: 1, name: "Ma Chủng", expRequired: 100 },
-    { id: 2, name: "Ma Thai Sơ Kỳ", expRequired: 800 },
-    { id: 3, name: "Ma Thai Trung Kỳ", expRequired: 3000 },
-    { id: 4, name: "Ma Thai Hậu Kỳ", expRequired: 10000 },
-    { id: 5, name: "Ma Đan Sơ Kỳ", expRequired: 40000 },
-    { id: 6, name: "Ma Đan Trung Kỳ", expRequired: 150000 },
-    { id: 7, name: "Ma Đan Hậu Kỳ", expRequired: 500000 },
-    { id: 8, name: "Ma Đan Viên Mãn", expRequired: 1500000 },
-    { id: 9, name: "Thiên Ma Sơ Kỳ", expRequired: 5000000 },
-    { id: 10, name: "Thiên Ma Trung Kỳ", expRequired: 15000000 },
-    { id: 11, name: "Thiên Ma Hậu Kỳ", expRequired: 40000000 },
-    { id: 12, name: "Thiên Ma Viên Mãn", expRequired: 100000000 },
-    { id: 13, name: "Ma Vương", expRequired: 500000000 },
-    { id: 14, name: "Ma Hoàng", expRequired: 2000000000 },
-    { id: 15, name: "Ma Tôn", expRequired: 10000000000 },
-    { id: 16, name: "Ma Đế", expRequired: 50000000000 },
-    { id: 17, name: "Ma Tiên", expRequired: 250000000000 },
+    // Ma Binh (Equivalent to Luyện Khí - 13 stages)
+    { id: 1, name: "Ma Binh Giai 1", expRequired: 100 },
+    { id: 2, name: "Ma Binh Giai 2", expRequired: 250 },
+    { id: 3, name: "Ma Binh Giai 3", expRequired: 500 },
+    { id: 4, name: "Ma Binh Giai 4", expRequired: 1000 },
+    { id: 5, name: "Ma Binh Giai 5", expRequired: 2500 },
+    { id: 6, name: "Ma Binh Giai 6", expRequired: 6000 },
+    { id: 7, name: "Ma Binh Giai 7", expRequired: 15000 },
+    { id: 8, name: "Ma Binh Giai 8", expRequired: 35000 },
+    { id: 9, name: "Ma Binh Giai 9", expRequired: 80000 },
+    { id: 10, name: "Ma Binh Giai 10", expRequired: 180000 },
+    { id: 11, name: "Ma Binh Giai 11", expRequired: 400000 },
+    { id: 12, name: "Ma Binh Giai 12", expRequired: 900000 },
+    { id: 13, name: "Ma Binh Đại Viên Mãn", expRequired: 2000000 },
+
+    // Ma Linh (Equivalent to Trúc Cơ)
+    { id: 14, name: "Ma Linh Sơ Kỳ", expRequired: 5000000 },
+    { id: 15, name: "Ma Linh Trung Kỳ", expRequired: 12000000 },
+    { id: 16, name: "Ma Linh Hậu Kỳ", expRequired: 30000000 },
+    { id: 17, name: "Ma Linh Viên Mãn", expRequired: 80000000 },
+
+    // Ma Tướng (Equivalent to Kết Đan)
+    { id: 18, name: "Ma Tướng Sơ Kỳ", expRequired: 200000000 },
+    { id: 19, name: "Ma Tướng Trung Kỳ", expRequired: 500000000 },
+    { id: 20, name: "Ma Tướng Hậu Kỳ", expRequired: 1200000000 },
+    { id: 21, name: "Ma Tướng Viên Mãn", expRequired: 3000000000 },
+
+    // Ma Soái (Equivalent to Nguyên Anh)
+    { id: 22, name: "Ma Soái Sơ Kỳ", expRequired: 8000000000 },
+    { id: 23, name: "Ma Soái Trung Kỳ", expRequired: 20000000000 },
+    { id: 24, name: "Ma Soái Hậu Kỳ", expRequired: 50000000000 },
+    { id: 25, name: "Ma Soái Viên Mãn", expRequired: 120000000000 },
+
+    // Ma Vương (Equivalent to Hóa Thần)
+    { id: 26, name: "Ma Vương Sơ Kỳ", expRequired: 300000000000 },
+    { id: 27, name: "Ma Vương Trung Kỳ", expRequired: 750000000000 },
+    { id: 28, name: "Ma Vương Hậu Kỳ", expRequired: 1800000000000 },
+    { id: 29, name: "Ma Vương Viên Mãn", expRequired: 4500000000000 },
+
+    // Ma Hoàng (Equivalent to Luyện Hư)
+    { id: 30, name: "Ma Hoàng Sơ Kỳ", expRequired: 12000000000000 },
+    { id: 31, name: "Ma Hoàng Trung Kỳ", expRequired: 30000000000000 },
+    { id: 32, name: "Ma Hoàng Hậu Kỳ", expRequired: 75000000000000 },
+    { id: 33, name: "Ma Hoàng Viên Mãn", expRequired: 200000000000000 },
+
+    // Ma Tôn (Equivalent to Hợp Thể)
+    { id: 34, name: "Ma Tôn Sơ Kỳ", expRequired: 500000000000000 },
+    { id: 35, name: "Ma Tôn Trung Kỳ", expRequired: 1200000000000000 },
+    { id: 36, name: "Ma Tôn Hậu Kỳ", expRequired: 3000000000000000 },
+    { id: 37, name: "Ma Tôn Viên Mãn", expRequired: 8000000000000000 },
+
+    // Ma Thánh (Equivalent to Đại Thừa)
+    { id: 38, name: "Ma Thánh Sơ Kỳ", expRequired: 20000000000000000 },
+    { id: 39, name: "Ma Thánh Trung Kỳ", expRequired: 50000000000000000 },
+    { id: 40, name: "Ma Thánh Hậu Kỳ", expRequired: 120000000000000000 },
+    { id: 41, name: "Ma Thánh Viên Mãn", expRequired: 300000000000000000 },
+
+    // Ma Đế (Equivalent to Độ Kiếp)
+    { id: 42, name: "Ma Đế Sơ Kỳ", expRequired: 1000000000000000000 },
+    { id: 43, name: "Ma Đế Trung Kỳ", expRequired: 2500000000000000000 },
+    { id: 44, name: "Ma Đế Hậu Kỳ", expRequired: 6000000000000000000 },
+    { id: 45, name: "Ma Đế Viên Mãn", expRequired: 15000000000000000000 },
+
+    // Chân Ma (Equivalent to Chân Tiên)
+    { id: 46, name: "Chân Ma Sơ Kỳ", expRequired: 40000000000000000000 },
+    { id: 47, name: "Chân Ma Trung Kỳ", expRequired: 100000000000000000000 },
+    { id: 48, name: "Chân Ma Hậu Kỳ", expRequired: 250000000000000000000 },
+    { id: 49, name: "Chân Ma Viên Mãn", expRequired: 600000000000000000000 },
 ];
 
 export const GHOST_REALMS = [
@@ -254,13 +352,37 @@ export const RACE_DATA = {
         baseLifespan: 100,
         description: "Cân bằng, đa dạng công pháp, phù hợp đại đạo."
     },
-    SPIRIT_BEAST: {
-        id: 'SPIRIT_BEAST',
-        name: "Yêu Tộc",
+    YAO_LOW: {
+        id: 'YAO_LOW',
+        name: "Yêu Tộc (Thấp Cấp)",
         realms: SPIRIT_BEAST_REALMS,
-        statMult: { atk: 0.9, def: 1.2, hp: 1.5, spd: 0.8 },
-        baseLifespan: 1000,
-        description: "Thân thể cực mạnh, khí huyết cao, tuổi thọ dài."
+        statMult: { atk: 1.0, def: 1.2, hp: 1.5, spd: 0.8 },
+        baseLifespan: 150,
+        description: "Yêu thú cấp thấp, thân thể khỏe, thọ nguyên dài hơn nhân tộc."
+    },
+    YAO_MID: {
+        id: 'YAO_MID',
+        name: "Yêu Tộc (Trung Cấp)",
+        realms: SPIRIT_BEAST_REALMS,
+        statMult: { atk: 1.2, def: 1.4, hp: 2.5, spd: 0.9 },
+        baseLifespan: 500,
+        description: "Dị chủng tiềm năng, huyết mạch bắt đầu có linh tính."
+    },
+    YAO_HIGH: {
+        id: 'YAO_HIGH',
+        name: "Yêu Tộc (Cao Cấp)",
+        realms: SPIRIT_BEAST_REALMS,
+        statMult: { atk: 1.5, def: 1.8, hp: 5.0, spd: 1.1 },
+        baseLifespan: 2000,
+        description: "Thái Cổ Dị Chủng/Hung Thú, sức mạnh bẩm sinh áp chế cấp thấp."
+    },
+    YAO_PEAK: {
+        id: 'YAO_PEAK',
+        name: "Chân Linh (Đỉnh Cấp)",
+        realms: SPIRIT_BEAST_REALMS,
+        statMult: { atk: 2.5, def: 2.5, hp: 12.0, spd: 1.5 },
+        baseLifespan: 10000,
+        description: "Thái Cổ Thần Thú, đứng đầu vạn tộc, thần thông quảng đại."
     },
     DEMON: {
         id: 'DEMON',
