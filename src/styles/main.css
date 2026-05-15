@@ -426,7 +426,15 @@ body {
 }
 
 .quality-than {
-  color: #ef4444;
+  color: #d4af37;
+}
+
+.rarity-flash {
+  position: fixed;
+  inset: 0;
+  background: white;
+  z-index: 2000;
+  pointer-events: none;
 }
 
 .border-pham {

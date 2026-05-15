@@ -1053,31 +1053,31 @@ export class Game {
     async craft(recipeId) {
         if (state.systems.alchemy) {
             const res = await state.systems.alchemy.craft(recipeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (!res.success) state.ui.toast(res.msg, 'error');
             this.refreshUI();
         }
     }
 
-    harvest(index) {
+    async harvest(index) {
         if (state.systems.garden) {
             const res = state.systems.garden.harvest(index);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (!res.success) state.ui.toast(res.msg, 'error');
             this.refreshUI();
         }
     }
 
-    drawTalisman(typeId) {
+    async drawTalisman(typeId) {
         if (state.systems.talisman) {
-            const res = state.systems.talisman.draw(typeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            const res = await state.systems.talisman.draw(typeId);
+            if (!res.success) state.ui.toast(res.msg, 'error');
             this.refreshUI();
         }
     }
 
-    forge(typeId) {
+    async forge(typeId) {
         if (state.systems.smithing) {
-            const res = state.systems.smithing.forge(typeId);
-            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            const res = await state.systems.smithing.forge(typeId);
+            if (!res.success) state.ui.toast(res.msg, 'error');
             this.refreshUI();
         }
     }
@@ -1193,14 +1193,15 @@ export class Game {
         }
     }
 
-    handleCombatEnd(result) {
+    async handleCombatEnd(result) {
         if (result === 'win') {
             const combat = state.currentCombat;
             if (combat?.enemy) {
-                combat.enemy.inventory.forEach(item => {
-                    state.player.inventory.addItem(item.id, item.quantity);
-                    state.ui.toast(`Thu được ${getItemById(item.id)?.name} x${item.quantity}`, 'success');
-                });
+                // Collect all loot to show in one flashy popup if needed
+                const loot = combat.enemy.inventory || [];
+                for (const item of loot) {
+                    await window.game.receiveItem(item.id, item.quantity);
+                }
                 const tuvi = combat.enemy.realmId * 50;
                 state.player.addTuVi(tuvi);
                 state.ui.toast(`Chiến thắng! Nhận được ${tuvi} Tu Vi.`, 'success');
@@ -1452,5 +1453,37 @@ export class Game {
                 state.ui.toast("Không đủ điểm Thiên Duyên!", "error");
             }
         }
+    }
+
+    /**
+     * Helper to give items to player with UI feedback (flashy for high rarity)
+     */
+    async receiveItem(itemId, quantity = 1, metadata = {}, customMessage = null) {
+        if (!state.player) return false;
+        
+        const itemData = getItemById(itemId);
+        if (!itemData) return false;
+
+        const success = state.player.inventory.addItem(itemId, quantity, metadata);
+        if (success) {
+            const quality = (metadata && metadata.quality) || itemData.quality || 'PHAM';
+            const flashyQualities = ['DIA', 'THIEN', 'TIEN', 'THAN', 'Hoàn Mỹ', 'Cực Phẩm', 'Tiên Phẩm'];
+            
+            if (flashyQualities.includes(quality)) {
+                // Show flashy UI
+                await state.ui.showAcquiredLoot({
+                    ...itemData,
+                    quantity,
+                    quality: metadata?.quality || itemData.quality // Use metadata quality if available
+                });
+            } else {
+                // Show standard toast
+                state.ui.toast(customMessage || `Đã nhận: ${itemData.name} x${quantity}`, 'success');
+            }
+            this.refreshUI();
+        } else {
+            state.ui.toast("Túi đồ đã đầy!", "error");
+        }
+        return success;
     }
 }

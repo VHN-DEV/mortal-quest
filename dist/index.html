@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-DiAczRak.js"></script>
+  <script type="module" crossorigin src="./assets/index-Nx52cYiz.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-Bmlkxg2T.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-DveLoQtw.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -42,6 +42,24 @@
     <!-- Main App Container -->
     <div id="app"
         class="relative h-screen w-full max-w-md mx-auto bg-black flex flex-col shadow-2xl shadow-qi-purple/20">
+
+        <!-- Loot Acquired Overlay -->
+        <div id="loot-overlay" class="fixed inset-0 z-[1200] hidden flex-col items-center justify-center bg-black/90 backdrop-blur-md transition-all duration-500 pointer-events-auto">
+            <div id="loot-magic-circle" class="absolute w-[600px] h-[600px] pointer-events-none opacity-0 transition-opacity duration-1000">
+                <svg viewBox="0 0 200 200" class="w-full h-full animate-spin-slow opacity-20">
+                    <circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="1,2" />
+                    <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="1" />
+                    <path d="M100 10 L110 90 L190 100 L110 110 L100 190 L90 110 L10 100 L90 90 Z" fill="none" stroke="currentColor" stroke-width="0.5" />
+                    <circle cx="100" cy="100" r="40" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4,4" />
+                </svg>
+            </div>
+            <div id="loot-container" class="relative z-10 flex flex-col items-center w-full">
+                <!-- Content injected via JS -->
+            </div>
+            <div id="loot-continue-hint" class="absolute bottom-12 text-white/40 text-[9px] font-ancient uppercase tracking-[0.5em] animate-pulse opacity-0">
+                Chạm để tiếp tục
+            </div>
+        </div>
 
         <!-- Global Header -->
         <header

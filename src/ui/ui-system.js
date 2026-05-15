@@ -562,6 +562,116 @@ export class UISystem {
     }
 
     /**
+     * Show a flashy "Loot Acquired" effect
+     * @param {Array|Object} items - Single item or array of items
+     */
+    async showAcquiredLoot(items) {
+        const lootItems = Array.isArray(items) ? items : [items];
+        if (lootItems.length === 0) return;
+
+        const overlay = document.getElementById('loot-overlay');
+        const container = document.getElementById('loot-container');
+        const magicCircle = document.getElementById('loot-magic-circle');
+        const hint = document.getElementById('loot-continue-hint');
+        
+        if (!overlay || !container) return;
+
+        const rarityConfigs = {
+            'PHAM': { color: '#94a3b8', label: 'PHÀM GIAI', sfx: 'click', shake: false },
+            'HOANG': { color: '#10b981', label: 'HOÀNG GIAI', sfx: 'success', shake: false },
+            'HUYEN': { color: '#3b82f6', label: 'HUYỀN GIAI', sfx: 'success', shake: false },
+            'DIA': { color: '#8b5cf6', label: 'ĐỊA GIAI', sfx: 'breakthrough', shake: 'medium' },
+            'THIEN': { color: '#f59e0b', label: 'THIÊN GIAI', sfx: 'breakthrough', shake: 'high' },
+            'TIEN': { color: '#ef4444', label: 'TIÊN KHÍ', sfx: 'breakthrough', shake: 'high', flash: true },
+            'THAN': { color: '#d4af37', label: 'THẦN VẬT', sfx: 'breakthrough', shake: 'high', flash: true },
+            'Hoàn Mỹ': { color: '#8b5cf6', label: 'HOÀN MỸ', sfx: 'success', shake: 'medium' },
+            'Cực Phẩm': { color: '#f59e0b', label: 'CỰC PHẨM', sfx: 'breakthrough', shake: 'medium' },
+            'Tiên Phẩm': { color: '#ef4444', label: 'TIÊN PHẨM', sfx: 'breakthrough', shake: 'high', flash: true }
+        };
+
+        return new Promise(async (resolve) => {
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex', 'opacity-100');
+
+            for (const item of lootItems) {
+                const config = rarityConfigs[item.quality] || rarityConfigs.PHAM;
+                
+                // Clear previous item
+                container.innerHTML = '';
+                hint.classList.add('opacity-0');
+                
+                // Set color for magic circle
+                magicCircle.style.color = config.color;
+                magicCircle.style.opacity = '0.4';
+
+                const itemHtml = `
+                    <div class="loot-item-card flex flex-col items-center opacity-0">
+                        <div class="relative w-32 h-32 mb-8 group">
+                            <div class="loot-item-glow absolute inset-[-40px] rounded-full blur-3xl opacity-60" style="background: radial-gradient(circle, ${config.color} 0%, transparent 70%)"></div>
+                            <img src="${item.image}" class="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_${config.color}]">
+                            <div class="absolute inset-0 border-2 border-${item.quality.toLowerCase()} rounded-2xl opacity-20 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                        <div class="text-center space-y-2">
+                            <h3 class="text-4xl font-charm text-glow tracking-wider mb-2" style="color: ${config.color}; text-shadow: 0 0 20px ${config.color}66">${item.name}</h3>
+                            <div class="flex items-center justify-center space-x-4">
+                                <div class="h-px w-8 bg-gradient-to-r from-transparent to-white/20"></div>
+                                <span class="text-[10px] font-bold tracking-[0.4em] uppercase" style="color: ${config.color}">${config.label}</span>
+                                <div class="h-px w-8 bg-gradient-to-l from-transparent to-white/20"></div>
+                            </div>
+                            <p class="text-xs text-white/40 font-ancient italic mt-4 max-w-[280px] leading-relaxed">"${item.description || 'Vật phẩm thần bí ẩn chứa linh lực dồi dào.'}"</p>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML = itemHtml;
+                const card = container.querySelector('.loot-item-card');
+
+                // Play Sound
+                audioManager.playSfx(config.sfx);
+                
+                // Effects
+                if (config.shake) this.screenShake(config.shake);
+                if (config.flash) {
+                    const flash = document.createElement('div');
+                    flash.className = 'rarity-flash fixed inset-0 z-[2000] bg-white opacity-0 pointer-events-none';
+                    document.body.appendChild(flash);
+                    gsap.to(flash, { opacity: 0.8, duration: 0.1, yoyo: true, repeat: 1, onComplete: () => flash.remove() });
+                }
+
+                // Animation
+                await gsap.timeline()
+                    .fromTo(card, { scale: 0.5, opacity: 0, y: 50 }, { scale: 1, opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" })
+                    .to(hint, { opacity: 1, duration: 1, ease: "power1.inOut" }, "-=0.2");
+
+                // Wait for click
+                await new Promise(r => {
+                    const nextHandler = () => {
+                        overlay.removeEventListener('click', nextHandler);
+                        r();
+                    };
+                    overlay.addEventListener('click', nextHandler);
+                });
+
+                // Animate out before next item
+                if (lootItems.length > 1 && lootItems.indexOf(item) < lootItems.length - 1) {
+                    await gsap.to(card, { scale: 1.2, opacity: 0, duration: 0.4, ease: "power2.in" });
+                }
+            }
+
+            // Close overlay
+            gsap.to(overlay, {
+                opacity: 0,
+                duration: 0.5,
+                onComplete: () => {
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('flex');
+                    container.innerHTML = '';
+                    resolve();
+                }
+            });
+        });
+    }
+
+    /**
      * Smoothly transition screen
      */
     async switchScreen(screenId, btn) {

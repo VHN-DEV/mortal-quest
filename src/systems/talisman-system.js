@@ -7,7 +7,7 @@ export class TalismanSystem {
         this.ui = ui;
     }
 
-    draw(recipeId) {
+    async draw(recipeId) {
         const recipe = TALISMAN_RECIPES[recipeId];
         if (!recipe) return { success: false, msg: 'Bí pháp không tồn tại!' };
         
@@ -64,7 +64,7 @@ export class TalismanSystem {
             else if (qualityRoll > 0.8) quality = 'Trung Phẩm';
 
             const metadata = { quality };
-            this.player.inventory.addItem(recipe.id, 1, metadata);
+            await window.game.receiveItem(recipe.id, 1, metadata);
             
             if (this.player.addTalismanExp(recipe.expGain)) {
                  const nextLevelInfo = getTalismanLevelInfo(this.player.talismanLevel);

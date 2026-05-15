@@ -125,7 +125,7 @@ export class MountainSystem {
         return true;
     }
 
-    triggerLayerEvent(layer, isPassive = false) {
+    async triggerLayerEvent(layer, isPassive = false) {
         const luck = this.player.luck || 50;
         const karma = this.player.karma || 0;
         const fateBias = Math.max(-0.25, Math.min(0.25, (luck - 50) / 200 + karma / 4000));
@@ -144,7 +144,7 @@ export class MountainSystem {
                     this.ui.toast(`${rolled.name}! Thân thể chịu tổn thương nặng nề.`, "error");
                 }
             } else if (rolled.type === 'treasure') {
-                this.handleTreasureEvent(rolled, fateBias);
+                await this.handleTreasureEvent(rolled, fateBias);
             } else if (rolled.type === 'encounter') {
                 this.handleEncounter(rolled);
             }
@@ -160,14 +160,13 @@ export class MountainSystem {
         }
     }
 
-    handleTreasureEvent(event, fateBias) {
+    async handleTreasureEvent(event, fateBias) {
         const jackpot = Math.random() < (0.1 + fateBias);
         const resources = MOUNTAIN_LAYERS.find(l => l.id === this.currentLayer)?.resources || [];
         const itemId = resources[Math.floor(Math.random() * resources.length)] || 'ling_thach_ha';
         
         if (jackpot) {
-            this.player.inventory.addItem(itemId, 3);
-            this.ui.toast(`Kỳ ngộ! Thu được ${jackpot ? '3x ' : '1x '} ${itemId}.`, "success");
+            await window.game.receiveItem(itemId, 3);
         } else {
             const gain = Math.max(50, Math.floor(this.player.realmId * 5));
             this.player.addLingShi(gain);

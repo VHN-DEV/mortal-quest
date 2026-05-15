@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite",
-    "optimize-images": "node scripts/optimize-images.js",
+    "optimize-images": "node src/scripts/optimize-images.js",
     "prebuild": "npm run optimize-images",
     "build": "vite build",
     "preview": "vite preview"

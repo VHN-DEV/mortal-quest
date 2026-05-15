@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Path relative to this script in /scripts directory
-const ASSETS_DIR = path.resolve(__dirname, '../src/assets/images');
+const ASSETS_DIR = path.resolve(__dirname, '../assets/images');
 
 async function convertDir(dir) {
     if (!fs.existsSync(dir)) return;

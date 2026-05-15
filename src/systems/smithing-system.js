@@ -8,7 +8,7 @@ export class SmithingSystem {
         this.ui = ui;
     }
 
-    forge(recipeId) {
+    async forge(recipeId) {
         const recipe = SMITHING_RECIPES[recipeId];
         if (!recipe) return { success: false, msg: 'Bản thiết kế không tồn tại!' };
 
@@ -73,7 +73,7 @@ export class SmithingSystem {
             else if (qualityRoll > 0.8) { quality = 'Trung Phẩm'; }
 
             const metadata = { quality, hasKhiLinh };
-            this.player.inventory.addItem(recipe.id, 1, metadata);
+            await window.game.receiveItem(recipe.id, 1, metadata);
             
             if (this.player.addSmithingExp(recipe.expGain)) {
                  const nextInfo = getSmithingLevelInfo(this.player.smithingLevel);

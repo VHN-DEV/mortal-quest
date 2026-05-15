@@ -92,12 +92,11 @@ export class GardenSystem {
                 return { success: false, msg: 'Linh thảo còn quá non, chưa thể thu hoạch!' };
             }
 
-            // Thêm vật phẩm vào túi (kèm metadata tuổi nếu cần, hoặc tạo item khác nhau)
-            // Hiện tại ta thêm item gốc
-            this.player.inventory.addItem(seed.herbId, 1, { age: age, stage: plot.stage });
+            const metadata = { age: age, stage: plot.stage };
+            window.game.receiveItem(seed.herbId, 1, metadata);
             
             this.resetPlot(plotIndex);
-            return { success: true, msg: `Đã thu hoạch ${seed.name} (${plot.stage})!` };
+            return { success: true, msg: `Đã thu hoạch ${seed.name} (${plot.stage})!`, itemId: seed.herbId, quantity: 1 };
         }
         return { success: false, msg: 'Không có gì để thu hoạch!' };
     }
