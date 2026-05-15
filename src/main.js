@@ -650,31 +650,29 @@ window.renderCreationScreen = () => {
         };
 
         elArtifacts.innerHTML = Object.values(CREATION_ARTIFACTS)
-            .filter(a => a.id === 'none' || a.rarity === 'Danh Khí')
+            .filter(a => a.rarity === 'Danh Khí')
             .map(a => {
-            const active = sys.selectedArtifact === a.id;
-            const isNone = a.id === 'none';
-            const col = RARITY_COLOR[a.rarity] || { text: 'text-gray-400', bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.1)' };
-            return `
-                <button onclick="window.game.selectCreationArtifact('${a.id}')"
-                    class="q-card w-full ${active ? 'active' : 'border-white/10'}"
-                    style="${active ? `border-color: ${col.border}; box-shadow: 0 0 12px ${col.border};` : ''}"
-                >
-                    <div class="flex justify-between items-start gap-2">
-                        <div class="q-title ${active ? col.text : ''}">${a.name}</div>
-                        <div class="q-cost" style="${!isNone ? `color: #f87171;` : 'color: #6b7280;'}">
-                            <i class="ph ph-star"></i>
-                            ${isNone ? '0' : `-${a.cost}`}
+                const active = sys.selectedArtifact === a.id;
+                const col = RARITY_COLOR[a.rarity] || { text: 'text-gray-400', bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.1)' };
+                return `
+                    <button onclick="window.game.selectCreationArtifact('${a.id}')"
+                        class="q-card w-full ${active ? 'active' : 'border-white/10'}"
+                        style="${active ? `border-color: ${col.border}; box-shadow: 0 0 12px ${col.border};` : ''}"
+                    >
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="q-title ${active ? col.text : ''}">${a.name}</div>
+                            <div class="q-cost" style="color: #f87171;">
+                                <i class="ph ph-star"></i>
+                                -${a.cost}
+                            </div>
                         </div>
-                    </div>
-                    <div class="q-desc">${a.desc}</div>
-                    ${!isNone ? `
-                    <div class="q-bonus-list mt-2">
-                        <span class="q-bonus-tag" style="color: ${col.text.replace('text-', '')}; background: ${col.bg}; border-color: ${col.border}">${a.rarity}</span>
-                    </div>` : ''}
-                </button>
-            `;
-        }).join('');
+                        <div class="q-desc">${a.desc}</div>
+                        <div class="q-bonus-list mt-2">
+                            <span class="q-bonus-tag" style="color: ${col.text.replace('text-', '')}; background: ${col.bg}; border-color: ${col.border}">${a.rarity}</span>
+                        </div>
+                    </button>
+                `;
+            }).join('');
     }
 
     if (elTraits) {

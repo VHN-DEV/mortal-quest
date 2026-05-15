@@ -190,7 +190,6 @@ export const CREATION_SCENARIOS = {
 };
 
 export const CREATION_ARTIFACTS = {
-    'none': { id: 'none', name: 'Không Chọn', cost: 0, desc: 'Bắt đầu hành trình với hai bàn tay trắng. Điểm Tiên Duyên không bị trừ.' },
     'chuong_thien_binh': {
         id: 'chuong_thien_binh', name: 'Chưởng Thiên Bình', cost: 150,
         desc: 'Bình thần hấp thụ tinh hoa nhật nguyệt, sinh linh dịch thúc đẩy linh thảo trưởng thành nhanh chóng.',

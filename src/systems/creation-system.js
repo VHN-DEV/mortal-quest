@@ -38,7 +38,11 @@ export class CreationSystem {
     }
 
     selectArtifact(artifactId) {
-        this.selectedArtifact = artifactId;
+        if (this.selectedArtifact === artifactId) {
+            this.selectedArtifact = 'none';
+        } else {
+            this.selectedArtifact = artifactId;
+        }
         this.calculatePoints();
     }
 
