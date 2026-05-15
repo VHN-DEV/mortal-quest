@@ -644,6 +644,7 @@ window.renderCreationScreen = () => {
     const elArtifacts = document.getElementById('creation-artifacts-list');
     if (elArtifacts) {
         const RARITY_COLOR = {
+            'Tiên Khí':             { text: 'text-cyan-400', bg: 'rgba(34,211,238,0.1)', border: 'rgba(34,211,238,0.4)' },
             'Thông Thiên Linh Bảo': { text: 'text-pink-400', bg: 'rgba(236,72,153,0.1)', border: 'rgba(236,72,153,0.3)' },
             'Linh Bảo':             { text: 'text-cultivation-gold', bg: 'rgba(212,175,55,0.1)', border: 'rgba(212,175,55,0.3)' },
             'Cổ Bảo':               { text: 'text-purple-400', bg: 'rgba(168,85,247,0.1)', border: 'rgba(168,85,247,0.3)' },

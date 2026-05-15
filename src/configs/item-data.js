@@ -1982,12 +1982,12 @@ export const ITEMS = {
         recipeId: 'long_lan_giap'
     },
 
-    // --- LINH BẢO / TIÊN KHÍ (LEGENDARY ARTIFACTS) ---
+    // --- TIÊN KHÍ / THÔNG THIÊN LINH BẢO (POEM ARTIFACTS) ---
     'vo_dinh_tieu_dao_cam': {
         id: 'vo_dinh_tieu_dao_cam',
         name: 'Vô Định Tiêu Dao Cầm',
         type: 'soulArtifact',
-        quality: 'Linh Bảo',
+        quality: 'Tiên Khí',
         image: 'artifacts/vo_dinh_tieu_dao_cam.png',
         description: 'Cây cầm thần bí, tiếng đàn có thể tàng hình sơn hà, tiêu diêu tự tại giữa trời đất.',
         price: 1000000,
@@ -1998,7 +1998,7 @@ export const ITEMS = {
         id: 'van_tinh_nho_quan',
         name: 'Văn Tinh Nho Quán',
         type: 'defenseArtifact',
-        quality: 'Linh Bảo',
+        quality: 'Tiên Khí',
         image: 'artifacts/van_tinh_nho_quan.png',
         description: 'Mũ nho sĩ chứa đựng tinh túy của văn chương, hạo nhiên chính khí trấn áp tà ma.',
         price: 800000,
@@ -2020,7 +2020,7 @@ export const ITEMS = {
         id: 'te_hon_toa',
         name: 'Tế Hồn Tỏa',
         type: 'attackArtifact',
-        quality: 'Linh Bảo',
+        quality: 'Tiên Khí',
         image: 'artifacts/te_hon_toa.png',
         description: 'Xiềng xích tế hồn, nhiếp lấy phách của vạn vật, khóa chặt u minh.',
         price: 1200000,
@@ -2031,7 +2031,7 @@ export const ITEMS = {
         id: 'luyen_phong_thach',
         name: 'Luyện Phong Thạch',
         type: 'attackArtifact',
-        quality: 'Linh Bảo',
+        quality: 'Tiên Khí',
         image: 'artifacts/luyen_phong_thach.png',
         description: 'Viên đá luyện từ cuồng phong, bách luyện thành binh, trảm phá càn khôn.',
         price: 900000,
@@ -2064,7 +2064,7 @@ export const ITEMS = {
         id: 'cuu_mach_linh_cham',
         name: 'Cửu Mạch Linh Châm',
         type: 'attackArtifact',
-        quality: 'Linh Bảo',
+        quality: 'Tiên Khí',
         image: 'artifacts/cuu_mach_linh_cham.png',
         description: 'Châm thần chín mạch, nghịch chuyển âm dương, hồi thiên tục mệnh.',
         price: 1100000,
@@ -2106,7 +2106,7 @@ export const ITEMS = {
         id: 'chan_vu_nho_quan',
         name: 'Chân Vũ Nho Quán (Hoàn Thiện)',
         type: 'defenseArtifact',
-        quality: 'Linh Bảo',
+        quality: 'Tiên Khí',
         image: 'artifacts/chan_vu_nho_quan_huu.webp', // Using right hand as representative
         description: 'Bản hoàn thiện của Chân Vũ Nho Quán, thập diện mai phục cũng bất cụ, chiến bát hoang.',
         price: 1700000,
