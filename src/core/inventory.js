@@ -86,6 +86,11 @@ export class Inventory {
                     window.game.screens.linhTheLuc.open();
                     return true;
                 }
+            } else if (itemData.action === 'open_phap_bao_luc') {
+                if (window.game && window.game.screens.phapBaoLuc) {
+                    window.game.screens.phapBaoLuc.open();
+                    return true;
+                }
             }
         }
         return false;

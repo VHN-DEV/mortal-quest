@@ -1,0 +1,208 @@
+import { ITEMS } from '../../configs/item-data.js';
+import { state } from '../../state.js';
+
+/**
+ * Màn hình hiển thị danh sách các pháp bảo trong game.
+ * Xếp hạng theo phẩm cấp và phân loại theo loại trang bị.
+ */
+export class PhapBaoLucScreen {
+    constructor() {
+        this.initElements();
+        this.initEvents();
+        
+        this.qualityOrder = [
+            'Phàm Khí',
+            'Pháp Khí',
+            'Linh Khí',
+            'Hoàn Mỹ',
+            'Cực Phẩm',
+            'Pháp Bảo',
+            'Cổ Bảo',
+            'Linh Bảo',
+            'Thông Thiên Linh Bảo',
+            'Tiên Khí',
+            'Thần',
+            'Thần Thoại'
+        ];
+
+        this.typeNames = {
+            'weapon': 'Binh Khí',
+            'armor': 'Phòng Giáp',
+            'accessory': 'Trang Sức',
+            'head': 'Mão/Đỉnh',
+            'shoes': 'Hài/Bộ',
+            'necklace': 'Anh Lạc',
+            'spaceArtifact': 'Không Gian',
+            'defenseArtifact': 'Hộ Thân',
+            'flightArtifact': 'Phi Hành',
+            'supportArtifact': 'Phụ Trợ',
+            'formationArtifact': 'Trận Đạo',
+            'soulArtifact': 'Hồn Đạo',
+            'attackArtifact': 'Chủ Chiến'
+        };
+    }
+
+    initElements() {
+        this.overlay = document.getElementById('phap-bao-luc-overlay');
+        this.listView = document.getElementById('phap-bao-list-view');
+        this.detailView = document.getElementById('phap-bao-detail-view');
+        
+        this.btnClose = document.getElementById('close-phap-bao-luc-btn');
+        this.btnBack = document.getElementById('back-to-phap-bao-list-btn');
+        
+        this.elDetailIcon = document.getElementById('phap-bao-detail-icon');
+        this.elDetailQuality = document.getElementById('phap-bao-detail-quality');
+        this.elDetailName = document.getElementById('phap-bao-detail-name');
+        this.elDetailType = document.getElementById('phap-bao-detail-type');
+        this.elDetailDesc = document.getElementById('phap-bao-detail-desc');
+        this.elDetailStats = document.getElementById('phap-bao-detail-stats');
+    }
+
+    initEvents() {
+        if (this.btnClose) {
+            this.btnClose.onclick = () => this.close();
+        }
+        if (this.btnBack) {
+            this.btnBack.onclick = () => this.showList();
+        }
+    }
+
+    open() {
+        if (!this.overlay) return;
+        state.ui.toggleOverlay('phap-bao-luc-overlay', true);
+        this.showList();
+    }
+
+    close() {
+        state.ui.toggleOverlay('phap-bao-luc-overlay', false);
+    }
+
+    showList() {
+        this.listView.classList.remove('hidden');
+        this.detailView.classList.add('hidden');
+        this.renderList();
+    }
+
+    showDetail(item) {
+        this.listView.classList.add('hidden');
+        this.detailView.classList.remove('hidden');
+        
+        this.elDetailIcon.textContent = item.icon || "⚔️";
+        this.elDetailQuality.textContent = item.quality;
+        this.elDetailName.textContent = item.name;
+        this.elDetailType.textContent = this.typeNames[item.type] || item.type;
+        this.elDetailDesc.textContent = item.description;
+        
+        // Render stats
+        this.elDetailStats.innerHTML = '';
+        if (item.stats) {
+            Object.entries(item.stats).forEach(([key, value]) => {
+                const statRow = document.createElement('div');
+                statRow.className = 'flex justify-between items-center text-xs py-1 border-b border-white/5';
+                statRow.innerHTML = `
+                    <span class="text-gray-500">${this.translateStat(key)}</span>
+                    <span class="text-qi-blue font-mono">${value > 0 ? '+' : ''}${value}</span>
+                `;
+                this.elDetailStats.appendChild(statRow);
+            });
+        }
+
+        const color = this.getQualityColor(item.quality);
+        this.elDetailIcon.style.color = color;
+        this.elDetailIcon.style.filter = `drop-shadow(0 0 15px ${color}80)`;
+        this.elDetailQuality.style.color = color;
+    }
+
+    translateStat(stat) {
+        const statsMap = {
+            'atk': 'Công Kích',
+            'def': 'Phòng Thủ',
+            'spd': 'Tốc Độ',
+            'hp': 'Khí Huyết',
+            'mana': 'Linh Lực',
+            'tuViSpeed': 'Tốc Độ Tu Luyện',
+            'soulExpSpeed': 'Tốc Độ Thần Thức',
+            'critRate': 'Tỷ Lệ Bạo Kích',
+            'pierce': 'Xuyên Thấu',
+            'slots': 'Ô Chứa Đồ',
+            'formationPower': 'Trận Pháp Uy Lực',
+            'soulRepress': 'Thần Hồn Áp Chế',
+            'costMana': 'Tiêu Hao Linh Lực',
+            'dodge': 'Né Tránh'
+        };
+        return statsMap[stat] || stat;
+    }
+
+    getQualityColor(quality) {
+        const colors = {
+            'Phàm Khí': '#9ca3af',
+            'Pháp Khí': '#34d399',
+            'Linh Khí': '#60a5fa',
+            'Hoàn Mỹ': '#a78bfa',
+            'Cực Phẩm': '#f472b6',
+            'Pháp Bảo': '#fbbf24',
+            'Cổ Bảo': '#f87171',
+            'Linh Bảo': '#ef4444',
+            'Thông Thiên Linh Bảo': '#ea580c',
+            'Tiên Khí': '#fbbf24',
+            'Thần': '#fbbf24',
+            'Thần Thoại': '#dc2626'
+        };
+        return colors[quality] || '#ffffff';
+    }
+
+    renderList() {
+        this.listView.innerHTML = '';
+        
+        // Filter and group items
+        const equipment = Object.values(ITEMS).filter(item => this.typeNames[item.type]);
+        
+        // Group by type
+        const grouped = {};
+        equipment.forEach(item => {
+            if (!grouped[item.type]) grouped[item.type] = [];
+            grouped[item.type].push(item);
+        });
+
+        // Sort types by the order in typeNames
+        const sortedTypes = Object.keys(this.typeNames).filter(type => grouped[type]);
+
+        sortedTypes.forEach(type => {
+            const typeHeader = document.createElement('div');
+            typeHeader.className = 'text-[10px] font-ancient text-gray-500 uppercase tracking-[0.3em] mt-6 mb-2 border-l-2 border-gray-700 pl-3';
+            typeHeader.textContent = this.typeNames[type];
+            this.listView.appendChild(typeHeader);
+
+            const items = grouped[type];
+            // Sort by quality
+            items.sort((a, b) => {
+                const qa = this.qualityOrder.indexOf(a.quality);
+                const qb = this.qualityOrder.indexOf(b.quality);
+                return qb - qa; // Higher quality first
+            });
+
+            items.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'group relative bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 rounded-2xl p-4 flex items-center space-x-4 cursor-pointer transition-all active:scale-95';
+                
+                const qualityColor = this.getQualityColor(item.quality);
+                
+                el.innerHTML = `
+                    <div class="flex-none w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center text-xl" style="color: ${qualityColor}">
+                        ${item.icon || '⚔️'}
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="text-sm font-bold text-white group-hover:text-qi-blue transition-colors">${item.name}</h4>
+                        <div class="flex items-center space-x-2 mt-0.5">
+                            <span class="text-[9px] font-bold" style="color: ${qualityColor}">${item.quality}</span>
+                        </div>
+                    </div>
+                    <i class="ph ph-caret-right text-gray-600 group-hover:text-white"></i>
+                `;
+                
+                el.onclick = () => this.showDetail(item);
+                this.listView.appendChild(el);
+            });
+        });
+    }
+}

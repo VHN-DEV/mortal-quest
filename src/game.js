@@ -58,7 +58,7 @@ export class Game {
             { MapScreen }, { InventoryScreen }, { CharacterScreen }, { SystemsScreen },
             { BattleScreen }, { SpiritStoneUI }, { TreasureScreen }, { FateScreen },
             { StartScreen }, { SaveScreen }, { MiningScreen }, { DiHoaBangScreen },
-            { DiLoiBangScreen }, { LinhTheLucScreen }
+            { DiLoiBangScreen }, { LinhTheLucScreen }, { PhapBaoLucScreen }
         ] = await Promise.all([
             import('./ui/screens/MapScreen.js'),
             import('./ui/screens/InventoryScreen.js'),
@@ -73,7 +73,8 @@ export class Game {
             import('./ui/screens/MiningScreen.js'),
             import('./ui/screens/DiHoaBangScreen.js'),
             import('./ui/screens/DiLoiBangScreen.js'),
-            import('./ui/screens/LinhTheLucScreen.js')
+            import('./ui/screens/LinhTheLucScreen.js'),
+            import('./ui/screens/PhapBaoLucScreen.js')
         ]);
 
         this.screens.map = new MapScreen();
@@ -90,6 +91,7 @@ export class Game {
         this.screens.diHoaBang = new DiHoaBangScreen();
         this.screens.diLoiBang = new DiLoiBangScreen();
         this.screens.linhTheLuc = new LinhTheLucScreen();
+        this.screens.phapBaoLuc = new PhapBaoLucScreen();
 
         state.systems.creation = new CreationSystem();
 
