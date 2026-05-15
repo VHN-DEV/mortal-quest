@@ -74,33 +74,15 @@ export const CREATION_RACES = {
         desc: 'Linh hồn hoàn chỉnh nhất, thích hợp tu luyện mọi loại công pháp. Tốc độ lĩnh ngộ ổn định.', 
         bonus: { tvps: 1.0, soulExpSpeed: 1.1 } 
     },
-    'YAO_LOW': { 
-        id: 'YAO_LOW', name: 'Yêu Tộc (Thấp Cấp)', cost: 20, 
-        desc: 'Yêu thú cấp thấp (Lang/Xà/Hổ). Thân thể khỏe, thọ nguyên dài hơn nhân tộc.', 
-        bloodline: 'PHAM',
-        bonus: { maxHp: 100, def: 20, maxAge: 100, tvps: 0.8 } 
-    },
-    'YAO_MID': { 
-        id: 'YAO_MID', name: 'Yêu Tộc (Trung Cấp)', cost: 50, 
-        desc: 'Dị chủng tiềm năng (Huyết Lang/Thanh Lân Mãng). Huyết mạch bắt đầu có linh tính.', 
+    'YAO': { 
+        id: 'YAO', name: 'Yêu Tộc', cost: 40, 
+        desc: 'Hóa hình từ yêu thú, thân thể cực mạnh, thọ nguyên dài. Có khả năng thức tỉnh huyết mạch thần thú.', 
         bloodline: 'LINH',
-        bonus: { maxHp: 300, atk: 50, def: 50, maxAge: 300, tvps: 1.0 } 
-    },
-    'YAO_HIGH': { 
-        id: 'YAO_HIGH', name: 'Yêu Tộc (Cao Cấp)', cost: 100, 
-        desc: 'Thái Cổ Dị Chủng/Hung Thú. Sức mạnh bẩm sinh cực lớn, áp chế cấp thấp.', 
-        bloodline: 'THIEN',
-        bonus: { maxHp: 1000, atk: 200, def: 200, maxAge: 1000, tvps: 1.5, allRes: 0.1 } 
-    },
-    'YAO_PEAK': { 
-        id: 'YAO_PEAK', name: 'Chân Linh (Đỉnh Cấp)', cost: 250, 
-        desc: 'Thái Cổ Thần Thú (Long/Phượng/Kỳ Lân). Đứng đầu vạn tộc, thần thông quảng đại.', 
-        bloodline: 'DE',
-        bonus: { maxHp: 5000, atk: 1000, def: 1000, maxAge: 10000, tvps: 3.0, allRes: 0.3 } 
+        bonus: { maxHp: 500, def: 50, maxAge: 1000, tvps: 0.9 } 
     },
     'DEMON': { 
         id: 'DEMON', name: 'Ma Tộc', cost: 60, 
-        desc: 'Chủng tộc của bản năng và sức mạnh hủy diệt. Tốc độ thăng tiến cực nhanh nhưng đầy rủi ro.', 
+        desc: 'Chủng tộc của bản năng và sức mạnh hủy diệt. Tốc độ thăng tiến cực nhanh nhưng dễ bị tâm ma quấy phá.', 
         bloodline: 'CHAN',
         bonus: { atk: 150, tvps: 1.3, karma: -200, maxAge: 500 } 
     }

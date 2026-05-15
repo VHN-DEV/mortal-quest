@@ -352,101 +352,21 @@ export const RACE_DATA = {
         baseLifespan: 100,
         description: "Cân bằng, đa dạng công pháp, phù hợp đại đạo."
     },
-    YAO_LOW: {
-        id: 'YAO_LOW',
-        name: "Yêu Tộc (Thấp Cấp)",
+    YAO: {
+        id: 'YAO',
+        name: "Yêu Tộc",
         realms: SPIRIT_BEAST_REALMS,
-        statMult: { atk: 1.0, def: 1.2, hp: 1.5, spd: 0.8 },
-        baseLifespan: 150,
-        description: "Yêu thú cấp thấp, thân thể khỏe, thọ nguyên dài hơn nhân tộc."
-    },
-    YAO_MID: {
-        id: 'YAO_MID',
-        name: "Yêu Tộc (Trung Cấp)",
-        realms: SPIRIT_BEAST_REALMS,
-        statMult: { atk: 1.2, def: 1.4, hp: 2.5, spd: 0.9 },
-        baseLifespan: 500,
-        description: "Dị chủng tiềm năng, huyết mạch bắt đầu có linh tính."
-    },
-    YAO_HIGH: {
-        id: 'YAO_HIGH',
-        name: "Yêu Tộc (Cao Cấp)",
-        realms: SPIRIT_BEAST_REALMS,
-        statMult: { atk: 1.5, def: 1.8, hp: 5.0, spd: 1.1 },
-        baseLifespan: 2000,
-        description: "Thái Cổ Dị Chủng/Hung Thú, sức mạnh bẩm sinh áp chế cấp thấp."
-    },
-    YAO_PEAK: {
-        id: 'YAO_PEAK',
-        name: "Chân Linh (Đỉnh Cấp)",
-        realms: SPIRIT_BEAST_REALMS,
-        statMult: { atk: 2.5, def: 2.5, hp: 12.0, spd: 1.5 },
-        baseLifespan: 10000,
-        description: "Thái Cổ Thần Thú, đứng đầu vạn tộc, thần thông quảng đại."
+        statMult: { atk: 1.2, def: 1.5, hp: 3.0, spd: 0.9 },
+        baseLifespan: 1000,
+        description: "Thân thể mạnh mẽ, thọ nguyên dài, có khả năng thức tỉnh huyết mạch."
     },
     DEMON: {
         id: 'DEMON',
         name: "Ma Tộc",
         realms: DEMON_REALMS,
-        statMult: { atk: 1.4, def: 0.8, hp: 1.1, spd: 1.1 },
+        statMult: { atk: 1.5, def: 0.9, hp: 1.2, spd: 1.1 },
         baseLifespan: 500,
-        description: "Công pháp bá đạo, sát thương cực cao, dễ tẩu hỏa nhập ma."
-    },
-    GHOST: {
-        id: 'GHOST',
-        name: "Quỷ Tu",
-        realms: GHOST_REALMS,
-        statMult: { atk: 1.1, def: 0.6, hp: 0.8, spd: 1.5 },
-        baseLifespan: 9999, // Souls don't "age" normally
-        description: "Thần thức mạnh, huyễn thuật, khó bị giết hoàn toàn."
-    },
-    ZOMBIE: {
-        id: 'ZOMBIE',
-        name: "Thi Tộc",
-        realms: ZOMBIE_REALMS,
-        statMult: { atk: 0.8, def: 2.0, hp: 1.8, spd: 0.5 },
-        baseLifespan: 9999,
-        description: "Phòng ngự cực mạnh, không biết đau, bất tử khó diệt."
-    },
-    VU: {
-        id: 'VU',
-        name: "Vu Tộc",
-        realms: VU_REALMS,
-        statMult: { atk: 1.2, def: 1.5, hp: 1.4, spd: 0.9 },
-        baseLifespan: 800,
-        description: "Luyện thể cực mạnh, thân thể như pháp bảo."
-    },
-    BUDDHIST: {
-        id: 'BUDDHIST',
-        name: "Phật Tu",
-        realms: BUDDHIST_REALMS,
-        statMult: { atk: 1.0, def: 1.4, hp: 1.2, spd: 0.9 },
-        baseLifespan: 300,
-        description: "Kim thân mạnh, khắc chế tà ma, tâm cảnh ổn định."
-    },
-    CONFUCIAN: {
-        id: 'CONFUCIAN',
-        name: "Nho Tu",
-        realms: CONFUCIAN_REALMS,
-        statMult: { atk: 1.1, def: 1.1, hp: 1.0, spd: 1.1 },
-        baseLifespan: 150,
-        description: "Ngôn xuất pháp tùy, khắc chế tà ma."
-    },
-    DRAGON: {
-        id: 'DRAGON',
-        name: "Long Tộc",
-        realms: DRAGON_REALMS,
-        statMult: { atk: 1.8, def: 1.8, hp: 2.5, spd: 1.2 },
-        baseLifespan: 100000,
-        description: "Thân thể cực mạnh, huyết mạch áp chế vạn tộc."
-    },
-    PHOENIX: {
-        id: 'PHOENIX',
-        name: "Phượng Tộc",
-        realms: PHOENIX_REALMS,
-        statMult: { atk: 2.0, def: 1.2, hp: 1.8, spd: 1.5 },
-        baseLifespan: 100000,
-        description: "Niết bàn trùng sinh, hỏa diễm cực mạnh."
+        description: "Sức mạnh hủy diệt, thăng tiến nhanh nhưng dễ gặp biến cố tâm ma."
     }
 };
 
