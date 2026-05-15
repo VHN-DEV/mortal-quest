@@ -2119,10 +2119,32 @@ export const ITEMS = {
         type: 'flightArtifact',
         quality: 'Danh Bảo',
         image: 'artifacts/bo_thien_lang.png',
-        description: 'Dải lụa bước lên trời, tùy phong khởi vũ, đạp vân tiêu.',
+        description: 'Dải lụa bước lên trời, tùy phong khởi vũ, đạp vân tiêu. Cùng cấp với [[phong_loi_si|Phong Lôi Sí]].',
         price: 1800000,
         stats: { spd: 150, luck: 20, tuViSpeed: 1.5 },
         poem: ['Lăng Vũ Cửu Thiên Tùy Phong Khởi', 'Cước Đạp Vân Tiêu Lộng Thái Hà']
+    },
+    'phong_loi_si': {
+        id: 'phong_loi_si',
+        name: 'Phong Lôi Sí',
+        type: 'flightArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/phong-loi-si.svg',
+        description: 'Đôi cánh được luyện từ lông vũ của yêu thú lôi hệ và phong hệ cực hiếm. Tốc độ độn thuật vô song, nhưng yêu cầu người sử dụng phải lĩnh ngộ [[phong_loi_quyet_book|Phong Lôi Quyết]] hoặc các [[loi_phap|Lôi Pháp]] để làm nguồn năng lượng kích hoạt.',
+        price: 2500000,
+        stats: { spd: 500, avoidRate: 0.2 },
+        requireThunder: true,
+        poem: ['Phong Lôi Nhất Động Thiên Địa Biến', 'Sí Vũ Khinh Huy Diệu Cửu Tiêu']
+    },
+    'phong_loi_quyet_book': {
+        id: 'phong_loi_quyet_book',
+        name: 'Sách: Phong Lôi Quyết',
+        type: 'book',
+        quality: 'Huyền',
+        icon: '📜',
+        description: 'Bí tịch ghi chép lại tâm pháp Phong Lôi Quyết hiếm gặp, giúp tu sĩ sở hữu linh lực cuồng bạo của Lôi và tốc độ của Phong.',
+        price: 500000,
+        techniqueId: 'phong_loi_quyet'
     },
     'nguyen_tu_cuc_son': {
         id: 'nguyen_tu_cuc_son',

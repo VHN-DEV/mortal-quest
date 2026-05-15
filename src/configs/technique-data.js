@@ -241,6 +241,18 @@ export const TECHNIQUES = {
         maxStage: 12,
         stats: { hp: 1000, mana: 1000, atk: 500, def: 500, spd: 100 },
         effects: { tvps: 5.0, lifespanBonus: 1000, allRes: 0.3 }
+    },
+    'phong_loi_quyet': {
+        id: 'phong_loi_quyet',
+        name: 'Phong Lôi Quyết',
+        type: 'Linh Lực',
+        element: 'Lôi',
+        quality: 'Huyền',
+        description: 'Công pháp hiếm gặp dung hợp giữa Phong và Lôi, linh lực cuồng bạo, tốc độ độn thuật cực nhanh.',
+        maxStage: 9,
+        stats: { atk: 100, spd: 150 },
+        effects: { tvps: 2.0, thunderDmg: 1.5, dodge: 0.1 },
+        compatibility: { 'Lôi': 1.5, 'Phong': 1.3, 'Thiên Linh Căn': 1.5 }
     }
 };
 

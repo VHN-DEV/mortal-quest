@@ -1196,6 +1196,21 @@ export class Player {
         const item = getItemById(itemId);
         if (!item || !item.type) return false;
 
+        // Special Requirement Check: Thunder for items like Phong Loi Si
+        if (item.requireThunder) {
+            const hasThunderTech = this.learnedTechniques.some(t => {
+                const techData = getTechniqueById(t.id);
+                return techData && techData.element === 'Lôi';
+            }) || (this.learnedSecretTechniques && this.learnedSecretTechniques.some(t => {
+                return t.id.includes('loi') || t.id.includes('thunder');
+            }));
+
+            if (!hasThunderTech) {
+                state.ui.toast(`Cần có công pháp hoặc bí thuật Lôi hệ để làm nguồn linh lực kích hoạt ${item.name}!`, "error");
+                return false;
+            }
+        }
+
         // Specialized Profession Tools
         if (item.type === 'cauldron') {
             if (this.currentCauldron) {
