@@ -79,6 +79,8 @@ export const SHOPS = {
                 { id: 'di_hoa_bang', stock: 1 },
                 { id: 'di_loi_bang', stock: 1 },
                 { id: 'linh_the_luc', stock: 1 },
+                { id: 'phap_bao_luc', stock: 1 },
+                { id: 'van_toc_thong_giam', stock: 1 },
                 { id: 'dan_dao_chan_giai', stock: 1 },
                 { id: 'luyen_khi_tong_cuong', stock: 1 },
                 { id: 'thai_thuong_phu_kinh', stock: 1 },

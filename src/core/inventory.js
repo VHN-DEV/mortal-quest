@@ -96,6 +96,45 @@ export class Inventory {
                     window.game.screens.chungTocLuc.open();
                     return true;
                 }
+            } else if (itemData.action === 'combine_ngu_cuc_son') {
+                const pieces = [
+                    'nguyen_tu_cuc_son',
+                    'bac_cuc_nguyen_quang_cuc_son',
+                    'hao_am_han_phach_cuc_son',
+                    'thai_at_thanh_quang_cuc_son',
+                    'am_duong_dai_ngu_hanh_cuc_son'
+                ];
+                
+                // Kiểm tra xem có đủ 5 mảnh không
+                const hasAll = pieces.every(id => this.hasItem(id, 1));
+                
+                if (hasAll) {
+                    // Xóa 5 mảnh
+                    pieces.forEach(id => this.removeItem(id, 1));
+                    // Thêm núi hợp thể
+                    this.addItem('nguyen_hop_ngu_cuc_son', 1);
+                    state.ui.alert("Ngũ hành quy nguyên, âm dương giao thái! Ngươi đã thành công hợp nhất 5 ngọn Cực Sơn thành Nguyên Hợp Ngũ Cực Sơn!", "Hợp Nhất Thành Công");
+                    return true;
+                } else {
+                    state.ui.toast("Cần đủ 5 ngọn núi Cực Sơn khác nhau mới có thể hợp nhất!", "error");
+                    return false;
+                }
+            } else if (itemData.action === 'separate_ngu_cuc_son') {
+                const pieces = [
+                    'nguyen_tu_cuc_son',
+                    'bac_cuc_nguyen_quang_cuc_son',
+                    'hao_am_han_phach_cuc_son',
+                    'thai_at_thanh_quang_cuc_son',
+                    'am_duong_dai_ngu_hanh_cuc_son'
+                ];
+                
+                // Xóa núi hợp thể
+                this.removeItem('nguyen_hop_ngu_cuc_son', 1);
+                // Thêm lại 5 mảnh
+                pieces.forEach(id => this.addItem(id, 1));
+                
+                state.ui.toast("Đã phân tách Nguyên Hợp Ngũ Cực Sơn thành 5 ngọn núi đơn lẻ.", "success");
+                return true;
             }
         }
         return false;

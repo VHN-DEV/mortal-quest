@@ -2123,6 +2123,73 @@ export const ITEMS = {
         price: 1800000,
         stats: { spd: 150, luck: 20, tuViSpeed: 1.5 },
         poem: ['Lăng Vũ Cửu Thiên Tùy Phong Khởi', 'Cước Đạp Vân Tiêu Lộng Thái Hà']
+    },
+    'nguyen_tu_cuc_son': {
+        id: 'nguyen_tu_cuc_son',
+        name: 'Nguyên Từ Cực Sơn',
+        type: 'defenseArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/nguyen-tu-cuc-son.svg',
+        description: 'Ngọn núi xám đen chứa đựng lực lượng Nguyên Từ, có thể khắc chế vạn pháp ngũ hành, trấn áp trọng lực. Là một trong 5 thành phần để luyện chế [[nguyen_hop_ngu_cuc_son|Nguyên Hợp Ngũ Cực Sơn]].',
+        price: 1500000,
+        stats: { def: 600, hp: 1500, gravityRes: 0.5 },
+        action: 'combine_ngu_cuc_son'
+    },
+    'bac_cuc_nguyen_quang_cuc_son': {
+        id: 'bac_cuc_nguyen_quang_cuc_son',
+        name: 'Bắc Cực Nguyên Quang Cực Sơn',
+        type: 'attackArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/bac-cuc-nguyen-quang-cuc-son.webp',
+        description: 'Ngọn núi kết tinh từ Bắc Cực Nguyên Quang, ánh sáng xuyên thấu vạn vật. Là một trong 5 thành phần để luyện chế [[nguyen_hop_ngu_cuc_son|Nguyên Hợp Ngũ Cực Sơn]].',
+        price: 1500000,
+        stats: { atk: 600, pierce: 0.5 },
+        action: 'combine_ngu_cuc_son'
+    },
+    'hao_am_han_phach_cuc_son': {
+        id: 'hao_am_han_phach_cuc_son',
+        name: 'Hạo Âm Hàn Phách Cực Sơn',
+        type: 'defenseArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/hao-am-han-phach-cuc-son.svg',
+        description: 'Ngọn núi chứa đựng cực hạn hàn khí, đông cứng thần hồn. Là một trong 5 thành phần để luyện chế [[nguyen_hop_ngu_cuc_son|Nguyên Hợp Ngũ Cực Sơn]].',
+        price: 1500000,
+        stats: { def: 400, iceDmg: 200, soulRepress: 0.3 },
+        action: 'combine_ngu_cuc_son'
+    },
+    'thai_at_thanh_quang_cuc_son': {
+        id: 'thai_at_thanh_quang_cuc_son',
+        name: 'Thái Ất Thanh Quang Cực Sơn',
+        type: 'attackArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/thai-at-thanh-quang-cuc-son.svg',
+        description: 'Ngọn núi tỏa ra Thái Ất Thanh Quang, vô cùng sắc bén. Là một trong 5 thành phần để luyện chế [[nguyen_hop_ngu_cuc_son|Nguyên Hợp Ngũ Cực Sơn]].',
+        price: 1500000,
+        stats: { atk: 500, spd: 100 },
+        action: 'combine_ngu_cuc_son'
+    },
+    'am_duong_dai_ngu_hanh_cuc_son': {
+        id: 'am_duong_dai_ngu_hanh_cuc_son',
+        name: 'Âm Dương Đại Ngũ Hành Cực Sơn',
+        type: 'supportArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/am-duong-dai-ngu-hanh-cuc-son.svg',
+        description: 'Ngọn núi dung hợp Âm Dương và Ngũ Hành, cân bằng linh khí. Là một trong 5 thành phần để luyện chế [[nguyen_hop_ngu_cuc_son|Nguyên Hợp Ngũ Cực Sơn]].',
+        price: 1500000,
+        stats: { allRes: 0.2, tuViSpeed: 2.0 },
+        action: 'combine_ngu_cuc_son'
+    },
+    'nguyen_hop_ngu_cuc_son': {
+        id: 'nguyen_hop_ngu_cuc_son',
+        name: 'Nguyên Hợp Ngũ Cực Sơn',
+        type: 'attackArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/nguyen-hop-ngu-cuc-son.svg',
+        description: 'Bảo vật trấn phái được hợp nhất từ: [[nguyen_tu_cuc_son|Nguyên Từ]], [[bac_cuc_nguyen_quang_cuc_son|Bắc Cực]], [[hao_am_han_phach_cuc_son|Hạo Âm]], [[thai_at_thanh_quang_cuc_son|Thái Ất]] và [[am_duong_dai_ngu_hanh_cuc_son|Âm Dương]]. Uy lực trấn áp càn khôn.',
+        price: 10000000,
+        stats: { atk: 3000, def: 2000, hp: 5000, pierce: 0.8, allRes: 0.5 },
+        action: 'separate_ngu_cuc_son',
+        poem: ['Ngũ Sơn Hợp Nhất Trấn Càn Khôn', 'Vạn Pháp Quy Nguyên Hóa Hư Không']
     }
 };
 

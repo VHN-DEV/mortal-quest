@@ -1,8 +1,9 @@
 import { ITEMS } from '../../configs/item-data.js';
 import { state } from '../../state.js';
+import { getAssetUrl } from '../../configs/asset-data.js';
 
 /**
- * Màn hình hiển thị danh sách các pháp bảo trong game.
+ * Màn hình hiển thị Vạn Bảo Lục - Danh sách các pháp bảo trong game.
  * Xếp hạng theo phẩm cấp và phân loại theo loại trang bị.
  */
 export class PhapBaoLucScreen {
@@ -87,11 +88,29 @@ export class PhapBaoLucScreen {
         this.listView.classList.add('hidden');
         this.detailView.classList.remove('hidden');
         
-        this.elDetailIcon.textContent = item.icon || "⚔️";
+        const color = this.getQualityColor(item.quality);
+
+        // Render Icon or Image
+        if (item.image) {
+            this.elDetailIcon.innerHTML = `<img src="${getAssetUrl(item.image)}" class="w-20 h-20 object-contain mx-auto filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">`;
+            this.elDetailIcon.style.color = '';
+            this.elDetailIcon.style.filter = '';
+        } else {
+            this.elDetailIcon.innerHTML = `<span class="text-5xl">${item.icon || "⚔️"}</span>`;
+            this.elDetailIcon.style.color = color;
+            this.elDetailIcon.style.filter = `drop-shadow(0 0 15px ${color}80)`;
+        }
+
         this.elDetailQuality.textContent = item.quality;
+        this.elDetailQuality.style.color = color;
+        
         this.elDetailName.textContent = item.name;
+        this.elDetailName.style.color = 'white';
+        
         this.elDetailType.textContent = this.typeNames[item.type] || item.type;
-        this.elDetailDesc.textContent = item.description;
+        
+        // Render Description with Quick Links
+        this.renderDescription(item.description);
         
         // Render stats
         this.elDetailStats.innerHTML = '';
@@ -106,11 +125,30 @@ export class PhapBaoLucScreen {
                 this.elDetailStats.appendChild(statRow);
             });
         }
+    }
 
-        const color = this.getQualityColor(item.quality);
-        this.elDetailIcon.style.color = color;
-        this.elDetailIcon.style.filter = `drop-shadow(0 0 15px ${color}80)`;
-        this.elDetailQuality.style.color = color;
+    renderDescription(desc) {
+        if (!this.elDetailDesc) return;
+        
+        // Pattern: [[item_id|display_name]]
+        const regex = /\[\[(.*?)\|(.*?)\]\]/g;
+        let html = desc.replace(regex, (match, id, name) => {
+            return `<span class="item-link text-qi-blue underline cursor-pointer hover:text-white transition-colors" data-id="${id}">${name}</span>`;
+        });
+        
+        this.elDetailDesc.innerHTML = html;
+        
+        // Gán sự kiện click cho các liên kết vừa tạo
+        const links = this.elDetailDesc.querySelectorAll('.item-link');
+        links.forEach(link => {
+            link.onclick = (e) => {
+                const id = e.target.dataset.id;
+                const targetItem = ITEMS[id];
+                if (targetItem) {
+                    this.showDetail(targetItem);
+                }
+            };
+        });
     }
 
     translateStat(stat) {
@@ -154,17 +192,13 @@ export class PhapBaoLucScreen {
     renderList() {
         this.listView.innerHTML = '';
         
-        // Filter and group items
         const equipment = Object.values(ITEMS).filter(item => this.typeNames[item.type]);
-        
-        // Group by type
         const grouped = {};
         equipment.forEach(item => {
             if (!grouped[item.type]) grouped[item.type] = [];
             grouped[item.type].push(item);
         });
 
-        // Sort types by the order in typeNames
         const sortedTypes = Object.keys(this.typeNames).filter(type => grouped[type]);
 
         sortedTypes.forEach(type => {
@@ -174,11 +208,10 @@ export class PhapBaoLucScreen {
             this.listView.appendChild(typeHeader);
 
             const items = grouped[type];
-            // Sort by quality
             items.sort((a, b) => {
                 const qa = this.qualityOrder.indexOf(a.quality);
                 const qb = this.qualityOrder.indexOf(b.quality);
-                return qb - qa; // Higher quality first
+                return qb - qa;
             });
 
             items.forEach(item => {
@@ -186,10 +219,13 @@ export class PhapBaoLucScreen {
                 el.className = 'group relative bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 rounded-2xl p-4 flex items-center space-x-4 cursor-pointer transition-all active:scale-95';
                 
                 const qualityColor = this.getQualityColor(item.quality);
-                
+                const contentIcon = item.image 
+                    ? `<img src="${getAssetUrl(item.image)}" class="w-8 h-8 object-contain">`
+                    : `<span style="color: ${qualityColor}">${item.icon || '⚔️'}</span>`;
+
                 el.innerHTML = `
-                    <div class="flex-none w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center text-xl" style="color: ${qualityColor}">
-                        ${item.icon || '⚔️'}
+                    <div class="flex-none w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center text-xl">
+                        ${contentIcon}
                     </div>
                     <div class="flex-grow">
                         <h4 class="text-sm font-bold text-white group-hover:text-qi-blue transition-colors">${item.name}</h4>
