@@ -658,11 +658,6 @@ window.renderCreationScreen = () => {
         };
     }
 
-    const btnCloseGuide = document.getElementById('btn-close-guide');
-    const btnGuideGotIt = document.getElementById('btn-guide-got-it');
-    const guideOverlay = document.getElementById('guide-overlay');
-    if (btnCloseGuide && guideOverlay) btnCloseGuide.onclick = () => state.ui.toggleOverlay(guideOverlay, false);
-    if (btnGuideGotIt && guideOverlay) btnGuideGotIt.onclick = () => state.ui.toggleOverlay(guideOverlay, false);
 };
 
 // Global error handler

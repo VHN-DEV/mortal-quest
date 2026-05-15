@@ -125,7 +125,7 @@ export class StartScreen {
         const btnSettings = document.getElementById('btn-start-settings');
         if (btnSettings) {
             btnSettings.onclick = () => {
-                const isMuted = state.settings?.isMuted || false;
+                const isMuted = window.game.audioManager.isMuted;
                 const options = [
                     {
                         label: isMuted ? 'Bật Âm Thanh' : 'Tắt Âm Thanh',
@@ -134,14 +134,19 @@ export class StartScreen {
                     }
                 ];
                 state.ui.promptOptions('Cài Đặt Hệ Thống', options, 'Tùy chỉnh các thiết lập cơ bản của trò chơi.')
-                    .then(action => {
+                    .then(async action => {
                         if (action === 'toggle-mute') {
-                            if (!state.settings) state.settings = {};
-                            state.settings.isMuted = !state.settings.isMuted;
-                            state.ui.toast(state.settings.isMuted ? 'Đã tắt âm thanh' : 'Đã bật âm thanh', 'info');
+                            const muted = await window.game.audioManager.toggleMute();
+                            window.game.updateMuteIcon(muted);
+                            state.ui.toast(muted ? 'Đã tắt âm thanh' : 'Đã bật âm thanh', 'info');
                         }
                     });
             };
+            
+            // Initial icon state on render
+            if (window.game && window.game.audioManager) {
+                window.game.updateMuteIcon(window.game.audioManager.isMuted);
+            }
         }
 
         const btnDiscord = document.getElementById('btn-start-discord');

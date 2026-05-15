@@ -165,9 +165,10 @@ export class UISystem {
                     <span>${opt.label}</span>
                 `;
                 btn.onclick = () => {
-                    this.toggleOverlay(this.modalOverlay, false);
-                    this.modalMessage.innerHTML = originalMessage; // Restore
-                    this._restoreButtons(originalConfirmDisplay, originalCancelDisplay, originalCancelText);
+                    this.toggleOverlay(this.modalOverlay, false, () => {
+                        this.modalMessage.innerHTML = originalMessage; // Restore
+                        this._restoreButtons(originalConfirmDisplay, originalCancelDisplay, originalCancelText);
+                    });
                     resolve(opt.value);
                 };
                 optionsContainer.appendChild(btn);
@@ -181,9 +182,10 @@ export class UISystem {
             this.modalBtnCancel.textContent = 'HỦY BỎ';
 
             this.modalBtnCancel.onclick = () => {
-                this.toggleOverlay(this.modalOverlay, false);
-                this.modalMessage.innerHTML = originalMessage;
-                this._restoreButtons(originalConfirmDisplay, originalCancelDisplay, originalCancelText);
+                this.toggleOverlay(this.modalOverlay, false, () => {
+                    this.modalMessage.innerHTML = originalMessage;
+                    this._restoreButtons(originalConfirmDisplay, originalCancelDisplay, originalCancelText);
+                });
                 resolve(null);
             };
 
@@ -222,7 +224,7 @@ export class UISystem {
     /**
      * Centralized overlay management with stack support
      */
-    toggleOverlay(overlay, show) {
+    toggleOverlay(overlay, show, onComplete = null) {
         const el = typeof overlay === 'string' ? document.getElementById(overlay) : overlay;
         if (!el) return;
 
@@ -236,12 +238,16 @@ export class UISystem {
             if (el.id === 'guide-overlay' || el.id === 'modal-overlay') {
                 gsap.fromTo(el,
                     { opacity: 0, scale: 0.9, backdropFilter: "blur(0px)" },
-                    { opacity: 1, scale: 1, backdropFilter: "blur(8px)", duration: 0.4, ease: "power2.out" }
+                    { opacity: 1, scale: 1, backdropFilter: "blur(8px)", duration: 0.4, ease: "power2.out", onComplete: () => {
+                        if (onComplete) onComplete();
+                    } }
                 );
             } else {
                 gsap.fromTo(el,
                     { opacity: 0 },
-                    { opacity: 1, duration: 0.3, ease: "power1.out" }
+                    { opacity: 1, duration: 0.3, ease: "power1.out", onComplete: () => {
+                        if (onComplete) onComplete();
+                    } }
                 );
             }
 
@@ -267,6 +273,8 @@ export class UISystem {
                     if (visibleOverlays.length === 0) {
                         document.body.classList.remove('modal-open');
                     }
+
+                    if (onComplete) onComplete();
                 }
             });
         }

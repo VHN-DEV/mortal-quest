@@ -57,6 +57,7 @@ import { MiningSystem } from './systems/mining-system.js';
 export class Game {
     constructor() {
         window.game = this;
+        this.audioManager = audioManager;
         this.screens = {};
     }
 
@@ -272,7 +273,9 @@ export class Game {
             'close-mountain-btn': 'mountain-overlay',
             'close-tower-btn': 'tower-overlay',
             'close-sects-btn': 'sects-overlay',
-            'close-stats-btn': 'stats-modal'
+            'close-stats-btn': 'stats-modal',
+            'btn-close-guide': 'guide-overlay',
+            'btn-guide-got-it': 'guide-overlay'
         };
 
         Object.entries(closeButtons).forEach(([btnId, overlayId]) => {
@@ -1317,6 +1320,12 @@ export class Game {
         const icon = document.getElementById('mute-icon');
         if (icon) {
             icon.className = muted ? 'ph ph-speaker-slash' : 'ph ph-speaker-high';
+        }
+        
+        const startIcon = document.getElementById('btn-start-settings');
+        if (startIcon) {
+            startIcon.className = (muted ? 'ph ph-speaker-slash' : 'ph ph-speaker-high') + ' hover:text-cultivation-gold cursor-pointer transition-all hover:scale-125 drop-shadow-md';
+            startIcon.title = muted ? 'Bật âm thanh' : 'Tắt âm thanh';
         }
     }
 
