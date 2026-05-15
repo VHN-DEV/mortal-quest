@@ -2107,7 +2107,7 @@ export const ITEMS = {
         name: 'Chân Vũ Nho Quán (Hoàn Thiện)',
         type: 'defenseArtifact',
         quality: 'Danh Khí',
-        image: 'artifacts/chan_vu_nho_quan_huu.webp', // Using right hand as representative
+        image: 'artifacts/chan_vu_nho_quan_full.webp', // Using right hand as representative
         description: 'Bản hoàn thiện của Chân Vũ Nho Quán, thập diện mai phục cũng bất cụ, chiến bát hoang.',
         price: 1700000,
         stats: { def: 500, hp: 2000, stability: 40 },

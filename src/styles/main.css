@@ -412,27 +412,32 @@ body {
 }
 
 /* Quality Colors Refined */
-.quality-pham, .quality-pham-khi {
+.quality-pham,
+.quality-pham-khi {
   color: #ffffff;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
-.quality-hoang, .quality-phap-khi {
+.quality-hoang,
+.quality-phap-khi {
   color: #10b981;
   text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
 }
 
-.quality-huyen, .quality-linh-khi {
+.quality-huyen,
+.quality-linh-khi {
   color: #3b82f6;
   text-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
 }
 
-.quality-dia, .quality-phap-bao {
+.quality-dia,
+.quality-phap-bao {
   color: #8b5cf6;
   text-shadow: 0 0 5px rgba(139, 92, 246, 0.3);
 }
 
-.quality-thien, .quality-co-bao {
+.quality-thien,
+.quality-co-bao {
   color: #f59e0b;
   text-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
 }
@@ -442,12 +447,14 @@ body {
   text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
 }
 
-.quality-than, .quality-thong-thien {
+.quality-than,
+.quality-thong-thien {
   color: #d4af37;
   text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 
-.quality-tien, .quality-tien-khi {
+.quality-tien,
+.quality-tien-khi {
   background: linear-gradient(to right, #ef4444, #f59e0b, #ffff00, #10b981, #3b82f6, #8b5cf6, #ef4444);
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -479,23 +486,28 @@ body {
   pointer-events: none;
 }
 
-.border-pham, .border-pham-khi {
+.border-pham,
+.border-pham-khi {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-.border-hoang, .border-phap-khi {
+.border-hoang,
+.border-phap-khi {
   border-color: rgba(16, 185, 129, 0.3);
 }
 
-.border-huyen, .border-linh-khi {
+.border-huyen,
+.border-linh-khi {
   border-color: rgba(59, 130, 246, 0.3);
 }
 
-.border-dia, .border-phap-bao {
+.border-dia,
+.border-phap-bao {
   border-color: rgba(139, 92, 246, 0.3);
 }
 
-.border-thien, .border-co-bao {
+.border-thien,
+.border-co-bao {
   border-color: rgba(245, 158, 11, 0.3);
 }
 
@@ -504,12 +516,14 @@ body {
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
 }
 
-.border-than, .border-thong-thien {
+.border-than,
+.border-thong-thien {
   border-color: rgba(212, 175, 55, 0.4);
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
-.border-tien, .border-tien-khi {
+.border-tien,
+.border-tien-khi {
   border-image: linear-gradient(to right, #ef4444, #f59e0b, #ffff00, #10b981, #3b82f6, #8b5cf6, #ef4444) 1;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
   border-width: 1px;
@@ -684,7 +698,6 @@ button:active {
 /* Mobile Touch Target Improvements */
 @media (max-width: 767px) {
   button {
-    min-height: 48px;
     touch-action: manipulation;
   }
 
@@ -801,24 +814,24 @@ button:active {
 
 /* Custom Select Styling */
 select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23d4af37' viewBox='0 0 256 256'%3E%3Cpath d='M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80a8,8,0,0,1,11.32-11.32L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
-    background-size: 0.8rem;
-    padding-right: 1.5rem !important;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23d4af37' viewBox='0 0 256 256'%3E%3Cpath d='M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80a8,8,0,0,1,11.32-11.32L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 0.8rem;
+  padding-right: 1.5rem !important;
 }
 
 select option {
-    background-color: #121417 !important;
-    color: #d4af37 !important;
-    padding: 12px !important;
-    font-size: 12px;
+  background-color: #121417 !important;
+  color: #d4af37 !important;
+  padding: 12px !important;
+  font-size: 12px;
 }
 
 select option:checked {
-    background-color: #d4af37 !important;
-    color: #0a0a0c !important;
+  background-color: #d4af37 !important;
+  color: #0a0a0c !important;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -1478,7 +1491,6 @@ select option:checked {
   letter-spacing: 0.1em;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
-  min-height: 48px;
 }
 
 .battle-action-btn-new i {
@@ -1525,28 +1537,80 @@ select option:checked {
 
 /* Stronger Screen Shake */
 @keyframes screen-shake {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  10% { transform: translate(-5px, -5px) rotate(-1deg); }
-  20% { transform: translate(5px, 5px) rotate(1deg); }
-  30% { transform: translate(-5px, 5px) rotate(-1deg); }
-  40% { transform: translate(5px, -5px) rotate(1deg); }
-  50% { transform: translate(-8px, 2px) rotate(0deg); }
-  60% { transform: translate(8px, -2px) rotate(0deg); }
-  70% { transform: translate(-5px, -5px) rotate(-1deg); }
-  80% { transform: translate(5px, 5px) rotate(1deg); }
-  90% { transform: translate(-5px, 2px) rotate(0deg); }
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  10% {
+    transform: translate(-5px, -5px) rotate(-1deg);
+  }
+
+  20% {
+    transform: translate(5px, 5px) rotate(1deg);
+  }
+
+  30% {
+    transform: translate(-5px, 5px) rotate(-1deg);
+  }
+
+  40% {
+    transform: translate(5px, -5px) rotate(1deg);
+  }
+
+  50% {
+    transform: translate(-8px, 2px) rotate(0deg);
+  }
+
+  60% {
+    transform: translate(8px, -2px) rotate(0deg);
+  }
+
+  70% {
+    transform: translate(-5px, -5px) rotate(-1deg);
+  }
+
+  80% {
+    transform: translate(5px, 5px) rotate(1deg);
+  }
+
+  90% {
+    transform: translate(-5px, 2px) rotate(0deg);
+  }
 }
 
 .animate-screen-shake {
-  animation: screen-shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+  animation: screen-shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
 }
 
 /* Flame Flicker for Dị Hỏa */
 @keyframes flame-flicker {
-  0%, 100% { transform: scale(1) rotate(-1deg); opacity: 0.9; filter: brightness(1); }
-  25% { transform: scale(1.1) rotate(1deg); opacity: 1; filter: brightness(1.2); }
-  50% { transform: scale(1.05) rotate(-2deg); opacity: 0.8; filter: brightness(1.1); }
-  75% { transform: scale(1.15) rotate(2deg); opacity: 1; filter: brightness(1.3); }
+
+  0%,
+  100% {
+    transform: scale(1) rotate(-1deg);
+    opacity: 0.9;
+    filter: brightness(1);
+  }
+
+  25% {
+    transform: scale(1.1) rotate(1deg);
+    opacity: 1;
+    filter: brightness(1.2);
+  }
+
+  50% {
+    transform: scale(1.05) rotate(-2deg);
+    opacity: 0.8;
+    filter: brightness(1.1);
+  }
+
+  75% {
+    transform: scale(1.15) rotate(2deg);
+    opacity: 1;
+    filter: brightness(1.3);
+  }
 }
 
 .flame-effect {
@@ -1555,13 +1619,21 @@ select option:checked {
 }
 
 /* Aura Intensity */
-.aura-low { box-shadow: 0 0 20px var(--focus-color, rgba(79, 209, 197, 0.2)); }
-.aura-mid { box-shadow: 0 0 50px var(--focus-color, rgba(79, 209, 197, 0.4)); }
-.aura-high { box-shadow: 0 0 100px var(--focus-color, rgba(79, 209, 197, 0.7)); }
+.aura-low {
+  box-shadow: 0 0 20px var(--focus-color, rgba(79, 209, 197, 0.2));
+}
+
+.aura-mid {
+  box-shadow: 0 0 50px var(--focus-color, rgba(79, 209, 197, 0.4));
+}
+
+.aura-high {
+  box-shadow: 0 0 100px var(--focus-color, rgba(79, 209, 197, 0.7));
+}
 
 /* Death Screen Styling */
 #death-overlay {
-  background: radial-gradient(circle, rgba(0,0,0,0.95) 0%, rgba(10,10,12,1) 100%);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.95) 0%, rgba(10, 10, 12, 1) 100%);
   z-index: 5000;
   display: none;
   opacity: 0;
@@ -1584,8 +1656,17 @@ select option:checked {
 }
 
 @keyframes death-fade-in {
-  0% { opacity: 0; transform: scale(0.8); filter: blur(10px); }
-  100% { opacity: 1; transform: scale(1); filter: blur(0px); }
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+    filter: blur(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
 }
 
 .death-quote {
@@ -1601,11 +1682,22 @@ select option:checked {
 
 /* Stat Up Variety */
 @keyframes stat-up-float {
-  0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
-  20% { opacity: 1; transform: translate(-50%, -30px) scale(1.1); }
-  100% { opacity: 0; transform: translate(-50%, -100px) scale(0.8); }
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.5);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -30px) scale(1.1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -100px) scale(0.8);
+  }
 }
 
 .animate-stat-up {
   animation: stat-up-float 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
+}

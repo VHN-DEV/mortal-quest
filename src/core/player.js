@@ -98,6 +98,7 @@ export class Player {
 
         // Destiny properties
         this.age = 18;
+        this.createdAt = Date.now();
         this.maxAge = 100;
         this.spiritualRoot = null;
         this.physique = {
@@ -453,7 +454,9 @@ export class Player {
         // 5. Forced Breakthrough Check (Heavenly Dao)
         const realm = this.getCurrentRealm(focus);
         const exp = focus === 'tuvi' ? this.tuVi : (focus === 'body' ? this.bodyExp : this.soulExp);
-        if (exp >= realm.expRequired * 2.0) { // Increased threshold for forced
+        const timeSinceCreation = Date.now() - (this.createdAt || 0);
+        
+        if (exp >= realm.expRequired * 2.0 && timeSinceCreation > 10000) { // Only after 10 seconds of gameplay
             const result = this.breakthrough(focus, true);
             this.pendingEvents.push({ 
                 type: 'forced_breakthrough', 
@@ -1821,6 +1824,7 @@ export class Player {
             currentWorldId: this.currentWorldId,
             currentLocId: this.currentLocId,
             explorationProgress: this.explorationProgress,
+            createdAt: this.createdAt,
             
             // External systems data
             npcData: (typeof state !== 'undefined' && state.systems.npc) ? state.systems.npc.saveData() : null,
@@ -1855,6 +1859,7 @@ export class Player {
         
         this.lastUpdate = data.lastUpdate || Date.now();
         this.playTime = data.playTime || 0;
+        this.createdAt = data.createdAt || Date.now();
 
         // Stats
         if (data.baseStats) this.baseStats = { ...this.baseStats, ...data.baseStats };
