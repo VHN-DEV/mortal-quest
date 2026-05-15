@@ -40,6 +40,9 @@ import { SocialSystem } from './systems/social-system.js';
 import { FateSystem } from './systems/fate-system.js';
 import { MiningSystem } from './systems/mining-system.js';
 
+import { MissionSystem } from './systems/MissionSystem.js';
+import { MissionScreen } from './ui/screens/MissionScreen.js';
+
 export class Game {
     constructor() {
         window.game = this;
@@ -58,7 +61,8 @@ export class Game {
             { MapScreen }, { InventoryScreen }, { CharacterScreen }, { SystemsScreen },
             { BattleScreen }, { SpiritStoneUI }, { TreasureScreen }, { FateScreen },
             { StartScreen }, { SaveScreen }, { MiningScreen }, { DiHoaBangScreen },
-            { DiLoiBangScreen }, { LinhTheLucScreen }, { PhapBaoLucScreen }, { ChungTocLucScreen }
+            { DiLoiBangScreen }, { LinhTheLucScreen }, { PhapBaoLucScreen }, { ChungTocLucScreen },
+            { MissionScreen: MissionScreenImport }
         ] = await Promise.all([
             import('./ui/screens/MapScreen.js'),
             import('./ui/screens/InventoryScreen.js'),
@@ -75,7 +79,8 @@ export class Game {
             import('./ui/screens/DiLoiBangScreen.js'),
             import('./ui/screens/LinhTheLucScreen.js'),
             import('./ui/screens/PhapBaoLucScreen.js'),
-            import('./ui/screens/ChungTocLucScreen.js')
+            import('./ui/screens/ChungTocLucScreen.js'),
+            import('./ui/screens/MissionScreen.js')
         ]);
 
         this.screens.map = new MapScreen();
@@ -94,6 +99,9 @@ export class Game {
         this.screens.linhTheLuc = new LinhTheLucScreen();
         this.screens.phapBaoLuc = new PhapBaoLucScreen();
         this.screens.chungTocLuc = new ChungTocLucScreen();
+        this.screens.mission = new MissionScreenImport();
+
+        state.systems.mission.init();
 
         state.systems.creation = new CreationSystem();
 
@@ -356,6 +364,8 @@ export class Game {
 
         if (state.systems.time) state.systems.time.update(delta);
         if (state.systems.garden) state.systems.garden.update(delta);
+        if (state.systems.mission) state.systems.mission.update();
+        if (state.systems.mining) state.systems.mining.processTimeEvents(delta / 60); // minutes
         if (state.systems.mountain && state.systems.mountain.isActive) state.systems.mountain.update(delta);
         if (state.systems.npc && state.systems.time) state.systems.npc.update(delta, state.systems.time.totalMinutes);
         if (state.systems.social) state.systems.social.update(delta);
@@ -557,7 +567,8 @@ export class Game {
             npc: new NPCSystem(),
             social: new SocialSystem(),
             fate: new FateSystem(player, state.ui),
-            mining: new MiningSystem(player, state.ui)
+            mining: new MiningSystem(player, state.ui),
+            mission: new MissionSystem()
         });
 
         this.screens.fate.player = player;
@@ -1502,5 +1513,27 @@ export class Game {
             state.ui.toast("Túi đồ đã đầy!", "error");
         }
         return success;
+    }
+
+    // --- MINING SYSTEM BRIDGES ---
+    mineManual(nodeId) {
+        if (!state.systems.mining) return;
+        const res = state.systems.mining.mineManual(nodeId);
+        if (res.success && this.screens.mining) this.screens.mining.render();
+    }
+    occupyNode(nodeId) {
+        if (!state.systems.mining) return;
+        const res = state.systems.mining.occupyNode(nodeId);
+        if (res.success && this.screens.mining) this.screens.mining.render();
+    }
+    claimMiningResources(nodeId) {
+        if (!state.systems.mining) return;
+        const res = state.systems.mining.claimResources(nodeId);
+        if (res.success && this.screens.mining) this.screens.mining.render();
+    }
+    abandonNode(nodeId) {
+        if (!state.systems.mining) return;
+        const res = state.systems.mining.abandonNode(nodeId);
+        if (res.success && this.screens.mining) this.screens.mining.render();
     }
 }

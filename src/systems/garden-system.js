@@ -95,6 +95,11 @@ export class GardenSystem {
             const metadata = { age: age, stage: plot.stage };
             window.game.receiveItem(seed.herbId, 1, metadata);
             
+            // Trigger Mission System
+            if (state.systems.mission) {
+                state.systems.mission.onAction('collect', 1);
+            }
+            
             this.resetPlot(plotIndex);
             return { success: true, msg: `Đã thu hoạch ${seed.name} (${plot.stage})!`, itemId: seed.herbId, quantity: 1 };
         }

@@ -946,6 +946,11 @@ export class CombatEngine {
         this.player.tuVi += reward;
         this.addLog(`Luyện hóa khí huyết kẻ địch, nhận được ${reward} tu vi.`);
 
+        // Trigger Mission System
+        if (state.systems.mission) {
+            state.systems.mission.onAction('kill', 1);
+        }
+
         // --- Nâng Cấp Hệ Thống Loot ---
         const drops = [];
 

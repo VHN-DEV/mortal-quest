@@ -218,4 +218,18 @@ export class MiningSystem {
             this.player.inventory.addItem(MINING_NODE_GRADES[node.grade].items[0], 10);
         }
     }
+
+    /**
+     * Từ bỏ linh mạch đã chiếm lĩnh
+     */
+    abandonNode(nodeId) {
+        const index = this.player.miningState.occupiedNodes.findIndex(on => on.nodeId === nodeId);
+        if (index === -1) return { success: false, msg: "Bạn không chiếm lĩnh linh mạch này." };
+
+        const node = MINING_NODES.find(n => n.id === nodeId);
+        this.player.miningState.occupiedNodes.splice(index, 1);
+        this.ui?.toast(`Bạn đã từ bỏ linh mạch ${node?.name || nodeId}.`, 'info');
+        
+        return { success: true };
+    }
 }
