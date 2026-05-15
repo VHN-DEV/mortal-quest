@@ -91,6 +91,11 @@ export class Inventory {
                     window.game.screens.phapBaoLuc.open();
                     return true;
                 }
+            } else if (itemData.action === 'open_chung_toc_luc') {
+                if (window.game && window.game.screens.chungTocLuc) {
+                    window.game.screens.chungTocLuc.open();
+                    return true;
+                }
             }
         }
         return false;

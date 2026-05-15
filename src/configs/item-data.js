@@ -56,6 +56,16 @@ export const ITEMS = {
         description: 'Bản danh sách ghi chép về các loại pháp bảo, thần khí trong thiên địa, phân loại theo phẩm cấp và công dụng. Bấm vào để xem chi tiết.',
         action: 'open_phap_bao_luc'
     },
+    'chung_toc_luc': {
+        id: 'chung_toc_luc',
+        name: 'Vạn Tộc Thông Giám',
+        type: 'book',
+        icon: '📜',
+        quality: 'Linh Khí',
+        price: 1500,
+        description: 'Cuốn điển tịch cổ ghi chép tường tận về nguồn gốc và đặc điểm của vạn tộc trong thiên địa. Bấm vào để xem chi tiết.',
+        action: 'open_chung_toc_luc'
+    },
 
     // --- PROFESSION MANUALS ---
     'dan_dao_chan_giai': {
