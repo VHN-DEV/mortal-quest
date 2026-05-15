@@ -21,7 +21,9 @@ export const ARTIFACT_QUALITIES = {
     HOAN_MY: { id: 4, name: 'Hoàn Mỹ', multiplier: 2.0, color: '#4299e1' },
     CUC_PHAM: { id: 5, name: 'Cực Phẩm', multiplier: 3.0, color: '#ed64a6' },
     TRUYEN_THUYET: { id: 6, name: 'Truyền Thuyết', multiplier: 5.0, color: '#f6ad55' },
-    THAN_THOAI: { id: 7, name: 'Thần Thoại', multiplier: 10.0, color: '#f56565' }
+    THAN_THOAI: { id: 7, name: 'Thần Thoại', multiplier: 10.0, color: '#f56565' },
+    DANH_KHI: { id: 8, name: 'Danh Khí', multiplier: 25.0, color: '#FFD700' },
+    DANH_BAO: { id: 9, name: 'Danh Bảo', multiplier: 60.0, color: '#FF4500' }
 };
 
 export const ARTIFACT_TYPES = {
