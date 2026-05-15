@@ -90,11 +90,9 @@ window.renderMainStats = () => {
 
     if (elRealm) elRealm.textContent = realm.name;
     if (elProgress) {
-        gsap.to(elProgress, { 
-            width: `${Math.min(100, progress)}%`, 
-            duration: 0.6, 
-            ease: "power2.out" 
-        });
+        // Sử dụng style.width trực tiếp thay vì GSAP trong vòng lặp render mỗi khung hình
+        // để tránh xung đột hoạt ảnh và đảm bảo khớp 100% với con số hiển thị.
+        elProgress.style.width = `${Math.min(100, progress)}%`;
     }
     if (elTuViText) elTuViText.textContent = `${Math.floor(player.tuVi).toLocaleString()} / ${realm.expRequired.toLocaleString()}`;
 
@@ -112,12 +110,9 @@ window.renderMainStats = () => {
     const bodyPercent = Math.min(100, (player.bodyExp / bodyRealm.expRequired) * 100);
     const soulPercent = Math.min(100, (player.soulExp / soulRealm.expRequired) * 100);
     
-    if (elBodyProgress) {
-        gsap.to(elBodyProgress, { width: `${bodyPercent}%`, duration: 0.8, ease: "power2.out" });
-    }
-    if (elSoulProgress) {
-        gsap.to(elSoulProgress, { width: `${soulPercent}%`, duration: 0.8, ease: "power2.out" });
-    }
+    if (elBodyProgress) elBodyProgress.style.width = `${bodyPercent}%`;
+    if (elSoulProgress) elSoulProgress.style.width = `${soulPercent}%`;
+    
     if (elBodyText) elBodyText.textContent = `${Math.floor(bodyPercent)}%`;
     if (elSoulText) elSoulText.textContent = `${Math.floor(soulPercent)}%`;
 
