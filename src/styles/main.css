@@ -401,32 +401,55 @@ body {
 }
 
 /* Quality Colors Refined */
-.quality-pham {
-  color: #94a3b8;
+.quality-pham, .quality-pham-khi {
+  color: #ffffff;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
-.quality-hoang {
+.quality-hoang, .quality-phap-khi {
   color: #10b981;
+  text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
 }
 
-.quality-huyen {
+.quality-huyen, .quality-linh-khi {
   color: #3b82f6;
+  text-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
 }
 
-.quality-dia {
+.quality-dia, .quality-phap-bao {
   color: #8b5cf6;
+  text-shadow: 0 0 5px rgba(139, 92, 246, 0.3);
 }
 
-.quality-thien {
+.quality-thien, .quality-co-bao {
   color: #f59e0b;
+  text-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
 }
 
-.quality-tien {
-  color: #d946ef;
+.quality-linh-bao {
+  color: #ef4444;
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
 }
 
-.quality-than {
+.quality-than, .quality-thong-thien {
   color: #d4af37;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.quality-tien, .quality-tien-khi {
+  background: linear-gradient(to right, #ef4444, #f59e0b, #ffff00, #10b981, #3b82f6, #8b5cf6, #ef4444);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-text 3s linear infinite;
+  font-weight: bold;
+}
+
+@keyframes rainbow-text {
+  to {
+    background-position: 200% center;
+  }
 }
 
 .rarity-flash {
@@ -437,24 +460,38 @@ body {
   pointer-events: none;
 }
 
-.border-pham {
-  border-color: rgba(148, 163, 184, 0.3);
+.border-pham, .border-pham-khi {
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
-.border-hoang {
+.border-hoang, .border-phap-khi {
   border-color: rgba(16, 185, 129, 0.3);
 }
 
-.border-huyen {
+.border-huyen, .border-linh-khi {
   border-color: rgba(59, 130, 246, 0.3);
 }
 
-.border-dia {
+.border-dia, .border-phap-bao {
   border-color: rgba(139, 92, 246, 0.3);
 }
 
-.border-thien {
+.border-thien, .border-co-bao {
   border-color: rgba(245, 158, 11, 0.3);
+}
+
+.border-linh-bao {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.border-than, .border-thong-thien {
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+.border-tien, .border-tien-khi {
+  border-image: linear-gradient(to right, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6) 1;
+  border-width: 1px;
+  border-style: solid;
 }
 
 /* Overlays Layering */

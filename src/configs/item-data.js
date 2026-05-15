@@ -1,14 +1,12 @@
 // --- Hệ Thống Phẩm Cấp Pháp Bảo ---
-// 1. Phàm Phẩm
-// 2. Hoàng Phẩm
-// 3. Huyền Phẩm
-// 4. Địa Phẩm
-// 5. Thiên Phẩm
+// 1. Phàm Khí
+// 2. Pháp Khí
+// 3. Linh Khí
+// 4. Pháp Bảo
+// 5. Cổ Bảo
 // 6. Linh Bảo
 // 7. Thông Thiên Linh Bảo
 // 8. Tiên Khí
-// 9. Thánh Khí
-// 10. Đạo Khí
 
 export const ITEMS = {
     // Hạt giống
@@ -423,7 +421,7 @@ export const ITEMS = {
         id: 'truc_co_dan',
         name: 'Trúc Cơ Đan',
         type: 'consumable',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         icon: '💎',
         description: 'Đan dược chí bảo giúp phàm nhân đúc thành đạo cơ.',
         price: 5000,
@@ -461,7 +459,7 @@ export const ITEMS = {
         id: 'thanh_hong_kiem',
         name: 'Thanh Hồng Kiếm',
         type: 'weapon',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         icon: '⚔️',
         description: 'Thanh kiếm tỏa ra ánh sáng xanh lục, sắc bén vô cùng.',
         price: 1500,
@@ -576,8 +574,8 @@ export const ITEMS = {
         id: 'hon_dang_co',
         name: 'Hồn Đăng Cổ',
         type: 'soulArtifact',
-        quality: 'Truyền Thuyết',
-        tier: 'CHAN_BAO',
+        quality: 'Cổ Bảo',
+        tier: 'CO_BAO',
         icon: '🪔',
         description: 'Ngọn đèn cổ bảo vệ thần hồn, kháng các loại ma chướng.',
         price: 25000,

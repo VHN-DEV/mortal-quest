@@ -578,16 +578,22 @@ export class UISystem {
         if (!overlay || !container) return;
 
         const rarityConfigs = {
-            'PHAM': { color: '#94a3b8', label: 'PHÀM GIAI', sfx: 'click', shake: false },
-            'HOANG': { color: '#10b981', label: 'HOÀNG GIAI', sfx: 'success', shake: false },
-            'HUYEN': { color: '#3b82f6', label: 'HUYỀN GIAI', sfx: 'success', shake: false },
-            'DIA': { color: '#8b5cf6', label: 'ĐỊA GIAI', sfx: 'breakthrough', shake: 'medium' },
-            'THIEN': { color: '#f59e0b', label: 'THIÊN GIAI', sfx: 'breakthrough', shake: 'high' },
-            'TIEN': { color: '#ef4444', label: 'TIÊN KHÍ', sfx: 'breakthrough', shake: 'high', flash: true },
-            'THAN': { color: '#d4af37', label: 'THẦN VẬT', sfx: 'breakthrough', shake: 'high', flash: true },
-            'Hoàn Mỹ': { color: '#8b5cf6', label: 'HOÀN MỸ', sfx: 'success', shake: 'medium' },
-            'Cực Phẩm': { color: '#f59e0b', label: 'CỰC PHẨM', sfx: 'breakthrough', shake: 'medium' },
-            'Tiên Phẩm': { color: '#ef4444', label: 'TIÊN PHẨM', sfx: 'breakthrough', shake: 'high', flash: true }
+            'Phàm Khí': { color: '#ffffff', label: 'PHÀM KHÍ', sfx: 'click', shake: false },
+            'Pháp Khí': { color: '#10b981', label: 'PHÁP KHÍ', sfx: 'success', shake: false },
+            'Linh Khí': { color: '#3b82f6', label: 'LINH KHÍ', sfx: 'success', shake: false },
+            'Pháp Bảo': { color: '#8b5cf6', label: 'PHÁP BẢO', sfx: 'breakthrough', shake: 'medium' },
+            'Cổ Bảo': { color: '#f59e0b', label: 'CỔ BẢO', sfx: 'breakthrough', shake: 'medium' },
+            'Linh Bảo': { color: '#ef4444', label: 'LINH BẢO', sfx: 'breakthrough', shake: 'high' },
+            'Thông Thiên Linh Bảo': { color: '#d4af37', label: 'THÔNG THIÊN', sfx: 'breakthrough', shake: 'high', flash: true },
+            'Tiên Khí': { color: '#ef4444', label: 'TIÊN KHÍ', sfx: 'breakthrough', shake: 'high', flash: true, rainbow: true },
+            // Legacy/Mapping support
+            'PHAM': { color: '#ffffff', label: 'PHÀM KHÍ', sfx: 'click' },
+            'HOANG': { color: '#10b981', label: 'PHÁP KHÍ', sfx: 'success' },
+            'HUYEN': { color: '#3b82f6', label: 'LINH KHÍ', sfx: 'success' },
+            'DIA': { color: '#8b5cf6', label: 'PHÁP BẢO', sfx: 'breakthrough' },
+            'THIEN': { color: '#f59e0b', label: 'CỔ BẢO', sfx: 'breakthrough' },
+            'TIEN': { color: '#ef4444', label: 'LINH BẢO', sfx: 'breakthrough' },
+            'THAN': { color: '#d4af37', label: 'THÔNG THIÊN', sfx: 'breakthrough' }
         };
 
         return new Promise(async (resolve) => {
@@ -613,7 +619,7 @@ export class UISystem {
                             <div class="absolute inset-0 border-2 border-${item.quality.toLowerCase()} rounded-2xl opacity-20 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                         <div class="text-center space-y-2">
-                            <h3 class="text-4xl font-charm text-glow tracking-wider mb-2" style="color: ${config.color}; text-shadow: 0 0 20px ${config.color}66">${item.name}</h3>
+                            <h3 class="text-4xl font-charm text-glow tracking-wider mb-2 ${config.rainbow ? 'quality-tien-khi' : ''}" style="color: ${config.rainbow ? 'transparent' : config.color}; text-shadow: 0 0 20px ${config.rainbow ? '#ffffff66' : config.color + '66'}">${item.name}</h3>
                             <div class="flex items-center justify-center space-x-4">
                                 <div class="h-px w-8 bg-gradient-to-r from-transparent to-white/20"></div>
                                 <span class="text-[10px] font-bold tracking-[0.4em] uppercase" style="color: ${config.color}">${config.label}</span>

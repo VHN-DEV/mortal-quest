@@ -6,7 +6,7 @@ import { getItemById } from '../configs/item-data.js';
  * @returns {string}
  */
 export function getQualityClass(quality) {
-    const map = { 
+    const map = {
         'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than',
         'Tàn Khuyết': 'pham', 'Thường': 'hoang', 'Tinh Phẩm': 'huyen', 'Hoàn Mỹ': 'dia', 'Cực Phẩm': 'thien', 'Truyền Thuyết': 'tien', 'Thần Thoại': 'than',
         'Danh Khí': 'than', 'Danh Bảo': 'than'
@@ -21,12 +21,12 @@ export function getQualityClass(quality) {
  * @returns {string}
  */
 export function renderItemCard(item, options = {}) {
-    const { 
-        showStock = false, 
-        stock = 0, 
-        showPrice = false, 
-        price = 0, 
-        showQuantity = false, 
+    const {
+        showStock = false,
+        stock = 0,
+        showPrice = false,
+        price = 0,
+        showQuantity = false,
         quantity = 0,
         buttonText = null,
         buttonClass = '',
@@ -34,7 +34,7 @@ export function renderItemCard(item, options = {}) {
     } = options;
 
     const qClass = getQualityClass(item.quality);
-    
+
     return `
         <div class="flex items-center justify-between p-3 bg-black/40 border border-gray-800 rounded-xl hover:border-${qClass} transition-all">
             <div class="flex items-center space-x-3">
@@ -42,14 +42,14 @@ export function renderItemCard(item, options = {}) {
                 <div>
                     <div class="text-sm font-bold text-white">${item.name}</div>
                     <div class="text-[9px] font-bold quality-${qClass}">
-                        ${item.quality}${ (item.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(item.quality)) ? '' : ' phẩm' } 
+                        ${item.quality}${(item.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(item.quality)) ? '' : ' phẩm'} 
                         ${showStock ? `| Kho: ${stock}` : ''}
                         ${showQuantity ? `| x${quantity}` : ''}
                     </div>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                ${showPrice ? `<div class="text-xs font-mono text-cultivation-gold">${price} LT</div>` : ''}
+                ${showPrice ? `<div class="text-xs font-mono text-cultivation-gold whitespace-nowrap">${price} LT</div>` : ''}
                 ${buttonText ? `
                     <button class="px-3 py-1 bg-qi-purple text-white text-[10px] font-bold rounded-lg hover:bg-purple-600 transition-all ${buttonClass}" 
                         onclick="${onClick}">
@@ -68,7 +68,7 @@ export function renderItemCard(item, options = {}) {
 export function renderGridItem(item, options = {}) {
     const { quantity = 0, price = 0, showPrice = false, isSelected = false, onClick = '' } = options;
     const qClass = getQualityClass(item.quality);
-    
+
     return `
         <div class="p-2 border rounded-lg bg-black/20 flex flex-col items-center cursor-pointer transition-all border-${qClass}/30 ${isSelected ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'}"
              onclick="${onClick}">

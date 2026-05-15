@@ -3,27 +3,22 @@
  */
 
 export const ARTIFACT_TIERS = {
-    PHAM_KHI: { id: 1, name: 'Phàm Khí', requirement: 'Phàm Nhân', color: '#94a3b8' },
-    PHAP_KHI: { id: 2, name: 'Pháp Khí', requirement: 'Luyện Khí', color: '#4fd1c5' },
-    LINH_KHI: { id: 3, name: 'Linh Khí', requirement: 'Trúc Cơ', color: '#3182ce' },
-    CHAN_BAO: { id: 4, name: 'Chân Bảo', requirement: 'Nguyên Anh', color: '#805ad5' },
-    HUYEN_THIEN: { id: 5, name: 'Huyền Thiên Linh Bảo', requirement: 'Hóa Thần', color: '#d53f8c' },
-    THONG_THIEN: { id: 6, name: 'Thông Thiên Linh Bảo', requirement: 'Luyện Hư', color: '#ecc94b' },
-    TIEN_KHI: { id: 7, name: 'Tiên Khí', requirement: 'Đại Thừa', color: '#f56565' },
-    DAO_KHI: { id: 8, name: 'Đạo Khí', requirement: 'Độ Kiếp', color: '#ffffff' },
-    HONG_MONG: { id: 9, name: 'Hồng Mông Chí Bảo', requirement: 'Tiên Nhân', color: '#000000' }
+    PHAM_KHI: { id: 1, name: 'Phàm Khí', requirement: 'Phàm Nhân', color: '#ffffff' },
+    PHAP_KHI: { id: 2, name: 'Pháp Khí', requirement: 'Luyện Khí', color: '#10b981' },
+    LINH_KHI: { id: 3, name: 'Linh Khí', requirement: 'Trúc Cơ', color: '#3b82f6' },
+    PHAP_BAO: { id: 4, name: 'Pháp Bảo', requirement: 'Kết Đan', color: '#8b5cf6' },
+    CO_BAO: { id: 5, name: 'Cổ Bảo', requirement: 'Nguyên Anh', color: '#f59e0b' },
+    LINH_BAO: { id: 6, name: 'Linh Bảo', requirement: 'Hóa Thần', color: '#ef4444' },
+    THONG_THIEN: { id: 7, name: 'Thông Thiên Linh Bảo', requirement: 'Luyện Hư', color: '#d4af37' },
+    TIEN_KHI: { id: 8, name: 'Tiên Khí', requirement: 'Đại Thừa', color: 'rainbow' }
 };
 
 export const ARTIFACT_QUALITIES = {
-    TAN_KHUYET: { id: 1, name: 'Tàn Khuyết', multiplier: 0.5, color: '#4a5568' },
-    THUONG: { id: 2, name: 'Thường', multiplier: 1.0, color: '#cbd5e0' },
-    TINH_PHAM: { id: 3, name: 'Tinh Phẩm', multiplier: 1.5, color: '#48bb78' },
-    HOAN_MY: { id: 4, name: 'Hoàn Mỹ', multiplier: 2.0, color: '#4299e1' },
-    CUC_PHAM: { id: 5, name: 'Cực Phẩm', multiplier: 3.0, color: '#ed64a6' },
-    TRUYEN_THUYET: { id: 6, name: 'Truyền Thuyết', multiplier: 5.0, color: '#f6ad55' },
-    THAN_THOAI: { id: 7, name: 'Thần Thoại', multiplier: 10.0, color: '#f56565' },
-    DANH_KHI: { id: 8, name: 'Danh Khí', multiplier: 25.0, color: '#FFD700' },
-    DANH_BAO: { id: 9, name: 'Danh Bảo', multiplier: 60.0, color: '#FF4500' }
+    HA_PHAM: { id: 1, name: 'Hạ phẩm', multiplier: 1.0, color: '#cbd5e0' },
+    TRUNG_PHAM: { id: 2, name: 'Trung phẩm', multiplier: 1.5, color: '#48bb78' },
+    THUONG_PHAM: { id: 3, name: 'Thượng phẩm', multiplier: 2.0, color: '#4299e1' },
+    CUC_PHAM: { id: 4, name: 'Cực phẩm', multiplier: 3.0, color: '#ed64a6' },
+    HOAN_MY: { id: 5, name: 'Hoàn Mỹ', multiplier: 5.0, color: '#f6ad55' }
 };
 
 export const ARTIFACT_TYPES = {

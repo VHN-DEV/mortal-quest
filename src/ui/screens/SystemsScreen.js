@@ -197,7 +197,7 @@ export class SystemsScreen {
                     </div>
                     ${locked ?
                     `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
-                    `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg" onclick="window.game.craft('${recipe.id}')">LUYỆN CHẾ</button>`
+                    `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap" onclick="window.game.craft('${recipe.id}')">LUYỆN CHẾ</button>`
                 }
                 </div>
                 <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
@@ -428,7 +428,7 @@ export class SystemsScreen {
 
         const section = shop.currentSection;
         const isPhapBao = section === 'phap_bao';
-        
+
         if (!isPhapBao) {
             this.elShopQualityFilterNav.classList.add('hidden');
             this.elShopSubFilterNav.classList.remove('border-r', 'border-white/5');
@@ -520,7 +520,7 @@ export class SystemsScreen {
                 <div class="text-2xl bg-black/60 p-2 rounded-lg border border-${qClass}/30">${itemData.image ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
                 <div>
                     <div class="text-sm font-bold text-white">${itemData.name}</div>
-                    <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality}${ (itemData.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(itemData.quality)) ? '' : ' phẩm' } | Kho: ${item.stock}</div>
+                    <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality}${(itemData.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(itemData.quality)) ? '' : ' phẩm'} | Kho: ${item.stock}</div>
                 </div>
             `;
 
@@ -531,12 +531,12 @@ export class SystemsScreen {
             btnContainer.innerHTML = `
                 <div class="text-right">
                     <div class="text-[8px] text-gray-500 line-through">${itemData.price} LT</div>
-                    <div class="text-xs font-mono text-cultivation-gold">${finalPrice} LT</div>
+                    <div class="text-xs font-mono text-cultivation-gold whitespace-nowrap">${finalPrice} LT</div>
                 </div>
             `;
 
             const btn = document.createElement('button');
-            btn.className = `px-4 py-2 btn-gold text-[10px] font-bold rounded-lg ${item.stock <= 0 ? 'opacity-50 grayscale pointer-events-none' : ''}`;
+            btn.className = `px-4 py-2 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap ${item.stock <= 0 ? 'opacity-50 grayscale pointer-events-none' : ''}`;
             btn.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>TRAO ĐỔI`;
             btn.onclick = (e) => {
                 e.stopPropagation();
@@ -879,7 +879,7 @@ export class SystemsScreen {
     }
 
     getQualityClass(quality) {
-        const map = { 
+        const map = {
             'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than',
             'Tàn Khuyết': 'pham', 'Thường': 'hoang', 'Tinh Phẩm': 'huyen', 'Hoàn Mỹ': 'dia', 'Cực Phẩm': 'thien', 'Truyền Thuyết': 'tien', 'Thần Thoại': 'than',
             'Danh Khí': 'than', 'Danh Bảo': 'than'
@@ -949,7 +949,7 @@ export class SystemsScreen {
                     </div>
                     ${locked ?
                     `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
-                    `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg" onclick="window.game.forge('${recipe.id}')">RÈN ĐÚC</button>`
+                    `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap" onclick="window.game.forge('${recipe.id}')">RÈN ĐÚC</button>`
                 }
                 </div>
                 <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
@@ -1025,7 +1025,7 @@ export class SystemsScreen {
         if (view) {
             view.innerHTML = '';
             const known = PUPPET_RECIPES.filter(r => state.player.knownPuppetRecipes.includes(r.id));
-            
+
             if (known.length === 0) {
                 view.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa có bản thiết kế khôi lỗi nào...</div>';
                 return;
@@ -1351,7 +1351,7 @@ export class SystemsScreen {
         diagramHeader.className = 'text-[10px] text-gray-500 uppercase tracking-widest mt-6 mb-2';
         diagramHeader.textContent = 'Trận Đồ Đã Lĩnh Ngộ';
         view.appendChild(diagramHeader);
-        
+
         if (knownFormations.length === 0) {
             const empty = document.createElement('div');
             empty.className = 'text-center py-6 text-gray-700 italic text-xs';
@@ -1436,29 +1436,29 @@ export class SystemsScreen {
             view.appendChild(empty);
         } else {
             known.forEach(type => {
-            const el = document.createElement('div');
-            el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 space-y-3';
+                const el = document.createElement('div');
+                el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 space-y-3';
 
-            let materialsHTML = '';
-            type.materials.forEach(mat => {
-                const matItem = getItemById(mat.id);
-                const count = state.player.inventory.hasItem(mat.id) ? state.player.inventory.items.find(i => i.id === mat.id).quantity : 0;
-                materialsHTML += `<div class="text-[9px] ${count >= mat.quantity ? 'text-gray-400' : 'text-red-500'}">${matItem?.name || mat.id} x${mat.quantity} (${count})</div>`;
-            });
+                let materialsHTML = '';
+                type.materials.forEach(mat => {
+                    const matItem = getItemById(mat.id);
+                    const count = state.player.inventory.hasItem(mat.id) ? state.player.inventory.items.find(i => i.id === mat.id).quantity : 0;
+                    materialsHTML += `<div class="text-[9px] ${count >= mat.quantity ? 'text-gray-400' : 'text-red-500'}">${matItem?.name || mat.id} x${mat.quantity} (${count})</div>`;
+                });
 
-            const locked = state.player.corpseLevel < type.level;
-            const successRate = Math.floor((0.7 - (type.level * 0.1) + (state.player.corpseLevel * 0.05)) * 100);
+                const locked = state.player.corpseLevel < type.level;
+                const successRate = Math.floor((0.7 - (type.level * 0.1) + (state.player.corpseLevel * 0.05)) * 100);
 
-            el.innerHTML = `
+                el.innerHTML = `
                 <div class="flex justify-between items-start">
                     <div>
                         <h4 class="font-ancient text-lg text-red-500">${type.name}</h4>
                         <p class="text-[9px] text-gray-500 mt-1">${type.description}</p>
                     </div>
                     ${locked ?
-                    `<span class="text-[8px] text-red-500 uppercase font-bold">Cần Cấp ${type.level}</span>` :
-                    `<button class="px-4 py-2 bg-red-900/20 text-red-400 text-[10px] font-bold rounded-xl border border-red-900/30" onclick="window.game.refineCorpse('${type.id}')">LUYỆN CHẾ</button>`
-                }
+                        `<span class="text-[8px] text-red-500 uppercase font-bold">Cần Cấp ${type.level}</span>` :
+                        `<button class="px-4 py-2 bg-red-900/20 text-red-400 text-[10px] font-bold rounded-xl border border-red-900/30" onclick="window.game.refineCorpse('${type.id}')">LUYỆN CHẾ</button>`
+                    }
                 </div>
                 <div class="grid grid-cols-2 gap-2">${materialsHTML}</div>
                 <div class="flex justify-between items-center text-[8px] text-gray-500 italic">
@@ -1466,7 +1466,7 @@ export class SystemsScreen {
                     <span>Phản phệ: ${(100 - successRate)}%</span>
                 </div>
             `;
-            view.appendChild(el);
+                view.appendChild(el);
             });
         }
     }
@@ -1553,7 +1553,7 @@ export class SystemsScreen {
                 <div class="text-6xl p-6 bg-white/5 rounded-full border border-white/10">${data.icon || '📜'}</div>
                 <div>
                     <h3 class="text-2xl font-ancient text-white">${data.name}</h3>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${data.quality || 'Phàm'}${ ((data.quality || 'Phàm').toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(data.quality || 'Phàm')) ? '' : ' Phẩm' } | ${stageName}</p>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${data.quality || 'Phàm'}${((data.quality || 'Phàm').toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(data.quality || 'Phàm')) ? '' : ' Phẩm'} | ${stageName}</p>
                 </div>
             </div>
 
