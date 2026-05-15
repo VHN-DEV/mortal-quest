@@ -439,9 +439,9 @@ export class SystemsScreen {
                 if (shop.currentSection === 'phap_bao') {
                     if (itemData.type !== this.shopSubFilter) return;
                 } else if (shop.currentSection === 'cong_phap') {
-                    const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc'));
+                    const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
                     const isBook = (itemData.type === 'book' || itemData.type === 'technique') && !isManualAction;
-                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || (itemData.type === 'consumable' && itemData.effect?.type === 'unlock_profession') || isManualAction;
+                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
 
                     if (this.shopSubFilter === 'cultivation' && !isBook) return;
                     if (this.shopSubFilter === 'manual' && !isRecipe) return;

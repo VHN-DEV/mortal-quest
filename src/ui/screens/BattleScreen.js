@@ -141,6 +141,9 @@ export class BattleScreen {
                 this.updateStatusEffects();
                 if (data.value > 0) {
                     audioManager.playSfx(data.crit ? 'combat_crit' : 'combat_hit');
+                    if (data.crit || data.value > (state.player.maxHp * 0.1)) {
+                        state.ui.screenShake(data.crit ? 'high' : 'medium');
+                    }
                 }
                 break;
             case 'player-turn-start':

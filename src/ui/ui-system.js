@@ -292,6 +292,23 @@ export class UISystem {
     }
 
     /**
+     * Create a screen shake effect
+     */
+    screenShake(intensity = 'medium') {
+        const app = document.getElementById('app');
+        if (!app) return;
+        
+        app.classList.remove('animate-screen-shake');
+        // Force reflow
+        void app.offsetWidth;
+        app.classList.add('animate-screen-shake');
+        
+        if (intensity === 'high') {
+            audioManager.playSfx('thunder'); // Optional thunder sound for heavy shake
+        }
+    }
+
+    /**
      * Create a damage popup effect
      */
     createDamagePopup(anchor, value, crit) {
@@ -391,14 +408,17 @@ export class UISystem {
      * Show a flashy breakthrough effect
      */
     showBreakthroughEffect(realmName) {
+        this.screenShake('high');
+        
         const effect = document.createElement('div');
         effect.className = 'absolute inset-0 z-[300] flex flex-col items-center justify-center pointer-events-none';
         effect.innerHTML = `
-            <div class="breakthrough-glow absolute w-64 h-64 bg-cultivation-gold/20 rounded-full blur-[100px] opacity-0"></div>
+            <div class="breakthrough-glow absolute w-64 h-64 bg-cultivation-gold/40 rounded-full blur-[100px] opacity-0"></div>
             <div class="breakthrough-title opacity-0 scale-50">
-                <h2 class="text-5xl font-charm text-cultivation-gold drop-shadow-[0_0_20px_rgba(212,175,55,0.8)]">ĐỘT PHÁ</h2>
-                <p class="text-xl font-ancient text-white text-center mt-2 tracking-[0.5em] uppercase">${realmName}</p>
+                <h2 class="text-6xl font-charm text-cultivation-gold drop-shadow-[0_0_30px_rgba(212,175,55,0.9)]">ĐỘT PHÁ</h2>
+                <p class="text-2xl font-ancient text-white text-center mt-2 tracking-[0.6em] uppercase text-glow">${realmName}</p>
             </div>
+            <div class="particles-burst absolute inset-0"></div>
         `;
 
         const app = document.getElementById('app');
@@ -411,11 +431,15 @@ export class UISystem {
             onComplete: () => effect.remove()
         });
 
-        tl.to(glow, { opacity: 1, scale: 2, duration: 0.8, ease: "power2.out" })
-            .to(title, { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" }, "-=0.6")
-            .to(glow, { opacity: 0, scale: 3, duration: 1.5, ease: "power1.in" }, "+=0.5")
-            .to(title, { opacity: 0, y: -50, duration: 0.8, ease: "power2.in" }, "-=1");
+        tl.to(glow, { opacity: 1, scale: 2.5, duration: 0.6, ease: "power4.out" })
+            .to(title, { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(2)" }, "-=0.4")
+            .to(glow, { opacity: 0, scale: 4, duration: 1.2, ease: "power2.in" }, "+=0.8")
+            .to(title, { opacity: 0, y: -100, scale: 1.2, duration: 0.8, ease: "power3.in" }, "-=0.8");
 
+        // Spawn a lot of particles
+        const rect = app.getBoundingClientRect();
+        this.spawnQiParticles(rect.width / 2, rect.height / 2, 40, '#D4AF37');
+        
         audioManager.playSfx('breakthrough');
     }
 
@@ -424,7 +448,7 @@ export class UISystem {
      */
     showStatUpEffect(anchor, text, color = 'text-green-400') {
         const el = document.createElement('div');
-        el.className = `absolute z-[500] font-ancient font-bold ${color} pointer-events-none opacity-0 whitespace-nowrap`;
+        el.className = `absolute z-[500] font-ancient font-bold ${color} pointer-events-none animate-stat-up whitespace-nowrap`;
         el.textContent = text;
         
         const app = document.getElementById('app');
@@ -433,57 +457,100 @@ export class UISystem {
 
         el.style.left = `${rect.left - appRect.left + rect.width / 2}px`;
         el.style.top = `${rect.top - appRect.top}px`;
-        el.style.transform = 'translateX(-50%)';
 
         app.appendChild(el);
-
-        gsap.to(el, {
-            y: -40,
-            opacity: 1,
-            duration: 0.5,
-            ease: "power2.out"
-        });
-        gsap.to(el, {
-            y: -60,
-            opacity: 0,
-            duration: 0.5,
-            delay: 0.8,
-            onComplete: () => el.remove()
-        });
+        setTimeout(() => el.remove(), 1600);
     }
 
     /**
      * Spawn QI particles at a specific position
      */
     spawnQiParticles(x, y, count = 10, color = '#4FD1C5') {
-        const container = document.querySelector('.qi-particles');
-        if (!container) return;
+        const app = document.getElementById('app');
+        let container = document.querySelector('.qi-particles');
+        
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'qi-particles absolute inset-0 pointer-events-none overflow-hidden';
+            app.appendChild(container);
+        }
 
         for (let i = 0; i < count; i++) {
             const p = document.createElement('div');
             p.className = 'absolute w-1 h-1 rounded-full pointer-events-none z-[60]';
             p.style.backgroundColor = color;
-            p.style.boxShadow = `0 0 5px ${color}`;
+            p.style.boxShadow = `0 0 8px ${color}`;
             p.style.left = `${x}px`;
             p.style.top = `${y}px`;
             
             container.appendChild(p);
 
             const angle = Math.random() * Math.PI * 2;
-            const distance = 50 + Math.random() * 100;
+            const distance = 40 + Math.random() * 120;
             const destX = Math.cos(angle) * distance;
             const destY = Math.sin(angle) * distance;
+            const scale = 0.5 + Math.random() * 1.5;
 
             gsap.to(p, {
                 x: destX,
                 y: destY,
                 opacity: 0,
                 scale: 0,
-                duration: 0.8 + Math.random() * 0.7,
+                duration: 0.5 + Math.random() * 1,
                 ease: "power2.out",
                 onComplete: () => p.remove()
             });
         }
+    }
+
+    /**
+     * Show a cinematic death screen
+     */
+    async showDeathScreen(message = "Thân thể của ngươi đã tan biến giữa hồng trần...") {
+        let overlay = document.getElementById('death-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'death-overlay';
+            overlay.className = 'fixed inset-0 flex flex-col items-center justify-center';
+            overlay.innerHTML = `
+                <h2 class="death-text text-7xl font-charm mb-4">MỆNH CHUNG</h2>
+                <div class="w-32 h-0.5 bg-red-900/50 my-6"></div>
+                <p class="death-quote text-sm italic text-gray-400"></p>
+                <div class="mt-20 opacity-0 death-actions transition-opacity duration-1000 delay-[5s]">
+                    <button id="death-restart-btn" class="px-10 py-4 bg-red-900/20 border border-red-900/50 text-red-500 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-red-900/40 transition-all">Luân Hồi Chuyển Thế</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        const quote = overlay.querySelector('.death-quote');
+        quote.textContent = message;
+        
+        overlay.style.display = 'flex';
+        // Force reflow
+        void overlay.offsetWidth;
+        overlay.classList.add('show');
+        
+        audioManager.playSfx('death'); // Assuming there's a death sound
+
+        return new Promise(resolve => {
+            const btn = overlay.querySelector('#death-restart-btn');
+            const actions = overlay.querySelector('.death-actions');
+            
+            setTimeout(() => actions.classList.add('opacity-100'), 5000);
+            
+            btn.onclick = () => {
+                gsap.to(overlay, { 
+                    opacity: 0, 
+                    duration: 1, 
+                    onComplete: () => {
+                        overlay.style.display = 'none';
+                        overlay.classList.remove('show');
+                        resolve();
+                    }
+                });
+            };
+        });
     }
 
     /**

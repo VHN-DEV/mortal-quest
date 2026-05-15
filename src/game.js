@@ -182,19 +182,22 @@ export class Game {
 
     bindPlaceholderButtons() {
         const placeholderBinds = {
-            'btn-npc-talk': 'Tương tác hội thoại NPC đang được bảo trì.',
-            'btn-npc-party': 'Tính năng mời NPC vào đội đang được phát triển.',
-            'btn-npc-dual': 'Tính năng luận bàn với NPC đang được phát triển.',
-            'btn-npc-attack': 'Tính năng khiêu chiến NPC đang được phát triển.',
-            'btn-npc-leave': 'Tính năng NPC hiện chưa mở.',
-            'btn-reroll-destiny': 'Tính năng quay lại Thiên Mệnh đang được phát triển.',
-            'btn-confirm-destiny': 'Tính năng xác nhận Thiên Mệnh đang được phát triển.'
+            'btn-npc-talk': { msg: 'Ngươi cố gắng bắt chuyện, nhưng vị đạo hữu này có vẻ đang nhập định sâu.', type: 'info' },
+            'btn-npc-party': { msg: 'Tính năng kết bạn đồng hành đang được phát triển.', type: 'info' },
+            'btn-npc-dual': { msg: 'Luận bàn đạo pháp hiện chưa khả dụng.', type: 'info' },
+            'btn-npc-attack': { msg: 'Ngươi cảm nhận được sát khí, nhưng quy tắc trấn nhỏ ngăn cản việc động thủ.', type: 'warning' },
+            'btn-npc-leave': { msg: 'NPC rời đi trong làn sương mù...', type: 'info' },
+            'btn-reroll-destiny': { msg: 'Thiên mệnh đã định, không thể cưỡng cầu lúc này.', type: 'info' },
+            'btn-confirm-destiny': { msg: 'Duyên phận đã kết nối với nhân gian.', type: 'success' }
         };
 
-        Object.entries(placeholderBinds).forEach(([id, msg]) => {
+        Object.entries(placeholderBinds).forEach(([id, data]) => {
             const btn = document.getElementById(id);
             if (btn && !btn.onclick) {
-                btn.onclick = () => state.ui.toast(msg, 'info');
+                btn.onclick = () => {
+                    state.ui.toast(data.msg, data.type);
+                    if (id === 'btn-npc-attack') state.ui.screenShake('medium');
+                };
             }
         });
     }
@@ -611,7 +614,11 @@ export class Game {
                     const appRect = document.getElementById('app').getBoundingClientRect();
                     const centerX = rect.left - appRect.left + rect.width / 2;
                     const centerY = rect.top - appRect.top + rect.height / 2;
-                    state.ui.spawnQiParticles(centerX, centerY, 15, result.type === 'tuvi' ? '#4FD1C5' : (result.type === 'body' ? '#F87171' : '#A78BFA'));
+                    
+                    const count = state.player.isSecluded ? 5 : 15;
+                    const particleColor = result.type === 'tuvi' ? '#4FD1C5' : (result.type === 'body' ? '#F87171' : '#A78BFA');
+                    
+                    state.ui.spawnQiParticles(centerX, centerY, count, particleColor);
                 }
             }
         }
@@ -691,16 +698,36 @@ export class Game {
         this.restartFromDeath();
     }
 
-    restartFromDeath() {
-        state.ui.alert("Thân thể của ngươi đã tan biến giữa hồng trần... Tu vi cả đời hóa thành hư không.", "VÔ THƯỜNG")
-            .then(() => {
-                SaveSystem.deleteSave(SaveSystem.currentSlot);
-                state.player = null;
-                state.currentCombat = null;
-                state.currentLocId = null;
-                state.explorationProgress = 0;
-                location.reload();
-            });
+    async restartFromDeath() {
+        const quotes = [
+            "Tu vi cả đời hóa thành hư không, mây khói tan biến...",
+            "Trăm năm tu đạo, một sớm thành không.",
+            "Cát bụi lại trở về với cát bụi.",
+            "Hồng trần cuồn cuộn, mệnh số đã tận."
+        ];
+        const quote = quotes[Math.floor(Math.random() * quotes.length)];
+        
+        await state.ui.showDeathScreen(quote);
+        
+        await SaveSystem.deleteSave(SaveSystem.currentSlot);
+        state.player = null;
+        state.currentCombat = null;
+        state.currentLocId = null;
+        state.explorationProgress = 0;
+        
+        // Return to start screen instead of reload
+        await Preferences.remove({ key: 'mortal_quest_current_screen' });
+        await SaveSystem.setLastSlot(null);
+        
+        // Reset App state
+        const elementsToHide = ['header', '#time-hud', 'nav', '.overlay-full', '.screen'];
+        elementsToHide.forEach(s => {
+            const el = document.querySelector(s);
+            if (el) el.classList.add('hidden');
+        });
+        
+        await this.showStartScreen();
+        audioManager.playBgm('start');
     }
 
     getRebirthProtectionSource() {

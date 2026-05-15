@@ -57,6 +57,7 @@ export class DiHoaBangScreen {
         this.listView.classList.add('hidden');
         this.detailView.classList.remove('hidden');
         
+        this.elDetailIcon.className = "text-6xl mb-4 flame-effect";
         this.elDetailIcon.textContent = "🔥"; // Default emoji, can be changed based on type/color
         this.elDetailRank.textContent = `Hạng ${diHoa.rank}`;
         this.elDetailName.textContent = diHoa.name;
@@ -100,8 +101,8 @@ export class DiHoaBangScreen {
             const rarityClass = this.getRarityClass(item.rarity);
             
             el.innerHTML = `
-                <div class="flex-none w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-sm font-ancient text-gray-400 group-hover:text-red-500 transition-colors">
-                    ${item.rank}
+                <div class="flex-none w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-sm font-ancient text-gray-400 group-hover:text-red-500 transition-colors flame-effect">
+                    🔥
                 </div>
                 <div class="flex-grow">
                     <h4 class="text-sm font-bold text-white group-hover:text-red-400 transition-colors">${item.name}</h4>
