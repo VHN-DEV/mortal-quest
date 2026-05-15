@@ -91,7 +91,7 @@ export class Inventory {
                     window.game.screens.phapBaoLuc.open();
                     return true;
                 }
-            } else if (itemData.action === 'open_chung_toc_luc') {
+            } else if (itemData.action === 'open_van_toc_thong_giam') {
                 if (window.game && window.game.screens.chungTocLuc) {
                     window.game.screens.chungTocLuc.open();
                     return true;
