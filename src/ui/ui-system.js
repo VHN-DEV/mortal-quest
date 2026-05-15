@@ -120,6 +120,7 @@ export class UISystem {
         this.modalMessage.textContent = message;
         this.modalIcon.className = `ph ${icon} text-5xl text-cultivation-gold animate-bounce-subtle`;
         this.modalBtnConfirm.textContent = confirmText;
+        this.modalBtnConfirm.style.display = 'block';
         this.modalBtnCancel.textContent = cancelText;
         this.modalBtnCancel.style.display = showCancel ? 'block' : 'none';
 
