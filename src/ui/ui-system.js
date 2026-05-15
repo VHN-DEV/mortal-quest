@@ -424,7 +424,7 @@ export class UISystem {
         effect.innerHTML = `
             <div class="breakthrough-glow absolute w-64 h-64 bg-cultivation-gold/40 rounded-full blur-[100px] opacity-0"></div>
             <div class="breakthrough-title opacity-0 scale-50">
-                <h2 class="text-6xl font-charm text-cultivation-gold drop-shadow-[0_0_30px_rgba(212,175,55,0.9)]">ĐỘT PHÁ</h2>
+                <h2 class="text-6xl font-charm text-cultivation-gold text-center drop-shadow-[0_0_30px_rgba(212,175,55,0.9)]">ĐỘT PHÁ</h2>
                 <p class="text-2xl font-ancient text-white text-center mt-2 tracking-[0.6em] uppercase text-glow">${realmName}</p>
             </div>
             <div class="particles-burst absolute inset-0"></div>
@@ -522,9 +522,9 @@ export class UISystem {
             overlay.id = 'death-overlay';
             overlay.className = 'fixed inset-0 flex flex-col items-center justify-center';
             overlay.innerHTML = `
-                <h2 class="death-text text-7xl font-charm mb-4">MỆNH CHUNG</h2>
+                <h2 class="death-text text-7xl font-charm mb-4 text-center">MỆNH CHUNG</h2>
                 <div class="w-32 h-0.5 bg-red-900/50 my-6"></div>
-                <p class="death-quote text-sm italic text-gray-400"></p>
+                <p class="death-quote text-sm italic text-gray-400 text-center px-10"></p>
                 <div class="mt-20 opacity-0 death-actions transition-opacity duration-1000 delay-[5s]">
                     <button id="death-restart-btn" class="px-10 py-4 bg-red-900/20 border border-red-900/50 text-red-500 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-red-900/40 transition-all">Luân Hồi Chuyển Thế</button>
                 </div>
