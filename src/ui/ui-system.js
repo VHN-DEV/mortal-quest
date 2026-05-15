@@ -2,6 +2,7 @@ import { Preferences } from '@capacitor/preferences';
 import { gsap } from 'gsap';
 import { audioManager } from '../utils/audio-manager.js';
 import { logger } from '../utils/logger.js';
+import { getAssetUrl } from '../configs/asset-data.js';
 
 export class UISystem {
     constructor() {
@@ -720,6 +721,72 @@ export class UISystem {
         } else if (screenId === 'screen-npc') {
             if (window.npcScreen) window.npcScreen.render();
         }
+    }
+
+    /**
+     * Show a legendary cinematic appearance for high-tier artifacts
+     */
+    async showArtifactAppearance(item) {
+        const overlay = document.getElementById('appearance-overlay');
+        const img = document.getElementById('appearance-item-img');
+        const name = document.getElementById('appearance-item-name');
+        const poem1 = document.getElementById('appearance-poem-1');
+        const poem2 = document.getElementById('appearance-poem-2');
+        const btn = document.getElementById('appearance-continue');
+        const magicCircle = overlay.querySelector('.appearance-magic-circle');
+        const anomaly = overlay.querySelector('.appearance-bg-anomaly');
+        const imgWrapper = overlay.querySelector('.appearance-item-image-wrapper');
+
+        if (!overlay || !img) return;
+
+        // Reset state
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+        overlay.style.opacity = '1';
+        img.src = getAssetUrl(item.image);
+        name.textContent = item.name;
+        poem1.textContent = item.poem ? item.poem[0] : '';
+        poem2.textContent = item.poem ? item.poem[1] : '';
+        
+        gsap.set([name, poem1, poem2, btn, magicCircle, anomaly, imgWrapper], { opacity: 0 });
+        gsap.set(imgWrapper, { scale: 0.5 });
+        gsap.set(name, { y: 20 });
+        gsap.set(btn, { y: 20 });
+
+        return new Promise(resolve => {
+            const tl = gsap.timeline();
+
+            // Phase 1: The Anomaly Begins
+            tl.to(overlay, { backgroundColor: '#000', duration: 0.1 })
+              .add(() => this.screenShake('high'))
+              .to(anomaly, { opacity: 1, duration: 1, ease: "power2.out" })
+              .to(magicCircle, { opacity: 1, scale: 1.2, duration: 1.5, ease: "power4.out" }, "-=0.5");
+
+            // Phase 2: Item Emerges
+            tl.to(imgWrapper, { opacity: 1, scale: 1, duration: 1.5, ease: "back.out(1.2)" }, "-=0.8")
+              .to(name, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "-=0.5");
+
+            // Phase 3: The Poem (Typewriter-ish)
+            tl.to(poem1, { opacity: 1, duration: 1.5, ease: "power1.inOut" }, "+=0.5")
+              .to(poem2, { opacity: 1, duration: 1.5, ease: "power1.inOut" }, "+=1.0")
+              .to(btn, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, "+=0.5");
+
+            // Audio cues
+            audioManager.playSfx('thunder');
+            setTimeout(() => audioManager.playSfx('breakthrough'), 1000);
+
+            btn.onclick = () => {
+                gsap.to(overlay, {
+                    opacity: 0,
+                    duration: 1,
+                    onComplete: () => {
+                        overlay.classList.add('hidden');
+                        overlay.classList.remove('flex');
+                        resolve();
+                    }
+                });
+            };
+        });
     }
 }
 

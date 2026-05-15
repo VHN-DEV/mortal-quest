@@ -23,7 +23,19 @@ export const SHOPS = {
                 { id: 'phong_loi_si', stock: 1, minVip: 4 },
                 { id: 'huyen_lu_item', stock: 1, minVip: 1 },
                 { id: 'dia_lu_item', stock: 1, minVip: 3 },
-                { id: 'thien_lu_item', stock: 1, minVip: 5 }
+                { id: 'thien_lu_item', stock: 1, minVip: 5 },
+                { id: 'vo_dinh_tieu_dao_cam', stock: 1, minVip: 5 },
+                { id: 'van_tinh_nho_quan', stock: 1, minVip: 5 },
+                { id: 'that_thai_huyen_nghien', stock: 1, minVip: 5 },
+                { id: 'te_hon_toa', stock: 1, minVip: 5 },
+                { id: 'luyen_phong_thach', stock: 1, minVip: 5 },
+                { id: 'kim_than_xa_loi', stock: 1, minVip: 5 },
+                { id: 'duong_kiem_ho', stock: 1, minVip: 5 },
+                { id: 'cuu_mach_linh_cham', stock: 1, minVip: 5 },
+                { id: 'co_luyen_lung', stock: 1, minVip: 5 },
+                { id: 'chan_vu_nho_quan_ta', stock: 1, minVip: 5 },
+                { id: 'chan_vu_nho_quan_huu', stock: 1, minVip: 5 },
+                { id: 'bo_thien_lang', stock: 1, minVip: 5 }
             ],
             'nguyen_lieu': [
                 { id: 'linh_thao_thap', stock: 200 },

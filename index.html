@@ -58,6 +58,41 @@
             </div>
         </div>
 
+        <!-- Appearance (Xuất Thế) Overlay for Legendary Items -->
+        <div id="appearance-overlay" class="fixed inset-0 z-[1300] hidden flex-col items-center justify-center bg-black transition-all duration-1000 pointer-events-auto overflow-hidden">
+            <div class="appearance-bg-anomaly absolute inset-0 opacity-0 bg-gradient-to-b from-transparent via-cultivation-gold/5 to-transparent"></div>
+            
+            <!-- Magic Circle -->
+            <div class="appearance-magic-circle absolute w-[800px] h-[800px] opacity-0 pointer-events-none">
+                <svg viewBox="0 0 200 200" class="w-full h-full text-cultivation-gold/40">
+                    <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="0.2" />
+                    <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 2" />
+                    <path d="M100 5 L105 30 L130 30 L110 45 L115 70 L100 55 L85 70 L90 45 L70 30 L95 30 Z" fill="none" stroke="currentColor" stroke-width="0.2" />
+                </svg>
+            </div>
+
+            <!-- Item Display -->
+            <div class="appearance-item-container relative z-10 flex flex-col items-center">
+                <div class="appearance-item-image-wrapper relative w-48 h-48 mb-12 opacity-0 scale-50">
+                    <div class="appearance-item-glow absolute inset-[-60px] rounded-full blur-[100px] bg-cultivation-gold/30"></div>
+                    <img id="appearance-item-img" src="" class="w-full h-full object-contain relative z-10">
+                </div>
+                
+                <div class="appearance-info text-center space-y-6">
+                    <h2 id="appearance-item-name" class="text-5xl font-charm text-cultivation-gold text-glow opacity-0 translate-y-4"></h2>
+                    
+                    <div class="appearance-poem-container space-y-4 min-h-[100px]">
+                        <p id="appearance-poem-1" class="text-xl font-ancient text-white/90 italic tracking-widest opacity-0"></p>
+                        <p id="appearance-poem-2" class="text-xl font-ancient text-white/90 italic tracking-widest opacity-0"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="appearance-continue" class="absolute bottom-16 opacity-0 translate-y-4 transition-all duration-500">
+                <button class="px-12 py-3 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold text-white/40 tracking-[0.6em] uppercase hover:bg-white/10 hover:text-white transition-all">Nghịch Thiên Cải Mệnh</button>
+            </div>
+        </div>
+
         <!-- Global Header -->
         <header
             class="p-4 bg-gradient-to-b from-black to-transparent border-b border-white/5 flex items-center justify-between z-50">
@@ -2053,8 +2088,9 @@
             <div id="shop-section-nav"
                 class="flex-none w-full min-w-0 custom-scroll-x border-b border-white/5 bg-black/30">
             </div>
-            <div id="shop-subfilter-nav"
-                class="flex-none w-full min-w-0 custom-scroll-x border-b border-white/5 bg-black/20 hidden">
+            <div id="shop-filters-wrap" class="flex-none flex w-full border-b border-white/5 bg-black/20 hidden overflow-hidden">
+                <div id="shop-subfilter-nav" class="flex-1 min-w-0"></div>
+                <div id="shop-quality-filter-nav" class="flex-1 min-w-0"></div>
             </div>
             <div id="shop-buy-view" class="flex-grow min-h-0 overflow-y-auto p-4 space-y-3 custom-scroll"></div>
             <div id="shop-sell-view" class="hidden flex-grow min-h-0 overflow-y-auto p-4 custom-scroll">

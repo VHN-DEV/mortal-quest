@@ -1964,7 +1964,148 @@ export const ITEMS = {
         recipeId: 'long_lan_giap'
     },
 
-    // --- PROFESSION MANUALS (BÍ PHÁP) ---
+    // --- DANH KHÍ / DANH BẢO (LEGENDARY ARTIFACTS) ---
+    'vo_dinh_tieu_dao_cam': {
+        id: 'vo_dinh_tieu_dao_cam',
+        name: 'Vô Định Tiêu Dao Cầm',
+        type: 'soulArtifact',
+        quality: 'Danh Khí',
+        image: 'artifacts/vo_dinh_tieu_dao_cam.png',
+        description: 'Cây cầm thần bí, tiếng đàn có thể tàng hình sơn hà, tiêu diêu tự tại giữa trời đất.',
+        price: 1000000,
+        stats: { soulRepress: 100, soulExpSpeed: 2.5, spd: 50 },
+        poem: ['Trần Thế Vô Nhiễm Ẩn Sơn Hà', 'Nhất Khúc Tiêu Giao Thiên Địa Gian']
+    },
+    'van_tinh_nho_quan': {
+        id: 'van_tinh_nho_quan',
+        name: 'Văn Tinh Nho Quán',
+        type: 'defenseArtifact',
+        quality: 'Danh Khí',
+        image: 'artifacts/van_tinh_nho_quan.png',
+        description: 'Mũ nho sĩ chứa đựng tinh túy của văn chương, hạo nhiên chính khí trấn áp tà ma.',
+        price: 800000,
+        stats: { def: 200, comprehension: 20, luck: 15 },
+        poem: ['Nho Quán Nhất Tinh Diệu Thiên Địa', 'Hạo Nhiên Chính Khí Đãng Càn Khôn']
+    },
+    'that_thai_huyen_nghien': {
+        id: 'that_thai_huyen_nghien',
+        name: 'Thất Thái Huyền Nghiên',
+        type: 'supportArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/that_thai_huyen_nghien.png',
+        description: 'Nghiên mực bảy màu, một điểm có thể định hình sơn hà, ghi chép thiên đạo.',
+        price: 1500000,
+        stats: { tuViSpeed: 3.0, daoVun: 50, luck: 30 },
+        poem: ['Thất Thái Lưu Quang Thư Thiên Đạo', 'Huyền Nghiên Nhất Điểm Định Sơn Hà']
+    },
+    'te_hon_toa': {
+        id: 'te_hon_toa',
+        name: 'Tế Hồn Tỏa',
+        type: 'attackArtifact',
+        quality: 'Danh Khí',
+        image: 'artifacts/te_hon_toa.png',
+        description: 'Xiềng xích tế hồn, nhiếp lấy phách của vạn vật, khóa chặt u minh.',
+        price: 1200000,
+        stats: { atk: 300, soulPierce: 0.5, lifeSteal: 0.2 },
+        poem: ['Tuế Hồn Nhiếp Phách Tỏa U Minh', 'Dị Kỷ Thương Địch Xá Kỳ Thủy']
+    },
+    'luyen_phong_thach': {
+        id: 'luyen_phong_thach',
+        name: 'Luyện Phong Thạch',
+        type: 'attackArtifact',
+        quality: 'Danh Khí',
+        image: 'artifacts/luyen_phong_thach.png',
+        description: 'Viên đá luyện từ cuồng phong, bách luyện thành binh, trảm phá càn khôn.',
+        price: 900000,
+        stats: { atk: 250, pierce: 0.4, spd: 80 },
+        poem: ['Thiên Ma Bách Lệ Xuất Thần Binh', 'Càn Khôn Nhất Trảm Thùy Khả Đáng']
+    },
+    'kim_than_xa_loi': {
+        id: 'kim_than_xa_loi',
+        name: 'Kim Thân Xá Lợi',
+        type: 'defenseArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/kim_than_xa_loi.png',
+        description: 'Hạt xá lợi kim thân, vạn pháp bất xâm, trấn giữ tâm ma.',
+        price: 2000000,
+        stats: { def: 500, hp: 2000, stability: 50 },
+        poem: ['Kim Thân Hộ Thể Trấn Yêu Tà', 'Vạn Pháp Bất Xâm Xá Lợi Tâm']
+    },
+    'duong_kiem_ho': {
+        id: 'duong_kiem_ho',
+        name: 'Dưỡng Kiếm Hồ',
+        type: 'supportArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/duong_kiem_ho.png',
+        description: 'Bầu rượu dưỡng kiếm, tàng chứa kiếm tiên, phong mang thấu càn khôn.',
+        price: 1300000,
+        stats: { atk: 150, critRate: 0.2, critDmg: 0.5 },
+        poem: ['Phong Mang Nhất Hiện Hàn Cửu Châu', 'Càn Khôn Hồ Trung Tàn Kiếm Tiên']
+    },
+    'cuu_mach_linh_cham': {
+        id: 'cuu_mach_linh_cham',
+        name: 'Cửu Mạch Linh Châm',
+        type: 'attackArtifact',
+        quality: 'Danh Khí',
+        image: 'artifacts/cuu_mach_linh_cham.png',
+        description: 'Châm thần chín mạch, nghịch chuyển âm dương, hồi thiên tục mệnh.',
+        price: 1100000,
+        stats: { atk: 120, lifeSteal: 0.5, hp: 500 },
+        poem: ['Linh Châm Cửu Chuyển Hoán Âm Dương', 'Nhất Niệm Hồi Thiên Tục Mệnh Nguyên']
+    },
+    'co_luyen_lung': {
+        id: 'co_luyen_lung',
+        name: 'Cổ Luyện Lũng',
+        type: 'supportArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/co_luyen_lung.png',
+        description: 'Lồng nuôi cổ trùng cổ xưa, thực nhật nguyệt, chứa vạn độc thiên trùng.',
+        price: 950000,
+        stats: { atk: 100, murderQi: 30, poisonRes: 0.8 },
+        poem: ['Cổ Luyện Nhất Thành Thực Nhật Nguyệt', 'Vạn Độc Thiên Trùng Dưỡng Lung Trung']
+    },
+    'chan_vu_nho_quan_ta': {
+        id: 'chan_vu_nho_quan_ta',
+        name: 'Chân Vũ Nho Quán (Tả)',
+        type: 'defenseArtifact',
+        quality: 'Danh Khí',
+        image: 'artifacts/chan_vu_nho_quan_ta.webp',
+        description: 'Mũ Chân Vũ phía bên trái, chứa đựng một phần thần uy của Chân Vũ Đại Đế.',
+        price: 425000,
+        stats: { def: 100, hp: 300 }
+    },
+    'chan_vu_nho_quan_huu': {
+        id: 'chan_vu_nho_quan_huu',
+        name: 'Chân Vũ Nho Quán (Hữu)',
+        type: 'defenseArtifact',
+        quality: 'Danh Khí',
+        image: 'artifacts/chan_vu_nho_quan_huu.webp',
+        description: 'Mũ Chân Vũ phía bên phải, chứa đựng một phần thần uy của Chân Vũ Đại Đế.',
+        price: 425000,
+        stats: { def: 100, hp: 300 }
+    },
+    'chan_vu_nho_quan': {
+        id: 'chan_vu_nho_quan',
+        name: 'Chân Vũ Nho Quán (Hoàn Thiện)',
+        type: 'defenseArtifact',
+        quality: 'Danh Khí',
+        image: 'artifacts/chan_vu_nho_quan_huu.webp', // Using right hand as representative
+        description: 'Bản hoàn thiện của Chân Vũ Nho Quán, thập diện mai phục cũng bất cụ, chiến bát hoang.',
+        price: 1700000,
+        stats: { def: 500, hp: 2000, stability: 40 },
+        poem: ['Thập Diện Mai Phục Hồn Bất Cụ', 'Chân Vũ Tại Thân Chiến Bát Hoang']
+    },
+    'bo_thien_lang': {
+        id: 'bo_thien_lang',
+        name: 'Bộ Thiên Lăng',
+        type: 'flightArtifact',
+        quality: 'Danh Bảo',
+        image: 'artifacts/bo_thien_lang.png',
+        description: 'Dải lụa bước lên trời, tùy phong khởi vũ, đạp vân tiêu.',
+        price: 1800000,
+        stats: { spd: 150, luck: 20, tuViSpeed: 1.5 },
+        poem: ['Lăng Vũ Cửu Thiên Tùy Phong Khởi', 'Cước Đạp Vân Tiêu Lộng Thái Hà']
+    }
 };
 
 export const getItemById = (id) => ITEMS[id];

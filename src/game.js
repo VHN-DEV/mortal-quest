@@ -1466,10 +1466,23 @@ export class Game {
 
         const success = state.player.inventory.addItem(itemId, quantity, metadata);
         if (success) {
-            const quality = (metadata && metadata.quality) || itemData.quality || 'PHAM';
-            const flashyQualities = ['DIA', 'THIEN', 'TIEN', 'THAN', 'Hoàn Mỹ', 'Cực Phẩm', 'Tiên Phẩm'];
+            // Check for Chân Vũ Nho Quán set completion
+            if (itemId === 'chan_vu_nho_quan_ta' || itemId === 'chan_vu_nho_quan_huu') {
+                const otherPartId = itemId === 'chan_vu_nho_quan_ta' ? 'chan_vu_nho_quan_huu' : 'chan_vu_nho_quan_ta';
+                if (state.player.inventory.hasItem(otherPartId)) {
+                    state.player.inventory.removeItem(itemId, 1);
+                    state.player.inventory.removeItem(otherPartId, 1);
+                    return this.receiveItem('chan_vu_nho_quan', 1, {}, "Chân Vũ Nho Quán đã hoàn thiện!");
+                }
+            }
+
+            const quality = (metadata && metadata.quality) || itemData.quality || 'Phàm';
+            const flashyQualities = ['DIA', 'THIEN', 'TIEN', 'THAN', 'Hoàn Mỹ', 'Cực Phẩm', 'Tiên Phẩm', 'Truyền Thuyết', 'Thần Thoại', 'Danh Khí', 'Danh Bảo'];
             
-            if (flashyQualities.includes(quality)) {
+            // Check for legendary appearance trigger (items with poem)
+            if (itemData.poem) {
+                await state.ui.showArtifactAppearance(itemData);
+            } else if (flashyQualities.includes(quality)) {
                 // Show flashy UI
                 await state.ui.showAcquiredLoot({
                     ...itemData,

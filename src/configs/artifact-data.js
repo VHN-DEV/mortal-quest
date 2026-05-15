@@ -76,5 +76,12 @@ export const ARTIFACT_SETS = {
             { count: 3, stats: { atk: 0.2 }, effects: ['Kích hoạt Kiếm Trận sơ cấp'] },
             { count: 12, stats: { atk: 1.0, pierce: 0.5 }, effects: ['Triệu hồi Thiên Cương Kiếm Trận'] }
         ]
+    },
+    CHAN_VU_NHO_QUAN_SET: {
+        name: 'Chân Vũ Nho Quán',
+        items: ['chan_vu_nho_quan_ta', 'chan_vu_nho_quan_huu'],
+        bonuses: [
+            { count: 2, stats: { def: 1.5, hp: 1.5 }, effects: ['Kích hoạt Chân Vũ Thánh Thể'] }
+        ]
     }
 };
