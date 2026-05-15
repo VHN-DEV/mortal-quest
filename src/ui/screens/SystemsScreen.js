@@ -521,6 +521,7 @@ export class SystemsScreen {
             `;
 
             const finalPrice = Math.floor(itemData.price * (1 - Math.min(0.25, state.player.vipLevel * 0.05)));
+            const isVipLocked = item.minVip && state.player.vipLevel < item.minVip;
 
             const btnContainer = document.createElement('div');
             btnContainer.className = 'flex items-center space-x-3';
@@ -528,11 +529,13 @@ export class SystemsScreen {
                 <div class="text-right">
                     <div class="text-[8px] text-gray-500 line-through">${itemData.price} LT</div>
                     <div class="text-xs font-mono text-cultivation-gold whitespace-nowrap">${finalPrice} LT</div>
+                    ${isVipLocked ? `<div class="text-[7px] text-red-500 font-bold uppercase animate-pulse">Yêu cầu VIP ${item.minVip}</div>` : ''}
                 </div>
             `;
 
             const btn = document.createElement('button');
-            btn.className = `px-4 py-2 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap ${item.stock <= 0 ? 'opacity-50 grayscale pointer-events-none' : ''}`;
+            const isOutOfStock = item.stock <= 0;
+            btn.className = `px-4 py-2 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap ${isOutOfStock || isVipLocked ? 'opacity-50 grayscale pointer-events-none' : ''}`;
             btn.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>TRAO ĐỔI`;
             btn.onclick = (e) => {
                 e.stopPropagation();

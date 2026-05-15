@@ -101,8 +101,6 @@ export class Game {
         this.screens.chungTocLuc = new ChungTocLucScreen();
         this.screens.mission = new MissionScreenImport();
 
-        state.systems.mission.init();
-
         state.systems.creation = new CreationSystem();
 
         await SaveSystem.migrateLegacySave();
@@ -570,6 +568,8 @@ export class Game {
             mining: new MiningSystem(player, state.ui),
             mission: new MissionSystem()
         });
+
+        state.systems.mission.init();
 
         this.screens.fate.player = player;
 
