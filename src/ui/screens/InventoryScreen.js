@@ -267,7 +267,7 @@ export class InventoryScreen {
             'soulArtifact': 'Hồn Đạo Pháp Bảo'
         };
 
-        const qualitySuffix = (displayQuality.toLowerCase().includes('khí') || displayQuality.toLowerCase().includes('bảo') || displayQuality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(displayQuality)) ? '' : ' Phẩm';
+        const qualitySuffix = (displayQuality.toLowerCase().includes('khí') || displayQuality.toLowerCase().includes('bảo') || displayQuality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo'].includes(displayQuality)) ? '' : ' Phẩm';
         this.elDetailType.textContent = `${displayQuality}${qualitySuffix} | ${typeNames[itemData.type] || itemData.type}`;
 
         this.elDetailDesc.textContent = itemData.description;
@@ -435,13 +435,16 @@ export class InventoryScreen {
 
     getQualityClass(quality) {
         const map = { 
-            'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than',
-            // New tiers
-            'Phàm Khí': 'pham-khi', 'Pháp Khí': 'phap-khi', 'Linh Khí': 'linh-khi', 'Pháp Bảo': 'phap-bao', 'Cổ Bảo': 'co-bao', 'Linh Bảo': 'linh-bao', 'Thông Thiên Linh Bảo': 'thong-thien', 'Tiên Khí': 'tien-khi',
-            // Qualities
-            'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien',
-            'Tàn Khuyết': 'pham', 'Thường': 'hoang', 'Tinh Phẩm': 'huyen', 'Hoàn Mỹ': 'dia', 'Cực Phẩm': 'thien', 'Truyền Thuyết': 'tien', 'Thần Thoại': 'than',
-            'Danh Khí': 'than', 'Danh Bảo': 'than'
+            'Phàm Khí': 'pham-khi', 
+            'Pháp Khí': 'phap-khi', 
+            'Linh Khí': 'linh-khi', 
+            'Pháp Bảo': 'phap-bao', 
+            'Cổ Bảo': 'co-bao', 
+            'Linh Bảo': 'linh-bao', 
+            'Thông Thiên Linh Bảo': 'thong-thien', 
+            'Tiên Khí': 'tien-khi',
+            // Compatibility for sub-qualities if they appear in metadata
+            'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
         };
         return map[quality] || 'pham';
     }

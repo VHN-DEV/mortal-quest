@@ -3,14 +3,14 @@
  */
 
 export const ARTIFACT_TIERS = {
-    PHAM_KHI: { id: 1, name: 'Phàm Khí', requirement: 'Phàm Nhân', color: '#ffffff' },
-    PHAP_KHI: { id: 2, name: 'Pháp Khí', requirement: 'Luyện Khí', color: '#10b981' },
-    LINH_KHI: { id: 3, name: 'Linh Khí', requirement: 'Trúc Cơ', color: '#3b82f6' },
-    PHAP_BAO: { id: 4, name: 'Pháp Bảo', requirement: 'Kết Đan', color: '#8b5cf6' },
-    CO_BAO: { id: 5, name: 'Cổ Bảo', requirement: 'Nguyên Anh', color: '#f59e0b' },
-    LINH_BAO: { id: 6, name: 'Linh Bảo', requirement: 'Hóa Thần', color: '#ef4444' },
-    THONG_THIEN: { id: 7, name: 'Thông Thiên Linh Bảo', requirement: 'Luyện Hư', color: '#d4af37' },
-    TIEN_KHI: { id: 8, name: 'Tiên Khí', requirement: 'Đại Thừa', color: 'rainbow' }
+    PHAM_KHI: { id: 'Phàm Khí', name: 'Phàm Khí', requirement: 'Phàm Nhân', color: '#ffffff' },
+    PHAP_KHI: { id: 'Pháp Khí', name: 'Pháp Khí', requirement: 'Luyện Khí', color: '#10b981' },
+    LINH_KHI: { id: 'Linh Khí', name: 'Linh Khí', requirement: 'Trúc Cơ', color: '#3b82f6' },
+    PHAP_BAO: { id: 'Pháp Bảo', name: 'Pháp Bảo', requirement: 'Kết Đan', color: '#8b5cf6' },
+    CO_BAO: { id: 'Cổ Bảo', name: 'Cổ Bảo', requirement: 'Nguyên Anh', color: '#f59e0b' },
+    LINH_BAO: { id: 'Linh Bảo', name: 'Linh Bảo', requirement: 'Hóa Thần', color: '#ef4444' },
+    THONG_THIEN: { id: 'Thông Thiên Linh Bảo', name: 'Thông Thiên Linh Bảo', requirement: 'Luyện Hư', color: '#d4af37' },
+    TIEN_KHI: { id: 'Tiên Khí', name: 'Tiên Khí', requirement: 'Đại Thừa', color: 'rainbow' }
 };
 
 export const ARTIFACT_QUALITIES = {

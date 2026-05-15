@@ -1498,8 +1498,8 @@ export class Game {
                 }
             }
 
-            const quality = (metadata && metadata.quality) || itemData.quality || 'Phàm';
-            const flashyQualities = ['DIA', 'THIEN', 'TIEN', 'THAN', 'Hoàn Mỹ', 'Cực Phẩm', 'Tiên Phẩm', 'Truyền Thuyết', 'Thần Thoại', 'Danh Khí', 'Danh Bảo'];
+            const quality = (metadata && metadata.quality) || itemData.quality || 'Phàm Khí';
+            const flashyQualities = ['Pháp Bảo', 'Cổ Bảo', 'Linh Bảo', 'Thông Thiên Linh Bảo', 'Tiên Khí'];
             
             // Check for legendary appearance trigger (items with poem)
             if (itemData.poem) {

@@ -20,7 +20,7 @@ export const CAULDRONS = {
     'pham_lu': {
         id: 'pham_lu',
         name: 'Phàm Cấp Đan Lư',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         successBonus: 0,
         qualityBonus: 0,
         stability: 0.5,
@@ -31,7 +31,7 @@ export const CAULDRONS = {
     'huyen_lu': {
         id: 'huyen_lu',
         name: 'Huyền Thiết Trọng Lư',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         successBonus: 0.05,
         qualityBonus: 0.1,
         stability: 0.7,
@@ -42,7 +42,7 @@ export const CAULDRONS = {
     'dia_lu': {
         id: 'dia_lu',
         name: 'Địa Long Phần Thiên Lư',
-        quality: 'Địa',
+        quality: 'Cổ Bảo',
         successBonus: 0.15,
         qualityBonus: 0.2,
         stability: 0.85,
@@ -53,7 +53,7 @@ export const CAULDRONS = {
     'thien_lu': {
         id: 'thien_lu',
         name: 'Thiên Cực Thái Hư Lư',
-        quality: 'Thiên',
+        quality: 'Linh Bảo',
         successBonus: 0.3,
         qualityBonus: 0.4,
         stability: 0.95,

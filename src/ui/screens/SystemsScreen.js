@@ -516,7 +516,7 @@ export class SystemsScreen {
                 <div class="text-2xl bg-black/60 p-2 rounded-lg border border-${qClass}/30">${itemData.image ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
                 <div>
                     <div class="text-sm font-bold text-white">${itemData.name}</div>
-                    <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality}${(itemData.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(itemData.quality)) ? '' : ' phẩm'} | Kho: ${item.stock}</div>
+                    <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality}${(itemData.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo'].includes(itemData.quality)) ? '' : ' phẩm'} | Kho: ${item.stock}</div>
                 </div>
             `;
 
@@ -879,13 +879,16 @@ export class SystemsScreen {
 
     getQualityClass(quality) {
         const map = { 
-            'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than',
-            // New tiers
-            'Phàm Khí': 'pham-khi', 'Pháp Khí': 'phap-khi', 'Linh Khí': 'linh-khi', 'Pháp Bảo': 'phap-bao', 'Cổ Bảo': 'co-bao', 'Linh Bảo': 'linh-bao', 'Thông Thiên Linh Bảo': 'thong-thien', 'Tiên Khí': 'tien-khi',
-            // Qualities
-            'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien',
-            'Tàn Khuyết': 'pham', 'Thường': 'hoang', 'Tinh Phẩm': 'huyen', 'Hoàn Mỹ': 'dia', 'Cực Phẩm': 'thien', 'Truyền Thuyết': 'tien', 'Thần Thoại': 'than',
-            'Danh Khí': 'than', 'Danh Bảo': 'than'
+            'Phàm Khí': 'pham-khi', 
+            'Pháp Khí': 'phap-khi', 
+            'Linh Khí': 'linh-khi', 
+            'Pháp Bảo': 'phap-bao', 
+            'Cổ Bảo': 'co-bao', 
+            'Linh Bảo': 'linh-bao', 
+            'Thông Thiên Linh Bảo': 'thong-thien', 
+            'Tiên Khí': 'tien-khi',
+            // Compatibility for sub-qualities if they appear in metadata
+            'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
         };
         return map[quality] || 'pham';
     }
@@ -1556,7 +1559,7 @@ export class SystemsScreen {
                 <div class="text-6xl p-6 bg-white/5 rounded-full border border-white/10">${data.icon || '📜'}</div>
                 <div>
                     <h3 class="text-2xl font-ancient text-white">${data.name}</h3>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${data.quality || 'Phàm'}${((data.quality || 'Phàm').toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(data.quality || 'Phàm')) ? '' : ' Phẩm'} | ${stageName}</p>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${data.quality || 'Phàm Khí'}${((data.quality || 'Phàm Khí').toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo'].includes(data.quality || 'Phàm Khí')) ? '' : ' Phẩm'} | ${stageName}</p>
                 </div>
             </div>
 

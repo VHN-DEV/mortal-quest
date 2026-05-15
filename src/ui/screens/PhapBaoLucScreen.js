@@ -15,15 +15,11 @@ export class PhapBaoLucScreen {
             'Phàm Khí',
             'Pháp Khí',
             'Linh Khí',
-            'Hoàn Mỹ',
-            'Cực Phẩm',
             'Pháp Bảo',
             'Cổ Bảo',
             'Linh Bảo',
             'Thông Thiên Linh Bảo',
-            'Tiên Khí',
-            'Thần',
-            'Thần Thoại'
+            'Tiên Khí'
         ];
 
         this.typeNames = {
@@ -173,18 +169,14 @@ export class PhapBaoLucScreen {
 
     getQualityColor(quality) {
         const colors = {
-            'Phàm Khí': '#9ca3af',
-            'Pháp Khí': '#34d399',
-            'Linh Khí': '#60a5fa',
-            'Hoàn Mỹ': '#a78bfa',
-            'Cực Phẩm': '#f472b6',
-            'Pháp Bảo': '#fbbf24',
-            'Cổ Bảo': '#f87171',
+            'Phàm Khí': '#94a3b8',
+            'Pháp Khí': '#10b981',
+            'Linh Khí': '#3b82f6',
+            'Pháp Bảo': '#8b5cf6',
+            'Cổ Bảo': '#f59e0b',
             'Linh Bảo': '#ef4444',
-            'Thông Thiên Linh Bảo': '#ea580c',
-            'Tiên Khí': '#fbbf24',
-            'Thần': '#fbbf24',
-            'Thần Thoại': '#dc2626'
+            'Thông Thiên Linh Bảo': '#d4af37',
+            'Tiên Khí': '#facc15'
         };
         return colors[quality] || '#ffffff';
     }

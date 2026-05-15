@@ -7,13 +7,16 @@ import { getItemById } from '../configs/item-data.js';
  */
 export function getQualityClass(quality) {
     const map = { 
-        'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than',
-        // New tiers
-        'Phàm Khí': 'pham-khi', 'Pháp Khí': 'phap-khi', 'Linh Khí': 'linh-khi', 'Pháp Bảo': 'phap-bao', 'Cổ Bảo': 'co-bao', 'Linh Bảo': 'linh-bao', 'Thông Thiên Linh Bảo': 'thong-thien', 'Tiên Khí': 'tien-khi',
-        // Qualities
-        'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien',
-        'Tàn Khuyết': 'pham', 'Thường': 'hoang', 'Tinh Phẩm': 'huyen', 'Hoàn Mỹ': 'dia', 'Cực Phẩm': 'thien', 'Truyền Thuyết': 'tien', 'Thần Thoại': 'than',
-        'Danh Khí': 'than', 'Danh Bảo': 'than'
+        'Phàm Khí': 'pham-khi', 
+        'Pháp Khí': 'phap-khi', 
+        'Linh Khí': 'linh-khi', 
+        'Pháp Bảo': 'phap-bao', 
+        'Cổ Bảo': 'co-bao', 
+        'Linh Bảo': 'linh-bao', 
+        'Thông Thiên Linh Bảo': 'thong-thien', 
+        'Tiên Khí': 'tien-khi',
+        // Compatibility for sub-qualities if they appear in metadata
+        'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
     };
     return map[quality] || 'pham';
 }
@@ -46,7 +49,7 @@ export function renderItemCard(item, options = {}) {
                 <div>
                     <div class="text-sm font-bold text-white">${item.name}</div>
                     <div class="text-[9px] font-bold quality-${qClass}">
-                        ${item.quality}${(item.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Truyền Thuyết', 'Thần Thoại'].includes(item.quality)) ? '' : ' phẩm'} 
+                        ${item.quality}${(item.quality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo'].includes(item.quality)) ? '' : ' phẩm'} 
                         ${showStock ? `| Kho: ${stock}` : ''}
                         ${showQuantity ? `| x${quantity}` : ''}
                     </div>
