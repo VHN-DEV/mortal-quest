@@ -439,18 +439,14 @@ export class SystemsScreen {
         this.elShopSubFilterNav.classList.add('border-r', 'border-white/5');
         const qualities = [
             { id: 'all', name: 'Tất cả phẩm' },
-            { id: 'Phàm', name: 'Phàm' },
-            { id: 'DIA', name: 'Địa' },
-            { id: 'THIEN', name: 'Thiên' },
-            { id: 'TIEN', name: 'Tiên' },
-            { id: 'THAN', name: 'Thần' },
-            { id: 'Hoàn Mỹ', name: 'Hoàn Mỹ' },
-            { id: 'Cực Phẩm', name: 'Cực Phẩm' },
-            { id: 'Tiên Phẩm', name: 'Tiên Phẩm' },
-            { id: 'Truyền Thuyết', name: 'Truyền Thuyết' },
-            { id: 'Thần Thoại', name: 'Thần Thoại' },
-            { id: 'Danh Khí', name: 'Danh Khí' },
-            { id: 'Danh Bảo', name: 'Danh Bảo' }
+            { id: 'Phàm Khí', name: 'Phàm Khí' },
+            { id: 'Pháp Khí', name: 'Pháp Khí' },
+            { id: 'Linh Khí', name: 'Linh Khí' },
+            { id: 'Pháp Bảo', name: 'Pháp Bảo' },
+            { id: 'Cổ Bảo', name: 'Cổ Bảo' },
+            { id: 'Linh Bảo', name: 'Linh Bảo' },
+            { id: 'Thông Thiên Linh Bảo', name: 'Thông Thiên Linh Bảo' },
+            { id: 'Tiên Khí', name: 'Tiên Khí' }
         ];
 
         this.elShopQualityFilterNav.classList.remove('hidden');
@@ -879,8 +875,12 @@ export class SystemsScreen {
     }
 
     getQualityClass(quality) {
-        const map = {
+        const map = { 
             'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than',
+            // New tiers
+            'Phàm Khí': 'pham-khi', 'Pháp Khí': 'phap-khi', 'Linh Khí': 'linh-khi', 'Pháp Bảo': 'phap-bao', 'Cổ Bảo': 'co-bao', 'Linh Bảo': 'linh-bao', 'Thông Thiên Linh Bảo': 'thong-thien', 'Tiên Khí': 'tien-khi',
+            // Qualities
+            'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien',
             'Tàn Khuyết': 'pham', 'Thường': 'hoang', 'Tinh Phẩm': 'huyen', 'Hoàn Mỹ': 'dia', 'Cực Phẩm': 'thien', 'Truyền Thuyết': 'tien', 'Thần Thoại': 'than',
             'Danh Khí': 'than', 'Danh Bảo': 'than'
         };

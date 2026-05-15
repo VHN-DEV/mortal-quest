@@ -10,10 +10,10 @@
 
 export const ITEMS = {
     // Hạt giống
-    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Linh Thảo', type: 'seed', icon: '🌱', quality: 'Phàm', price: 10, description: 'Linh chủng linh thảo sơ cấp.' },
-    'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh', price: 150, description: 'Linh chủng linh thảo hỏa hệ.' },
-    'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh', price: 150, description: 'Linh chủng linh thảo băng hệ.' },
-    'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Huyền', price: 300, description: 'Linh chủng linh thảo âm hệ.' },
+    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Linh Thảo', type: 'seed', icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Linh chủng linh thảo sơ cấp.' },
+    'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng linh thảo hỏa hệ.' },
+    'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng linh thảo băng hệ.' },
+    'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng linh thảo âm hệ.' },
 
     // Vật phẩm đặc biệt
     'di_hoa_bang': {
@@ -21,7 +21,7 @@ export const ITEMS = {
         name: 'Dị Hỏa Bảng',
         type: 'book',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1700,
         description: 'Bản danh sách ghi chép về 23 loại Dị Hỏa kỳ dị nhất trong thiên địa. Bấm vào để xem chi tiết.',
         action: 'open_di_hoa_bang'
@@ -31,7 +31,7 @@ export const ITEMS = {
         name: 'Dị Lôi Bảng',
         type: 'book',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1500,
         description: 'Bản danh sách ghi chép về 10 loại Dị Lôi cường hãn nhất trong thiên địa. Bấm vào để xem chi tiết.',
         action: 'open_di_loi_bang'
@@ -41,7 +41,7 @@ export const ITEMS = {
         name: 'Chư Thiên Linh Thể Lục',
         type: 'book',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 2000,
         description: 'Bản danh sách ghi chép về 15 loại Linh Thể mạnh mẽ nhất chư thiên. Bấm vào để xem chi tiết.',
         action: 'open_linh_the_luc'
@@ -53,7 +53,7 @@ export const ITEMS = {
         name: 'Đan Đạo Chân Giải',
         type: 'book',
         icon: '📔',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 1000,
         description: 'Sách nhập môn về Luyện Đan, giúp mở khóa nghề Luyện Dược Sư.',
         effect: { type: 'unlock_profession', profession: 'alchemy' }
@@ -63,7 +63,7 @@ export const ITEMS = {
         name: 'Luyện Khí Tổng Cương',
         type: 'book',
         icon: '📔',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 1200,
         description: 'Nguyên lý cơ bản về rèn đúc pháp bảo, mở khóa nghề Luyện Khí Sư.',
         effect: { type: 'unlock_profession', profession: 'smithing' }
@@ -73,7 +73,7 @@ export const ITEMS = {
         name: 'Thái Thượng Phù Kinh',
         type: 'book',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 800,
         description: 'Ghi chép về cách dẫn linh hồn vào phù giấy, mở khóa nghề Phù Sư.',
         effect: { type: 'unlock_profession', profession: 'talisman' }
@@ -83,7 +83,7 @@ export const ITEMS = {
         name: 'Trận Đạo Thiên Thư',
         type: 'book',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 2500,
         description: 'Thiên thư ghi chép về các loại trận pháp, mở khóa nghề Trận Pháp Sư.',
         effect: { type: 'unlock_profession', profession: 'formation' }
@@ -93,7 +93,7 @@ export const ITEMS = {
         name: 'Cơ Quan Linh Kỹ',
         type: 'book',
         icon: '📔',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 3000,
         description: 'Bí tịch về cách chế tạo khôi lỗi, mở khóa nghề Khôi Lỗi Sư.',
         effect: { type: 'unlock_profession', profession: 'puppet' }
@@ -103,7 +103,7 @@ export const ITEMS = {
         name: 'Cửu U Luyện Thi Thuật',
         type: 'book',
         icon: '💀',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1500,
         description: 'Tà thuật luyện chế xác chết, mở khóa nghề Luyện Thi Sư.',
         effect: { type: 'unlock_profession', profession: 'corpse' }
@@ -115,7 +115,7 @@ export const ITEMS = {
         name: 'Đan Phương: Ngưng Khí Đan',
         type: 'recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 300,
         description: 'Ghi chép cách luyện chế Ngưng Khí Đan.',
         effect: { type: 'learn_recipe', value: 'ngung_khi_dan' }
@@ -125,7 +125,7 @@ export const ITEMS = {
         name: 'Đan Phương: Thanh Tâm Đan',
         type: 'recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 500,
         description: 'Ghi chép cách luyện chế Thanh Tâm Đan.',
         effect: { type: 'learn_recipe', value: 'than_tam_dan' }
@@ -135,7 +135,7 @@ export const ITEMS = {
         name: 'Đan Phương: Trúc Cơ Đan',
         type: 'recipe',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 2000,
         description: 'Ghi chép cách luyện chế Trúc Cơ Đan cực kỳ quan trọng.',
         effect: { type: 'learn_recipe', value: 'truc_co_dan' }
@@ -145,7 +145,7 @@ export const ITEMS = {
         name: 'Đan Phương: Bổ Nguyên Đan',
         type: 'recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 600,
         description: 'Ghi chép cách luyện chế Bổ Nguyên Đan.',
         effect: { type: 'learn_recipe', value: 'bo_nguyen_dan' }
@@ -155,7 +155,7 @@ export const ITEMS = {
         name: 'Đan Phương: Ngưng Anh Đan',
         type: 'recipe',
         icon: '📜',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 10000,
         description: 'Đan phương quý hiếm dùng để đột phá Nguyên Anh.',
         effect: { type: 'learn_recipe', value: 'ngung_anh_dan' }
@@ -167,7 +167,7 @@ export const ITEMS = {
         name: 'Bản Vẽ: Thanh Hồng Kiếm',
         type: 'recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 400,
         description: 'Bản vẽ rèn đúc Thanh Hồng Kiếm.',
         effect: { type: 'learn_smithing_recipe', value: 'thanh_hong_kiem' }
@@ -177,7 +177,7 @@ export const ITEMS = {
         name: 'Bản Vẽ: Tinh Hà Phi Kiếm',
         type: 'recipe',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1500,
         description: 'Bản vẽ rèn đúc Tinh Hà Phi Kiếm.',
         effect: { type: 'learn_smithing_recipe', value: 'phi_kiem_tinh_ha' }
@@ -187,7 +187,7 @@ export const ITEMS = {
         name: 'Bản Vẽ: Long Lân Giáp',
         type: 'recipe',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 2500,
         description: 'Bản vẽ rèn đúc Long Lân Giáp.',
         effect: { type: 'learn_smithing_recipe', value: 'long_lan_giap' }
@@ -197,7 +197,7 @@ export const ITEMS = {
         name: 'Bản Vẽ: Bát Quái Kính',
         type: 'recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 800,
         description: 'Bản vẽ rèn đúc Bát Quái Kính.',
         effect: { type: 'learn_smithing_recipe', value: 'bat_quai_kinh' }
@@ -209,7 +209,7 @@ export const ITEMS = {
         name: 'Phù Văn: Hỏa Cầu Phù',
         type: 'talisman_recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 200,
         description: 'Phù văn cơ bản của hỏa hệ.',
         effect: { type: 'learn_talisman_recipe', value: 'hoa_cau_phu' }
@@ -219,7 +219,7 @@ export const ITEMS = {
         name: 'Phù Văn: Kim Cương Phù',
         type: 'talisman_recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 500,
         description: 'Phù văn tăng phòng ngự.',
         effect: { type: 'learn_talisman_recipe', value: 'kim_cuong_phu' }
@@ -229,7 +229,7 @@ export const ITEMS = {
         name: 'Phù Văn: Thần Hành Phù',
         type: 'talisman_recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 400,
         description: 'Phù văn tăng tốc độ di chuyển.',
         effect: { type: 'learn_talisman_recipe', value: 'than_hanh_phu' }
@@ -239,7 +239,7 @@ export const ITEMS = {
         name: 'Phù Văn: Thuấn Di Phù',
         type: 'talisman_recipe',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1500,
         description: 'Phù văn dịch chuyển tức thời.',
         effect: { type: 'learn_talisman_recipe', value: 'thun_di_phu' }
@@ -249,7 +249,7 @@ export const ITEMS = {
         name: 'Phù Văn: Thiên Lôi Phù',
         type: 'talisman_recipe',
         icon: '📜',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 5000,
         description: 'Phù văn dẫn lôi đình chi lực.',
         effect: { type: 'learn_talisman_recipe', value: 'thien_loi_phu' }
@@ -261,7 +261,7 @@ export const ITEMS = {
         name: 'Trận Đồ: Tụ Linh Trận',
         type: 'recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 1000,
         description: 'Học cách bố trí Tụ Linh Trận.',
         effect: { type: 'learn_formation', value: 'tran_do_tu_linh' }
@@ -271,7 +271,7 @@ export const ITEMS = {
         name: 'Trận Đồ: Ảo Ảnh Trận',
         type: 'recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 1500,
         description: 'Học cách bố trí Ảo Ảnh Trận.',
         effect: { type: 'learn_formation', value: 'tran_do_ao_anh' }
@@ -281,7 +281,7 @@ export const ITEMS = {
         name: 'Trận Đồ: Sát Kiếm Trận',
         type: 'recipe',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Học cách bố trí Sát Kiếm Trận.',
         effect: { type: 'learn_formation', value: 'tran_do_sat_kiem' }
@@ -291,7 +291,7 @@ export const ITEMS = {
         name: 'Trận Đồ: Hộ Tông Đại Trận',
         type: 'recipe',
         icon: '📜',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 20000,
         description: 'Học cách bố trí Hộ Tông Đại Trận.',
         effect: { type: 'learn_formation', value: 'ho_tong_dai_tran' }
@@ -303,7 +303,7 @@ export const ITEMS = {
         name: 'Bản Vẽ: Thiết Giáp Khôi Lỗi',
         type: 'recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 1000,
         description: 'Hướng dẫn chế tạo Thiết Giáp Khôi Lỗi.',
         effect: { type: 'learn_puppet_recipe', value: 'thiet_giap_khoi_loi' }
@@ -313,7 +313,7 @@ export const ITEMS = {
         name: 'Bản Vẽ: Kiếm Khôi',
         type: 'recipe',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 3000,
         description: 'Hướng dẫn chế tạo Kiếm Khôi.',
         effect: { type: 'learn_puppet_recipe', value: 'kiem_khoi' }
@@ -325,7 +325,7 @@ export const ITEMS = {
         name: 'Bí Phương: Luyện Chế Thi Binh',
         type: 'recipe',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 500,
         description: 'Ghi chép cách luyện chế Thi Binh cơ bản.',
         effect: { type: 'learn_corpse_recipe', value: 'thi_binh' }
@@ -335,7 +335,7 @@ export const ITEMS = {
         name: 'Bí Phương: Luyện Chế Thi Tướng',
         type: 'recipe',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 2000,
         description: 'Ghi chép cách luyện chế Thi Tướng hung hãn.',
         effect: { type: 'learn_corpse_recipe', value: 'thi_tuong' }
@@ -345,7 +345,7 @@ export const ITEMS = {
         name: 'Bí Phương: Luyện Chế Đồng Giáp Thi',
         type: 'recipe',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Ghi chép cách luyện chế Đồng Giáp Thi đao thương bất nhập.',
         effect: { type: 'learn_corpse_recipe', value: 'dong_giap_thi' }
@@ -357,7 +357,7 @@ export const ITEMS = {
         name: 'Tịch Cốc Đan',
         type: 'consumable',
         icon: '💊',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 30,
         description: 'Đan dược giúp tu sĩ không cần ăn uống, tập trung bế quan. Tăng nhẹ tốc độ tu luyện trong 1 giờ.',
         effect: { type: 'buff', stat: 'tu_vi_speed', value: 1.1, duration: 3600 }
@@ -367,7 +367,7 @@ export const ITEMS = {
         name: 'Ngưng Khí Đan',
         type: 'consumable',
         icon: '💊',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 150,
         description: 'Gia tăng 500 linh khí ngay lập tức.',
         effect: { type: 'tu_vi', value: 500 }
@@ -377,7 +377,7 @@ export const ITEMS = {
         name: 'Linh Thảo Hạ Phẩm',
         type: 'material',
         icon: '🌿',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 20,
         description: 'Linh thảo chứa ít linh khí, thường thấy ở các bìa rừng.'
     },
@@ -386,7 +386,7 @@ export const ITEMS = {
         name: 'Linh Thảo Trung Phẩm',
         type: 'material',
         icon: '🍃',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 100,
         description: 'Linh thảo có dược tính ổn định, thích hợp luyện đan bậc trung.'
     },
@@ -395,7 +395,7 @@ export const ITEMS = {
         name: 'Hỏa Diễm Thảo',
         type: 'material',
         icon: '🔥',
-        quality: 'Linh',
+        quality: 'Linh Khí',
         price: 250,
         description: 'Thảo dược nóng rực, sinh trưởng ở nơi có hỏa khí nồng đậm.'
     },
@@ -404,7 +404,7 @@ export const ITEMS = {
         name: 'Hàn Tủy Hoa',
         type: 'material',
         icon: '❄️',
-        quality: 'Linh',
+        quality: 'Linh Khí',
         price: 250,
         description: 'Hoa trắng như tuyết, mang theo hàn khí thấu xương.'
     },
@@ -413,7 +413,7 @@ export const ITEMS = {
         name: 'U Minh Hoa',
         type: 'material',
         icon: '💀',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 500,
         description: 'Hoa mọc nơi âm khí nồng đậm, u tối.'
     },
@@ -431,7 +431,7 @@ export const ITEMS = {
         id: 'bo_nguyen_dan',
         name: 'Bổ Nguyên Đan',
         type: 'consumable',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         icon: '🍶',
         price: 450,
         description: 'Đan dược bồi bổ nguyên khí, hồi phục 100 Khí Huyết và 50 Linh Lực.',
@@ -442,7 +442,7 @@ export const ITEMS = {
         name: 'Thủy Tinh Linh Khoáng',
         type: 'material',
         icon: '💠',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 200,
         description: 'Một loại khoáng thạch chứa thủy tính linh lực.'
     },
@@ -451,7 +451,7 @@ export const ITEMS = {
         name: 'Ma Thạch Hạ Phẩm',
         type: 'material',
         icon: '🌑',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 350,
         description: 'Đá chứa ma khí loãng, dùng cho các loại đan dược đặc thù.'
     },
@@ -470,7 +470,7 @@ export const ITEMS = {
         name: 'Thanh Tâm Đan',
         type: 'consumable',
         icon: '🧊',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 200,
         description: 'Hồi phục 50% HP ngay lập tức.',
         effect: { type: 'heal', value: 0.5 }
@@ -481,7 +481,7 @@ export const ITEMS = {
         id: 'phi_kiem_go',
         name: 'Phi Kiếm Gỗ',
         type: 'weapon',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         icon: '🗡️',
         description: 'Kiếm gỗ dành cho đệ tử nhập môn, sát thương không đáng kể.',
         price: 50,
@@ -491,7 +491,7 @@ export const ITEMS = {
         id: 'ao_bo_so_cap',
         name: 'Áo Bố Sơ Cấp',
         type: 'armor',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         icon: '👘',
         description: 'Áo vải thô sơ, chỉ có tác dụng che thân.',
         price: 30,
@@ -501,7 +501,7 @@ export const ITEMS = {
         id: 'nhan_dong_nat',
         name: 'Nhẫn Đồng Nát',
         type: 'accessory',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         icon: '💍',
         description: 'Một chiếc nhẫn bằng đồng cũ kỹ.',
         price: 80,
@@ -512,7 +512,7 @@ export const ITEMS = {
         name: 'Túi Trữ Vật (Sơ)',
         type: 'spaceArtifact',
         icon: '🎒',
-        quality: 'Thường',
+        quality: 'Pháp Khí',
         tier: 'PHAP_KHI',
         price: 500,
         description: 'Mở rộng thêm 10 ô chứa đồ.',
@@ -535,7 +535,7 @@ export const ITEMS = {
         id: 'linh_thuyen_so',
         name: 'Linh Thuyền Sơ Cấp',
         type: 'flightArtifact',
-        quality: 'Thường',
+        quality: 'Pháp Khí',
         tier: 'PHAP_KHI',
         icon: '🛶',
         description: 'Thuyền nhỏ bay trên không trung bằng linh thạch.',
@@ -561,7 +561,7 @@ export const ITEMS = {
         id: 'tran_ban_so',
         name: 'Trận Bàn Sơ Cấp',
         type: 'formationArtifact',
-        quality: 'Thường',
+        quality: 'Pháp Khí',
         tier: 'PHAP_KHI',
         icon: '🌀',
         description: 'Bàn xoay dùng để bố trí các trận pháp cơ bản.',
@@ -605,7 +605,7 @@ export const ITEMS = {
         name: 'Hạt Giống Linh Thảo Trung Cấp',
         type: 'seed',
         icon: '🌿',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 25,
         description: 'Hạt giống linh thảo cấp trung, cần thời gian gieo trồng lâu hơn.'
     },
@@ -614,7 +614,7 @@ export const ITEMS = {
         name: 'Hồi Huyết Đan',
         type: 'consumable',
         icon: '🧪',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 50,
         description: 'Thuốc cầm máu cơ bản, hồi phục 20% HP.',
         effect: { type: 'heal', value: 0.2 }
@@ -628,7 +628,7 @@ export const ITEMS = {
         grade: 'HA',
         attribute: 'NORMAL',
         icon: '💎',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 1,
         weight: 0.01,
         description: 'Linh thạch phổ thông nhất, dùng cho giao dịch và tu luyện sơ cấp.'
@@ -640,7 +640,7 @@ export const ITEMS = {
         grade: 'TRUNG',
         attribute: 'NORMAL',
         icon: '💠',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 100,
         weight: 0.02,
         description: 'Linh khí tinh thuần, 1 viên tương đương 100 Hạ Phẩm.'
@@ -652,7 +652,7 @@ export const ITEMS = {
         grade: 'THUONG',
         attribute: 'NORMAL',
         icon: '🔮',
-        quality: 'Thiên',
+        quality: 'Cổ Bảo',
         price: 10000,
         weight: 0.05,
         description: 'Linh lực đậm đặc, dùng trong các giao dịch đấu giá hoặc đột phá.'
@@ -676,7 +676,7 @@ export const ITEMS = {
         grade: 'HA', // Default to HA, can be changed via metadata
         attribute: 'FIRE',
         icon: '🔥',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 5,
         weight: 0.01,
         description: 'Chứa hỏa linh khí, phù hợp cho hỏa tu và luyện đan.'
@@ -688,7 +688,7 @@ export const ITEMS = {
         grade: 'HA',
         attribute: 'ICE',
         icon: '❄️',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 5,
         weight: 0.01,
         description: 'Tỏa ra hàn khí lạnh thấu xương, phù hợp cho băng tu.'
@@ -700,7 +700,7 @@ export const ITEMS = {
         grade: 'HA',
         attribute: 'LIGHTNING',
         icon: '⚡',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 8,
         weight: 0.01,
         description: 'Chứa lôi điện chi lực, cực kỳ bạo liệt.'
@@ -712,7 +712,7 @@ export const ITEMS = {
         grade: 'HA',
         attribute: 'WOOD',
         icon: '🌿',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 5,
         weight: 0.01,
         description: 'Chứa sinh mệnh tinh hoa, hỗ trợ hồi phục và trồng trọt.'
@@ -724,7 +724,7 @@ export const ITEMS = {
         grade: 'HA',
         attribute: 'DEMON',
         icon: '🌑',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 10,
         weight: 0.01,
         description: 'Chứa ma khí loãng, dùng cho ma tu hoặc các tà thuật.'
@@ -736,7 +736,7 @@ export const ITEMS = {
         grade: 'HA',
         attribute: 'METAL',
         icon: '📀',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 5,
         weight: 0.01,
         description: 'Chứa kim hệ linh khí, vô cùng sắc bén và kiên cố.'
@@ -748,7 +748,7 @@ export const ITEMS = {
         grade: 'HA',
         attribute: 'EARTH',
         icon: '🟤',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 5,
         weight: 0.01,
         description: 'Chứa thổ hệ linh khí, trầm ổn và dày nặng.'
@@ -794,7 +794,7 @@ export const ITEMS = {
         name: 'Phế Linh Thạch',
         type: 'material',
         icon: '🪨',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 0.1,
         weight: 0.01,
         description: 'Linh thạch đã bị hút cạn linh khí, chỉ còn là đá vụn.'
@@ -806,7 +806,7 @@ export const ITEMS = {
         name: 'Ma Tinh',
         type: 'consumable',
         icon: '🌑',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1000,
         description: 'Tinh thể ngưng tụ từ ma khí đậm đặc, dùng để tăng Ma Khí.',
         effect: { type: 'qi_absorb', qiType: 'ma_khi', amount: 500, purity: 'TINH_THUAN' }
@@ -816,7 +816,7 @@ export const ITEMS = {
         name: 'Tiên Ngọc',
         type: 'consumable',
         icon: '💎',
-        quality: 'Thiên',
+        quality: 'Cổ Bảo',
         price: 50000,
         description: 'Ngọc thạch từ Tiên Giới, chứa đựng Tiên Khí tinh thuần.',
         effect: { type: 'qi_absorb', qiType: 'tien_khi', amount: 1000, purity: 'CUC_PHAM' }
@@ -836,7 +836,7 @@ export const ITEMS = {
         name: 'Sinh Mệnh Thạch',
         type: 'consumable',
         icon: '🌱',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 15000,
         description: 'Đá quý chứa đựng sinh cơ dồi dào, giúp tăng Sinh Khí.',
         effect: { type: 'qi_absorb', qiType: 'sinh_khi', amount: 800, purity: 'TINH_THUAN' }
@@ -847,7 +847,7 @@ export const ITEMS = {
         id: 'phi_kiem_thanh_tuyen',
         name: 'Thanh Tuyền Kiếm',
         type: 'weapon',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         icon: '🗡️',
         description: 'Phi kiếm cấp thấp, tăng nhẹ công kích và tốc độ.',
         price: 800,
@@ -857,7 +857,7 @@ export const ITEMS = {
         id: 'bat_quai_kinh',
         name: 'Bát Quái Kính',
         type: 'treasure',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         icon: '🪞',
         description: 'Phòng ngự pháp bảo, tạo lớp chắn linh khí giảm sát thương.',
         price: 2500,
@@ -867,7 +867,7 @@ export const ITEMS = {
         id: 'u_minh_chuong',
         name: 'U Minh Chuông',
         type: 'treasure',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         icon: '🔔',
         description: 'Hồn hệ pháp bảo, tăng mạnh Thần Thức và kháng ảo cảnh.',
         price: 12000,
@@ -1018,7 +1018,7 @@ export const ITEMS = {
         name: 'Túi Trữ Vật (Trung)',
         type: 'bag',
         icon: '🎒',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 2500,
         description: 'Mở rộng thêm 20 ô chứa đồ.',
         stats: { slots: 20 }
@@ -1030,7 +1030,7 @@ export const ITEMS = {
         name: 'Tụ Linh Trận Đồ',
         type: 'formation',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 1000,
         description: 'Trận đồ cơ bản dùng để tụ tập linh khí xung quanh.'
     },
@@ -1039,14 +1039,14 @@ export const ITEMS = {
         name: 'Ảo Ảnh Trận Đồ',
         type: 'formation',
         icon: '🌫️',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 4500,
         description: 'Tạo huyễn cảnh che mắt đối thủ.'
     },
 
     // --- TALISMAN PAPERS (GIẤY PHÙ) ---
-    'hoang_chi_phu': { id: 'hoang_chi_phu', name: 'Hoàng Chỉ Phù', type: 'material', icon: '📜', quality: 'Phàm', price: 10, description: 'Giấy phù vàng cơ bản.' },
-    'chu_sa_muc': { id: 'chu_sa_muc', name: 'Chu Sa Mực', type: 'material', icon: '🩸', quality: 'Phàm', price: 20, description: 'Mực chu sa dùng để vẽ phù.' },
+    'hoang_chi_phu': { id: 'hoang_chi_phu', name: 'Hoàng Chỉ Phù', type: 'material', icon: '📜', quality: 'Phàm Khí', price: 10, description: 'Giấy phù vàng cơ bản.' },
+    'chu_sa_muc': { id: 'chu_sa_muc', name: 'Chu Sa Mực', type: 'material', icon: '🩸', quality: 'Phàm Khí', price: 20, description: 'Mực chu sa dùng để vẽ phù.' },
 
     // Khôi Lỗi
     'khoi_loi_item': {
@@ -1062,7 +1062,7 @@ export const ITEMS = {
         name: 'Linh Mộc Phù Chỉ',
         type: 'talisman_paper',
         icon: '🪵',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 50,
         description: 'Làm từ gỗ linh mộc, tăng độ ổn định khi vẽ phù.'
     },
@@ -1071,7 +1071,7 @@ export const ITEMS = {
         name: 'Yêu Thú Da Phù',
         type: 'talisman_paper',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 250,
         description: 'Làm từ da yêu thú, tăng uy lực cho phù công kích.'
     },
@@ -1082,7 +1082,7 @@ export const ITEMS = {
         name: 'Chu Sa Linh Mực',
         type: 'talisman_ink',
         icon: '🩸',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 20,
         description: 'Mực chu sa chứa linh lực loãng, dùng vẽ phù cơ bản.'
     },
@@ -1091,7 +1091,7 @@ export const ITEMS = {
         name: 'Yêu Huyết Mực',
         type: 'talisman_ink',
         icon: '🧪',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 150,
         description: 'Pha trộn từ máu yêu thú, tăng sát thương cho phù lục.'
     },
@@ -1102,7 +1102,7 @@ export const ITEMS = {
         name: 'Trúc Phù Bút',
         type: 'talisman_pen',
         icon: '🖌️',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 500,
         description: 'Bút vẽ phù làm từ linh trúc, tăng tỷ lệ thành công thêm 5%.',
         stats: { successRate: 0.05 }
@@ -1114,7 +1114,7 @@ export const ITEMS = {
         name: 'Hỏa Cầu Phù',
         type: 'talisman',
         icon: '🔥',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 100,
         description: 'Triệu hồi hỏa cầu tấn công, gây sát thương Hỏa.',
         effect: { type: 'damage', value: 200, element: 'fire' }
@@ -1124,7 +1124,7 @@ export const ITEMS = {
         name: 'Kim Cương Phù',
         type: 'talisman',
         icon: '🛡️',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 350,
         description: 'Tạo lớp bảo vệ cứng như kim cương, tăng 100 DEF trong 3 lượt.',
         effect: { type: 'buff', stat: 'def', value: 100, duration: 3 }
@@ -1134,7 +1134,7 @@ export const ITEMS = {
         name: 'Thần Hành Phù',
         type: 'talisman',
         icon: '👟',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 200,
         description: 'Tăng tốc độ di chuyển cực nhanh trong thời gian ngắn.',
         effect: { type: 'utility', speedBoost: 2.0, duration: 60 } // seconds
@@ -1144,7 +1144,7 @@ export const ITEMS = {
         name: 'Thuấn Di Phù',
         type: 'talisman',
         icon: '⚡',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 2000,
         description: 'Dịch chuyển tức thời thoát khỏi nguy hiểm.',
         effect: { type: 'escape' }
@@ -1156,7 +1156,7 @@ export const ITEMS = {
         name: 'Đan Đạo Chân Giải',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1000,
         effect: { type: 'unlock_profession', profession: 'alchemy', secretId: 'bp_luyen_dan' },
         description: 'Gia tăng vĩnh viễn tỉ lệ luyện đan thành công.'
@@ -1166,7 +1166,7 @@ export const ITEMS = {
         name: 'Trường Sinh Quyết',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1000,
         description: 'Bí tịch dưỡng sinh cổ xưa, tăng mạnh Thọ Nguyên.'
     },
@@ -1175,7 +1175,7 @@ export const ITEMS = {
         name: 'Huyết Độn Thuật',
         type: 'consumable',
         icon: '🩸',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1500,
         description: 'Ma đạo bí pháp, dùng tinh huyết để độn tẩu cực nhanh.'
     },
@@ -1184,7 +1184,7 @@ export const ITEMS = {
         name: 'Luyện Khí Tổng Cương',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1500,
         effect: { type: 'unlock_profession', profession: 'smithing', secretId: 'bp_luyen_khi' },
         description: 'Chứa đựng bí quyết tôi luyện kim thạch, rèn đúc thần binh pháp bảo.'
@@ -1194,7 +1194,7 @@ export const ITEMS = {
         name: 'Thái Thượng Phù Kinh',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1000,
         effect: { type: 'unlock_profession', profession: 'talisman', secretId: 'bp_phu_luc' },
         description: 'Hướng dẫn cách câu thông thiên địa linh lực vào phù văn để tạo ra phù lục.'
@@ -1204,7 +1204,7 @@ export const ITEMS = {
         name: 'Trận Đạo Thiên Thư',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 2000,
         effect: { type: 'unlock_profession', profession: 'formation', secretId: 'bp_tran_phap' },
         description: 'Kiến thức về trận đồ, mắt trận và cách bố trí linh thạch để trấn giữ hoặc công kích.'
@@ -1214,7 +1214,7 @@ export const ITEMS = {
         name: 'Vạn Thú Ngự Pháp',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1200,
         effect: { type: 'unlock_profession', profession: 'beast', secretId: 'bp_ngu_thu' },
         description: 'Bí quyết giao tiếp và ký kết khế ước với các loài linh thú.'
@@ -1224,7 +1224,7 @@ export const ITEMS = {
         name: 'Thiên Trùng Bí Lục',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1200,
         effect: { type: 'unlock_profession', profession: 'insect', secretId: 'bp_ngu_trung' },
         description: 'Cách nuôi dưỡng và điều khiển bầy trùng mang theo kịch độc hoặc năng lực đặc thù.'
@@ -1234,7 +1234,7 @@ export const ITEMS = {
         name: 'Cơ Quan Linh Kỹ',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 2500,
         effect: { type: 'unlock_profession', profession: 'puppet', secretId: 'bp_khoi_loi' },
         description: 'Kỹ thuật chế tác cơ quan và truyền linh hồn vào các vật vô tri để tạo ra khôi lỗi.'
@@ -1244,7 +1244,7 @@ export const ITEMS = {
         name: 'Cửu U Luyện Thi Thuật',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 3000,
         effect: { type: 'unlock_profession', profession: 'corpse', secretId: 'bp_luyen_thi' },
         description: 'Tà thuật luyện chế xác chết thành thi khôi, đao thương bất nhập.'
@@ -1256,7 +1256,7 @@ export const ITEMS = {
         name: 'Thiên Lôi Phù Quyển',
         type: 'talisman_recipe',
         icon: '⚡',
-        quality: 'Thiên',
+        quality: 'Cổ Bảo',
         price: 45000,
         description: 'Ghi chép cách vẽ Thiên Lôi Phù, uy lực kinh thiên động địa.'
     },
@@ -1267,7 +1267,7 @@ export const ITEMS = {
         name: 'Linh Thảo (10 năm)',
         type: 'material',
         icon: '🌿',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 80,
         description: 'Linh thảo đã có chút hỏa hầu, dược tính ổn định.'
     },
@@ -1276,7 +1276,7 @@ export const ITEMS = {
         name: 'Linh Thảo (100 năm)',
         type: 'material',
         icon: '🍃',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 500,
         description: 'Linh thảo trăm năm, chứa đựng linh khí đậm đặc.'
     },
@@ -1285,7 +1285,7 @@ export const ITEMS = {
         name: 'Linh Thảo (1000 năm)',
         type: 'material',
         icon: '🎋',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 5000,
         description: 'Linh thảo ngàn năm, hiếm có khó tìm, dùng luyện cao cấp đan dược.'
     },
@@ -1296,7 +1296,7 @@ export const ITEMS = {
         name: 'Yêu Đan Sơ Cấp',
         type: 'material',
         icon: '🟡',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 300,
         description: 'Nội đan của yêu thú cấp thấp, chứa tinh hoa yêu lực.'
     },
@@ -1305,7 +1305,7 @@ export const ITEMS = {
         name: 'Yêu Đan Trung Cấp',
         type: 'material',
         icon: '🟠',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1500,
         description: 'Nội đan của yêu thú trung cấp, chứa linh lực dồi dào.'
     },
@@ -1314,7 +1314,7 @@ export const ITEMS = {
         name: 'Ngưng Anh Đan',
         type: 'consumable',
         icon: '💎',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 50000,
         description: 'Đan dược hỗ trợ ngưng tụ Nguyên Anh, cực kỳ quý hiếm.',
         stats: { breakthroughRate: 0.25 }
@@ -1324,7 +1324,7 @@ export const ITEMS = {
         name: 'Yêu Thú Tinh Huyết',
         type: 'material',
         icon: '🩸',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 100,
         description: 'Máu tươi của yêu thú, dùng trong luyện thể hoặc luyện đan.'
     },
@@ -1335,7 +1335,7 @@ export const ITEMS = {
         name: 'Linh Thảo (Vạn năm)',
         type: 'material',
         icon: '🌺',
-        quality: 'Thiên',
+        quality: 'Cổ Bảo',
         price: 50000,
         description: 'Linh thảo sinh trưởng vạn năm, đã thông linh tính, có thể luyện chế Tiên đan.'
     },
@@ -1344,7 +1344,7 @@ export const ITEMS = {
         name: 'Huyền Thiết',
         type: 'material',
         icon: '⬛',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 800,
         description: 'Sắt đen cực nặng và cứng, dùng để rèn vũ khí hạng nặng.'
     },
@@ -1353,7 +1353,7 @@ export const ITEMS = {
         name: 'Tinh Kim',
         type: 'material',
         icon: '✨',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 3000,
         description: 'Vàng tinh khiết chứa linh lực, dẫn linh cực tốt.'
     },
@@ -1362,7 +1362,7 @@ export const ITEMS = {
         name: 'Thiên Ngoại Vẫn Thiết',
         type: 'material',
         icon: '☄️',
-        quality: 'Thiên',
+        quality: 'Cổ Bảo',
         price: 25000,
         description: 'Mảnh vỡ thiên thạch từ ngoài không gian, chứa sức mạnh tinh thần.'
     },
@@ -1371,7 +1371,7 @@ export const ITEMS = {
         name: 'Yêu Thú Cốt',
         type: 'material',
         icon: '🦴',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 150,
         description: 'Xương của yêu thú, dùng làm nguyên liệu chế tác hoặc luyện thi.'
     },
@@ -1380,7 +1380,7 @@ export const ITEMS = {
         name: 'Da Lân Giáp',
         type: 'material',
         icon: '🛡️',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1200,
         description: 'Lớp da hoặc vảy của yêu thú phòng ngự cao.'
     },
@@ -1389,7 +1389,7 @@ export const ITEMS = {
         name: 'Long Huyết Tinh',
         type: 'material',
         icon: '🩸',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 10000,
         description: 'Tinh hoa máu rồng ngưng kết, chứa sức mạnh huyết mạch kinh người.'
     },
@@ -1398,7 +1398,7 @@ export const ITEMS = {
         name: 'Tiên Tinh',
         type: 'material',
         icon: '💎',
-        quality: 'Thiên',
+        quality: 'Cổ Bảo',
         price: 100000,
         description: 'Tinh thể kết tinh từ Tiên khí, chỉ có ở những nơi tiên phàm giao giới.'
     },
@@ -1417,7 +1417,7 @@ export const ITEMS = {
         name: 'Hỏa Tinh Thạch',
         type: 'material',
         icon: '🔥',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1200,
         description: 'Khoáng thạch chứa hỏa tính cực mạnh.'
     },
@@ -1426,7 +1426,7 @@ export const ITEMS = {
         name: 'Hàn Ngọc Tủy',
         type: 'material',
         icon: '❄️',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 8500,
         description: 'Tinh túy từ hàn ngọc vạn năm, lạnh thấu xương.'
     },
@@ -1437,7 +1437,7 @@ export const ITEMS = {
         name: 'Phàm Lư',
         type: 'consumable',
         icon: '🏺',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 100,
         description: 'Đan lư cơ bản cho người mới học luyện đan.',
         effect: { type: 'equip_cauldron', value: 'pham_lu' }
@@ -1447,7 +1447,7 @@ export const ITEMS = {
         name: 'Mồi Lửa: Linh Hỏa',
         type: 'consumable',
         icon: '🔥',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 50,
         description: 'Linh hỏa cấp thấp, đủ để luyện chế đan dược phàm phẩm.',
         effect: { type: 'refine_flame', value: 'linh_hoa' }
@@ -1457,7 +1457,7 @@ export const ITEMS = {
         name: 'Huyền Thiết Trọng Lư',
         type: 'cauldron',
         icon: '🏺',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Đan lư đúc từ huyền thiết, giúp ổn định hỏa lực.'
     },
@@ -1466,7 +1466,7 @@ export const ITEMS = {
         name: 'Thanh Liên Địa Tâm Hỏa (Chủng)',
         type: 'flame',
         icon: '🔥',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 50000,
         description: 'Hỏa chủng của Thanh Liên Địa Tâm Hỏa, có thể luyện hóa thành linh hỏa.'
     },
@@ -1477,7 +1477,7 @@ export const ITEMS = {
         name: 'Trường Sinh Quyết',
         type: 'technique',
         icon: '📖',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 500,
         description: 'Công pháp cơ bản giúp gia tăng thọ nguyên và thể chất.'
     },
@@ -1486,7 +1486,7 @@ export const ITEMS = {
         name: 'Thiên Lôi Kiếm Quyết',
         type: 'technique',
         icon: '⚡',
-        quality: 'Thiên',
+        quality: 'Cổ Bảo',
         price: 50000,
         description: 'Kiếm quyết cấp cao mượn lực thiên lôi, uy lực vô song.'
     },
@@ -1497,7 +1497,7 @@ export const ITEMS = {
         name: 'Huyền Thiết',
         type: 'material',
         icon: '🧱',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 200,
         description: 'Quặng sắt nặng chứa linh khí, nguyên liệu cơ bản luyện khí.'
     },
@@ -1506,7 +1506,7 @@ export const ITEMS = {
         name: 'Tinh Kim',
         type: 'material',
         icon: '✨',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 1500,
         description: 'Kim loại tinh khiết, dẫn linh lực cực tốt.'
     },
@@ -1515,7 +1515,7 @@ export const ITEMS = {
         name: 'Thái Dương Thần Kim',
         type: 'material',
         icon: '🌞',
-        quality: 'Thiên',
+        quality: 'Cổ Bảo',
         price: 150000,
         description: 'Vật liệu chí dương, sinh ra từ lõi mặt trời.'
     },
@@ -1526,7 +1526,7 @@ export const ITEMS = {
         name: 'Lôi Kích Mộc',
         type: 'material',
         icon: '🪵',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 12000,
         description: 'Gỗ cây linh thụ bị sét đánh mà không chết, chứa lôi đình chi lực.'
     },
@@ -1537,7 +1537,7 @@ export const ITEMS = {
         name: 'Đế Khí Đài',
         type: 'smithing_tool',
         icon: '⚒️',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 200,
         description: 'Bệ rèn thô sơ cho người mới học luyện khí.'
     },
@@ -1546,7 +1546,7 @@ export const ITEMS = {
         name: 'Luyện Khí Đài',
         type: 'smithing_tool',
         icon: '⚒️',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 3000,
         description: 'Bệ rèn linh văn chuyên dụng cho luyện khí sư.'
     },
@@ -1557,7 +1557,7 @@ export const ITEMS = {
         name: 'Tinh Hà Phi Kiếm',
         type: 'weapon',
         icon: '🗡️',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 15000,
         description: 'Kiếm mang ánh sáng tinh hà, sát thương cực lớn.',
         stats: { atk: 150, critical: 0.15 }
@@ -1567,7 +1567,7 @@ export const ITEMS = {
         name: 'Long Lân Giáp',
         type: 'armor',
         icon: '🛡️',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 85000,
         description: 'Giáp làm từ vảy giao long, phòng ngự kinh người.',
         stats: { def: 450, resistance: 0.3 }
@@ -1579,7 +1579,7 @@ export const ITEMS = {
         name: 'Trứng Thanh Vân Hạc',
         type: 'beast_egg',
         icon: '🥚',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 2000,
         description: 'Một quả trứng hạc tỏa ra linh khí thanh khiết.',
         beastId: 'thanh_van_hac',
@@ -1590,7 +1590,7 @@ export const ITEMS = {
         name: 'Trứng Xích Diễm Lang',
         type: 'beast_egg',
         icon: '🔥',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 3500,
         description: 'Trứng sói lửa, sờ vào thấy ấm nóng.',
         beastId: 'xich_diem_lang',
@@ -1601,7 +1601,7 @@ export const ITEMS = {
         name: 'Kén Kim Tàm',
         type: 'beast_egg',
         icon: '🧶',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Kén của Kim Tàm, đang chờ đợi ngày phá kén.',
         beastId: 'kim_tam',
@@ -1612,7 +1612,7 @@ export const ITEMS = {
         name: 'Linh Thú Đan',
         type: 'beast_food',
         icon: '💊',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 100,
         description: 'Đan dược bồi bổ cho linh thú, tăng kinh nghiệm và độ thân mật.',
         expGain: 100,
@@ -1623,7 +1623,7 @@ export const ITEMS = {
         name: 'Yêu Nhục Tươi',
         type: 'beast_food',
         icon: '🥩',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         price: 50,
         description: 'Thịt yêu thú tươi sống, linh thú rất thích ăn.',
         expGain: 50,
@@ -1634,7 +1634,7 @@ export const ITEMS = {
         name: 'Vạn Thú Lệnh',
         type: 'treasure',
         icon: '📜',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 50000,
         description: 'Lệnh bài cổ xưa giúp tăng khả năng thuần phục yêu thú.',
         stats: { tamingBonus: 0.2 }
@@ -1646,7 +1646,7 @@ export const ITEMS = {
         name: '« Đan Đạo Chân Giải »',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Ghi chép tinh túy của đan đạo, dùng để mở khóa nghề Luyện Đan.',
         effect: { type: 'unlock_profession', profession: 'alchemy' }
@@ -1656,7 +1656,7 @@ export const ITEMS = {
         name: '« Thiên Phù Bí Lục »',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Chứa đựng bí mật của phù văn, dùng để mở khóa nghề Phù Lục.',
         effect: { type: 'unlock_profession', profession: 'talisman' }
@@ -1666,7 +1666,7 @@ export const ITEMS = {
         name: '« Luyện Khí Tổng Cương »',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Bí tịch rèn đúc pháp bảo, dùng để mở khóa nghề Luyện Khí.',
         effect: { type: 'unlock_profession', profession: 'smithing' }
@@ -1676,7 +1676,7 @@ export const ITEMS = {
         name: '« Trận Đạo Diễn Nghĩa »',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Giải mã các trận pháp cổ đại, dùng để mở khóa nghề Trận Pháp.',
         effect: { type: 'unlock_profession', profession: 'formation' }
@@ -1686,7 +1686,7 @@ export const ITEMS = {
         name: '« Khôi Lỗi Chân Kinh »',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Bí thuật điều khiển rối, dùng để mở khóa nghề Khôi Lỗi.',
         effect: { type: 'unlock_profession', profession: 'puppet' }
@@ -1696,7 +1696,7 @@ export const ITEMS = {
         name: '« Thi Đạo Quyển Thứ »',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Tà thuật luyện chế xác chết, dùng để mở khóa nghề Luyện Thi.',
         effect: { type: 'unlock_profession', profession: 'corpse' }
@@ -1706,7 +1706,7 @@ export const ITEMS = {
         name: '« Ngự Thú Tâm Pháp »',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Tâm pháp dẫn dắt linh thú, dùng để mở khóa nghề Ngự Thú.',
         effect: { type: 'unlock_profession', profession: 'beast' }
@@ -1716,7 +1716,7 @@ export const ITEMS = {
         name: '« Vạn Trùng Bí Truyền »',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Kỹ thuật nuôi dưỡng kỳ trùng, dùng để mở khóa nghề Khu Trùng.',
         effect: { type: 'unlock_profession', profession: 'insect' }
@@ -1727,7 +1727,7 @@ export const ITEMS = {
         name: 'Sách: Trường Xuân Nạp Khí Quyết',
         type: 'book',
         icon: '📘',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 300,
         techniqueId: 'truong_xuan_nap_khi_quyet',
         description: 'Bản sao chép công pháp nhập môn phổ thông được lưu truyền rộng rãi trong Nhân Giới.'
@@ -1737,7 +1737,7 @@ export const ITEMS = {
         name: 'Sách: Liệt Dương Công',
         type: 'book',
         icon: '📙',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 800,
         techniqueId: 'liet_duong_cong',
         description: 'Ghi chép phương pháp hấp thu Hỏa linh khí.'
@@ -1747,7 +1747,7 @@ export const ITEMS = {
         name: 'Sách: Hàn Thủy Quyết',
         type: 'book',
         icon: '📗',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 800,
         techniqueId: 'han_thuy_quyet',
         description: 'Ghi chép phương pháp hấp thu Thủy linh khí.'
@@ -1757,7 +1757,7 @@ export const ITEMS = {
         name: 'Sách: Thanh Mộc Tâm Kinh',
         type: 'book',
         icon: '📒',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 800,
         techniqueId: 'thanh_moc_tam_kinh',
         description: 'Ghi chép phương pháp hấp thu Mộc linh khí.'
@@ -1767,7 +1767,7 @@ export const ITEMS = {
         name: 'Sách: Canh Kim Quyết',
         type: 'book',
         icon: '📖',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 800,
         techniqueId: 'canh_kim_quyet',
         description: 'Ghi chép phương pháp hấp thu Kim linh khí.'
@@ -1777,7 +1777,7 @@ export const ITEMS = {
         name: 'Sách: Hậu Thổ Công',
         type: 'book',
         icon: '📜',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 800,
         techniqueId: 'hau_tho_cong',
         description: 'Ghi chép phương pháp hấp thu Thổ linh khí.'
@@ -1787,7 +1787,7 @@ export const ITEMS = {
         name: 'Sách: Man Ngưu Kình',
         type: 'book',
         icon: '🐂',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 1500,
         techniqueId: 'man_nguu_kinh',
         description: 'Bí pháp Luyện Thể sơ cấp, rèn luyện cơ bắp.'
@@ -1797,7 +1797,7 @@ export const ITEMS = {
         name: 'Sách: Dưỡng Thần Quyết',
         type: 'book',
         icon: '🧠',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 2000,
         techniqueId: 'duong_than_quyet',
         description: 'Bí pháp Thần Thức sơ cấp, rèn luyện linh hồn.'
@@ -1807,7 +1807,7 @@ export const ITEMS = {
         name: 'Sách: Cửu Chuyển Kim Thân',
         type: 'book',
         icon: '🔱',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 12000,
         techniqueId: 'cuu_chuyen_kim_than',
         description: 'Bí pháp Luyện Thể trung cấp cực kỳ quý hiếm.'
@@ -1817,7 +1817,7 @@ export const ITEMS = {
         name: 'Sách: U Minh Huy Ngạn',
         type: 'book',
         icon: '💀',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 15000,
         techniqueId: 'u_minh_huy_ngan',
         description: 'Bí pháp Thần Thức trung cấp, tu luyện linh hồn.'
@@ -1827,7 +1827,7 @@ export const ITEMS = {
         name: 'Đan Phương: Thanh Tâm Đan',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 2500,
         description: 'Ghi chép cách luyện chế Thanh Tâm Đan.',
         effect: { type: 'learn_recipe', value: 'than_tam_dan' }
@@ -1837,7 +1837,7 @@ export const ITEMS = {
         name: 'Đan Phương: Trúc Cơ Đan',
         type: 'consumable',
         icon: '📜',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 15000,
         description: 'Ghi chép cách luyện chế Trúc Cơ Đan cực kỳ quý giá.',
         effect: { type: 'learn_recipe', value: 'truc_co_dan' }
@@ -1847,7 +1847,7 @@ export const ITEMS = {
         name: 'Bản Vẽ: Tinh Hà Phi Kiếm',
         type: 'consumable',
         icon: '📜',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         price: 8000,
         description: 'Ghi chép phương pháp rèn Tinh Hà Phi Kiếm.',
         effect: { type: 'learn_smithing_recipe', value: 'phi_kiem_tinh_ha' }
@@ -1857,7 +1857,7 @@ export const ITEMS = {
         name: 'Bản Vẽ: Long Lân Giáp',
         type: 'consumable',
         icon: '📜',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 25000,
         description: 'Bản vẽ rèn Long Lân Giáp phòng ngự kinh người.',
         effect: { type: 'learn_smithing_recipe', value: 'long_lan_giap' }
@@ -1867,7 +1867,7 @@ export const ITEMS = {
         name: 'Huyền Thiết Lư',
         type: 'cauldron',
         icon: '🏺',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         price: 5000,
         description: 'Đan lư rèn từ huyền thiết, dẫn hỏa ổn định.',
         stats: { alchemyBonus: 0.1 }
@@ -1877,7 +1877,7 @@ export const ITEMS = {
         name: 'Địa Long Phần Thiên Lư',
         type: 'cauldron',
         icon: '🏺',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 35000,
         description: 'Chứa đựng tinh hoa chi lực của địa long, khống hỏa cực tốt.'
     },
@@ -1886,7 +1886,7 @@ export const ITEMS = {
         name: 'Thiên Cực Thái Hư Lư',
         type: 'cauldron',
         icon: '🏺',
-        quality: 'Thiên',
+        quality: 'Cổ Bảo',
         price: 150000,
         description: 'Lò luyện đỉnh cấp, ổn định hỏa lực đến mức hoàn mỹ.'
     },
@@ -1895,7 +1895,7 @@ export const ITEMS = {
         name: 'Vẫn Lạc Tâm Viêm (Chủng)',
         type: 'consumable',
         icon: '🔥',
-        quality: 'Địa',
+        quality: 'Pháp Bảo',
         price: 120000,
         description: 'Hỏa chủng của Vẫn Lạc Tâm Viêm, tăng mạnh hiệu suất luyện đan.',
         effect: { type: 'refine_flame', value: 'van_lac_tam_viem' }
@@ -1905,7 +1905,7 @@ export const ITEMS = {
         name: 'Tịnh Liên Yêu Hỏa (Chủng)',
         type: 'consumable',
         icon: '🔥',
-        quality: 'Thiên',
+        quality: 'Cổ Bảo',
         price: 800000,
         description: 'Yêu hỏa thần bí có khả năng tịnh hóa vạn vật.',
         effect: { type: 'refine_flame', value: 'tinh_lien_yeu_hoa' }
@@ -1915,7 +1915,7 @@ export const ITEMS = {
         id: 'recipe_ngung_khi',
         name: 'Đan Phương Ngưng Khí Đan',
         type: 'recipe',
-        quality: 'Phàm',
+        quality: 'Phàm Khí',
         icon: '📜',
         description: 'Ghi chép cách luyện chế Ngưng Khí Đan.',
         price: 200,
@@ -1925,7 +1925,7 @@ export const ITEMS = {
         id: 'recipe_than_tam',
         name: 'Đan Phương Thanh Tâm Đan',
         type: 'recipe',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         icon: '📜',
         description: 'Ghi chép cách luyện chế Thanh Tâm Đan.',
         price: 500,
@@ -1935,7 +1935,7 @@ export const ITEMS = {
         id: 'recipe_truc_co',
         name: 'Đan Phương Trúc Cơ Đan',
         type: 'recipe',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         icon: '📜',
         description: 'Ghi chép cách luyện chế Trúc Cơ Đan cực kỳ quý giá.',
         price: 2000,
@@ -1945,7 +1945,7 @@ export const ITEMS = {
         id: 'recipe_phi_kiem_tinh_ha',
         name: 'Bản Vẽ Tinh Hà Phi Kiếm',
         type: 'recipe',
-        quality: 'Hoàng',
+        quality: 'Pháp Khí',
         icon: '⚒️',
         description: 'Bản vẽ rèn đúc Tinh Hà Phi Kiếm.',
         price: 800,
@@ -1955,7 +1955,7 @@ export const ITEMS = {
         id: 'recipe_long_lan_giap',
         name: 'Bản Vẽ Long Lân Giáp',
         type: 'recipe',
-        quality: 'Huyền',
+        quality: 'Linh Khí',
         icon: '⚒️',
         description: 'Bản vẽ rèn đúc Long Lân Giáp.',
         price: 2500,

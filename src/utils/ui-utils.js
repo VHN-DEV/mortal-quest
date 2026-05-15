@@ -6,8 +6,12 @@ import { getItemById } from '../configs/item-data.js';
  * @returns {string}
  */
 export function getQualityClass(quality) {
-    const map = {
+    const map = { 
         'Phàm': 'pham', 'Hoàng': 'hoang', 'Huyền': 'huyen', 'Địa': 'dia', 'Thiên': 'thien', 'Tiên': 'tien', 'Thần': 'than',
+        // New tiers
+        'Phàm Khí': 'pham-khi', 'Pháp Khí': 'phap-khi', 'Linh Khí': 'linh-khi', 'Pháp Bảo': 'phap-bao', 'Cổ Bảo': 'co-bao', 'Linh Bảo': 'linh-bao', 'Thông Thiên Linh Bảo': 'thong-thien', 'Tiên Khí': 'tien-khi',
+        // Qualities
+        'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien',
         'Tàn Khuyết': 'pham', 'Thường': 'hoang', 'Tinh Phẩm': 'huyen', 'Hoàn Mỹ': 'dia', 'Cực Phẩm': 'thien', 'Truyền Thuyết': 'tien', 'Thần Thoại': 'than',
         'Danh Khí': 'than', 'Danh Bảo': 'than'
     };
