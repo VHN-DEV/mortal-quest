@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-omzBwd23.js"></script>
+  <script type="module" crossorigin src="./assets/index-DPqEJmZv.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-3tRsa3FQ.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-DuEshqm6.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -879,9 +879,15 @@
                                         class="text-gray-500 font-ancient">Ngộ Tính:</span> <span
                                         id="char-comprehension" class="text-cultivation-gold text-[10px]">10</span>
                                 </div>
-                                <div class="flex justify-between pt-2 border-t border-white/5"><span
-                                        class="text-gray-500 font-ancient">Tuổi Thọ:</span> <span id="char-age"
-                                        class="text-cultivation-gold">18 / 100</span></div>
+                                <div class="pt-2 border-t border-white/5">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-500 font-ancient">Tuổi Thọ:</span>
+                                        <div class="flex items-center space-x-1 whitespace-nowrap">
+                                            <span id="char-age" class="text-white font-bold text-[10px]">18 / 100</span>
+                                            <span id="char-remaining-age-container"></span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="bg-white/5 p-4 rounded-xl border border-white/10 flex-grow space-y-3">
@@ -908,13 +914,27 @@
                             <div>
                                 <h3 class="text-[10px] font-ancient text-qi-blue mb-1 uppercase tracking-widest">Thiên
                                     Mệnh Chi Tử</h3>
-                                <div id="char-destiny-info" class="space-y-1">
-                                    <div class="text-[10px]"><span class="text-gray-400">Căn:</span> <span
-                                            id="char-root" class="font-bold"></span></div>
-                                    <div class="text-[10px]"><span class="text-gray-400">Thể:</span> <span
-                                            id="char-physique" class="font-bold text-qi-purple"></span></div>
-                                    <div class="text-[10px]"><span class="text-gray-400">Vận:</span> <span
-                                            id="char-luck" class="font-mono"></span></div>
+                                <div id="char-destiny-info" class="space-y-1.5">
+                                    <div class="flex justify-between items-center text-[10px] whitespace-nowrap">
+                                        <span class="text-gray-400">Danh Hiệu:</span>
+                                        <span id="char-title" class="text-cultivation-gold font-bold text-right ml-2">Vô Danh</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[10px] whitespace-nowrap">
+                                        <span class="text-gray-400">Mệnh Cách:</span>
+                                        <span id="char-destiny-rating" class="text-white font-bold italic text-right ml-2">Phàm mệnh</span>
+                                    </div>
+                                    <div class="flex justify-between items-start text-[10px] whitespace-nowrap">
+                                        <span class="text-gray-400">Linh Căn:</span>
+                                        <div id="char-root" class="font-bold text-right ml-2"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[10px] whitespace-nowrap">
+                                        <span class="text-gray-400">Thể Chất:</span>
+                                        <span id="char-physique" class="font-bold text-qi-purple text-right ml-2"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[10px] whitespace-nowrap">
+                                        <span class="text-gray-400">Cơ Duyên:</span>
+                                        <span id="char-luck" class="font-mono text-right ml-2"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

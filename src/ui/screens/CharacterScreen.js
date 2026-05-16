@@ -21,6 +21,7 @@ export class CharacterScreen {
         this.elCharSpd = document.getElementById('char-spd');
         this.elCharMana = document.getElementById('char-mana');
         this.elCharAge = document.getElementById('char-age');
+        this.elCharRemainingAge = document.getElementById('char-remaining-age-container');
         this.elCharStability = document.getElementById('char-stability');
         this.elCharComprehension = document.getElementById('char-comprehension');
         
@@ -43,6 +44,8 @@ export class CharacterScreen {
         this.elCharSectInfo = document.getElementById('char-sect-info');
         this.elCharRace = document.getElementById('char-race');
         this.elCharGender = document.getElementById('char-gender');
+        this.elCharTitle = document.getElementById('char-title');
+        this.elCharDestinyRating = document.getElementById('char-destiny-rating');
         this.elRoot = document.getElementById('char-root');
         this.elPhysique = document.getElementById('char-physique');
         this.elLuck = document.getElementById('char-luck');
@@ -75,36 +78,50 @@ export class CharacterScreen {
         if (!state.player) return;
 
         // Render basic stats
-        // Render basic stats with Base (+ Bonus) format
-        if (this.elCharHp) this.elCharHp.textContent = `${Math.floor(state.player.hp)} / ${Math.floor(state.player.maxHp)}`;
+        // Render basic stats with safety checks for NaN
+        if (this.elCharHp) {
+            const hp = state.player.hp || 0;
+            const maxHp = state.player.maxHp || 100;
+            this.elCharHp.textContent = `${Math.floor(hp)} / ${Math.floor(maxHp)}`;
+        }
         
         if (this.elCharAtk) {
-            const base = Math.floor(state.player.baseStats.atk);
-            const bonus = Math.floor(state.player.bonusStats.atk);
+            const base = Math.floor(state.player.baseStats.atk || 0);
+            const bonus = Math.floor(state.player.bonusStats.atk || 0);
             this.elCharAtk.innerHTML = `${base} <span class="text-[8px] opacity-60 ml-1">(+${bonus})</span>`;
         }
         
         if (this.elCharDef) {
-            const base = Math.floor(state.player.baseStats.def);
-            const bonus = Math.floor(state.player.bonusStats.def);
+            const base = Math.floor(state.player.baseStats.def || 0);
+            const bonus = Math.floor(state.player.bonusStats.def || 0);
             this.elCharDef.innerHTML = `${base} <span class="text-[8px] opacity-60 ml-1">(+${bonus})</span>`;
         }
         
         if (this.elCharSpd) {
-            const base = Math.floor(state.player.baseStats.spd);
-            const bonus = Math.floor(state.player.bonusStats.spd);
+            const base = Math.floor(state.player.baseStats.spd || 0);
+            const bonus = Math.floor(state.player.bonusStats.spd || 0);
             this.elCharSpd.innerHTML = `${base} <span class="text-[8px] opacity-60 ml-1">(+${bonus})</span>`;
         }
 
-        if (this.elCharMana) this.elCharMana.textContent = `${Math.floor(state.player.mana)} / ${Math.floor(state.player.maxMana)}`;
+        if (this.elCharMana) {
+            const mana = state.player.mana || 0;
+            const maxMana = state.player.maxMana || 50;
+            this.elCharMana.textContent = `${Math.floor(mana)} / ${Math.floor(maxMana)}`;
+        }
+
+        // Render Age & Lifespan combined
+        const playerAge = state.player.age || 0;
+        const maxAge = state.player.maxAge || 100;
+        const remaining = maxAge - Math.floor(playerAge);
+        
         if (this.elCharAge) {
-            const remaining = state.player.maxAge - Math.floor(state.player.age);
-            const colorClass = remaining < 10 ? 'text-red-500 animate-pulse' : (remaining < 50 ? 'text-cultivation-gold' : 'text-gray-500');
-            this.elCharAge.innerHTML = `
-                <div class="flex items-center space-x-2">
-                    <span>${Math.floor(state.player.age)} / ${state.player.maxAge}</span>
-                    <span class="text-[9px] ${colorClass} font-bold px-1.5 py-0.5 rounded bg-white/5 border border-white/5">Còn ${remaining} năm</span>
-                </div>
+            this.elCharAge.textContent = `${Math.floor(playerAge)} / ${maxAge}`;
+        }
+        
+        if (this.elCharRemainingAge) {
+            const colorClass = remaining < 10 ? 'text-red-500 animate-pulse' : (remaining < 50 ? 'text-cultivation-gold' : 'text-gray-400');
+            this.elCharRemainingAge.innerHTML = `
+                <span class="text-[8px] ${colorClass} opacity-80">(Còn ${remaining} năm)</span>
             `;
         }
 
@@ -141,6 +158,15 @@ export class CharacterScreen {
         if (this.elCharGender) {
             this.elCharGender.textContent = state.player.gender || "Nam";
         }
+        
+        if (this.elCharTitle) {
+            this.elCharTitle.textContent = state.player.fate?.activeTitleId || "Vô Danh";
+            // If you have a TITLE_DATA mapping, you could use that for names
+        }
+        
+        if (this.elCharDestinyRating) {
+            this.elCharDestinyRating.textContent = state.player.destinyRating || "Phàm mệnh";
+        }
 
         // Breakthrough Buttons
         document.querySelectorAll('.btn-bt-type').forEach(btn => {
@@ -171,9 +197,9 @@ export class CharacterScreen {
             const root = state.player.spiritualRoot;
             const rarityName = root.rarityName || 'Phàm';
             this.elRoot.innerHTML = `
-                <div class="flex flex-col items-end">
+                <div class="flex flex-col items-end leading-tight">
                     <span style="color: ${root.color}">${rarityName} ${root.type}</span>
-                    <span class="text-[8px] opacity-60">Tinh khiết: ${root.purity}%</span>
+                    <span class="text-[7px] opacity-50 font-normal">Tinh khiết: ${root.purity}%</span>
                 </div>
             `;
         }

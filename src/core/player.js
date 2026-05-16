@@ -1133,33 +1133,6 @@ export class Player {
         });
     }
 
-    calculateStats() {
-        const base = RACE_DATA[this.race] || RACE_DATA['Nhân'];
-        const realm = getRealmById(this.realmId);
-        
-        // Base stats from race + realm
-        this.maxHp = base.hp + (realm ? realm.hpBonus : 0) + (this.bonusStats.hp || 0);
-        this.maxMp = base.mp + (realm ? realm.mpBonus : 0) + (this.bonusStats.mp || 0);
-        this.atk = base.atk + (realm ? realm.atkBonus : 0) + (this.bonusStats.atk || 0);
-        this.def = base.def + (realm ? realm.defBonus : 0) + (this.bonusStats.def || 0);
-        this.spd = base.spd + (realm ? realm.spdBonus : 0) + (this.bonusStats.spd || 0);
-        
-        // Calculate Max Age
-        this.maxAge = base.baseLifespan + (this.realmId * 50) + (this.bonusStats.maxAge || 0);
-    }
-
-    triggerSeclusionEvent() {
-        const events = [
-            { name: 'Lĩnh Ngộ Cơ Duyên', msg: 'Trong lúc nhập định, ngươi bỗng nhiên lĩnh ngộ được một tia thiên địa quy tắc.', effect: () => this.comprehension += 1 },
-            { name: 'Tâm Ma Xâm Nhập', msg: 'Tâm ma xuất hiện quấy nhiễu, đạo tâm của ngươi bị rung động mạnh mẽ.', effect: () => this.karma -= 10 },
-            { name: 'Khí Huyết Nghịch Chuyển', msg: 'Linh lực vận hành sai lệch, kinh mạch bị tổn thương nhẹ.', effect: () => this.hp -= 100 },
-            { name: 'Đột Phá Bình Cảnh', msg: 'Cảm giác bình cảnh có chút lỏng lẻo, khả năng đột phá tăng lên.', effect: () => this.bonusStats.breakthroughRate = (this.bonusStats.breakthroughRate || 0) + 0.05 }
-        ];
-
-        const event = events[Math.floor(Math.random() * events.length)];
-        event.effect();
-        logger.info('player', `Seclusion Event: ${event.name} - ${event.msg}`);
-    }
 
     applyTechniqueToStats(path, techId) {
         if (!techId) return;
@@ -1557,14 +1530,6 @@ export class Player {
         return { success: false, msg: "Không có hiệu ứng nào xảy ra..." };
     }
 
-    removeFromParty(npcId) {
-        const index = this.party.findIndex(npc => npc.id === npcId);
-        if (index > -1) {
-            this.party.splice(index, 1);
-            return true;
-        }
-        return false;
-    }
 
     // Technique Methods
     learnTechnique(techId, qualityId = 'BINH_THUONG') {
