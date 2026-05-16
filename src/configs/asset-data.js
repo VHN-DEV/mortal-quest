@@ -141,6 +141,10 @@ export const ASSETS = {
     items: createAssetProxy({
         spirit_stone: getAssetUrl('items/spirit_stone'),
         healing_pill: getAssetUrl('items/healing_pill'),
+        cu_pham_linh_thach: getAssetUrl('items/cu_pham_linh_thach'),
+        ha_pham_linh_thach: getAssetUrl('items/ha_pham_linh_thach'),
+        trung_pham_linh_thach: getAssetUrl('items/trung_pham_linh_thach'),
+        thuong_pham_linh_thach: getAssetUrl('items/thuong_pham_linh_thach'),
     }, 'items', 'spirit_stone'),
 
     // Logos
