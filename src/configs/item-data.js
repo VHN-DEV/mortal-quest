@@ -2306,6 +2306,69 @@ export const ITEMS = {
         price: 500000,
         techniqueId: 'phong_loi_quyet'
     },
+    'trung_thien_phong_ngan_uynh': {
+        id: 'trung_thien_phong_ngan_uynh',
+        name: 'Trứng Thiên Phong Ngân Uynh',
+        type: 'consumable',
+        icon: '🦗',
+        quality: 'Pháp Bảo',
+        price: 25000,
+        description: 'Trứng của Thiên Phong Ngân Uynh, loại kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.'
+    },
+    'linh_thu_dai_so': {
+        id: 'linh_thu_dai_so',
+        name: 'Linh Thú Đại (Sơ)',
+        type: 'artifact',
+        icon: '👜',
+        quality: 'Pháp Khí',
+        price: 500,
+        description: 'Túi chuyên dụng để chứa linh thú và kỳ trùng sơ cấp. Có thể chứa tối đa 3 con.'
+    },
+    'linh_thu_dai_trung': {
+        id: 'linh_thu_dai_trung',
+        name: 'Linh Thú Đại (Trung)',
+        type: 'artifact',
+        icon: '👜',
+        quality: 'Linh Khí',
+        price: 2500,
+        description: 'Túi chứa linh thú trung cấp, được gia trì không gian trận pháp. Có thể chứa tối đa 10 con.'
+    },
+    'linh_thu_dai_cao': {
+        id: 'linh_thu_dai_cao',
+        name: 'Linh Thú Đại (Cao)',
+        type: 'artifact',
+        icon: '👜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        description: 'Túi chứa linh thú cao cấp, bên trong có linh khí nồng đậm giúp linh thú phát triển. Có thể chứa tối đa 50 con.'
+    },
+    'trung_phe_kim_trung': {
+        id: 'trung_phe_kim_trung',
+        name: 'Trứng Phệ Kim Trùng',
+        type: 'consumable',
+        icon: '🥚',
+        quality: 'Linh Bảo',
+        price: 100000,
+        description: 'Trứng của loài kỳ trùng đứng đầu bảng xếp hạng. Cực kỳ hiếm thấy và khó ấp nở.'
+    },
+    'trung_huyet_ngoc_tri_chu': {
+        id: 'trung_huyet_ngoc_tri_chu',
+        name: 'Trứng Huyết Ngọc Tri Chu',
+        type: 'consumable',
+        icon: '🥚',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        description: 'Trứng của loài nhện quý hiếm có tơ cực kỳ dẻo dai.'
+    },
+    'trung_bang_tam': {
+        id: 'trung_bang_tam',
+        name: 'Trứng Băng Tằm Thiên Niên',
+        type: 'consumable',
+        icon: '🥚',
+        quality: 'Linh Khí',
+        price: 5000,
+        description: 'Trứng của loài tằm sinh trưởng trong cực hàn chi địa.'
+    },
     'nguyen_tu_cuc_son': {
         id: 'nguyen_tu_cuc_son',
         name: 'Nguyên Từ Cực Sơn',
