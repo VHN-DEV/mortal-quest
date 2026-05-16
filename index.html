@@ -589,21 +589,6 @@
 
             <div id="screen-main"
                 class="screen hidden flex flex-col h-full overflow-y-auto custom-scroll animate-fade-in">
-                
-                <!-- NEW: Game Time & Era Display -->
-                <div id="game-time-display" class="flex-none px-6 py-4 border-b border-white/5 bg-black/20 flex justify-between items-center backdrop-blur-md sticky top-0 z-50">
-                    <div class="flex flex-col">
-                        <span id="time-era" class="text-[8px] text-qi-blue uppercase tracking-[0.3em] font-ancient">Kỷ Nguyên Thiên Đạo</span>
-                        <div class="flex items-center space-x-2">
-                            <span id="time-year-month" class="text-xs font-bold text-white font-mono">Năm 1234 - Tháng 01</span>
-                            <span id="time-season" class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-widest bg-qi-jade/10 text-qi-jade border border-qi-jade/20">Mùa Xuân</span>
-                        </div>
-                    </div>
-                    <div class="flex flex-col items-end">
-                        <span id="time-hour" class="text-lg font-charm text-cultivation-gold leading-none">Giờ Tý</span>
-                        <div id="time-phenomenon" class="text-[7px] text-red-400 uppercase tracking-widest animate-pulse mt-0.5 hidden">Huyết Nguyệt</div>
-                    </div>
-                </div>
 
                 <div class="flex-grow flex flex-col items-center justify-start min-h-full">
                     <div class="m-auto w-full flex flex-col items-center p-6 py-12 space-y-10">
@@ -914,11 +899,13 @@
                                 <div id="char-destiny-info" class="space-y-1.5">
                                     <div class="flex justify-between items-center text-[10px] whitespace-nowrap">
                                         <span class="text-gray-400">Danh Hiệu:</span>
-                                        <span id="char-title" class="text-cultivation-gold font-bold text-right ml-2">Vô Danh</span>
+                                        <span id="char-title" class="text-cultivation-gold font-bold text-right ml-2">Vô
+                                            Danh</span>
                                     </div>
                                     <div class="flex justify-between items-center text-[10px] whitespace-nowrap">
                                         <span class="text-gray-400">Mệnh Cách:</span>
-                                        <span id="char-destiny-rating" class="text-white font-bold italic text-right ml-2">Phàm mệnh</span>
+                                        <span id="char-destiny-rating"
+                                            class="text-white font-bold italic text-right ml-2">Phàm mệnh</span>
                                     </div>
                                     <div class="flex justify-between items-start text-[10px] whitespace-nowrap">
                                         <span class="text-gray-400">Linh Căn:</span>
@@ -926,7 +913,8 @@
                                     </div>
                                     <div class="flex justify-between items-center text-[10px] whitespace-nowrap">
                                         <span class="text-gray-400">Thể Chất:</span>
-                                        <span id="char-physique" class="font-bold text-qi-purple text-right ml-2"></span>
+                                        <span id="char-physique"
+                                            class="font-bold text-qi-purple text-right ml-2"></span>
                                     </div>
                                     <div class="flex justify-between items-center text-[10px] whitespace-nowrap">
                                         <span class="text-gray-400">Cơ Duyên:</span>
@@ -1289,8 +1277,8 @@
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-3xl font-charm text-cultivation-gold">Túi Càn Khôn</h2>
                     <div class="flex items-center space-x-3">
-                        <button id="btn-toggle-equipment"
-                            class="p-1 bg-gray-800 rounded text-xs hover:bg-gray-700" title="Hiện/Ẩn trang bị">👕</button>
+                        <button id="btn-toggle-equipment" class="p-1 bg-gray-800 rounded text-xs hover:bg-gray-700"
+                            title="Hiện/Ẩn trang bị">👕</button>
                         <span id="inventory-capacity" class="text-[10px] text-gray-500 font-mono">0/20</span>
                         <button id="btn-inventory-sort"
                             class="p-1 bg-gray-800 rounded text-xs hover:bg-gray-700">🔄</button>
