@@ -39,7 +39,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         // Bắt đầu preload tài nguyên
         await preloadAssets((percent, text) => {
-            if (elBar) elBar.style.width = `${percent}%`;
+            // Sử dụng GSAP để làm mượt chuyển động của thanh progress
+            if (elBar) {
+                gsap.to(elBar, {
+                    width: `${percent}%`,
+                    duration: 0.5,
+                    ease: "power1.out"
+                });
+            }
             if (elPercent) elPercent.textContent = `${percent}%`;
             if (elText) elText.textContent = text;
         });
@@ -47,11 +54,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Khởi tạo game engine
         await game.init();
 
-        // Ẩn màn hình loading với hiệu ứng mượt mà
+        // Ẩn màn hình loading với hiệu ứng GSAP premium
         if (elLoading) {
-            elLoading.style.opacity = '0';
-            elLoading.style.pointerEvents = 'none';
-            setTimeout(() => elLoading.remove(), 700);
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    elLoading.remove();
+                    // Auto-start game logic if needed
+                }
+            });
+
+            tl.to(elLoading, {
+                opacity: 0,
+                scale: 1.05,
+                duration: 1,
+                ease: "power2.inOut",
+                pointerEvents: "none"
+            });
+            
+            // Subtle entrance animation for the main app
+            gsap.from("#app", {
+                opacity: 0,
+                y: 10,
+                duration: 1,
+                delay: 0.5,
+                ease: "power2.out"
+            });
         }
     } catch (err) {
         console.error('Lỗi khởi động game:', err);

@@ -2031,6 +2031,7 @@ select option:checked {
     align-items: center;
     justify-content: center;
     z-index: 10000;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
 }
 
 .loading-bg-container {
@@ -2045,8 +2046,14 @@ select option:checked {
     background-image: url('../assets/images/backgrounds/loading_bg.webp');
     background-size: cover;
     background-position: center;
-    filter: blur(4px) brightness(0.4);
+    filter: blur(4px) brightness(0.3);
     transform: scale(1.1);
+    animation: loading-bg-zoom 20s ease-in-out infinite alternate;
+}
+
+@keyframes loading-bg-zoom {
+    from { transform: scale(1.1) rotate(0deg); }
+    to { transform: scale(1.2) rotate(1deg); }
 }
 
 .loading-bg-overlay {
@@ -2065,8 +2072,9 @@ select option:checked {
 }
 
 @keyframes mist-move {
-    from { transform: translate(-5%, -5%) scale(1); }
-    to { transform: translate(5%, 5%) scale(1.1); }
+    0% { transform: translate(-5%, -5%) scale(1); opacity: 0.3; }
+    50% { opacity: 0.6; }
+    100% { transform: translate(5%, 5%) scale(1.2); opacity: 0.3; }
 }
 
 /* Spirit Particles */
@@ -2088,10 +2096,11 @@ select option:checked {
 }
 
 @keyframes float-particle-loading {
-    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
-    20% { opacity: 0.6; }
-    80% { opacity: 0.6; }
-    100% { transform: translateY(-10vh) translateX(20px); opacity: 0; }
+    0% { transform: translateY(110vh) translateX(0) scale(1); opacity: 0; }
+    20% { opacity: 0.8; transform: translateY(80vh) translateX(10px) scale(1.2); }
+    50% { transform: translateY(50vh) translateX(-10px) scale(1); }
+    80% { opacity: 0.8; transform: translateY(20vh) translateX(10px) scale(1.2); }
+    100% { transform: translateY(-10vh) translateX(0) scale(1); opacity: 0; }
 }
 
 .spiritual-array-container {
@@ -2146,9 +2155,8 @@ select option:checked {
 }
 
 @keyframes title-shimmer {
-    0% { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)); }
-    50% { filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.6)); }
-    100% { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)); }
+    0%, 100% { filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4)); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 35px rgba(212, 175, 55, 0.8)); transform: scale(1.02); }
 }
 
 .loading-progress-container {
@@ -2192,6 +2200,13 @@ select option:checked {
     padding: 1px;
     overflow: hidden;
     backdrop-filter: blur(5px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    animation: conduit-pulse 2s ease-in-out infinite;
+}
+
+@keyframes conduit-pulse {
+    0%, 100% { border-color: rgba(255, 255, 255, 0.1); box-shadow: 0 0 5px rgba(79, 209, 197, 0.1); }
+    50% { border-color: rgba(79, 209, 197, 0.3); box-shadow: 0 0 15px rgba(79, 209, 197, 0.2); }
 }
 
 .qi-conduit-inner {
