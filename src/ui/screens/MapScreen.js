@@ -168,7 +168,6 @@ export class MapScreen {
 
     async selectWorld(id) {
         if (!id) return;
-        if (state.currentWorldId === id) return;
         
         const w = getWorlds()[id];
         if (!w) {
@@ -176,12 +175,15 @@ export class MapScreen {
             return;
         }
 
-        // Travel time: 1-3 months (1 month = 4320 mins)
-        const travelMins = (1 + Math.floor(Math.random() * 3)) * 4320;
-        if (state.systems.time) state.systems.time.skipTime(travelMins);
-        state.ui.toast(`Ngươi đã lặn lội đường xa, vượt qua biên giới để đến ${w.name}...`, "info");
+        // Only apply travel time and update currentWorldId if it's a DIFFERENT world
+        if (state.currentWorldId !== id) {
+            // Travel time: 1-3 months (1 month = 4320 mins)
+            const travelMins = (1 + Math.floor(Math.random() * 3)) * 4320;
+            if (state.systems.time) state.systems.time.skipTime(travelMins);
+            state.ui.toast(`Ngươi đã lặn lội đường xa, vượt qua biên giới để đến ${w.name}...`, "info");
+            state.currentWorldId = id;
+        }
 
-        state.currentWorldId = id;
         this.elCurrentWorldName.textContent = w.name;
         state.ui.toggleOverlay(this.viewWorlds, false);
         state.ui.toggleOverlay(this.viewLocations, true);
