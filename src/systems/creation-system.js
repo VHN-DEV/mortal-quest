@@ -1,4 +1,4 @@
-import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS } from '../configs/creation-data.js';
+import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS } from '../configs/creation-data.js';
 import { Player } from '../core/player.js';
 
 const RANDOM_NAMES = [
@@ -27,6 +27,26 @@ export class CreationSystem {
         this.startingLingShi = 0;
         this.startingRealmId = 1;
         this.selectedArtifact = 'none';
+        
+        // Secondary Talents (Values from 1-100)
+        this.talents = {
+            comprehension: Math.floor(Math.random() * 61) + 20, // 20-80
+            luck: Math.floor(Math.random() * 61) + 20,
+            daoTam: Math.floor(Math.random() * 61) + 20,
+            divineSense: Math.floor(Math.random() * 61) + 20,
+            physique: Math.floor(Math.random() * 61) + 20
+        };
+        
+        this.rootRarity = 'PHAM';
+        this.rootPurity = Math.floor(Math.random() * 41) + 30; // 30-70 initially
+    }
+
+    rerollTalents() {
+        for (const key in this.talents) {
+            this.talents[key] = Math.floor(Math.random() * 81) + 10; // 10-90
+        }
+        // Small cost or point penalty if needed, but for now free
+        this.calculatePoints();
     }
 
     selectOrigin(originId) {
@@ -128,6 +148,27 @@ export class CreationSystem {
         return total;
     }
 
+    getTalentValue(talentId) {
+        let base = this.talents[talentId] || 50;
+        let bonus = 0;
+
+        // From Race
+        const race = CREATION_RACES[this.selectedRace];
+        if (race.bonus && race.bonus[talentId]) bonus += race.bonus[talentId];
+
+        // From Physique
+        const phys = CREATION_PHYSIQUES[this.selectedPhysique];
+        if (phys.bonus && phys.bonus[talentId]) bonus += phys.bonus[talentId];
+
+        // From Traits
+        this.selectedTraits.forEach(id => {
+            const trait = CREATION_TRAITS[id];
+            if (trait.bonus && trait.bonus[talentId]) bonus += trait.bonus[talentId];
+        });
+
+        return Math.max(1, Math.min(999, base + bonus));
+    }
+
     toggleTrait(traitId) {
         const index = this.selectedTraits.indexOf(traitId);
         if (index > -1) {
@@ -176,8 +217,23 @@ export class CreationSystem {
         const raceKeys = Object.keys(CREATION_RACES);
         this.selectedRace = raceKeys[Math.floor(Math.random() * raceKeys.length)];
 
+        // Roll Rarity
+        const roll = Math.random();
+        let accum = 0;
+        for (const [key, data] of Object.entries(ROOT_RARITY)) {
+            accum += data.chance;
+            if (roll <= accum) {
+                this.rootRarity = key;
+                break;
+            }
+        }
+
+        // Roll Purity
+        this.rootPurity = Math.floor(Math.random() * 71) + 30; // 30-100
+
         const rootKeys = Object.keys(CREATION_ROOTS);
         this.selectedRoot = rootKeys[Math.floor(Math.random() * rootKeys.length)];
+        this.selectRoot(this.selectedRoot);
         
         const physKeys = Object.keys(CREATION_PHYSIQUES);
         this.selectedPhysique = physKeys[Math.floor(Math.random() * physKeys.length)];
@@ -187,6 +243,11 @@ export class CreationSystem {
         this.startingLingShi = CREATION_ORIGINS[this.selectedOrigin].resources.lingShi;
         this.startingRealmId = 1;
         
+        // Random talents
+        for (const key in this.talents) {
+            this.talents[key] = Math.floor(Math.random() * 81) + 10; // 10-90
+        }
+
         // Random traits
         const traitKeys = Object.keys(CREATION_TRAITS);
         const count = Math.floor(Math.random() * 4);
@@ -219,13 +280,25 @@ export class CreationSystem {
         player.racialBonus = race.bonus;
 
         // Apply Root
+        const rarityData = ROOT_RARITY[this.rootRarity];
         player.spiritualRoot = {
+            id: root.id,
             type: root.name,
             elements: [...this.selectedRootElements],
-            multiplier: root.bonus.tvps || 1.0,
+            rarity: this.rootRarity,
+            rarityName: rarityData.name,
+            purity: this.rootPurity,
+            multiplier: (root.bonus.qiAbsorb || 1.0) * rarityData.multiplier * (this.rootPurity / 100),
             bonus: root.bonus, 
-            color: this.getRootColor(this.selectedRoot)
+            color: rarityData.color
         };
+        
+        // Apply Talents
+        player.comprehension = this.talents.comprehension;
+        player.luck = this.talents.luck;
+        player.daoTam = this.talents.daoTam;
+        player.divineSense = this.talents.divineSense;
+        player.physiqueTalent = this.talents.physique;
         
         // Apply Physique
         player.physique = {

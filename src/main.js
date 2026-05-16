@@ -13,7 +13,7 @@ import { getRealmById, HUMAN_REALMS } from './configs/realm-data.js';
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
 import { SEEDS } from './configs/garden-data.js';
 import { SECTS, getSectById } from './configs/sect-data.js';
-import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS } from './configs/creation-data.js';
+import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS } from './configs/creation-data.js';
 import { PHYSIQUES } from './configs/physique-data.js';
 import { NPCScreen } from './ui/screens/NPCScreen.js';
 
@@ -182,7 +182,7 @@ const CREATION_BONUS_LABELS = {
     maxHp: 'Sinh lực',
     spd: 'Tốc',
     mana: 'Mana',
-    luck: 'May mắn',
+    luck: 'Khí vận',
     karma: 'Nghiệp',
     tvps: 'Tu vi/s',
     alchemySuccess: 'Tỉ lệ luyện đan',
@@ -203,8 +203,12 @@ const CREATION_BONUS_LABELS = {
     spdPercent: 'Tốc độ (%)',
     avoidRate: 'Né tránh',
     maxMana: 'Mana tối đa',
-    daoVun: 'Đạo vận',
-    murderQi: 'Sát khí'
+    techniqueMastery: 'Lĩnh ngộ công pháp',
+    breakthroughChance: 'Tỉ lệ đột phá',
+    comprehension: 'Ngộ tính',
+    daoTam: 'Đạo tâm',
+    divineSense: 'Thần thức',
+    physique: 'Căn cốt'
 };
 
 const formatCreationBonus = (bonus = {}) => {
@@ -222,9 +226,9 @@ const formatCreationBonus = (bonus = {}) => {
             if (typeof value !== 'number') return null;
             const label = CREATION_BONUS_LABELS[key] || key;
 
-            if (multiplierStats.includes(key)) {
+            if (multiplierStats.includes(key) || key === 'techniqueMastery' || key === 'breakthroughChance') {
                 let percent;
-                if (['critRate', 'critDmg', 'lifeSteal', 'pierce', 'soulPierce', 'fireDmg', 'waterDmg', 'thunderDmg'].includes(key)) {
+                if (['critRate', 'critDmg', 'lifeSteal', 'pierce', 'soulPierce', 'fireDmg', 'waterDmg', 'thunderDmg', 'breakthroughChance'].includes(key)) {
                     percent = Math.round(value * 100);
                 } else {
                     // For tvps, 1.2 means +20%, 4.0 means +300%
@@ -321,8 +325,12 @@ window.renderCreationScreen = () => {
                 <div class="flex justify-between items-start border-b border-white/5 pb-1">
                     <span class="opacity-60">Linh căn</span>
                     <div class="text-right">
-                        <div class="font-medium">${root.name} <span class="text-[8px] text-qi-blue">(${root.purity}%)</span></div>
-                        <div class="text-[8px] text-qi-blue opacity-80">${rootElementsStr}</div>
+                        <div class="font-medium" style="color: ${ROOT_RARITY[sys.rootRarity].color}">
+                            ${ROOT_RARITY[sys.rootRarity].name} ${root.name}
+                        </div>
+                        <div class="text-[8px] text-qi-blue opacity-80">
+                            Tinh khiết: ${sys.rootPurity}% · ${rootElementsStr}
+                        </div>
                     </div>
                 </div>
                     <span class="opacity-60">Thể chất</span>
@@ -545,37 +553,54 @@ window.renderCreationScreen = () => {
             const active = sys.selectedRoot === r.id;
             const bonuses = (formatCreationBonus(r.bonus) || 'Chỉ số cơ bản').split(' · ');
             
-            // Element selection for active root (excluding Ngu Hanh)
+            // Element selection logic
             let elementsHtml = '';
-            if (active && r.id !== 'ngu_hanh_linh_can') {
-                const isSpecial = r.type === 'special';
+            if (active) {
+                const isSpecial = r.id === 'di_linh_can' || r.id === 'thien_linh_can';
                 const elements = isSpecial ? { ...ROOT_ELEMENTS, ...SPECIAL_ELEMENTS } : ROOT_ELEMENTS;
-                elementsHtml = `
-                    <div class="mt-3 pt-3 border-t border-white/5">
-                        <div class="text-[8px] uppercase tracking-wider text-qi-blue font-bold opacity-60 mb-2">Chọn Thuộc Tính</div>
-                        <div class="flex flex-wrap gap-1.5">
-                            ${Object.values(elements).map(e => {
-                                const elActive = sys.selectedRootElements.includes(e.name);
-                                return `
-                                    <button onclick="event.stopPropagation(); window.game.toggleCreationRootElement('${e.name}')" 
-                                        class="px-2 py-1 rounded-md border text-[8px] flex flex-col items-center gap-0.5 transition-all
-                                        ${elActive ? 'bg-qi-blue/20 border-qi-blue text-white shadow-[0_0_8px_rgba(77,158,255,0.2)]' : 'bg-black/40 border-white/10 text-gray-400 opacity-60 hover:opacity-100'}">
-                                        <div class="flex items-center gap-1">
-                                            <span>${e.icon}</span>
-                                            <span class="font-ancient">${e.name}</span>
-                                        </div>
-                                        <div class="text-[6px] opacity-60 italic text-center w-full max-w-[50px] truncate">${e.orientation}</div>
-                                    </button>
-                                `;
-                            }).join('')}
+                
+                // For Ngu Hanh, always show all 5
+                if (r.id === 'ngu_hanh_linh_can') {
+                    elementsHtml = `
+                        <div class="mt-3 pt-3 border-t border-white/5">
+                            <div class="flex flex-wrap gap-1">
+                                ${['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'].map(name => {
+                                    const e = ROOT_ELEMENTS[name];
+                                    return `<span class="text-[8px] px-1.5 py-0.5 rounded bg-white/5 border border-white/10 opacity-60">${e.icon} ${e.name}</span>`;
+                                }).join('')}
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                } else {
+                    elementsHtml = `
+                        <div class="mt-3 pt-3 border-t border-white/5">
+                            <div class="text-[8px] uppercase tracking-wider text-qi-blue font-bold opacity-60 mb-2">Chọn Thuộc Tính (${sys.selectedRootElements.length}/${r.quantity})</div>
+                            <div class="flex flex-wrap gap-1.5">
+                                ${Object.values(elements).map(e => {
+                                    const elActive = sys.selectedRootElements.includes(e.name);
+                                    const disabled = !elActive && sys.selectedRootElements.length >= r.quantity;
+                                    return `
+                                        <button onclick="event.stopPropagation(); window.game.toggleCreationRootElement('${e.name}')" 
+                                            class="px-2 py-1 rounded-md border text-[8px] flex flex-col items-center gap-0.5 transition-all
+                                            ${elActive ? 'bg-qi-blue/20 border-qi-blue text-white' : 'bg-black/40 border-white/10 text-gray-400 opacity-60 hover:opacity-100'}
+                                            ${disabled ? 'cursor-not-allowed grayscale' : 'cursor-pointer'}"
+                                            ${disabled ? 'disabled' : ''}>
+                                            <div class="flex items-center gap-1">
+                                                <span>${e.icon}</span>
+                                                <span class="font-ancient">${e.name}</span>
+                                            </div>
+                                        </button>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
             }
 
             return `
                 <div onclick="window.game.selectCreationRoot('${r.id}')" 
-                    class="q-card cursor-pointer ${active ? 'active text-qi-blue border-qi-blue' : 'text-gray-400 border-white/10'}">
+                    class="q-card cursor-pointer ${active ? 'active border-qi-blue' : 'text-gray-400 border-white/10'}">
                     <div class="flex justify-between items-start gap-2">
                         <div class="q-title ${active ? 'text-qi-blue' : ''}">${r.name}</div>
                         <div class="q-cost">
@@ -588,6 +613,52 @@ window.renderCreationScreen = () => {
                         ${bonuses.map(b => `<span class="q-bonus-tag" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2)">${b}</span>`).join('')}
                     </div>
                     ${elementsHtml}
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Secondary Talents List
+    const elTalentsList = document.getElementById('creation-talents-list');
+    const elTalentsHeader = document.querySelector('#creation-talents-container span');
+    
+    if (elTalentsHeader && !document.getElementById('reroll-talents-btn')) {
+        const btn = document.createElement('button');
+        btn.id = 'reroll-talents-btn';
+        btn.className = 'p-1.5 rounded-lg bg-qi-blue/10 border border-qi-blue/20 text-qi-blue hover:bg-qi-blue/20 transition-all flex items-center space-x-1';
+        btn.onclick = () => window.game.rerollCreationTalents();
+        btn.innerHTML = `<i class="ph ph-arrows-clockwise text-[10px]"></i> <span class="text-[8px] font-bold">Xí Ngầu</span>`;
+        
+        const wrapper = elTalentsHeader.parentElement;
+        if (wrapper) {
+            const controls = wrapper.querySelector('.flex.items-center.space-x-2');
+            if (controls) controls.prepend(btn);
+        }
+    }
+
+    if (elTalentsList) {
+        elTalentsList.innerHTML = Object.values(SECONDARY_TALENTS).map(t => {
+            const baseVal = sys.talents[t.id];
+            const totalVal = sys.getTalentValue(t.id);
+            const bonus = totalVal - baseVal;
+            
+            let color = 'text-gray-400';
+            if (totalVal > 80) color = 'text-cultivation-gold';
+            else if (totalVal > 60) color = 'text-qi-blue';
+            
+            return `
+                <div class="flex flex-col space-y-1.5 p-2 rounded-xl bg-black/40 border border-white/5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[9px] font-ancient text-white/80 uppercase tracking-widest">${t.name}</span>
+                        <div class="flex items-center space-x-1.5">
+                            ${bonus !== 0 ? `<span class="text-[8px] ${bonus > 0 ? 'text-green-400' : 'text-red-400'}">${bonus > 0 ? '+' : ''}${bonus}</span>` : ''}
+                            <span class="text-xs font-mono font-bold ${color}">${totalVal}</span>
+                        </div>
+                    </div>
+                    <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div class="h-full bg-qi-blue shadow-[0_0_8px_rgba(79,209,197,0.3)]" style="width: ${Math.min(100, totalVal)}%"></div>
+                    </div>
+                    <div class="text-[7px] text-gray-600 italic leading-tight">${t.desc}</div>
                 </div>
             `;
         }).join('');

@@ -1461,6 +1461,13 @@ export class Game {
         }
     }
 
+    rerollCreationTalents() {
+        if (state.systems.creation) {
+            state.systems.creation.rerollTalents();
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
     async startCreationGame() {
         if (state.systems.creation) {
             const nameInput = document.getElementById('creation-name-input');

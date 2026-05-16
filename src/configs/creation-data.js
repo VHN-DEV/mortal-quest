@@ -88,49 +88,59 @@ export const CREATION_RACES = {
     }
 };
 
+export const ROOT_RARITY = {
+    'PHAM': { id: 'PHAM', name: 'Phàm', color: '#9ca3af', chance: 0.45, multiplier: 1.0 },
+    'LINH': { id: 'LINH', name: 'Linh', color: '#4ade80', chance: 0.30, multiplier: 1.5 },
+    'DIA': { id: 'DIA', name: 'Địa', color: '#3b82f6', chance: 0.15, multiplier: 2.2 },
+    'THIEN': { id: 'THIEN', name: 'Thiên', color: '#ec4899', chance: 0.07, multiplier: 3.5 },
+    'THANH': { id: 'THANH', name: 'Thánh', color: '#f59e0b', chance: 0.025, multiplier: 6.0 },
+    'TIEN': { id: 'TIEN', name: 'Tiên', color: '#ffffff', chance: 0.005, multiplier: 12.0 }
+};
+
 export const CREATION_ROOTS = {
     'thien_linh_can': { 
-        id: 'thien_linh_can', name: 'Thiên Linh Căn', cost: 100, type: 'special', 
-        purity: 100,
-        desc: 'Linh căn hoàn mỹ, thiên tài tuyệt thế. Hấp thu linh khí gần như không hao tổn.', 
-        bonus: { tvps: 4.0, qiAbsorb: 2.0, luck: 20, breakthroughChance: 0.2, heartDemonRes: 0.3 } 
+        id: 'thien_linh_can', name: 'Thiên Linh Căn', cost: 100, type: 'special', quantity: 1,
+        desc: 'Linh căn hoàn mỹ, chỉ một thuộc tính tinh thuần. Hấp thu linh khí gần như không hao tổn.', 
+        bonus: { qiAbsorb: 2.0, breakthroughChance: 0.2, techniqueMastery: 1.5 } 
     },
     'di_linh_can': { 
-        id: 'di_linh_can', name: 'Dị Linh Căn', cost: 70, type: 'special', 
-        purity: 90,
-        desc: 'Linh căn biến dị hiếm gặp (Lôi/Băng/Phong/Độc). Sức mạnh vượt xa tu sĩ bình thường.', 
-        bonus: { tvps: 2.5, atk: 25, qiAbsorb: 1.2 } 
+        id: 'di_linh_can', name: 'Dị Linh Căn', cost: 70, type: 'special', quantity: 1,
+        desc: 'Linh căn biến dị hiếm gặp (Lôi/Băng/Phong/Độc). Sức mạnh bộc phát cực mạnh.', 
+        bonus: { qiAbsorb: 1.4, atk: 25, techniqueMastery: 1.3 } 
     },
     'don_linh_can': { 
-        id: 'don_linh_can', name: 'Đơn Linh Căn', cost: 40, type: 'basic', 
-        purity: 85,
-        desc: 'Chỉ một thuộc tính tinh thuần cực cao. Tốc độ tu luyện vượt trội.', 
-        bonus: { tvps: 2.0, qiAbsorb: 1.1 } 
+        id: 'don_linh_can', name: 'Đơn Linh Căn', cost: 40, type: 'basic', quantity: 1,
+        desc: 'Chỉ một thuộc tính tinh thuần. Tốc độ tu luyện vượt trội.', 
+        bonus: { qiAbsorb: 1.2, techniqueMastery: 1.2 } 
     },
     'song_linh_can': { 
-        id: 'song_linh_can', name: 'Song Linh Căn', cost: 30, type: 'basic', 
-        purity: 60,
-        desc: 'Hai thuộc tính chính. Tu luyện khá nhanh, có thể build song hệ.', 
-        bonus: { tvps: 1.8 } 
+        id: 'song_linh_can', name: 'Song Linh Căn', cost: 30, type: 'basic', quantity: 2,
+        desc: 'Hai thuộc tính chính. Linh hoạt trong việc chọn lựa công pháp.', 
+        bonus: { qiAbsorb: 1.0, techniqueMastery: 1.1 } 
     },
     'tam_linh_can': { 
-        id: 'tam_linh_can', name: 'Tam Linh Căn', cost: 10, type: 'basic', 
-        purity: 40,
-        desc: 'Ba loại linh căn. Tốc độ tu luyện trung bình.', 
-        bonus: { tvps: 1.2 } 
+        id: 'tam_linh_can', name: 'Tam Linh Căn', cost: 10, type: 'basic', quantity: 3,
+        desc: 'Ba loại linh căn. Tốc độ tu luyện trung bình nhưng đa dạng.', 
+        bonus: { qiAbsorb: 0.8, techniqueMastery: 1.0 } 
     },
     'ngu_hanh_linh_can': { 
-        id: 'ngu_hanh_linh_can', name: 'Ngũ Hành', cost: 0, type: 'basic', 
-        purity: 50,
-        desc: 'Đầy đủ ngũ hành. Tốc độ tu luyện bình thường nhưng căn cơ vững chắc.', 
-        bonus: { qiAbsorb: 1.3 } 
+        id: 'ngu_hanh_linh_can', name: 'Ngũ Hành Linh Căn', cost: 0, type: 'basic', quantity: 5,
+        desc: 'Đầy đủ ngũ hành. Chậm chạp ở giai đoạn đầu nhưng tiềm năng về sau vô hạn.', 
+        bonus: { qiAbsorb: 0.6, techniqueMastery: 1.5, allRes: 0.1 } 
     },
     'tap_linh_can': { 
-        id: 'tap_linh_can', name: 'Tạp Linh Căn', cost: -30, type: 'basic', 
-        purity: 20,
-        desc: 'Nhiều thuộc tính pha tạp, hấp thu linh khí chậm, khó đột phá.', 
-        bonus: { tvps: 0.7, breakthroughChance: -0.1 } 
+        id: 'tap_linh_can', name: 'Tạp Linh Căn', cost: -30, type: 'basic', quantity: 4,
+        desc: 'Nhiều thuộc tính pha tạp, tu luyện gian nan, khó lòng tiến xa.', 
+        bonus: { qiAbsorb: 0.4, breakthroughChance: -0.1, techniqueMastery: 0.7 } 
     }
+};
+
+export const SECONDARY_TALENTS = {
+    'comprehension': { id: 'comprehension', name: 'Ngộ Tính', desc: 'Ảnh hưởng tốc độ lĩnh ngộ công pháp và hiệu quả tu luyện.' },
+    'luck': { id: 'luck', name: 'Khí Vận', desc: 'Ảnh hưởng tỷ lệ gặp kỳ ngộ hiếm và may mắn trong chiến đấu.' },
+    'daoTam': { id: 'daoTam', name: 'Đạo Tâm', desc: 'Kháng tâm ma, ổn định linh lực khi đột phá.' },
+    'divineSense': { id: 'divineSense', name: 'Thần Thức', desc: 'Khả năng khống chế pháp bảo và thám sai bí cảnh.' },
+    'physique': { id: 'physique', name: 'Căn Cốt', desc: 'Ảnh hưởng HP, thể lực và sức chống chịu nhục thân.' }
 };
 
 export const ROOT_ELEMENTS = {

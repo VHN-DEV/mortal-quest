@@ -57,6 +57,7 @@ export class CharacterScreen {
         this.elFormationList = document.getElementById('active-formations-list');
         this.elCharAdvancedStats = document.getElementById('char-advanced-stats');
         this.elSpecializedPaths = document.getElementById('char-specialized-paths');
+        this.elCharTalentsList = document.getElementById('char-talents-list');
     }
     
     initEvents() {
@@ -158,8 +159,14 @@ export class CharacterScreen {
 
         // Destiny Info
         if (this.elRoot && state.player.spiritualRoot) {
-            this.elRoot.textContent = state.player.spiritualRoot.type;
-            this.elRoot.style.color = state.player.spiritualRoot.color;
+            const root = state.player.spiritualRoot;
+            const rarityName = root.rarityName || 'Phàm';
+            this.elRoot.innerHTML = `
+                <div class="flex flex-col items-end">
+                    <span style="color: ${root.color}">${rarityName} ${root.type}</span>
+                    <span class="text-[8px] opacity-60">Tinh khiết: ${root.purity}%</span>
+                </div>
+            `;
         }
         if (this.elPhysique) {
             const phys = state.player.physique;
@@ -201,11 +208,44 @@ export class CharacterScreen {
         // Advanced Stats
         this.renderAdvancedStats();
         
+        // Talents
+        this.renderTalents();
+        
         // Energy (Qi)
         if (typeof window.game.renderEnergy === 'function') window.game.renderEnergy();
         
         // Specialized Paths
         this.renderSpecializedPaths();
+    }
+
+    renderTalents() {
+        if (!this.elCharTalentsList || !state.player) return;
+        
+        const talents = {
+            comprehension: { name: 'Ngộ Tính', icon: '🧠', color: 'bg-qi-blue' },
+            luck: { name: 'Khí Vận', icon: '✨', color: 'bg-cultivation-gold' },
+            daoTam: { name: 'Đạo Tâm', icon: '🛡️', color: 'bg-emerald-500' },
+            divineSense: { name: 'Thần Thức', icon: '👁️', color: 'bg-qi-purple' },
+            physiqueTalent: { name: 'Căn Cốt', icon: '🦴', color: 'bg-red-500' }
+        };
+
+        this.elCharTalentsList.innerHTML = Object.entries(talents).map(([key, data]) => {
+            const val = state.player[key] || 50;
+            return `
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center text-[10px]">
+                        <div class="flex items-center space-x-1">
+                            <span class="opacity-80">${data.icon}</span>
+                            <span class="text-gray-400 uppercase tracking-widest">${data.name}</span>
+                        </div>
+                        <span class="font-mono font-bold text-white">${val}</span>
+                    </div>
+                    <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                        <div class="h-full ${data.color} shadow-[0_0_8px_rgba(0,0,0,0.5)] transition-all duration-500" style="width: ${val}%"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     renderSpecializedPaths() {

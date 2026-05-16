@@ -112,6 +112,8 @@ export class Player {
         this.luck = 50;
         this.talents = [];
         this.destinyRating = "Phàm mệnh";
+        this.stability = 100; // 0-100%
+
 
         // Technique systems
         this.mainTechniqueId = null;
@@ -261,6 +263,9 @@ export class Player {
         this.comprehension = 10; // Ngộ tính: Ảnh hưởng tốc độ lĩnh ngộ và tu luyện
         this.stability = 100;    // Độ ổn định: 0-100%
         this.heartDemon = 0;     // Tâm ma: 0-100%
+        this.daoTam = 50;        // Đạo tâm: Chống tâm ma, ổn định linh lực
+        this.divineSense = 50;   // Thần thức: Khống chế pháp bảo
+        this.physiqueTalent = 50; // Căn cốt: HP và thể tu
     }
 
     get lingShi() {
@@ -680,7 +685,7 @@ export class Player {
             stability *= fatePenalty;
             
             const roll = Math.random() * 100;
-            if (roll > this.stability) {
+            if (roll > stability) {
                 // Qi Deviation!
                 this.hp *= 0.1; // More severe damage
                 const penalty = isForced ? 0.5 : 0.7;
@@ -689,14 +694,17 @@ export class Player {
                 const tuViDiffBody = this.realmId - this.bodyRealmId;
                 const tuViDiffSoul = this.realmId - this.soulRealmId;
                 
+                // Dao Heart protection
+                const daoTamProtection = (this.daoTam || 50) / 200; // Up to 50% protection
+                
                 let extraMsg = "";
                 if (tuViDiffBody > 5) {
-                    this.hp *= 0.5;
+                    this.hp *= (0.5 + daoTamProtection);
                     extraMsg += " Thân thể không chịu nổi linh lực bạo tẩu!";
                 }
                 if (tuViDiffSoul > 5) {
-                    this.stability -= 20;
-                    this.heartDemon += 10;
+                    this.stability -= (20 * (1 - daoTamProtection));
+                    this.heartDemon += (10 * (1 - daoTamProtection));
                     extraMsg += " Thần thức lung lay, tâm ma thừa cơ xâm nhập!";
                 }
 
@@ -724,6 +732,10 @@ export class Player {
             }
             
             this.calculateStats();
+            
+            // Dao Heart increases stability after success
+            this.stability = Math.min(100, this.stability + ((this.daoTam || 50) / 10));
+            
             return { success: true, msg: isForced ? "Thiên Đạo cưỡng ép đột phá thành công! Ngươi may mắn thoát khỏi một kiếp." : "Đột phá thành công!" };
         }
         return { success: false, msg: check.reason || "Chưa đủ điều kiện đột phá." };
@@ -830,6 +842,7 @@ export class Player {
                 if (b.maxHp) this.baseStats.maxHp += b.maxHp;
                 if (b.maxAge) this.bonusStats.maxAge += b.maxAge;
                 if (b.qiAbsorb) this.advancedStats.qiAbsorb *= b.qiAbsorb;
+                if (b.techniqueMastery) this.advancedStats.techniqueMastery = (this.advancedStats.techniqueMastery || 1) * b.techniqueMastery;
             }
 
             // Apply Elemental Bonuses
@@ -844,16 +857,22 @@ export class Player {
                                 } else {
                                     this.advancedStats[key] += val;
                                 }
-                            } else if (this.baseStats.hasOwnProperty(key)) {
-                                this.baseStats[key] += val;
-                            } else if (this.bonusStats.hasOwnProperty(key)) {
-                                this.bonusStats[key] += val;
                             }
                         });
                     }
                 });
             }
         }
+
+        // Apply Physique Talent
+        this.baseStats.maxHp *= (1 + ((this.physiqueTalent || 50) / 200));
+        this.baseStats.def *= (1 + ((this.physiqueTalent || 50) / 500));
+
+        // Apply Comprehension
+        this.bonusStats.tuViSpeed *= (1 + ((this.comprehension || 50) / 200));
+
+        // Apply Divine Sense
+        this.advancedStats.perception = 10 + (soulLevel * 5) + ((this.divineSense || 50) / 5);
 
         // 2.2 Apply TALENT (Traits) bonuses
         if (this.talents && this.talents.length > 0) {
