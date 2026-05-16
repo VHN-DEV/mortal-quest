@@ -24,7 +24,7 @@ export class CraftingSystem {
         if (this.player.realmId < recipe.minRealm) return { can: false, msg: 'Cảnh giới chưa đủ!' };
         
         for (const mat of recipe.materials) {
-            const playerMat = this.player.inventory.items.find(i => i.id === mat.id);
+            const playerMat = this.player.inventory.allItems.find(i => i.id === mat.id);
             if (!playerMat || playerMat.quantity < mat.quantity) {
                 return { can: false, msg: `Thiếu ${getItemById(mat.id).name}!` };
             }

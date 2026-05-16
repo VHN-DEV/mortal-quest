@@ -49,8 +49,8 @@ export class ShopSystem {
         }
 
         // Check if we can add item
-        const existing = this.player.inventory.items.find(i => i.id === itemId);
-        if (!existing && this.player.inventory.items.length >= this.player.inventory.maxSlots) {
+        const existing = this.player.inventory.allItems.find(i => i.id === itemId);
+        if (!existing && this.player.inventory.isFull) {
             return { success: false, msg: 'Túi đồ đã đầy, không thể chứa thêm bảo vật!' };
         }
 
@@ -69,7 +69,7 @@ export class ShopSystem {
         if (!itemData) return { success: false, msg: 'Bảo vật không tồn tại!' };
 
         // Check if player has the item
-        const playerItem = this.player.inventory.items.find(i => i.id === itemId);
+        const playerItem = this.player.inventory.allItems.find(i => i.id === itemId);
         if (!playerItem || playerItem.quantity < quantity) {
             return { success: false, msg: 'Không đủ bảo vật để giao dịch!' };
         }

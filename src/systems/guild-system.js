@@ -36,7 +36,7 @@ export class GuildSystem {
             }
             
             // Check inventory for task items
-            const items = this.player.inventory.items.filter(i => i.id === cert.task.targetId);
+            const items = this.player.inventory.allItems.filter(i => i.id === cert.task.targetId);
             const validItems = items.filter(i => {
                 const qMap = { 'Hạ Phẩm': 0, 'Trung Phẩm': 1, 'Thượng Phẩm': 2, 'Cực Phẩm': 3, 'Hoàn Mỹ': 4 };
                 return qMap[i.quality || 'Hạ Phẩm'] >= qMap[cert.task.minQuality];
@@ -65,7 +65,7 @@ export class GuildSystem {
         const mission = GUILD_MISSIONS.find(m => m.id === missionId);
         if (!mission) return;
 
-        const items = this.player.inventory.items.filter(i => i.id === mission.targetId);
+        const items = this.player.inventory.allItems.filter(i => i.id === mission.targetId);
         const validItems = items.filter(i => {
             if (!mission.minQuality) return true;
             const qMap = { 'Hạ Phẩm': 0, 'Trung Phẩm': 1, 'Thượng Phẩm': 2, 'Cực Phẩm': 3, 'Hoàn Mỹ': 4 };

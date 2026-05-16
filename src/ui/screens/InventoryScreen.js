@@ -24,6 +24,8 @@ export class InventoryScreen {
         this.elDetailStats = document.getElementById('detail-stats');
         this.btnUseItem = document.getElementById('btn-use-item');
         this.btnEquipItem = document.getElementById('btn-equip-item');
+        this.btnToggleEquip = document.getElementById('btn-toggle-equipment');
+        this.elEquipmentContainer = document.getElementById('inventory-equipment-slots');
         this.equipmentSlots = document.querySelectorAll('.equipment-slot');
 
         // New Elements
@@ -42,10 +44,14 @@ export class InventoryScreen {
         this.btnBuyItem = document.getElementById('btn-buy-item');
         this.btnSellItem = document.getElementById('btn-sell-item');
         this.btnCrushStone = document.getElementById('btn-crush-stone');
-        
+
         // Connections
         this.elDetailConnections = document.getElementById('detail-connections');
         this.elConnectionsList = document.getElementById('connections-list');
+
+        // Bag Transfer Elements
+        this.elTransferContainer = document.getElementById('detail-transfer-container');
+        this.elTransferBags = document.getElementById('detail-transfer-bags');
     }
 
     initEvents() {
@@ -177,6 +183,14 @@ export class InventoryScreen {
                 }
             };
         }
+
+        if (this.btnToggleEquip) {
+            this.btnToggleEquip.onclick = () => {
+                if (this.elEquipmentContainer) {
+                    this.elEquipmentContainer.classList.toggle('hidden');
+                }
+            };
+        }
     }
 
     render() {
@@ -193,16 +207,50 @@ export class InventoryScreen {
 
         state.player.inventory.bags.forEach((bag, index) => {
             const isActive = state.player.inventory.currentBagIndex === index;
+            const container = document.createElement('div');
+            container.className = 'relative flex-shrink-0';
+
             const btn = document.createElement('button');
-            btn.className = `px-3 py-1.5 rounded-lg text-[9px] font-bold border transition-all whitespace-nowrap ${isActive ? 'bg-qi-blue/10 text-qi-blue border-qi-blue/30' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/20'}`;
+            btn.className = `px-3 py-1.5 rounded-xl text-[10px] font-bold border transition-all whitespace-nowrap ${isActive ? 'bg-qi-blue/10 text-qi-blue border-qi-blue/40 shadow-[0_0_15px_rgba(0,186,255,0.1)]' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/20'}`;
             btn.innerHTML = `<i class="ph ph-bag mr-1"></i> ${bag.name}`;
             btn.onclick = () => {
                 state.player.inventory.currentBagIndex = index;
                 state.player.inventory.currentPage = 0;
                 this.render();
             };
-            this.elBagTabs.appendChild(btn);
+
+            // Add rename button for active bag
+            if (isActive) {
+                const renameBtn = document.createElement('button');
+                renameBtn.className = 'absolute -top-1.5 -right-1 w-3.5 h-3.5 bg-cultivation-gold text-black rounded-full flex items-center justify-center text-[7px] border border-black shadow-lg z-10';
+                renameBtn.innerHTML = '<i class="ph ph-pencil-simple"></i>';
+                renameBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    this.promptRenameBag(index);
+                };
+                container.appendChild(renameBtn);
+            }
+
+            container.appendChild(btn);
+            this.elBagTabs.appendChild(container);
         });
+    }
+
+    promptRenameBag(index) {
+        const bag = state.player.inventory.bags[index];
+        if (!bag) return;
+
+        state.ui.prompt(
+            `Đổi tên cho ${bag.name}:`,
+            (newName) => {
+                if (newName && newName.trim()) {
+                    state.player.inventory.renameBag(index, newName);
+                    state.ui.toast("Đã đổi tên túi!", "success");
+                    this.render();
+                }
+            },
+            bag.name
+        );
     }
 
     renderGrid() {
@@ -289,17 +337,17 @@ export class InventoryScreen {
                 }
             } else {
                 slot.classList.add('border-white/20');
-                const icons = { 
-                    head: 'ph-crown', 
-                    shoes: 'ph-sneaker', 
-                    necklace: 'ph-diamond', 
-                    attackArtifact: 'ph-sword', 
-                    defenseArtifact: 'ph-shield', 
-                    flightArtifact: 'ph-wind', 
-                    spaceArtifact: 'ph-backpack', 
-                    formationArtifact: 'ph-circles-three', 
-                    supportArtifact: 'ph-sparkle', 
-                    soulArtifact: 'ph-ghost' 
+                const icons = {
+                    head: 'ph-crown',
+                    shoes: 'ph-sneaker',
+                    necklace: 'ph-diamond',
+                    attackArtifact: 'ph-sword',
+                    defenseArtifact: 'ph-shield',
+                    flightArtifact: 'ph-wind',
+                    spaceArtifact: 'ph-backpack',
+                    formationArtifact: 'ph-circles-three',
+                    supportArtifact: 'ph-sparkle',
+                    soulArtifact: 'ph-ghost'
                 };
                 slot.innerHTML = `<i class="ph ${icons[type] || 'ph-question'} text-gray-400"></i>`;
                 slot.onclick = null;
@@ -352,8 +400,37 @@ export class InventoryScreen {
         const qualitySuffix = (displayQuality.toLowerCase().includes('khí') || displayQuality.toLowerCase().includes('bảo') || displayQuality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(displayQuality)) ? '' : ' Phẩm';
         this.elDetailType.textContent = `${displayQuality}${qualitySuffix} | ${typeNames[itemData.type] || itemData.type}`;
 
+        // Bag Transfer UI
+        if (this.elTransferContainer && this.elTransferBags) {
+            const isFromInventory = !fromShop && !fromSell;
+            this.elTransferContainer.classList.toggle('hidden', !isFromInventory || state.player.inventory.bags.length <= 1);
+
+            if (isFromInventory && state.player.inventory.bags.length > 1) {
+                this.elTransferBags.innerHTML = '';
+                const currentBagIndex = state.player.inventory.currentBagIndex;
+                const itemIndexInBag = state.player.inventory.bags[currentBagIndex].items.findIndex(i => i.id === id);
+
+                state.player.inventory.bags.forEach((bag, idx) => {
+                    if (idx === currentBagIndex) return;
+
+                    const btn = document.createElement('button');
+                    btn.className = 'px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-[9px] text-gray-400 hover:bg-qi-blue/10 hover:text-qi-blue transition-all active:scale-95';
+                    btn.textContent = `Tới: ${bag.name}`;
+                    btn.onclick = () => {
+                        const res = state.player.inventory.transferItem(currentBagIndex, itemIndexInBag, idx);
+                        state.ui.toast(res.msg, res.success ? 'success' : 'error');
+                        if (res.success) {
+                            state.ui.toggleOverlay(this.elItemDetail, false);
+                            this.render();
+                        }
+                    };
+                    this.elTransferBags.appendChild(btn);
+                });
+            }
+        }
+
         let desc = itemData.description;
-        
+
         // Puppet specific
         if (itemData.type === 'puppet' && playerItem && playerItem.metadata) {
             desc = `${playerItem.metadata.name}\n${desc}\nĐộ bền: ${playerItem.metadata.durability}/${playerItem.metadata.maxDurability}`;
@@ -362,7 +439,7 @@ export class InventoryScreen {
                 desc += `\nHP: ${stats.hp} | ATK: ${stats.atk} | DEF: ${stats.def}`;
             }
         }
-        
+
         // Artifact specific
         const isArtifact = itemData.type.includes('Artifact');
         if (isArtifact && playerItem) {
@@ -407,7 +484,7 @@ export class InventoryScreen {
             this.btnEquipItem.classList.add('hidden');
             if (this.btnBuyItem) this.btnBuyItem.classList.toggle('hidden', !fromShop);
             if (this.btnSellItem) this.btnSellItem.classList.toggle('hidden', !fromSell);
-            
+
             if (fromSell && isStackable) {
                 this.elQtyContainer.classList.remove('hidden');
                 if (playerItem) {
@@ -426,7 +503,7 @@ export class InventoryScreen {
 
         const isSpiritStone = itemData.type === 'spirit_stone';
         const isManual = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc'));
-        
+
         this.btnUseItem.classList.toggle('hidden', !(['consumable', 'book', 'spirit_stone'].includes(itemData.type)) || (fromShop && !isManual));
         if (this.btnCrushStone) this.btnCrushStone.classList.toggle('hidden', !isSpiritStone || fromShop || fromSell);
 
@@ -435,7 +512,7 @@ export class InventoryScreen {
         } else {
             this.btnUseItem.textContent = isManual ? 'XEM' : (itemData.type === 'book' ? 'LĨNH NGỘ' : 'SỬ DỤNG');
         }
-        
+
         const mappedSlot = state.player.getEquipSlotForItemType
             ? state.player.getEquipSlotForItemType(itemData.type)
             : itemData.type;
@@ -457,7 +534,7 @@ export class InventoryScreen {
 
         const connections = getItemConnections(itemId);
         this.elConnectionsList.innerHTML = '';
-        
+
         const allConnections = [];
 
         if (connections.produces) allConnections.push({ id: connections.produces, label: 'Thu hoạch ra', icon: '🌿' });
@@ -469,7 +546,7 @@ export class InventoryScreen {
         });
 
         connections.asMaterialIn.forEach(prod => {
-            allConnections.push({ id: prod.id, label: 'Luyện Chế', icon: '⚗️' });
+            allConnections.push({ id: prod.id, name: prod.name, label: 'Luyện Chế', icon: '⚗️' });
         });
 
         if (connections.unlocksProfession) {
@@ -487,8 +564,8 @@ export class InventoryScreen {
                 const btn = document.createElement('button');
                 const qClass = connItem ? this.getQualityClass(connItem.quality) : 'gray-500';
                 btn.className = `flex items-center space-x-2 p-1.5 bg-white/5 border border-white/10 rounded-xl hover:bg-qi-blue/10 transition-all active:scale-95 group border-b-2 border-b-${qClass}/30`;
-                
-                const name = connItem ? connItem.name : conn.info;
+
+                const name = connItem ? connItem.name : (conn.name || conn.info);
                 const iconHtml = connItem ? (connItem.image ? `<img src="${getAssetUrl(connItem.image)}" class="w-4 h-4 object-contain">` : (connItem.icon || conn.icon)) : conn.icon;
 
                 btn.innerHTML = `
@@ -498,7 +575,7 @@ export class InventoryScreen {
                         <span class="text-[9px] font-bold text-white group-hover:text-qi-blue transition-colors">${name}</span>
                     </div>
                 `;
-                
+
                 if (connItem) {
                     btn.onclick = (e) => {
                         e.stopPropagation();
@@ -551,8 +628,8 @@ export class InventoryScreen {
     }
 
     getQualityClass(quality) {
-        const map = { 
-            'Phàm Khí': 'pham-khi', 'Pháp Khí': 'phap-khi', 'Linh Khí': 'linh-khi', 'Pháp Bảo': 'phap-bao', 
+        const map = {
+            'Phàm Khí': 'pham-khi', 'Pháp Khí': 'phap-khi', 'Linh Khí': 'linh-khi', 'Pháp Bảo': 'phap-bao',
             'Cổ Bảo': 'co-bao', 'Linh Bảo': 'linh-bao', 'Thông Thiên Linh Bảo': 'thong-thien', 'Tiên Khí': 'tien-khi', 'Danh Khí': 'danh-khi',
             'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
         };

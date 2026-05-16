@@ -26,6 +26,14 @@ export class Inventory {
         return this.bags.flatMap(bag => bag.items);
     }
 
+    get totalSlots() {
+        return this.bags.reduce((total, bag) => total + bag.slots, 0);
+    }
+
+    get isFull() {
+        return this.bags.every(bag => bag.items.length >= bag.slots);
+    }
+
     addItem(itemId, quantity = 1, metadata = {}) {
         // 1. Tìm xem có stack cũ không (trong tất cả các túi)
         for (const bag of this.bags) {
@@ -165,6 +173,41 @@ export class Inventory {
     upgradeBag(index, extraSlots) {
         if (this.bags[index]) {
             this.bags[index].slots += extraSlots;
+            return true;
+        }
+        return false;
+    }
+
+    transferItem(fromBagIndex, itemIndex, toBagIndex) {
+        const fromBag = this.bags[fromBagIndex];
+        const toBag = this.bags[toBagIndex];
+
+        if (!fromBag || !toBag || fromBagIndex === toBagIndex) return { success: false, msg: "Không thể chuyển vào cùng một túi!" };
+        
+        const item = fromBag.items[itemIndex];
+        if (!item) return { success: false, msg: "Vật phẩm không tồn tại!" };
+
+        // Check if stackable in target bag
+        const existing = toBag.items.find(i => i.id === item.id && this.compareMetadata(i.metadata, item.metadata));
+        if (existing) {
+            existing.quantity += item.quantity;
+            fromBag.items.splice(itemIndex, 1);
+            return { success: true, msg: "Đã chuyển và gộp vật phẩm!" };
+        }
+
+        // If not stackable, check if target bag has space
+        if (toBag.items.length < toBag.slots) {
+            toBag.items.push(item);
+            fromBag.items.splice(itemIndex, 1);
+            return { success: true, msg: "Đã chuyển vật phẩm!" };
+        }
+
+        return { success: false, msg: "Túi mục tiêu đã đầy!" };
+    }
+
+    renameBag(index, newName) {
+        if (this.bags[index] && newName.trim()) {
+            this.bags[index].name = newName.trim();
             return true;
         }
         return false;

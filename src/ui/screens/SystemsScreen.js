@@ -181,7 +181,7 @@ export class SystemsScreen {
             recipe.materials.forEach(mat => {
                 const matItem = getItemById(mat.id);
                 if (!matItem) return;
-                const playerMat = state.player.inventory.items.find(i => i.id === mat.id);
+                const playerMat = state.player.inventory.allItems.find(i => i.id === mat.id);
                 const count = playerMat ? playerMat.quantity : 0;
                 const enough = count >= mat.quantity;
                 materialsHTML += `<div class="text-[10px] ${enough ? 'text-gray-400' : 'text-red-500'}">${matItem.name}: ${count}/${mat.quantity}</div>`;
@@ -558,7 +558,7 @@ export class SystemsScreen {
         const sectionType = state.systems.shop.currentSection;
         const subFilter = this.shopSubFilter;
 
-        state.player.inventory.items.forEach(item => {
+        state.player.inventory.allItems.forEach(item => {
             const itemData = getItemById(item.id);
             if (!itemData) return;
 
@@ -1244,7 +1244,7 @@ export class SystemsScreen {
         // Hatch View
         if (viewHatch && state.views.beast === 'hatch') {
             viewHatch.innerHTML = '';
-            const eggs = state.player.inventory.items.filter(i => getItemById(i.id).type === 'beast_egg');
+            const eggs = state.player.inventory.allItems.filter(i => getItemById(i.id).type === 'beast_egg');
             if (eggs.length === 0) {
                 viewHatch.innerHTML = '<div class="text-center py-10 text-gray-600 italic">Ngươi không có trứng linh thú nào...</div>';
             } else {

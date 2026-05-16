@@ -80,7 +80,7 @@ export class PuppetSystem {
     }
 
     repair(inventoryIndex) {
-        const item = this.player.inventory.items[inventoryIndex];
+        const item = this.player.inventory.allItems[inventoryIndex];
         if (!item || item.id !== 'khoi_loi_item') return { success: false, msg: "Không phải khôi lỗi!" };
 
         const cost = 100; // Placeholder cost

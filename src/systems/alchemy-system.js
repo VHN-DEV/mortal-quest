@@ -98,7 +98,7 @@ export class AlchemySystem {
         for (const mat of recipe.materials) {
             const matItem = getItemById(mat.id);
             if (!matItem) continue;
-            const playerMat = this.player.inventory.items.find(i => i.id === mat.id);
+            const playerMat = this.player.inventory.allItems.find(i => i.id === mat.id);
             if (!playerMat || playerMat.quantity < mat.quantity) {
                 return { success: false, msg: `Thiếu ${matItem.name}!` };
             }

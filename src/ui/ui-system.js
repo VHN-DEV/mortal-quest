@@ -14,6 +14,8 @@ export class UISystem {
         this.modalMessage = document.getElementById('modal-message');
         this.modalBtnConfirm = document.getElementById('modal-btn-confirm');
         this.modalBtnCancel = document.getElementById('modal-btn-cancel');
+        this.modalInputContainer = document.getElementById('modal-input-container');
+        this.modalInput = document.getElementById('modal-input');
         this.loadingOverlay = document.getElementById('loading-overlay');
     }
 
@@ -130,6 +132,7 @@ export class UISystem {
             this.toggleOverlay(this.modalOverlay, false);
             this.modalBtnConfirm.onclick = null;
             this.modalBtnCancel.onclick = null;
+            if (this.modalInputContainer) this.modalInputContainer.classList.add('hidden');
         };
 
         this.modalBtnConfirm.onclick = () => {
@@ -140,6 +143,44 @@ export class UISystem {
         this.modalBtnCancel.onclick = () => {
             cleanup();
             if (onCancel) onCancel();
+        };
+    }
+
+    /**
+     * Show a prompt with an input field
+     */
+    prompt(message, onConfirm, defaultValue = '', title = 'Thiên Đạo Truy Vấn') {
+        this.modalTitle.textContent = title;
+        this.modalMessage.textContent = message;
+        this.modalIcon.className = `ph ph-question text-5xl text-cultivation-gold animate-bounce-subtle`;
+        this.modalBtnConfirm.textContent = 'XÁC NHẬN';
+        this.modalBtnConfirm.style.display = 'block';
+        this.modalBtnCancel.textContent = 'HỦY BỎ';
+        this.modalBtnCancel.style.display = 'block';
+
+        if (this.modalInputContainer && this.modalInput) {
+            this.modalInputContainer.classList.remove('hidden');
+            this.modalInput.value = defaultValue;
+            setTimeout(() => this.modalInput.focus(), 100);
+        }
+
+        this.toggleOverlay(this.modalOverlay, true);
+
+        const cleanup = () => {
+            this.toggleOverlay(this.modalOverlay, false);
+            this.modalBtnConfirm.onclick = null;
+            this.modalBtnCancel.onclick = null;
+            if (this.modalInputContainer) this.modalInputContainer.classList.add('hidden');
+        };
+
+        this.modalBtnConfirm.onclick = () => {
+            const value = this.modalInput ? this.modalInput.value : '';
+            cleanup();
+            if (onConfirm) onConfirm(value);
+        };
+
+        this.modalBtnCancel.onclick = () => {
+            cleanup();
         };
     }
 
@@ -200,6 +241,7 @@ export class UISystem {
         this.modalBtnCancel.style.display = cancelDisp;
         this.modalBtnCancel.textContent = cancelText;
         this.modalBtnCancel.onclick = null; // Reset
+        if (this.modalInputContainer) this.modalInputContainer.classList.add('hidden');
     }
 
     _rebindElements() {

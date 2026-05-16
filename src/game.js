@@ -747,8 +747,8 @@ export class Game {
         // Reset App state
         const elementsToHide = ['header', '#time-hud', 'nav', '.overlay-full', '.screen'];
         elementsToHide.forEach(s => {
-            const el = document.querySelector(s);
-            if (el) el.classList.add('hidden');
+            const els = document.querySelectorAll(s);
+            els.forEach(el => el.classList.add('hidden'));
         });
         
         await this.showStartScreen();
@@ -925,7 +925,7 @@ export class Game {
 
     playerCrushStone() {
         if (state.player) {
-            const stones = state.player.inventory.items.filter(i => {
+            const stones = state.player.inventory.allItems.filter(i => {
                 const data = getItemById(i.id);
                 return data && data.type === 'spirit_stone';
             });
@@ -970,7 +970,7 @@ export class Game {
     }
 
     showPlantMenu(index) {
-        const seeds = state.player.inventory.items.filter(i => i.id.startsWith('seed_'));
+        const seeds = state.player.inventory.allItems.filter(i => i.id.startsWith('seed_'));
         const menu = document.getElementById('garden-menu-content');
         const title = document.getElementById('garden-menu-title');
         const subtitle = document.getElementById('garden-menu-subtitle');
@@ -1222,6 +1222,11 @@ export class Game {
         } else if (result === 'lose') {
             this.handleDeath();
         }
+        
+        if (this.screens.battle) {
+            this.screens.battle.close();
+        }
+        
         state.currentCombat = null;
         state.ui.switchScreen('screen-adventure', null);
         this.refreshUI();

@@ -166,7 +166,7 @@ export class SpiritStoneSystem {
             const gradeData = SPIRIT_STONE_GRADES[gradeId];
             const energyPerStone = gradeData.multiplier * 10;
 
-            const inventoryItem = this.player.inventory.items.find(i => i.id === itemId);
+            const inventoryItem = this.player.inventory.allItems.find(i => i.id === itemId);
             if (inventoryItem && inventoryItem.quantity > 0) {
                 const stonesNeeded = Math.ceil((requiredEnergy - provided) / energyPerStone);
                 const stonesToUse = Math.min(inventoryItem.quantity, stonesNeeded);

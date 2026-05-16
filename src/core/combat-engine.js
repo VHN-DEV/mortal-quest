@@ -591,7 +591,7 @@ export class CombatEngine {
     }
 
     playerUsePotion() {
-        const potion = this.player.inventory.items.find(i => {
+        const potion = this.player.inventory.allItems.find(i => {
             const d = getItemById(i.id);
             return d?.type === 'consumable' && (d.effect?.type === 'heal' || d.effect?.type === 'mana');
         });
@@ -609,7 +609,7 @@ export class CombatEngine {
             this.addLog("Chưa lĩnh hội bí pháp Phù Lục, không thể dùng phù trong chiến đấu!");
             return;
         }
-        const talisman = this.player.inventory.items.find(i => getItemById(i.id)?.type === 'talisman');
+        const talisman = this.player.inventory.allItems.find(i => getItemById(i.id)?.type === 'talisman');
         if (!talisman) {
             this.addLog("Không có phù lục khả dụng!");
             return;
@@ -634,7 +634,7 @@ export class CombatEngine {
     }
 
     playerCrushStone() {
-        const stone = this.player.inventory.items.find(i => getItemById(i.id)?.type === 'spirit_stone');
+        const stone = this.player.inventory.allItems.find(i => getItemById(i.id)?.type === 'spirit_stone');
         if (!stone) {
             this.addLog("Không có linh thạch để bóp nát!");
             return;
@@ -694,7 +694,7 @@ export class CombatEngine {
             this.addLog("Chưa mở khóa Khôi Lỗi Thuật!");
             return;
         }
-        const puppet = this.player.inventory.items.find(i => i.id === 'khoi_loi_item');
+        const puppet = this.player.inventory.allItems.find(i => i.id === 'khoi_loi_item');
         if (!puppet) {
             this.addLog("Chưa có khôi lỗi để triệu hồi chiến đấu!");
             return;

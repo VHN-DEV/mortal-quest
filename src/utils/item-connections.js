@@ -48,6 +48,7 @@ export function getItemConnections(itemId) {
         if (r.materials.some(m => m.id === itemId)) {
             connections.asMaterialIn.push({
                 id: r.resultId,
+                name: r.name,
                 type: 'alchemy'
             });
         }
@@ -68,7 +69,8 @@ export function getItemConnections(itemId) {
     Object.values(SMITHING_RECIPES).forEach(r => {
         if (r.materials.some(m => m.id === itemId)) {
             connections.asMaterialIn.push({
-                id: r.id, // In smithing-data, id is usually the same as the result item id
+                id: r.id,
+                name: r.name,
                 type: 'smithing'
             });
         }
@@ -88,6 +90,7 @@ export function getItemConnections(itemId) {
         if (r.materials.some(m => m.id === itemId)) {
             connections.asMaterialIn.push({
                 id: r.id,
+                name: r.name,
                 type: 'talisman'
             });
         }
@@ -107,6 +110,7 @@ export function getItemConnections(itemId) {
         if (r.materials.some(m => m.id === itemId)) {
             connections.asMaterialIn.push({
                 id: r.id,
+                name: r.name,
                 type: 'puppet'
             });
         }
