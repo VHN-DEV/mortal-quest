@@ -216,6 +216,33 @@ export const MOUNTAIN_BEASTS = [
         level: 45,
         icon: '🐗',
         description: 'Hấp thụ lôi điện để cường hóa cơ thể.'
+    },
+    {
+        id: 'thanh_van_ly',
+        name: 'Thanh Vân Ly Thú',
+        layer: 'suong_mu',
+        level: 12,
+        icon: '🦁',
+        image: 'beasts/thanh-van-ly-thu.webp',
+        description: 'Linh thú cưỡi mây, tốc độ vô ảnh vô hình.'
+    },
+    {
+        id: 'huyen_giap_dia_long',
+        name: 'Huyền Giáp Địa Long',
+        layer: 'u_thuy_dong',
+        level: 28,
+        icon: '🐲',
+        image: 'beasts/huyen-giap-dia-long.webp',
+        description: 'Rồng đất bọc thép, phòng thủ kiên cố.'
+    },
+    {
+        id: 'u_minh_mong_diep',
+        name: 'U Minh Mộng Điệp',
+        layer: 'huyet_nguyet',
+        level: 60,
+        icon: '🦋',
+        image: 'beasts/u-minh-mong-diep.webp',
+        description: 'Bướm ảo ảnh, dẫn dắt con người vào mộng cảnh không lối thoát.'
     }
 ];
 
@@ -314,13 +341,55 @@ export const MOUNTAIN_EVENTS = [
             if (choice === 'pick') {
                 const dangerChance = player.realmId >= 26 ? 0.1 : 0.6;
                 if (Math.random() < dangerChance) {
-                    return { msg: 'Yêu thú bảo hộ xuất hiện! Ngươi phải chiến đấu!', type: 'combat_then_loot', loot: 'linh_thao_cao' };
+                    // Ngẫu nhiên chọn 1 trong 3 đại yêu bảo hộ
+                    const guardians = ['thanh_van_ly', 'huyen_giap_dia_long', 'u_minh_mong_diep'];
+                    const guardianId = guardians[Math.floor(Math.random() * guardians.length)];
+                    
+                    return { 
+                        msg: `Yêu thú bảo hộ ${guardianId.replace(/_/g, ' ')} xuất hiện! Ngươi phải chiến đấu để giành lấy linh thảo!`, 
+                        type: 'combat_then_loot', 
+                        enemyId: guardianId,
+                        loot: 'linh_thao_cao' 
+                    };
                 } else {
                     player.inventory.addItem('linh_thao_cao', 1);
                     return { msg: player.realmId >= 26 ? 'Ngươi thản nhiên hái linh thảo, yêu thú bảo hộ sợ hãi bỏ chạy.' : 'Ngươi đã hái được linh dược thành công mà không đánh động yêu thú.' };
                 }
             }
             return { msg: 'Ngươi quyết định không mạo hiểm.' };
+        }
+    },
+    {
+        id: 'o_yeu_thu',
+        name: 'Ổ Yêu Thú Hiếm',
+        type: 'encounter',
+        layer: 'any',
+        description: 'Ngươi phát hiện một hang động nhỏ tỏa ra linh khí lạ thường, có vẻ là nơi cư ngụ của một loài yêu thú quý hiếm.',
+        options: [
+            { label: 'Tiến vào khám phá', value: 'enter', icon: 'ph-door' },
+            { label: 'Rời đi', value: 'leave', icon: 'ph-arrow-left' }
+        ],
+        resolve: async (choice, player, game) => {
+            if (choice === 'enter') {
+                const rand = Math.random();
+                if (rand < 0.3) {
+                    const eggs = ['trung_thanh_van_ly', 'trung_huyen_giap_dia_long', 'trung_u_minh_mong_diep'];
+                    const eggId = eggs[Math.floor(Math.random() * eggs.length)];
+                    player.inventory.addItem(eggId, 1);
+                    return { msg: `Vận khí cực tốt! Ngươi đã tìm thấy một quả ${game.configs.items[eggId].name} bị bỏ lại!` };
+                } else if (rand < 0.7) {
+                    const guardians = ['thanh_van_ly', 'huyen_giap_dia_long', 'u_minh_mong_diep'];
+                    const guardianId = guardians[Math.floor(Math.random() * guardians.length)];
+                    return { 
+                        msg: 'Ngươi đã đánh động yêu thú đang ngủ say! Nó đang lao tới!', 
+                        type: 'combat', 
+                        enemyId: guardianId 
+                    };
+                } else {
+                    return { msg: 'Hang động trống rỗng, chỉ còn lại vài mẩu xương tàn.' };
+                }
+            }
+            return null;
         }
     },
     {

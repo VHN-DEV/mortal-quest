@@ -14,6 +14,38 @@ export const ITEMS = {
     'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.' },
     'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.' },
     'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.' },
+    
+    // Trứng Linh Thú
+    'trung_thanh_van_ly': {
+        id: 'trung_thanh_van_ly',
+        name: 'Trứng Thanh Vân Ly Thú',
+        type: 'beast_egg',
+        beastId: 'thanh_van_ly',
+        icon: '🥚',
+        quality: 'Linh Khí',
+        price: 5000,
+        description: 'Trứng của Thanh Vân Ly Thú, tỏa ra linh khí thanh khiết của mây trời.'
+    },
+    'trung_huyen_giap_dia_long': {
+        id: 'trung_huyen_giap_dia_long',
+        name: 'Trứng Huyền Giáp Địa Long',
+        type: 'beast_egg',
+        beastId: 'huyen_giap_dia_long',
+        icon: '🥚',
+        quality: 'Địa Cấp',
+        price: 15000,
+        description: 'Trứng của Huyền Giáp Địa Long, nặng trịch như đá và bao phủ bởi lớp vỏ đen nhánh cứng cáp.'
+    },
+    'trung_u_minh_mong_diep': {
+        id: 'trung_u_minh_mong_diep',
+        name: 'Trứng U Minh Mộng Điệp',
+        type: 'beast_egg',
+        beastId: 'u_minh_mong_diep',
+        icon: '🥚',
+        quality: 'Linh Khí',
+        price: 8000,
+        description: 'Kén của U Minh Mộng Điệp, tỏa ra làn khói ảo ảnh mờ ảo.'
+    },
 
     // Vật phẩm đặc biệt
     'di_hoa_bang': {
@@ -127,6 +159,16 @@ export const ITEMS = {
         price: 1500,
         description: 'Tà thuật luyện chế xác chết, mở khóa nghề Luyện Thi Sư.',
         effect: { type: 'unlock_profession', profession: 'corpse' }
+    },
+    'ngu_thu_quyet': {
+        id: 'ngu_thu_quyet',
+        name: 'Ngự Thú Quyết',
+        type: 'book',
+        icon: '📔',
+        quality: 'Pháp Khí',
+        price: 1500,
+        description: 'Bí tịch ghi chép cách thuần phục và điều khiển linh thú, mở khóa nghề Ngự Thú Sư.',
+        effect: { type: 'unlock_profession', profession: 'beast' }
     },
     'token_merchant': {
         id: 'token_merchant',

@@ -115,6 +115,13 @@ export const ASSETS = {
         dragon: getAssetUrl('enemies/fire_dragon'),
     }, 'enemies', 'wolf'),
 
+    // Yêu Thú (Linh Thú, Dị Thú...)
+    beasts: createAssetProxy({
+        thanh_van_ly: getAssetUrl('beasts/thanh-van-ly-thu'),
+        dia_long: getAssetUrl('beasts/huyen-giap-dia-long'),
+        mong_diep: getAssetUrl('beasts/u-minh-mong-diep'),
+    }, 'beasts', 'thanh_van_ly'),
+
     // Bối cảnh & Bản đồ
     backgrounds: createAssetProxy({
         nhan_gioi: getAssetUrl('backgrounds/sect_gate'),

@@ -146,9 +146,19 @@ export class BeastSystem {
         this.player.inventory.removeItem(materialId, 1);
 
         // Logic tăng chỉ số dựa trên loại vật liệu
-        // Phệ Kim Trùng thích ăn kim thạch (huyen_thiet, tinh_kim)
         let statGain = '';
-        if (materialId === 'huyen_thiet' || materialId === 'tinh_kim') {
+        
+        // Đặc thù cho từng loại hoặc vật liệu
+        if (materialId === 'u_minh_hoa' && beast.id === 'u_minh_mong_diep') {
+            beast.stats.atk += 15;
+            beast.stats.spd += 10;
+            statGain = 'Công kích +15, Tốc độ +10';
+        } else if ((materialId === 'huyen_thiet' || materialId === 'tinh_kim') && beast.id === 'huyen_giap_dia_long') {
+            const gain = materialId === 'tinh_kim' ? 20 : 5;
+            beast.stats.def += gain;
+            beast.stats.hp += gain * 2;
+            statGain = `Phòng ngự +${gain}, Máu +${gain * 2}`;
+        } else if (materialId === 'tinh_kim' || materialId === 'huyen_thiet') {
             const gain = materialId === 'tinh_kim' ? 10 : 2;
             beast.stats.atk += gain;
             beast.stats.def += Math.floor(gain / 2);

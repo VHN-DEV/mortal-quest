@@ -119,6 +119,36 @@ export const BEASTS = {
         description: 'Nhện ngọc máu, chuyên sống trong các cổ mộ, tơ nhện cực kỳ dẻo dai và có độc.',
         baseStats: { hp: 600, atk: 120, def: 100, spd: 80 },
         abilities: ['Huyết Ma Võng', 'Kịch Độc'],
+    },
+    'thanh_van_ly': {
+        id: 'thanh_van_ly',
+        name: 'Thanh Vân Ly Thú',
+        type: BEAST_TYPES.LINH_THU,
+        bloodline: 'LINH',
+        image: 'beasts/thanh-van-ly-thu.webp',
+        description: 'Linh thú mang hơi thở của mây trời, tốc độ cực nhanh và linh hoạt.',
+        baseStats: { hp: 400, atk: 55, def: 25, spd: 60 },
+        abilities: ['Vân Độn', 'Ly Trảo'],
+    },
+    'huyen_giap_dia_long': {
+        id: 'huyen_giap_dia_long',
+        name: 'Huyền Giáp Địa Long',
+        type: BEAST_TYPES.DI_THU,
+        bloodline: 'DIA',
+        image: 'beasts/huyen-giap-dia-long.webp',
+        description: 'Loài rồng đất có lớp vảy cứng như sắt đen, phòng ngự cực kỳ kiên cố.',
+        baseStats: { hp: 1200, atk: 80, def: 150, spd: 20 },
+        abilities: ['Huyền Giáp Hộ Thể', 'Địa Chấn'],
+    },
+    'u_minh_mong_diep': {
+        id: 'u_minh_mong_diep',
+        name: 'U Minh Mộng Điệp',
+        type: BEAST_TYPES.LINH_THU,
+        bloodline: 'LINH',
+        image: 'beasts/u-minh-mong-diep.webp',
+        description: 'Bướm mộng đến từ u minh, có khả năng gây ra ảo giác cho kẻ địch.',
+        baseStats: { hp: 300, atk: 40, def: 15, spd: 70 },
+        abilities: ['Mộng Cảnh', 'U Minh Phấn'],
     }
 };
 

@@ -1,7 +1,7 @@
 import { MOUNTAIN_LAYERS, MOUNTAIN_BEASTS, MOUNTAIN_EVENTS, MOUNTAIN_TIERS, MOUNTAIN_BOSSES } from '../configs/mountain-data.js';
 import { state } from '../state.js';
 import { Enemy } from '../core/enemy.js';
-import { ASSETS } from '../configs/asset-data.js';
+import { ASSETS, getAssetUrl } from '../configs/asset-data.js';
 
 export class MountainSystem {
     constructor(player, ui) {
@@ -237,12 +237,12 @@ export class MountainSystem {
             const result = await event.resolve(choice, this.player, window.game);
             if (result) {
                 if (result.msg) this.ui.toast(result.msg, 'info');
-                if (result.type === 'combat_then_loot') {
-                    this.triggerBattle(null, true, (win) => {
+                if (result.type === 'combat_then_loot' || result.type === 'combat') {
+                    this.triggerBattle(null, false, (win) => {
                         if (win && result.loot) {
                             window.game.receiveItem(result.loot, 1);
                         }
-                    });
+                    }, result.enemyId);
                 }
                 return;
             }
@@ -264,15 +264,23 @@ export class MountainSystem {
         }
     }
 
-    triggerBattle(layer, isNpc = false, onEnd = null) {
-        const layerBeasts = MOUNTAIN_BEASTS.filter(b => b.layer === (layer ? layer.id : this.currentLayer));
-        const beast = layerBeasts[Math.floor(Math.random() * layerBeasts.length)] || MOUNTAIN_BEASTS[0];
+    triggerBattle(layer, isNpc = false, onEnd = null, specificEnemyId = null) {
+        let beast;
+        if (specificEnemyId) {
+            beast = MOUNTAIN_BEASTS.find(b => b.id === specificEnemyId);
+        }
+        
+        if (!beast) {
+            const layerBeasts = MOUNTAIN_BEASTS.filter(b => b.layer === (layer ? layer.id : this.currentLayer));
+            beast = layerBeasts[Math.floor(Math.random() * layerBeasts.length)] || MOUNTAIN_BEASTS[0];
+        }
         
         const enemyData = {
             name: isNpc ? "Tán Tu Độc Hành" : beast.name,
-            img: isNpc ? ASSETS.npcs.merchant : ASSETS.enemies.wolf,
+            img: isNpc ? ASSETS.npcs.merchant : (beast.image ? getAssetUrl(beast.image) : ASSETS.enemies.wolf),
             statMult: 1.2 + (beast.level / 40),
-            race: isNpc ? 'HUMAN' : (beast.race || 'SPIRIT_BEAST')
+            race: isNpc ? 'HUMAN' : (beast.race || 'SPIRIT_BEAST'),
+            id: beast.id
         };
         
         const enemy = new Enemy(beast.level + (isNpc ? 5 : 0), enemyData);

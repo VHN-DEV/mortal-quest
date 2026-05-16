@@ -184,6 +184,21 @@ export const WORLDS = {
                 resources: ['Tiên Khí', 'Đạo Quả', 'Danh Khí'],
                 energies: [{ type: 'tien_khi', concentration: 300, purity: 'DAO' }, { type: 'hong_mong_tu_khi', concentration: 5, purity: 'DAO' }, { type: 'hon_don_khi', concentration: 2, purity: 'DAO' }],
                 eventProbs: { combat: 0.6, loot: 0.2, npc: 0.1, empty: 0.1 }
+            },
+            {
+                id: 'thai_hu_tien_cung',
+                name: 'Thái Hư Tiên Cung',
+                minRealm: 45,
+                danger: 'tu_dia',
+                image: getLocImg('thai_hu_tien_cung'),
+                description: 'Cung điện cổ xưa lơ lửng trong hư không, nơi chứa đựng bí mật về Thái Hư quy luật.',
+                resources: ['Thái Hư Đạo Quả', 'Tiên Khí Cực Phẩm', 'Hư Không Chi Tinh'],
+                energies: [
+                    { type: 'tien_khi', concentration: 400, purity: 'DAO' }, 
+                    { type: 'khong_gian_chi_khi', concentration: 150, purity: 'CUC_PHAM' },
+                    { type: 'thai_hu_chi_luc', concentration: 50, purity: 'DAO' }
+                ],
+                eventProbs: { combat: 0.5, loot: 0.3, npc: 0.1, empty: 0.1 }
             }
         ]
     }
