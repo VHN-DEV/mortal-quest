@@ -12,44 +12,82 @@
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
 
     <!-- Loading Screen (Splash) -->
-    <!-- Loading Screen (Splash) -->
-    <div id="loading-screen" class="fixed inset-0 z-[1000] flex flex-col items-center justify-center transition-all duration-1000">
+    <div id="loading-screen" class="fixed inset-0 z-[10000]">
+        <!-- Background Layers -->
+        <div class="loading-bg-container">
+            <div class="loading-bg-image"></div>
+            <div class="loading-bg-overlay"></div>
+            <div class="loading-mist"></div>
+        </div>
+
+        <!-- Spirit Particles -->
+        <div class="spirit-particles" id="spirit-particles">
+            <!-- Dynamically generated particles -->
+        </div>
+
         <!-- Floating Runes -->
-        <div class="rune-float" style="top: 20%; left: 15%; animation-delay: 0s;">乾</div>
-        <div class="rune-float" style="top: 25%; right: 20%; animation-delay: 1s;">坤</div>
-        <div class="rune-float" style="bottom: 30%; left: 25%; animation-delay: 2s;">震</div>
-        <div class="rune-float" style="bottom: 20%; right: 15%; animation-delay: 3s;">巽</div>
+        <div class="rune-float" style="top: 15%; left: 10%; animation-delay: 0s;">乾</div>
+        <div class="rune-float" style="top: 20%; right: 15%; animation-delay: 1.5s;">坤</div>
+        <div class="rune-float" style="bottom: 25%; left: 15%; animation-delay: 3s;">震</div>
+        <div class="rune-float" style="bottom: 15%; right: 10%; animation-delay: 4.5s;">巽</div>
         
         <!-- Spiritual Array -->
         <div class="spiritual-array-container">
-            <div class="array-ring array-ring-outer"></div>
-            <div class="array-ring array-ring-middle"></div>
-            <div class="array-ring array-ring-inner"></div>
-            <div class="array-core"></div>
+            <svg class="array-svg" viewBox="0 0 200 200">
+                <!-- Ring 1 (Outer) -->
+                <circle class="array-ring-1" cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="1 4" />
+                <circle class="array-ring-1" cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="20 10" />
+                
+                <!-- Ring 2 (Middle) -->
+                <circle class="array-ring-2" cx="100" cy="100" r="75" fill="none" stroke="#4fd1c5" stroke-width="0.5" stroke-dasharray="2 2" />
+                <path class="array-ring-2" d="M100 25 L110 90 L175 100 L110 110 L100 175 L90 110 L25 100 L90 90 Z" fill="none" stroke="#4fd1c5" stroke-width="0.5" />
+                
+                <!-- Ring 3 (Inner) -->
+                <circle class="array-ring-3" cx="100" cy="100" r="55" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="40 20" />
+                <circle class="array-ring-3" cx="100" cy="100" r="50" fill="none" stroke="currentColor" stroke-width="0.5" />
+            </svg>
+            <div class="array-core-glow"></div>
         </div>
 
         <!-- Title -->
         <h1 class="loading-title">PHÀM NHÂN VẤN ĐẠO</h1>
 
         <!-- Progress Section -->
-        <div class="flex flex-col items-center space-y-4">
-            <div class="flex justify-between w-60 items-end px-1">
-                <span id="loading-text" class="text-[10px] font-ancient text-cultivation-gold uppercase tracking-[0.3em] animate-pulse">
+        <div class="loading-progress-container">
+            <div class="loading-status-wrap">
+                <span id="loading-text" class="loading-text">
                     Đang thu nạp linh khí...
                 </span>
-                <span id="loading-percent" class="text-xs font-mono text-qi-blue">0%</span>
+                <span id="loading-percent" class="loading-percent">0%</span>
             </div>
             
-            <div class="qi-conduit-container">
-                <div id="loading-bar" class="qi-flow" style="width: 0%"></div>
+            <div class="qi-conduit-outer">
+                <div id="loading-bar" class="qi-conduit-inner" style="width: 0%"></div>
             </div>
         </div>
 
         <!-- Footer Tip -->
-        <p class="absolute bottom-12 text-[10px] text-gray-500 italic font-ancient opacity-60 text-center px-8">
+        <p class="loading-footer-tip">
             "Đường tu tiên vạn dặm, tâm bất động, đạo bất di."
         </p>
+
+        <script>
+            // Generate some initial particles for the loading screen
+            const particleContainer = document.getElementById('spirit-particles');
+            if (particleContainer) {
+                for (let i = 0; i < 20; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'spirit-particle';
+                    p.style.left = Math.random() * 100 + 'vw';
+                    p.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    p.style.animationDelay = (Math.random() * 5) + 's';
+                    p.style.opacity = Math.random() * 0.5 + 0.1;
+                    particleContainer.appendChild(p);
+                }
+            }
+        </script>
     </div>
+
 
     <!-- Desktop Vignette & Background Overlay -->
     <div
