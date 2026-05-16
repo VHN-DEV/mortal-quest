@@ -434,6 +434,21 @@ body {
   text-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
 }
 
+#turn-indicator {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+  text-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+}
+
+.indicator-pulse {
+  animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 0.2; }
+  100% { transform: scale(0.8); opacity: 0.5; }
+}
+
 .quality-dia,
 .quality-phap-bao {
   color: #8b5cf6;
@@ -1453,61 +1468,100 @@ select option:checked {
 
 /* New Combat System UI */
 .combat-tab {
-  padding: 0.5rem 1rem;
-  font-size: 8px;
-  font-family: 'EB Garamond', serif;
-  font-weight: 800;
-  color: #64748b;
-  background: transparent;
-  border-bottom: 2px solid transparent;
-  transition: all 0.3s ease;
+  padding: 0.6rem 1.2rem;
+  font-size: 9px;
+  font-family: 'Ancient', serif;
+  font-weight: 700;
+  color: rgba(148, 163, 184, 0.6);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   white-space: nowrap;
-  letter-spacing: 0.1em;
-  min-height: 32px;
+  letter-spacing: 0.2em;
+  min-height: 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.combat-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--cultivation-gold);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+  box-shadow: 0 0 10px var(--cultivation-gold);
 }
 
 .combat-tab.active {
   color: var(--cultivation-gold);
-  border-bottom-color: var(--cultivation-gold);
-  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+  background: rgba(212, 175, 55, 0.05);
+  border-color: rgba(212, 175, 55, 0.2);
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
 }
 
-.combat-tab:hover {
+.combat-tab.active::after {
+  width: 60%;
+}
+
+.combat-tab:hover:not(.active) {
   color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .battle-action-btn-new {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem;
-  gap: 0.5rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(255, 255, 255, 0.03);
-  color: #cbd5e1;
+  padding: 0.75rem 0.5rem;
+  gap: 0.4rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  color: #e2e8f0;
   font-size: 10px;
-  font-family: 'EB Garamond', serif;
+  font-family: 'Ancient', serif;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.15em;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   width: 100%;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .battle-action-btn-new i {
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   color: var(--qi-blue);
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
+  transition: all 0.3s ease;
+}
+
+.battle-action-btn-new span {
+  font-weight: 600;
+  opacity: 0.9;
 }
 
 .battle-action-btn-new:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(59, 130, 246, 0.1);
+}
+
+.battle-action-btn-new:hover i {
+  transform: scale(1.1) translateY(-2px);
+  color: #60a5fa;
 }
 
 .battle-action-btn-new:active {
-  transform: scale(0.98);
+  transform: scale(0.96);
+  transition-duration: 0.1s;
 }
 
 .tab-pane {
@@ -1631,6 +1685,61 @@ select option:checked {
 
 .aura-high {
   box-shadow: 0 0 100px var(--focus-color, rgba(79, 209, 197, 0.7));
+}
+
+/* --- Battle Portrait Aura --- */
+.battle-aura {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent, var(--aura-color, #4fd1c5), transparent);
+  opacity: 0.3;
+  filter: blur(20px);
+  animation: aura-rotate 10s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes aura-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.portrait-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 20px var(--aura-color, #4fd1c5);
+  pointer-events: none;
+  opacity: 0.5;
+  animation: portrait-pulse 3s ease-in-out infinite;
+}
+
+@keyframes portrait-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.02); }
+}
+
+/* Health/Mana Bars Enhancements */
+.bar-liquid {
+  position: relative;
+  overflow: hidden;
+}
+
+.bar-liquid::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: bar-shine 2s infinite linear;
+}
+
+@keyframes bar-shine {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
 }
 
 /* Death Screen Styling */
@@ -1802,5 +1911,15 @@ select option:checked {
 #btn-loot-confirm:hover {
     border-color: rgba(255, 255, 255, 0.3);
     background: rgba(255, 255, 255, 0.08);
+}
+
+.mask-fade-top {
+  mask-image: linear-gradient(to top, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 80%, transparent 100%);
+}
+
+.mask-fade-bottom {
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
 }
 

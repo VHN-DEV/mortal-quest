@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-Bj8D_S3i.js"></script>
+  <script type="module" crossorigin src="./assets/index-BQVQwRIm.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-BSrq4oWb.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-D5myNlWf.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -3418,22 +3418,21 @@
                     class="flex-grow flex flex-col justify-start items-center p-6 space-y-12 overflow-y-auto custom-scroll min-h-0">
                     <!-- Enemy Side -->
                     <div class="relative w-full max-w-xs group">
-                        <div
-                            class="absolute -inset-4 bg-red-600/5 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                        </div>
+                        <div class="battle-aura" style="--aura-color: #ef4444;"></div>
                         <div class="relative flex flex-col items-center space-y-4">
                             <div class="relative">
+                                <div class="portrait-glow" style="--aura-color: #ef4444;"></div>
                                 <div
-                                    class="w-32 h-32 rounded-3xl overflow-hidden border-2 border-red-900/30 shadow-[0_0_40px_rgba(153,27,27,0.2)]">
+                                    class="w-32 h-32 rounded-3xl overflow-hidden border-2 border-red-900/30 shadow-[0_0_40px_rgba(153,27,27,0.3)]">
                                     <img id="enemy-img" src="" class="w-full h-full object-cover">
                                 </div>
                                 <div id="enemy-status-effects"
                                     class="absolute -right-2 -bottom-2 flex flex-col space-y-1"></div>
                             </div>
                             <div class="text-center space-y-1.5">
-                                <h3 id="battle-enemy-name" class="text-xl font-ancient text-red-400">Yêu Thú</h3>
+                                <h3 id="battle-enemy-name" class="text-xl font-ancient text-red-400 drop-shadow-[0_0_10px_rgba(239,68,68,0.3)]">Yêu Thú</h3>
                                 <div id="battle-enemy-realm"
-                                    class="text-[9px] text-gray-500 uppercase tracking-[0.2em]">Luyện Khí Tầng 3</div>
+                                    class="text-[9px] text-gray-500 uppercase tracking-[0.2em] font-medium">Luyện Khí Tầng 3</div>
                             </div>
                             <!-- Enemy HP -->
                             <div class="w-full px-4 space-y-1.5">
@@ -3443,27 +3442,29 @@
                                     <span id="enemy-hp-text" class="text-[9px] font-mono text-red-500">100/100</span>
                                 </div>
                                 <div
-                                    class="h-1.5 w-full bg-red-950/40 rounded-full overflow-hidden border border-red-900/20">
+                                    class="h-1.5 w-full bg-red-950/40 rounded-full overflow-hidden border border-red-900/20 shadow-inner">
                                     <div id="battle-enemy-hp"
-                                        class="h-full bg-red-600 shadow-[0_0_10px_rgba(220,38,38,0.3)] transition-all duration-500"
+                                        class="h-full bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)] transition-all duration-500 bar-liquid"
                                         style="width: 100%"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="w-20 h-20 flex items-center justify-center">
-                        <div class="relative">
-                            <div class="absolute inset-0 bg-qi-blue/20 blur-xl rounded-full animate-pulse"></div>
-                            <i class="ph ph-swords text-4xl text-qi-blue/40 relative z-10 animate-bounce"></i>
+                    <div class="w-20 h-20 flex items-center justify-center relative">
+                        <div class="absolute inset-0 bg-qi-blue/10 blur-3xl rounded-full animate-pulse"></div>
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="text-[8px] text-qi-blue/40 font-ancient uppercase tracking-[0.3em] mb-2">Đối Quyết</div>
+                            <i class="ph-bold ph-swords text-4xl text-qi-blue/30 animate-bounce"></i>
                         </div>
                     </div>
 
                     <!-- Player Side -->
-                    <div class="relative w-full max-w-xs">
+                    <div class="relative w-full max-w-xs group">
+                        <div class="battle-aura" style="--aura-color: #4fd1c5;"></div>
                         <div class="relative flex flex-col items-center space-y-4">
-                            <!-- Player HP/MP Bars -->
-                            <div class="w-full px-4 space-y-3">
+                             <!-- Player HP/MP Bars -->
+                             <div class="w-full px-4 space-y-3">
                                 <!-- HP -->
                                 <div class="space-y-1.5">
                                     <div class="flex justify-between items-end px-1">
@@ -3474,9 +3475,9 @@
                                             class="text-[9px] font-mono text-qi-jade">100/100</span>
                                     </div>
                                     <div
-                                        class="h-1.5 w-full bg-qi-jade/10 rounded-full overflow-hidden border border-qi-jade/20">
+                                        class="h-1.5 w-full bg-qi-jade/10 rounded-full overflow-hidden border border-qi-jade/20 shadow-inner">
                                         <div id="battle-player-hp"
-                                            class="h-full bg-qi-jade shadow-[0_0_10px_rgba(16,185,129,0.3)] transition-all duration-500"
+                                            class="h-full bg-qi-jade shadow-[0_0_15px_rgba(16,185,129,0.5)] transition-all duration-500 bar-liquid"
                                             style="width: 100%"></div>
                                     </div>
                                 </div>
@@ -3490,33 +3491,34 @@
                                             class="text-[9px] font-mono text-qi-blue">100/100</span>
                                     </div>
                                     <div
-                                        class="h-1.5 w-full bg-qi-blue/10 rounded-full overflow-hidden border border-qi-blue/20">
+                                        class="h-1.5 w-full bg-qi-blue/10 rounded-full overflow-hidden border border-qi-blue/20 shadow-inner">
                                         <div id="battle-player-mana"
-                                            class="h-full bg-qi-blue shadow-[0_0_10px_rgba(59,130,246,0.3)] transition-all duration-500"
+                                            class="h-full bg-qi-blue shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-500 bar-liquid"
                                             style="width: 100%"></div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="relative">
+                                <div class="portrait-glow" style="--aura-color: #4fd1c5;"></div>
                                 <div
-                                    class="w-24 h-24 rounded-3xl overflow-hidden border-2 border-qi-blue/30 shadow-[0_0_40px_rgba(59,130,246,0.2)]">
+                                    class="w-28 h-28 rounded-3xl overflow-hidden border-2 border-qi-blue/30 shadow-[0_0_40px_rgba(59,130,246,0.3)]">
                                     <img id="battle-player-img" src="" class="w-full h-full object-cover">
                                 </div>
                                 <div id="player-status-effects"
                                     class="absolute -left-2 -bottom-2 flex flex-col space-y-1"></div>
                             </div>
                             <div class="text-center space-y-1">
-                                <h3 id="battle-player-name" class="text-lg font-ancient text-white">Bản Tọa</h3>
+                                <h3 id="battle-player-name" class="text-lg font-ancient text-white drop-shadow-[0_0_10px_rgba(79,209,197,0.3)]">Bản Tọa</h3>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Battle Log & Actions -->
-                <div class="flex-none p-6 space-y-4 bg-gradient-to-t from-black to-transparent">
+                <div class="flex-none p-6 space-y-4 bg-gradient-to-t from-black via-black/80 to-transparent">
                     <div id="battle-log"
-                        class="h-16 overflow-y-auto text-[10px] text-gray-400 font-serif italic space-y-1 custom-scroll mask-fade-top mb-2">
+                        class="h-14 overflow-y-auto text-[10px] text-gray-400 font-serif italic space-y-1 custom-scroll mask-fade-top mb-2 border-l border-white/5 pl-3">
                         <p>Bắt đầu cuộc chiến...</p>
                     </div>
 
@@ -3529,17 +3531,17 @@
                             <span id="chanting-turns" class="text-[9px] font-mono text-cultivation-gold">Còn 2
                                 lượt</span>
                         </div>
-                        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                        <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
                             <div id="chanting-progress"
-                                class="h-full bg-gradient-to-r from-cultivation-gold to-orange-500 transition-all duration-700"
+                                class="h-full bg-gradient-to-r from-cultivation-gold to-orange-500 transition-all duration-700 bar-liquid"
                                 style="width: 50%"></div>
                         </div>
                     </div>
 
-                    <div class="relative bg-black/40 rounded-2xl border border-white/5 p-2">
+                    <div class="relative bg-white/[0.03] rounded-3xl border border-white/10 p-4 backdrop-blur-sm shadow-2xl">
                         <!-- Combat Tabs -->
                         <div id="battle-tabs"
-                            class="flex space-x-1 overflow-x-auto custom-scrollbar-hidden pb-1 mb-2 border-b border-white/5">
+                            class="flex space-x-2 overflow-x-auto custom-scrollbar-hidden pb-3 mb-4 border-b border-white/5">
                             <button data-tab="cong" class="combat-tab active" title="Công kích cơ bản">CÔNG</button>
                             <button data-tab="thuat" class="combat-tab" title="Thuật pháp & Bí thuật">THUẬT</button>
                             <button data-tab="thu" class="combat-tab" title="Phòng thủ & Hộ thân">THỦ</button>
@@ -3555,7 +3557,7 @@
                         </div>
 
                         <!-- Tab Content Areas -->
-                        <div id="battle-tab-content" class="min-h-[100px]">
+                        <div id="battle-tab-content" class="min-h-[120px]">
                             <!-- Tab: CÔNG -->
                             <div id="tab-cong" class="tab-pane grid grid-cols-2 gap-2">
                                 <button id="btn-attack" class="battle-action-btn-new">
