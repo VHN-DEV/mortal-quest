@@ -98,14 +98,17 @@ export class LootScreen {
     createItemElement(item, isFromVictim, index) {
         const itemData = getItemById(item.id);
         const div = document.createElement('div');
-        div.className = `loot-item-slot group`;
+        
+        // Add quality class for specific glows
+        const qualityClass = this.getQualityClass(itemData?.quality);
+        div.className = `loot-item-slot group ${qualityClass}`;
         
         const qualityColor = this.getQualityColor(itemData?.quality);
         
         div.innerHTML = `
-            ${itemData?.icon ? `<div class="text-2xl opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">${itemData.icon}</div>` : 
-              (itemData?.img ? `<img src="${itemData.img}" class="w-full h-full object-contain opacity-80 group-hover:opacity-100">` : 
-              `<div class="w-full h-full flex items-center justify-center text-[10px] text-gray-500 font-ancient">${itemData?.name || 'Vô danh'}</div>`)}
+            ${itemData?.icon ? `<div class="text-3xl opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all drop-shadow-md">${itemData.icon}</div>` : 
+              (itemData?.img ? `<img src="${itemData.img}" class="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all group-hover:scale-105">` : 
+              `<div class="w-full h-full flex items-center justify-center text-[10px] text-gray-500 font-ancient text-center p-1">${itemData?.name || 'Vô danh'}</div>`)}
             
             <div class="loot-item-quantity">${item.quantity}</div>
             <div class="loot-quality-bar ${qualityColor}"></div>
@@ -194,6 +197,17 @@ export class LootScreen {
             'Tiên Khí': 'bg-cyan-400'
         };
         return colors[quality] || 'bg-white/10';
+    }
+
+    getQualityClass(quality) {
+        const classes = {
+            'Pháp Bảo': 'quality-purple-500',
+            'Cổ Bảo': 'quality-orange-500',
+            'Linh Bảo': 'quality-red-500',
+            'Thông Thiên Linh Bảo': 'quality-cultivation-gold',
+            'Tiên Khí': 'quality-cyan-400'
+        };
+        return classes[quality] || '';
     }
 
     close() {
