@@ -131,7 +131,16 @@ export const SHOPS = {
             'ky_trung': [
                 { id: 'egg_phe_kim_trung', stock: 1, minVip: 2 },
                 { id: 'egg_bang_tam', stock: 3, minVip: 1 },
-                { id: 'egg_huyet_ngoc_tri_chu', stock: 5 }
+                { id: 'egg_huyet_ngoc_tri_chu', stock: 5 },
+                { id: 'egg_kim_giap_hac', stock: 2, minVip: 1 },
+                { id: 'egg_huyen_diem_nga', stock: 5 },
+                { id: 'egg_loi_bang', stock: 1, minVip: 3 },
+                { id: 'egg_thien_phong_ngan_uynh', stock: 1, minVip: 5 }
+            ],
+            'linh_thu': [
+                { id: 'linh_thu_dai_so', stock: 5 },
+                { id: 'linh_thu_dai_trung', stock: 2, minVip: 1 },
+                { id: 'linh_thu_dai_cao', stock: 1, minVip: 3 }
             ],
             'tui_tru_vat': [
                 { id: 'tui_tru_vat_so', stock: 5 },
@@ -174,6 +183,14 @@ export const SHOPS = {
             'luyen_khi': [
                 { id: 'huyen_thiet', stock: 100 },
                 { id: 'tinh_kim', stock: 50 }
+            ],
+            'ky_trung': [
+                { id: 'egg_phe_kim_trung', stock: 2, minVip: 1 },
+                { id: 'egg_loi_bang', stock: 1, minVip: 2 }
+            ],
+            'linh_thu': [
+                { id: 'linh_thu_dai_so', stock: 10 },
+                { id: 'linh_thu_dai_trung', stock: 5 }
             ],
             'tui_tru_vat': [
                 { id: 'tui_tru_vat_so', stock: 10 },

@@ -423,7 +423,8 @@ export class SystemsScreen {
             subFilters = [
                 { id: 'all', name: '--- Lọc Loại Kỳ Vật ---' },
                 { id: 'tui_tru_vat', name: 'Túi Trữ Vật' },
-                { id: 'ky_trung', name: 'Kỳ Trùng' }
+                { id: 'ky_trung', name: 'Kỳ Trùng' },
+                { id: 'linh_thu', name: 'Linh Thú' }
             ];
         }
 
@@ -651,7 +652,8 @@ export class SystemsScreen {
                 'phu_luc': ['talisman'],
                 'luyen_khi': ['material', 'smithing_tool'],
                 'tui_tru_vat': ['consumable'],
-                'ky_trung': ['consumable'] // Usually eggs are consumable or special
+                'ky_trung': ['consumable'], // Usually eggs are consumable or special
+                'linh_thu': ['supportArtifact']
             };
 
             // Mapping Category to its internal sections
@@ -660,7 +662,7 @@ export class SystemsScreen {
                 'phap_bao': ['phap_bao'],
                 'cong_phap': ['cong_phap'],
                 'bach_nghe': ['nguyen_lieu', 'phu_luc', 'tran_phap', 'luyen_khi', 'linh_dien'],
-                'ky_vat': ['tui_tru_vat', 'ky_trung']
+                'ky_vat': ['tui_tru_vat', 'ky_trung', 'linh_thu']
             };
 
             const targetSections = catMap[sectionType] || [sectionType];

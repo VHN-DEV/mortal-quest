@@ -2372,7 +2372,99 @@ export const ITEMS = {
         stats: { atk: 3000, def: 2000, hp: 5000, pierce: 0.8, allRes: 0.5 },
         action: 'separate_ngu_cuc_son',
         poem: ['Ngũ Sơn Hợp Nhất Trấn Càn Khôn', 'Vạn Pháp Quy Nguyên Hóa Hư Không']
+    },
+    // --- BEAST RELATED ITEMS ---
+    'linh_thu_dai_so': {
+        id: 'linh_thu_dai_so',
+        name: 'Linh Thú Đại (Sơ)',
+        type: 'supportArtifact',
+        icon: '👜',
+        quality: 'Pháp Khí',
+        price: 1000,
+        description: 'Túi chuyên dụng dùng để chứa và nuôi dưỡng linh thú, kỳ trùng cấp thấp. Không gian bên trong ổn định, giúp linh thú nghỉ ngơi hồi phục.'
+    },
+    'linh_thu_dai_trung': {
+        id: 'linh_thu_dai_trung',
+        name: 'Linh Thú Đại (Trung)',
+        type: 'supportArtifact',
+        icon: '👜',
+        quality: 'Linh Khí',
+        price: 5000,
+        description: 'Túi linh thú cấp trung, có thể chứa được các loại linh thú có linh tính cao hơn. Linh khí bên trong dồi dào, hỗ trợ linh thú thăng cấp.'
+    },
+    'linh_thu_dai_cao': {
+        id: 'linh_thu_dai_cao',
+        name: 'Linh Thú Đại (Cao)',
+        type: 'supportArtifact',
+        icon: '👜',
+        quality: 'Pháp Bảo',
+        price: 20000,
+        description: 'Túi linh thú cao cấp, có thể chứa được các loại thần thú hoặc kỳ trùng vương cấp. Có tác dụng bảo hộ linh tính và ngăn chặn phản phệ.'
+    },
+    'egg_phe_kim_trung': {
+        id: 'egg_phe_kim_trung',
+        name: 'Trứng Phệ Kim Trùng',
+        type: 'consumable',
+        image: 'artifacts/phe-kim-trung.svg',
+        quality: 'Linh Khí',
+        price: 5000,
+        description: 'Trứng của Phệ Kim Trùng, một loại kỳ trùng nổi tiếng với khả năng thôn phệ vạn vật, ngay cả pháp bảo cũng khó thoát khỏi hàm răng của chúng.'
+    },
+    'egg_bang_tam': {
+        id: 'egg_bang_tam',
+        name: 'Trứng Băng Tằm',
+        type: 'consumable',
+        image: 'artifacts/bang-tam.svg',
+        quality: 'Pháp Khí',
+        price: 1500,
+        description: 'Trứng của Băng Tằm, sinh vật sống ở vùng cực hàn. Tơ của chúng là nguyên liệu quý để dệt nên các loại pháp y phòng ngự cực cao.'
+    },
+    'egg_huyet_ngoc_tri_chu': {
+        id: 'egg_huyet_ngoc_tri_chu',
+        name: 'Trứng Huyết Ngọc Tri Chu',
+        type: 'consumable',
+        image: 'artifacts/huyet-ngoc-tri-chu.svg',
+        quality: 'Pháp Khí',
+        price: 2000,
+        description: 'Trứng của Huyết Ngọc Tri Chu, loại nhện mang huyết mạch cổ xưa, nọc độc vô cùng bạo liệt và tơ nhện dẻo dai khó đứt.'
+    },
+    'egg_kim_giap_hac': {
+        id: 'egg_kim_giap_hac',
+        name: 'Trứng Kim Giáp Hạc',
+        type: 'consumable',
+        image: 'artifacts/kim-giap-hac.svg',
+        quality: 'Pháp Khí',
+        price: 3000,
+        description: 'Trứng của Kim Giáp Hạc, loài linh hạc có lớp lông cứng như kim loại, tốc độ bay cực nhanh và rất trung thành.'
+    },
+    'egg_huyen_diem_nga': {
+        id: 'egg_huyen_diem_nga',
+        name: 'Trứng Huyền Diệm Nga',
+        type: 'consumable',
+        image: 'artifacts/huyen-diem-nga.svg',
+        quality: 'Pháp Khí',
+        price: 1500,
+        description: 'Trứng của Huyền Diệm Nga, loài bướm đêm mang hỏa tính, có khả năng phun ra hỏa độc gây ảo giác.'
+    },
+    'egg_loi_bang': {
+        id: 'egg_loi_bang',
+        name: 'Trứng Lôi Bằng',
+        type: 'consumable',
+        icon: '🦅',
+        quality: 'Linh Khí',
+        price: 8000,
+        description: 'Trứng của Lôi Bằng, loài chim khổng lồ mang theo sức mạnh lôi đình, khi trưởng thành có thể sải cánh vạn dặm.'
+    },
+    'egg_thien_phong_ngan_uynh': {
+        id: 'egg_thien_phong_ngan_uynh',
+        name: 'Trứng Thiên Phong Ngân Uynh',
+        type: 'consumable',
+        icon: '🦗',
+        quality: 'Pháp Bảo',
+        price: 25000,
+        description: 'Trứng của Thiên Phong Ngân Uynh, loại kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.'
     }
+
 };
 
 export const getItemById = (id) => ITEMS[id];

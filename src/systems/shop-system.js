@@ -17,7 +17,7 @@ export class ShopSystem {
             'phap_bao': ['phap_bao'],
             'cong_phap': ['cong_phap', 'bi_tich'],
             'bach_nghe': ['nguyen_lieu', 'phu_luc', 'tran_phap', 'luyen_khi', 'linh_dien'],
-            'ky_vat': ['tui_tru_vat', 'ky_trung']
+            'ky_vat': ['tui_tru_vat', 'ky_trung', 'linh_thu']
         };
 
         const targetSections = categories[this.currentSection] || [this.currentSection];
