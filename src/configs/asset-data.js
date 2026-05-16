@@ -4,7 +4,7 @@
  */
 
 // Tự động quét toàn bộ thư mục assets/images
-const allImages = import.meta.glob('../assets/images/**/*.{webp,gif,svg}', { eager: true, query: '?url', import: 'default' });
+const allImages = import.meta.glob('../assets/images/**/*.{webp,gif,svg,png}', { eager: true, query: '?url', import: 'default' });
 
 /**
  * Preload all essential assets and track progress
