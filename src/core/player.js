@@ -245,7 +245,8 @@ export class Player {
             statusRes: 0,
             iceControl: 0,
             dotDmg: 1.0,
-            lifesteal: 0
+            damageReduction: 0,
+            techniqueMastery: 1.0
         };
 
         this.equipmentMetadata = {}; // { [slot]: { spirit, level, durability, extraStat: { type, value } } }
@@ -774,7 +775,7 @@ export class Player {
             fireDmg: 1.0, waterDmg: 1.0, thunderDmg: 1.0,
             qiAbsorb: 1.0, lifeSteal: 0, alchemySuccess: 0,
             soulRepress: 0, perception: 5 + (soulLevel * 2), daoVun: 0, murderQi: 0,
-            allRes: 0
+            allRes: 0, damageReduction: 0, techniqueMastery: 1.0
         };
 
         // 1. Calculate BASE STATS (from Realms)
@@ -786,18 +787,21 @@ export class Player {
         // Apply Racial Bonus from creation
         if (this.racialBonus) {
             Object.entries(this.racialBonus).forEach(([key, val]) => {
-                if (this.advancedStats.hasOwnProperty(key)) {
-                    if (['tvps', 'qiAbsorb', 'allRes', 'soulExpSpeed'].includes(key)) this.advancedStats[key] *= val;
-                    else this.advancedStats[key] += val;
+                if (key === 'tvps') this.bonusStats.tuViSpeed *= val;
+                else if (key === 'soulExpSpeed') this.bonusStats.soulExpSpeed *= val;
+                else if (key === 'bodyExpSpeed') this.bonusStats.bodyExpSpeed *= val;
+                else if (key === 'maxAge') this.bonusStats.maxAge += val;
+                else if (key === 'karma') this.karma += val;
+                else if (this.advancedStats.hasOwnProperty(key)) {
+                    if (['qiAbsorb', 'allRes', 'fireDmg', 'waterDmg', 'thunderDmg'].includes(key)) {
+                        this.advancedStats[key] *= val;
+                    } else {
+                        this.advancedStats[key] += val;
+                    }
                 } else if (this.bonusStats.hasOwnProperty(key)) {
-                    if (key === 'tvps') this.bonusStats.tuViSpeed *= val;
-                    else this.bonusStats[key] += val;
+                    this.bonusStats[key] += val;
                 } else if (this.baseStats.hasOwnProperty(key)) {
                     this.baseStats[key] += val;
-                } else if (key === 'karma') {
-                    this.karma += val;
-                } else if (key === 'maxAge') {
-                    this.bonusStats.maxAge += val;
                 }
             });
         }
@@ -821,7 +825,6 @@ export class Player {
         this.baseStats.maxMana += 60 * Math.max(0, soulLevel - 1) * soulMult;
         this.baseStats.spd += 10 * Math.max(0, soulLevel - 1) * soulMult;
         this.advancedStats.critRate += (soulLevel - 1) * 0.01;
-        this.advancedStats.perception = 10 + (soulLevel * 5) + (this.comprehension * 0.5);
 
         // --- Stability & Heart Demon Penalties ---
         if (this.stability < 40) {
@@ -1017,11 +1020,11 @@ export class Player {
         this.applySetBonuses(equippedIds);
 
         // 4. Combine BASE and BONUS for final values
-        this.maxHp = this.baseStats.maxHp + this.bonusStats.maxHp;
-        this.maxMana = this.baseStats.maxMana + this.bonusStats.maxMana;
-        this.atk = this.baseStats.atk + this.bonusStats.atk;
-        this.def = this.baseStats.def + this.bonusStats.def;
-        this.spd = this.baseStats.spd + this.bonusStats.spd;
+        this.maxHp = Math.max(1, (this.baseStats.maxHp || 0) + (this.bonusStats.maxHp || 0));
+        this.maxMana = Math.max(1, (this.baseStats.maxMana || 0) + (this.bonusStats.maxMana || 0));
+        this.atk = Math.max(0, (this.baseStats.atk || 0) + (this.bonusStats.atk || 0));
+        this.def = Math.max(0, (this.baseStats.def || 0) + (this.bonusStats.def || 0));
+        this.spd = Math.max(1, (this.baseStats.spd || 0) + (this.bonusStats.spd || 0));
 
         // 4. Apply TITLE bonuses
         if (this.fate.activeTitleId) {

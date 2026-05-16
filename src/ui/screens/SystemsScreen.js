@@ -148,8 +148,8 @@ export class SystemsScreen {
 
         const lvlInfo = getAlchemyLevelInfo(state.player.alchemyLevel);
         this.elAlchemyLvlText.textContent = lvlInfo.name;
-        const nextLevelExp = state.player.alchemyLevel * 100 * Math.pow(1.5, state.player.alchemyLevel - 1);
-        this.elAlchemyExpBar.style.width = `${(state.player.alchemyExp / nextLevelExp) * 100}%`;
+        const nextLevelExp = Math.max(1, state.player.alchemyLevel * 100 * Math.pow(1.5, state.player.alchemyLevel - 1));
+        this.elAlchemyExpBar.style.width = `${Math.min(100, (state.player.alchemyExp / nextLevelExp) * 100)}%`;
 
         if (state.views.alchemy === 'recipes') {
             this.renderRecipes();
@@ -1155,8 +1155,8 @@ export class SystemsScreen {
 
         if (elLvl) elLvl.textContent = `Khôi Lỗi Sư - Cấp ${state.player.puppetLevel}`;
         if (elBar) {
-            const nextLevelExp = state.player.puppetLevel * 100 * Math.pow(1.5, state.player.puppetLevel - 1);
-            elBar.style.width = `${(state.player.puppetExp / nextLevelExp) * 100}%`;
+            const nextLevelExp = Math.max(1, state.player.puppetLevel * 100 * Math.pow(1.5, state.player.puppetLevel - 1));
+            elBar.style.width = `${Math.min(100, (state.player.puppetExp / nextLevelExp) * 100)}%`;
         }
 
         if (view) {
@@ -1221,8 +1221,8 @@ export class SystemsScreen {
 
         if (elLvl) elLvl.textContent = lvlInfo.name;
         if (elBar) {
-            const nextLevelExp = state.player.talismanLevel * 100 * Math.pow(1.5, state.player.talismanLevel - 1);
-            elBar.style.width = `${(state.player.talismanExp / nextLevelExp) * 100}%`;
+            const nextLevelExp = Math.max(1, state.player.talismanLevel * 100 * Math.pow(1.5, state.player.talismanLevel - 1));
+            elBar.style.width = `${Math.min(100, (state.player.talismanExp / nextLevelExp) * 100)}%`;
         }
 
         // Update Pen Name
@@ -1316,8 +1316,8 @@ export class SystemsScreen {
 
         if (elLvl) elLvl.textContent = `Cấp ${curLevel}`;
         if (elExp) {
-            const nextLevelExp = curLevel * 100 * Math.pow(1.5, curLevel - 1);
-            elExp.style.width = `${(curExp / nextLevelExp) * 100}%`;
+            const nextLevelExp = Math.max(1, curLevel * 100 * Math.pow(1.5, curLevel - 1));
+            elExp.style.width = `${Math.min(100, (curExp / nextLevelExp) * 100)}%`;
         }
 
         // List View Rendering

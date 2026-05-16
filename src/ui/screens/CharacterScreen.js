@@ -112,7 +112,7 @@ export class CharacterScreen {
         // Render Age & Lifespan combined
         const playerAge = state.player.age || 0;
         const maxAge = state.player.maxAge || 100;
-        const remaining = maxAge - Math.floor(playerAge);
+        const remaining = Math.max(0, maxAge - Math.floor(playerAge));
         
         if (this.elCharAge) {
             this.elCharAge.textContent = `${Math.floor(playerAge)} / ${maxAge}`;
@@ -126,11 +126,11 @@ export class CharacterScreen {
         }
 
         if (this.elCharStability) {
-            const stability = state.player.stability;
+            const stability = state.player.stability || 100;
             this.elCharStability.textContent = `${Math.floor(stability)}%`;
             this.elCharStability.className = stability > 90 ? 'text-green-400' : (stability < 40 ? 'text-red-500' : 'text-cultivation-gold');
         }
-        if (this.elCharComprehension) this.elCharComprehension.textContent = Math.floor(state.player.comprehension);
+        if (this.elCharComprehension) this.elCharComprehension.textContent = Math.floor(state.player.comprehension || 0);
 
         // Render Realms & Progress
         const tuviRealm = state.player.getCurrentRealm('tuvi');
@@ -145,9 +145,9 @@ export class CharacterScreen {
         if (this.elCharProgBody) this.elCharProgBody.style.width = `${Math.min(100, (state.player.bodyExp / bodyRealm.expRequired) * 100)}%`;
         if (this.elCharProgSoul) this.elCharProgSoul.style.width = `${Math.min(100, (state.player.soulExp / soulRealm.expRequired) * 100)}%`;
 
-        if (this.elCharExpTuvi) this.elCharExpTuvi.textContent = `${Math.floor(state.player.tuVi).toLocaleString()} / ${tuviRealm.expRequired.toLocaleString()}`;
-        if (this.elCharExpBody) this.elCharExpBody.textContent = `${Math.floor(state.player.bodyExp).toLocaleString()} / ${bodyRealm.expRequired.toLocaleString()}`;
-        if (this.elCharExpSoul) this.elCharExpSoul.textContent = `${Math.floor(state.player.soulExp).toLocaleString()} / ${soulRealm.expRequired.toLocaleString()}`;
+        if (this.elCharExpTuvi) this.elCharExpTuvi.textContent = `${Math.floor(state.player.tuVi || 0).toLocaleString()} / ${tuviRealm.expRequired.toLocaleString()}`;
+        if (this.elCharExpBody) this.elCharExpBody.textContent = `${Math.floor(state.player.bodyExp || 0).toLocaleString()} / ${bodyRealm.expRequired.toLocaleString()}`;
+        if (this.elCharExpSoul) this.elCharExpSoul.textContent = `${Math.floor(state.player.soulExp || 0).toLocaleString()} / ${soulRealm.expRequired.toLocaleString()}`;
 
         // Race Info
         if (this.elCharRace) {
@@ -332,18 +332,18 @@ export class CharacterScreen {
         };
 
         this.elCharAdvancedStats.innerHTML = Object.entries(labels).map(([key, label]) => {
-            const val = stats[key];
+            const val = stats[key] || 0;
             if (val === 0 || val === 1.0) return ''; // Hide empty stats
             
             let displayVal = val;
-            if (['critRate', 'critDmg', 'pierce', 'soulPierce', 'lifeSteal', 'allRes'].includes(key)) {
+            if (['critRate', 'critDmg', 'pierce', 'soulPierce', 'lifeSteal', 'allRes', 'damageReduction'].includes(key)) {
                 displayVal = (val * 100).toFixed(1) + '%';
             }
 
             return `
                 <div class="flex justify-between items-center border-b border-white/5 py-1">
-                    <span class="text-gray-500">${label}:</span>
-                    <span class="text-white font-mono">${displayVal}</span>
+                    <span class="text-gray-500 text-[10px]">${label}:</span>
+                    <span class="text-white font-mono text-[10px]">${displayVal}</span>
                 </div>
             `;
         }).join('');

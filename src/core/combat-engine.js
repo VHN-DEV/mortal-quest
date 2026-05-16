@@ -34,7 +34,7 @@ export class CombatEngine {
 
     calculateTurnOrder() {
         // Divine Sense (Perception) influences reaction speed
-        const pSense = (this.player.perception || 10) * 0.1;
+        const pSense = (this.player.advancedStats?.perception || 10) * 0.1;
         const eSense = (this.enemy.perception || 10) * 0.1;
 
         this.turnOrder = [
@@ -301,7 +301,10 @@ export class CombatEngine {
             flightBonus = artifact?.stats?.spd || 20;
         }
 
-        const successChance = Math.max(0.1, Math.min(0.9, 0.4 + ((playerSpd + flightBonus - enemySpd) / 100)));
+        let successChance = 0.4 + ((playerSpd + flightBonus - enemySpd) / 100);
+        if (isNaN(successChance)) successChance = 0.4;
+        successChance = Math.max(0.1, Math.min(0.9, successChance));
+        
         const success = Math.random() < successChance;
 
         if (success) {
@@ -410,7 +413,7 @@ export class CombatEngine {
         let damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression * racialBonus * envBonus));
 
         // Divine Sense (Perception) Accuracy/Crit
-        const pSense = this.player.perception || 10;
+        const pSense = this.player.advancedStats?.perception || 10;
         const eSense = this.enemy.perception || 10;
         const hitChance = 0.85 + (pSense - eSense) * 0.005;
         
@@ -849,7 +852,7 @@ export class CombatEngine {
         this.triggerArtifacts('defense');
         
         const suppression = this.calculateRealmSuppression(this.enemy, this.player);
-        const pSense = this.player.perception || 10;
+        const pSense = this.player.advancedStats?.perception || 10;
         const eSense = this.enemy.perception || 10;
 
         // Hit chance affected by dodge and perception
