@@ -35,7 +35,12 @@ export const SHOPS = {
                 { id: 'co_luyen_lung', stock: 1, minVip: 5 },
                 { id: 'chan_vu_nho_quan_ta', stock: 1, minVip: 5 },
                 { id: 'chan_vu_nho_quan_huu', stock: 1, minVip: 5 },
-                { id: 'bo_thien_lang', stock: 1, minVip: 5 }
+                { id: 'bo_thien_lang', stock: 1, minVip: 5 },
+                { id: 'nguyen_tu_cuc_son', stock: 1, minVip: 4 },
+                { id: 'bac_cuc_nguyen_quang_cuc_son', stock: 1, minVip: 4 },
+                { id: 'hao_am_han_phach_cuc_son', stock: 1, minVip: 4 },
+                { id: 'thai_at_thanh_quang_cuc_son', stock: 1, minVip: 4 },
+                { id: 'am_duong_dai_ngu_hanh_cuc_son', stock: 1, minVip: 4 }
             ],
             'nguyen_lieu': [
                 { id: 'linh_thao_thap', stock: 200 },

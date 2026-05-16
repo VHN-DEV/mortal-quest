@@ -10,10 +10,10 @@
 
 export const ITEMS = {
     // Hạt giống
-    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Linh Thảo', type: 'seed', icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Linh chủng linh thảo sơ cấp.' },
-    'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng linh thảo hỏa hệ.' },
-    'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng linh thảo băng hệ.' },
-    'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng linh thảo âm hệ.' },
+    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Linh Thảo', type: 'seed', icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Linh chủng của Linh Thảo Thấp Phẩm.' },
+    'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.' },
+    'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.' },
+    'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.' },
 
     // Vật phẩm đặc biệt
     'di_hoa_bang': {
@@ -137,7 +137,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Pháp Khí',
         price: 300,
-        description: 'Ghi chép cách luyện chế Ngưng Khí Đan.',
+        description: 'Ghi chép cách luyện chế [[ngung_khi_dan|Ngưng Khí Đan]] từ [[linh_thao_thap|Linh Thảo Thấp Phẩm]].',
         effect: { type: 'learn_recipe', value: 'ngung_khi_dan' }
     },
     'dp_than_tam_dan': {
@@ -147,7 +147,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Pháp Khí',
         price: 500,
-        description: 'Ghi chép cách luyện chế Thanh Tâm Đan.',
+        description: 'Ghi chép cách luyện chế [[thanh_tam_dan|Thanh Tâm Đan]] từ [[linh_thao_10y|Linh Thảo (10 năm)]] và [[chu_sa_muc|Chu Sa Linh Mực]].',
         effect: { type: 'learn_recipe', value: 'than_tam_dan' }
     },
     'dp_truc_co_dan': {
@@ -157,7 +157,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Linh Khí',
         price: 2000,
-        description: 'Ghi chép cách luyện chế Trúc Cơ Đan cực kỳ quan trọng.',
+        description: 'Ghi chép cách luyện chế [[truc_co_dan|Trúc Cơ Đan]] từ [[linh_thao_100y|Linh Thảo (100 năm)]], [[yeu_dan_so|Yêu Đan Sơ Cấp]] và [[hoa_tinh_thach|Hỏa Tinh Thạch]].',
         effect: { type: 'learn_recipe', value: 'truc_co_dan' }
     },
     'dp_bo_nguyen_dan': {
@@ -167,7 +167,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Pháp Khí',
         price: 600,
-        description: 'Ghi chép cách luyện chế Bổ Nguyên Đan.',
+        description: 'Ghi chép cách luyện chế [[bo_nguyen_dan|Bổ Nguyên Đan]] từ [[linh_thao_10y|Linh Thảo (10 năm)]] và [[yeu_huyet|Yêu Thú Tinh Huyết]].',
         effect: { type: 'learn_recipe', value: 'bo_nguyen_dan' }
     },
     'dp_ngung_anh_dan': {
@@ -177,7 +177,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Pháp Bảo',
         price: 10000,
-        description: 'Đan phương quý hiếm dùng để đột phá Nguyên Anh.',
+        description: 'Đan phương luyện chế [[ngung_anh_dan|Ngưng Anh Đan]] từ [[linh_thao_1000y|Linh Thảo (1000 năm)]], [[yeu_dan_trung|Yêu Đan Trung Cấp]] và [[han_ngoc_tuy|Hàn Ngọc Tủy]].',
         effect: { type: 'learn_recipe', value: 'ngung_anh_dan' }
     },
 
@@ -189,7 +189,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Pháp Khí',
         price: 400,
-        description: 'Bản vẽ rèn đúc Thanh Hồng Kiếm.',
+        description: 'Bản vẽ rèn đúc [[thanh_hong_kiem|Thanh Hồng Kiếm]] từ [[huyen_thiet|Huyền Thiết]].',
         effect: { type: 'learn_smithing_recipe', value: 'thanh_hong_kiem' }
     },
     'bv_phi_kiem_tinh_ha': {
@@ -199,7 +199,7 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Linh Khí',
         price: 1500,
-        description: 'Bản vẽ rèn đúc Tinh Hà Phi Kiếm.',
+        description: 'Bản vẽ rèn đúc [[phi_kiem_tinh_ha|Tinh Hà Phi Kiếm]] từ [[tinh_kim|Tinh Kim]] và [[huyen_thiet|Huyền Thiết]].',
         effect: { type: 'learn_smithing_recipe', value: 'phi_kiem_tinh_ha' }
     },
     'bv_long_lan_giap': {
@@ -443,7 +443,7 @@ export const ITEMS = {
         type: 'consumable',
         quality: 'Linh Khí',
         icon: '💎',
-        description: 'Đan dược chí bảo giúp phàm nhân đúc thành đạo cơ.',
+        description: 'Đan dược chí bảo giúp phàm nhân đúc thành đạo cơ. Luyện chế từ Linh Thảo (100 năm), Yêu Đan Sơ Cấp và Hỏa Tinh Thạch.',
         price: 5000,
         stats: { breakthroughRate: 0.3 }
     },
@@ -454,7 +454,7 @@ export const ITEMS = {
         quality: 'Linh Khí',
         icon: '🍶',
         price: 450,
-        description: 'Đan dược bồi bổ nguyên khí, hồi phục 100 Khí Huyết và 50 Linh Lực.',
+        description: 'Đan dược bồi bổ nguyên khí, hồi phục 100 Khí Huyết và 50 Linh Lực. Kết hợp từ Linh Thảo (10 năm) và Yêu Thú Tinh Huyết.',
         effect: { type: 'restore', hp: 100, mana: 50 }
     },
     'thuy_tinh': {
@@ -492,7 +492,7 @@ export const ITEMS = {
         icon: '🧊',
         quality: 'Linh Khí',
         price: 200,
-        description: 'Hồi phục 50% HP ngay lập tức.',
+        description: 'Hồi phục 50% HP ngay lập tức. Luyện chế từ Linh Thảo (10 năm) và Chu Sa Linh Mực.',
         effect: { type: 'heal', value: 0.5 }
     },
 
@@ -1579,7 +1579,7 @@ export const ITEMS = {
         icon: '🗡️',
         quality: 'Linh Khí',
         price: 15000,
-        description: 'Kiếm mang ánh sáng tinh hà, sát thương cực lớn.',
+        description: 'Kiếm mang ánh sáng tinh hà, sát thương cực lớn. Rèn từ Tinh Kim và Huyền Thiết.',
         stats: { atk: 150, critical: 0.15 }
     },
     'long_lan_giap': {
@@ -1589,7 +1589,7 @@ export const ITEMS = {
         icon: '🛡️',
         quality: 'Pháp Bảo',
         price: 85000,
-        description: 'Giáp làm từ vảy giao long, phòng ngự kinh người.',
+        description: 'Giáp làm từ vảy giao long, phòng ngự kinh người. Đúc từ Da Lân Giáp và Yêu Thú Tinh Huyết.',
         stats: { def: 450, resistance: 0.3 }
     },
 
@@ -2130,7 +2130,7 @@ export const ITEMS = {
         type: 'flightArtifact',
         quality: 'Danh Khí',
         image: 'artifacts/phong-loi-si.svg',
-        description: 'Đôi cánh được luyện từ lông vũ của yêu thú lôi hệ và phong hệ cực hiếm. Tốc độ độn thuật vô song, nhưng yêu cầu người sử dụng phải lĩnh ngộ [[phong_loi_quyet_book|Phong Lôi Quyết]] hoặc các [[loi_phap|Lôi Pháp]] để làm nguồn năng lượng kích hoạt.',
+        description: 'Đôi cánh được luyện từ lông vũ của yêu thú lôi hệ và phong hệ cực hiếm. Tốc độ độn thuật vô song, nhưng yêu cầu người sử dụng phải lĩnh ngộ [[phong_loi_quyet_book|Phong Lôi Quyết]] hoặc các Lôi Pháp để làm nguồn năng lượng kích hoạt.',
         price: 2500000,
         stats: { spd: 500, avoidRate: 0.2 },
         requireThunder: true,

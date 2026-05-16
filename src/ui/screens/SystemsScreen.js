@@ -504,7 +504,7 @@ export class SystemsScreen {
             const qClass = this.getQualityClass(itemData.quality);
 
             const el = document.createElement('div');
-            el.className = `flex items-center justify-between p-3 bg-black/40 border border-gray-800 rounded-xl hover:border-${qClass} cursor-pointer transition-all`;
+            el.className = `flex items-center justify-between p-3 bg-black/40 border border-gray-800 rounded-xl hover:border-${qClass} cursor-pointer transition-colors duration-200`;
             el.onclick = () => {
                 if (window.game.screens.inventory) {
                     window.game.screens.inventory.selectItem(item.id, true);
@@ -602,7 +602,7 @@ export class SystemsScreen {
             if (['material', 'herb', 'ore', 'wood'].includes(itemData.type)) sellMult = 0.3;
 
             const el = document.createElement('div');
-            el.className = `p-2 border border-gray-800 rounded-lg bg-black/20 flex flex-col items-center cursor-pointer hover:border-${qClass} transition-all active:scale-95`;
+            el.className = `p-2 border border-gray-800 rounded-lg bg-black/20 flex flex-col items-center cursor-pointer hover:border-${qClass} transition-colors duration-200 active:scale-95`;
             el.innerHTML = `
                 <div class="text-2xl mb-1">${itemData.image ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
                 <div class="text-[9px] text-gray-400">x${item.quantity}</div>

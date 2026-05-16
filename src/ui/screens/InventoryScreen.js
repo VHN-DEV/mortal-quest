@@ -1,6 +1,7 @@
 import { state } from '../../state.js';
-import { getItemById } from '../../configs/item-data.js';
+import { getItemById, ITEMS } from '../../configs/item-data.js';
 import { getAssetUrl } from '../../configs/asset-data.js';
+import { getItemConnections } from '../../utils/item-connections.js';
 
 /**
  * Quản lý giao diện túi đồ và trang bị.
@@ -35,6 +36,10 @@ export class InventoryScreen {
         this.btnBuyItem = document.getElementById('btn-buy-item');
         this.btnSellItem = document.getElementById('btn-sell-item');
         this.btnCrushStone = document.getElementById('btn-crush-stone');
+        
+        // Connections
+        this.elDetailConnections = document.getElementById('detail-connections');
+        this.elConnectionsList = document.getElementById('connections-list');
     }
 
     initEvents() {
@@ -249,14 +254,14 @@ export class InventoryScreen {
 
         const typeNames = {
             'spirit_stone': 'Linh Thạch',
-            'consumable': 'Đan Dược / Linh Vật',
-            'book': 'Công Pháp / Bí Tịch',
-            'weapon': 'Linh Khí / Pháp Bảo',
-            'armor': 'Pháp Y / Linh Giáp',
-            'accessory': 'Trang Sức',
+            'consumable': 'Linh Đan / Thánh Quả',
+            'book': 'Công Pháp / Thần Thông',
+            'weapon': 'Pháp Bảo / Thần Binh',
+            'armor': 'Pháp Y / Bảo Giáp',
+            'accessory': 'Linh Sức / Trang Sức',
             'treasure': 'Thiên Tài Địa Bảo',
-            'formation': 'Trận Pháp',
-            'puppet': 'Khôi Lỗi',
+            'formation': 'Trận Đồ',
+            'puppet': 'Cơ Quan / Khôi Lỗi',
             // Artifact types
             'attackArtifact': 'Pháp Bảo Chủ Chiến',
             'defenseArtifact': 'Pháp Bảo Hộ Thân',
@@ -270,7 +275,7 @@ export class InventoryScreen {
         const qualitySuffix = (displayQuality.toLowerCase().includes('khí') || displayQuality.toLowerCase().includes('bảo') || displayQuality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(displayQuality)) ? '' : ' Phẩm';
         this.elDetailType.textContent = `${displayQuality}${qualitySuffix} | ${typeNames[itemData.type] || itemData.type}`;
 
-        this.elDetailDesc.textContent = itemData.description;
+        this.elDetailDesc.innerHTML = this.linkifyDescription(itemData.description, id);
         if (this.elDetailStats) this.elDetailStats.innerHTML = '';
         
         // Puppet specific
@@ -366,7 +371,95 @@ export class InventoryScreen {
         this.btnEquipItem.classList.toggle('hidden', !equippable);
 
         state.ui.toggleOverlay(this.elItemDetail, true);
+        this.renderConnections(id);
         this.render();
+    }
+
+    renderConnections(itemId) {
+        if (!this.elDetailConnections || !this.elConnectionsList) return;
+
+        const connections = getItemConnections(itemId);
+        this.elConnectionsList.innerHTML = '';
+        
+        const allConnections = [];
+
+        // Harvest Info
+        if (connections.produces) {
+            allConnections.push({ id: connections.produces, label: 'Thu hoạch ra', icon: '🌿' });
+        }
+        if (connections.harvestedFrom) {
+            allConnections.push({ id: connections.harvestedFrom, label: 'Gieo trồng từ', icon: '🌱' });
+        }
+
+        // Recipe Info
+        if (connections.recipeFor) {
+            allConnections.push({ id: connections.recipeFor, label: 'Luyện chế ra', icon: '📜' });
+        }
+
+        // Ingredients
+        connections.ingredients.forEach(ing => {
+            allConnections.push({ id: ing.id, label: `Nguyên Liệu x${ing.quantity}`, icon: '🧪' });
+        });
+
+        // Used in recipes
+        connections.asMaterialIn.forEach(prod => {
+            allConnections.push({ id: prod.id, label: 'Luyện Chế', icon: '⚗️' });
+        });
+
+        // Profession Unlocks
+        if (connections.unlocksProfession) {
+            allConnections.push({ 
+                label: 'Truyền Thừa Đạo Nghiệp', 
+                icon: '📜', 
+                info: connections.unlocksProfession.toUpperCase() 
+            });
+        }
+
+        // Teaches Technique
+        if (connections.teaches) {
+            allConnections.push({ 
+                label: 'Lĩnh Ngộ Thần Thông', 
+                icon: '📖', 
+                info: connections.teaches 
+            });
+        }
+
+        if (allConnections.length > 0) {
+            this.elDetailConnections.classList.remove('hidden');
+            allConnections.forEach(conn => {
+                const connItem = conn.id ? getItemById(conn.id) : null;
+                
+                const btn = document.createElement('button');
+                const qClass = connItem ? this.getQualityClass(connItem.quality) : 'gray-500';
+                btn.className = `flex items-center space-x-2 p-1.5 bg-white/5 border border-white/10 rounded-xl hover:bg-qi-blue/10 transition-all active:scale-95 group border-b-2 border-b-${qClass}/30`;
+                
+                const name = connItem ? connItem.name : conn.info;
+                const iconHtml = connItem ? 
+                    (connItem.image ? `<img src="${getAssetUrl(connItem.image)}" class="w-4 h-4 object-contain">` : (connItem.icon || conn.icon)) : 
+                    conn.icon;
+
+                btn.innerHTML = `
+                    <div class="text-sm">${iconHtml}</div>
+                    <div class="flex flex-col items-start">
+                        <span class="text-[7px] text-gray-500 uppercase tracking-tighter">${conn.label}</span>
+                        <span class="text-[9px] font-bold text-white group-hover:text-qi-blue transition-colors">${name}</span>
+                    </div>
+                `;
+                
+                if (connItem) {
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        this.selectItem(conn.id, false, false);
+                    };
+                } else {
+                    btn.classList.add('cursor-default');
+                }
+                
+                this.elConnectionsList.appendChild(btn);
+            });
+        } else {
+            this.elDetailConnections.classList.add('hidden');
+        }
     }
 
     getStatLabel(statKey) {
@@ -448,5 +541,68 @@ export class InventoryScreen {
             'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
         };
         return map[quality] || 'pham';
+    }
+
+    /**
+     * Tự động biến các tên vật phẩm trong mô tả thành link liên kết.
+     */
+    linkifyDescription(text, currentItemId) {
+        if (!text) return '';
+        
+        let result = text;
+        const replacements = [];
+
+        // 1. Xử lý các liên kết thủ công định dạng [[id|name]] hoặc [[id]]
+        const manualLinkRegex = /\[\[(.*?)(?:\|(.*?))?\]\]/g;
+        result = result.replace(manualLinkRegex, (match, id, name) => {
+            const item = ITEMS[id];
+            if (!item) return name || id; // Trả về text gốc nếu không tìm thấy item
+
+            const placeholder = `[[MANUAL_LINK_${replacements.length}]]`;
+            replacements.push({ 
+                placeholder, 
+                item, 
+                displayName: name || item.name 
+            });
+            return placeholder;
+        });
+
+        // 2. Tự động liên kết theo tên cho các phần còn lại
+        const allItems = Object.values(ITEMS)
+            .filter(item => item.name && item.name.length > 2)
+            .sort((a, b) => b.name.length - a.name.length);
+
+        allItems.forEach((item, index) => {
+            if (item.id === currentItemId) return;
+            
+            const name = item.name;
+            // Chỉ thay thế nếu không phải là một phần của placeholder đã tạo
+            if (result.includes(name)) {
+                // Sử dụng Regex với boundary để tránh match trúng một phần của từ
+                // (nhưng vẫn phải cẩn thận với tiếng Việt)
+                const placeholder = `[[AUTO_LINK_${index}]]`;
+                const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(escapedName, 'g');
+                
+                let replaced = false;
+                result = result.replace(regex, (match) => {
+                    replaced = true;
+                    return placeholder;
+                });
+
+                if (replaced) {
+                    replacements.push({ placeholder, item, displayName: name });
+                }
+            }
+        });
+
+        // 3. Thay thế tất cả placeholder bằng HTML thực tế
+        replacements.forEach(rep => {
+            const qClass = this.getQualityClass(rep.item.quality);
+            const linkHtml = `<span class="item-link quality-${qClass} text-[10px] px-1.5 py-0.5 bg-white/5 rounded border border-white/10 cursor-pointer hover:text-qi-blue hover:border-qi-blue transition-all inline-block align-middle mx-0.5 mb-1" onclick="game.screens.inventory.selectItem('${rep.item.id}', true)">${rep.displayName}</span>`;
+            result = result.split(rep.placeholder).join(linkHtml);
+        });
+
+        return result;
     }
 }
