@@ -327,7 +327,8 @@ export class CharacterScreen {
             lifeSteal: 'Huyết Tế',
             soulRepress: 'Trấn Áp Thần Thức',
             daoVun: 'Đạo Vận',
-            murderQi: 'Sát Khí'
+            murderQi: 'Sát Khí',
+            allRes: 'Kháng Tất Cả'
         };
 
         this.elCharAdvancedStats.innerHTML = Object.entries(labels).map(([key, label]) => {
@@ -335,7 +336,7 @@ export class CharacterScreen {
             if (val === 0 || val === 1.0) return ''; // Hide empty stats
             
             let displayVal = val;
-            if (['critRate', 'critDmg', 'pierce', 'soulPierce', 'lifeSteal'].includes(key)) {
+            if (['critRate', 'critDmg', 'pierce', 'soulPierce', 'lifeSteal', 'allRes'].includes(key)) {
                 displayVal = (val * 100).toFixed(1) + '%';
             }
 

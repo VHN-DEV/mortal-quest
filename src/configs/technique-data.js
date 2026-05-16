@@ -257,6 +257,17 @@ export const TECHNIQUES = {
         stats: { atk: 100, spd: 150 },
         effects: { tvps: 2.0, thunderDmg: 1.5, dodge: 0.1 },
         compatibility: { 'Lôi': 1.5, 'Phong': 1.3, 'Thiên Linh Căn': 1.5 }
+    },
+    'truong_sinh_quyet': {
+        id: 'truong_sinh_quyet',
+        name: 'Trường Sinh Quyết',
+        type: 'Linh Lực',
+        element: 'Mộc',
+        quality: 'Hoàng Giai',
+        description: 'Công pháp cơ bản tập trung vào dưỡng sinh, giúp kéo dài thọ nguyên.',
+        maxStage: 5,
+        stats: { hp: 100 },
+        effects: { tvps: 1.2, lifespanBonus: 100 }
     }
 };
 

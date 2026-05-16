@@ -161,6 +161,17 @@ export class Inventory {
                 state.ui.toast("Đã phân tách Nguyên Hợp Ngũ Cực Sơn thành 5 ngọn núi đơn lẻ.", "success");
                 return true;
             }
+        } else if (itemData.type === 'beast_egg') {
+            if (state.systems.beast) {
+                const res = state.systems.beast.hatch(itemId);
+                if (res.success) {
+                    state.ui.alert(res.msg, "Ấp Nở Thành Công");
+                    return true;
+                } else {
+                    state.ui.toast(res.msg, "error");
+                    return false;
+                }
+            }
         }
         return false;
     }
@@ -235,6 +246,9 @@ export class Inventory {
         } else if (effect.type === 'heal') {
             const healAmount = Math.floor(this.player.maxHp * effect.value);
             this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
+        } else if (effect.type === 'lifespan' || effect.type === 'max_age') {
+            this.player.maxAge += effect.value;
+            state.ui.toast(`Thọ nguyên tăng thêm ${effect.value} năm!`, "success");
         } else if (effect.type === 'mana') {
             const manaAmount = Math.floor(this.player.maxMana * effect.value);
             this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaAmount);

@@ -235,7 +235,9 @@ export class CombatEngine {
         }
 
         if (damage > 0) {
-            const finalDmg = Math.max(1, damage - Math.floor(this.player.def / 2));
+            const dr = this.player.advancedStats.damageReduction || 0;
+            const allRes = this.player.advancedStats.allRes || 0;
+            const finalDmg = Math.max(1, Math.floor((damage - Math.floor(this.player.def / 2)) * (1 - dr) * (1 - allRes)));
             this.player.hp -= finalDmg;
             this.addLog(msg + ` Gây ${finalDmg} sát thương.`);
             this.onUpdate('damage', { target: 'player', value: finalDmg, crit: true });
@@ -865,7 +867,9 @@ export class CombatEngine {
             return;
         }
 
-        let damage = Math.max(1, (this.enemy.atk - Math.floor(this.player.def / 2)) * suppression);
+        const dr = this.player.advancedStats.damageReduction || 0;
+        const allRes = this.player.advancedStats.allRes || 0;
+        let damage = Math.max(1, (this.enemy.atk - Math.floor(this.player.def / 2)) * suppression * (1 - dr) * (1 - allRes));
         let attackMsg = `${this.enemy.name} lao đến tấn công, gây ${Math.floor(damage)} sát thương.`;
 
         if (this.enemyArchetype === 'ASSASSIN' && Math.random() < 0.35) {

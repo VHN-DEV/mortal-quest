@@ -1390,7 +1390,8 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Linh Khí',
         price: 1000,
-        description: 'Bí tịch dưỡng sinh cổ xưa, tăng mạnh Thọ Nguyên.'
+        description: 'Bí tịch dưỡng sinh cổ xưa, tăng mạnh Thọ Nguyên.',
+        effect: { type: 'lifespan', value: 20 }
     },
     'huyet_don_thuat_book': {
         id: 'huyet_don_thuat_book',
@@ -1714,12 +1715,13 @@ export const ITEMS = {
     // --- TECHNIQUES (CÔNG PHÁP) ---
     'truong_sinh_quyet': {
         id: 'truong_sinh_quyet',
-        name: 'Trường Sinh Quyết',
-        type: 'technique',
+        name: 'Trường Sinh Quyết (Bí Tịch)',
+        type: 'book',
         icon: '📖',
         quality: 'Pháp Khí',
         price: 500,
-        description: 'Công pháp cơ bản giúp gia tăng thọ nguyên và thể chất.'
+        description: 'Công pháp cơ bản giúp gia tăng thọ nguyên và thể chất.',
+        techniqueId: 'truong_sinh_quyet'
     },
     'thien_loi_kiem_quyet': {
         id: 'thien_loi_kiem_quyet',

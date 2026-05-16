@@ -208,7 +208,8 @@ const CREATION_BONUS_LABELS = {
     comprehension: 'Ngộ tính',
     daoTam: 'Đạo tâm',
     divineSense: 'Thần thức',
-    physique: 'Căn cốt'
+    physique: 'Căn cốt',
+    allRes: 'Kháng Tất Cả'
 };
 
 const formatCreationBonus = (bonus = {}) => {
@@ -218,7 +219,7 @@ const formatCreationBonus = (bonus = {}) => {
     const multiplierStats = [
         'tvps', 'alchemySuccess', 'bodyExpSpeed', 'soulExpSpeed',
         'qiAbsorb', 'critRate', 'critDmg', 'lifeSteal',
-        'pierce', 'soulPierce', 'fireDmg', 'waterDmg', 'thunderDmg'
+        'pierce', 'soulPierce', 'fireDmg', 'waterDmg', 'thunderDmg', 'allRes'
     ];
 
     return Object.entries(normalized)
@@ -228,7 +229,7 @@ const formatCreationBonus = (bonus = {}) => {
 
             if (multiplierStats.includes(key) || key === 'techniqueMastery' || key === 'breakthroughChance') {
                 let percent;
-                if (['critRate', 'critDmg', 'lifeSteal', 'pierce', 'soulPierce', 'fireDmg', 'waterDmg', 'thunderDmg', 'breakthroughChance'].includes(key)) {
+                if (['critRate', 'critDmg', 'lifeSteal', 'pierce', 'soulPierce', 'fireDmg', 'waterDmg', 'thunderDmg', 'breakthroughChance', 'allRes'].includes(key)) {
                     percent = Math.round(value * 100);
                 } else {
                     // For tvps, 1.2 means +20%, 4.0 means +300%

@@ -102,7 +102,7 @@ export class DiHoaBangScreen {
             
             el.innerHTML = `
                 <div class="flex-none w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-sm font-ancient text-gray-400 group-hover:text-red-500 transition-colors flame-effect">
-                    🔥
+                    ${item.rank}
                 </div>
                 <div class="flex-grow">
                     <h4 class="text-sm font-bold text-white group-hover:text-red-400 transition-colors">${item.name}</h4>
@@ -111,7 +111,7 @@ export class DiHoaBangScreen {
                         <span class="text-[8px] font-bold ${rarityClass}">${item.rarity}</span>
                     </div>
                 </div>
-                <i class="ph ph-caret-right text-gray-600 group-hover:text-red-500"></i>
+                <i class="ph ph-fire text-gray-600 group-hover:text-red-500"></i>
             `;
             
             el.onclick = () => this.showDetail(item);

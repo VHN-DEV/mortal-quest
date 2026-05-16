@@ -773,7 +773,8 @@ export class Player {
             pierce: 0, soulPierce: 0, critRate: 0.05, critDmg: 1.5,
             fireDmg: 1.0, waterDmg: 1.0, thunderDmg: 1.0,
             qiAbsorb: 1.0, lifeSteal: 0, alchemySuccess: 0,
-            soulRepress: 0, perception: 5 + (soulLevel * 2), daoVun: 0, murderQi: 0
+            soulRepress: 0, perception: 5 + (soulLevel * 2), daoVun: 0, murderQi: 0,
+            allRes: 0
         };
 
         // 1. Calculate BASE STATS (from Realms)
@@ -854,6 +855,7 @@ export class Player {
                 if (b.maxHp) this.baseStats.maxHp += b.maxHp;
                 if (b.maxAge) this.bonusStats.maxAge += b.maxAge;
                 if (b.qiAbsorb) this.advancedStats.qiAbsorb *= b.qiAbsorb;
+                if (b.allRes) this.advancedStats.allRes += b.allRes;
                 if (b.techniqueMastery) this.advancedStats.techniqueMastery = (this.advancedStats.techniqueMastery || 1) * b.techniqueMastery;
             }
 
@@ -1193,6 +1195,12 @@ export class Player {
             if (techData.stats.hp) this.bonusStats.maxHp += techData.stats.hp * finalMult;
             if (techData.stats.mana) this.bonusStats.maxMana += techData.stats.mana * finalMult;
             if (techData.stats.spd) this.bonusStats.spd += techData.stats.spd * finalMult;
+        }
+
+        // Apply lifespan bonus if defined in effects
+        if (techData.effects) {
+            if (techData.effects.lifespanBonus) this.bonusStats.maxAge += techData.effects.lifespanBonus * finalMult;
+            if (techData.effects.allRes) this.advancedStats.allRes += techData.effects.allRes * finalMult;
         }
     }
 
