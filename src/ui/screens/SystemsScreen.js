@@ -197,7 +197,7 @@ export class SystemsScreen {
                     </div>
                     ${locked ?
                     `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
-                    `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap" onclick="window.game.craft('${recipe.id}')">LUYỆN CHẾ</button>`
+                    `<button class="px-3 py-1.5 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap" onclick="window.game.craft('${recipe.id}')">LUYỆN CHẾ</button>`
                 }
                 </div>
                 <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
@@ -252,7 +252,7 @@ export class SystemsScreen {
                                 <span class="text-[9px] text-gray-500">(${Math.floor(plot.age)} năm)</span>
                             </div>
                         </div>
-                        <button class="px-4 py-2 bg-qi-jade/10 text-qi-jade text-[10px] font-bold rounded-xl border border-qi-jade/20 active:scale-95 transition-all" onclick="window.game.harvest(${index})">THU HOẠCH</button>
+                        <button class="px-3 py-1.5 bg-qi-jade/10 text-qi-jade text-[10px] font-bold rounded-xl border border-qi-jade/20 active:scale-95 transition-all" onclick="window.game.harvest(${index})">THU HOẠCH</button>
                     </div>
                 `;
             } else {
@@ -536,7 +536,7 @@ export class SystemsScreen {
 
             const btn = document.createElement('button');
             const isOutOfStock = item.stock <= 0;
-            btn.className = `px-4 py-2 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap ${isOutOfStock || isVipLocked ? 'opacity-50 grayscale pointer-events-none' : ''}`;
+            btn.className = `px-3 py-1.5 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap ${isOutOfStock || isVipLocked ? 'opacity-50 grayscale pointer-events-none' : ''}`;
             btn.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>TRAO ĐỔI`;
             btn.onclick = (e) => {
                 e.stopPropagation();
@@ -633,7 +633,7 @@ export class SystemsScreen {
                     <h4 class="text-sm font-ancient text-white">${cert.name}</h4>
                     <p class="text-[10px] text-gray-500">Phí: ${cert.requirements.fee} LT | Cần luyện: ${cert.task.quantity} ${getItemById(cert.task.targetId)?.name || 'đan dược'}</p>
                 </div>
-                <button class="px-4 py-2 bg-qi-blue text-black text-[10px] font-bold rounded-lg ${locked ? 'opacity-50' : ''}" 
+                <button class="px-3 py-1.5 bg-qi-blue text-black text-[10px] font-bold rounded-lg ${locked ? 'opacity-50' : ''}" 
                     onclick="window.game.guildCertify(${cert.level})">KHẢO HẠCH</button>
             `;
             this.elGuildCerts.appendChild(el);
@@ -668,7 +668,7 @@ export class SystemsScreen {
                         <h4 class="text-sm font-ancient text-white">${room.name} ${active ? '⭐' : ''}</h4>
                         <p class="text-[10px] text-gray-500">Phí thuê: ${room.fee} LT | Tăng ${room.successBonus * 100}% thành công</p>
                     </div>
-                    <button class="px-4 py-2 ${active ? 'bg-gray-800' : 'bg-cultivation-gold'} text-black text-[10px] font-bold rounded-lg" 
+                    <button class="px-3 py-1.5 ${active ? 'bg-gray-800' : 'bg-cultivation-gold'} text-black text-[10px] font-bold rounded-lg" 
                         onclick="window.game.guildRent('${room.id}')">${active ? 'ĐANG THUÊ' : 'THUÊ'}</button>
                 `;
                 this.elGuildRooms.appendChild(el);

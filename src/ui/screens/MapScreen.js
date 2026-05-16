@@ -130,7 +130,7 @@ export class MapScreen {
             const w = worlds[id];
             const locked = state.player.realmId < w.minRealm;
             const el = document.createElement('div');
-            el.className = `group relative overflow-hidden p-6 rounded-[2rem] border transition-all duration-500 active:scale-[0.98] ${locked ? 'bg-black/20 border-white/5 opacity-60' : 'bg-qi-ink/40 border-white/10 hover:border-qi-blue/50 hover:bg-black/60 shadow-xl'}`;
+            el.className = `group relative overflow-hidden p-5 rounded-[2rem] border transition-all duration-500 active:scale-[0.98] ${locked ? 'bg-black/20 border-white/5 opacity-60' : 'bg-qi-ink/40 border-white/10 hover:border-qi-blue/50 hover:bg-black/60 shadow-xl'}`;
 
             const reqRealmName = getRealmById(w.minRealm).name;
 
@@ -192,7 +192,7 @@ export class MapScreen {
             const playerRealm = state.player.getRealmById ? state.player.getRealmById(state.player.realmId) : getRealmById(state.player.realmId);
             const locked = state.player.realmId < loc.minRealm;
             const el = document.createElement('div');
-            el.className = `location-card h-40 p-6 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
+            el.className = `location-card h-40 p-5 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
 
             const dangerInfo = DANGER_LEVELS[loc.danger] || { name: loc.danger };
             const dangerClass = `danger-${loc.danger}`;
@@ -390,28 +390,28 @@ export class MapScreen {
         } else if (SECTS[loc.id]) {
             hasSpecial = true;
             this.elLocSpecialActions.innerHTML = `
-                <button onclick="window.game.openSect()" class="col-span-2 py-4 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                <button onclick="window.game.openSect()" class="col-span-2 py-3 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
                     <i class="ph ph-castle-turret text-lg"></i><span>VÀO TÔNG MÔN</span>
                 </button>
             `;
         } else if (loc.special === 'guild') {
             hasSpecial = true;
             this.elLocSpecialActions.innerHTML = `
-                <button onclick="window.game.openGuild()" class="col-span-2 py-4 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                <button onclick="window.game.openGuild()" class="col-span-2 py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
                     <i class="ph ph-users text-lg"></i><span>VÀO CÔNG HỘI</span>
                 </button>
             `;
         } else if (loc.special === 'tower') {
             hasSpecial = true;
             this.elLocSpecialActions.innerHTML = `
-                <button onclick="window.game.openTower()" class="col-span-2 py-4 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                <button onclick="window.game.openTower()" class="col-span-2 py-3 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
                     <i class="ph ph-tower text-lg"></i><span>VÀO ĐAN THÁP</span>
                 </button>
             `;
         } else if (loc.special === 'mountain') {
             hasSpecial = true;
             this.elLocSpecialActions.innerHTML = `
-                <button onclick="window.game.openMountain()" class="col-span-2 py-4 bg-red-900/20 border border-red-500/30 rounded-xl text-red-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                <button onclick="window.game.openMountain()" class="col-span-2 py-3 bg-red-900/20 border border-red-500/30 rounded-xl text-red-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
                     <i class="ph ph-mountains text-lg"></i><span>VÀO ĐẠI SƠN</span>
                 </button>
             `;
@@ -422,7 +422,7 @@ export class MapScreen {
         if (hasNodes) {
             hasSpecial = true;
             const btnMining = document.createElement('button');
-            btnMining.className = "col-span-2 py-4 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2 mt-2";
+            btnMining.className = "col-span-2 py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2 mt-2";
             btnMining.innerHTML = '<i class="ph ph-pickaxe text-lg"></i><span>KHAI KHOÁNG</span>';
             btnMining.onclick = () => window.game.openMining();
             this.elLocSpecialActions.appendChild(btnMining);
