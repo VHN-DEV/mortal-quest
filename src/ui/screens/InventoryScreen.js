@@ -201,6 +201,22 @@ export class InventoryScreen {
         this.renderBagTabs();
         this.renderGrid();
         this.renderEquipmentSlots();
+        this.updateDetailQuantity();
+    }
+
+    updateDetailQuantity() {
+        if (!state.selectedItemId || !this.elItemDetail || this.elItemDetail.classList.contains('hidden')) return;
+
+        const item = state.player.inventory.allItems.find(i => i.id === state.selectedItemId);
+        if (item && this.elQtyMaxText) {
+            this.elQtyMaxText.textContent = `Tối đa: ${item.quantity}`;
+            
+            // Ensure input doesn't exceed current quantity
+            const currentVal = parseInt(this.elQtyInput.value) || 1;
+            if (currentVal > item.quantity) {
+                this.elQtyInput.value = Math.max(1, item.quantity);
+            }
+        }
     }
 
     renderBagTabs() {
@@ -477,7 +493,7 @@ export class InventoryScreen {
             this.elQtyContainer.classList.toggle('hidden', !isStackable || fromShop);
             if (isStackable && playerItem && !fromShop) {
                 this.elQtyInput.value = 1;
-                this.elQtyMaxText.textContent = `Tối đa: ${playerItem.quantity}`;
+                this.updateDetailQuantity();
             }
         }
 
@@ -491,7 +507,7 @@ export class InventoryScreen {
                 this.elQtyContainer.classList.remove('hidden');
                 if (playerItem) {
                     this.elQtyInput.value = 1;
-                    this.elQtyMaxText.textContent = `Tối đa: ${playerItem.quantity}`;
+                    this.updateDetailQuantity();
                 }
             }
 
