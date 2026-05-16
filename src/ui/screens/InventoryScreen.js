@@ -2,6 +2,8 @@ import { state } from '../../state.js';
 import { getItemById, ITEMS } from '../../configs/item-data.js';
 import { getAssetUrl } from '../../configs/asset-data.js';
 import { getItemConnections } from '../../utils/item-connections.js';
+import { getTechniqueById, getSecretTechniqueById } from '../../configs/technique-data.js';
+import { BEASTS } from '../../configs/beast-data.js';
 
 /**
  * Quản lý giao diện túi đồ và trang bị.
@@ -550,11 +552,30 @@ export class InventoryScreen {
         });
 
         if (connections.unlocksProfession) {
-            allConnections.push({ label: 'Truyền Thừa Đạo Nghiệp', icon: '📜', info: connections.unlocksProfession.toUpperCase() });
+            const professionNames = {
+                alchemy: 'Luyện Dược Sư',
+                smithing: 'Luyện Khí Sư',
+                talisman: 'Phù Sư',
+                formation: 'Trận Pháp Sư',
+                puppet: 'Khôi Lỗi Sư',
+                corpse: 'Luyện Thi Sư',
+                beast: 'Ngự Thú Sư',
+                insect: 'Khu Trùng Sư'
+            };
+            const profName = professionNames[connections.unlocksProfession] || connections.unlocksProfession.toUpperCase();
+            allConnections.push({ label: 'Truyền Thừa Đạo Nghiệp', icon: '📜', info: profName });
         }
 
         if (connections.teaches) {
-            allConnections.push({ label: 'Lĩnh Ngộ Thần Thông', icon: '📖', info: connections.teaches });
+            const tech = getTechniqueById(connections.teaches) || getSecretTechniqueById(connections.teaches);
+            const techName = tech ? tech.name : connections.teaches;
+            allConnections.push({ label: 'Lĩnh Ngộ Thần Thông', icon: '📖', info: techName });
+        }
+
+        if (connections.hatchesTo) {
+            const beast = BEASTS[connections.hatchesTo];
+            const beastName = beast ? beast.name : connections.hatchesTo;
+            allConnections.push({ label: 'Ấp Nở Ra', icon: '🥚', info: beastName });
         }
 
         if (allConnections.length > 0) {

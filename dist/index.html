@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-CDA6V5B8.js"></script>
+  <script type="module" crossorigin src="./assets/index-BNFQlnqo.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-CiICGT7m.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-CEMcQzUQ.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -636,6 +636,26 @@
                             <!-- Player Aura -->
                             <div id="aura-glow"
                                 class="absolute inset-16 bg-qi-blue/5 rounded-full blur-3xl animate-pulse aura-glow">
+                            </div>
+
+                            <!-- Circular Progress Bars -->
+                            <div class="absolute inset-0 z-10 pointer-events-none">
+                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                    <!-- Tu Vi Circle (Outer) -->
+                                    <circle cx="50" cy="50" r="48" fill="none" stroke="rgba(79, 209, 197, 0.1)" stroke-width="1.5" />
+                                    <circle id="circle-tu-vi" cx="50" cy="50" r="48" fill="none" stroke="#4fd1c5" stroke-width="1.5" 
+                                        stroke-dasharray="301.6" stroke-dashoffset="301.6" stroke-linecap="round" class="transition-all duration-700 ease-out" />
+                                    
+                                    <!-- Body Circle (Middle) -->
+                                    <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(239, 68, 68, 0.1)" stroke-width="1.5" />
+                                    <circle id="circle-body" cx="50" cy="50" r="44" fill="none" stroke="#ef4444" stroke-width="1.5" 
+                                        stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" class="transition-all duration-700 ease-out" />
+                                    
+                                    <!-- Soul Circle (Inner) -->
+                                    <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(168, 85, 247, 0.1)" stroke-width="1.5" />
+                                    <circle id="circle-soul" cx="50" cy="50" r="40" fill="none" stroke="#9f7aea" stroke-width="1.5" 
+                                        stroke-dasharray="251.3" stroke-dashoffset="251.3" stroke-linecap="round" class="transition-all duration-700 ease-out" />
+                                </svg>
                             </div>
 
                             <div id="aura-border"

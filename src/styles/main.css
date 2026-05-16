@@ -2042,7 +2042,7 @@ select option:checked {
 .loading-bg-image {
     position: absolute;
     inset: 0;
-    background-image: url('../assets/images/backgrounds/loading_bg.png');
+    background-image: url('../assets/images/backgrounds/loading_bg.webp');
     background-size: cover;
     background-position: center;
     filter: blur(4px) brightness(0.4);
@@ -2251,6 +2251,17 @@ select option:checked {
     25% { opacity: 0.4; }
     50% { transform: translateY(-60px) rotate(30deg) scale(1.2); opacity: 0.2; }
     75% { opacity: 0.4; }
+}
+
+/* Circular Cultivation Progress */
+#circle-tu-vi {
+    filter: drop-shadow(0 0 5px rgba(79, 209, 197, 0.5));
+}
+#circle-body {
+    filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.5));
+}
+#circle-soul {
+    filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.5));
 }
 
 

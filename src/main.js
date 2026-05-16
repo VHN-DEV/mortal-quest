@@ -116,6 +116,27 @@ window.renderMainStats = () => {
     if (elBodyText) elBodyText.textContent = `${Math.floor(bodyPercent)}%`;
     if (elSoulText) elSoulText.textContent = `${Math.floor(soulPercent)}%`;
 
+    // Circular Progress Update
+    const circleTuVi = document.getElementById('circle-tu-vi');
+    const circleBody = document.getElementById('circle-body');
+    const circleSoul = document.getElementById('circle-soul');
+
+    if (circleTuVi) {
+        const circumference = 301.6;
+        const offset = circumference - (Math.min(100, progress) / 100) * circumference;
+        circleTuVi.style.strokeDashoffset = offset;
+    }
+    if (circleBody) {
+        const circumference = 276.5;
+        const offset = circumference - (bodyPercent / 100) * circumference;
+        circleBody.style.strokeDashoffset = offset;
+    }
+    if (circleSoul) {
+        const circumference = 251.3;
+        const offset = circumference - (soulPercent / 100) * circumference;
+        circleSoul.style.strokeDashoffset = offset;
+    }
+
     const focus = player.cultivationFocus || 'tuvi';
     const focusMap = {
         tuvi: { id: 'focus-tuvi', label: 'THU NẠP LINH KHÍ', icon: 'ph-sparkle' },
