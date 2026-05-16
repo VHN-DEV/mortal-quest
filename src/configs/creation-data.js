@@ -69,22 +69,22 @@ export const DEMON_KARMA = [
 ];
 
 export const CREATION_RACES = {
-    'HUMAN': { 
-        id: 'HUMAN', name: 'Nhân Tộc', cost: 0, 
-        desc: 'Linh hồn hoàn chỉnh nhất, thích hợp tu luyện mọi loại công pháp. Tốc độ lĩnh ngộ ổn định.', 
-        bonus: { tvps: 1.0, soulExpSpeed: 1.1 } 
+    'HUMAN': {
+        id: 'HUMAN', name: 'Nhân Tộc', cost: 0,
+        desc: 'Linh hồn hoàn chỉnh nhất, thích hợp tu luyện mọi loại công pháp. Tốc độ lĩnh ngộ ổn định.',
+        bonus: { tvps: 1.0, soulExpSpeed: 1.1 }
     },
-    'YAO': { 
-        id: 'YAO', name: 'Yêu Tộc', cost: 40, 
-        desc: 'Hóa hình từ yêu thú, thân thể cực mạnh, thọ nguyên dài. Có khả năng thức tỉnh huyết mạch thần thú.', 
+    'YAO': {
+        id: 'YAO', name: 'Yêu Tộc', cost: 40,
+        desc: 'Hóa hình từ yêu thú, thân thể cực mạnh, thọ nguyên dài. Có khả năng thức tỉnh huyết mạch thần thú.',
         bloodline: 'LINH',
-        bonus: { maxHp: 500, def: 50, maxAge: 1000, tvps: 0.9 } 
+        bonus: { maxHp: 500, def: 50, maxAge: 1000, tvps: 0.9 }
     },
-    'DEMON': { 
-        id: 'DEMON', name: 'Ma Tộc', cost: 60, 
-        desc: 'Chủng tộc của bản năng và sức mạnh hủy diệt. Tốc độ thăng tiến cực nhanh nhưng dễ bị tâm ma quấy phá.', 
+    'DEMON': {
+        id: 'DEMON', name: 'Ma Tộc', cost: 60,
+        desc: 'Chủng tộc của bản năng và sức mạnh hủy diệt. Tốc độ thăng tiến cực nhanh nhưng dễ bị tâm ma quấy phá.',
         bloodline: 'CHAN',
-        bonus: { atk: 150, tvps: 1.3, karma: -200, maxAge: 500 } 
+        bonus: { atk: 150, tvps: 1.3, karma: -200, maxAge: 500 }
     }
 };
 
@@ -98,40 +98,40 @@ export const ROOT_RARITY = {
 };
 
 export const CREATION_ROOTS = {
-    'thien_linh_can': { 
+    'thien_linh_can': {
         id: 'thien_linh_can', name: 'Thiên Linh Căn', cost: 100, type: 'special', quantity: 1,
-        desc: 'Linh căn hoàn mỹ, chỉ một thuộc tính tinh thuần. Hấp thu linh khí gần như không hao tổn.', 
-        bonus: { qiAbsorb: 2.0, breakthroughChance: 0.2, techniqueMastery: 1.5 } 
+        desc: 'Linh căn hoàn mỹ, chỉ một thuộc tính tinh thuần. Hấp thu linh khí gần như không hao tổn.',
+        bonus: { qiAbsorb: 2.0, breakthroughChance: 0.2, techniqueMastery: 1.5 }
     },
-    'di_linh_can': { 
+    'di_linh_can': {
         id: 'di_linh_can', name: 'Dị Linh Căn', cost: 70, type: 'special', quantity: 1,
-        desc: 'Linh căn biến dị hiếm gặp (Lôi/Băng/Phong/Độc). Sức mạnh bộc phát cực mạnh.', 
-        bonus: { qiAbsorb: 1.4, atk: 25, techniqueMastery: 1.3 } 
+        desc: 'Linh căn biến dị hiếm gặp (Lôi/Băng/Phong/Độc). Sức mạnh bộc phát cực mạnh.',
+        bonus: { qiAbsorb: 1.4, atk: 25, techniqueMastery: 1.3 }
     },
-    'don_linh_can': { 
+    'don_linh_can': {
         id: 'don_linh_can', name: 'Đơn Linh Căn', cost: 40, type: 'basic', quantity: 1,
-        desc: 'Chỉ một thuộc tính tinh thuần. Tốc độ tu luyện vượt trội.', 
-        bonus: { qiAbsorb: 1.2, techniqueMastery: 1.2 } 
+        desc: 'Chỉ một thuộc tính tinh thuần. Tốc độ tu luyện vượt trội.',
+        bonus: { qiAbsorb: 1.2, techniqueMastery: 1.2 }
     },
-    'song_linh_can': { 
+    'song_linh_can': {
         id: 'song_linh_can', name: 'Song Linh Căn', cost: 30, type: 'basic', quantity: 2,
-        desc: 'Hai thuộc tính chính. Linh hoạt trong việc chọn lựa công pháp.', 
-        bonus: { qiAbsorb: 1.0, techniqueMastery: 1.1 } 
+        desc: 'Hai thuộc tính chính. Linh hoạt trong việc chọn lựa công pháp.',
+        bonus: { qiAbsorb: 1.0, techniqueMastery: 1.1 }
     },
-    'tam_linh_can': { 
+    'tam_linh_can': {
         id: 'tam_linh_can', name: 'Tam Linh Căn', cost: 10, type: 'basic', quantity: 3,
-        desc: 'Ba loại linh căn. Tốc độ tu luyện trung bình nhưng đa dạng.', 
-        bonus: { qiAbsorb: 0.8, techniqueMastery: 1.0 } 
+        desc: 'Ba loại linh căn. Tốc độ tu luyện trung bình nhưng đa dạng.',
+        bonus: { qiAbsorb: 0.8, techniqueMastery: 1.0 }
     },
-    'ngu_hanh_linh_can': { 
+    'ngu_hanh_linh_can': {
         id: 'ngu_hanh_linh_can', name: 'Ngũ Hành Linh Căn', cost: 0, type: 'basic', quantity: 5,
-        desc: 'Đầy đủ ngũ hành. Chậm chạp ở giai đoạn đầu nhưng tiềm năng về sau vô hạn.', 
-        bonus: { qiAbsorb: 0.6, techniqueMastery: 1.5, allRes: 0.1 } 
+        desc: 'Đầy đủ ngũ hành. Chậm chạp ở giai đoạn đầu nhưng tiềm năng về sau vô hạn.',
+        bonus: { qiAbsorb: 0.6, techniqueMastery: 1.5, allRes: 0.1 }
     },
-    'tap_linh_can': { 
-        id: 'tap_linh_can', name: 'Tạp Linh Căn', cost: -30, type: 'basic', quantity: 4,
-        desc: 'Nhiều thuộc tính pha tạp, tu luyện gian nan, khó lòng tiến xa.', 
-        bonus: { qiAbsorb: 0.4, breakthroughChance: -0.1, techniqueMastery: 0.7 } 
+    'nguy_linh_can': {
+        id: 'nguy_linh_can', name: 'Ngụy Linh Căn', cost: -30, type: 'basic', quantity: 4,
+        desc: 'Nhiều thuộc tính pha tạp, tu luyện gian nan, khó lòng tiến xa.',
+        bonus: { qiAbsorb: 0.4, breakthroughChance: -0.1, techniqueMastery: 0.7 }
     }
 };
 
@@ -144,53 +144,53 @@ export const SECONDARY_TALENTS = {
 };
 
 export const ROOT_ELEMENTS = {
-    'Kim': { 
+    'Kim': {
         id: 'Kim', name: 'Kim', color: '#ffd700', icon: '⚔️',
         orientation: 'Công kích, Sắc bén',
-        bonus: { atk: 50, critRate: 0.05, armorPen: 0.1 } 
+        bonus: { atk: 50, critRate: 0.05, armorPen: 0.1 }
     },
-    'Mộc': { 
+    'Mộc': {
         id: 'Mộc', name: 'Mộc', color: '#4ade80', icon: '🌿',
         orientation: 'Sinh mệnh, Hồi phục',
-        bonus: { maxHp: 200, hpRegen: 10, poisonRes: 0.2 } 
+        bonus: { maxHp: 200, hpRegen: 10, poisonRes: 0.2 }
     },
-    'Thủy': { 
+    'Thủy': {
         id: 'Thủy', name: 'Thủy', color: '#3b82f6', icon: '💧',
         orientation: 'Mềm dẻo, Khống chế',
-        bonus: { maxMana: 300, avoidRate: 0.05, crowdControl: 0.1 } 
+        bonus: { maxMana: 300, avoidRate: 0.05, crowdControl: 0.1 }
     },
-    'Hỏa': { 
+    'Hỏa': {
         id: 'Hỏa', name: 'Hỏa', color: '#f87171', icon: '🔥',
         orientation: 'Bộc phát, Hủy diệt',
-        bonus: { skillDmg: 0.15, fireDmg: 1.5, spd: 20 } 
+        bonus: { skillDmg: 0.15, fireDmg: 1.5, spd: 20 }
     },
-    'Thổ': { 
+    'Thổ': {
         id: 'Thổ', name: 'Thổ', color: '#a855f7', icon: '⛰️',
         orientation: 'Phòng ngự, Ổn định',
-        bonus: { def: 40, maxHp: 300, statusRes: 0.15 } 
+        bonus: { def: 40, maxHp: 300, statusRes: 0.15 }
     }
 };
 
 export const SPECIAL_ELEMENTS = {
-    'Lôi': { 
+    'Lôi': {
         id: 'Lôi', name: 'Lôi', color: '#fbbf24', icon: '⚡',
         orientation: 'Tốc độ, Bạo phát',
-        bonus: { spd: 50, critRate: 0.1, thunderDmg: 2.5 } 
+        bonus: { spd: 50, critRate: 0.1, thunderDmg: 2.5 }
     },
-    'Băng': { 
+    'Băng': {
         id: 'Băng', name: 'Băng', color: '#60a5fa', icon: '❄️',
         orientation: 'Đóng băng, Khống chế',
-        bonus: { def: 60, waterDmg: 2.0, iceControl: 0.2 } 
+        bonus: { def: 60, waterDmg: 2.0, iceControl: 0.2 }
     },
-    'Phong': { 
+    'Phong': {
         id: 'Phong', name: 'Phong', color: '#94a3b8', icon: '🌪️',
         orientation: 'Né tránh, Ám sát',
-        bonus: { avoidRate: 0.15, spd: 80, critDmg: 0.3 } 
+        bonus: { avoidRate: 0.15, spd: 80, critDmg: 0.3 }
     },
-    'Độc': { 
+    'Độc': {
         id: 'Độc', name: 'Độc', color: '#c084fc', icon: '☠️',
         orientation: 'Nguyền rủa, Hấp thụ',
-        bonus: { poisonDmg: 2.0, lifesteal: 0.1, dotDmg: 0.2 } 
+        bonus: { poisonDmg: 2.0, lifesteal: 0.1, dotDmg: 0.2 }
     }
 };
 
@@ -241,7 +241,7 @@ export const CREATION_TRAITS = {
     'kiem_dao_ky_tai': { id: 'kiem_dao_ky_tai', name: 'Kiếm Đạo Kỳ Tài', cost: 40, type: 'advantage', desc: 'Lĩnh ngộ kiếm pháp cực nhanh, tăng tỉ lệ bạo kích.', bonus: { atk: 20, critRate: 0.1, critDmg: 0.5 } },
     'di_hoa_tan_diem': { id: 'di_hoa_tan_diem', name: 'Dị Hỏa Tàn Diễm', cost: 40, type: 'advantage', desc: 'Mang theo ngọn lửa thần bí, hỗ trợ luyện đan.', bonus: { alchemySuccess: 0.25, fireDmg: 1.2 } },
     'thong_minh': { id: 'thong_minh', name: 'Thất Khiếu Linh Lung', cost: 30, type: 'advantage', desc: 'Thông minh bẩm sinh, tăng tốc độ học tập và thọ nguyên.', bonus: { tvps: 1.3, maxAge: 20 } },
-    
+
     // Disadvantages
     'kinh_mach_tan_khuyet': { id: 'kinh_mach_tan_khuyet', name: 'Kinh Mạch Tàn Khuyết', cost: -100, type: 'disadvantage', desc: 'Kinh mạch bị tổn thương, tu luyện chậm.', bonus: { tvps: 0.5, qiAbsorb: 0.5 } },
     'thien_sat_co_tinh': { id: 'thien_sat_co_tinh', name: 'Thiên Sát Cô Tinh', cost: -70, type: 'disadvantage', desc: 'Khắc người thân, dễ gây thù hận, nghiệp lực sâu dày.', bonus: { luck: -70, karma: -200, murderQi: 100 } },
@@ -254,7 +254,7 @@ export const CREATION_SCENARIOS = {
         id: 'pham_nhan_luu',
         name: 'Phàm Nhân Lưu',
         desc: 'Không thiên phú, không tài nguyên, bắt đầu từ con số 0.',
-        setup: { root: 'tap_linh_can', physique: 'binh_thuong', origin: 'tan_tu', traits: [] }
+        setup: { root: 'nguy_linh_can', physique: 'binh_thuong', origin: 'tan_tu', traits: [] }
     },
     'thien_kieu_luu': {
         id: 'thien_kieu_luu',

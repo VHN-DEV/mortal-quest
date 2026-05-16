@@ -7,9 +7,9 @@ export class DestinySystem {
         const origin = this.rollOrigin();
         const talents = this.rollTalents();
         const luck = Math.floor(Math.random() * 100);
-        
+
         const destinyRating = this.evaluateDestiny(root, physique, luck, origin);
-        
+
         return {
             spiritualRoot: root,
             physique: physique,
@@ -23,7 +23,7 @@ export class DestinySystem {
     static rollSpiritualRoot() {
         const qualityKeys = Object.keys(ROOT_QUALITIES);
         const quality = qualityKeys[Math.floor(Math.random() * qualityKeys.length)];
-        
+
         // Root Types: Single (10%), Double (30%), Triple (40%), Pentad (20%)
         const r = Math.random();
         let elementCount = 1;
@@ -31,26 +31,27 @@ export class DestinySystem {
         else if (r < 0.4) elementCount = 2;
         else if (r < 0.8) elementCount = 3;
         else elementCount = 5;
-        
+
         const allElements = [...ROOT_TYPES.BASIC];
         const elements = [];
         for (let i = 0; i < elementCount; i++) {
             const idx = Math.floor(Math.random() * allElements.length);
             elements.push(allElements.splice(idx, 1)[0]);
         }
-        
+
         // Mutated chance (5%)
         let mutated = null;
         if (Math.random() < 0.05) {
             mutated = ROOT_TYPES.MUTATED[Math.floor(Math.random() * ROOT_TYPES.MUTATED.length)];
         }
-        
+
         let typeName = "";
         if (mutated) typeName = `Biến Dị ${mutated}`;
         else if (elementCount === 1) typeName = `Đơn Linh Căn (${elements[0]})`;
         else if (elementCount === 2) typeName = `Song Linh Căn`;
         else if (elementCount === 3) typeName = `Tam Linh Căn`;
-        else typeName = `Ngũ Hành Tạp Linh Căn`;
+        else if (elementCount === 4) typeName = `Ngụy Linh Căn`;
+        else typeName = `Ngũ Hành Linh Căn`;
 
         return {
             type: typeName,
@@ -85,7 +86,7 @@ export class DestinySystem {
         score += root.multiplier * 20;
         if (physique) score += 50;
         score += luck;
-        
+
         if (score < 50) return "Phàm Nhân Mệnh Cách";
         if (score < 100) return "Đại Khí Vãn Thành";
         if (score < 150) return "Tuyệt Thế Thiên Kiêu";

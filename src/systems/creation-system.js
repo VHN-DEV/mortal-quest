@@ -27,7 +27,7 @@ export class CreationSystem {
         this.startingLingShi = 0;
         this.startingRealmId = 1;
         this.selectedArtifact = 'none';
-        
+
         // Secondary Talents (Values from 1-100)
         this.talents = {
             comprehension: Math.floor(Math.random() * 61) + 20, // 20-80
@@ -36,7 +36,7 @@ export class CreationSystem {
             divineSense: Math.floor(Math.random() * 61) + 20,
             physique: Math.floor(Math.random() * 61) + 20
         };
-        
+
         this.rootRarity = 'PHAM';
         this.rootPurity = Math.floor(Math.random() * 41) + 30; // 30-70 initially
     }
@@ -81,7 +81,7 @@ export class CreationSystem {
             this.selectedRootElements = ['Kim', 'Mộc'];
         } else if (rootId === 'tam_linh_can') {
             this.selectedRootElements = ['Kim', 'Mộc', 'Thủy'];
-        } else if (rootId === 'tap_linh_can') {
+        } else if (rootId === 'nguy_linh_can') {
             this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Thổ'];
         }
         this.calculatePoints();
@@ -97,7 +97,7 @@ export class CreationSystem {
             'don_linh_can': 1,
             'song_linh_can': 2,
             'tam_linh_can': 3,
-            'tap_linh_can': 4
+            'nguy_linh_can': 4
         }[this.selectedRoot] || 1;
 
         if (this.selectedRootElements.includes(element)) {
@@ -116,19 +116,19 @@ export class CreationSystem {
 
     calculatePoints() {
         let total = CREATION_CONFIG.BASE_POINTS;
-        
+
         // Race cost
         total -= CREATION_RACES[this.selectedRace].cost;
 
         // Root cost
         total -= CREATION_ROOTS[this.selectedRoot].cost;
-        
+
         // Physique cost
         total -= CREATION_PHYSIQUES[this.selectedPhysique].cost;
-        
+
         // Origin cost
         total -= CREATION_ORIGINS[this.selectedOrigin].cost;
-        
+
         // Traits cost
         this.selectedTraits.forEach(traitId => {
             total -= CREATION_TRAITS[traitId].cost;
@@ -143,7 +143,7 @@ export class CreationSystem {
         if (this.startingLingShi > 0) {
             total -= Math.floor(this.startingLingShi / 100);
         }
-        
+
         this.points = total;
         return total;
     }
@@ -194,7 +194,7 @@ export class CreationSystem {
     applyScenario(scenarioId) {
         const scenario = CREATION_SCENARIOS[scenarioId];
         if (!scenario) return;
-        
+
         this.selectedRace = scenario.setup.race || 'HUMAN';
         this.selectedRoot = scenario.setup.root;
         this.selectedPhysique = scenario.setup.physique;
@@ -234,15 +234,15 @@ export class CreationSystem {
         const rootKeys = Object.keys(CREATION_ROOTS);
         this.selectedRoot = rootKeys[Math.floor(Math.random() * rootKeys.length)];
         this.selectRoot(this.selectedRoot);
-        
+
         const physKeys = Object.keys(CREATION_PHYSIQUES);
         this.selectedPhysique = physKeys[Math.floor(Math.random() * physKeys.length)];
-        
+
         const originKeys = Object.keys(CREATION_ORIGINS);
         this.selectedOrigin = originKeys[Math.floor(Math.random() * originKeys.length)];
         this.startingLingShi = CREATION_ORIGINS[this.selectedOrigin].resources.lingShi;
         this.startingRealmId = 1;
-        
+
         // Random talents
         for (const key in this.talents) {
             this.talents[key] = Math.floor(Math.random() * 81) + 10; // 10-90
@@ -257,25 +257,25 @@ export class CreationSystem {
                 this.selectedTraits.push(randomTrait);
             }
         }
-        
+
         this.calculatePoints();
     }
 
     buildPlayer() {
         if (this.points < 0 && this.mode === 'custom') return null;
-        
+
         const player = new Player();
         player.name = this.playerName;
         player.gender = this.playerGender;
         player.age = this.playerAge;
         player.avatar = this.playerAvatar;
         player.race = this.selectedRace;
-        
+
         const race = CREATION_RACES[this.selectedRace];
         const root = CREATION_ROOTS[this.selectedRoot];
         const phys = CREATION_PHYSIQUES[this.selectedPhysique];
         const origin = CREATION_ORIGINS[this.selectedOrigin];
-        
+
         // Apply Race
         player.racialBonus = race.bonus;
 
@@ -289,17 +289,17 @@ export class CreationSystem {
             rarityName: rarityData.name,
             purity: this.rootPurity,
             multiplier: (root.bonus.qiAbsorb || 1.0) * rarityData.multiplier * (this.rootPurity / 100),
-            bonus: root.bonus, 
+            bonus: root.bonus,
             color: rarityData.color
         };
-        
+
         // Apply Talents
         player.comprehension = this.talents.comprehension;
         player.luck = this.talents.luck;
         player.daoTam = this.talents.daoTam;
         player.divineSense = this.talents.divineSense;
         player.physiqueTalent = this.talents.physique;
-        
+
         // Apply Physique
         player.physique = {
             id: phys.id,
@@ -308,7 +308,7 @@ export class CreationSystem {
             awakened: true,
             phenomenonActive: false
         };
-        
+
         // Apply Origin resources
         player.origin = origin;
         player.realmId = this.startingRealmId;
@@ -318,7 +318,7 @@ export class CreationSystem {
         player.addLingShi(this.startingLingShi);
         origin.resources.items.forEach(itemId => player.inventory.addItem(itemId, 1));
         if (origin.resources.karma) player.karma = origin.resources.karma;
-        
+
         // Apply Traits
         this.selectedTraits.forEach(traitId => {
             const trait = CREATION_TRAITS[traitId];
@@ -340,15 +340,15 @@ export class CreationSystem {
             // 10 points = 1 Comprehension
             player.comprehension += this.points * 0.1;
         }
-        
+
         // Apply Destiny Rating based on leftover points
         player.destinyRating = this.getDestinyRating(this.points);
-        
+
         // Finalize stats (player.calculateStats will look at root, physique, and talents)
         player.calculateStats();
         player.hp = player.maxHp;
         player.mana = player.maxMana;
-        
+
         return player;
     }
 
@@ -367,7 +367,7 @@ export class CreationSystem {
             'song_linh_can': '#3b82f6',
             'tam_linh_can': '#4ade80',
             'ngu_hanh_linh_can': '#ffffff',
-            'tap_linh_can': '#9ca3af'
+            'nguy_linh_can': '#9ca3af'
         };
         return colors[rootId] || '#ffffff';
     }
