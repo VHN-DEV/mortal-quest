@@ -27,6 +27,8 @@ export class SystemsScreen {
     constructor() {
         this.shopSubFilter = 'all';
         this.shopQualityFilter = 'all';
+        this.shopSearchQuery = '';
+        this.shopSortMode = 'default';
         this.initElements();
         this.initEvents();
     }
@@ -52,6 +54,8 @@ export class SystemsScreen {
         this.elShopFiltersWrap = document.getElementById('shop-filters-wrap');
         this.btnShopTabBuy = document.getElementById('shop-tab-buy');
         this.btnShopTabSell = document.getElementById('shop-tab-sell');
+        this.elShopSearchInput = document.getElementById('shop-search-input');
+        this.elShopSortSelect = document.getElementById('shop-sort-select');
 
         // Other lists
         this.elGuildCerts = document.getElementById('guild-cert-list');
@@ -92,6 +96,20 @@ export class SystemsScreen {
         if (this.btnShopTabSell) {
             this.btnShopTabSell.onclick = () => {
                 state.views.shop = 'sell';
+                this.renderShop();
+            };
+        }
+
+        if (this.elShopSearchInput) {
+            this.elShopSearchInput.oninput = (e) => {
+                this.shopSearchQuery = e.target.value.toLowerCase().trim();
+                this.renderShop();
+            };
+        }
+
+        if (this.elShopSortSelect) {
+            this.elShopSortSelect.onchange = (e) => {
+                this.shopSortMode = e.target.value;
                 this.renderShop();
             };
         }
@@ -321,36 +339,28 @@ export class SystemsScreen {
     renderShopSections() {
         if (!this.elShopSectionNav) return;
         const shop = state.systems.shop;
-        const shopData = SHOPS[shop.currentShopId];
+        
+        const categories = [
+            { id: 'dan_duoc', name: 'Đan Dược', icon: '💊' },
+            { id: 'phap_bao', name: 'Trang Bị', icon: '⚔️' },
+            { id: 'cong_phap', name: 'Bí Tịch', icon: '📜' },
+            { id: 'bach_nghe', name: 'Bách Nghệ', icon: '⚒️' },
+            { id: 'ky_vat', name: 'Kỳ Vật', icon: '💎' }
+        ];
 
-        const sections = Object.keys(shopData.sections);
         const currentButtons = this.elShopSectionNav.querySelectorAll('button');
 
-        // Map section names to Vietnamese
-        const names = {
-            'dan_duoc': 'Đan Dược',
-            'phap_bao': 'Pháp Bảo',
-            'nguyen_lieu': 'Nguyên Liệu',
-            'cong_phap': 'Bí Tịch',
-            'tran_phap': 'Trận Pháp',
-            'phu_luc': 'Phù Lục',
-            'luyen_khi': 'Luyện Khí',
-            'linh_dien': 'Linh Điền',
-            'ky_trung': 'Kỳ Trùng',
-            'tui_tru_vat': 'Túi Trữ Vật'
-        };
-
-        // If buttons count doesn't match or shop changed, rebuild
-        if (currentButtons.length !== sections.length || this.elShopSectionNav.dataset.shopId !== shop.currentShopId) {
+        // If buttons count doesn't match, rebuild
+        if (currentButtons.length !== categories.length) {
             this.elShopSectionNav.innerHTML = '';
             this.elShopSectionNav.dataset.shopId = shop.currentShopId;
 
-            sections.filter(s => s !== 'bi_tich').forEach(sectionKey => {
+            categories.forEach(cat => {
                 const el = document.createElement('button');
-                el.dataset.section = sectionKey;
+                el.dataset.category = cat.id;
                 el.onclick = () => {
                     if (state.systems.shop) {
-                        state.systems.shop.currentSection = sectionKey;
+                        state.systems.shop.currentSection = cat.id;
                         this.shopSubFilter = 'all'; // Reset sub-filter
                         this.shopQualityFilter = 'all'; // Reset quality filter
                         this.renderShop();
@@ -362,10 +372,11 @@ export class SystemsScreen {
 
         // Update classes and text for all buttons
         this.elShopSectionNav.querySelectorAll('button').forEach(btn => {
-            const sectionKey = btn.dataset.section;
-            const active = shop.currentSection === sectionKey;
-            btn.className = `px-4 py-2 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all whitespace-nowrap shrink-0 ${active ? 'bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/30' : 'text-gray-500 border border-transparent'}`;
-            btn.textContent = names[sectionKey] || sectionKey;
+            const catId = btn.dataset.category;
+            const cat = categories.find(c => c.id === catId);
+            const active = shop.currentSection === catId;
+            btn.className = `px-4 py-2.5 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all whitespace-nowrap shrink-0 flex items-center space-x-2 ${active ? 'bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/30 shadow-[0_0_15px_rgba(212,175,55,0.1)]' : 'text-gray-500 border border-white/5 hover:border-white/10 bg-white/[0.02]'}`;
+            btn.innerHTML = `<span>${cat.icon}</span> <span>${cat.name}</span>`;
         });
     }
 
@@ -399,15 +410,33 @@ export class SystemsScreen {
                 { id: 'cultivation', name: 'Công Pháp Tu Luyện' },
                 { id: 'manual', name: 'Bí Tịch Kỹ Năng' }
             ];
+        } else if (section === 'bach_nghe') {
+            subFilters = [
+                { id: 'all', name: '--- Lọc Loại Bách Nghệ ---' },
+                { id: 'nguyen_lieu', name: 'Nguyên Liệu' },
+                { id: 'phu_luc', name: 'Phù Lục' },
+                { id: 'tran_phap', name: 'Trận Pháp' },
+                { id: 'luyen_khi', name: 'Luyện Khí' },
+                { id: 'linh_dien', name: 'Linh Điền' }
+            ];
+        } else if (section === 'ky_vat') {
+            subFilters = [
+                { id: 'all', name: '--- Lọc Loại Kỳ Vật ---' },
+                { id: 'tui_tru_vat', name: 'Túi Trữ Vật' },
+                { id: 'ky_trung', name: 'Kỳ Trùng' }
+            ];
         }
 
+        // Search bar makes filters wrap always visible
+        this.elShopFiltersWrap?.classList.remove('hidden');
+
         if (subFilters.length === 0) {
-            this.elShopFiltersWrap?.classList.add('hidden');
             this.elShopSubFilterNav.innerHTML = '';
+            this.elShopSubFilterNav.classList.add('hidden');
             return;
         }
 
-        this.elShopFiltersWrap?.classList.remove('hidden');
+        this.elShopSubFilterNav.classList.remove('hidden');
         this.elShopSubFilterNav.className = "p-2";
         this.elShopSubFilterNav.innerHTML = `
             <select id="shop-subfilter-select" class="w-full bg-black/40 text-qi-blue border border-qi-blue/20 rounded-lg px-2 py-1.5 text-[9px] font-ancient uppercase tracking-widest outline-none transition-all focus:border-qi-blue/50">
@@ -428,9 +457,11 @@ export class SystemsScreen {
         if (!shop) return;
 
         const section = shop.currentSection;
-        const isPhapBao = section === 'phap_bao';
+        
+        // Show quality filter for almost everything except curated lists or simple mats
+        const showQuality = ['phap_bao', 'dan_duoc', 'cong_phap', 'bach_nghe'].includes(section);
 
-        if (!isPhapBao) {
+        if (!showQuality) {
             this.elShopQualityFilterNav.classList.add('hidden');
             this.elShopSubFilterNav.classList.remove('border-r', 'border-white/5');
             this.elShopQualityFilterNav.innerHTML = '';
@@ -470,38 +501,75 @@ export class SystemsScreen {
         const shop = state.systems.shop;
         let inv = shop.getShopInventory();
 
-        // Virtual Merge for Công Pháp and Bí Tịch
-        if (shop.currentSection === 'cong_phap') {
-            const shopData = SHOPS[shop.currentShopId];
-            if (shopData.sections.bi_tich) {
-                inv = [...inv, ...shopData.sections.bi_tich];
-            }
-        }
-
         this.elShopBuyView.innerHTML = '';
 
-        inv.forEach(item => {
-            const itemData = getItemById(item.id);
-            if (!itemData) return;
+        // Apply Search Filter
+        if (this.shopSearchQuery) {
+            inv = inv.filter(item => {
+                const itemData = getItemById(item.id);
+                return itemData && itemData.name.toLowerCase().includes(this.shopSearchQuery);
+            });
+        }
 
-            // Apply Sub-filter
-            if (this.shopSubFilter !== 'all') {
+        // Apply Sub-filter
+        if (this.shopSubFilter !== 'all') {
+            inv = inv.filter(item => {
+                const itemData = getItemById(item.id);
+                if (!itemData) return false;
+
                 if (shop.currentSection === 'phap_bao') {
-                    if (itemData.type !== this.shopSubFilter) return;
+                    return itemData.type === this.shopSubFilter;
                 } else if (shop.currentSection === 'cong_phap') {
                     const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
                     const isBook = (itemData.type === 'book' || itemData.type === 'technique') && !isManualAction;
                     const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
 
-                    if (this.shopSubFilter === 'cultivation' && !isBook) return;
-                    if (this.shopSubFilter === 'manual' && !isRecipe) return;
+                    if (this.shopSubFilter === 'cultivation') return isBook;
+                    if (this.shopSubFilter === 'manual') return isRecipe;
+                } else if (['bach_nghe', 'ky_vat'].includes(shop.currentSection)) {
+                    // For grouped categories, sub-filter is the original section key
+                    const shopData = SHOPS[shop.currentShopId];
+                    const sectionItems = shopData.sections[this.shopSubFilter] || [];
+                    return sectionItems.some(i => i.id === item.id);
                 }
-            }
+                return true;
+            });
+        }
 
-            // Apply Quality Filter
-            if (this.shopQualityFilter !== 'all') {
-                if (itemData.quality !== this.shopQualityFilter) return;
-            }
+        // Apply Quality Filter
+        if (this.shopQualityFilter !== 'all') {
+            inv = inv.filter(item => {
+                const itemData = getItemById(item.id);
+                return itemData && itemData.quality === this.shopQualityFilter;
+            });
+        }
+
+        // Apply Sorting
+        if (this.shopSortMode !== 'default') {
+            inv.sort((a, b) => {
+                const dataA = getItemById(a.id);
+                const dataB = getItemById(b.id);
+                if (!dataA || !dataB) return 0;
+
+                if (this.shopSortMode === 'price-asc') return dataA.price - dataB.price;
+                if (this.shopSortMode === 'price-desc') return dataB.price - dataA.price;
+                if (this.shopSortMode === 'quality') {
+                    const qOrder = ['Phàm Khí', 'Pháp Khí', 'Linh Khí', 'Pháp Bảo', 'Cổ Bảo', 'Linh Bảo', 'Thông Thiên Linh Bảo', 'Tiên Khí', 'Danh Khí', 'Hạ phẩm', 'Trung phẩm', 'Thượng phẩm', 'Cực phẩm', 'Hoàn Mỹ'];
+                    return qOrder.indexOf(dataB.quality) - qOrder.indexOf(dataA.quality);
+                }
+                return 0;
+            });
+        }
+
+        if (inv.length === 0) {
+            this.elShopBuyView.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Không tìm thấy bảo vật phù hợp...</div>';
+            return;
+        }
+
+        inv.forEach(item => {
+            const itemData = getItemById(item.id);
+            if (!itemData) return;
+
             const qClass = this.getQualityClass(itemData.quality);
 
             const el = document.createElement('div');
@@ -558,9 +626,20 @@ export class SystemsScreen {
         const sectionType = state.systems.shop.currentSection;
         const subFilter = this.shopSubFilter;
 
-        state.player.inventory.allItems.forEach(item => {
+        let items = [...state.player.inventory.allItems];
+
+        // Apply Search Filter
+        if (this.shopSearchQuery) {
+            items = items.filter(item => {
+                const itemData = getItemById(item.id);
+                return itemData && itemData.name.toLowerCase().includes(this.shopSearchQuery);
+            });
+        }
+
+        // Apply Category/Section Filter
+        items = items.filter(item => {
             const itemData = getItemById(item.id);
-            if (!itemData) return;
+            if (!itemData) return false;
 
             // Simple mapping for filtering
             const typeMap = {
@@ -571,35 +650,78 @@ export class SystemsScreen {
                 'tran_phap': ['formation'],
                 'phu_luc': ['talisman'],
                 'luyen_khi': ['material', 'smithing_tool'],
-                'tui_tru_vat': ['consumable']
+                'tui_tru_vat': ['consumable'],
+                'ky_trung': ['consumable'] // Usually eggs are consumable or special
             };
 
-            if (sectionType && typeMap[sectionType]) {
-                if (!typeMap[sectionType].includes(itemData.type)) return;
+            // Mapping Category to its internal sections
+            const catMap = {
+                'dan_duoc': ['dan_duoc'],
+                'phap_bao': ['phap_bao'],
+                'cong_phap': ['cong_phap'],
+                'bach_nghe': ['nguyen_lieu', 'phu_luc', 'tran_phap', 'luyen_khi', 'linh_dien'],
+                'ky_vat': ['tui_tru_vat', 'ky_trung']
+            };
 
-                // Specific filter for merged Công Pháp
-                if (sectionType === 'cong_phap') {
-                    const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc'));
-                    const isBook = (itemData.type === 'book' || itemData.type === 'technique') && !isManualAction;
-                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || (itemData.type === 'consumable' && itemData.effect?.type === 'unlock_profession') || isManualAction;
+            const targetSections = catMap[sectionType] || [sectionType];
+            const allowedTypes = targetSections.flatMap(s => typeMap[s] || []);
 
-                    if (subFilter === 'cultivation' && !isBook) return;
-                    if (subFilter === 'manual' && isBook) return;
-                    if (subFilter === 'manual' && !isRecipe && !isBook) return; // Fallback
+            if (allowedTypes.length > 0 && !allowedTypes.includes(itemData.type)) return false;
 
-                    // If no subfilter, only show books and recipes
-                    if (subFilter === 'all' && !isBook && !isRecipe) return;
-                }
+            // Specific filter for merged Công Pháp
+            if (sectionType === 'cong_phap') {
+                const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc'));
+                const isBook = (itemData.type === 'book' || itemData.type === 'technique') && !isManualAction;
+                const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || (itemData.type === 'consumable' && itemData.effect?.type === 'unlock_profession') || isManualAction;
 
-                // Sub-filter for Pháp Bảo
-                if (sectionType === 'phap_bao' && subFilter !== 'all' && itemData.type !== subFilter) return;
-
-                // Specific filter for Túi Trữ Vật
-                if (sectionType === 'tui_tru_vat' && itemData.action !== 'expand_inventory') return;
-
-                // Quality Filter
-                if (this.shopQualityFilter !== 'all' && itemData.quality !== this.shopQualityFilter) return;
+                if (subFilter === 'cultivation' && !isBook) return false;
+                if (subFilter === 'manual' && isBook) return false;
+                if (subFilter === 'manual' && !isRecipe && !isBook) return false; // Fallback
+                if (subFilter === 'all' && !isBook && !isRecipe) return false;
             }
+
+            // Sub-filter for Bách Nghệ / Kỳ Vật (matches original section)
+            if (['bach_nghe', 'ky_vat'].includes(sectionType) && subFilter !== 'all') {
+                if (!typeMap[subFilter] || !typeMap[subFilter].includes(itemData.type)) return false;
+            }
+
+            // Sub-filter for Pháp Bảo
+            if (sectionType === 'phap_bao' && subFilter !== 'all' && itemData.type !== subFilter) return false;
+
+            // Specific filter for Túi Trữ Vật
+            if (subFilter === 'tui_tru_vat' && itemData.action !== 'expand_inventory') return false;
+
+            // Quality Filter
+            if (this.shopQualityFilter !== 'all' && itemData.quality !== this.shopQualityFilter) return false;
+
+            return true;
+        });
+
+        // Apply Sorting
+        if (this.shopSortMode !== 'default') {
+            items.sort((a, b) => {
+                const dataA = getItemById(a.id);
+                const dataB = getItemById(b.id);
+                if (!dataA || !dataB) return 0;
+
+                if (this.shopSortMode === 'price-asc') return dataA.price - dataB.price;
+                if (this.shopSortMode === 'price-desc') return dataB.price - dataA.price;
+                if (this.shopSortMode === 'quality') {
+                    const qOrder = ['Phàm Khí', 'Pháp Khí', 'Linh Khí', 'Pháp Bảo', 'Cổ Bảo', 'Linh Bảo', 'Thông Thiên Linh Bảo', 'Tiên Khí', 'Danh Khí', 'Hạ phẩm', 'Trung phẩm', 'Thượng phẩm', 'Cực phẩm', 'Hoàn Mỹ'];
+                    return qOrder.indexOf(dataB.quality) - qOrder.indexOf(dataA.quality);
+                }
+                return 0;
+            });
+        }
+
+        if (items.length === 0) {
+            this.elShopSellGrid.innerHTML = '<div class="col-span-4 text-center py-10 text-gray-600 italic text-xs">Không có bảo vật nào để giao dịch...</div>';
+            return;
+        }
+
+        items.forEach(item => {
+            const itemData = getItemById(item.id);
+            if (!itemData) return;
 
             const qClass = this.getQualityClass(itemData.quality);
 

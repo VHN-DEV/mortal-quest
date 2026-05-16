@@ -2264,9 +2264,25 @@
                 class="flex-none w-full min-w-0 custom-scroll-x border-b border-white/5 bg-black/30">
             </div>
             <div id="shop-filters-wrap"
-                class="flex-none flex w-full border-b border-white/5 bg-black/20 hidden overflow-hidden px-2">
-                <div id="shop-subfilter-nav" class="flex-1 min-w-0"></div>
-                <div id="shop-quality-filter-nav" class="flex-1 min-w-0"></div>
+                class="flex-none flex flex-col w-full border-b border-white/5 bg-black/20 hidden overflow-hidden">
+                <div class="flex w-full border-b border-white/5">
+                    <div id="shop-subfilter-nav" class="flex-1 min-w-0"></div>
+                    <div id="shop-quality-filter-nav" class="flex-1 min-w-0"></div>
+                </div>
+                <div class="p-2 flex space-x-2">
+                    <div class="relative flex-grow">
+                        <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
+                        <input id="shop-search-input" type="text" placeholder="Tìm kiếm bảo vật..." 
+                            class="w-full bg-black/40 text-white border border-white/10 rounded-xl pl-9 pr-4 py-2 text-[10px] outline-none focus:border-cultivation-gold/50 transition-all">
+                    </div>
+                    <select id="shop-sort-select" 
+                        class="bg-black/40 text-gray-400 border border-white/10 rounded-xl px-3 py-2 text-[10px] outline-none focus:border-cultivation-gold/50 transition-all">
+                        <option value="default">Sắp xếp: Mặc định</option>
+                        <option value="price-asc">Giá: Thấp -> Cao</option>
+                        <option value="price-desc">Giá: Cao -> Thấp</option>
+                        <option value="quality">Phẩm chất</option>
+                    </select>
+                </div>
             </div>
             <div id="shop-buy-view" class="flex-grow min-h-0 overflow-y-auto p-4 space-y-3 custom-scroll"></div>
             <div id="shop-sell-view" class="hidden flex-grow min-h-0 overflow-y-auto p-4 custom-scroll">

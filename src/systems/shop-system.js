@@ -10,7 +10,24 @@ export class ShopSystem {
 
     getShopInventory() {
         const shop = SHOPS[this.currentShopId];
-        return shop.sections[this.currentSection] || [];
+        
+        // Handle Grouped Categories
+        const categories = {
+            'dan_duoc': ['dan_duoc'],
+            'phap_bao': ['phap_bao'],
+            'cong_phap': ['cong_phap', 'bi_tich'],
+            'bach_nghe': ['nguyen_lieu', 'phu_luc', 'tran_phap', 'luyen_khi', 'linh_dien'],
+            'ky_vat': ['tui_tru_vat', 'ky_trung']
+        };
+
+        const targetSections = categories[this.currentSection] || [this.currentSection];
+        let items = [];
+        targetSections.forEach(sec => {
+            if (shop.sections[sec]) {
+                items = [...items, ...shop.sections[sec]];
+            }
+        });
+        return items;
     }
 
     buyItem(itemId, quantity = 1) {
@@ -19,14 +36,9 @@ export class ShopSystem {
 
         // Check VIP requirement
         const shopData = SHOPS[this.currentShopId];
-        let section = shopData.sections[this.currentSection] || [];
-        
-        // Virtual Merge for Công Pháp and Bí Tịch (Matching UI logic)
-        if (this.currentSection === 'cong_phap' && shopData.sections.bi_tich) {
-            section = [...section, ...shopData.sections.bi_tich];
-        }
+        const inv = this.getShopInventory();
+        const shopItem = inv.find(i => i.id === itemId);
 
-        const shopItem = section.find(i => i.id === itemId);
         if (!shopItem) return { success: false, msg: 'Bảo vật không có sẵn trong nơi này!' };
         
         const playerVip = this.player.vipLevel || 0;
@@ -44,7 +56,7 @@ export class ShopSystem {
         }
 
         // Check stock
-        if (!shopItem || shopItem.stock < quantity) {
+        if (shopItem.stock < quantity) {
             return { success: false, msg: 'Nguồn hàng đã cạn kiệt!' };
         }
 
@@ -63,6 +75,7 @@ export class ShopSystem {
 
         return { success: false, msg: 'Giao dịch thất bại!' };
     }
+
 
     sellItem(itemId, quantity = 1) {
         const itemData = getItemById(itemId);
