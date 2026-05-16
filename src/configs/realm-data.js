@@ -1,4 +1,5 @@
 export const HUMAN_REALMS = [
+    { id: 0, name: "Phàm nhân", expRequired: 10 },
     { id: 1, name: "Luyện Khí Sơ Kỳ (Tầng 1)", expRequired: 100 },
     { id: 2, name: "Luyện Khí Sơ Kỳ (Tầng 2)", expRequired: 250 },
     { id: 3, name: "Luyện Khí Sơ Kỳ (Tầng 3)", expRequired: 500 },
@@ -317,6 +318,7 @@ export const SOUL_PATH_REALMS = [
 ];
 
 export const BODY_REALMS = [
+    { id: 0, name: "Thân thể yếu ớt", expRequired: 10 },
     { id: 1, name: "Phàm Thể", expRequired: 1000 },
     { id: 2, name: "Luyện Bì", expRequired: 5000 },
     { id: 3, name: "Luyện Cốt", expRequired: 25000 },
@@ -331,6 +333,7 @@ export const BODY_REALMS = [
 ];
 
 export const SOUL_REALMS = [
+    { id: 0, name: "Phàm hồn", expRequired: 10 },
     { id: 1, name: "Linh Thức", expRequired: 1000 },
     { id: 2, name: "Thần Niệm", expRequired: 5000 },
     { id: 3, name: "Thần Hải", expRequired: 25000 },

@@ -25,7 +25,7 @@ export class CreationSystem {
         this.playerAge = 18;
         this.playerAvatar = "player_male";
         this.startingLingShi = 0;
-        this.startingRealmId = 1;
+        this.startingRealmId = 0;
         this.selectedArtifact = 'none';
 
         // Secondary Talents (Values from 1-100)
@@ -201,7 +201,7 @@ export class CreationSystem {
         this.selectedOrigin = scenario.setup.origin;
         this.selectedTraits = [...scenario.setup.traits];
         this.startingLingShi = CREATION_ORIGINS[this.selectedOrigin].resources.lingShi;
-        this.startingRealmId = 1;
+        this.startingRealmId = 0;
         this.calculatePoints();
     }
 
@@ -241,7 +241,7 @@ export class CreationSystem {
         const originKeys = Object.keys(CREATION_ORIGINS);
         this.selectedOrigin = originKeys[Math.floor(Math.random() * originKeys.length)];
         this.startingLingShi = CREATION_ORIGINS[this.selectedOrigin].resources.lingShi;
-        this.startingRealmId = 1;
+        this.startingRealmId = 0;
 
         // Random talents
         for (const key in this.talents) {
@@ -311,9 +311,10 @@ export class CreationSystem {
 
         // Apply Origin resources
         player.origin = origin;
-        player.realmId = this.startingRealmId;
-        player.bodyRealmId = this.startingRealmId;
-        player.soulRealmId = this.startingRealmId;
+        const startingId = (this.selectedRace === 'HUMAN' ? 0 : 1);
+        player.realmId = startingId;
+        player.bodyRealmId = startingId;
+        player.soulRealmId = startingId;
 
         player.addLingShi(this.startingLingShi);
         origin.resources.items.forEach(itemId => player.inventory.addItem(itemId, 1));

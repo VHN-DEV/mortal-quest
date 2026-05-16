@@ -343,9 +343,21 @@ window.renderCreationScreen = () => {
             </div>
         `;
 
+        const realmLevel = sys.startingRealmId ?? 0;
+        const realmMult = realmLevel > 0 ? Math.pow(1.8, realmLevel - 1) : 1.0;
+
         const base = {
-            atk: 10, def: 5, maxHp: 100, spd: 10, mana: 50, luck: 50,
-            karma: 0, maxAge: 100, critRate: 0.05, alchemySuccess: 0, qiAbsorb: 1.0
+            atk: (10 + (realmLevel * 5)) * realmMult,
+            def: (5 + (realmLevel * 2)) * realmMult,
+            maxHp: (100 + (realmLevel * 20)) * realmMult,
+            mana: (50 + (realmLevel * 50)) * realmMult,
+            spd: (15 + (realmLevel * 5)) * realmMult,
+            luck: 50,
+            karma: 0,
+            maxAge: 100 + (realmLevel * 50),
+            critRate: 0.05,
+            alchemySuccess: 0,
+            qiAbsorb: 1.0
         };
 
         const raceBonus = CREATION_RACES[sys.selectedRace]?.bonus || {};
@@ -385,14 +397,14 @@ window.renderCreationScreen = () => {
         const qiBonus = (raceBonus.qiAbsorb || 1) * (rootBonus.qiAbsorb || 1) * (physBonus.qiAbsorb || 1) * (traitBonus.qiAbsorb || 1) * (elementBonus.qiAbsorb || 1);
 
         const previewStats = [
-            { label: 'Công', value: base.atk + sumFlat('atk'), color: 'text-red-400' },
-            { label: 'Thủ', value: base.def + sumFlat('def'), color: 'text-blue-400' },
-            { label: 'Sinh lực', value: base.maxHp + sumFlat('maxHp'), color: 'text-emerald-400' },
-            { label: 'Mana', value: base.mana + sumFlat('mana') + sumFlat('maxMana'), color: 'text-purple-400' },
-            { label: 'Tốc', value: base.spd + sumFlat('spd'), color: 'text-yellow-400' },
-            { label: 'Thọ nguyên', value: base.maxAge + sumFlat('maxAge'), color: 'text-orange-400' },
-            { label: 'May mắn', value: base.luck + sumFlat('luck'), color: 'text-cyan-400' },
-            { label: 'Nghiệp lực', value: base.karma + sumFlat('karma'), color: 'text-rose-500' },
+            { label: 'Công', value: Math.floor(base.atk + sumFlat('atk')), color: 'text-red-400' },
+            { label: 'Thủ', value: Math.floor(base.def + sumFlat('def')), color: 'text-blue-400' },
+            { label: 'Sinh lực', value: Math.floor(base.maxHp + sumFlat('maxHp')), color: 'text-emerald-400' },
+            { label: 'Mana', value: Math.floor(base.mana + sumFlat('mana') + sumFlat('maxMana')), color: 'text-purple-400' },
+            { label: 'Tốc', value: Math.floor(base.spd + sumFlat('spd')), color: 'text-yellow-400' },
+            { label: 'Thọ nguyên', value: Math.floor(base.maxAge + sumFlat('maxAge')), color: 'text-orange-400' },
+            { label: 'May mắn', value: Math.floor(base.luck + sumFlat('luck')), color: 'text-cyan-400' },
+            { label: 'Nghiệp lực', value: Math.floor(base.karma + sumFlat('karma')), color: 'text-rose-500' },
             { label: 'Bạo kích', value: `${Math.round((base.critRate + sumFlat('critRate')) * 100)}%`, color: 'text-red-500' },
             { label: 'Hấp thu', value: `x${qiBonus.toFixed(1)}`, color: 'text-qi-jade' },
             { label: 'Luyện đan', value: `+${Math.round(sumFlat('alchemySuccess') * 100)}%`, color: 'text-emerald-500' },
@@ -463,9 +475,10 @@ window.renderCreationScreen = () => {
         elStartingRealmSelect.innerHTML = availableRealms.map(realm => `
             <option value="${realm.id}">${realm.name}</option>
         `).join('');
-        elStartingRealmSelect.value = String(sys.startingRealmId || 1);
+        elStartingRealmSelect.value = String(sys.startingRealmId ?? 0);
         elStartingRealmSelect.onchange = (e) => {
-            sys.startingRealmId = parseInt(e.target.value, 10) || 1;
+            sys.startingRealmId = parseInt(e.target.value, 10);
+            if (isNaN(sys.startingRealmId)) sys.startingRealmId = 0;
         };
     }
 

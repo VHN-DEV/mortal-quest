@@ -203,8 +203,9 @@ export class MapScreen {
             const el = document.createElement('div');
             el.className = `location-card h-40 p-5 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
 
-            const dangerInfo = DANGER_LEVELS[loc.danger] || { name: loc.danger };
-            const dangerClass = `danger-${loc.danger}`;
+            const relDanger = this.getRelativeDanger(loc);
+            const dangerInfo = DANGER_LEVELS[relDanger] || { name: relDanger };
+            const dangerClass = `danger-${relDanger}`;
             const reqRealmName = getRealmById(loc.minRealm).name;
 
             el.innerHTML = `
@@ -232,6 +233,36 @@ export class MapScreen {
 
             this.elLocList.appendChild(el);
         });
+    }
+
+    getRelativeDanger(loc) {
+        if (!state.player) return loc.danger || 'ha_cap';
+        
+        const playerRealm = state.player.realmId;
+        const minRealm = loc.minRealm;
+        const baseDanger = loc.danger || 'ha_cap';
+        
+        const dangerOrder = ['an_toan', 'ha_cap', 'trung_cap', 'cao_cap', 'nguy_hiem', 'cuc_ky_nguy_hiem', 'tu_dia'];
+        let baseIndex = dangerOrder.indexOf(baseDanger);
+        if (baseIndex === -1) baseIndex = 1;
+
+        // Calculate adjustment based on realm difference
+        const diff = playerRealm - minRealm;
+        let adjustment = 0;
+
+        if (diff > 10) adjustment = -2; // Much stronger
+        else if (diff > 5) adjustment = -1; // Stronger
+        else if (diff < -5) adjustment = 2; // Much weaker
+        else if (diff < 0) adjustment = 1; // Weaker (e.g. Mortal in Level 1 area)
+        
+        // Special logic for Mortals (Realm 0)
+        if (playerRealm === 0 && minRealm === 0 && baseIndex < 4) {
+            // Even if minRealm is 0, a mortal finds 'ha_cap' to be 'trung_cap'
+            adjustment += 1;
+        }
+
+        let adjustedIndex = Math.max(0, Math.min(dangerOrder.length - 1, baseIndex + adjustment));
+        return dangerOrder[adjustedIndex];
     }
 
     getDangerClass(danger) {

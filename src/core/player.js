@@ -14,7 +14,7 @@ export class Player {
         this.gender = "Nam";
         this.avatar = "player_male";
         this.race = 'HUMAN'; // HUMAN, SPIRIT_BEAST, DEMON, etc.
-        this.realmId = 1;
+        this.realmId = 0;
         this.tuVi = 0;
         this.buffs = []; // Array of { id, type, value, endTime }
         this.pendingEvents = [];
@@ -30,9 +30,9 @@ export class Player {
         };
 
         // Body & Soul systems
-        this.bodyRealmId = 1;
+        this.bodyRealmId = 0;
         this.bodyExp = 0;
-        this.soulRealmId = 1;
+        this.soulRealmId = 0;
         this.soulExp = 0;
         
         // Multi-Path Advancement
@@ -414,7 +414,7 @@ export class Player {
         else if (type === 'body') id = this.bodyRealmId;
         else if (type === 'soul') id = this.soulRealmId;
         else if (this.specializedPaths[type]) id = this.specializedPaths[type].realmId;
-        else id = 1;
+        else id = 0;
         
         return getRealmById(id, type, this.race);
     }
@@ -777,7 +777,7 @@ export class Player {
         };
 
         // 1. Calculate BASE STATS (from Realms)
-        const realmMult = Math.pow(1.8, realmLevel - 1);
+        const realmMult = realmLevel > 0 ? Math.pow(1.8, realmLevel - 1) : 1.0;
         
         const raceInfo = RACE_DATA[this.race || 'HUMAN'] || RACE_DATA.HUMAN;
         const raceMults = raceInfo.statMult;
@@ -809,16 +809,16 @@ export class Player {
 
         // --- Body Realm Enhancement ---
         // Body Realm adds to HP and Def, and now Damage Reduction
-        const bodyMult = Math.pow(1.2, bodyLevel - 1);
-        this.baseStats.maxHp += 100 * (bodyLevel - 1) * bodyMult;
-        this.baseStats.def += 20 * (bodyLevel - 1) * bodyMult;
+        const bodyMult = bodyLevel > 0 ? Math.pow(1.2, bodyLevel - 1) : 1.0;
+        this.baseStats.maxHp += 100 * Math.max(0, bodyLevel - 1) * bodyMult;
+        this.baseStats.def += 20 * Math.max(0, bodyLevel - 1) * bodyMult;
         this.advancedStats.damageReduction = 1 - (1 / (1 + (bodyLevel * 0.05))); // Logarithmic DR
 
         // --- Soul Realm Enhancement ---
         // Soul Realm adds to Mana, Spd, Crit and Perception
-        const soulMult = Math.pow(1.15, soulLevel - 1);
-        this.baseStats.maxMana += 60 * (soulLevel - 1) * soulMult;
-        this.baseStats.spd += 10 * (soulLevel - 1) * soulMult;
+        const soulMult = soulLevel > 0 ? Math.pow(1.15, soulLevel - 1) : 1.0;
+        this.baseStats.maxMana += 60 * Math.max(0, soulLevel - 1) * soulMult;
+        this.baseStats.spd += 10 * Math.max(0, soulLevel - 1) * soulMult;
         this.advancedStats.critRate += (soulLevel - 1) * 0.01;
         this.advancedStats.perception = 10 + (soulLevel * 5) + (this.comprehension * 0.5);
 

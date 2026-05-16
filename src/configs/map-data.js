@@ -36,13 +36,13 @@ export const DANGER_LEVELS = {
 export const WORLDS = {
     'nhan_gioi': {
         name: 'Phàm Trần Giới',
-        minRealm: 1,
+        minRealm: 0,
         description: 'Vùng đất của phàm nhân và các tu sĩ bắt đầu con đường nghịch thiên.',
         locations: [
             {
                 id: 'van_thu_lam',
                 name: 'Vạn Thú Chi Lâm',
-                minRealm: 1,
+                minRealm: 0,
                 danger: 'ha_cap',
                 image: getLocImg('van_thu_lam'),
                 description: 'Nơi yêu thú sơ cấp hoành hành, đầy rẫy linh thảo thiên nhiên.',
@@ -53,7 +53,7 @@ export const WORLDS = {
             {
                 id: 'loan_tinh_hai',
                 name: 'Loạn Tinh Hải',
-                minRealm: 1,
+                minRealm: 0,
                 danger: 'ha_cap',
                 image: getLocImg('loan_tinh_hai'),
                 description: 'Vùng biển hỗn loạn với vô số đảo nhỏ và yêu thú thủy tộc.',
@@ -86,7 +86,7 @@ export const WORLDS = {
             {
                 id: 'van_bao_cac',
                 name: 'Vạn Bảo Các',
-                minRealm: 1,
+                minRealm: 0,
                 danger: 'an_toan',
                 image: getLocImg('van_bao_cac'),
                 description: 'Thương hội liên giới, nơi có mọi thứ mà tu sĩ cần.',
@@ -106,7 +106,7 @@ export const WORLDS = {
             {
                 id: 'cong_hoi_luyen_duoc',
                 name: 'Công Hội Luyện Dược Sư',
-                minRealm: 1,
+                minRealm: 0,
                 danger: 'an_toan',
                 image: getLocImg('cong_hoi_luyen_duoc'),
                 description: 'Nơi quản lý và cấp chứng nhận cho các Luyện Dược Sư.',
@@ -117,7 +117,7 @@ export const WORLDS = {
             {
                 id: 'thap_van_dai_son',
                 name: 'Thập Vạn Đại Sơn',
-                minRealm: 1,
+                minRealm: 0,
                 danger: 'cuc_ky_nguy_hiem',
                 image: getLocImg('thap_van_dai_son'),
                 description: 'Dãy núi cổ vô tận, nơi chôn giấu bí mật thời thượng cổ.',

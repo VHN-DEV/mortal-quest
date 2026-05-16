@@ -6,7 +6,7 @@ export const MOUNTAIN_TIERS = [
     { 
         id: 'ngoai_son', 
         name: 'Ngoại Sơn', 
-        minRealm: 1, 
+        minRealm: 0, 
         description: 'Dành cho tu sĩ Luyện Khí và Trúc Cơ. Nơi tập trung nhiều tán tu và thương đội.',
         hazardScale: 1.0
     },
