@@ -1516,12 +1516,12 @@ select option:checked {
 
 .battle-action-btn-new {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 0.5rem;
+  padding: 0.35rem 0.6rem;
   gap: 0.4rem;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
   color: #e2e8f0;
@@ -1532,13 +1532,13 @@ select option:checked {
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   width: 100%;
   position: relative;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .battle-action-btn-new i {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   color: var(--qi-blue);
-  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
+  filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));
   transition: all 0.3s ease;
 }
 
@@ -1694,10 +1694,11 @@ select option:checked {
   border-radius: 50%;
   background: conic-gradient(from 0deg, transparent, var(--aura-color, #4fd1c5), transparent);
   opacity: 0.3;
-  filter: blur(20px);
+  filter: blur(15px);
   animation: aura-rotate 10s linear infinite;
   pointer-events: none;
   z-index: -1;
+  transform-origin: center center;
 }
 
 @keyframes aura-rotate {
@@ -1709,15 +1710,15 @@ select option:checked {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: inset 0 0 20px var(--aura-color, #4fd1c5);
+  box-shadow: inset 0 0 15px var(--aura-color, #4fd1c5);
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.4;
   animation: portrait-pulse 3s ease-in-out infinite;
 }
 
 @keyframes portrait-pulse {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.02); }
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.02); }
 }
 
 /* Health/Mana Bars Enhancements */
@@ -1854,7 +1855,7 @@ select option:checked {
     aspect-ratio: 1/1;
     border: 1px solid rgba(255, 255, 255, 0.05);
     background: rgba(255, 255, 255, 0.02);
-    border-radius: 0.75rem;
+    border-radius: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1862,13 +1863,15 @@ select option:checked {
     position: relative;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    min-height: 60px;
+    max-height: 80px;
 }
 
 .loot-item-slot:hover {
     background: rgba(212, 175, 55, 0.05);
     border-color: rgba(212, 175, 55, 0.4);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
 .loot-item-slot:active {
@@ -1877,25 +1880,47 @@ select option:checked {
 
 .loot-item-quantity {
     position: absolute;
-    bottom: 0.25rem;
-    right: 0.25rem;
-    background: rgba(0, 0, 0, 0.7);
+    bottom: 0.4rem;
+    right: 0.4rem;
+    background: rgba(0, 0, 0, 0.8);
     color: white;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 8px;
+    font-size: 7px;
     padding: 1px 4px;
     border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 5;
 }
 
 .loot-quality-bar {
     position: absolute;
     bottom: 0;
-    left: 0.5rem;
-    right: 0.5rem;
+    left: 0.75rem;
+    right: 0.75rem;
     height: 2px;
     border-radius: 2px 2px 0 0;
-    opacity: 0.6;
+    opacity: 0.8;
+}
+
+/* Global Tooltip */
+.global-tooltip {
+    position: absolute;
+    z-index: 9999;
+    pointer-events: none;
+    background: rgba(10, 10, 12, 0.95);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    min-width: 200px;
+    max-width: 280px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(212, 175, 55, 0.05);
+    backdrop-filter: blur(12px);
+    transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+}
+
+.global-tooltip.hidden {
+    display: none;
+    opacity: 0;
 }
 
 #btn-loot-take-all {

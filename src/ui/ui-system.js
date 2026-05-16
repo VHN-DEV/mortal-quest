@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { audioManager } from '../utils/audio-manager.js';
 import { logger } from '../utils/logger.js';
 import { getAssetUrl } from '../configs/asset-data.js';
+import { getItemById } from '../configs/item-data.js';
 
 export class UISystem {
     constructor() {
@@ -24,6 +25,9 @@ export class UISystem {
         this.elTimeSeason = document.getElementById('time-season');
         this.elTimeHour = document.getElementById('time-hour');
         this.elTimePhenomenon = document.getElementById('time-phenomenon');
+
+        // Tooltip
+        this.elTooltip = document.getElementById('global-tooltip');
     }
 
     updateTimeUI(time) {
@@ -352,6 +356,25 @@ export class UISystem {
                 }
             });
         }
+    }
+
+    resetUIState() {
+        const overlays = [
+            'map-location-view', 'map-explore-view', 'shop-overlay', 'guild-overlay',
+            'mountain-overlay', 'tower-overlay', 'sects-overlay', 'stats-modal',
+            'guide-overlay', 'modal-overlay', 'chase-overlay', 'ambush-overlay',
+            'loot-screen-overlay', 'mining-overlay'
+        ];
+
+        overlays.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+                el.style.opacity = '0';
+            }
+        });
+        document.body.classList.remove('modal-open');
     }
 
     /**
@@ -787,7 +810,7 @@ export class UISystem {
         } else if (screenId === 'screen-inventory') {
             if (window.game && window.game.screens.inventory) window.game.screens.inventory.render();
         } else if (screenId === 'screen-adventure') {
-            if (window.game && window.game.screens.map) window.game.screens.map.renderWorldList();
+            if (window.game && window.game.screens.map) window.game.screens.map.restoreView();
         } else if (screenId === 'screen-crafting-hub') {
             if (window.game && window.game.screens.systems) window.game.screens.systems.renderCraftingHub();
         } else if (screenId === 'screen-npc') {
@@ -859,6 +882,85 @@ export class UISystem {
                 });
             };
         });
+    }
+
+    showTooltip(itemId, event, metadata = {}) {
+        if (!this.elTooltip) return;
+        const item = getItemById(itemId);
+        if (!item) return;
+
+        const quality = metadata.quality || item.quality;
+        const qClass = this.getQualityClass(quality);
+        
+        let statsHtml = '';
+        if (item.stats) {
+            statsHtml = `<div class="mt-2 pt-2 border-t border-white/5 space-y-1">` + 
+                Object.entries(item.stats).map(([k, v]) => `
+                    <div class="flex justify-between text-[8px]">
+                        <span class="text-gray-500 uppercase">${this.getStatLabel(k)}</span>
+                        <span class="text-qi-blue font-bold">+${v}</span>
+                    </div>
+                `).join('') + `</div>`;
+        }
+
+        this.elTooltip.innerHTML = `
+            <div class="flex items-center space-x-2 mb-1">
+                <div class="text-xl">${item.icon || '📦'}</div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-bold text-white font-ancient quality-${qClass}">${item.name}</span>
+                    <span class="text-[7px] text-gray-500 uppercase tracking-tighter">${quality}</span>
+                </div>
+            </div>
+            <div class="text-[9px] text-gray-400 italic leading-tight">${item.description || ''}</div>
+            ${statsHtml}
+        `;
+
+        this.elTooltip.classList.remove('hidden');
+        this.elTooltip.style.opacity = '1';
+
+        // Position tooltip relative to #app
+        const app = document.getElementById('app');
+        const appRect = app.getBoundingClientRect();
+        const rect = this.elTooltip.getBoundingClientRect();
+        
+        const padding = 15;
+        let x = event.clientX - appRect.left + padding;
+        let y = event.clientY - appRect.top + padding;
+
+        // Keep inside screen (viewport check)
+        if (event.clientX + rect.width + padding > window.innerWidth) {
+            x = event.clientX - appRect.left - rect.width - padding;
+        }
+        if (event.clientY + rect.height + padding > window.innerHeight) {
+            y = event.clientY - appRect.top - rect.height - padding;
+        }
+
+        this.elTooltip.style.left = `${x}px`;
+        this.elTooltip.style.top = `${y}px`;
+    }
+
+    hideTooltip() {
+        if (!this.elTooltip) return;
+        this.elTooltip.classList.add('hidden');
+        this.elTooltip.style.opacity = '0';
+    }
+
+    getQualityClass(quality) {
+        const map = {
+            'Phàm Khí': 'pham-khi', 'Pháp Khí': 'phap-khi', 'Linh Khí': 'linh-khi', 'Pháp Bảo': 'phap-bao',
+            'Cổ Bảo': 'co-bao', 'Linh Bảo': 'linh-bao', 'Thông Thiên Linh Bảo': 'thong-thien', 'Tiên Khí': 'tien-khi', 'Danh Khí': 'danh-khi',
+            'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
+        };
+        return map[quality] || 'pham';
+    }
+
+    getStatLabel(statKey) {
+        const map = {
+            atk: 'Công', def: 'Thủ', spd: 'Tốc', maxHp: 'Sinh lực', maxMana: 'Pháp lực', mana: 'Pháp lực',
+            luck: 'Khí vận', critChance: 'Tỉ lệ bạo kích', critDamage: 'Sát thương bạo kích', karma: 'Nhân quả',
+            lifespan: 'Thọ nguyên', qiAbsorb: 'Hấp thụ Linh khí', alchemyBonus: 'Tỉ lệ Luyện đan'
+        };
+        return map[statKey] || statKey;
     }
 }
 

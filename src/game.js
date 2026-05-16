@@ -46,6 +46,10 @@ import { MissionScreen } from './ui/screens/MissionScreen.js';
 export class Game {
     constructor() {
         window.game = this;
+        this.handleDeath = this.handleDeath.bind(this);
+        this.handleCombatEnd = this.handleCombatEnd.bind(this);
+        this.startChase = this.startChase.bind(this);
+        this.giveupChase = this.giveupChase.bind(this);
         this.audioManager = audioManager;
         this.screens = {};
     }
@@ -372,7 +376,7 @@ export class Game {
         if (state.systems.fate) state.systems.fate.checkTribulation();
         if (state.systems.treasure) state.systems.treasure.update(delta);
 
-        if (state.player.hp <= 0) this.handleDeath();
+        if (state.player.hp <= 0) window.game.handleDeath();
     }
 
     render() {
@@ -442,6 +446,7 @@ export class Game {
         state.currentLocId = state.player.currentLocId || 'thanh_van_tran';
         state.explorationProgress = state.player.explorationProgress || 0;
 
+        state.ui.resetUIState();
         this.initSystems(state.player, savedData);
 
         const nonGameScreens = ['screen-creation', 'screen-start', 'screen-save'];
@@ -779,7 +784,7 @@ export class Game {
         }
     }
 
-    handlePlayerDeath(reason = "Ngươi đã vẫn lạc...") {
+    handleDeath(reason = "Ngươi đã vẫn lạc...") {
         if (state.isDead) return;
         state.isDead = true;
 
@@ -1299,7 +1304,7 @@ export class Game {
                 state.ui.toast(`Chiến thắng! Nhận được ${tuvi} Tu Vi.`, 'success');
             }
         } else if (result === 'lose') {
-            this.handleDeath();
+            window.game.handleDeath();
         }
         
         if (this.screens.battle) {
@@ -1559,6 +1564,8 @@ export class Game {
             state.systems.creation.playerName = nameInput?.value || "Phàm Nhân";
             const newPlayer = state.systems.creation.buildPlayer();
             if (newPlayer) {
+                // Reset map view preference for new journey
+                await Preferences.set({ key: 'mortal_quest_map_view', value: 'worlds' });
                 await this.loadGame(newPlayer.save());
                 state.ui.toast("Bắt đầu hành trình tu tiên!", "success");
             } else {

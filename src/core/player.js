@@ -489,8 +489,8 @@ export class Player {
     checkMortality() {
         if (this.age >= this.maxAge) {
             // Trigger Death
-            if (window.game && window.game.handlePlayerDeath) {
-                window.game.handlePlayerDeath("Thọ nguyên đã cạn, đại hạn đã tới. Ngươi đã hóa thành cát bụi giữa hồng trần...");
+            if (window.game && window.game.handleDeath) {
+                window.game.handleDeath("Thọ nguyên đã cạn, đại hạn đã tới. Ngươi đã hóa thành cát bụi giữa hồng trần...");
             }
         }
     }
