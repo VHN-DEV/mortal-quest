@@ -557,13 +557,38 @@ export const ITEMS = {
     'tui_tru_vat_so': {
         id: 'tui_tru_vat_so',
         name: 'Túi Trữ Vật (Sơ)',
-        type: 'spaceArtifact',
+        type: 'consumable',
         icon: '🎒',
         quality: 'Pháp Khí',
         tier: 'PHAP_KHI',
         price: 500,
-        description: 'Mở rộng thêm 10 ô chứa đồ.',
+        description: 'Sử dụng để mở rộng thêm một túi trữ vật mới với 10 ô chứa đồ.',
+        action: 'expand_inventory',
         stats: { slots: 10 }
+    },
+    'tui_tru_vat_trung': {
+        id: 'tui_tru_vat_trung',
+        name: 'Túi Trữ Vật (Trung)',
+        type: 'consumable',
+        icon: '🎒',
+        quality: 'Linh Khí',
+        tier: 'LINH_KHI',
+        price: 5000,
+        description: 'Sử dụng để mở rộng thêm một túi trữ vật mới với 30 ô chứa đồ.',
+        action: 'expand_inventory',
+        stats: { slots: 30 }
+    },
+    'tui_tru_vat_cao': {
+        id: 'tui_tru_vat_cao',
+        name: 'Túi Trữ Vật (Cao)',
+        type: 'consumable',
+        icon: '🎒',
+        quality: 'Pháp Bảo',
+        tier: 'PHAP_BAO',
+        price: 25000,
+        description: 'Sử dụng để mở rộng thêm một túi trữ vật mới với 50 ô chứa đồ.',
+        action: 'expand_inventory',
+        stats: { slots: 50 }
     },
     'ho_tam_kinh': {
         id: 'ho_tam_kinh',

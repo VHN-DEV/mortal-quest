@@ -132,6 +132,11 @@ export const SHOPS = {
                 { id: 'egg_phe_kim_trung', stock: 1, minVip: 2 },
                 { id: 'egg_bang_tam', stock: 3, minVip: 1 },
                 { id: 'egg_huyet_ngoc_tri_chu', stock: 5 }
+            ],
+            'tui_tru_vat': [
+                { id: 'tui_tru_vat_so', stock: 5 },
+                { id: 'tui_tru_vat_trung', stock: 2, minVip: 1 },
+                { id: 'tui_tru_vat_cao', stock: 1, minVip: 3 }
             ]
         }
     },
@@ -169,6 +174,11 @@ export const SHOPS = {
             'luyen_khi': [
                 { id: 'huyen_thiet', stock: 100 },
                 { id: 'tinh_kim', stock: 50 }
+            ],
+            'tui_tru_vat': [
+                { id: 'tui_tru_vat_so', stock: 10 },
+                { id: 'tui_tru_vat_trung', stock: 5 },
+                { id: 'tui_tru_vat_cao', stock: 2, minVip: 1 }
             ]
         }
     }

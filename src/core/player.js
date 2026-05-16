@@ -278,7 +278,7 @@ export class Player {
             'ling_thach_cuc': 1000000
         };
         
-        this.inventory.items.forEach(item => {
+        this.inventory.allItems.forEach(item => {
             if (mappings[item.id]) {
                 total += item.quantity * mappings[item.id];
             }
@@ -295,7 +295,7 @@ export class Player {
         };
 
         if (this.inventory) {
-            this.inventory.items.forEach(item => {
+            this.inventory.allItems.forEach(item => {
                 if (counts.hasOwnProperty(item.id)) {
                     counts[item.id] += item.quantity;
                 }
@@ -327,7 +327,7 @@ export class Player {
             if (gradeId === 'CUC' && this.spiritStoneSettings?.lockCucPham && amount < 1000000) continue;
             
             const info = mappings[gradeId];
-            const item = this.inventory.items.find(i => i.id === info.id);
+            const item = this.inventory.allItems.find(i => i.id === info.id);
             
             if (item && item.quantity > 0) {
                 const totalValAvailable = item.quantity * info.val;
@@ -1280,8 +1280,7 @@ export class Player {
             }
 
             if (this.equipment[slot]) {
-                if (this.inventory.items.length >= this.inventory.maxSlots) return false;
-                this.inventory.addItem(this.equipment[slot], 1);
+                if (!this.inventory.addItem(this.equipment[slot], 1)) return false;
             }
             this.equipment[slot] = itemId;
             this.inventory.removeItem(itemId, 1);
@@ -1332,7 +1331,6 @@ export class Player {
 
     unequip(slot) {
         if (this.equipment[slot]) {
-            if (this.inventory.items.length >= this.inventory.maxSlots) return false;
             const itemId = this.equipment[slot];
             if (this.inventory.addItem(itemId, 1)) {
                 this.equipment[slot] = null;

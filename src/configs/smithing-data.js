@@ -51,6 +51,38 @@ export const SMITHING_RECIPES = {
         staminaCost: 40,
         manaCost: 50,
         expGain: 300
+    },
+    'upgrade_bag_so': {
+        id: 'upgrade_bag_so',
+        name: 'Nâng Cấp Túi Trữ Vật (Sơ)',
+        level: 1,
+        materials: [
+            { id: 'huyen_thiet', quantity: 10 },
+            { id: 'yeu_huyet', quantity: 2 }
+        ],
+        baseSuccessRate: 0.8,
+        staminaCost: 30,
+        manaCost: 20,
+        expGain: 200,
+        type: 'bag_upgrade',
+        extraSlots: 5,
+        icon: '🎒'
+    },
+    'upgrade_bag_trung': {
+        id: 'upgrade_bag_trung',
+        name: 'Nâng Cấp Túi Trữ Vật (Trung)',
+        level: 3,
+        materials: [
+            { id: 'tinh_kim', quantity: 5 },
+            { id: 'thuy_tinh', quantity: 10 }
+        ],
+        baseSuccessRate: 0.5,
+        staminaCost: 80,
+        manaCost: 150,
+        expGain: 800,
+        type: 'bag_upgrade',
+        extraSlots: 10,
+        icon: '🎒'
     }
 };
 

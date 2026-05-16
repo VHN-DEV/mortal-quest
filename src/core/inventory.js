@@ -4,22 +4,47 @@ import { state } from '../state.js';
 export class Inventory {
     constructor(player) {
         this.player = player;
-        this.items = []; // Array of { id, quantity }
-        this.maxSlots = 20;
+        this.bags = [
+            {
+                id: 'basic_bag',
+                name: 'Túi Vải',
+                slots: 20,
+                items: [],
+                type: 'basic'
+            }
+        ];
+        this.currentBagIndex = 0;
+        this.currentPage = 0;
+        this.itemsPerPage = 20;
+    }
+
+    get currentBag() {
+        return this.bags[this.currentBagIndex];
+    }
+
+    get allItems() {
+        return this.bags.flatMap(bag => bag.items);
     }
 
     addItem(itemId, quantity = 1, metadata = {}) {
-        const existing = this.items.find(i => i.id === itemId && this.compareMetadata(i.metadata, metadata));
-        if (existing) {
-            existing.quantity += quantity;
-            return true;
-        } else {
-            if (this.items.length >= this.maxSlots) {
-                return false; // Inventory full
+        // 1. Tìm xem có stack cũ không (trong tất cả các túi)
+        for (const bag of this.bags) {
+            const existing = bag.items.find(i => i.id === itemId && this.compareMetadata(i.metadata, metadata));
+            if (existing) {
+                existing.quantity += quantity;
+                return true;
             }
-            this.items.push({ id: itemId, quantity, metadata });
-            return true;
         }
+
+        // 2. Nếu không có stack, tìm túi còn chỗ trống
+        for (const bag of this.bags) {
+            if (bag.items.length < bag.slots) {
+                bag.items.push({ id: itemId, quantity, metadata });
+                return true;
+            }
+        }
+
+        return false; // Hết chỗ chứa trong tất cả các túi
     }
 
     compareMetadata(m1, m2) {
@@ -29,19 +54,21 @@ export class Inventory {
     }
 
     removeItem(itemId, quantity = 1) {
-        const index = this.items.findIndex(i => i.id === itemId);
-        if (index > -1) {
-            this.items[index].quantity -= quantity;
-            if (this.items[index].quantity <= 0) {
-                this.items.splice(index, 1);
+        for (const bag of this.bags) {
+            const index = bag.items.findIndex(i => i.id === itemId);
+            if (index > -1) {
+                bag.items[index].quantity -= quantity;
+                if (bag.items[index].quantity <= 0) {
+                    bag.items.splice(index, 1);
+                }
+                return true;
             }
-            return true;
         }
         return false;
     }
 
     hasItem(itemId, quantity = 1) {
-        const item = this.items.find(i => i.id === itemId);
+        const item = this.allItems.find(i => i.id === itemId);
         return item && item.quantity >= quantity;
     }
 
@@ -49,8 +76,9 @@ export class Inventory {
         const itemData = getItemById(itemId);
         if (!itemData) return false;
 
-        const index = this.items.findIndex(i => i.id === itemId);
-        if (index === -1 || this.items[index].quantity < quantity) return false;
+        const allItems = this.allItems;
+        const itemInInv = allItems.find(i => i.id === itemId);
+        if (!itemInInv || itemInInv.quantity < quantity) return false;
 
         if (itemData.type === 'consumable' && itemData.effect) {
             for (let i = 0; i < quantity; i++) {
@@ -59,7 +87,6 @@ export class Inventory {
             this.removeItem(itemId, quantity);
             return true;
         } else if (itemData.type === 'book' && itemData.techniqueId) {
-            // Sách thì thường dùng từng cuốn một
             if (this.player.learnTechnique(itemData.techniqueId)) {
                 this.removeItem(itemId, 1);
                 return true;
@@ -70,6 +97,12 @@ export class Inventory {
                 const res = ss.absorb(itemId, quantity);
                 return res.success;
             }
+        } else if (itemData.action === 'expand_inventory') {
+            const slotsToAdd = itemData.stats?.slots || 10;
+            this.addBag(itemData.name, slotsToAdd, itemData.id);
+            this.removeItem(itemId, 1);
+            state.ui.toast(`Đã thêm túi mới: ${itemData.name} (+${slotsToAdd} ô)`, "success");
+            return true;
         } else if (itemData.action) {
             if (itemData.action === 'open_di_hoa_bang') {
                 if (window.game && window.game.screens.diHoaBang) {
@@ -97,21 +130,10 @@ export class Inventory {
                     return true;
                 }
             } else if (itemData.action === 'combine_ngu_cuc_son') {
-                const pieces = [
-                    'nguyen_tu_cuc_son',
-                    'bac_cuc_nguyen_quang_cuc_son',
-                    'hao_am_han_phach_cuc_son',
-                    'thai_at_thanh_quang_cuc_son',
-                    'am_duong_dai_ngu_hanh_cuc_son'
-                ];
-                
-                // Kiểm tra xem có đủ 5 mảnh không
+                const pieces = ['nguyen_tu_cuc_son', 'bac_cuc_nguyen_quang_cuc_son', 'hao_am_han_phach_cuc_son', 'thai_at_thanh_quang_cuc_son', 'am_duong_dai_ngu_hanh_cuc_son'];
                 const hasAll = pieces.every(id => this.hasItem(id, 1));
-                
                 if (hasAll) {
-                    // Xóa 5 mảnh
                     pieces.forEach(id => this.removeItem(id, 1));
-                    // Thêm núi hợp thể
                     this.addItem('nguyen_hop_ngu_cuc_son', 1);
                     state.ui.alert("Ngũ hành quy nguyên, âm dương giao thái! Ngươi đã thành công hợp nhất 5 ngọn Cực Sơn thành Nguyên Hợp Ngũ Cực Sơn!", "Hợp Nhất Thành Công");
                     return true;
@@ -120,19 +142,9 @@ export class Inventory {
                     return false;
                 }
             } else if (itemData.action === 'separate_ngu_cuc_son') {
-                const pieces = [
-                    'nguyen_tu_cuc_son',
-                    'bac_cuc_nguyen_quang_cuc_son',
-                    'hao_am_han_phach_cuc_son',
-                    'thai_at_thanh_quang_cuc_son',
-                    'am_duong_dai_ngu_hanh_cuc_son'
-                ];
-                
-                // Xóa núi hợp thể
+                const pieces = ['nguyen_tu_cuc_son', 'bac_cuc_nguyen_quang_cuc_son', 'hao_am_han_phach_cuc_son', 'thai_at_thanh_quang_cuc_son', 'am_duong_dai_ngu_hanh_cuc_son'];
                 this.removeItem('nguyen_hop_ngu_cuc_son', 1);
-                // Thêm lại 5 mảnh
                 pieces.forEach(id => this.addItem(id, 1));
-                
                 state.ui.toast("Đã phân tách Nguyên Hợp Ngũ Cực Sơn thành 5 ngọn núi đơn lẻ.", "success");
                 return true;
             }
@@ -140,9 +152,27 @@ export class Inventory {
         return false;
     }
 
+    addBag(name, slots, id = 'new_bag') {
+        this.bags.push({
+            id,
+            name,
+            slots,
+            items: [],
+            type: 'expand'
+        });
+    }
+
+    upgradeBag(index, extraSlots) {
+        if (this.bags[index]) {
+            this.bags[index].slots += extraSlots;
+            return true;
+        }
+        return false;
+    }
+
     getTotalWeight() {
         let total = 0;
-        this.items.forEach(i => {
+        this.allItems.forEach(i => {
             const data = getItemById(i.id);
             if (data && data.weight) {
                 total += data.weight * i.quantity;
@@ -165,7 +195,6 @@ export class Inventory {
         } else if (effect.type === 'learn_secret') {
             this.player.learnSecretTechnique(effect.value);
         } else if (effect.type === 'qi_absorb') {
-            // Check if energySystem exists (it should be global or accessible via player)
             const es = window.energySystem || (this.player.energySystem);
             if (es) {
                 es.absorbQi(effect.qiType, effect.amount, effect.purity || 'TINH_THUAN');
@@ -201,7 +230,7 @@ export class Inventory {
         } else if (effect.type === 'refine_flame') {
             if (!this.player.ownedFlames.includes(effect.value)) {
                 this.player.ownedFlames.push(effect.value);
-                this.player.currentFlame = effect.value; // Auto switch to better flame
+                this.player.currentFlame = effect.value;
             }
         } else if (effect.type === 'equip_cauldron') {
             if (!this.player.ownedCauldrons.includes(effect.value)) {
@@ -213,7 +242,7 @@ export class Inventory {
                 id: effect.id || 'temp_buff',
                 stat: effect.stat,
                 value: effect.value,
-                duration: (effect.duration || 3600) * 1000 // duration is in seconds in item-data
+                duration: (effect.duration || 3600) * 1000
             });
         } else if (effect.type === 'unlock_profession') {
             if (this.player.unlockProfession(effect.profession)) {
@@ -236,35 +265,37 @@ export class Inventory {
             'Phàm Khí': 1, 'Pháp Khí': 2, 'Linh Khí': 3, 'Pháp Bảo': 4, 'Cổ Bảo': 5, 'Linh Bảo': 6, 'Thông Thiên Linh Bảo': 7, 'Tiên Khí': 8, 'Danh Khí': 9
         };
 
-        this.items.sort((a, b) => {
-            const itemA = getItemById(a.id);
-            const itemB = getItemById(b.id);
-            if (!itemA || !itemB) return 0;
-            
-            if (itemA.type !== itemB.type) return itemA.type.localeCompare(itemB.type);
-            
-            const qA = qualityMap[itemA.quality] || 0;
-            const qB = qualityMap[itemB.quality] || 0;
-            if (qA !== qB) return qB - qA; // Higher quality first
-            
-            return itemA.name.localeCompare(itemB.name);
+        this.bags.forEach(bag => {
+            bag.items.sort((a, b) => {
+                const itemA = getItemById(a.id);
+                const itemB = getItemById(b.id);
+                if (!itemA || !itemB) return 0;
+                if (itemA.type !== itemB.type) return itemA.type.localeCompare(itemB.type);
+                const qA = qualityMap[itemA.quality] || 0;
+                const qB = qualityMap[itemB.quality] || 0;
+                if (qA !== qB) return qB - qA;
+                return itemA.name.localeCompare(itemB.name);
+            });
         });
     }
 
     load(data) {
         if (Array.isArray(data)) {
-            this.items = data;
-            this.maxSlots = 20;
-        } else if (data) {
-            this.items = data.items || [];
-            this.maxSlots = data.maxSlots || 20;
+            this.bags[0].items = data;
+        } else if (data && data.bags) {
+            this.bags = data.bags;
+            this.currentBagIndex = data.currentBagIndex || 0;
+        } else if (data && data.items) {
+            this.bags[0].items = data.items;
+            this.bags[0].slots = data.maxSlots || 20;
         }
     }
 
     save() {
         return {
-            items: this.items,
-            maxSlots: this.maxSlots
+            bags: this.bags,
+            currentBagIndex: this.currentBagIndex
         };
     }
 }
+

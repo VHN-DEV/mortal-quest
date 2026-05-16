@@ -336,7 +336,8 @@ export class SystemsScreen {
             'phu_luc': 'Phù Lục',
             'luyen_khi': 'Luyện Khí',
             'linh_dien': 'Linh Điền',
-            'ky_trung': 'Kỳ Trùng'
+            'ky_trung': 'Kỳ Trùng',
+            'tui_tru_vat': 'Túi Trữ Vật'
         };
 
         // If buttons count doesn't match or shop changed, rebuild
@@ -569,7 +570,8 @@ export class SystemsScreen {
                 'cong_phap': ['book', 'technique', 'recipe', 'talisman_recipe', 'consumable'], // Merged types
                 'tran_phap': ['formation'],
                 'phu_luc': ['talisman'],
-                'luyen_khi': ['material', 'smithing_tool']
+                'luyen_khi': ['material', 'smithing_tool'],
+                'tui_tru_vat': ['consumable']
             };
 
             if (sectionType && typeMap[sectionType]) {
@@ -591,6 +593,9 @@ export class SystemsScreen {
 
                 // Sub-filter for Pháp Bảo
                 if (sectionType === 'phap_bao' && subFilter !== 'all' && itemData.type !== subFilter) return;
+
+                // Specific filter for Túi Trữ Vật
+                if (sectionType === 'tui_tru_vat' && itemData.action !== 'expand_inventory') return;
 
                 // Quality Filter
                 if (this.shopQualityFilter !== 'all' && itemData.quality !== this.shopQualityFilter) return;
@@ -942,7 +947,7 @@ export class SystemsScreen {
             let materialsHTML = '';
             recipe.materials.forEach(mat => {
                 const matItem = getItemById(mat.id);
-                const count = state.player.inventory.items.find(i => i.id === mat.id)?.quantity || 0;
+                const count = state.player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
                 const enough = count >= mat.quantity;
                 materialsHTML += `<div class="text-[10px] ${enough ? 'text-gray-400' : 'text-red-500'}">${matItem?.name || mat.id}: ${count}/${mat.quantity}</div>`;
             });
@@ -957,7 +962,7 @@ export class SystemsScreen {
                     </div>
                     ${locked ?
                     `<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${recipe.level}</span>` :
-                    `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap" onclick="window.game.forge('${recipe.id}')">RÈN ĐÚC</button>`
+                    `<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap" onclick="window.game.forge('${recipe.id}')">${recipe.type === 'bag_upgrade' ? 'NÂNG CẤP' : 'RÈN ĐÚC'}</button>`
                 }
                 </div>
                 <div class="grid grid-cols-2 gap-1">${materialsHTML}</div>
@@ -1046,7 +1051,7 @@ export class SystemsScreen {
                 let materialsHTML = '';
                 recipe.materials.forEach(mat => {
                     const matItem = getItemById(mat.id);
-                    const count = state.player.inventory.items.find(i => i.id === mat.id)?.quantity || 0;
+                    const count = state.player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
                     const enough = count >= mat.quantity;
                     materialsHTML += `
                         <div class="flex justify-between items-center bg-black/20 p-2 rounded-xl border ${enough ? 'border-white/5' : 'border-red-500/20'}">
@@ -1123,7 +1128,7 @@ export class SystemsScreen {
                 let materialsHTML = '';
                 recipe.materials.forEach(mat => {
                     const matItem = getItemById(mat.id);
-                    const count = state.player.inventory.hasItem(mat.id) ? state.player.inventory.items.find(i => i.id === mat.id).quantity : 0;
+                    const count = state.player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
                     materialsHTML += `<div class="text-[9px] ${count >= mat.quantity ? 'text-gray-400' : 'text-red-500'}">${matItem.name} x${mat.quantity} (${count})</div>`;
                 });
 
@@ -1450,7 +1455,7 @@ export class SystemsScreen {
                 let materialsHTML = '';
                 type.materials.forEach(mat => {
                     const matItem = getItemById(mat.id);
-                    const count = state.player.inventory.hasItem(mat.id) ? state.player.inventory.items.find(i => i.id === mat.id).quantity : 0;
+                    const count = state.player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
                     materialsHTML += `<div class="text-[9px] ${count >= mat.quantity ? 'text-gray-400' : 'text-red-500'}">${matItem?.name || mat.id} x${mat.quantity} (${count})</div>`;
                 });
 

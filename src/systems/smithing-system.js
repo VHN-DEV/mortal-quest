@@ -73,6 +73,16 @@ export class SmithingSystem {
             else if (qualityRoll > 0.8) { quality = 'Trung Phẩm'; }
 
             const metadata = { quality, hasKhiLinh };
+            
+            if (recipe.type === 'bag_upgrade') {
+                this.player.inventory.upgradeBag(this.player.inventory.currentBagIndex, recipe.extraSlots);
+                this.player.addSmithingExp(recipe.expGain);
+                return { 
+                    success: true, 
+                    msg: `Chúc mừng! Ngươi đã nâng cấp thành công ${this.player.inventory.currentBag.name} (+${recipe.extraSlots} ô)!` 
+                };
+            }
+
             await window.game.receiveItem(recipe.id, 1, metadata);
             
             if (this.player.addSmithingExp(recipe.expGain)) {
@@ -81,7 +91,7 @@ export class SmithingSystem {
             }
             return { 
                 success: true, 
-                msg: `Chúc mừng! Ngươi đã rèn thành công [${quality}] ${getItemById(recipe.id).name}!${hasKhiLinh ? ' VẬT PHẨM ĐÃ SINH RA KHÍ LINH!' : ''}` 
+                msg: `Chúc mừng! Ngươi đã rèn thành công [${quality}] ${getItemById(recipe.id)?.name || recipe.name}!${hasKhiLinh ? ' VẬT PHẨM ĐÃ SINH RA KHÍ LINH!' : ''}` 
             };
         } else {
             // Failure

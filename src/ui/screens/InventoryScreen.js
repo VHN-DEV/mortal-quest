@@ -26,6 +26,12 @@ export class InventoryScreen {
         this.btnEquipItem = document.getElementById('btn-equip-item');
         this.equipmentSlots = document.querySelectorAll('.equipment-slot');
 
+        // New Elements
+        this.elBagTabs = document.getElementById('inventory-bag-tabs');
+        this.btnPrev = document.getElementById('btn-inventory-prev');
+        this.btnNext = document.getElementById('btn-inventory-next');
+        this.elPageText = document.getElementById('inventory-page-text');
+
         // Quantity Selector Elements
         this.elQtyContainer = document.getElementById('detail-quantity-container');
         this.elQtyInput = document.getElementById('detail-quantity-input');
@@ -50,6 +56,26 @@ export class InventoryScreen {
             };
         }
 
+        if (this.btnPrev) {
+            this.btnPrev.onclick = () => {
+                if (state.player.inventory.currentPage > 0) {
+                    state.player.inventory.currentPage--;
+                    this.render();
+                }
+            };
+        }
+
+        if (this.btnNext) {
+            this.btnNext.onclick = () => {
+                const bag = state.player.inventory.currentBag;
+                const maxPage = Math.ceil(bag.items.length / state.player.inventory.itemsPerPage) - 1;
+                if (state.player.inventory.currentPage < maxPage) {
+                    state.player.inventory.currentPage++;
+                    this.render();
+                }
+            };
+        }
+
         if (this.btnUseItem) {
             this.btnUseItem.onclick = () => {
                 const qty = parseInt(this.elQtyInput.value) || 1;
@@ -57,10 +83,9 @@ export class InventoryScreen {
                 const isManual = itemData && itemData.action && itemData.action.startsWith('open_');
 
                 if (state.selectedItemId && state.player.inventory.useItem(state.selectedItemId, qty)) {
-                    // Nếu là vật phẩm xem (manual), đóng popup chi tiết để hiện popup danh lục
                     if (isManual) {
                         state.ui.toggleOverlay(this.elItemDetail, false);
-                    } else if (!state.player.inventory.items.find(i => i.id === state.selectedItemId)) {
+                    } else if (!state.player.inventory.allItems.find(i => i.id === state.selectedItemId)) {
                         state.selectedItemId = null;
                         state.ui.toggleOverlay(this.elItemDetail, false);
                     }
@@ -74,7 +99,7 @@ export class InventoryScreen {
         if (this.btnCrushStone) {
             this.btnCrushStone.onclick = () => {
                 if (state.selectedItemId && state.player.crushStone(state.selectedItemId, 1).success) {
-                    if (!state.player.inventory.items.find(i => i.id === state.selectedItemId)) {
+                    if (!state.player.inventory.allItems.find(i => i.id === state.selectedItemId)) {
                         state.selectedItemId = null;
                         state.ui.toggleOverlay(this.elItemDetail, false);
                     }
@@ -92,7 +117,7 @@ export class InventoryScreen {
 
         if (this.btnQtyPlus) {
             this.btnQtyPlus.onclick = () => {
-                const item = state.player.inventory.items.find(i => i.id === state.selectedItemId);
+                const item = state.player.inventory.allItems.find(i => i.id === state.selectedItemId);
                 if (!item) return;
                 const val = Math.min(item.quantity, (parseInt(this.elQtyInput.value) || 1) + 1);
                 this.elQtyInput.value = val;
@@ -101,7 +126,7 @@ export class InventoryScreen {
 
         if (this.btnQtyMax) {
             this.btnQtyMax.onclick = () => {
-                const item = state.player.inventory.items.find(i => i.id === state.selectedItemId);
+                const item = state.player.inventory.allItems.find(i => i.id === state.selectedItemId);
                 if (item) this.elQtyInput.value = item.quantity;
             };
         }
@@ -157,13 +182,47 @@ export class InventoryScreen {
     render() {
         if (!state.player) return;
 
-        if (this.elInventoryGrid) this.elInventoryGrid.innerHTML = '';
+        this.renderBagTabs();
+        this.renderGrid();
+        this.renderEquipmentSlots();
+    }
+
+    renderBagTabs() {
+        if (!this.elBagTabs) return;
+        this.elBagTabs.innerHTML = '';
+
+        state.player.inventory.bags.forEach((bag, index) => {
+            const isActive = state.player.inventory.currentBagIndex === index;
+            const btn = document.createElement('button');
+            btn.className = `px-3 py-1.5 rounded-lg text-[9px] font-bold border transition-all whitespace-nowrap ${isActive ? 'bg-qi-blue/10 text-qi-blue border-qi-blue/30' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/20'}`;
+            btn.innerHTML = `<i class="ph ph-bag mr-1"></i> ${bag.name}`;
+            btn.onclick = () => {
+                state.player.inventory.currentBagIndex = index;
+                state.player.inventory.currentPage = 0;
+                this.render();
+            };
+            this.elBagTabs.appendChild(btn);
+        });
+    }
+
+    renderGrid() {
+        if (!this.elInventoryGrid) return;
+        this.elInventoryGrid.innerHTML = '';
+
+        const bag = state.player.inventory.currentBag;
+        const itemsPerPage = state.player.inventory.itemsPerPage;
+        const currentPage = state.player.inventory.currentPage;
+
+        const start = currentPage * itemsPerPage;
+        const end = start + itemsPerPage;
+        const paginatedItems = bag.items.slice(start, end);
+
         if (this.elInventoryCapacity) {
             const weight = state.player.inventory.getTotalWeight().toFixed(2);
-            this.elInventoryCapacity.textContent = `${state.player.inventory.items.length}/${state.player.inventory.maxSlots} | ${weight}kg`;
+            this.elInventoryCapacity.textContent = `${bag.items.length}/${bag.slots} | ${weight}kg`;
         }
 
-        state.player.inventory.items.forEach(item => {
+        paginatedItems.forEach(item => {
             const itemData = getItemById(item.id);
             if (!itemData) return;
 
@@ -180,7 +239,24 @@ export class InventoryScreen {
             this.elInventoryGrid.appendChild(el);
         });
 
-        this.renderEquipmentSlots();
+        // Fill empty slots if needed
+        const currentItemsCount = paginatedItems.length;
+        if (currentItemsCount < itemsPerPage) {
+            for (let i = 0; i < itemsPerPage - currentItemsCount; i++) {
+                const el = document.createElement('div');
+                el.className = 'p-2 border border-white/5 rounded-lg bg-black/10 flex items-center justify-center opacity-20';
+                el.innerHTML = '<div class="w-8 h-8"></div>';
+                this.elInventoryGrid.appendChild(el);
+            }
+        }
+
+        // Pagination UI
+        if (this.elPageText) {
+            const maxPage = Math.max(1, Math.ceil(bag.items.length / itemsPerPage));
+            this.elPageText.textContent = `${currentPage + 1} / ${maxPage}`;
+            if (this.btnPrev) this.btnPrev.disabled = currentPage === 0;
+            if (this.btnNext) this.btnNext.disabled = currentPage >= maxPage - 1;
+        }
     }
 
     renderEquipmentSlots() {
@@ -236,7 +312,7 @@ export class InventoryScreen {
         const itemData = getItemById(id);
         if (!itemData) return;
 
-        const playerItem = state.player.inventory.items.find(i => i.id === id);
+        const playerItem = state.player.inventory.allItems.find(i => i.id === id);
         const displayQuality = (playerItem && playerItem.metadata && playerItem.metadata.quality) ? playerItem.metadata.quality : itemData.quality;
         const qClass = this.getQualityClass(displayQuality);
 
@@ -262,21 +338,21 @@ export class InventoryScreen {
             'treasure': 'Thiên Tài Địa Bảo',
             'formation': 'Trận Đồ',
             'puppet': 'Cơ Quan / Khôi Lỗi',
-            // Artifact types
             'attackArtifact': 'Pháp Bảo Chủ Chiến',
             'defenseArtifact': 'Pháp Bảo Hộ Thân',
             'flightArtifact': 'Phi Hành Pháp Bảo',
             'spaceArtifact': 'Càn Khôn Pháp Bảo',
             'formationArtifact': 'Trận Đạo Pháp Bảo',
             'supportArtifact': 'Phụ Trợ Pháp Bảo',
-            'soulArtifact': 'Hồn Đạo Pháp Bảo'
+            'soulArtifact': 'Hồn Đạo Pháp Bảo',
+            'material': 'Linh Vật / Tài Nguyên',
+            'seed': 'Linh Chủng'
         };
 
         const qualitySuffix = (displayQuality.toLowerCase().includes('khí') || displayQuality.toLowerCase().includes('bảo') || displayQuality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(displayQuality)) ? '' : ' Phẩm';
         this.elDetailType.textContent = `${displayQuality}${qualitySuffix} | ${typeNames[itemData.type] || itemData.type}`;
 
-        this.elDetailDesc.innerHTML = this.linkifyDescription(itemData.description, id);
-        if (this.elDetailStats) this.elDetailStats.innerHTML = '';
+        let desc = itemData.description;
         
         // Puppet specific
         if (itemData.type === 'puppet' && playerItem && playerItem.metadata) {
@@ -287,11 +363,10 @@ export class InventoryScreen {
             }
         }
         
-        // Artifact specific (only when item is in player inventory)
+        // Artifact specific
         const isArtifact = itemData.type.includes('Artifact');
         if (isArtifact && playerItem) {
             const meta = playerItem.metadata || {};
-            const tier = itemData.tier || 'PHAM_KHI';
             const level = meta.level || 1;
             const spirit = meta.spirit || 0;
             const durability = meta.durability || 100;
@@ -304,7 +379,10 @@ export class InventoryScreen {
             desc += `\nNhận chủ: ${isBound ? 'ĐÃ NHẬN CHỦ' : 'CHƯA NHẬN CHỦ'}`;
         }
 
-        // Show stats for all equippable items (works in both shop and inventory view)
+        this.elDetailDesc.innerHTML = this.linkifyDescription(desc, id);
+        if (this.elDetailStats) this.elDetailStats.innerHTML = '';
+
+        // Show stats for all equippable items
         if (itemData.stats && this.elDetailStats) {
             Object.entries(itemData.stats).forEach(([key, val]) => {
                 const statEl = document.createElement('div');
@@ -315,7 +393,7 @@ export class InventoryScreen {
         }
 
         // Show/Hide Quantity Container
-        const isStackable = ['spirit_stone', 'consumable'].includes(itemData.type);
+        const isStackable = ['spirit_stone', 'consumable', 'material', 'seed'].includes(itemData.type);
         if (this.elQtyContainer) {
             this.elQtyContainer.classList.toggle('hidden', !isStackable || fromShop);
             if (isStackable && playerItem && !fromShop) {
@@ -330,7 +408,6 @@ export class InventoryScreen {
             if (this.btnBuyItem) this.btnBuyItem.classList.toggle('hidden', !fromShop);
             if (this.btnSellItem) this.btnSellItem.classList.toggle('hidden', !fromSell);
             
-            // Re-show quantity for selling
             if (fromSell && isStackable) {
                 this.elQtyContainer.classList.remove('hidden');
                 if (playerItem) {
@@ -383,60 +460,36 @@ export class InventoryScreen {
         
         const allConnections = [];
 
-        // Harvest Info
-        if (connections.produces) {
-            allConnections.push({ id: connections.produces, label: 'Thu hoạch ra', icon: '🌿' });
-        }
-        if (connections.harvestedFrom) {
-            allConnections.push({ id: connections.harvestedFrom, label: 'Gieo trồng từ', icon: '🌱' });
-        }
+        if (connections.produces) allConnections.push({ id: connections.produces, label: 'Thu hoạch ra', icon: '🌿' });
+        if (connections.harvestedFrom) allConnections.push({ id: connections.harvestedFrom, label: 'Gieo trồng từ', icon: '🌱' });
+        if (connections.recipeFor) allConnections.push({ id: connections.recipeFor, label: 'Luyện chế ra', icon: '📜' });
 
-        // Recipe Info
-        if (connections.recipeFor) {
-            allConnections.push({ id: connections.recipeFor, label: 'Luyện chế ra', icon: '📜' });
-        }
-
-        // Ingredients
         connections.ingredients.forEach(ing => {
             allConnections.push({ id: ing.id, label: `Nguyên Liệu x${ing.quantity}`, icon: '🧪' });
         });
 
-        // Used in recipes
         connections.asMaterialIn.forEach(prod => {
             allConnections.push({ id: prod.id, label: 'Luyện Chế', icon: '⚗️' });
         });
 
-        // Profession Unlocks
         if (connections.unlocksProfession) {
-            allConnections.push({ 
-                label: 'Truyền Thừa Đạo Nghiệp', 
-                icon: '📜', 
-                info: connections.unlocksProfession.toUpperCase() 
-            });
+            allConnections.push({ label: 'Truyền Thừa Đạo Nghiệp', icon: '📜', info: connections.unlocksProfession.toUpperCase() });
         }
 
-        // Teaches Technique
         if (connections.teaches) {
-            allConnections.push({ 
-                label: 'Lĩnh Ngộ Thần Thông', 
-                icon: '📖', 
-                info: connections.teaches 
-            });
+            allConnections.push({ label: 'Lĩnh Ngộ Thần Thông', icon: '📖', info: connections.teaches });
         }
 
         if (allConnections.length > 0) {
             this.elDetailConnections.classList.remove('hidden');
             allConnections.forEach(conn => {
                 const connItem = conn.id ? getItemById(conn.id) : null;
-                
                 const btn = document.createElement('button');
                 const qClass = connItem ? this.getQualityClass(connItem.quality) : 'gray-500';
                 btn.className = `flex items-center space-x-2 p-1.5 bg-white/5 border border-white/10 rounded-xl hover:bg-qi-blue/10 transition-all active:scale-95 group border-b-2 border-b-${qClass}/30`;
                 
                 const name = connItem ? connItem.name : conn.info;
-                const iconHtml = connItem ? 
-                    (connItem.image ? `<img src="${getAssetUrl(connItem.image)}" class="w-4 h-4 object-contain">` : (connItem.icon || conn.icon)) : 
-                    conn.icon;
+                const iconHtml = connItem ? (connItem.image ? `<img src="${getAssetUrl(connItem.image)}" class="w-4 h-4 object-contain">` : (connItem.icon || conn.icon)) : conn.icon;
 
                 btn.innerHTML = `
                     <div class="text-sm">${iconHtml}</div>
@@ -454,7 +507,6 @@ export class InventoryScreen {
                 } else {
                     btn.classList.add('cursor-default');
                 }
-                
                 this.elConnectionsList.appendChild(btn);
             });
         } else {
@@ -464,41 +516,21 @@ export class InventoryScreen {
 
     getStatLabel(statKey) {
         const map = {
-            atk: 'Công',
-            def: 'Thủ',
-            spd: 'Tốc',
-            maxHp: 'Sinh lực',
-            maxMana: 'Pháp lực',
-            mana: 'Pháp lực',
-            luck: 'Khí vận',
-            critChance: 'Tỉ lệ bạo kích',
-            critDamage: 'Sát thương bạo kích',
-            karma: 'Nhân quả',
-            lifespan: 'Thọ nguyên',
-            life_span: 'Thọ nguyên',
-            qiAbsorb: 'Hấp thụ Linh khí',
-            qi_absorb: 'Hấp thụ Linh khí',
-            alchemyBonus: 'Tỉ lệ Luyện đan',
-            alchemy_success: 'Tỉ lệ Luyện đan',
-            smithingBonus: 'Tỉ lệ Luyện khí',
-            smithing_success: 'Tỉ lệ Luyện khí',
-            tu_vi_speed: 'Tốc độ Tu luyện',
-            tuViSpeed: 'Tốc độ Tu luyện',
-            spirit: 'Thần thức',
-            slots: 'Ô chứa đồ',
-            breakthroughRate: 'Tỉ lệ Đột phá',
-            breakthrough_rate: 'Tỉ lệ Đột phá'
+            atk: 'Công', def: 'Thủ', spd: 'Tốc', maxHp: 'Sinh lực', maxMana: 'Pháp lực', mana: 'Pháp lực',
+            luck: 'Khí vận', critChance: 'Tỉ lệ bạo kích', critDamage: 'Sát thương bạo kích', karma: 'Nhân quả',
+            lifespan: 'Thọ nguyên', life_span: 'Thọ nguyên', qiAbsorb: 'Hấp thụ Linh khí', qi_absorb: 'Hấp thụ Linh khí',
+            alchemyBonus: 'Tỉ lệ Luyện đan', alchemy_success: 'Tỉ lệ Luyện đan', smithingBonus: 'Tỉ lệ Luyện khí',
+            smithing_success: 'Tỉ lệ Luyện khí', tu_vi_speed: 'Tốc độ Tu luyện', tuViSpeed: 'Tốc độ Tu luyện',
+            spirit: 'Thần thức', slots: 'Ô chứa đồ', breakthroughRate: 'Tỉ lệ Đột phá', breakthrough_rate: 'Tỉ lệ Đột phá'
         };
         return map[statKey] || statKey;
     }
 
     buildEquipPreview(itemData, mappedSlot) {
         if (!itemData?.stats) return '';
-
         const currentEquippedId = state.player.equipment[mappedSlot];
         const currentEquipped = currentEquippedId ? getItemById(currentEquippedId) : null;
         const currentStats = currentEquipped?.stats || {};
-
         const statKeys = new Set([...Object.keys(itemData.stats), ...Object.keys(currentStats)]);
         if (statKeys.size === 0) return '';
 
@@ -507,7 +539,6 @@ export class InventoryScreen {
             const curVal = currentStats[key] || 0;
             const diff = nextVal - curVal;
             const sign = diff >= 0 ? '+' : '';
-            
             if (this.elDetailStats) {
                 const statEl = document.createElement('div');
                 statEl.className = 'flex justify-between items-center text-[10px] py-1 border-b border-white/5';
@@ -517,92 +548,49 @@ export class InventoryScreen {
                 this.elDetailStats.appendChild(statEl);
             }
         });
-
-        if (currentEquipped && this.elDetailStats) {
-            const infoEl = document.createElement('div');
-            infoEl.className = 'text-[8px] text-gray-600 italic mt-2 text-center';
-            infoEl.textContent = `Đang trang bị: ${currentEquipped.name}`;
-            this.elDetailStats.appendChild(infoEl);
-        }
     }
 
     getQualityClass(quality) {
         const map = { 
-            'Phàm Khí': 'pham-khi', 
-            'Pháp Khí': 'phap-khi', 
-            'Linh Khí': 'linh-khi', 
-            'Pháp Bảo': 'phap-bao', 
-            'Cổ Bảo': 'co-bao', 
-            'Linh Bảo': 'linh-bao', 
-            'Thông Thiên Linh Bảo': 'thong-thien', 
-            'Tiên Khí': 'tien-khi',
-            'Danh Khí': 'danh-khi',
-            // Compatibility for sub-qualities if they appear in metadata
+            'Phàm Khí': 'pham-khi', 'Pháp Khí': 'phap-khi', 'Linh Khí': 'linh-khi', 'Pháp Bảo': 'phap-bao', 
+            'Cổ Bảo': 'co-bao', 'Linh Bảo': 'linh-bao', 'Thông Thiên Linh Bảo': 'thong-thien', 'Tiên Khí': 'tien-khi', 'Danh Khí': 'danh-khi',
             'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
         };
         return map[quality] || 'pham';
     }
 
-    /**
-     * Tự động biến các tên vật phẩm trong mô tả thành link liên kết.
-     */
     linkifyDescription(text, currentItemId) {
         if (!text) return '';
-        
         let result = text;
         const replacements = [];
-
-        // 1. Xử lý các liên kết thủ công định dạng [[id|name]] hoặc [[id]]
         const manualLinkRegex = /\[\[(.*?)(?:\|(.*?))?\]\]/g;
         result = result.replace(manualLinkRegex, (match, id, name) => {
             const item = ITEMS[id];
-            if (!item) return name || id; // Trả về text gốc nếu không tìm thấy item
-
+            if (!item) return name || id;
             const placeholder = `[[MANUAL_LINK_${replacements.length}]]`;
-            replacements.push({ 
-                placeholder, 
-                item, 
-                displayName: name || item.name 
-            });
+            replacements.push({ placeholder, item, displayName: name || item.name });
             return placeholder;
         });
 
-        // 2. Tự động liên kết theo tên cho các phần còn lại
-        const allItems = Object.values(ITEMS)
-            .filter(item => item.name && item.name.length > 2)
-            .sort((a, b) => b.name.length - a.name.length);
-
+        const allItems = Object.values(ITEMS).filter(item => item.name && item.name.length > 2).sort((a, b) => b.name.length - a.name.length);
         allItems.forEach((item, index) => {
             if (item.id === currentItemId) return;
-            
             const name = item.name;
-            // Chỉ thay thế nếu không phải là một phần của placeholder đã tạo
             if (result.includes(name)) {
-                // Sử dụng Regex với boundary để tránh match trúng một phần của từ
-                // (nhưng vẫn phải cẩn thận với tiếng Việt)
                 const placeholder = `[[AUTO_LINK_${index}]]`;
                 const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 const regex = new RegExp(escapedName, 'g');
-                
                 let replaced = false;
-                result = result.replace(regex, (match) => {
-                    replaced = true;
-                    return placeholder;
-                });
-
-                if (replaced) {
-                    replacements.push({ placeholder, item, displayName: name });
-                }
+                result = result.replace(regex, (match) => { replaced = true; return placeholder; });
+                if (replaced) replacements.push({ placeholder, item, displayName: name });
             }
         });
 
-        // 3. Thay thế tất cả placeholder bằng HTML thực tế
         replacements.forEach(rep => {
             const qClass = this.getQualityClass(rep.item.quality);
             const linkHtml = `<span class="item-link quality-${qClass} text-[10px] px-1.5 py-0.5 bg-white/5 rounded border border-white/10 cursor-pointer hover:text-qi-blue hover:border-qi-blue transition-all inline-block align-middle mx-0.5 mb-1" onclick="game.screens.inventory.selectItem('${rep.item.id}', true)">${rep.displayName}</span>`;
             result = result.split(rep.placeholder).join(linkHtml);
         });
-
         return result;
     }
 }
