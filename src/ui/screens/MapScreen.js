@@ -168,11 +168,18 @@ export class MapScreen {
 
     async selectWorld(id) {
         if (!id) return;
+        if (state.currentWorldId === id) return;
+        
         const w = getWorlds()[id];
         if (!w) {
             state.ui.toast("Không tìm thấy dữ liệu thế giới!", "error");
             return;
         }
+
+        // Travel time: 1-3 months (1 month = 4320 mins)
+        const travelMins = (1 + Math.floor(Math.random() * 3)) * 4320;
+        if (state.systems.time) state.systems.time.skipTime(travelMins);
+        state.ui.toast(`Ngươi đã lặn lội đường xa, vượt qua biên giới để đến ${w.name}...`, "info");
 
         state.currentWorldId = id;
         this.elCurrentWorldName.textContent = w.name;
@@ -237,6 +244,12 @@ export class MapScreen {
             console.error(`Location not found: ${locId} in world ${state.currentWorldId}`);
             state.ui.toast("Không tìm thấy dữ liệu địa điểm!", "error");
             return;
+        }
+
+        // Travel time: 1-7 days (1 day = 12 hours = 144 mins)
+        if (state.currentLocId !== locId) {
+            const travelMins = (1 + Math.floor(Math.random() * 7)) * 144;
+            if (state.systems.time) state.systems.time.skipTime(travelMins);
         }
 
         state.currentLocId = locId;

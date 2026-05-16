@@ -13,11 +13,11 @@ export class TimeSystem {
         this.totalMinutes = (randomStartYear * 12 * 30 * 12) + randomDayOffset;
         
         this.lastTickTime = Date.now();
-        this.tickRate = 60000; // 1 real minute = 1 game Giờ
+        this.tickRate = 10000; // 10 real seconds = 1 game Giờ (was 60s)
         
         this.currentPhenomenon = null;
         this.phenomenonEndTime = 0;
-        this.timeMultiplier = 1.0;
+        this.timeMultiplier = 2.0; // 1 real second = 1.2 game Giờ (1 year = ~1 real hour)
     }
 
     update(delta) {
@@ -36,10 +36,20 @@ export class TimeSystem {
             this.ui.toast("Thiên tượng đã biến mất.", "info");
         }
 
+        // Update UI
+        if (this.ui.updateTimeUI) {
+            this.ui.updateTimeUI(this.getFormattedTime());
+        }
+
         // Randomly trigger phenomena every Giờ
         if (elapsed >= this.tickRate && !this.currentPhenomenon) {
             this.checkRandomPhenomena();
         }
+    }
+
+    skipTime(minutes) {
+        this.advanceTime(minutes);
+        logger.info('system', `Time Skipped: ${minutes} mins`);
     }
 
     advanceTime(minutes) {

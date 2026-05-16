@@ -97,7 +97,16 @@ export class CharacterScreen {
         }
 
         if (this.elCharMana) this.elCharMana.textContent = `${Math.floor(state.player.mana)} / ${Math.floor(state.player.maxMana)}`;
-        if (this.elCharAge) this.elCharAge.textContent = `${Math.floor(state.player.age)} / ${state.player.maxAge}`;
+        if (this.elCharAge) {
+            const remaining = state.player.maxAge - Math.floor(state.player.age);
+            const colorClass = remaining < 10 ? 'text-red-500 animate-pulse' : (remaining < 50 ? 'text-cultivation-gold' : 'text-gray-500');
+            this.elCharAge.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <span>${Math.floor(state.player.age)} / ${state.player.maxAge}</span>
+                    <span class="text-[9px] ${colorClass} font-bold px-1.5 py-0.5 rounded bg-white/5 border border-white/5">Còn ${remaining} năm</span>
+                </div>
+            `;
+        }
 
         if (this.elCharStability) {
             const stability = state.player.stability;

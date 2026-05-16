@@ -17,6 +17,36 @@ export class UISystem {
         this.modalInputContainer = document.getElementById('modal-input-container');
         this.modalInput = document.getElementById('modal-input');
         this.loadingOverlay = document.getElementById('loading-overlay');
+        
+        // Time Display Elements
+        this.elTimeEra = document.getElementById('time-era');
+        this.elTimeYearMonth = document.getElementById('time-year-month');
+        this.elTimeSeason = document.getElementById('time-season');
+        this.elTimeHour = document.getElementById('time-hour');
+        this.elTimePhenomenon = document.getElementById('time-phenomenon');
+    }
+
+    updateTimeUI(time) {
+        if (!this.elTimeYearMonth) return;
+        
+        this.elTimeYearMonth.textContent = `Năm ${time.year} - Tháng ${time.month.toString().padStart(2, '0')} - Ngày ${time.day.toString().padStart(2, '0')}`;
+        this.elTimeHour.textContent = time.hourName;
+        
+        if (this.elTimeSeason) {
+            this.elTimeSeason.textContent = time.seasonName;
+            this.elTimeSeason.style.color = time.seasonColor;
+            this.elTimeSeason.style.borderColor = `${time.seasonColor}33`;
+            this.elTimeSeason.style.backgroundColor = `${time.seasonColor}11`;
+        }
+
+        if (this.elTimePhenomenon) {
+            if (time.phenomenon) {
+                this.elTimePhenomenon.textContent = time.phenomenon;
+                this.elTimePhenomenon.classList.remove('hidden');
+            } else {
+                this.elTimePhenomenon.classList.add('hidden');
+            }
+        }
     }
 
     /**

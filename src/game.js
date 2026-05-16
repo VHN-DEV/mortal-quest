@@ -682,12 +682,76 @@ export class Game {
         }
     }
 
-    enterSeclusion() {
+    async enterSeclusion() {
         if (!state.player) return;
         if (state.player.isSecluded) return;
-        state.player.isSecluded = true;
-        state.ui.toast("Ngươi đã bắt đầu bế quan, tâm thần tĩnh lặng...", "success");
-        this.refreshUI();
+
+        const options = [
+            { label: 'Bế quan 1 năm', value: 1, icon: 'ph-moon' },
+            { label: 'Bế quan 10 năm', value: 10, icon: 'ph-moon-stars' },
+            { label: 'Bế quan 50 năm', value: 50, icon: 'ph-stars' },
+            { label: 'Bế quan 100 năm', value: 100, icon: 'ph-yin-yang' }
+        ];
+
+        const durationYears = await state.ui.promptOptions(
+            "Định Hình Bế Quan",
+            options,
+            "Ngươi muốn bế quan trong bao lâu? Trong thời gian này, tu vi sẽ tăng trưởng vượt bậc nhưng thọ nguyên cũng sẽ cạn kiệt tương ứng."
+        );
+
+        if (!durationYears) return;
+
+        // Calculate total minutes: 12 months * 30 days * 12 hours = 4320 mins/year
+        const totalMinutes = durationYears * 4320;
+        
+        // Calculate expected tuvi gain
+        // Seclusion gives 5x multiplier. delta is not available here, so we simulate 1s intervals
+        // Player.js: tuViGain = tuViPerSecond * focusMult * finalMultiplier * delta
+        // finalMultiplier = multiplier * stabilityMult * compMult * seclusionMult(5.0)
+        
+        // Simplified calculation for summary:
+        const focus = state.player.cultivationFocus || 'tuvi';
+        const rate = focus === 'tuvi' ? state.player.tuViPerSecond : (focus === 'body' ? state.player.bodyExpPerSecond : state.player.soulExpPerSecond);
+        const baseGainPerMins = rate * 60; // Rate is per second, but let's assume 1 min game = 1s real for calculation
+        const seclusionMult = 5.0;
+        const totalGain = baseGainPerMins * totalMinutes * seclusionMult * (1 + (state.player.comprehension / 100));
+
+        const confirm = await state.ui.confirm(
+            `Ngươi chắc chắn muốn bế quan ${durationYears} năm? Dự kiến tu vi sẽ tăng thêm khoảng ${Math.floor(totalGain).toLocaleString()} điểm.`,
+            "Xác Nhận Nhập Định"
+        );
+
+        if (!confirm) return;
+
+        state.ui.showLoading(true, "Đang thâm tầng định cảnh...");
+        
+        // Advance time
+        if (state.systems.time) {
+            state.systems.time.skipTime(totalMinutes);
+        }
+
+        // Apply gain to player (TimeSystem.advanceTime handles age, but we need to apply TuVi manually or through skip logic)
+        // Since we don't have a fast-forward simulation of every second, we apply a bulk gain
+        state.player.tuVi += (focus === 'tuvi' ? totalGain : totalGain * 0.2);
+        state.player.bodyExp += (focus === 'body' ? totalGain : totalGain * 0.2);
+        state.player.soulExp += (focus === 'soul' ? totalGain : totalGain * 0.2);
+
+        // Check for breakthroughs during seclusion
+        state.player.isSecluded = true; // Temporary set to true for trigger check
+        for (let i = 0; i < durationYears; i++) {
+            if (Math.random() < 0.1) state.player.triggerSeclusionEvent();
+        }
+        state.player.isSecluded = false;
+
+        setTimeout(() => {
+            state.ui.showLoading(false);
+            state.ui.alert(
+                `Sau ${durationYears} năm bế quan khổ tu, ngươi đã xuất quan. Tuổi hiện tại: ${state.player.age}. Tu vi tinh tiến vượt bậc!`,
+                "Xuất Quan Đại Cát"
+            );
+            this.refreshUI();
+            this.saveGame();
+        }, 2000);
     }
 
     exitSeclusion() {
@@ -711,26 +775,37 @@ export class Game {
         }
     }
 
-    handleDeath() {
+    handlePlayerDeath(reason = "Ngươi đã vẫn lạc...") {
+        if (state.isDead) return;
+        state.isDead = true;
+
         const source = this.getRebirthProtectionSource();
         if (source && this.consumeRebirthProtection(source)) {
+            // Rebirth logic
             state.player.hp = Math.max(1, Math.floor(state.player.maxHp * 0.2));
             state.player.mana = Math.floor(state.player.maxMana * 0.1);
+            
+            // If it was age death, give some bonus years
+            if (state.player.age >= state.player.maxAge) {
+                state.player.age = Math.max(0, state.player.maxAge - 10); // Extend 10 years
+            }
+
+            state.isDead = false;
             state.ui.toast('Ngươi đã chết, nhưng nhờ thủ đoạn bảo mệnh/trùng sinh nên thoát kiếp.', 'warning', 7000);
             this.refreshUI();
             return;
         }
-        this.restartFromDeath();
+        this.restartFromDeath(reason);
     }
 
-    async restartFromDeath() {
+    async restartFromDeath(reason = null) {
         const quotes = [
             "Tu vi cả đời hóa thành hư không, mây khói tan biến...",
             "Trăm năm tu đạo, một sớm thành không.",
             "Cát bụi lại trở về với cát bụi.",
             "Hồng trần cuồn cuộn, mệnh số đã tận."
         ];
-        const quote = quotes[Math.floor(Math.random() * quotes.length)];
+        const quote = reason || quotes[Math.floor(Math.random() * quotes.length)];
         
         await state.ui.showDeathScreen(quote);
         
