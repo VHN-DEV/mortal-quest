@@ -1169,10 +1169,10 @@ export class Game {
         state.currentCombat.start();
     }
 
-    handleCombatEncounter(worldId, locId) {
+    handleCombatEncounter(worldId, locId, onEnd = null) {
         const loc = getLocationById(worldId, locId);
         const enemy = EnemyGenerator.generate(loc?.dangerLevel || 1);
-        this.pendingEncounter = { worldId, locId, enemy };
+        this.pendingEncounter = { worldId, locId, enemy, onEnd };
 
         const playerPerc = state.player.advancedStats.perception || 5;
         const enemyPerc = enemy.perception || 5;
@@ -1184,9 +1184,9 @@ export class Game {
             state.ui.toggleOverlay(document.getElementById('ambush-overlay'), true);
         } else if (enemyPerc > playerPerc + (Math.random() * 10)) {
             state.ui.toast(`Ngươi bị một con ${enemy.name} tập kích bất ngờ!`, 'error');
-            setTimeout(() => this.startBattle(enemy), 1000);
+            setTimeout(() => this.startBattle(enemy, null, onEnd), 1000);
         } else {
-            this.startBattle(enemy);
+            this.startBattle(enemy, null, onEnd);
         }
     }
 
@@ -1231,11 +1231,12 @@ export class Game {
         if (!this.pendingEncounter) return;
         state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
         const successChance = 0.6 + ((state.player.advancedStats.perception || 5) / 100);
+        const { enemy, onEnd } = this.pendingEncounter;
         if (Math.random() < successChance) {
-            this.startBattle(this.pendingEncounter.enemy, 'player');
+            this.startBattle(enemy, 'player', onEnd);
         } else {
             state.ui.toast("Tập kích thất bại! Ngươi đã bị đối phương phát hiện.", "warning");
-            this.startBattle(this.pendingEncounter.enemy);
+            this.startBattle(enemy, null, onEnd);
         }
         this.pendingEncounter = null;
     }

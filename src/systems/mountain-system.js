@@ -130,33 +130,77 @@ export class MountainSystem {
         const karma = this.player.karma || 0;
         const fateBias = Math.max(-0.25, Math.min(0.25, (luck - 50) / 200 + karma / 4000));
 
-        const layerEvents = MOUNTAIN_EVENTS.filter(e => e.layer === 'any' || e.layer === layer.id);
-        const rolled = layerEvents.find(e => Math.random() < (e.chance + fateBias * 0.1));
+        const probs = layer.eventProbs || { combat: 0.15, loot: 0.1, npc: 0.05, empty: 0.7 };
         
-        if (rolled) {
-            if (rolled.type === 'hazard') {
-                const avoid = Math.random() < (0.2 + fateBias + (this.player.stats.spd / 1000));
-                if (avoid) {
-                    this.ui.toast(`${rolled.name}! Nhờ linh giác nhạy bén, ngươi đã tránh được hiểm cảnh.`, "warning");
-                } else {
-                    this.player.mountainSurvival.toxicity = Math.min(100, this.player.mountainSurvival.toxicity + 15);
-                    this.player.hp -= (layer.difficulty * 10);
-                    this.ui.toast(`${rolled.name}! Thân thể chịu tổn thương nặng nề.`, "error");
+        // Adjust probabilities based on fate bias
+        const adjustedProbs = {
+            combat: Math.max(0, probs.combat - fateBias * 0.1),
+            loot: Math.max(0, probs.loot + fateBias * 0.15),
+            npc: Math.max(0, probs.npc + fateBias * 0.05),
+            empty: probs.empty
+        };
+
+        const total = adjustedProbs.combat + adjustedProbs.loot + adjustedProbs.npc + adjustedProbs.empty;
+        let rand = Math.random() * total;
+
+        if (rand < adjustedProbs.combat) {
+            this.triggerBattle(layer);
+            return;
+        }
+        rand -= adjustedProbs.combat;
+
+        if (rand < adjustedProbs.loot) {
+            const layerEvents = MOUNTAIN_EVENTS.filter(e => (e.layer === 'any' || e.layer === layer.id) && (e.type === 'treasure' || e.type === 'hazard'));
+            const rolled = layerEvents[Math.floor(Math.random() * layerEvents.length)];
+            if (rolled) {
+                if (rolled.type === 'hazard') {
+                    const avoid = Math.random() < (0.2 + fateBias + (this.player.stats.spd / 1000));
+                    if (avoid) {
+                        this.ui.toast(`${rolled.name}! Nhờ linh giác nhạy bén, ngươi đã tránh được hiểm cảnh.`, "warning");
+                    } else {
+                        this.player.mountainSurvival.toxicity = Math.min(100, this.player.mountainSurvival.toxicity + 15);
+                        this.player.hp -= (layer.difficulty * 10);
+                        this.ui.toast(`${rolled.name}! Thân thể chịu tổn thương nặng nề.`, "error");
+                    }
+                } else if (rolled.type === 'treasure') {
+                    await this.handleTreasureEvent(rolled, fateBias);
                 }
-            } else if (rolled.type === 'treasure') {
-                await this.handleTreasureEvent(rolled, fateBias);
-            } else if (rolled.type === 'encounter') {
+            }
+            return;
+        }
+        rand -= adjustedProbs.loot;
+
+        if (rand < adjustedProbs.npc) {
+            const encounterEvents = MOUNTAIN_EVENTS.filter(e => (e.layer === 'any' || e.layer === layer.id) && e.type === 'encounter');
+            const rolled = encounterEvents[Math.floor(Math.random() * encounterEvents.length)];
+            if (rolled) {
                 this.handleEncounter(rolled);
             }
             return;
         }
 
-        if (isPassive) return; 
+        if (isPassive) return;
 
-        // Combat check
-        const beastChance = 0.15 + (this.layerProgress / 500); // Higher progress = higher beast chance
-        if (Math.random() < beastChance) {
-            this.triggerBattle(layer);
+        // Empty event feedback
+        const mountainEmptyMsgs = [
+            "Tiếng gió rít qua khe núi, bốn bề vắng lặng.",
+            "Ngươi cẩn trọng tiến bước, chỉ nghe thấy tiếng bước chân của chính mình.",
+            "Một vài hòn đá lăn xuống vực sâu, vang lên tiếng động khô khốc.",
+            "Mây mù bao phủ, vạn vật như chìm vào hư vô.",
+            "Ngươi cảm nhận được linh khí dao động, nhưng không tìm thấy gì bất thường.",
+            "Đường núi gập ghềnh, ngươi tập trung tinh thần để không bị sẩy chân."
+        ];
+        this.addLog(mountainEmptyMsgs[Math.floor(Math.random() * mountainEmptyMsgs.length)]);
+    }
+
+    addLog(msg) {
+        const log = document.getElementById('mountain-event-log');
+        if (log) {
+            const p = document.createElement('p');
+            p.className = 'text-[10px] text-gray-400 font-ancient py-1 border-b border-white/5 animate-fade-in';
+            p.innerHTML = `<span class="text-gray-600 mr-2">[${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}]</span> ${msg}`;
+            log.prepend(p);
+            if (log.childNodes.length > 50) log.removeChild(log.lastChild);
         }
     }
 
@@ -183,6 +227,25 @@ export class MountainSystem {
             event.description
         );
 
+        if (!choice) return;
+
+        // Custom resolve logic from event data
+        if (event.resolve) {
+            const result = await event.resolve(choice, this.player, window.game);
+            if (result) {
+                if (result.msg) this.ui.toast(result.msg, 'info');
+                if (result.type === 'combat_then_loot') {
+                    this.triggerBattle(null, true, (win) => {
+                        if (win && result.loot) {
+                            window.game.receiveItem(result.loot, 1);
+                        }
+                    });
+                }
+                return;
+            }
+        }
+
+        // Fallback legacy logic
         if (choice === 'trade') {
             this.ui.toast("Đang mở giao diện giao dịch...", "info");
             // Logic for trading NPC
@@ -198,7 +261,7 @@ export class MountainSystem {
         }
     }
 
-    triggerBattle(layer, isNpc = false) {
+    triggerBattle(layer, isNpc = false, onEnd = null) {
         const layerBeasts = MOUNTAIN_BEASTS.filter(b => b.layer === (layer ? layer.id : this.currentLayer));
         const beast = layerBeasts[Math.floor(Math.random() * layerBeasts.length)] || MOUNTAIN_BEASTS[0];
         
@@ -213,7 +276,7 @@ export class MountainSystem {
         this.ui.toast(`${isNpc ? 'Tu sĩ phục kích' : 'Yêu thú xuất hiện'}: ${enemyData.name}!`, "warning");
         
         if (window?.game?.startBattle) {
-            window.game.startBattle(enemy);
+            window.game.startBattle(enemy, null, onEnd);
         }
     }
 

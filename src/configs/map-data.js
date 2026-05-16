@@ -48,7 +48,7 @@ export const WORLDS = {
                 description: 'Nơi yêu thú sơ cấp hoành hành, đầy rẫy linh thảo thiên nhiên.',
                 resources: ['Linh Thảo', 'Yêu Đan Hạ Phẩm'],
                 energies: [{ type: 'linh_khi', element: 'Mộc', concentration: 15, purity: 'TINH_THUAN' }, { type: 'yeu_khi', concentration: 20, purity: 'TAP' }, { type: 'sinh_khi', concentration: 5, purity: 'TINH_THUAN' }],
-                eventProbs: { combat: 0.4, loot: 0.3, npc: 0.1, empty: 0.2 }
+                eventProbs: { combat: 0.25, loot: 0.15, npc: 0.05, empty: 0.55 }
             },
             {
                 id: 'loan_tinh_hai',
@@ -59,7 +59,7 @@ export const WORLDS = {
                 description: 'Vùng biển hỗn loạn với vô số đảo nhỏ và yêu thú thủy tộc.',
                 resources: ['Thủy Tinh', 'Linh Thạch Hạ Phẩm'],
                 energies: [{ type: 'linh_khi', element: 'Thủy', concentration: 20, purity: 'TINH_THUAN' }],
-                eventProbs: { combat: 0.3, loot: 0.2, npc: 0.1, empty: 0.4 }
+                eventProbs: { combat: 0.2, loot: 0.1, npc: 0.05, empty: 0.65 }
             },
             {
                 id: 'thien_kiem_tong',
@@ -70,7 +70,7 @@ export const WORLDS = {
                 description: 'Kiếm đạo thánh địa, nơi vạn kiếm quy tông.',
                 resources: ['Kiếm Ý', 'Linh Khoáng'],
                 energies: [{ type: 'kiem_khi', concentration: 60, purity: 'CUC_PHAM' }, { type: 'linh_khi', element: 'Kim', concentration: 30, purity: 'TINH_THUAN' }, { type: 'hao_nhien_chinh_khi', concentration: 10, purity: 'TINH_THUAN' }],
-                eventProbs: { combat: 0.1, loot: 0.1, npc: 0.5, empty: 0.3 }
+                eventProbs: { combat: 0.02, loot: 0.03, npc: 0.4, empty: 0.55 }
             },
             {
                 id: 'huyen_am_coc',
@@ -81,7 +81,7 @@ export const WORLDS = {
                 description: 'U ám tà khí, nơi ma tu thường xuyên ẩn nấp phục kích.',
                 resources: ['Âm Sát', 'Ma Thạch'],
                 energies: [{ type: 'ma_khi', concentration: 80, purity: 'TINH_THUAN' }, { type: 'tu_khi', concentration: 40, purity: 'TAP' }, { type: 'hon_khi', concentration: 10, purity: 'TAP' }],
-                eventProbs: { combat: 0.5, loot: 0.2, npc: 0.1, empty: 0.2 }
+                eventProbs: { combat: 0.4, loot: 0.1, npc: 0.05, empty: 0.45 }
             },
             {
                 id: 'van_bao_cac',

@@ -327,8 +327,7 @@ export class MapScreen {
         this.updateExplorationUI();
 
         const loc = getLocationById(state.currentWorldId, state.currentLocId);
-
-        let probs = { combat: 1.0, loot: 0, npc: 0, shop: 0 };
+        const probs = loc.eventProbs || { combat: 0.1, loot: 0.1, npc: 0.05, empty: 0.75 };
 
         const event = getRandomEvent(probs);
 
@@ -344,15 +343,42 @@ export class MapScreen {
                 }, 1000);
             } else if (event.type === 'npc') {
                 setTimeout(() => {
+                    // Decide which NPC to open based on context or just generic
                     window.game.openNPC();
                 }, 1000);
             } else if (event.type === 'shop') {
                 window.game.openShop();
             } else if (event.type === 'combat') {
                 setTimeout(() => { window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId); }, 1000);
+            } else if (event.type === 'interactive') {
+                setTimeout(async () => {
+                    const choice = await state.ui.promptOptions(event.name, event.options, event.description);
+                    if (choice && event.resolve) {
+                        const result = await event.resolve(choice, state.player, window.game);
+                        if (result) {
+                            if (result.msg) this.updateEventDisplay(result.msg, '📜');
+                            if (result.type === 'combat_then_loot') {
+                                window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId, (win) => {
+                                    if (win && result.loot) {
+                                        window.game.receiveItem(result.loot, 1);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    if (window.game) window.game.saveGame();
+                }, 1000);
             }
         } else {
-            this.updateEventDisplay('Một chặng đường yên tĩnh.', '🚶');
+            const emptyMsgs = [
+                'Một chặng đường yên tĩnh.',
+                'Gió thổi xào xạc qua kẽ lá, không một bóng người.',
+                'Ngươi lẳng lặng tiến bước, tâm thần hòa vào thiên địa.',
+                'Tiếng chim kêu xa xăm, cảnh vật thanh bình.',
+                'Mọi thứ dường như tĩnh lặng đến lạ thường.',
+                'Cảnh sắc xung quanh tuy đẹp nhưng không có gì bất ngờ xảy ra.'
+            ];
+            this.updateEventDisplay(emptyMsgs[Math.floor(Math.random() * emptyMsgs.length)], '🚶');
         }
 
         if (state.explorationProgress >= 100) {
