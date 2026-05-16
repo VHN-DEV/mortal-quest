@@ -111,7 +111,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 12.0,
         survivalFactor: 3.0,
         description: 'Vực sâu vạn trượng, nơi tụ hội của long mạch chi lực.',
-        resources: ['long_huyet_tinh', 'than_thú_trung', 'tien_tinh']
+        resources: ['long_huyet_tinh', 'than_thú_trung', 'tien_tinh', 'tu_tuong_bo_de_kiem', 'quan_han_linh_ngoc_bat']
     },
     {
         id: 'thanh_son',
@@ -120,7 +120,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 20.0,
         survivalFactor: 5.0,
         description: 'Nơi tối cao của Đại Sơn, thiên đạo tàn khuyết, áp lực khủng khiếp.',
-        resources: ['hong_mong_chi_bao', 'tien_nhan_truyen_thua', 'hon_don_khi']
+        resources: ['hong_mong_chi_bao', 'tien_nhan_truyen_thua', 'hon_don_khi', 'thien_dao_than_thach', 'truyen_dao_thanh_gian']
     }
 ];
 
@@ -171,7 +171,7 @@ export const MOUNTAIN_BOSSES = [
         def: 50000,
         icon: '🌌',
         description: 'Sinh vật sinh ra từ hỗn độn, canh giữ ranh giới thiên đạo.',
-        rewards: ['hong_mong_chi_bao', 'tien_tinh']
+        rewards: ['hong_mong_chi_bao', 'tien_tinh', 'thien_dao_than_thach', 'ban_thach_dinh_nguyen_kiem', 'luc_duong_loi_hoa_kiem']
     }
 ];
 

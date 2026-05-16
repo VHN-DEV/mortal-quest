@@ -40,7 +40,13 @@ export const SHOPS = {
                 { id: 'bac_cuc_nguyen_quang_cuc_son', stock: 1, minVip: 4 },
                 { id: 'hao_am_han_phach_cuc_son', stock: 1, minVip: 4 },
                 { id: 'thai_at_thanh_quang_cuc_son', stock: 1, minVip: 4 },
-                { id: 'am_duong_dai_ngu_hanh_cuc_son', stock: 1, minVip: 4 }
+                { id: 'am_duong_dai_ngu_hanh_cuc_son', stock: 1, minVip: 4 },
+                { id: 'ban_thach_dinh_nguyen_kiem', stock: 1, minVip: 5 },
+                { id: 'luc_duong_loi_hoa_kiem', stock: 1, minVip: 5 },
+                { id: 'tu_tuong_bo_de_kiem', stock: 1, minVip: 5 },
+                { id: 'quan_han_linh_ngoc_bat', stock: 1, minVip: 5 },
+                { id: 'that_tinh_ban_nguyet_thinh', stock: 1, minVip: 5 },
+                { id: 'to_nga_suong_nguyet_luan', stock: 1, minVip: 5 }
             ],
             'nguyen_lieu': [
                 { id: 'linh_thao_thap', stock: 200 },
@@ -49,6 +55,7 @@ export const SHOPS = {
                 { id: 'yeu_huyet', stock: 50 },
                 { id: 'yeu_dan_so', stock: 20 },
                 { id: 'hoa_tinh_thach', stock: 15 },
+                { id: 'thien_dao_than_thach', stock: 1, minVip: 5 },
                 { id: 'thanh_lien_hoa_seed', stock: 1, minVip: 3 }
             ],
             'cong_phap': [
@@ -112,6 +119,7 @@ export const SHOPS = {
                 { id: 'bv_kiem_khoi', stock: 1, minVip: 1 },
                 { id: 'bp_thi_binh', stock: 1 },
                 { id: 'van_lac_tam_viem_seed', stock: 1, minVip: 4 },
+                { id: 'truyen_dao_thanh_gian', stock: 1, minVip: 5 },
                 { id: 'tinh_lien_yeu_hoa_seed', stock: 1, minVip: 5 }
             ],
             'linh_dien': [
@@ -138,7 +146,8 @@ export const SHOPS = {
             'phap_bao': [
                 { id: 'phi_kiem_thanh_tuyen', stock: 10 },
                 { id: 'bat_quai_kinh', stock: 5 },
-                { id: 'huyen_lu_item', stock: 5 }
+                { id: 'huyen_lu_item', stock: 5 },
+                { id: 'tao_hoa_tien_dinh', stock: 1, minVip: 5 }
             ],
             'nguyen_lieu': [
                 { id: 'linh_thao_100y', stock: 50 },
