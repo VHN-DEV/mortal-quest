@@ -128,6 +128,33 @@ export const ITEMS = {
         description: 'Tà thuật luyện chế xác chết, mở khóa nghề Luyện Thi Sư.',
         effect: { type: 'unlock_profession', profession: 'corpse' }
     },
+    'token_merchant': {
+        id: 'token_merchant',
+        name: 'Thương Nhân Lệnh',
+        type: 'material',
+        icon: '🏷️',
+        quality: 'Linh Khí',
+        price: 5000,
+        description: 'Lệnh bài của một thương hội lớn, giúp nhận được sự tin tưởng và ưu đãi từ các thương nhân.'
+    },
+    'dan_giai_doc': {
+        id: 'dan_giai_doc',
+        name: 'Đan Giải Độc',
+        type: 'consumable',
+        icon: '💊',
+        quality: 'Pháp Khí',
+        price: 200,
+        description: 'Đan dược giúp hóa giải các loại độc tố cơ bản và chướng khí.'
+    },
+    'bp_tran_phap': {
+        id: 'bp_tran_phap',
+        name: 'Trận Pháp Bí Tịch',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Khí',
+        price: 1000,
+        description: 'Ghi chép về các trận pháp cơ bản, giúp hiểu rõ hơn về cấm chế và trận pháp bảo vệ.'
+    },
 
     // --- ALCHEMY RECIPE SCROLLS ---
     'dp_ngung_khi_dan': {

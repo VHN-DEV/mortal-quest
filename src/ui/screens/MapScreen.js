@@ -332,7 +332,9 @@ export class MapScreen {
         const event = getRandomEvent(probs);
 
         if (event) {
-            this.updateEventDisplay(event.description, event.icon || '📜');
+            const desc = typeof event.description === 'function' ? event.description(state.player) : event.description;
+            this.updateEventDisplay(desc, event.icon || '📜');
+            
             if (event.type === 'loot') {
                 const resultMsg = event.result(state.player);
                 const droppedShi = Math.floor(Math.random() * 10 * state.player.realmId);
@@ -352,7 +354,10 @@ export class MapScreen {
                 setTimeout(() => { window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId); }, 1000);
             } else if (event.type === 'interactive') {
                 setTimeout(async () => {
-                    const choice = await state.ui.promptOptions(event.name, event.options, event.description);
+                    const finalDesc = typeof event.description === 'function' ? event.description(state.player) : event.description;
+                    const finalOptions = typeof event.options === 'function' ? event.options(state.player) : event.options;
+                    const choice = await state.ui.promptOptions(event.name, finalOptions, finalDesc);
+                    
                     if (choice && event.resolve) {
                         const result = await event.resolve(choice, state.player, window.game);
                         if (result) {

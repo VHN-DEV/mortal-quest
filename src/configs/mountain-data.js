@@ -241,24 +241,38 @@ export const MOUNTAIN_EVENTS = [
         name: 'Gặp Gỡ Tán Tu',
         type: 'encounter',
         layer: 'any',
-        description: 'Ngươi tình cờ bắt gặp một vị tán tu đang đơn độc hành tẩu. Ánh mắt người này lộ vẻ cảnh giác nhưng cũng đầy mệt mỏi.',
-        options: [
-            { label: 'Trao đổi vật phẩm', value: 'trade', icon: 'ph-arrows-left-right' },
-            { label: 'Ra tay cướp bóc', value: 'rob', icon: 'ph-knife' },
-            { label: 'Rời đi lặng lẽ', value: 'leave', icon: 'ph-ghost' }
-        ]
+        description: (player) => {
+            if (player.realmId >= 22) return 'Một vị tán tu đơn độc đang hành tẩu, khi thấy ngươi, hắn vội vàng cúi đầu, ánh mắt đầy vẻ kính sợ và né tránh.';
+            return 'Ngươi tình cờ bắt gặp một vị tán tu đang đơn độc hành tẩu. Ánh mắt người này lộ vẻ cảnh giác nhưng cũng đầy mệt mỏi.';
+        },
+        options: (player) => {
+            const opts = [
+                { label: 'Trao đổi vật phẩm', value: 'trade', icon: 'ph-arrows-left-right' },
+                { label: 'Rời đi lặng lẽ', value: 'leave', icon: 'ph-ghost' }
+            ];
+            if (player.realmId >= 22 || player.karma < 0) {
+                opts.splice(1, 0, { label: 'Ra tay cướp bóc', value: 'rob', icon: 'ph-knife' });
+            }
+            return opts;
+        }
     },
     {
         id: 'thuong_nhan_dai_son',
         name: 'Thương Đội Đại Sơn',
         type: 'encounter',
         layer: 'chan_nui',
-        description: 'Một đoàn thương nhân đang nghỉ chân bên đường, có vẻ họ đang vận chuyển linh thảo quý.',
-        options: [
-            { label: 'Giao dịch', value: 'trade', icon: 'ph-shopping-cart' },
-            { label: 'Hỏi thăm tin tức', value: 'info', icon: 'ph-info' },
-            { label: 'Đi tiếp', value: 'leave', icon: 'ph-arrow-right' }
-        ]
+        description: (player) => {
+            if (player.realmId >= 18) return 'Một đoàn thương nhân đang nghỉ chân, thấy cao nhân đi tới, trưởng đoàn vội vàng ra chào mời các loại kỳ trân dị bảo.';
+            return 'Một đoàn thương nhân đang nghỉ chân bên đường, có vẻ họ đang vận chuyển linh thảo quý.';
+        },
+        options: (player) => {
+            const opts = [
+                { label: 'Giao dịch', value: 'trade', icon: 'ph-shopping-cart' },
+                { label: 'Đi tiếp', value: 'leave', icon: 'ph-arrow-right' }
+            ];
+            if (player.realmId >= 18) opts.splice(1, 0, { label: 'Hỏi thăm tin tức', value: 'info', icon: 'ph-info' });
+            return opts;
+        }
     },
     {
         id: 'ma_tu_phuc_kich',
@@ -288,18 +302,22 @@ export const MOUNTAIN_EVENTS = [
         name: 'Linh Dược Quý',
         type: 'encounter',
         layer: 'any',
-        description: 'Một gốc Cửu Diệp Linh Thảo đang tỏa ra linh quang lấp lánh, nhưng có vẻ có một luồng sát khí đang ẩn nấp gần đó.',
+        description: (player) => {
+            if (player.realmId >= 26) return 'Một gốc Cửu Diệp Linh Thảo đang tỏa quang. Yêu thú bảo hộ cảm nhận được uy áp Hóa Thần của ngươi, đang run rẩy không dám lộ diện.';
+            return 'Một gốc Cửu Diệp Linh Thảo đang tỏa ra linh quang lấp lánh, nhưng có vẻ có một luồng sát khí đang ẩn nấp gần đó.';
+        },
         options: [
             { label: 'Hái linh dược', value: 'pick', icon: 'ph-leaf' },
             { label: 'Rời đi', value: 'leave', icon: 'ph-arrow-u-up-left' }
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'pick') {
-                if (Math.random() < 0.6) {
+                const dangerChance = player.realmId >= 26 ? 0.1 : 0.6;
+                if (Math.random() < dangerChance) {
                     return { msg: 'Yêu thú bảo hộ xuất hiện! Ngươi phải chiến đấu!', type: 'combat_then_loot', loot: 'linh_thao_cao' };
                 } else {
                     player.inventory.addItem('linh_thao_cao', 1);
-                    return { msg: 'Ngươi đã hái được linh dược thành công mà không đánh động yêu thú.' };
+                    return { msg: player.realmId >= 26 ? 'Ngươi thản nhiên hái linh thảo, yêu thú bảo hộ sợ hãi bỏ chạy.' : 'Ngươi đã hái được linh dược thành công mà không đánh động yêu thú.' };
                 }
             }
             return { msg: 'Ngươi quyết định không mạo hiểm.' };
@@ -310,14 +328,18 @@ export const MOUNTAIN_EVENTS = [
         name: 'Động Phủ Cấm Chế',
         type: 'encounter',
         layer: 'any',
-        description: 'Một hang động bí mật bị bao phủ bởi một tầng cấm chế cổ đại mang theo áp lực linh khí cực mạnh.',
+        description: (player) => {
+            if (player.realmId >= 22) return 'Trước mặt là một hang động bị cấm chế cổ đại bao phủ. Với tu vi Nguyên Anh, ngươi có thể cảm nhận rõ ràng các luồng linh lực đang vận hành.';
+            return 'Một hang động bí mật bị bao phủ bởi một tầng cấm chế cổ đại mang theo áp lực linh khí cực mạnh.';
+        },
         options: [
             { label: 'Cường hành phá giải', value: 'break', icon: 'ph-lightning' },
             { label: 'Bỏ qua', value: 'leave', icon: 'ph-x' }
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'break') {
-                if (player.stats.atk > 10000) {
+                const threshold = player.realmId >= 22 ? 8000 : 15000;
+                if (player.stats.atk > threshold) {
                     player.addLingShi(10000);
                     return { msg: 'Ngươi dùng đại lực phá tan cấm chế! Bên trong là kho chứa linh thạch của một vị cổ tu.' };
                 } else {
@@ -327,5 +349,5 @@ export const MOUNTAIN_EVENTS = [
             }
             return null;
         }
-    }
+    },
 ];

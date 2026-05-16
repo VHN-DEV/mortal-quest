@@ -219,12 +219,15 @@ export class MountainSystem {
     }
 
     async handleEncounter(event) {
-        if (!event.options) return;
+        const desc = typeof event.description === 'function' ? event.description(this.player) : event.description;
+        const options = typeof event.options === 'function' ? event.options(this.player) : event.options;
+
+        if (!options) return;
         
         const choice = await this.ui.promptOptions(
             event.name,
-            event.options,
-            event.description
+            options,
+            desc
         );
 
         if (!choice) return;

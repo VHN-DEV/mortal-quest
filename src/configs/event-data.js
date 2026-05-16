@@ -97,14 +97,13 @@ export const EVENTS = [
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'pick') {
-                if (Math.random() < 0.6) {
+                const dangerChance = player.realmId < 14 ? 0.8 : 0.4; // Easier for Bamboo Building (Trúc Cơ) and above
+                if (Math.random() < dangerChance) {
                     game.ui.toast("Yêu thú bảo hộ xuất hiện! Ngươi phải chiến đấu để giành lấy linh dược.", "warning");
-                    // Trigger battle then give reward if win
-                    // For simplicity, we trigger a specific battle logic or handle it in game.js
-                    return { type: 'combat_then_loot', loot: 'thap_van_nien_linh_chi' };
+                    return { type: 'combat_then_loot', loot: 'linh_thao_cao' };
                 } else {
                     player.inventory.addItem('linh_thao_cao', 1);
-                    return { msg: 'May mắn thay! Yêu thú đang ngủ say, ngươi đã hái được linh dược thành công.' };
+                    return { msg: 'May mắn thay! Nhờ cảnh giới thâm hậu (hoặc may mắn), ngươi đã hái được linh dược mà không kinh động đến yêu thú.' };
                 }
             }
             return { msg: 'Ngươi quyết định không mạo hiểm, lẳng lặng rời đi.' };
@@ -122,20 +121,24 @@ export const EVENTS = [
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'break') {
-                const success = player.stats.atk > 5000;
+                const threshold = 5000 + (player.realmId * 100);
+                const success = player.stats.atk > threshold;
                 if (success) {
-                    player.addLingShi(5000);
-                    return { msg: 'Ngươi dùng sức mạnh tuyệt đối phá tan màn sáng! Bên trong có một ít Linh Thạch cổ.' };
+                    const gain = 5000 + (player.realmId * 500);
+                    player.addLingShi(gain);
+                    return { msg: `Ngươi dùng sức mạnh tuyệt đối phá tan màn sáng! Bên trong có một ít Linh Thạch cổ (Nhận được ${gain} Linh Thạch).` };
                 } else {
-                    player.hp -= 500;
+                    player.hp -= (500 + player.realmId * 10);
                     return { msg: 'Cấm chế phản chấn! Ngươi bị thương nặng và không thể phá giải.' };
                 }
             } else if (choice === 'study') {
-                if (player.stats.soul > 3000) {
+                const soulReq = 3000 + (player.realmId * 50);
+                const hasFormationManual = player.inventory.hasItem('bp_tran_phap', 1);
+                if (player.stats.soul > (hasFormationManual ? soulReq * 0.7 : soulReq)) {
                     player.inventory.addItem('bp_tran_phap', 1);
-                    return { msg: 'Thần niệm nhạy bén giúp ngươi tìm ra điểm yếu của cấm chế. Ngươi nhặt được một cuốn Trận Pháp Cơ Bản.' };
+                    return { msg: 'Thần niệm nhạy bén (và kiến thức trận pháp) giúp ngươi tìm ra điểm yếu. Ngươi thu hoạch được một cuốn Trận Pháp Cơ Bản.' };
                 } else {
-                    return { msg: 'Thần niệm của ngươi chưa đủ mạnh để nhìn thấu quy luật của cấm chế này.' };
+                    return { msg: 'Thần niệm của ngươi chưa đủ mạnh để nhìn thấu quy luật phức tạp của cấm chế này.' };
                 }
             }
             return { msg: 'Ngươi cảm thấy cấm chế này quá nguy hiểm, quyết định rời đi.' };
@@ -152,16 +155,19 @@ export const EVENTS = [
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'enter') {
-                if (player.luck > 60) {
+                const baseLuck = 60;
+                const luckBonus = player.realmId >= 22 ? 20 : 0; // Yuan Ying (Nguyên Anh) recognized by dwelling
+                if (player.luck + luckBonus > baseLuck) {
                     player.inventory.addItem('tien_tinh', 1);
-                    return { msg: 'Ngươi vượt qua khảo nghiệm, nhận được một viên Tiên Tinh!' };
+                    return { msg: 'Khí tức của ngươi phù hợp với chủ nhân động phủ, ngươi vượt qua khảo nghiệm và nhận được một viên Tiên Tinh!' };
                 } else {
                     game.ui.toast("Bẫy rập kích hoạt! Ngươi bị dịch chuyển ra ngoài.", "error");
                     return { msg: 'Động phủ tràn đầy cạm bẫy, ngươi may mắn thoát ra được nhưng không thu hoạch gì.' };
                 }
             } else if (choice === 'pray') {
-                player.karma += 10;
-                return { msg: 'Sự thành tâm của ngươi nhận được một tia phúc trạch, công đức tăng lên.' };
+                const karmaGain = player.realmId < 14 ? 10 : 20;
+                player.karma += karmaGain;
+                return { msg: `Sự thành tâm của một ${player.realmId >= 14 ? 'tu sĩ' : 'phàm nhân'} như ngươi nhận được một tia phúc trạch, công đức tăng ${karmaGain}.` };
             }
             return null;
         }
@@ -200,22 +206,42 @@ export const EVENTS = [
         id: 'merchant_distress',
         name: 'Thương nhân gặp nạn',
         type: 'interactive',
-        description: 'Một xe ngựa của thương hội bị lật bên đường, một nhóm cướp đang bao vây vị thương nhân béo tốt.',
-        options: [
-            { label: 'Ra tay cứu giúp', value: 'help', icon: 'ph-shield-plus' },
-            { label: 'Cùng bọn cướp hôi của', value: 'rob', icon: 'ph-hand-grabbing' },
-            { label: 'Thờ ơ đi qua', value: 'ignore', icon: 'ph-eye-slash' }
-        ],
+        description: (player) => {
+            if (player.realmId >= 22) return 'Một xe ngựa của thương hội bị lật, bọn cướp đang bao vây vị thương nhân. Khi thấy ngươi lướt tới với uy áp Nguyên Anh, cả bọn cướp lẫn thương nhân đều run rẩy.';
+            if (player.realmId >= 14) return 'Một xe ngựa bị lật, bọn cướp đang bao vây vị thương nhân. Sự xuất hiện của một vị tu sĩ như ngươi khiến bọn cướp có chút e dè.';
+            return 'Một xe ngựa của thương hội bị lật bên đường, một nhóm cướp đang bao vây vị thương nhân béo tốt. Chúng nhìn ngươi với ánh mắt hung quang lộ rõ.';
+        },
+        options: (player) => {
+            const opts = [
+                { label: 'Ra tay cứu giúp', value: 'help', icon: 'ph-shield-plus' },
+                { label: 'Thờ ơ đi qua', value: 'ignore', icon: 'ph-eye-slash' }
+            ];
+            if (player.karma < 0 || player.realmId < 14) {
+                opts.splice(1, 0, { label: 'Cùng bọn cướp hôi của', value: 'rob', icon: 'ph-hand-grabbing' });
+            }
+            if (player.realmId >= 22) {
+                opts.push({ label: 'Dùng uy áp đuổi khéo', value: 'intimidate', icon: 'ph-detective' });
+            }
+            return opts;
+        },
         resolve: async (choice, player, game) => {
+            const hasMerchantToken = player.inventory.hasItem('token_merchant', 1);
             if (choice === 'help') {
                 game.ui.toast("Ngươi ra tay đánh đuổi bọn cướp!", "success");
                 player.karma += 20;
-                player.addLingShi(2000);
-                return { msg: 'Vị thương nhân cảm kích khôn cùng, tặng ngươi 2000 Linh Thạch và một ít đan dược dược liệu.' };
+                const baseReward = 2000 + (player.realmId * 200);
+                const finalReward = hasMerchantToken ? baseReward * 2 : baseReward;
+                player.addLingShi(finalReward);
+                return { msg: `Vị thương nhân cảm kích khôn cùng${hasMerchantToken ? ' khi thấy lệnh bài của bằng hữu' : ''}, tặng ngươi ${finalReward} Linh Thạch và một ít đan dược.` };
             } else if (choice === 'rob') {
                 player.karma -= 50;
-                player.addLingShi(5000);
-                return { msg: 'Ngươi cùng bọn cướp chia chác tài sản. Nhận được 5000 Linh Thạch nhưng danh tiếng sụt giảm.' };
+                const robReward = 5000 + (player.realmId * 500);
+                player.addLingShi(robReward);
+                return { msg: `Ngươi cùng bọn cướp chia chác tài sản. Nhận được ${robReward} Linh Thạch nhưng danh tiếng sụt giảm nghiêm trọng.` };
+            } else if (choice === 'intimidate') {
+                player.karma += 10;
+                player.addLingShi(3000);
+                return { msg: 'Chỉ một cái liếc mắt, lũ cướp đã hồn bay phách lạc bỏ chạy. Thương nhân tôn kính dâng lên 3000 Linh Thạch phí bảo hộ.' };
             }
             return null;
         }
@@ -250,22 +276,30 @@ export const EVENTS = [
         id: 'beast_hunt_join',
         name: 'Gia nhập đoàn săn bắt',
         type: 'interactive',
-        description: 'Một nhóm tán tu đang bao vây một con Thiết Giáp Tê Ngưu. Thấy ngươi, họ đề nghị ngươi cùng gia nhập để chia sẻ chiến lợi phẩm.',
-        options: [
-            { label: 'Đồng ý gia nhập', value: 'join', icon: 'ph-users-three' },
-            { label: 'Tọa sơn quan hổ đấu', value: 'wait', icon: 'ph-binoculars' },
-            { label: 'Từ chối', value: 'leave', icon: 'ph-prohibit' }
-        ],
+        description: (player) => {
+            if (player.realmId >= 22) return 'Một nhóm tán tu đang vất vả bao vây một con Thiết Giáp Tê Ngưu. Thấy ngươi lướt ngang, họ vội vàng cung kính mời đại năng ra tay trợ giúp.';
+            if (player.realmId >= 14) return 'Nhóm tán tu đang vây săn yêu thú, họ nhận ra tu vi của ngươi và ngỏ ý mời cùng gia nhập.';
+            return 'Một nhóm tán tu đang bao vây một con Thiết Giáp Tê Ngưu. Thấy ngươi, họ nhìn qua tu vi rồi hất hàm hỏi có muốn làm mồi nhử không.';
+        },
+        options: (player) => {
+            const opts = [
+                { label: 'Đồng ý gia nhập', value: 'join', icon: 'ph-users-three' },
+                { label: 'Từ chối', value: 'leave', icon: 'ph-prohibit' }
+            ];
+            if (player.realmId < 14) opts.push({ label: 'Tọa sơn quan hổ đấu', value: 'wait', icon: 'ph-binoculars' });
+            if (player.realmId >= 22) opts.push({ label: 'Cướp lấy con mồi', value: 'rob', icon: 'ph-hand-grabbing' });
+            return opts;
+        },
         resolve: async (choice, player, game) => {
             if (choice === 'join') {
-                const success = player.stats.atk > 3000;
+                const success = player.stats.atk > 3000 || player.realmId >= 14;
                 if (success) {
                     player.addLingShi(3000);
                     player.inventory.addItem('yeu_dan_trung', 1);
-                    return { msg: 'Sự giúp sức của ngươi giúp đoàn săn nhanh chóng hạ gục yêu thú. Ngươi nhận được phần chia xứng đáng.' };
+                    return { msg: 'Sự giúp sức của ngươi giúp đoàn săn nhanh chóng hạ gục yêu thú. Họ cung kính dâng lên phần chia lớn nhất.' };
                 } else {
                     player.hp -= 300;
-                    return { msg: 'Ngươi quá yếu, suýt chút nữa đã mất mạng dưới sừng tê ngưu. Nhóm tán tu nhìn ngươi với ánh mắt khinh bỉ.' };
+                    return { msg: 'Ngươi quá yếu, suýt chút nữa đã mất mạng. Nhóm tán tu cười nhạo và đuổi ngươi đi như một kẻ vướng chân.' };
                 }
             } else if (choice === 'wait') {
                 if (Math.random() < 0.4) {
@@ -275,6 +309,11 @@ export const EVENTS = [
                 } else {
                     return { msg: 'Bọn họ đã hạ gục yêu thú và cảnh giác nhìn về phía ngươi. Ngươi không có cơ hội ra tay.' };
                 }
+            } else if (choice === 'rob') {
+                player.karma -= 40;
+                player.inventory.addItem('yeu_dan_trung', 2);
+                player.addLingShi(5000);
+                return { msg: 'Ngươi ra tay bá đạo, một chiêu kết liễu yêu thú và lấy đi toàn bộ. Nhóm tán tu tức giận nhưng không dám ho một tiếng.' };
             }
             return null;
         }
@@ -318,14 +357,20 @@ export const EVENTS = [
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'talk') {
-                const gain = Math.floor(player.tuViPerSecond * 500);
+                if (player.realmId >= 26) { // Hóa Thần (Hwa Shin)
+                    player.karma += 20;
+                    player.fate.reputation += 10;
+                    return { msg: 'Ngươi chỉ điểm cho lão đạo sĩ về thiên đạo. Lão nhân đại ngộ, dập đầu cảm tạ, ngươi nhận được công đức và danh vọng!' };
+                }
+                const gain = Math.floor(player.tuViPerSecond * 1000);
                 player.addTuVi(gain);
                 return { msg: `Sau một hồi đàm luận, ngươi cảm thấy tâm cảnh thông suốt. Nhận được ${gain} Tu Vi!` };
             } else if (choice === 'ask') {
-                if (player.lingShi >= 1000) {
-                    player.lingShi -= 1000;
+                const cost = 1000 + (player.realmId * 100);
+                if (player.lingShi >= cost) {
+                    player.spendLingShi(cost);
                     player.stats.soul += 50;
-                    return { msg: 'Ngươi bỏ ra ít linh thạch làm lễ, được lão đạo sĩ chỉ điểm một vài bí thuật. Thần Niệm tăng 50!' };
+                    return { msg: `Ngươi thành tâm thỉnh giáo, lão đạo sĩ chỉ điểm bí thuật. Thần Niệm tăng 50! (Tốn ${cost} Linh Thạch)` };
                 } else {
                     return { msg: 'Lão đạo sĩ cười mà không nói, có vẻ lễ nghi của ngươi chưa đủ.' };
                 }
@@ -346,17 +391,19 @@ export const EVENTS = [
         resolve: async (choice, player, game) => {
             if (choice === 'accept') {
                 player.karma -= 100;
-                player.stats.atk += 200;
+                const atkGain = 200 + (player.realmId * 10);
+                player.stats.atk += atkGain;
                 player.inventory.addItem('ma_thach', 10);
-                return { msg: 'Ngươi nhận lấy ma công, thực lực tăng mạnh nhưng ma tính cũng theo đó mà tăng lên!' };
+                return { msg: `Ngươi nhận lấy ma công, thực lực tăng mạnh (Công kích +${atkGain}) nhưng ma tính cũng theo đó mà tăng lên!` };
             } else if (choice === 'purify') {
-                if (player.stats.soul > 5000) {
+                const soulReq = 5000 + (player.realmId * 100);
+                if (player.stats.soul > soulReq) {
                     player.karma += 50;
                     player.inventory.addItem('linh_thach_thuong', 1);
-                    return { msg: 'Ngươi dùng thần niệm tịnh hóa tàn hồn, nhận được công đức và một viên Linh Thạch Thượng Phẩm.' };
+                    return { msg: 'Ngươi dùng thần niệm thâm hậu tịnh hóa tàn hồn, nhận được công đức và một viên Linh Thạch Thượng Phẩm.' };
                 } else {
-                    player.hp -= 500;
-                    return { msg: 'Tàn hồn quá mạnh, ngươi bị ma khí phản phệ!' };
+                    player.hp -= (500 + player.realmId * 20);
+                    return { msg: 'Tàn hồn quá mạnh, ngươi bị ma khí phản phệ dữ dội!' };
                 }
             }
             return null;
@@ -476,10 +523,17 @@ export const EVENTS = [
             if (choice === 'fight') {
                 const gain = player.realmId * 5000;
                 player.addTuVi(gain);
-                player.addLingShi(5000);
-                return { msg: `Ngươi dũng mãnh sát địch, thu được vô số yêu đan và tu vi chiến đấu. Nhận được ${gain} Tu Vi!` };
+                const moneyGain = 5000 + (player.realmId * 500);
+                player.addLingShi(moneyGain);
+                return { msg: `Ngươi dũng mãnh sát địch, thu được vô số yêu đan và tu vi chiến đấu. Nhận được ${gain} Tu Vi và ${moneyGain} Linh Thạch!` };
             } else if (choice === 'hide') {
-                return { msg: 'Ngươi trốn kỹ trong hang, chờ triều tịch đi qua. May mắn không bị phát hiện.' };
+                const hideLuck = 40 + (player.realmId);
+                if (player.luck > hideLuck) {
+                    return { msg: 'Ngươi trốn kỹ trong hang, chờ triều tịch đi qua. May mắn không bị phát hiện.' };
+                } else {
+                    player.hp -= (500 + player.realmId * 50);
+                    return { msg: 'Yêu thú phát hiện ra nơi ẩn nấp! Ngươi phải chật vật lắm mới thoát ra được.' };
+                }
             } else if (choice === 'run') {
                 player.hp -= 200;
                 return { msg: 'Ngươi chạy thục mạng, tuy thoát nạn nhưng cũng bị vài con yêu thú quẹt trúng.' };
@@ -519,18 +573,36 @@ export const EVENTS = [
         id: 'npc_duel_bet',
         name: 'Tán tu khiêu chiến',
         type: 'interactive',
-        description: 'Một vị tán tu ngang ngược chặn đường, muốn tỷ thí với ngươi một trận với mức cược là 5000 Linh Thạch.',
-        options: [
-            { label: 'Chấp nhận tỷ thí', value: 'accept', icon: 'ph-sword' },
-            { label: 'Từ chối (Bị khinh bỉ)', value: 'refuse', icon: 'ph-hand-grabbing' }
-        ],
+        description: (player) => {
+            if (player.realmId >= 22) return 'Một vị tán tu vốn định chặn đường, nhưng khi nhìn rõ tu vi của ngươi, hắn lập tức quỳ sụp xuống xin tha mạng.';
+            return 'Một vị tán tu ngang ngược chặn đường, muốn tỷ thí với ngươi một trận với mức cược là 5000 Linh Thạch.';
+        },
+        options: (player) => {
+            if (player.realmId >= 22) {
+                return [
+                    { label: 'Tha cho hắn', value: 'forgive', icon: 'ph-hand-palm' },
+                    { label: 'Lấy đi túi trữ vật', value: 'rob_weak', icon: 'ph-hand-grabbing' }
+                ];
+            }
+            return [
+                { label: 'Chấp nhận tỷ thí', value: 'accept', icon: 'ph-sword' },
+                { label: 'Từ chối (Bị khinh bỉ)', value: 'refuse', icon: 'ph-hand-grabbing' }
+            ];
+        },
         resolve: async (choice, player, game) => {
             if (choice === 'accept') {
                 if (player.lingShi < 5000) return { msg: 'Ngươi không đủ linh thạch để đặt cược!' };
                 return { type: 'combat_then_loot', loot: 'ling_thach_thuong', msg: 'Hảo! Hãy xem thực lực của ngươi đến đâu!' };
-            } else {
+            } else if (choice === 'refuse') {
                 player.karma -= 2;
                 return { msg: 'Ngươi lẳng lặng đi qua, mặc cho hắn cười nhạo sau lưng.' };
+            } else if (choice === 'forgive') {
+                player.karma += 5;
+                return { msg: 'Ngươi phất tay cho hắn đi. Hắn dập đầu cảm tạ rồi chạy biến.' };
+            } else if (choice === 'rob_weak') {
+                player.karma -= 10;
+                player.addLingShi(2000);
+                return { msg: 'Hắn run rẩy dâng lên túi trữ vật. Ngươi thu được 2000 Linh Thạch.' };
             }
             return null;
         }
@@ -570,11 +642,12 @@ export const EVENTS = [
             if (choice === 'listen') {
                 player.karma += 30;
                 player.inventory.addItem('bp_luyen_dan', 1);
-                return { msg: 'Ông ta mỉm cười truyền lại cho ngươi tâm đắc cả đời về Luyện Đan rồi thanh thản ra đi.' };
+                return { msg: `Ông ta mỉm cười${player.realmId >= 22 ? ', nhận ra ngươi là một mầm non đầy hứa hẹn' : ''}, truyền lại cho ngươi tâm đắc cả đời về Luyện Đan rồi thanh thản ra đi.` };
             } else if (choice === 'kill') {
                 player.karma -= 200;
-                player.addLingShi(20000);
-                return { msg: 'Ngươi giết người đoạt bảo! Thu được túi trữ vật chứa 20,000 Linh Thạch nhưng tâm ma đã nảy mầm.' };
+                const lootMoney = 20000 + (player.realmId * 2000);
+                player.addLingShi(lootMoney);
+                return { msg: `Ngươi giết người đoạt bảo! Thu được túi trữ vật chứa ${lootMoney} Linh Thạch nhưng tâm ma đã nảy mầm.` };
             }
             return null;
         }
@@ -590,17 +663,18 @@ export const EVENTS = [
             { label: 'Không quan tâm', value: 'leave', icon: 'ph-x' }
         ],
         resolve: async (choice, player, game) => {
+            const auctionPrice = 8000 + (player.realmId * 500);
             if (choice === 'bid') {
-                if (player.lingShi >= 10000) {
-                    player.lingShi -= 10000;
+                if (player.lingShi >= auctionPrice) {
+                    player.spendLingShi(auctionPrice);
                     player.inventory.addItem('map_fragment', 1);
-                    return { msg: 'Ngươi đấu giá thành công! Có được mảnh tàn đồ dẫn đến kho báu cổ đại.' };
+                    return { msg: `Ngươi đấu giá thành công với mức giá ${auctionPrice} Linh Thạch! Có được mảnh tàn đồ bí cảnh.` };
                 } else {
-                    return { msg: 'Ngươi không đủ linh thạch để tham gia.' };
+                    return { msg: 'Ngươi không đủ linh thạch để tham gia cuộc đấu giá này.' };
                 }
             } else if (choice === 'rob') {
                 player.karma -= 80;
-                return { type: 'combat_then_loot', loot: 'map_fragment', msg: 'Ngươi chờ sẵn bên ngoài, ra tay ngay khi người mua vừa bước ra!' };
+                return { type: 'combat_then_loot', loot: 'map_fragment', msg: 'Ngươi chờ sẵn bên ngoài, ra tay ngay khi người mua vừa bước ra! Kẻ mạnh mới có quyền sở hữu tàn đồ.' };
             }
             return null;
         }
@@ -616,12 +690,15 @@ export const EVENTS = [
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'absorb') {
-                const gain = player.tuViPerSecond * 2000;
+                const baseGain = player.tuViPerSecond * 2000;
+                const bonus = player.advancedStats.qiAbsorb || 1.0;
+                const gain = Math.floor(baseGain * bonus);
                 player.addTuVi(gain);
-                return { msg: `Ngươi hấp thu linh vũ, cảm thấy tu vi tăng tiến vùn vụt. Nhận được ${gain} Tu Vi!` };
+                return { msg: `Ngươi hấp thu linh vũ, cảm thấy tu vi tăng tiến vùn vụt (Nhận được ${gain} Tu Vi, x${bonus.toFixed(1)} từ tốc độ hấp thu).` };
             } else if (choice === 'collect') {
-                player.inventory.addItem('linh_dich_ngu_sac', 2);
-                return { msg: 'Ngươi thu thập được 2 bình Ngũ Sắc Linh Dịch cực phẩm.' };
+                const amount = player.realmId >= 22 ? 4 : 2; // More for Yuan Ying+
+                player.inventory.addItem('linh_dich_ngu_sac', amount);
+                return { msg: `Ngươi thu thập được ${amount} bình Ngũ Sắc Linh Dịch cực phẩm.` };
             }
             return null;
         }
@@ -638,15 +715,23 @@ export const EVENTS = [
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'cross') {
-                if (player.stats.def > 3000) {
-                    return { msg: 'Ngươi dùng linh lực hộ thể, thành công vượt qua chướng khí.' };
+                const defReq = 3000 + (player.realmId * 100);
+                if (player.stats.def > defReq) {
+                    return { msg: 'Ngươi dùng linh lực hộ thể thâm hậu, thành công vượt qua chướng khí mà không tốn một sợi lông.' };
                 } else {
-                    player.hp -= 2000;
-                    return { msg: 'Độc khí xâm nhập kinh mạch! Ngươi bị thương nặng.' };
+                    const dmg = 2000 + (player.realmId * 50);
+                    player.hp -= dmg;
+                    return { msg: `Độc khí xâm nhập kinh mạch! Ngươi bị thương nặng (Mất ${dmg} HP).` };
                 }
             } else if (choice === 'medicine') {
-                // Check if has detox pill
-                player.hp -= 200; // Small damage anyway
+                const hasDetox = player.inventory.hasItem('dan_giai_doc', 1);
+                if (hasDetox) {
+                    player.inventory.removeItem('dan_giai_doc', 1);
+                    return { msg: 'Ngươi uống đan dược và bình thản đi qua chướng khí.' };
+                } else {
+                    player.hp -= 200;
+                    return { msg: 'Ngươi không có đan dược, chỉ có thể nín thở vượt qua nhưng vẫn bị nhiễm độc nhẹ.' };
+                }
             }
             return null;
         }
@@ -691,14 +776,16 @@ export const EVENTS = [
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'talk') {
-                player.addTuVi(1000);
-                return { msg: 'Những kỷ niệm cũ giúp tâm cảnh ngươi bình hòa. Nhận được 1000 Tu Vi.' };
+                const gain = 1000 + (player.realmId * 100);
+                player.addTuVi(gain);
+                return { msg: `Những kỷ niệm cũ giúp tâm cảnh ngươi bình hòa. Nhận được ${gain} Tu Vi.` };
             } else if (choice === 'borrow') {
-                if (player.karma > 0) {
-                    player.addLingShi(2000);
-                    return { msg: 'Hắn hào phóng cho ngươi mượn 2000 Linh Thạch mà không cần hoàn trả.' };
+                if (player.karma > 50) { // Good karma required
+                    const amount = 2000 + (player.realmId * 200);
+                    player.addLingShi(amount);
+                    return { msg: `Hắn hào phóng cho ngươi mượn ${amount} Linh Thạch mà không cần hoàn trả vì nể tình xưa.` };
                 } else {
-                    return { msg: 'Hắn nhìn thấy hắc khí trên người ngươi, lạnh lùng từ chối rồi rời đi.' };
+                    return { msg: 'Hắn nhìn thấy hắc khí (Karma thấp) trên người ngươi, lạnh lùng từ chối rồi rời đi.' };
                 }
             }
             return null;
@@ -827,12 +914,14 @@ export const EVENTS = [
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'enter') {
-                if (player.stats.atk > 50000) {
+                const reqAtk = 50000 + (player.realmId * 1000);
+                if (player.stats.atk > reqAtk) {
                     player.inventory.addItem('hon_don_khi', 1);
                     return { msg: 'Thực lực khủng khiếp giúp ngươi áp chế hỗn độn, thu hoạch được một luồng Hỗn Độn Chi Khí!' };
                 } else {
-                    player.hp -= 9999;
-                    return { msg: 'Không gian loạn lưu xé nát cơ thể ngươi! Ngươi suýt chết bên trong.' };
+                    const dmg = 9999 + (player.realmId * 100);
+                    player.hp -= dmg;
+                    return { msg: `Không gian loạn lưu xé nát cơ thể ngươi! Ngươi suýt chết bên trong (Mất ${dmg.toLocaleString()} HP).` };
                 }
             }
             return null;
