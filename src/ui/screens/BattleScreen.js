@@ -170,11 +170,85 @@ export class BattleScreen {
                 this.updateTurnIndicator(data.turn);
                 this.updateChantingUI();
                 break;
+            case 'loot':
+                this.handlePostBattleLoot(data.enemy);
+                break;
             case 'end':
                 this.actionContainer.classList.add('hidden');
                 audioManager.playBgm('main');
                 break;
         }
+    }
+
+    handlePostBattleLoot(enemy) {
+        const isMonster = ['SPIRIT_BEAST', 'DRAGON', 'ZOMBIE', 'GHOST'].includes(enemy.race);
+
+        if (isMonster) {
+            // Hiển thị lựa chọn thu thập cho Yêu Thú
+            const options = [
+                { label: 'Thu Thập Nguyên Liệu', value: 'materials', icon: 'ph-flask', desc: 'Mổ xẻ lấy nội đan, huyết nhục, xương cốt... (Dùng luyện đan, luyện khí)' },
+                { label: 'Thu Thập Xác (Luyện Thi)', value: 'corpse', icon: 'ph-skull', desc: 'Giữ nguyên thi thể để bán hoặc luyện chế thi khôi.' },
+                { label: 'Lục Soát Đồ Đạc', value: 'search', icon: 'ph-hand-pointing', desc: 'Tìm xem trên người nó có vật phẩm gì rơi rớt không.' }
+            ];
+
+            state.ui.promptOptions(`Chiến Lợi Phẩm: ${enemy.name}`, options, "Ngươi muốn xử lý thi thể này như thế nào?")
+                .then(choice => {
+                    if (choice === 'materials') {
+                        this.extractMonsterMaterials(enemy);
+                    } else if (choice === 'corpse') {
+                        this.collectMonsterCorpse(enemy);
+                    } else if (choice === 'search') {
+                        window.game.screens.loot.open(enemy);
+                    }
+                    
+                    // Always show victory message after choice
+                    setTimeout(() => state.currentCombat?.onEnd('win'), 1000);
+                });
+        } else {
+            // Đối với Tu sĩ/Chủng tộc thông minh -> Mở màn hình Loot PUBG
+            window.game.screens.loot.open(enemy);
+            // Loot screen closing will trigger combat end via user confirmation or we can handle it here
+            // For simplicity, we trigger end when they close the loot screen or take all
+            const originalClose = window.game.screens.loot.close.bind(window.game.screens.loot);
+            window.game.screens.loot.close = () => {
+                originalClose();
+                state.currentCombat?.onEnd('win');
+            };
+        }
+    }
+
+    extractMonsterMaterials(enemy) {
+        const drops = [];
+        // Tỷ lệ rơi nguyên liệu dựa trên level/realm
+        const count = 1 + Math.floor(enemy.realmId / 10);
+        
+        // 1. Yêu Đan (100%)
+        const danId = enemy.realmId >= 40 ? 'yeu_dan_trung' : 'yeu_dan_so';
+        state.player.inventory.addItem(danId, 1);
+        drops.push(`[1x ${danId === 'yeu_dan_trung' ? 'Yêu Đan Trung Cấp' : 'Yêu Đan Sơ Cấp'}]`);
+
+        // 2. Yêu Huyết
+        if (Math.random() < 0.7) {
+            state.player.inventory.addItem('yeu_huyet', count);
+            drops.push(`[${count}x Yêu Thú Tinh Huyết]`);
+        }
+
+        // 3. Yêu Cốt
+        if (Math.random() < 0.5) {
+            state.player.inventory.addItem('yeu_cot', count);
+            drops.push(`[${count}x Yêu Thú Cốt]`);
+        }
+
+        state.ui.alert(`Ngươi thuần thục mổ xẻ ${enemy.name}, thu được: ${drops.join(', ')}`, "Thu Thập Nguyên Liệu");
+    }
+
+    collectMonsterCorpse(enemy) {
+        state.player.inventory.addItem('xac_yeu_thu', 1, { 
+            originalName: enemy.name, 
+            realmId: enemy.realmId,
+            race: enemy.race 
+        });
+        state.ui.toast(`Đã thu hồi xác của ${enemy.name} vào túi trữ vật.`, "success");
     }
 
     updateHPs() {

@@ -951,45 +951,8 @@ export class CombatEngine {
             state.systems.mission.onAction('kill', 1);
         }
 
-        // --- Nâng Cấp Hệ Thống Loot ---
-        const drops = [];
-
-        // 1. Drop ALL items from enemy inventory
-        if (this.enemy.inventory && this.enemy.inventory.length > 0) {
-            this.enemy.inventory.forEach(item => {
-                if (item.quantity > 0) {
-                    this.player.inventory.addItem(item.id, item.quantity);
-                    const data = getItemById(item.id);
-                    drops.push(`<span class="text-qi-blue">[${item.quantity}x ${data?.name || item.id}]</span>`);
-                }
-            });
-        }
-
-        // 2. Drop equipment (80% chance for each piece)
-        if (this.enemy.equipment) {
-            Object.values(this.enemy.equipment).forEach(item => {
-                if (item && Math.random() < 0.8) {
-                    this.player.inventory.addItem(item.id, 1);
-                    const data = getItemById(item.id);
-                    drops.push(`<span class="text-qi-purple">[1x ${data?.name || item.name || item.id}]</span>`);
-                }
-            });
-        }
-
-        // 3. Chance to drop "Storage Bag" (Túi trữ vật) if enemy is high level
-        if (this.enemy.realmId >= 5 && Math.random() < 0.2) {
-            this.player.inventory.addItem('tui_tru_vat_so', 1);
-            drops.push(`<span class="text-cultivation-gold">[1x Túi Trữ Vật của đối thủ]</span>`);
-        }
-
-        if (drops.length > 0) {
-            this.addLog(`Thu được chiến lợi phẩm: ${drops.join(', ')}`);
-        } else {
-            this.addLog("Kẻ địch nghèo rớt mồng tơi, không thu hoạch được gì thêm.");
-        }
-
-        this.onUpdate('end');
-        setTimeout(() => this.onEnd('win'), 3000);
+        // Notify UI to handle loot
+        this.onUpdate('loot', { enemy: this.enemy });
     }
 
     lose() {

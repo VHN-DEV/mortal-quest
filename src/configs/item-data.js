@@ -1508,6 +1508,24 @@ export const ITEMS = {
         price: 100,
         description: 'Máu tươi của yêu thú, dùng trong luyện thể hoặc luyện đan.'
     },
+    'xac_yeu_thu': {
+        id: 'xac_yeu_thu',
+        name: 'Xác Yêu Thú',
+        type: 'material',
+        icon: '🧟',
+        quality: 'Pháp Khí',
+        price: 500,
+        description: 'Thân xác hoàn chỉnh của yêu thú, có thể dùng để luyện thi hoặc bán.'
+    },
+    'xac_tu_si': {
+        id: 'xac_tu_si',
+        name: 'Xác Tu Sĩ',
+        type: 'material',
+        icon: '💀',
+        quality: 'Linh Khí',
+        price: 1000,
+        description: 'Thân xác của tu sĩ đã vẫn lạc, chứa đựng linh tính, là vật liệu thượng hạng để luyện thi.'
+    },
 
     // --- ORES & MINERALS ---
     'linh_thao_van_nam': {

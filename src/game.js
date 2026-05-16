@@ -62,7 +62,7 @@ export class Game {
             { BattleScreen }, { SpiritStoneUI }, { TreasureScreen }, { FateScreen },
             { StartScreen }, { SaveScreen }, { MiningScreen }, { DiHoaBangScreen },
             { DiLoiBangScreen }, { LinhTheLucScreen }, { PhapBaoLucScreen }, { ChungTocLucScreen },
-            { KyTrungBangScreen }, { MissionScreen: MissionScreenImport }
+            { KyTrungBangScreen }, { MissionScreen: MissionScreenImport }, { LootScreen }
         ] = await Promise.all([
             import('./ui/screens/MapScreen.js'),
             import('./ui/screens/InventoryScreen.js'),
@@ -81,7 +81,8 @@ export class Game {
             import('./ui/screens/PhapBaoLucScreen.js'),
             import('./ui/screens/ChungTocLucScreen.js'),
             import('./ui/screens/KyTrungBangScreen.js'),
-            import('./ui/screens/MissionScreen.js')
+            import('./ui/screens/MissionScreen.js'),
+            import('./ui/screens/LootScreen.js')
         ]);
 
         this.screens.map = new MapScreen();
@@ -102,6 +103,7 @@ export class Game {
         this.screens.chungTocLuc = new ChungTocLucScreen();
         this.screens.kyTrungBang = new KyTrungBangScreen();
         this.screens.mission = new MissionScreenImport();
+        this.screens.loot = new LootScreen();
 
         state.systems.creation = new CreationSystem();
 
