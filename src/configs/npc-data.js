@@ -106,3 +106,132 @@ export const NPC_TEMPLATES = {
     }
 };
 
+export const SPECIAL_NPCS = {
+    'han_phi_vu': {
+        id: 'han_phi_vu',
+        name: 'Hàn Phi Vũ',
+        gender: 'Nam',
+        title: 'Thanh Nh Nhàn Tán Tu',
+        portrait: ASSETS.portraits.han_phi_vu,
+        personality: 'da_nghi',
+        goal: 'thanh_tien',
+        role: 'Kiếm Tu',
+        isRomanceable: true,
+        desc: 'Một vị tán tu bí ẩn, hành sự cẩn trọng, tâm cơ thâm trầm. Luôn mang theo một chiếc bình nhỏ màu xanh bên mình.',
+        dialogues: {
+            'meet': ['Đạo hữu, tu tiên giới hiểm ác, tốt nhất đừng nên quá tin tưởng bất kỳ ai.', 'Gặp gỡ là duyên, nhưng duyên phận cũng có khi là họa.'],
+            'friendly': ['Trên con đường trường sinh cô độc này, có ngươi làm bạn cũng không tệ.'],
+            'romance': ['Nếu ngươi nguyện ý, chúng ta có thể cùng nhau tìm kiếm đại đạo.'],
+            'special_move': ['Thanh Nguyên Kiếm Quyết!']
+        }
+    },
+    'bach_tu_linh': {
+        id: 'bach_tu_linh',
+        name: 'Bạch Tử Linh',
+        gender: 'Nam',
+        title: 'Đan Đạo Thiên Tài',
+        portrait: ASSETS.portraits.bach_tu_linh,
+        personality: 'hoa_nha',
+        goal: 'tim_truyen_thua',
+        role: 'Luyện Đan Sư',
+        isRomanceable: true,
+        desc: 'Trưởng lão trẻ tuổi nhất của Đan Hà Phái, thiên phú luyện đan cực cao, khí chất ôn nhu như ngọc.',
+        dialogues: {
+            'meet': ['Mùi linh dược trên người đạo hữu thật đặc biệt, có muốn cùng ta trao đổi tâm đắc luyện đan không?', 'Đan đạo cũng như nhân sinh, cần nhất là sự kiên trì.'],
+            'friendly': ['Đây là đan dược ta mới luyện thành, tặng cho đạo hữu phòng thân.'],
+            'romance': ['Lòng ta đã định, đời này chỉ nguyện cùng ngươi kết làm đạo lữ.'],
+            'special_move': ['Cửu Chuyển Kim Đan Hỏa!']
+        }
+    },
+    'du_nhuoc_nhan': {
+        id: 'du_nhuoc_nhan',
+        name: 'Du Nhược Nhan',
+        gender: 'Nữ',
+        title: 'Lạc Nhạn Tiên Tử',
+        portrait: ASSETS.portraits.du_nhuoc_nhan,
+        personality: 'kieu_ngao',
+        goal: 'chan_hung_tong_mon',
+        role: 'Âm Nhạc Tu',
+        isRomanceable: true,
+        desc: 'Đại sư tỷ của Linh Âm Các, sở hữu dung mạo tuyệt thế và khả năng dùng tiếng đàn điều khiển linh khí.',
+        dialogues: {
+            'meet': ['Tiếng đàn của ta không dành cho kẻ phàm phu tục tử.', 'Ngươi có thể nghe hiểu ý vị trong khúc nhạc này sao?'],
+            'friendly': ['Khúc nhạc này, ta chỉ đàn cho một mình ngươi nghe.'],
+            'romance': ['Thế gian vạn dặm, tâm ta chỉ gửi gắm nơi tiếng đàn và... nơi ngươi.'],
+            'special_move': ['Thiên Ma Cầm Âm!']
+        }
+    },
+    'phuong_ca': {
+        id: 'phuong_ca',
+        name: 'Phương Ca',
+        gender: 'Nữ',
+        title: 'Vạn Bảo Các Chủ',
+        portrait: ASSETS.portraits.phuong_ca,
+        personality: 'quy_quyet',
+        goal: 'tim_dao_lu',
+        role: 'Trận Pháp Sư',
+        isRomanceable: true,
+        desc: 'Thương nhân bí ẩn nắm giữ vạn bảo, tinh thông trận pháp, tính tình biến hóa khôn lường.',
+        dialogues: {
+            'meet': ['Trên đời này không có gì là không thể mua được bằng linh thạch, kể cả mạng sống.', 'Muốn xem bảo vật của ta? Phải xem ngươi có đủ thành ý không.'],
+            'friendly': ['Lần này ta sẽ giảm giá cho ngươi, coi như là phí kết giao.'],
+            'romance': ['Vạn bảo của ta đều thuộc về ta, còn ta... thuộc về ngươi.'],
+            'special_move': ['Bát Quái Tru Tiên Trận!']
+        }
+    },
+    'phuong_vu': {
+        id: 'phuong_vu',
+        name: 'Phương Vũ',
+        gender: 'Nữ',
+        title: 'Tuyệt Thế Kiếm Cơ',
+        portrait: ASSETS.portraits.phuong_vu,
+        personality: 'lanh_lung',
+        goal: 'bao_thu',
+        role: 'Kiếm Tu',
+        isRomanceable: true,
+        desc: 'Một nữ kiếm tu lãnh đạm, kiếm ý lạnh thấu xương, một lòng vì kiếm, không vướng hồng trần.',
+        dialogues: {
+            'meet': ['Kiếm của ta chỉ dùng để giết người, không dùng để đàm đạo.', 'Ngươi có thể đỡ được một kiếm của ta không?'],
+            'friendly': ['Kiếm ý của ngươi... có chút hơi ấm.'],
+            'romance': ['Đời này, kiếm là mạng, ngươi là tâm.'],
+            'special_move': ['Vạn Kiếm Quy Tông!']
+        }
+    },
+    'tran_tu_huyen': {
+        id: 'tran_tu_huyen',
+        name: 'Trần Tử Huyền',
+        gender: 'Nữ',
+        title: 'U Minh Thánh Nữ',
+        portrait: ASSETS.portraits.tran_tu_huyen,
+        personality: 'dien_cuong',
+        goal: 'chan_hung_tong_mon',
+        role: 'Phù Lục Sư',
+        isRomanceable: true,
+        desc: 'Thánh nữ của Ma Đạo tông môn, hành sự tàn độc nhưng lại có thiên phú về phù lục chi đạo.',
+        dialogues: {
+            'meet': ['Máu của ngươi... trông thật rực rỡ.', 'Muốn nếm thử uy lực của Ma Phù không?'],
+            'friendly': ['Ngươi thật thú vị, ta không nỡ giết ngươi nữa rồi.'],
+            'romance': ['Dù là tiên hay ma, ta chỉ muốn cùng ngươi đi đến tận cùng.'],
+            'special_move': ['U Minh Huyết Phù!']
+        }
+    },
+    'xich_nguyet': {
+        id: 'xich_nguyet',
+        name: 'Xích Nguyệt',
+        gender: 'Nữ',
+        title: 'Yêu Tộc Chiến Cơ',
+        portrait: ASSETS.portraits.xich_nguyet,
+        personality: 'trung_thanh',
+        goal: 'bao_thu',
+        role: 'Luyện Thể',
+        isRomanceable: true,
+        desc: 'Chiến binh mạnh mẽ nhất của Lang tộc, sở hữu sức mạnh nhục thân kinh người và ý chí kiên định.',
+        dialogues: {
+            'meet': ['Kẻ yếu không có quyền lên tiếng ở đây.', 'Ngươi có đủ sức mạnh để khiến ta phục tùng không?'],
+            'friendly': ['Ngươi đã chứng minh được bản lĩnh của mình.'],
+            'romance': ['Tộc của ta chỉ có một bạn đời duy nhất, và ta đã chọn ngươi.'],
+            'special_move': ['Thiên Lang Khiếu Nguyệt!']
+        }
+    }
+};
+
