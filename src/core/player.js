@@ -353,7 +353,13 @@ export class Player {
             }
         }
 
-        return remaining === 0;
+        if (remaining === 0) {
+            if (state.systems.cheat) {
+                state.systems.cheat.onAction('spend_lingshi', amount);
+            }
+            return true;
+        }
+        return false;
     }
 
     addLingShi(amount) {

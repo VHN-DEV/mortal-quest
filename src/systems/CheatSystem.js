@@ -49,6 +49,7 @@ export class CheatSystem {
         // Reward Pending State (For Chests & 3-Choose-1 UI)
         this.pendingRewards = null; // Holds the currently rolled options
         this.claimStyle = 'direct'; // direct, chest, choose (from config)
+        this.lastClaimedRewards = null; // Stored for direct rewards popup display
     }
 
     init() {
@@ -87,7 +88,7 @@ export class CheatSystem {
         }
 
         // 3. Location Check-In System Roll
-        if (this.systemId === 'location') {
+        if (this.systemId === 'check_in_loc') {
             if (this.locationState.lastDayRolled < currentDay || !this.locationState.targetLocId) {
                 this.rollNewLocation(currentDay);
             }
@@ -173,7 +174,7 @@ export class CheatSystem {
      * Checks if check-in criteria are met
      */
     canCheckIn() {
-        if (this.systemId !== 'location' || this.locationState.claimed) return false;
+        if (this.systemId !== 'check_in_loc' || this.locationState.claimed) return false;
         // Checked in today if currently at the target location ID
         return state.currentLocId === this.locationState.targetLocId;
     }
@@ -263,6 +264,8 @@ export class CheatSystem {
     applyRewardsDirectly() {
         if (!this.pendingRewards) return;
 
+        this.lastClaimedRewards = [...this.pendingRewards]; // Save for direct UI alert
+
         this.pendingRewards.forEach(reward => {
             if (reward.type === 'lingshi') {
                 this.player.addLingShi(reward.qty);
@@ -279,7 +282,7 @@ export class CheatSystem {
             this.signInState.available = false;
         } else if (this.systemId === 'mission') {
             this.missionState.currentMission.claimed = true;
-        } else if (this.systemId === 'location') {
+        } else if (this.systemId === 'check_in_loc') {
             this.locationState.claimed = true;
         }
 
@@ -312,7 +315,7 @@ export class CheatSystem {
             this.signInState.available = false;
         } else if (this.systemId === 'mission') {
             this.missionState.currentMission.claimed = true;
-        } else if (this.systemId === 'location') {
+        } else if (this.systemId === 'check_in_loc') {
             this.locationState.claimed = true;
         }
 

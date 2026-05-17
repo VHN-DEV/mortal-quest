@@ -722,6 +722,9 @@ export class Game {
         }
 
         if (result.success && result.gain > 0) {
+            if (state.systems.cheat) {
+                state.systems.cheat.onAction('cultivate', 1);
+            }
             const btn = document.getElementById('cultivate-btn');
             if (btn) {
                 state.ui.showStatUpEffect(btn, `+${Math.floor(result.gain)} ${result.type === 'tuvi' ? 'Tu Vi' : (result.type === 'body' ? 'Khí Huyết' : 'Thần Niệm')}`);
@@ -752,6 +755,9 @@ export class Game {
         const result = state.player.breakthrough(focus);
         if (result && result.msg) state.ui.toast(result.msg, result.success ? 'success' : 'error');
         if (result && result.success) {
+            if (state.systems.cheat) {
+                state.systems.cheat.onAction('breakthrough', 1);
+            }
             state.ui.showBreakthroughEffect(state.player.getCurrentRealm(focus).name);
             await this.saveGame();
         }
@@ -843,6 +849,9 @@ export class Game {
                 `Sau ${durationYears} năm bế quan khổ tu, ngươi đã xuất quan. Tuổi hiện tại: ${state.player.age}. Tu vi tinh tiến vượt bậc!`,
                 "Xuất Quan Đại Cát"
             );
+            if (state.systems.cheat) {
+                state.systems.cheat.onAction('seclusion', 1);
+            }
             this.refreshUI();
             this.saveGame();
         }, 2000);

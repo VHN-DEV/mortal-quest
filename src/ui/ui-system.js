@@ -153,7 +153,7 @@ export class UISystem {
 
     showModal({ title, message, icon = 'ph-info', confirmText = 'LĨNH CHỈ', cancelText = 'BÃI BÃI', showCancel = true, onConfirm, onCancel }) {
         this.modalTitle.textContent = title;
-        this.modalMessage.textContent = message;
+        this.modalMessage.innerHTML = message;
         this.modalIcon.className = `ph ${icon} text-5xl text-cultivation-gold animate-bounce-subtle`;
         this.modalBtnConfirm.textContent = confirmText;
         this.modalBtnConfirm.style.display = 'block';
@@ -185,7 +185,7 @@ export class UISystem {
      */
     prompt(message, onConfirm, defaultValue = '', title = 'Thiên Đạo Truy Vấn') {
         this.modalTitle.textContent = title;
-        this.modalMessage.textContent = message;
+        this.modalMessage.innerHTML = message;
         this.modalIcon.className = `ph ph-question text-5xl text-cultivation-gold animate-bounce-subtle`;
         this.modalBtnConfirm.textContent = 'XÁC NHẬN';
         this.modalBtnConfirm.style.display = 'block';

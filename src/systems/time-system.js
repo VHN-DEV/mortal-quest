@@ -79,6 +79,10 @@ export class TimeSystem {
     }
 
     // Helper getters
+    get totalDays() {
+        return Math.floor(this.totalMinutes / 12);
+    }
+
     getHour() {
         const hourIndex = this.totalMinutes % 12;
         return HOURS[hourIndex];

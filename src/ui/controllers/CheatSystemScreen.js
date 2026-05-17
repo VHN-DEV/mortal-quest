@@ -10,6 +10,7 @@ export class CheatSystemScreen {
         this.closeBtn = null;
         this.isOpeningChest = false;
         this.selectedChooseIndex = null;
+        this.ui = state.ui;
     }
 
     initElements() {
@@ -82,7 +83,7 @@ export class CheatSystemScreen {
             subContent = this.getSignInUI(cheatSys);
         } else if (cheatSys.systemId === 'mission') {
             subContent = this.getMissionUI(cheatSys);
-        } else if (cheatSys.systemId === 'location') {
+        } else if (cheatSys.systemId === 'check_in_loc') {
             subContent = this.getLocationUI(cheatSys);
         }
 
@@ -117,7 +118,7 @@ export class CheatSystemScreen {
                 const success = cheatSys.actionSignIn();
                 if (success) {
                     if (cheatSys.claimStyle === 'direct') {
-                        this.showRewardsAlert(cheatSys.signInState.totalDays === 1 ? 'Đăng Nhập Đầu' : 'Điểm Danh Ngày Mới', cheatSys.getRewardPool());
+                        this.showRewardsAlert(cheatSys.signInState.totalDays === 1 ? 'Đăng Nhập Đầu' : 'Điểm Danh Ngày Mới', cheatSys.lastClaimedRewards);
                     }
                     this.render();
                 }
@@ -131,7 +132,7 @@ export class CheatSystemScreen {
                 const success = cheatSys.actionClaimMission();
                 if (success) {
                     if (cheatSys.claimStyle === 'direct') {
-                        this.showRewardsAlert('Hoàn Thành Chí Cao Nhiệm Vụ', cheatSys.getRewardPool());
+                        this.showRewardsAlert('Hoàn Thành Chí Cao Nhiệm Vụ', cheatSys.lastClaimedRewards);
                     }
                     this.render();
                 }
@@ -145,7 +146,7 @@ export class CheatSystemScreen {
                 const success = cheatSys.actionCheckIn();
                 if (success) {
                     if (cheatSys.claimStyle === 'direct') {
-                        this.showRewardsAlert('Đánh Dấu Thiên Cơ Thành Công', cheatSys.getRewardPool());
+                        this.showRewardsAlert('Đánh Dấu Thiên Cơ Thành Công', cheatSys.lastClaimedRewards);
                     }
                     this.render();
                 }
@@ -439,7 +440,7 @@ export class CheatSystemScreen {
                     const result = cheatSys.chooseReward(this.selectedChooseIndex);
                     this.selectedChooseIndex = null;
                     if (result) {
-                        this.ui.toast(`Lựa chọn thành công: Nhận [${result.chosen.name}]!`, 'success');
+                        state.ui.toast(`Lựa chọn thành công: Nhận [${result.chosen.name}]!`, 'success');
                     }
                     audioManager.playSfx('ui_click');
                     this.render();
@@ -497,18 +498,19 @@ export class CheatSystemScreen {
      * Display a beautiful visual popup notification of directly claimed rewards
      */
     showRewardsAlert(title, items) {
+        if (!items || items.length === 0) return;
         let content = `<div class="space-y-2 mt-2">`;
         items.slice(0, 3).forEach(item => {
             const col = REWARD_QUALITY_COLORS[item.quality] || 'text-gray-400';
             content += `
                 <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
-                    <span class="text-[10px] text-white/80 font-bold">${item.icon} ${item.name}</span>
+                    <span class="text-[10px] text-white/80 font-bold">${item.icon} ${item.name} (x${item.qty})</span>
                     <span class="text-[9px] ${col} font-black uppercase font-mono">${item.quality}</span>
                 </div>
             `;
         });
         content += `</div>`;
 
-        this.ui.alert(content, title || 'Thiên Cơ Ban Thưởng');
+        state.ui.alert(content, title || 'Thiên Cơ Ban Thưởng');
     }
 }
