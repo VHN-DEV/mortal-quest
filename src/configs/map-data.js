@@ -138,6 +138,22 @@ export const WORLDS = {
                 subRegionName: 'Nguyên Vũ Quốc'
             },
             {
+                id: 'thien_tinh_tong',
+                name: 'Thiên Tinh Tông',
+                minRealm: 5,
+                danger: 'an_toan',
+                image: getLocImg('thien_kiem_tong'),
+                description: 'Tông môn lớn của Nguyên Vũ Quốc nổi tiếng với kỹ năng Trận Pháp tinh diệu bậc nhất thiên hạ.',
+                resources: ['Trận Kỳ', 'Trận Pháp Cơ Bản', 'Linh Khoáng'],
+                energies: [{ type: 'linh_khi', concentration: 20, purity: 'TINH_THUAN' }],
+                elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 40, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.05, loot: 0.2, npc: 0.35, empty: 0.4 },
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam Đại Lục',
+                subRegionId: 'nguyen_vu_quoc',
+                subRegionName: 'Nguyên Vũ Quốc'
+            },
+            {
                 id: 'thien_van_thanh',
                 name: 'Thiên Vân Thành',
                 minRealm: 0,
@@ -823,6 +839,22 @@ export const WORLDS = {
                 subRegionName: 'Nội Hải'
             },
             {
+                id: 'am_minh_chi_dia',
+                name: 'Âm Minh Chi Địa',
+                minRealm: 20,
+                danger: 'tu_dia',
+                image: getLocImg('huyen_am_coc'),
+                description: 'Vùng không gian giam giữ tối tăm không có linh khí, chỉ chứa Âm Minh Quỷ Lực tàn bạo dâng tràn.',
+                resources: ['Âm Minh Thạch', 'Âm Sát', 'U Hồn Cát'],
+                energies: [{ type: 'tu_khi', concentration: 50, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 5, 'Mộc': 5, 'Thủy': 5, 'Hỏa': 5, 'Thổ': 10, 'Phong': 10, 'Lôi': 0, 'Băng': 15, 'Quang': 0, 'Ám': 60 },
+                eventProbs: { combat: 0.5, loot: 0.25, npc: 0.05, empty: 0.2 },
+                regionId: 'loan_tinh_hai',
+                regionName: 'Loạn Tinh Hải',
+                subRegionId: 'ngoai_hai',
+                subRegionName: 'Ngoại Hải'
+            },
+            {
                 id: 'thuong_co_truyen_tong_tran',
                 name: 'Thượng Cổ Truyền Tống Trận',
                 minRealm: 12,
@@ -981,6 +1013,22 @@ export const WORLDS = {
                 regionName: 'Thảo Nguyên Lãnh Địa',
                 subRegionId: 'mo_lan_toc',
                 subRegionName: 'Mộ Lan Tộc'
+            },
+            {
+                id: 'dot_ngot_thanh_dien',
+                name: 'Đột Ngột Thánh Điện',
+                minRealm: 14,
+                danger: 'cao_cap',
+                image: getLocImg('dan_thap'),
+                description: 'Đền thờ thiêng liêng tối cao của Đột Ngột Tộc ở thảo nguyên phía bắc, nơi tôn thờ Kim Bác Thánh Thú.',
+                resources: ['Thánh Thú Linh Vật', 'Thảo Nguyên Linh Dược'],
+                energies: [{ type: 'linh_khi', concentration: 20, purity: 'TINH_THUAN' }],
+                elementQi: { 'Kim': 30, 'Mộc': 20, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.35, loot: 0.15, npc: 0.3, empty: 0.2 },
+                regionId: 'thao_nguyen_lanh_dia',
+                regionName: 'Thảo Nguyên Lãnh Địa',
+                subRegionId: 'dot_ngot_toc',
+                subRegionName: 'Đột Ngột Tộc'
             },
             {
                 id: 'sa_hai_bi_canh',
