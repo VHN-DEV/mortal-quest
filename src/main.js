@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ease: "power2.inOut",
                 pointerEvents: "none"
             });
-            
+
             // Subtle entrance animation for the main app
             gsap.from("#app", {
                 opacity: 0,
@@ -106,19 +106,19 @@ window.renderMainStats = () => {
     // Render current location name and background dynamically
     const elLocName = document.getElementById('main-current-location');
     const elMainScreen = document.getElementById('screen-main');
-    
+
     if (elLocName || elMainScreen) {
         const locName = findLocationName(state.currentLocId);
         if (elLocName && elLocName.textContent !== locName) {
             elLocName.textContent = locName;
         }
-        
+
         if (elMainScreen && lastRenderedLocId !== state.currentLocId) {
             lastRenderedLocId = state.currentLocId;
             const loc = getLocationById(state.currentWorldId, state.currentLocId);
             const defaultBg = ASSETS.backgrounds.cultivation;
             const bgUrl = loc?.image || defaultBg;
-            
+
             // Set linear-gradient overlay for excellent readability and atmosphere
             elMainScreen.style.backgroundImage = `linear-gradient(to bottom, rgba(10, 10, 12, 0.85), rgba(10, 10, 12, 0.95)), url('${bgUrl}')`;
             elMainScreen.style.backgroundSize = 'cover';
@@ -163,10 +163,10 @@ window.renderMainStats = () => {
     const soulRealm = player.getCurrentRealm('soul');
     const bodyPercent = Math.min(100, (player.bodyExp / bodyRealm.expRequired) * 100);
     const soulPercent = Math.min(100, (player.soulExp / soulRealm.expRequired) * 100);
-    
+
     if (elBodyProgress) elBodyProgress.style.width = `${bodyPercent}%`;
     if (elSoulProgress) elSoulProgress.style.width = `${soulPercent}%`;
-    
+
     if (elBodyText) elBodyText.textContent = `${Math.floor(bodyPercent)}%`;
     if (elSoulText) elSoulText.textContent = `${Math.floor(soulPercent)}%`;
 
@@ -391,7 +391,7 @@ window.renderCreationScreen = () => {
         const phys = PHYSIQUES[sys.selectedPhysique] || {};
         const origin = CREATION_ORIGINS[sys.selectedOrigin] || {};
         const race = CREATION_RACES[sys.selectedRace] || {};
-        
+
         const classInfo = sys.getRootClassification();
         const rootElementsStr = sys.selectedRootElements.map(e => {
             const pct = sys.selectedRootElementProportions[e] || 0;
@@ -647,152 +647,162 @@ window.renderCreationScreen = () => {
     }
 
     if (elRoots) {
-        elRoots.innerHTML = Object.values(CREATION_ROOTS).map(r => {
-            const active = sys.selectedRoot === r.id;
-            const bonuses = (formatCreationBonus(r.bonus) || 'Chỉ số cơ bản').split(' · ');
-            
-            // Element selection logic
-            let elementsHtml = '';
-            if (active) {
-                const isSpecial = r.id === 'di_linh_can' || r.id === 'thien_linh_can';
-                const elements = isSpecial ? { ...ROOT_ELEMENTS, ...SPECIAL_ELEMENTS } : ROOT_ELEMENTS;
-                
-                // For Ngu Hanh, always show all 5
-                let selectionButtonsHtml = '';
-                if (r.id === 'ngu_hanh_linh_can') {
-                    selectionButtonsHtml = `
-                        <div class="flex flex-wrap gap-1">
-                            ${['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'].map(name => {
-                                const e = ROOT_ELEMENTS[name];
-                                return `<span class="text-[8px] px-1.5 py-0.5 rounded bg-white/5 border border-white/10 opacity-60">${e.icon} ${e.name}</span>`;
-                            }).join('')}
-                        </div>
-                    `;
-                } else {
-                    selectionButtonsHtml = `
-                        <div class="text-[8px] uppercase tracking-wider text-qi-blue font-bold opacity-60 mb-2">Chọn Thuộc Tính (${sys.selectedRootElements.length}/${r.quantity})</div>
-                        <div class="flex flex-wrap gap-1.5">
-                            ${Object.values(elements).map(e => {
-                                const elActive = sys.selectedRootElements.includes(e.name);
-                                const disabled = !elActive && sys.selectedRootElements.length >= r.quantity && r.quantity > 1;
-                                return `
-                                    <button onclick="event.stopPropagation(); window.game.toggleCreationRootElement('${e.name}')" 
-                                        class="px-2 py-1 rounded-md border text-[8px] flex flex-col items-center gap-0.5 transition-all
-                                        ${elActive ? 'bg-qi-blue/20 border-qi-blue text-white' : 'bg-black/40 border-white/10 text-gray-400 opacity-60 hover:opacity-100'}
-                                        ${disabled ? 'cursor-not-allowed grayscale' : 'cursor-pointer'}"
-                                        ${disabled ? 'disabled' : ''}>
-                                        <div class="flex items-center gap-1">
-                                            <span>${e.icon}</span>
-                                            <span class="font-ancient">${e.name}</span>
-                                        </div>
-                                    </button>
-                                `;
-                            }).join('')}
-                        </div>
-                    `;
-                }
+        const ELEMENT_COLORS = {
+            'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
+            'Lôi': '#fbbf24', 'Băng': '#60a5fa', 'Phong': '#94a3b8', 'Độc': '#c084fc', 'Quang': '#fffbeb', 'Ám': '#a855f7'
+        };
+        const classInfo = sys.getRootClassification();
+        const rootData = CREATION_ROOTS[sys.selectedRoot];
+        const bonuses = (formatCreationBonus(rootData.bonus) || 'Chỉ số cơ bản').split(' · ');
 
-                // Render Range Sliders for proportions
-                let slidersHtml = '';
-                if (sys.selectedRootElements.length > 1) {
-                    const ELEMENT_COLORS = {
-                        'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
-                        'Lôi': '#a855f7', 'Băng': '#06b6d4', 'Phong': '#94a3b8', 'Độc': '#10b981'
-                    };
-                    const classInfo = sys.getRootClassification();
+        const normalActive = sys.rootTab === 'normal';
+        const mutatedActive = sys.rootTab === 'mutated';
 
-                    slidersHtml = `
-                        <div class="mt-3 pt-2 border-t border-white/5 space-y-1.5" onclick="event.stopPropagation()">
-                            <div class="flex justify-between items-center text-[7.5px] uppercase tracking-wider font-bold">
-                                <span class="text-qi-blue">Tỷ Lệ Thuộc Tính (Tổng: 100%)</span>
-                                <span style="color: ${ROOT_RARITY[sys.rootRarity].color}">${classInfo.name}</span>
-                            </div>
-                            <div class="space-y-1">
-                                ${sys.selectedRootElements.map(elName => {
-                                    const pct = sys.selectedRootElementProportions[elName] || 0;
-                                    const el = ROOT_ELEMENTS[elName] || SPECIAL_ELEMENTS[elName] || { icon: '✨' };
-                                    const color = ELEMENT_COLORS[elName] || '#fff';
-                                    return `
-                                        <div class="flex items-center justify-between gap-2 py-0.5">
-                                            <div class="flex items-center gap-1 w-16 shrink-0 text-[8px] font-medium" style="color: ${color}">
-                                                <span>${el.icon}</span>
-                                                <span class="font-ancient">${elName}</span>
-                                                <span class="font-mono font-bold ml-auto">${pct}%</span>
-                                            </div>
-                                            <input type="range" min="0" max="100" value="${pct}" 
-                                                class="flex-grow h-0.5 bg-white/5 rounded appearance-none cursor-pointer accent-qi-blue transition-all"
-                                                style="background: linear-gradient(to right, ${color} 0%, ${color} ${pct}%, rgba(255,255,255,0.05) ${pct}%, rgba(255,255,255,0.05) 100%) !important"
-                                                oninput="window.game.adjustCreationRootProportion('${elName}', this.value)"
-                                            >
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                            ${!classInfo.isBalanced ? `
-                                <div class="text-[7px] text-red-400 bg-red-500/5 border border-red-500/10 px-1.5 py-0.5 rounded leading-tight flex items-start gap-1">
-                                    <i class="ph ph-warning-circle text-[8px] mt-0.5 shrink-0"></i>
-                                    <span>Tạp linh căn lệch: giảm ${Math.round((1 - classInfo.multiplierScale) * 100)}% tốc độ tu luyện! Kéo cân bằng để tối ưu.</span>
+        let tabContentHtml = '';
+        if (normalActive) {
+            tabContentHtml = `
+                <div class="mt-4 p-4 rounded-xl border border-white/5 bg-black/20 space-y-3">
+                    <div class="flex justify-between items-center text-[8px] uppercase tracking-wider font-bold mb-1">
+                        <span class="text-qi-blue">Tỷ Lệ Thuộc Tính (Tổng: 100%)</span>
+                        <span style="color: ${ROOT_RARITY[sys.rootRarity].color}">${classInfo.name}</span>
+                    </div>
+                    <div class="space-y-3">
+                        ${['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'].map(elName => {
+                const pct = sys.selectedRootElementProportions[elName] || 0;
+                const el = ROOT_ELEMENTS[elName];
+                const color = ELEMENT_COLORS[elName];
+                return `
+                                <div class="flex items-center justify-between gap-3 py-1 border-b border-white/[0.02]">
+                                    <div class="flex items-center gap-1.5 w-20 shrink-0 text-[9px] font-medium" style="color: ${color}">
+                                        <span class="text-xs">${el.icon}</span>
+                                        <span class="font-ancient font-semibold">${elName}</span>
+                                        <span class="font-mono font-bold ml-auto">${pct}%</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 flex-grow">
+                                        <button onclick="window.game.adjustCreationRootProportion('${elName}', ${pct - 1})" 
+                                            style="width: 18px !important; height: 18px !important; min-width: 18px !important; min-height: 18px !important; padding: 0 !important; margin: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; font-size: 10px !important; line-height: 1 !important; border-radius: 4px !important; background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: #9ca3af !important; cursor: pointer !important; transition: all 0.2s !important;"
+                                            onmouseenter="this.style.setProperty('background', 'rgba(255,255,255,0.15)', 'important'); this.style.setProperty('color', '#fff', 'important');" 
+                                            onmouseleave="this.style.setProperty('background', 'rgba(255,255,255,0.05)', 'important'); this.style.setProperty('color', '#9ca3af', 'important');"
+                                            class="select-none">
+                                            -
+                                        </button>
+                                        <input type="range" min="0" max="100" value="${pct}" 
+                                            class="flex-grow h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-white transition-all hover:bg-white/10"
+                                            style="background: linear-gradient(to right, ${color} 0%, ${color} ${pct}%, rgba(255,255,255,0.05) ${pct}%, rgba(255,255,255,0.05) 100%) !important"
+                                            oninput="window.game.adjustCreationRootProportion('${elName}', this.value)"
+                                        >
+                                        <button onclick="window.game.adjustCreationRootProportion('${elName}', ${pct + 1})" 
+                                            style="width: 18px !important; height: 18px !important; min-width: 18px !important; min-height: 18px !important; padding: 0 !important; margin: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; font-size: 10px !important; line-height: 1 !important; border-radius: 4px !important; background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: #9ca3af !important; cursor: pointer !important; transition: all 0.2s !important;"
+                                            onmouseenter="this.style.setProperty('background', 'rgba(255,255,255,0.15)', 'important'); this.style.setProperty('color', '#fff', 'important');" 
+                                            onmouseleave="this.style.setProperty('background', 'rgba(255,255,255,0.05)', 'important'); this.style.setProperty('color', '#9ca3af', 'important');"
+                                            class="select-none">
+                                            +
+                                        </button>
+                                    </div>
                                 </div>
-                            ` : `
-                                <div class="text-[7px] text-green-400 bg-green-500/5 border border-green-500/10 px-1.5 py-0.5 rounded leading-tight flex items-start gap-1">
-                                    <i class="ph ph-sparkle text-[8px] mt-0.5 shrink-0"></i>
-                                    <span>Hòa hợp: +${Math.round((classInfo.multiplierScale - 1) * 100)}% tốc độ hấp thu linh lực.</span>
-                                </div>
-                            `}
-                        </div>
-                    `;
-                } else if (sys.selectedRootElements.length === 1) {
-                    const elName = sys.selectedRootElements[0];
-                    const el = ROOT_ELEMENTS[elName] || SPECIAL_ELEMENTS[elName] || { icon: '✨' };
-                    slidersHtml = `
-                        <div class="mt-4 pt-3 border-t border-white/5" onclick="event.stopPropagation()">
-                            <div class="text-[7.5px] text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-1.5 rounded-lg leading-tight flex items-center gap-1">
-                                <i class="ph ph-sparkle text-[9px]"></i>
-                                <span>Tinh thể ${el.icon} ${elName} tinh thuần đạt độ tinh khiết tuyệt đối 100%!</span>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                elementsHtml = `
-                    <div class="mt-3 pt-3 border-t border-white/5">
-                        ${selectionButtonsHtml}
-                        ${slidersHtml}
+                            `;
+            }).join('')}
                     </div>
-                `;
-            }
-
-            return `
-                <div onclick="window.game.selectCreationRoot('${r.id}')" 
-                    class="q-card cursor-pointer ${active ? 'active border-qi-blue' : 'text-gray-400 border-white/10'}">
-                    <div class="flex justify-between items-start gap-2">
-                        <div class="q-title ${active ? 'text-qi-blue' : ''}">${r.name}</div>
-                        <div class="q-cost">
-                            <i class="ph ph-lightning"></i>
-                            ${r.cost}
+                    
+                    ${!classInfo.isBalanced ? `
+                        <div class="text-[7.5px] text-red-400 bg-red-500/5 border border-red-500/10 px-2.5 py-2 rounded-lg leading-relaxed flex items-start gap-1.5 mt-2">
+                            <i class="ph ph-warning-circle text-[10px] mt-0.5 shrink-0"></i>
+                            <span>Linh Căn bị lệch hoặc pha tạp nhiều tạp chất: Tốc độ hấp thu linh khí giảm ${Math.round((1 - classInfo.multiplierScale) * 100)}%. Kéo các thanh thuộc tính về trạng thái cân bằng để tăng tối đa tốc độ tu luyện!</span>
                         </div>
-                    </div>
-                    <div class="q-desc">${r.desc}</div>
-                    <div class="q-bonus-list">
-                        ${bonuses.map(b => `<span class="q-bonus-tag" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2)">${b}</span>`).join('')}
-                    </div>
-                    ${elementsHtml}
+                    ` : `
+                        <div class="text-[7.5px] text-green-400 bg-green-500/5 border border-green-500/10 px-2.5 py-2 rounded-lg leading-relaxed flex items-start gap-1.5 mt-2">
+                            <i class="ph ph-sparkle text-[10px] mt-0.5 shrink-0"></i>
+                            <span>Linh Căn đạt trạng thái hòa hợp hoàn mỹ! Tốc độ hấp thu linh lực gia tăng thêm +${Math.round((classInfo.multiplierScale - 1) * 100)}% tốc độ tu luyện.</span>
+                        </div>
+                    `}
                 </div>
             `;
-        }).join('');
+        } else {
+            tabContentHtml = `
+                <div class="mt-4 p-4 rounded-xl border border-white/5 bg-black/20 space-y-3">
+                    <div class="text-[8px] uppercase tracking-wider font-bold text-qi-purple mb-1">
+                        Chọn Thuộc Tính Dị Linh Căn (Duy nhất 1)
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mt-2">
+                        ${['Phong', 'Lôi', 'Băng', 'Quang', 'Ám'].map(elName => {
+                const el = SPECIAL_ELEMENTS[elName];
+                const elActive = sys.selectedRootElements.includes(elName);
+                const color = ELEMENT_COLORS[elName];
+                return `
+                                <button onclick="window.game.selectCreationMutatedElement('${elName}')" 
+                                    class="p-3 rounded-xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer select-none
+                                    ${elActive ? 'bg-qi-purple/10 border-qi-purple text-white shadow-lg' : 'bg-black/30 border-white/5 text-gray-400 hover:border-white/10 hover:text-white'}"
+                                    style="${elActive ? `border-color: ${color} !important; box-shadow: 0 0 8px ${color}40 !important;` : ''}">
+                                    <span class="text-xl filter drop-shadow" style="${elActive ? `text-shadow: 0 0 10px ${color}` : ''}">${el.icon}</span>
+                                    <span class="text-[9px] font-ancient font-bold" style="color: ${elActive ? color : ''}">${elName}</span>
+                                    <span class="text-[7px] text-gray-500 leading-none">${el.orientation}</span>
+                                </button>
+                            `;
+            }).join('')}
+                    </div>
+                    
+                    <div class="text-[7.5px] text-purple-400 bg-purple-500/5 border border-purple-500/10 px-2.5 py-2 rounded-lg leading-relaxed flex items-start gap-1.5 mt-2">
+                        <i class="ph ph-sparkle text-[10px] mt-0.5 shrink-0"></i>
+                        <span>Dị Linh Căn đột biến sở hữu các thuộc tính vô cùng hiếm gặp trong tự nhiên. +15% tốc độ tu luyện và mang lại các hiệu ứng đặc thù bá đạo khi chiến đấu!</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        elRoots.innerHTML = `
+            <div class="flex gap-2 p-1 bg-black/40 rounded-xl border border-white/5 mb-4">
+                <button onclick="window.game.selectCreationRootTab('normal')" 
+                    class="flex-1 py-2 px-3 rounded-lg text-[9px] uppercase tracking-wider font-bold transition-all text-center cursor-pointer
+                    ${normalActive ? 'bg-qi-blue/20 text-white border border-qi-blue/30 shadow-lg shadow-qi-blue/5' : 'text-gray-400 border border-transparent hover:text-white'}">
+                    Linh Căn Thường
+                </button>
+                <button onclick="window.game.selectCreationRootTab('mutated')" 
+                    class="flex-1 py-2 px-3 rounded-lg text-[9px] uppercase tracking-wider font-bold transition-all text-center cursor-pointer
+                    ${mutatedActive ? 'bg-qi-purple/20 text-white border border-qi-purple/30 shadow-lg shadow-qi-purple/5' : 'text-gray-400 border border-transparent hover:text-white'}">
+                    Dị Linh Căn
+                </button>
+            </div>
+            
+            <div class="q-card active border-qi-blue/30 p-4 rounded-xl bg-gradient-to-br from-black/40 to-white/[0.02] border border-white/5 flex flex-col gap-2.5">
+                <div class="flex justify-between items-center">
+                    <div class="flex flex-col">
+                        <span class="text-[8px] text-gray-500 uppercase tracking-widest leading-none mb-1">Cấp bậc Linh Căn</span>
+                        <span class="text-xs font-ancient font-bold text-qi-blue">${classInfo.name}</span>
+                    </div>
+                    <div class="flex items-center gap-1 px-2.5 py-1 bg-qi-blue/10 border border-qi-blue/20 text-qi-blue rounded-lg text-[9px] font-bold">
+                        <i class="ph ph-lightning text-[10px]"></i>
+                        <span>Tốn: ${rootData.cost} Điểm</span>
+                    </div>
+                </div>
+                
+                <div class="text-[8.5px] text-gray-400 leading-relaxed font-light">
+                    ${rootData.desc}
+                </div>
+                
+                <div class="flex flex-wrap gap-1.5 mt-1">
+                    ${bonuses.map(b => `
+                        <span class="px-2 py-0.5 rounded text-[8px] font-bold border" style="color: #60a5fa; background: rgba(96, 165, 250, 0.05); border-color: rgba(96, 165, 250, 0.15)">
+                            ${b}
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+            
+            ${tabContentHtml}
+        `;
     }
 
     // Secondary Talents List
     const elTalentsList = document.getElementById('creation-talents-list');
     const elTalentsHeader = document.querySelector('#creation-talents-container span');
-    
+
     if (elTalentsHeader && !document.getElementById('reroll-talents-btn')) {
         const btn = document.createElement('button');
         btn.id = 'reroll-talents-btn';
         btn.className = 'p-1.5 rounded-lg bg-qi-blue/10 border border-qi-blue/20 text-qi-blue hover:bg-qi-blue/20 transition-all flex items-center space-x-1';
         btn.onclick = () => window.game.rerollCreationTalents();
         btn.innerHTML = `<i class="ph ph-arrows-clockwise text-[10px]"></i> <span class="text-[8px] font-bold">Xí Ngầu</span>`;
-        
+
         const wrapper = elTalentsHeader.parentElement;
         if (wrapper) {
             const controls = wrapper.querySelector('.flex.items-center.space-x-2');
@@ -805,11 +815,11 @@ window.renderCreationScreen = () => {
             const baseVal = sys.talents[t.id];
             const totalVal = sys.getTalentValue(t.id);
             const bonus = totalVal - baseVal;
-            
+
             let color = 'text-gray-400';
             if (totalVal > 80) color = 'text-cultivation-gold';
             else if (totalVal > 60) color = 'text-qi-blue';
-            
+
             return `
                 <div class="flex flex-col space-y-1.5 p-2 rounded-xl bg-black/40 border border-white/5">
                     <div class="flex justify-between items-center">
@@ -908,8 +918,8 @@ window.renderCreationScreen = () => {
     const elArtifacts = document.getElementById('creation-artifacts-list');
     if (elArtifacts) {
         const RARITY_COLOR = {
-            'Danh Khí':             { text: 'text-red-400', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' },
-            'Tiên Khí':             { text: 'text-cyan-400', bg: 'rgba(34,211,238,0.1)', border: 'rgba(34,211,238,0.3)' },
+            'Danh Khí': { text: 'text-red-400', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' },
+            'Tiên Khí': { text: 'text-cyan-400', bg: 'rgba(34,211,238,0.1)', border: 'rgba(34,211,238,0.3)' },
             'Thông Thiên Linh Bảo': { text: 'text-amber-400', bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.3)' },
         };
 
@@ -918,14 +928,14 @@ window.renderCreationScreen = () => {
             .map(a => {
                 const active = sys.selectedArtifact === a.id;
                 const col = RARITY_COLOR[a.rarity] || { text: 'text-gray-400', bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.1)' };
-                
+
                 // Get item icon from database or default based on id
                 const itemData = getItemById(a.id);
                 const icon = itemData?.icon || (
                     a.id.includes('binh') ? '🍶' :
-                    a.id.includes('dinh') ? '🏺' :
-                    a.id.includes('cam') ? '🎻' :
-                    a.id.includes('quan') ? '🎓' : '🔮'
+                        a.id.includes('dinh') ? '🏺' :
+                            a.id.includes('cam') ? '🎻' :
+                                a.id.includes('quan') ? '🎓' : '🔮'
                 );
 
                 return `

@@ -15,6 +15,7 @@ export class CreationSystem {
         this.mode = 'custom';
         this.points = CREATION_CONFIG.BASE_POINTS;
         this.selectedRace = 'HUMAN';
+        this.rootTab = 'normal';
         this.selectedRoot = 'ngu_hanh_linh_can';
         this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
         this.selectedRootElementProportions = { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20 };
@@ -78,18 +79,106 @@ export class CreationSystem {
 
 
     resetProportions() {
-        const N = this.selectedRootElements.length;
-        if (N === 0) {
-            this.selectedRootElementProportions = {};
-            return;
+        if (this.rootTab === 'normal') {
+            this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+            this.selectedRootElementProportions = { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20 };
+            this.selectedRoot = 'ngu_hanh_linh_can';
+        } else {
+            this.selectedRootElements = ['Lôi'];
+            this.selectedRootElementProportions = { 'Lôi': 100 };
+            this.selectedRoot = 'di_linh_can';
         }
-        const base = Math.floor(100 / N);
-        const remainder = 100 - (base * N);
+    }
+
+    adjustNormalElementProportion(targetElement, newValue) {
+        newValue = Math.max(0, Math.min(100, Math.round(newValue)));
+        const oldValue = this.selectedRootElementProportions[targetElement] || 0;
+        const delta = newValue - oldValue;
+        if (delta === 0) return;
+
+        const allNormal = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+        const otherElements = allNormal.filter(el => el !== targetElement);
         
-        this.selectedRootElementProportions = {};
-        this.selectedRootElements.forEach((el, index) => {
-            this.selectedRootElementProportions[el] = base + (index === 0 ? remainder : 0);
-        });
+        // Sum of other active elements (value > 0)
+        const activeOthers = otherElements.filter(el => (this.selectedRootElementProportions[el] || 0) > 0);
+        const sumOthers = activeOthers.reduce((acc, el) => acc + (this.selectedRootElementProportions[el] || 0), 0);
+
+        const remaining = 100 - newValue;
+
+        if (sumOthers > 0 && remaining > 0) {
+            let remainingDelta = remaining;
+            activeOthers.forEach((el, index) => {
+                const currentVal = this.selectedRootElementProportions[el] || 0;
+                let newVal = 0;
+                if (index === activeOthers.length - 1) {
+                    newVal = remainingDelta;
+                } else {
+                    newVal = Math.round(remaining * (currentVal / sumOthers));
+                    remainingDelta -= newVal;
+                }
+                this.selectedRootElementProportions[el] = Math.max(0, Math.min(100, newVal));
+            });
+        } else if (remaining > 0) {
+            // If all others were 0, distribute equally
+            let remainingDelta = remaining;
+            otherElements.forEach((el, index) => {
+                let newVal = 0;
+                if (index === otherElements.length - 1) {
+                    newVal = remainingDelta;
+                } else {
+                    newVal = Math.round(remaining / otherElements.length);
+                    remainingDelta -= newVal;
+                }
+                this.selectedRootElementProportions[el] = Math.max(0, Math.min(100, newVal));
+            });
+        } else {
+            // remaining === 0, meaning newValue === 100
+            otherElements.forEach(el => {
+                this.selectedRootElementProportions[el] = 0;
+            });
+        }
+
+        this.selectedRootElementProportions[targetElement] = newValue;
+        
+        // Ensure total sum is exactly 100
+        let sum = allNormal.reduce((acc, el) => acc + (this.selectedRootElementProportions[el] || 0), 0);
+        let diff = 100 - sum;
+        if (diff !== 0) {
+            // Adjust the element with the maximum proportion (excluding targetElement if possible)
+            let maxEl = otherElements[0];
+            let maxVal = -1;
+            otherElements.forEach(el => {
+                const val = this.selectedRootElementProportions[el] || 0;
+                if (val > maxVal) {
+                    maxVal = val;
+                    maxEl = el;
+                }
+            });
+            if (maxEl && this.selectedRootElementProportions[maxEl] !== undefined) {
+                this.selectedRootElementProportions[maxEl] = Math.max(0, Math.min(100, this.selectedRootElementProportions[maxEl] + diff));
+            } else {
+                this.selectedRootElementProportions[targetElement] = Math.max(0, Math.min(100, this.selectedRootElementProportions[targetElement] + diff));
+            }
+        }
+
+        // Recalculate selectedRootElements
+        this.selectedRootElements = allNormal.filter(el => (this.selectedRootElementProportions[el] || 0) > 0);
+
+        // Update selectedRoot based on count
+        const N = this.selectedRootElements.length;
+        if (N === 1) {
+            this.selectedRoot = 'thien_linh_can';
+        } else if (N === 2) {
+            this.selectedRoot = 'song_linh_can';
+        } else if (N === 3) {
+            this.selectedRoot = 'tam_linh_can';
+        } else if (N === 4) {
+            this.selectedRoot = 'nguy_linh_can';
+        } else if (N === 5) {
+            this.selectedRoot = 'ngu_hanh_linh_can';
+        }
+
+        this.calculatePoints();
     }
 
     adjustElementProportion(targetElement, newValue) {
@@ -161,7 +250,14 @@ export class CreationSystem {
 
     getRootClassification() {
         const N = this.selectedRootElements.length;
-        if (N <= 1) return { name: CREATION_ROOTS[this.selectedRoot].name, isBalanced: true, multiplierScale: 1.0 };
+        
+        if (this.selectedRoot === 'di_linh_can') {
+            return { name: `Dị Linh Căn (${this.selectedRootElements.join(' - ') || 'Không'})`, isBalanced: true, multiplierScale: 1.15 };
+        }
+        
+        if (N === 1) {
+            return { name: `Thiên Linh Căn (${this.selectedRootElements[0]})`, isBalanced: true, multiplierScale: 1.25 };
+        }
 
         const ideal = 100 / N;
         let maxDeviation = 0;
@@ -171,7 +267,7 @@ export class CreationSystem {
             if (dev > maxDeviation) maxDeviation = dev;
         });
 
-        const rootName = CREATION_ROOTS[this.selectedRoot].name;
+        const rootName = CREATION_ROOTS[this.selectedRoot]?.name || 'Linh Căn';
 
         if (this.selectedRoot === 'ngu_hanh_linh_can') {
             if (maxDeviation > 15) {
@@ -183,32 +279,54 @@ export class CreationSystem {
             }
         }
 
+        const elementsStr = this.selectedRootElements.join(' - ');
         if (maxDeviation > 15) {
-            return { name: `${rootName} (Bị Pha Tạp)`, isBalanced: false, multiplierScale: 0.7 };
+            return { name: `${rootName} (${elementsStr}) (Bị Pha Tạp)`, isBalanced: false, multiplierScale: 0.7 };
         } else if (maxDeviation > 5) {
-            return { name: `${rootName} (Hơi Lệch)`, isBalanced: false, multiplierScale: 0.9 };
+            return { name: `${rootName} (${elementsStr}) (Hơi Lệch)`, isBalanced: false, multiplierScale: 0.9 };
         } else {
-            return { name: `${rootName} (Cân Bằng)`, isBalanced: true, multiplierScale: 1.1 };
+            return { name: `${rootName} (${elementsStr}) (Cân Bằng)`, isBalanced: true, multiplierScale: 1.1 };
         }
     }
 
     selectRoot(rootId) {
         this.selectedRoot = rootId;
-        // Reset elements based on root type
-        if (rootId === 'ngu_hanh_linh_can') {
-            this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
-        } else if (rootId === 'thien_linh_can') {
-            this.selectedRootElements = ['Hỏa']; // Default
-        } else if (rootId === 'di_linh_can') {
-            this.selectedRootElements = ['Lôi']; // Default
-        } else if (rootId === 'song_linh_can') {
-            this.selectedRootElements = ['Kim', 'Mộc'];
-        } else if (rootId === 'tam_linh_can') {
-            this.selectedRootElements = ['Kim', 'Mộc', 'Thủy'];
-        } else if (rootId === 'nguy_linh_can') {
-            this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Thổ'];
+        this.rootTab = (rootId === 'di_linh_can' ? 'mutated' : 'normal');
+        
+        if (rootId === 'di_linh_can') {
+            this.selectedRootElements = ['Lôi'];
+            this.selectedRootElementProportions = { 'Lôi': 100 };
+        } else {
+            if (rootId === 'ngu_hanh_linh_can') {
+                this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+            } else if (rootId === 'thien_linh_can') {
+                this.selectedRootElements = ['Hỏa'];
+            } else if (rootId === 'song_linh_can') {
+                this.selectedRootElements = ['Kim', 'Mộc'];
+            } else if (rootId === 'tam_linh_can') {
+                this.selectedRootElements = ['Kim', 'Mộc', 'Thủy'];
+            } else if (rootId === 'nguy_linh_can') {
+                this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Thổ'];
+            }
+            
+            // Reinitialize proportions
+            const N = this.selectedRootElements.length;
+            const base = Math.floor(100 / N);
+            const remainder = 100 - (base * N);
+            
+            this.selectedRootElementProportions = {};
+            // Set active ones
+            this.selectedRootElements.forEach((el, index) => {
+                this.selectedRootElementProportions[el] = base + (index === 0 ? remainder : 0);
+            });
+            // Initialize others to 0 so slider can read
+            const allNormal = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+            allNormal.forEach(el => {
+                if (!this.selectedRootElementProportions[el]) {
+                    this.selectedRootElementProportions[el] = 0;
+                }
+            });
         }
-        this.resetProportions();
         this.calculatePoints();
     }
 
@@ -358,7 +476,44 @@ export class CreationSystem {
 
         const rootKeys = Object.keys(CREATION_ROOTS);
         this.selectedRoot = rootKeys[Math.floor(Math.random() * rootKeys.length)];
-        this.selectRoot(this.selectedRoot);
+        this.rootTab = (this.selectedRoot === 'di_linh_can' ? 'mutated' : 'normal');
+
+        if (this.selectedRoot === 'di_linh_can') {
+            const diElements = ['Phong', 'Lôi', 'Băng', 'Quang', 'Ám'];
+            const chosen = diElements[Math.floor(Math.random() * diElements.length)];
+            this.selectedRootElements = [chosen];
+            this.selectedRootElementProportions = { [chosen]: 100 };
+        } else {
+            const normalElements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+            // Shuffle
+            const shuffled = [...normalElements].sort(() => Math.random() - 0.5);
+            const qty = CREATION_ROOTS[this.selectedRoot].quantity;
+            this.selectedRootElements = shuffled.slice(0, qty);
+            
+            this.selectedRootElementProportions = {};
+            if (qty === 1) {
+                this.selectedRootElementProportions[this.selectedRootElements[0]] = 100;
+            } else {
+                let remaining = 100;
+                this.selectedRootElements.forEach((el, idx) => {
+                    if (idx === qty - 1) {
+                        this.selectedRootElementProportions[el] = remaining;
+                    } else {
+                        const min = 5;
+                        const max = remaining - 5 * (qty - 1 - idx);
+                        const val = Math.floor(Math.random() * (max - min + 1)) + min;
+                        this.selectedRootElementProportions[el] = val;
+                        remaining -= val;
+                    }
+                });
+            }
+            // Add inactive standard ones at 0%
+            normalElements.forEach(el => {
+                if (this.selectedRootElementProportions[el] === undefined) {
+                    this.selectedRootElementProportions[el] = 0;
+                }
+            });
+        }
 
         const physKeys = Object.keys(CREATION_PHYSIQUES);
         this.selectedPhysique = physKeys[Math.floor(Math.random() * physKeys.length)];

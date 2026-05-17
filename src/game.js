@@ -1551,6 +1551,25 @@ export class Game {
         }
     }
 
+    selectCreationRootTab(tab) {
+        if (state.systems.creation) {
+            state.systems.creation.rootTab = tab;
+            state.systems.creation.resetProportions();
+            state.systems.creation.calculatePoints();
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationMutatedElement(element) {
+        if (state.systems.creation) {
+            state.systems.creation.selectedRoot = 'di_linh_can';
+            state.systems.creation.selectedRootElements = [element];
+            state.systems.creation.selectedRootElementProportions = { [element]: 100 };
+            state.systems.creation.calculatePoints();
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
     toggleCreationRootElement(element) {
         if (state.systems.creation) {
             state.systems.creation.toggleRootElement(element);
@@ -1560,7 +1579,11 @@ export class Game {
 
     adjustCreationRootProportion(element, value) {
         if (state.systems.creation) {
-            state.systems.creation.adjustElementProportion(element, value);
+            if (state.systems.creation.rootTab === 'normal') {
+                state.systems.creation.adjustNormalElementProportion(element, value);
+            } else {
+                state.systems.creation.adjustElementProportion(element, value);
+            }
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }

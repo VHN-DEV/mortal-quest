@@ -186,6 +186,16 @@ export const SPECIAL_ELEMENTS = {
         id: 'Độc', name: 'Độc', color: '#c084fc', icon: '☠️',
         orientation: 'Nguyền rủa, Hấp thụ',
         bonus: { poisonDmg: 2.0, lifesteal: 0.1, dotDmg: 0.2 }
+    },
+    'Quang': {
+        id: 'Quang', name: 'Quang', color: '#fffbeb', icon: '☀️',
+        orientation: 'Trị liệu, Tịnh hóa',
+        bonus: { maxHp: 500, avoidRate: 0.1, allRes: 0.15 }
+    },
+    'Ám': {
+        id: 'Ám', name: 'Ám', color: '#a855f7', icon: '🌙',
+        orientation: 'Thôn phệ, Nguyền rủa',
+        bonus: { lifesteal: 0.2, critRate: 0.1, critDmg: 0.2 }
     }
 };
 
