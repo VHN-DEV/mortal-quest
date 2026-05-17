@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-BnvuUvdt.js"></script>
+  <script type="module" crossorigin src="./assets/index-Ov0hW_d3.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-B5RSr7_3.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-jTwuv2cg.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -32,15 +32,99 @@
         <div class="loading-centerpiece-container">
             <div class="yinyang-glow-ring"></div>
             <svg class="yinyang-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <!-- Outer Bagua Trigrams (Tiên Thiên Bát Quái) -->
+                <!-- 1. Càn (0° - Top): 3 Solid -->
+                <g transform="rotate(0, 50, 50)">
+                    <rect x="43" y="15" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="43" y="11" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="43" y="7" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                </g>
+                <!-- 2. Tốn (45°): Inner Broken, Middle Solid, Outer Solid -->
+                <g transform="rotate(45, 50, 50)">
+                    <!-- Inner Broken -->
+                    <rect x="43" y="15" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="15" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Middle Solid -->
+                    <rect x="43" y="11" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Outer Solid -->
+                    <rect x="43" y="7" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                </g>
+                <!-- 3. Khảm (90°): Inner Broken, Middle Solid, Outer Broken -->
+                <g transform="rotate(90, 50, 50)">
+                    <!-- Inner Broken -->
+                    <rect x="43" y="15" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="15" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Middle Solid -->
+                    <rect x="43" y="11" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Outer Broken -->
+                    <rect x="43" y="7" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="7" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                </g>
+                <!-- 4. Cấn (135°): Inner Broken, Middle Broken, Outer Solid -->
+                <g transform="rotate(135, 50, 50)">
+                    <!-- Inner Broken -->
+                    <rect x="43" y="15" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="15" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Middle Broken -->
+                    <rect x="43" y="11" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="11" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Outer Solid -->
+                    <rect x="43" y="7" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                </g>
+                <!-- 5. Khôn (180°): 3 Broken -->
+                <g transform="rotate(180, 50, 50)">
+                    <!-- Inner Broken -->
+                    <rect x="43" y="15" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="15" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Middle Broken -->
+                    <rect x="43" y="11" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="11" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Outer Broken -->
+                    <rect x="43" y="7" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="7" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                </g>
+                <!-- 6. Chấn (225°): Inner Solid, Middle Broken, Outer Broken -->
+                <g transform="rotate(225, 50, 50)">
+                    <!-- Inner Solid -->
+                    <rect x="43" y="15" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Middle Broken -->
+                    <rect x="43" y="11" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="11" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Outer Broken -->
+                    <rect x="43" y="7" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="7" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                </g>
+                <!-- 7. Ly (270°): Inner Solid, Middle Broken, Outer Solid -->
+                <g transform="rotate(270, 50, 50)">
+                    <!-- Inner Solid -->
+                    <rect x="43" y="15" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Middle Broken -->
+                    <rect x="43" y="11" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="11" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Outer Solid -->
+                    <rect x="43" y="7" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                </g>
+                <!-- 8. Đoài (315°): Inner Solid, Middle Solid, Outer Broken -->
+                <g transform="rotate(315, 50, 50)">
+                    <!-- Inner Solid -->
+                    <rect x="43" y="15" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Middle Solid -->
+                    <rect x="43" y="11" width="14" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <!-- Outer Broken -->
+                    <rect x="43" y="7" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                    <rect x="51.25" y="7" width="5.75" height="1.2" rx="0.4" fill="rgba(255, 255, 255, 0.9)" />
+                </g>
+
+                <!-- Inner Yin-Yang (Tai Chi) -->
                 <!-- Base white circle (Yang half) -->
-                <circle cx="50" cy="50" r="45" fill="#ffffff" />
+                <circle cx="50" cy="50" r="28" fill="#ffffff" />
                 <!-- Yin half (Black) -->
-                <path d="M 50,5 A 45,45 0 0,0 50,95 A 22.5,22.5 0 0,0 50,50 A 22.5,22.5 0 0,1 50,5 Z" fill="#000000" />
+                <path d="M 50,22 A 28,28 0 0,0 50,78 A 14,14 0 0,0 50,50 A 14,14 0 0,1 50,22 Z" fill="#000000" />
                 <!-- Small circles (eyes) -->
                 <!-- Black eye inside upper White bulge -->
-                <circle cx="50" cy="27.5" r="4.5" fill="#000000" />
+                <circle cx="50" cy="36" r="3" fill="#000000" />
                 <!-- White eye inside lower Black bulge -->
-                <circle cx="50" cy="72.5" r="4.5" fill="#ffffff" />
+                <circle cx="50" cy="64" r="3" fill="#ffffff" />
             </svg>
         </div>
 
