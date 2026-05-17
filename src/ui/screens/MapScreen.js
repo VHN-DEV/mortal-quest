@@ -286,6 +286,9 @@ export class MapScreen {
         }
 
         state.currentLocId = locId;
+        if (state.player && typeof state.player.calculateStats === 'function') {
+            state.player.calculateStats();
+        }
 
         // LOGIC: If it's a direct-entry special location, skip the dashboard
         if (loc.special === 'mountain') {

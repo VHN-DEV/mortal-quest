@@ -7,6 +7,7 @@ import { getPhysiqueById, getPhysiqueAwakenBonus, PHYSIQUE_GRADES, PHYSIQUE_STAG
 import { ARTIFACT_SETS } from '../configs/artifact-data.js';
 import { CREATION_TRAITS, ROOT_ELEMENTS, SPECIAL_ELEMENTS } from '../configs/creation-data.js';
 import { TITLES } from '../configs/fate-data.js';
+import { getLocationById, WORLDS } from '../configs/map-data.js';
 
 export class Player {
     constructor() {
@@ -755,6 +756,86 @@ export class Player {
         return { success: false, msg: check.reason || "Chưa đủ điều kiện đột phá." };
     }
 
+    getEnvironmentalQiMultiplier() {
+        if (typeof state === 'undefined') return 1.0;
+        const locId = state.currentLocId || 'thanh_van_tran';
+        
+        let loc = null;
+        for (const world of Object.values(WORLDS)) {
+            loc = world.locations.find(l => l.id === locId);
+            if (loc) break;
+        }
+
+        // Town (Thanh Vân Trấn) or default baseline
+        let energies = [{ type: 'linh_khi', concentration: 10 }];
+        if (loc && loc.energies && loc.energies.length > 0) {
+            energies = loc.energies;
+        }
+
+        // Get player root proportions (standardize to sum to 1.0)
+        let proportions = {};
+        if (this.spiritualRoot) {
+            if (this.spiritualRoot.proportions) {
+                Object.entries(this.spiritualRoot.proportions).forEach(([el, pct]) => {
+                    proportions[el] = pct / 100;
+                });
+            } else if (this.spiritualRoot.elements) {
+                const count = this.spiritualRoot.elements.length;
+                this.spiritualRoot.elements.forEach(el => {
+                    proportions[el] = 1.0 / count;
+                });
+            }
+        }
+        
+        if (Object.keys(proportions).length === 0) {
+            // Default Phàm Nhân or no root (balanced elements)
+            proportions = { 'Kim': 0.2, 'Mộc': 0.2, 'Thủy': 0.2, 'Hỏa': 0.2, 'Thổ': 0.2 };
+        }
+
+        // Calculate environmental Qi absorption
+        let totalAbsorbedQi = 0;
+        
+        // Sum up Qi absorption for each of player's root elements
+        Object.entries(proportions).forEach(([elName, elPct]) => {
+            let elQi = 0;
+            let hasSpecificQiInArea = false;
+            
+            // Check if there is specific elemental Qi in the area
+            energies.forEach(eng => {
+                if ((eng.type === 'linh_khi' || eng.type === 'tien_khi') && eng.element === elName) {
+                    elQi += eng.concentration;
+                    hasSpecificQiInArea = true;
+                }
+            });
+
+            // If there's no matching specific element in energies, but general linh_khi/tien_khi exists
+            if (!hasSpecificQiInArea) {
+                energies.forEach(eng => {
+                    if (eng.type === 'linh_khi' || eng.type === 'tien_khi') {
+                        if (!eng.element) {
+                            // General pure Qi contains all elements
+                            elQi += eng.concentration;
+                            hasSpecificQiInArea = true;
+                        }
+                    }
+                });
+            }
+            
+            // Baseline very thin Qi if there is no matching elemental Qi in this area at all
+            if (!hasSpecificQiInArea) {
+                elQi = 0.5; // extremely low! Slows down single elements if not in their matching area
+            }
+            
+            totalAbsorbedQi += elQi * elPct;
+        });
+
+        // Normalize the multiplier: standard starter town (Thanh Vân Trấn) has Qi = 10 -> mult = 1.0
+        const mult = totalAbsorbedQi / 10;
+        
+        // Keep within safe minimum bound (e.g. 0.02) so it never completely freezes, but feels extremely slow
+        return Math.max(0.02, mult);
+    }
+
     calculateStats() {
         const realmLevel = this.realmId;
         const bodyLevel = this.bodyRealmId;
@@ -1108,6 +1189,9 @@ export class Player {
             this.maxMana += energyBonuses.mana || 0;
             this.spd += energyBonuses.spd || 0;
         }
+        
+        // Apply Environmental Qi Multiplier to Cultivation Speed
+        this.tuViPerSecond *= this.getEnvironmentalQiMultiplier();
         
         // 5. Finalize Secondary Stats
         const baseLifespan = raceInfo.baseLifespan || 100;

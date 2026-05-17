@@ -293,15 +293,55 @@ export class TechniqueSystem {
             return { success: false, msg: "Không đủ Điểm Công Pháp." };
         }
 
+        const techData = isSecret ? getSecretTechniqueById(techId) : getTechniqueById(techId);
+        if (!techData) return { success: false, msg: "Không tìm thấy công pháp." };
+
         this.player.techniquePoints -= 1;
-        const gain = 10 + Math.floor(Math.random() * 10);
+
+        // Calculate root match multiplier
+        let rootMult = 1.0;
+        if (this.player.spiritualRoot && techData.element && techData.element !== 'Neutral') {
+            const elName = techData.element;
+            let elPct = 0;
+            
+            if (this.player.spiritualRoot.proportions) {
+                elPct = (this.player.spiritualRoot.proportions[elName] || 0) / 100;
+            } else if (this.player.spiritualRoot.elements) {
+                if (this.player.spiritualRoot.elements.includes(elName)) {
+                    elPct = 1.0 / this.player.spiritualRoot.elements.length;
+                }
+            }
+            
+            if (elPct > 0) {
+                // Compatible: up to 2.5x speed
+                rootMult = 1.0 + elPct * 1.5;
+            } else {
+                // Mismatched: 80% penalty
+                rootMult = 0.2;
+            }
+        }
+
+        const baseGain = 10 + Math.floor(Math.random() * 10);
+        const gain = Math.max(1, Math.floor(baseGain * rootMult));
         
         if (isSecret) {
             const res = this.addSecretMastery(techId, gain);
-            return { success: true, msg: res.leveledUp ? `Lĩnh ngộ bí pháp tăng tiến! Đạt đến: ${res.newLevel}` : "Lĩnh ngộ bí pháp tăng thêm một chút." };
+            let msg = res.leveledUp ? `Lĩnh ngộ bí pháp tăng tiến! Đạt đến: ${res.newLevel}` : `Lĩnh ngộ bí pháp tăng thêm ${gain} điểm.`;
+            if (rootMult > 1.2) {
+                msg += ` (Linh căn tương hợp cực kỳ tốt! +${Math.round((rootMult - 1) * 100)}% tốc độ)`;
+            } else if (rootMult < 0.5) {
+                msg += ` (Linh căn bất tương hợp! Bị giảm ${Math.round((1 - rootMult) * 100)}% tốc độ)`;
+            }
+            return { success: true, msg };
         } else {
             this.addMastery(techId, gain);
-            return { success: true, msg: "Tu luyện thành công!" };
+            let msg = `Tu luyện thành công! Nhận ${gain} điểm thuần thục.`;
+            if (rootMult > 1.2) {
+                msg += ` (Linh căn tương hợp cực kỳ tốt! +${Math.round((rootMult - 1) * 100)}% tốc độ)`;
+            } else if (rootMult < 0.5) {
+                msg += ` (Linh căn bất tương hợp! Bị giảm ${Math.round((1 - rootMult) * 100)}% tốc độ)`;
+            }
+            return { success: true, msg };
         }
     }
 }

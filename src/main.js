@@ -7,7 +7,7 @@ import { gsap } from 'gsap';
 import { EnemyGenerator, Enemy } from './core/enemy.js';
 import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
-import { getWorlds, getLocationById } from './configs/map-data.js';
+import { getWorlds, getLocationById, findLocationName } from './configs/map-data.js';
 import { ASSETS, preloadAssets } from './configs/asset-data.js';
 import { getRealmById, HUMAN_REALMS } from './configs/realm-data.js';
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
@@ -97,9 +97,35 @@ window.switchScreen = (screenId, btn) => state.ui.switchScreen(screenId, btn);
 // --- RE-IMPLEMENTING MISSING LOGIC (TEMPORARY) ---
 // Một số logic phức tạp chưa được tách sang Screen sẽ nằm ở đây hoặc SystemsScreen.
 
+let lastRenderedLocId = null;
+
 window.renderMainStats = () => {
     const player = state.player;
     if (!player) return;
+
+    // Render current location name and background dynamically
+    const elLocName = document.getElementById('main-current-location');
+    const elMainScreen = document.getElementById('screen-main');
+    
+    if (elLocName || elMainScreen) {
+        const locName = findLocationName(state.currentLocId);
+        if (elLocName && elLocName.textContent !== locName) {
+            elLocName.textContent = locName;
+        }
+        
+        if (elMainScreen && lastRenderedLocId !== state.currentLocId) {
+            lastRenderedLocId = state.currentLocId;
+            const loc = getLocationById(state.currentWorldId, state.currentLocId);
+            const defaultBg = ASSETS.backgrounds.cultivation;
+            const bgUrl = loc?.image || defaultBg;
+            
+            // Set linear-gradient overlay for excellent readability and atmosphere
+            elMainScreen.style.backgroundImage = `linear-gradient(to bottom, rgba(10, 10, 12, 0.85), rgba(10, 10, 12, 0.95)), url('${bgUrl}')`;
+            elMainScreen.style.backgroundSize = 'cover';
+            elMainScreen.style.backgroundPosition = 'center';
+            elMainScreen.style.transition = 'background-image 1.5s ease-in-out';
+        }
+    }
 
     const realm = player.getCurrentRealm();
     const progress = (player.tuVi / realm.expRequired) * 100;
