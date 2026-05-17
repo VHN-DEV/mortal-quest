@@ -158,7 +158,7 @@ export const WORLDS = {
                 name: 'Thiên Vân Thành',
                 minRealm: 0,
                 danger: 'an_toan',
-                image: getLocImg('van_bao_cac'),
+                image: getLocImg('thien_uyen_thanh'),
                 description: 'Đại tiên thành sầm uất tại Trung Châu Thánh Địa, trung tâm mua bán sầm uất nhất Nhân Giới.',
                 resources: ['Linh Thạch Hạ Phẩm', 'Pháp Bảo Sơ Cấp'],
                 energies: [{ type: 'linh_khi', concentration: 20, purity: 'TINH_THUAN' }],
