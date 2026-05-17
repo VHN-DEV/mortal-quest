@@ -15,6 +15,10 @@ import { gsap } from 'gsap';
  */
 export class MapScreen {
     constructor() {
+        this.mapNavLevel = 'regions'; // 'regions', 'subregions', 'locations'
+        this.selectedRegionId = null;
+        this.selectedSubRegionId = null;
+
         this.initElements();
         this.initEvents();
     }
@@ -70,9 +74,20 @@ export class MapScreen {
 
         if (this.btnBackToWorlds) {
             this.btnBackToWorlds.onclick = async () => {
-                state.ui.toggleOverlay(this.viewLocations, false);
-                state.ui.toggleOverlay(this.viewWorlds, true);
-                await Preferences.set({ key: 'mortal_quest_map_view', value: 'worlds' });
+                if (this.mapNavLevel === 'locations') {
+                    this.mapNavLevel = 'subregions';
+                    this.selectedSubRegionId = null;
+                    this.renderLocationList();
+                } else if (this.mapNavLevel === 'subregions') {
+                    this.mapNavLevel = 'regions';
+                    this.selectedRegionId = null;
+                    this.renderLocationList();
+                } else {
+                    // level is 'regions', go back to world list screen
+                    state.ui.toggleOverlay(this.viewLocations, false);
+                    state.ui.toggleOverlay(this.viewWorlds, true);
+                    await Preferences.set({ key: 'mortal_quest_map_view', value: 'worlds' });
+                }
             };
         }
 
@@ -97,6 +112,9 @@ export class MapScreen {
 
         const { value: savedView } = await Preferences.get({ key: 'mortal_quest_map_view' });
         if (savedView === 'locations' && state.currentWorldId) {
+            this.mapNavLevel = 'regions';
+            this.selectedRegionId = null;
+            this.selectedSubRegionId = null;
             await this.selectWorld(state.currentWorldId);
         } else if (savedView === 'explore' && state.currentWorldId && state.currentLocId) {
             // Restore location info and show explore view
@@ -184,6 +202,10 @@ export class MapScreen {
             state.currentWorldId = id;
         }
 
+        this.mapNavLevel = 'regions';
+        this.selectedRegionId = null;
+        this.selectedSubRegionId = null;
+
         this.elCurrentWorldName.textContent = w.name;
         state.ui.toggleOverlay(this.viewWorlds, false);
         state.ui.toggleOverlay(this.viewLocations, true);
@@ -197,42 +219,143 @@ export class MapScreen {
         if (!w) return;
         this.elLocList.innerHTML = '';
         
-        w.locations.forEach(loc => {
-            const playerRealm = state.player.getRealmById ? state.player.getRealmById(state.player.realmId) : getRealmById(state.player.realmId);
-            const locked = state.player.realmId < loc.minRealm;
-            const el = document.createElement('div');
-            el.className = `location-card h-40 p-5 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
+        const elSub = this.elCurrentWorldNameSub || document.getElementById('current-world-name-sub');
 
-            const relDanger = this.getRelativeDanger(loc);
-            const dangerInfo = DANGER_LEVELS[relDanger] || { name: relDanger };
-            const dangerClass = `danger-${relDanger}`;
-            const reqRealmName = getRealmById(loc.minRealm).name;
+        if (this.mapNavLevel === 'regions') {
+            this.elCurrentWorldName.textContent = w.name;
+            if (elSub) elSub.textContent = 'Chọn Đại Lục / Hải Vực';
 
-            el.innerHTML = `
-                <img src="${loc.image || ASSETS.backgrounds.cultivation}" class="location-card-image">
-                <div class="relative z-10 space-y-1">
-                    <div class="flex justify-between items-center">
-                        <h4 class="text-xl font-bold text-white group-hover:text-qi-blue transition-colors">${loc.name}</h4>
-                        ${locked ? '<i class="ph ph-lock text-red-500"></i>' : ''}
-                    </div>
-                    <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">${loc.description}</p>
-                    <div class="flex items-center space-x-2 pt-1">
-                        <span class="px-2 py-0.5 rounded border text-[7px] uppercase font-bold tracking-widest ${dangerClass}">${dangerInfo.name}</span>
-                        <span class="text-[7px] text-gray-500 uppercase tracking-widest">Yêu cầu: ${reqRealmName}</span>
-                    </div>
-                </div>
-            `;
-
-            el.onclick = () => {
-                if (locked) {
-                    state.ui.toast(`Cảnh giới không đủ! Yêu cầu: ${reqRealmName}`, 'warning');
-                    return;
+            // Find unique regions
+            const regionsMap = new Map();
+            w.locations.forEach(loc => {
+                if (loc.regionId) {
+                    regionsMap.set(loc.regionId, loc.regionName || loc.regionId);
                 }
-                this.startExploration(loc.id);
-            };
+            });
 
-            this.elLocList.appendChild(el);
-        });
+            if (regionsMap.size === 0) {
+                // Fallback to locations list
+                this.mapNavLevel = 'locations';
+                this.renderLocationList();
+                return;
+            }
+
+            regionsMap.forEach((regionName, regionId) => {
+                const el = document.createElement('div');
+                el.className = 'location-card h-40 p-5 flex flex-col justify-end cursor-pointer';
+
+                const previewLoc = w.locations.find(loc => loc.regionId === regionId);
+                const previewImg = previewLoc?.image || ASSETS.backgrounds.cultivation;
+
+                el.innerHTML = `
+                    <img src="${previewImg}" class="location-card-image">
+                    <div class="relative z-10 space-y-1">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xl font-bold text-white group-hover:text-qi-blue transition-colors">${regionName}</h4>
+                            <i class="ph ph-caret-right text-qi-blue text-xl"></i>
+                        </div>
+                        <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">Lịch luyện thám hiểm khu vực ${regionName}</p>
+                    </div>
+                `;
+
+                el.onclick = () => {
+                    this.selectedRegionId = regionId;
+                    this.mapNavLevel = 'subregions';
+                    this.renderLocationList();
+                };
+
+                this.elLocList.appendChild(el);
+            });
+
+        } else if (this.mapNavLevel === 'subregions') {
+            const regionName = w.locations.find(loc => loc.regionId === this.selectedRegionId)?.regionName || this.selectedRegionId;
+            this.elCurrentWorldName.textContent = regionName;
+            if (elSub) elSub.textContent = 'Chọn Quốc Gia / Tông Môn / Thành Trì';
+
+            // Find unique subregions
+            const subRegionsMap = new Map();
+            w.locations.forEach(loc => {
+                if (loc.regionId === this.selectedRegionId && loc.subRegionId) {
+                    subRegionsMap.set(loc.subRegionId, loc.subRegionName || loc.subRegionId);
+                }
+            });
+
+            if (subRegionsMap.size === 0) {
+                this.mapNavLevel = 'locations';
+                this.renderLocationList();
+                return;
+            }
+
+            subRegionsMap.forEach((subName, subId) => {
+                const el = document.createElement('div');
+                el.className = 'location-card h-40 p-5 flex flex-col justify-end cursor-pointer';
+
+                const previewLoc = w.locations.find(loc => loc.subRegionId === subId);
+                const previewImg = previewLoc?.image || ASSETS.backgrounds.cultivation;
+
+                el.innerHTML = `
+                    <img src="${previewImg}" class="location-card-image">
+                    <div class="relative z-10 space-y-1">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xl font-bold text-white group-hover:text-qi-blue transition-colors">${subName}</h4>
+                            <i class="ph ph-caret-right text-qi-blue text-xl"></i>
+                        </div>
+                        <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">Thế lực trấn thủ, thành trì giao thương tại ${subName}</p>
+                    </div>
+                `;
+
+                el.onclick = () => {
+                    this.selectedSubRegionId = subId;
+                    this.mapNavLevel = 'locations';
+                    this.renderLocationList();
+                };
+
+                this.elLocList.appendChild(el);
+            });
+
+        } else if (this.mapNavLevel === 'locations') {
+            const subName = w.locations.find(loc => loc.subRegionId === this.selectedSubRegionId)?.subRegionName || this.selectedSubRegionId;
+            this.elCurrentWorldName.textContent = subName;
+            if (elSub) elSub.textContent = 'Chọn Địa Điểm Lịch Luyện';
+
+            const filteredLocs = w.locations.filter(loc => loc.subRegionId === this.selectedSubRegionId);
+
+            filteredLocs.forEach(loc => {
+                const locked = state.player.realmId < loc.minRealm;
+                const el = document.createElement('div');
+                el.className = `location-card h-40 p-5 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
+
+                const relDanger = this.getRelativeDanger(loc);
+                const dangerInfo = DANGER_LEVELS[relDanger] || { name: relDanger };
+                const dangerClass = `danger-${relDanger}`;
+                const reqRealmName = getRealmById(loc.minRealm).name;
+
+                el.innerHTML = `
+                    <img src="${loc.image || ASSETS.backgrounds.cultivation}" class="location-card-image">
+                    <div class="relative z-10 space-y-1">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xl font-bold text-white group-hover:text-qi-blue transition-colors">${loc.name}</h4>
+                            ${locked ? '<i class="ph ph-lock text-red-500"></i>' : ''}
+                        </div>
+                        <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">${loc.description}</p>
+                        <div class="flex items-center space-x-2 pt-1">
+                            <span class="px-2 py-0.5 rounded border text-[7px] uppercase font-bold tracking-widest ${dangerClass}">${dangerInfo.name}</span>
+                            <span class="text-[7px] text-gray-500 uppercase tracking-widest">Yêu cầu: ${reqRealmName}</span>
+                        </div>
+                    </div>
+                `;
+
+                el.onclick = () => {
+                    if (locked) {
+                        state.ui.toast(`Cảnh giới không đủ! Yêu cầu: ${reqRealmName}`, 'warning');
+                        return;
+                    }
+                    this.startExploration(loc.id);
+                };
+
+                this.elLocList.appendChild(el);
+            });
+        }
     }
 
     getRelativeDanger(loc) {

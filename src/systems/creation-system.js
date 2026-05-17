@@ -483,6 +483,25 @@ export class CreationSystem {
         // Apply Destiny Rating based on leftover points
         player.destinyRating = this.getDestinyRating(this.points);
 
+        // Set Origin-Specific Starting Locations
+        let startWorldId = 'nhan_gioi';
+        let startLocId = 'thanh_van_tran';
+        
+        if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
+            startLocId = 'thien_van_thanh';
+        } else if (this.selectedOrigin === 'tong_mon') {
+            startLocId = 'hoang_phong_coc';
+        } else if (this.selectedOrigin === 'ma_dao') {
+            startLocId = 'huyen_am_coc';
+        } else if (this.selectedOrigin === 'thu_nguyen_du_hanh_gia' || this.selectedOrigin === 'hoi_quy_gia' || this.selectedOrigin === 'chuyen_sinh_gia') {
+            startLocId = 'thoi_khong_bi_canh';
+            startWorldId = 'linh_gioi';
+        }
+        
+        player.currentWorldId = startWorldId;
+        player.currentLocId = startLocId;
+        player.explorationProgress = 0;
+
         // Finalize stats (player.calculateStats will look at root, physique, and talents)
         player.calculateStats();
         player.hp = player.maxHp;

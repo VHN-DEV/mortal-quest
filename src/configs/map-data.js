@@ -40,6 +40,39 @@ export const WORLDS = {
         description: 'Vùng đất của phàm nhân và các tu sĩ bắt đầu con đường nghịch thiên.',
         locations: [
             {
+                id: 'thanh_van_tran',
+                name: 'Thanh Vân Trấn',
+                minRealm: 0,
+                danger: 'an_toan',
+                image: getLocImg('van_thu_lam'),
+                description: 'Thôn trang phàm nhân hẻo lánh, nơi cuộc hành trình bắt đầu.',
+                resources: ['Linh Thảo', 'Linh Cát'],
+                energies: [{ type: 'linh_khi', concentration: 5, purity: 'TAP' }],
+                eventProbs: { combat: 0.1, loot: 0.2, npc: 0.1, empty: 0.6 },
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam Đại Lục',
+                subRegionId: 'viet_quoc',
+                subRegionName: 'Việt Quốc'
+            },
+            {
+                id: 'hoang_phong_coc',
+                name: 'Hoàng Phong Cốc',
+                minRealm: 0,
+                danger: 'an_toan',
+                image: getLocImg('thien_kiem_tong'),
+                description: 'Một trong Lục Đại Tông Môn của Việt Quốc, linh khí dồi dào phù hợp tu luyện.',
+                resources: ['Linh Thảo', 'Linh Thạch Hạ Phẩm'],
+                energies: [
+                    { type: 'linh_khi', element: 'Thổ', concentration: 25, purity: 'TINH_THUAN' },
+                    { type: 'linh_khi', element: 'Mộc', concentration: 15, purity: 'TINH_THUAN' }
+                ],
+                eventProbs: { combat: 0.05, loot: 0.1, npc: 0.45, empty: 0.4 },
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam Đại Lục',
+                subRegionId: 'viet_quoc',
+                subRegionName: 'Việt Quốc'
+            },
+            {
                 id: 'van_thu_lam',
                 name: 'Vạn Thú Chi Lâm',
                 minRealm: 0,
@@ -48,18 +81,11 @@ export const WORLDS = {
                 description: 'Nơi yêu thú sơ cấp hoành hành, đầy rẫy linh thảo thiên nhiên.',
                 resources: ['Linh Thảo', 'Yêu Đan Hạ Phẩm'],
                 energies: [{ type: 'linh_khi', element: 'Mộc', concentration: 15, purity: 'TINH_THUAN' }, { type: 'yeu_khi', concentration: 20, purity: 'TAP' }, { type: 'sinh_khi', concentration: 5, purity: 'TINH_THUAN' }],
-                eventProbs: { combat: 0.25, loot: 0.15, npc: 0.05, empty: 0.55 }
-            },
-            {
-                id: 'loan_tinh_hai',
-                name: 'Loạn Tinh Hải',
-                minRealm: 0,
-                danger: 'ha_cap',
-                image: getLocImg('loan_tinh_hai'),
-                description: 'Vùng biển hỗn loạn với vô số đảo nhỏ và yêu thú thủy tộc.',
-                resources: ['Thủy Tinh', 'Linh Thạch Hạ Phẩm'],
-                energies: [{ type: 'linh_khi', element: 'Thủy', concentration: 20, purity: 'TINH_THUAN' }],
-                eventProbs: { combat: 0.2, loot: 0.1, npc: 0.05, empty: 0.65 }
+                eventProbs: { combat: 0.25, loot: 0.15, npc: 0.05, empty: 0.55 },
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam Đại Lục',
+                subRegionId: 'viet_quoc',
+                subRegionName: 'Việt Quốc'
             },
             {
                 id: 'thien_kiem_tong',
@@ -70,7 +96,11 @@ export const WORLDS = {
                 description: 'Kiếm đạo thánh địa, nơi vạn kiếm quy tông.',
                 resources: ['Kiếm Ý', 'Linh Khoáng'],
                 energies: [{ type: 'kiem_khi', concentration: 60, purity: 'CUC_PHAM' }, { type: 'linh_khi', element: 'Kim', concentration: 30, purity: 'TINH_THUAN' }, { type: 'hao_nhien_chinh_khi', concentration: 10, purity: 'TINH_THUAN' }],
-                eventProbs: { combat: 0.02, loot: 0.03, npc: 0.4, empty: 0.55 }
+                eventProbs: { combat: 0.02, loot: 0.03, npc: 0.4, empty: 0.55 },
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam Đại Lục',
+                subRegionId: 'nguyen_vu_quoc',
+                subRegionName: 'Nguyên Vũ Quốc'
             },
             {
                 id: 'huyen_am_coc',
@@ -81,7 +111,26 @@ export const WORLDS = {
                 description: 'U ám tà khí, nơi ma tu thường xuyên ẩn nấp phục kích.',
                 resources: ['Âm Sát', 'Ma Thạch'],
                 energies: [{ type: 'ma_khi', concentration: 80, purity: 'TINH_THUAN' }, { type: 'tu_khi', concentration: 40, purity: 'TAP' }, { type: 'hon_khi', concentration: 10, purity: 'TAP' }],
-                eventProbs: { combat: 0.4, loot: 0.1, npc: 0.05, empty: 0.45 }
+                eventProbs: { combat: 0.4, loot: 0.1, npc: 0.05, empty: 0.45 },
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam Đại Lục',
+                subRegionId: 'nguyen_vu_quoc',
+                subRegionName: 'Nguyên Vũ Quốc'
+            },
+            {
+                id: 'thien_van_thanh',
+                name: 'Thiên Vân Thành',
+                minRealm: 0,
+                danger: 'an_toan',
+                image: getLocImg('van_bao_cac'),
+                description: 'Đại tiên thành sầm uất tại Trung Châu Thánh Địa, trung tâm mua bán sầm uất nhất Nhân Giới.',
+                resources: ['Linh Thạch Hạ Phẩm', 'Pháp Bảo Sơ Cấp'],
+                energies: [{ type: 'linh_khi', concentration: 20, purity: 'TINH_THUAN' }],
+                eventProbs: { combat: 0.0, loot: 0.05, npc: 0.65, empty: 0.3 },
+                regionId: 'trung_chau',
+                regionName: 'Trung Châu Thánh Địa',
+                subRegionId: 'thien_dao_thanh',
+                subRegionName: 'Thiên Đạo Thành'
             },
             {
                 id: 'van_bao_cac',
@@ -91,7 +140,11 @@ export const WORLDS = {
                 image: getLocImg('van_bao_cac'),
                 description: 'Thương hội liên giới, nơi có mọi thứ mà tu sĩ cần.',
                 resources: ['Đan Dược', 'Pháp Bảo'],
-                eventProbs: { combat: 0.0, loot: 0.0, npc: 0.8, empty: 0.2 }
+                eventProbs: { combat: 0.0, loot: 0.0, npc: 0.8, empty: 0.2 },
+                regionId: 'trung_chau',
+                regionName: 'Trung Châu Thánh Địa',
+                subRegionId: 'thien_dao_thanh',
+                subRegionName: 'Thiên Đạo Thành'
             },
             {
                 id: 'linh_bao_lau',
@@ -101,7 +154,11 @@ export const WORLDS = {
                 image: getLocImg('linh_bao_lau'),
                 description: 'Lâu đài chứa đựng vô số linh bảo, cạnh tranh khốc liệt với Vạn Bảo Các.',
                 resources: ['Pháp Bảo Hiếm', 'Vật Phẩm Quý'],
-                eventProbs: { combat: 0.0, loot: 0.0, npc: 0.9, empty: 0.1 }
+                eventProbs: { combat: 0.0, loot: 0.0, npc: 0.9, empty: 0.1 },
+                regionId: 'trung_chau',
+                regionName: 'Trung Châu Thánh Địa',
+                subRegionId: 'thien_dao_thanh',
+                subRegionName: 'Thiên Đạo Thành'
             },
             {
                 id: 'cong_hoi_luyen_duoc',
@@ -112,7 +169,11 @@ export const WORLDS = {
                 description: 'Nơi quản lý và cấp chứng nhận cho các Luyện Dược Sư.',
                 resources: ['Đan Phương', 'Linh Thảo'],
                 eventProbs: { combat: 0.0, loot: 0.0, npc: 0.7, empty: 0.3 },
-                special: 'guild'
+                special: 'guild',
+                regionId: 'trung_chau',
+                regionName: 'Trung Châu Thánh Địa',
+                subRegionId: 'thien_dao_thanh',
+                subRegionName: 'Thiên Đạo Thành'
             },
             {
                 id: 'thap_van_dai_son',
@@ -124,7 +185,26 @@ export const WORLDS = {
                 resources: ['Yêu Đan', 'Linh Dược Cổ'],
                 energies: [{ type: 'yeu_khi', concentration: 80, purity: 'CUC_PHAM' }, { type: 'sinh_khi', concentration: 15, purity: 'TINH_THUAN' }],
                 eventProbs: { combat: 0.5, loot: 0.2, npc: 0.1, empty: 0.2 },
-                special: 'mountain'
+                special: 'mountain',
+                regionId: 'tay_vuc',
+                regionName: 'Tây Vực Sa Mạc',
+                subRegionId: 'tay_vuc_bien_ai',
+                subRegionName: 'Biên Ải Tây Vực'
+            },
+            {
+                id: 'loan_tinh_hai',
+                name: 'Loạn Tinh Hải',
+                minRealm: 0,
+                danger: 'ha_cap',
+                image: getLocImg('loan_tinh_hai'),
+                description: 'Vùng biển hỗn loạn với vô số đảo nhỏ và yêu thú thủy tộc.',
+                resources: ['Thủy Tinh', 'Linh Thạch Hạ Phẩm'],
+                energies: [{ type: 'linh_khi', element: 'Thủy', concentration: 20, purity: 'TINH_THUAN' }],
+                eventProbs: { combat: 0.2, loot: 0.1, npc: 0.05, empty: 0.65 },
+                regionId: 'loan_tinh_hai',
+                regionName: 'Loạn Tinh Hải',
+                subRegionId: 'ngoai_hai',
+                subRegionName: 'Ngoại Hải'
             }
         ]
     },
@@ -142,7 +222,11 @@ export const WORLDS = {
                 description: 'Di tích cổ đại with linh khí đậm đặc gấp bội.',
                 resources: ['Linh Thạch Trung Phẩm', 'Cổ Bảo'],
                 energies: [{ type: 'linh_khi', concentration: 100, purity: 'CUC_PHAM' }],
-                eventProbs: { combat: 0.4, loot: 0.3, npc: 0.2, empty: 0.1 }
+                eventProbs: { combat: 0.4, loot: 0.3, npc: 0.2, empty: 0.1 },
+                regionId: 'linh_gioi_trung_tam',
+                regionName: 'Linh Giới Trung Tâm',
+                subRegionId: 'than_vuc_thanh_thanh',
+                subRegionName: 'Thần Vực Thánh Thành'
             },
             {
                 id: 'dan_thap',
@@ -153,7 +237,11 @@ export const WORLDS = {
                 description: 'Nơi cao nhất của Đan Đạo, hội tụ các bậc đại sư.',
                 resources: ['Tiên Đan', 'Dị Hỏa Chi Lực'],
                 eventProbs: { combat: 0.0, loot: 0.0, npc: 0.9, empty: 0.1 },
-                special: 'tower'
+                special: 'tower',
+                regionId: 'linh_gioi_trung_tam',
+                regionName: 'Linh Giới Trung Tâm',
+                subRegionId: 'than_vuc_thanh_thanh',
+                subRegionName: 'Thần Vực Thánh Thành'
             },
             {
                 id: 'thoi_khong_bi_canh',
@@ -165,7 +253,11 @@ export const WORLDS = {
                 resources: ['Thời Không Tinh Thạch'],
                 energies: [{ type: 'khong_gian_chi_khi', concentration: 30, purity: 'CUC_PHAM' }, { type: 'thoi_gian_chi_khi', concentration: 10, purity: 'DAO' }],
                 eventProbs: { combat: 0.3, loot: 0.4, npc: 0.1, empty: 0.2 },
-                timeRate: 10
+                timeRate: 10,
+                regionId: 'linh_gioi_trung_tam',
+                regionName: 'Linh Giới Trung Tâm',
+                subRegionId: 'than_vuc_thanh_thanh',
+                subRegionName: 'Thần Vực Thánh Thành'
             }
         ]
     },
@@ -183,7 +275,11 @@ export const WORLDS = {
                 description: 'Nơi ở của các Tiên nhân và Đạo tổ vĩnh hằng.',
                 resources: ['Tiên Khí', 'Đạo Quả', 'Danh Khí'],
                 energies: [{ type: 'tien_khi', concentration: 300, purity: 'DAO' }, { type: 'hong_mong_tu_khi', concentration: 5, purity: 'DAO' }, { type: 'hon_don_khi', concentration: 2, purity: 'DAO' }],
-                eventProbs: { combat: 0.6, loot: 0.2, npc: 0.1, empty: 0.1 }
+                eventProbs: { combat: 0.6, loot: 0.2, npc: 0.1, empty: 0.1 },
+                regionId: 'tien_gioi_dinh_phong',
+                regionName: 'Tiên Giới Đỉnh Phong',
+                subRegionId: 'cuu_trong_thien_vuc',
+                subRegionName: 'Cửu Trọng Thiên Vực'
             },
             {
                 id: 'thai_hu_tien_cung',
@@ -198,7 +294,11 @@ export const WORLDS = {
                     { type: 'khong_gian_chi_khi', concentration: 150, purity: 'CUC_PHAM' },
                     { type: 'thai_hu_chi_luc', concentration: 50, purity: 'DAO' }
                 ],
-                eventProbs: { combat: 0.5, loot: 0.3, npc: 0.1, empty: 0.1 }
+                eventProbs: { combat: 0.5, loot: 0.3, npc: 0.1, empty: 0.1 },
+                regionId: 'tien_gioi_dinh_phong',
+                regionName: 'Tiên Giới Đỉnh Phong',
+                subRegionId: 'cuu_trong_thien_vuc',
+                subRegionName: 'Cửu Trọng Thiên Vực'
             }
         ]
     }
