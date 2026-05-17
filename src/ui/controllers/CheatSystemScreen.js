@@ -269,6 +269,7 @@ export class CheatSystemScreen {
                 <div class="space-y-1">
                     <div class="text-[8px] uppercase tracking-wider text-gray-500">Tọa Độ Đánh Dấu Thiên Địa</div>
                     <div class="text-xs font-ancient font-black text-amber-400 uppercase tracking-widest">${state.targetLocName || 'Đang Cảm Ứng'}</div>
+                    ${state.targetWorldName ? `<div class="text-[8px] text-gray-500 uppercase tracking-wider font-mono">(${state.targetWorldName})</div>` : ''}
                     <div class="text-[8px] text-gray-600">Đến đúng địa điểm thiên địa hội tụ để đánh dấu khí vận.</div>
                 </div>
 
@@ -293,7 +294,7 @@ export class CheatSystemScreen {
                     ${!currentlyHere ? `
                         <div class="text-[8px] text-red-400 font-ancient flex items-center justify-center space-x-1">
                             <i class="ph ph-warning-circle"></i>
-                            <span>Tọa độ không khớp. Vui lòng di chuyển đến [${state.targetLocName}]!</span>
+                            <span>Tọa độ không khớp. Vui lòng di chuyển đến [${state.targetLocName}]${state.targetWorldName ? ` ở [${state.targetWorldName}]` : ''}!</span>
                         </div>
                     ` : ''}
                 `}

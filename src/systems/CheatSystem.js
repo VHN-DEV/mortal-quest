@@ -150,6 +150,8 @@ export class CheatSystem {
 
         this.locationState.targetLocId = target.id;
         this.locationState.targetLocName = target.name;
+        this.locationState.targetWorldId = worldId;
+        this.locationState.targetWorldName = world ? world.name : 'Phàm Trần Giới';
         this.locationState.lastDayRolled = day;
         this.locationState.claimed = false;
     }
@@ -180,8 +182,9 @@ export class CheatSystem {
      */
     canCheckIn() {
         if (this.systemId !== 'check_in_loc' || this.locationState.claimed) return false;
-        // Checked in today if currently at the target location ID
-        return state.currentLocId === this.locationState.targetLocId;
+
+        const targetWorld = this.locationState.targetWorldId || 'nhan_gioi';
+        return state.currentWorldId === targetWorld && state.currentLocId === this.locationState.targetLocId;
     }
 
     /**
