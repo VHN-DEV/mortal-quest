@@ -646,7 +646,7 @@ window.renderCreationScreen = () => {
                             <div class="flex flex-wrap gap-1.5">
                                 ${Object.values(elements).map(e => {
                                     const elActive = sys.selectedRootElements.includes(e.name);
-                                    const disabled = !elActive && sys.selectedRootElements.length >= r.quantity;
+                                    const disabled = !elActive && sys.selectedRootElements.length >= r.quantity && r.quantity > 1;
                                     return `
                                         <button onclick="event.stopPropagation(); window.game.toggleCreationRootElement('${e.name}')" 
                                             class="px-2 py-1 rounded-md border text-[8px] flex flex-col items-center gap-0.5 transition-all
