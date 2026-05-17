@@ -144,6 +144,19 @@ body {
   #screen-creation .pb-32 {
     padding-bottom: calc(10rem + env(safe-area-inset-bottom, 0px));
   }
+
+  /* Loading Screen Mobile Adjustments */
+  .loading-title {
+    font-size: 1.8rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .loading-status-wrap {
+    justify-content: center;
+    gap: 0.75rem;
+  }
 }
 
 
@@ -2185,6 +2198,7 @@ select option:checked {
     font-weight: 700;
     color: #d4af37;
     letter-spacing: 0.35em;
+    text-align: center;
     margin-bottom: 2rem;
     position: relative;
     background: linear-gradient(to bottom, #fff9c4, #d4af37, #8b6b15);

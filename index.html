@@ -29,13 +29,15 @@
         <div class="loading-centerpiece-container">
             <div class="yinyang-glow-ring"></div>
             <svg class="yinyang-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <!-- Yin half (Dark ink) -->
-                <path d="M 50,5 A 45,45 0 0,0 50,95 A 22.5,22.5 0 0,0 50,50 A 22.5,22.5 0 0,1 50,5 Z" fill="rgba(10, 10, 12, 0.95)" stroke="rgba(79, 209, 197, 0.3)" stroke-width="0.5" />
-                <!-- Yang half (Glowing cyan) -->
-                <path d="M 50,5 A 45,45 0 0,1 50,95 A 22.5,22.5 0 0,0 50,50 A 22.5,22.5 0 0,1 50,5 Z" fill="#4fd1c5" opacity="0.85" />
-                <!-- Small circles -->
-                <circle cx="50" cy="27.5" r="4.5" fill="#4fd1c5" />
-                <circle cx="50" cy="72.5" r="4.5" fill="rgba(10, 10, 12, 0.95)" />
+                <!-- Base white circle (Yang half) -->
+                <circle cx="50" cy="50" r="45" fill="#ffffff" />
+                <!-- Yin half (Black) -->
+                <path d="M 50,5 A 45,45 0 0,0 50,95 A 22.5,22.5 0 0,0 50,50 A 22.5,22.5 0 0,1 50,5 Z" fill="#000000" />
+                <!-- Small circles (eyes) -->
+                <!-- Black eye inside upper White bulge -->
+                <circle cx="50" cy="27.5" r="4.5" fill="#000000" />
+                <!-- White eye inside lower Black bulge -->
+                <circle cx="50" cy="72.5" r="4.5" fill="#ffffff" />
             </svg>
         </div>
 
