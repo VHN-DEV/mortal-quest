@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-DLtgt8sM.js"></script>
+  <script type="module" crossorigin src="./assets/index-Ov0hW_d3.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-BCLAD2f0.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-jTwuv2cg.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -32,13 +32,127 @@
         <div class="loading-centerpiece-container">
             <div class="yinyang-glow-ring"></div>
             <svg class="yinyang-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <!-- Yin half (Dark ink) -->
-                <path d="M 50,5 A 45,45 0 0,0 50,95 A 22.5,22.5 0 0,0 50,50 A 22.5,22.5 0 0,1 50,5 Z" fill="rgba(10, 10, 12, 0.95)" stroke="rgba(79, 209, 197, 0.3)" stroke-width="0.5" />
-                <!-- Yang half (Glowing cyan) -->
-                <path d="M 50,5 A 45,45 0 0,1 50,95 A 22.5,22.5 0 0,0 50,50 A 22.5,22.5 0 0,1 50,5 Z" fill="#4fd1c5" opacity="0.85" />
-                <!-- Small circles -->
-                <circle cx="50" cy="27.5" r="4.5" fill="#4fd1c5" />
-                <circle cx="50" cy="72.5" r="4.5" fill="rgba(10, 10, 12, 0.95)" />
+                <defs>
+                    <!-- Ink Wash Gradient for the Yin path (faded/uneven brush ink) -->
+                    <linearGradient id="ink-wash-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#050505" stop-opacity="0.98" />
+                        <stop offset="40%" stop-color="#141414" stop-opacity="0.95" />
+                        <stop offset="75%" stop-color="#222222" stop-opacity="0.90" />
+                        <stop offset="100%" stop-color="#0a0a0a" stop-opacity="0.97" />
+                    </linearGradient>
+                    
+                    <!-- Ink Bleed & Calligraphy Stroke Filter -->
+                    <filter id="ink-bleed" x="-15%" y="-15%" width="130%" height="130%">
+                        <!-- Generate high-fidelity turbulence for paper texture absorption -->
+                        <feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="4" result="noise" />
+                        <!-- Displace the edges of vector elements to simulate organic brush hairs and bleed -->
+                        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.8" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+                        <!-- Apply a very subtle blur to simulate water bleeding into rice paper fibers -->
+                        <feGaussianBlur in="displaced" stdDeviation="0.45" result="bleed" />
+                        <!-- Combine with a faint copy of the source for perfect core visibility -->
+                        <feMerge>
+                            <feMergeNode in="bleed" />
+                            <feMergeNode in="SourceGraphic" opacity="0.15" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <!-- Wrap all elements in a group with the ink-bleed filter for a calligraphic style -->
+                <g filter="url(#ink-bleed)">
+                    <!-- Outer Bagua Trigrams (Tiên Thiên Bát Quái) in soft calligraphic ivory/white -->
+                    <!-- 1. Càn (0° - Top): 3 Solid -->
+                    <g transform="rotate(0, 50, 50)">
+                        <rect x="43" y="15" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="43" y="11" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="43" y="7" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                    </g>
+                    <!-- 2. Tốn (45°): Inner Broken, Middle Solid, Outer Solid -->
+                    <g transform="rotate(45, 50, 50)">
+                        <!-- Inner Broken -->
+                        <rect x="43" y="15" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="15" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Middle Solid -->
+                        <rect x="43" y="11" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Outer Solid -->
+                        <rect x="43" y="7" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                    </g>
+                    <!-- 3. Khảm (90°): Inner Broken, Middle Solid, Outer Broken -->
+                    <g transform="rotate(90, 50, 50)">
+                        <!-- Inner Broken -->
+                        <rect x="43" y="15" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="15" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Middle Solid -->
+                        <rect x="43" y="11" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Outer Broken -->
+                        <rect x="43" y="7" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="7" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                    </g>
+                    <!-- 4. Cấn (135°): Inner Broken, Middle Broken, Outer Solid -->
+                    <g transform="rotate(135, 50, 50)">
+                        <!-- Inner Broken -->
+                        <rect x="43" y="15" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="15" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Middle Broken -->
+                        <rect x="43" y="11" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="11" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Outer Solid -->
+                        <rect x="43" y="7" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                    </g>
+                    <!-- 5. Khôn (180°): 3 Broken -->
+                    <g transform="rotate(180, 50, 50)">
+                        <!-- Inner Broken -->
+                        <rect x="43" y="15" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="15" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Middle Broken -->
+                        <rect x="43" y="11" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="11" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Outer Broken -->
+                        <rect x="43" y="7" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="7" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                    </g>
+                    <!-- 6. Chấn (225°): Inner Solid, Middle Broken, Outer Broken -->
+                    <g transform="rotate(225, 50, 50)">
+                        <!-- Inner Solid -->
+                        <rect x="43" y="15" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Middle Broken -->
+                        <rect x="43" y="11" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="11" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Outer Broken -->
+                        <rect x="43" y="7" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="7" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                    </g>
+                    <!-- 7. Ly (270°): Inner Solid, Middle Broken, Outer Solid -->
+                    <g transform="rotate(270, 50, 50)">
+                        <!-- Inner Solid -->
+                        <rect x="43" y="15" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Middle Broken -->
+                        <rect x="43" y="11" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="11" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Outer Solid -->
+                        <rect x="43" y="7" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                    </g>
+                    <!-- 8. Đoài (315°): Inner Solid, Middle Solid, Outer Broken -->
+                    <g transform="rotate(315, 50, 50)">
+                        <!-- Inner Solid -->
+                        <rect x="43" y="15" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Middle Solid -->
+                        <rect x="43" y="11" width="14" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <!-- Outer Broken -->
+                        <rect x="43" y="7" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                        <rect x="51.25" y="7" width="5.75" height="1.2" rx="0.4" fill="#f6f5f0" />
+                    </g>
+
+                    <!-- Inner Yin-Yang (Tai Chi) -->
+                    <!-- Base Yang half: soft antique rice paper white -->
+                    <circle cx="50" cy="50" r="28" fill="#fcfaf2" />
+                    <!-- Yin half: calligraphic ink wash gradient -->
+                    <path d="M 50,22 A 28,28 0 0,0 50,78 A 14,14 0 0,0 50,50 A 14,14 0 0,1 50,22 Z" fill="url(#ink-wash-grad)" />
+                    <!-- Small circles (eyes): organic ink droplets -->
+                    <!-- Black eye inside upper White bulge -->
+                    <circle cx="50" cy="36" r="3.2" fill="#080808" />
+                    <!-- White eye inside lower Black bulge -->
+                    <circle cx="50" cy="64" r="3.2" fill="#fcfaf2" />
+                </g>
             </svg>
         </div>
 
@@ -745,6 +859,17 @@
                         </div>
 
                         <div class="flex flex-col space-y-4 w-full px-4">
+                            <!-- Element Qi Grid Container for Cultivation Screen -->
+                            <div class="p-3 border border-white/5 rounded-xl bg-black/40 space-y-2">
+                                <div class="flex justify-between items-center text-[7.5px] uppercase tracking-wider font-bold mb-1">
+                                    <span class="text-qi-blue">Tỷ Lệ Linh Khí Địa Phương</span>
+                                    <span id="main-purity-tag" class="text-gray-500 text-[7px] leading-none">LINH KHÍ</span>
+                                </div>
+                                <div id="main-element-qi-grid" class="grid grid-cols-5 gap-1.5">
+                                    <!-- Element Qi values dynamically rendered here -->
+                                </div>
+                            </div>
+
                             <!-- Path Selectors (Sleek Tabs) -->
                             <div
                                 class="flex space-x-1 bg-black/40 p-1 rounded-xl border border-white/5 backdrop-blur-sm">
@@ -989,16 +1114,25 @@
                                         <span id="char-destiny-rating"
                                             class="text-white font-bold italic text-right ml-2">Phàm mệnh</span>
                                     </div>
-                                    <div class="flex justify-between items-start text-[10px] whitespace-nowrap">
-                                        <span class="text-gray-400">Linh Căn:</span>
-                                        <div id="char-root" class="font-bold text-right ml-2"></div>
+                                    <!-- Linh Căn Section -->
+                                    <div class="border-t border-white/5 pt-2 mt-2 space-y-1.5">
+                                        <div class="flex justify-between items-start text-[10px]">
+                                            <span class="text-gray-400 whitespace-nowrap mr-2">Linh Căn:</span>
+                                            <span id="char-root-name" class="font-bold text-right ml-2 min-w-0"></span>
+                                        </div>
+                                        <div id="char-root-elements" class="flex flex-wrap justify-end gap-1 max-w-full leading-normal"></div>
+                                        <div id="char-root-purity" class="text-right text-[7.5px] opacity-60"></div>
                                     </div>
-                                    <div class="flex justify-between items-center text-[10px] whitespace-nowrap">
-                                        <span class="text-gray-400">Thể Chất:</span>
+
+                                    <!-- Thể Chất Section -->
+                                    <div class="border-t border-white/5 pt-2 flex justify-between items-center text-[10px]">
+                                        <span class="text-gray-400 whitespace-nowrap mr-2">Thể Chất:</span>
                                         <span id="char-physique"
-                                            class="font-bold text-qi-purple text-right ml-2"></span>
+                                            class="font-bold text-qi-purple text-right ml-2 min-w-0 flex-grow leading-tight"></span>
                                     </div>
-                                    <div class="flex justify-between items-center text-[10px] whitespace-nowrap">
+
+                                    <!-- Cơ Duyên Section -->
+                                    <div class="border-t border-white/5 pt-2 flex justify-between items-center text-[10px] whitespace-nowrap">
                                         <span class="text-gray-400">Cơ Duyên:</span>
                                         <span id="char-luck" class="font-mono text-right ml-2"></span>
                                     </div>
@@ -1985,6 +2119,17 @@
                     <div class="dashboard-stat">
                         <span class="dashboard-stat-label">Thời Gian</span>
                         <span id="env-timerate" class="dashboard-stat-value text-cultivation-gold">1.0x</span>
+                    </div>
+                </div>
+
+                <!-- Element Qi Distribution Grid -->
+                <div class="p-3 border border-white/5 rounded-xl bg-black/40 space-y-2">
+                    <div class="flex justify-between items-center text-[7.5px] uppercase tracking-wider font-bold mb-1">
+                        <span class="text-qi-blue">Tỷ Lệ Linh Khí Địa Phương</span>
+                        <span id="env-purity-tag" class="text-gray-500 text-[7px] leading-none">LINH KHÍ</span>
+                    </div>
+                    <div id="env-element-qi-grid" class="grid grid-cols-5 gap-1.5">
+                        <!-- Element Qi values dynamically rendered here -->
                     </div>
                 </div>
 
