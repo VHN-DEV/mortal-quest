@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-CF7n0XdH.js"></script>
+  <script type="module" crossorigin src="./assets/index-D0XHtZP6.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-DQm7LDH8.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-WGUA3yYm.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -3756,7 +3756,7 @@
                     <div class="battle-aura scale-50" style="--aura-color: #ef4444;"></div>
                     <div class="relative flex-none">
                         <div class="portrait-glow opacity-30" style="--aura-color: #ef4444;"></div>
-                        <div class="w-9 h-9 rounded-md overflow-hidden border border-red-900/20 shadow-md">
+                        <div id="enemy-portrait-btn" class="w-9 h-9 rounded-md overflow-hidden border border-red-900/20 shadow-md cursor-pointer hover:border-red-500/50 transition-all" title="Click để xem chi tiết chỉ số">
                             <img id="enemy-img" src="" class="w-full h-full object-cover">
                         </div>
                         <div id="enemy-status-effects" class="absolute -right-1 -bottom-1 flex space-x-0.5"></div>
@@ -3952,6 +3952,74 @@
                 <!-- Hidden List for Secrets -->
                 <div id="battle-secret-list"
                     class="hidden absolute bottom-full left-0 right-0 mb-2 p-4 bg-black/95 backdrop-blur-2xl border border-white/10 rounded-2xl z-50 space-y-2 max-h-48 overflow-y-auto custom-scroll shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enemy Stats Modal -->
+    <div id="battle-enemy-stats-modal" class="hidden absolute inset-0 bg-black/85 backdrop-blur-md z-[1000] flex flex-col justify-center items-center p-4">
+        <div class="bg-qi-ink/95 border border-red-500/20 rounded-2xl w-full max-w-xs overflow-hidden flex flex-col shadow-2xl animate-scale-up">
+            <!-- Modal Header -->
+            <div class="px-4 py-3 bg-red-950/20 border-b border-white/5 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400 text-xs"><i class="ph ph-shield-warning animate-pulse"></i></span>
+                    <span class="text-[10px] font-ancient text-red-300 font-bold uppercase tracking-wider">Thông Tin Đối Thủ</span>
+                </div>
+                <button id="btn-close-enemy-stats" class="text-gray-400 hover:text-white transition-colors"><i class="ph ph-x text-sm"></i></button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-4 space-y-4 overflow-y-auto max-h-[70vh] custom-scroll text-[10px]">
+                <!-- Profile Card -->
+                <div class="flex items-center space-x-3 bg-white/[0.02] border border-white/5 p-2 rounded-xl">
+                    <div class="w-12 h-12 rounded-lg overflow-hidden border border-red-950 flex-shrink-0">
+                        <img id="enemy-stats-img" src="" class="w-full h-full object-cover">
+                    </div>
+                    <div class="min-w-0">
+                        <h3 id="enemy-stats-name" class="font-ancient font-bold text-red-400 text-[11px] truncate">Kẻ Địch</h3>
+                        <p id="enemy-stats-race" class="text-[8px] text-gray-500 uppercase tracking-wider mt-0.5">Yêu Tộc</p>
+                    </div>
+                </div>
+
+                <!-- Basic Stats Grid -->
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex items-center justify-between">
+                        <span class="text-gray-500 text-[9px]">Sinh Mệnh (HP)</span>
+                        <span id="enemy-stats-hp" class="font-bold text-red-400 font-mono text-[9px]">100/100</span>
+                    </div>
+                    <div class="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex items-center justify-between">
+                        <span class="text-gray-500 text-[9px]">Linh Lực (Mana)</span>
+                        <span id="enemy-stats-mana" class="font-bold text-qi-blue font-mono text-[9px]">50/50</span>
+                    </div>
+                    <div class="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex items-center justify-between">
+                        <span class="text-gray-500 text-[9px]">Tấn Công (ATK)</span>
+                        <span id="enemy-stats-atk" class="font-bold text-white font-mono text-[9px]">10</span>
+                    </div>
+                    <div class="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex items-center justify-between">
+                        <span class="text-gray-500 text-[9px]">Phòng Ngự (DEF)</span>
+                        <span id="enemy-stats-def" class="font-bold text-qi-jade font-mono text-[9px]">5</span>
+                    </div>
+                    <div class="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex items-center justify-between">
+                        <span class="text-gray-500 text-[9px]">Tốc Độ (SPD)</span>
+                        <span id="enemy-stats-spd" class="font-bold text-qi-purple font-mono text-[9px]">12</span>
+                    </div>
+                    <div class="bg-white/[0.01] border border-white/5 p-2 rounded-xl flex items-center justify-between">
+                        <span class="text-gray-500 text-[9px]">Thần Thức (Sense)</span>
+                        <span id="enemy-stats-sense" class="font-bold text-cultivation-gold font-mono text-[9px]">10</span>
+                    </div>
+                </div>
+
+                <!-- Advanced Stats Divider -->
+                <div class="relative flex py-1 items-center">
+                    <div class="flex-grow border-t border-white/5"></div>
+                    <span class="flex-shrink mx-2 text-[8px] text-gray-500 uppercase tracking-widest font-ancient">Chỉ Số Đặc Biệt</span>
+                    <div class="flex-grow border-t border-white/5"></div>
+                </div>
+
+                <!-- Advanced Stats Grid -->
+                <div id="enemy-advanced-stats-container" class="space-y-1.5">
+                    <!-- Advanced stats will be dynamically populated here -->
                 </div>
             </div>
         </div>

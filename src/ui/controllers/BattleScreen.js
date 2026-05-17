@@ -25,6 +25,9 @@ export class BattleScreen {
         this.enemyRealm = document.getElementById('battle-enemy-realm');
         this.enemyImg = document.getElementById('enemy-img');
         this.enemyStatusContainer = document.getElementById('enemy-status-effects');
+        this.enemyPortraitBtn = document.getElementById('enemy-portrait-btn');
+        this.enemyStatsModal = document.getElementById('battle-enemy-stats-modal');
+        this.btnCloseEnemyStats = document.getElementById('btn-close-enemy-stats');
         
         // Player elements
         this.playerName = document.getElementById('battle-player-name');
@@ -90,6 +93,14 @@ export class BattleScreen {
         if (this.btnInsect) this.btnInsect.onclick = () => this.handleAction('insect');
         if (this.btnEscape) this.btnEscape.onclick = () => this.handleAction('escape');
         if (this.btnSecret) this.btnSecret.onclick = () => this.toggleSecretList();
+
+        // Enemy Stats Modal events
+        if (this.enemyPortraitBtn) {
+            this.enemyPortraitBtn.onclick = () => this.showEnemyStats();
+        }
+        if (this.btnCloseEnemyStats) {
+            this.btnCloseEnemyStats.onclick = () => this.hideEnemyStats();
+        }
     }
 
     switchTab(tabId) {
@@ -449,7 +460,104 @@ export class BattleScreen {
         if (this.secretList) this.secretList.classList.add('hidden');
     }
 
+    showEnemyStats() {
+        const combat = state.currentCombat;
+        if (!combat || !combat.enemy) return;
+
+        const enemy = combat.enemy;
+        const imgEl = document.getElementById('enemy-stats-img');
+        const nameEl = document.getElementById('enemy-stats-name');
+        const raceEl = document.getElementById('enemy-stats-race');
+        
+        if (imgEl) imgEl.src = enemy.image || ASSETS.enemies.wolf;
+        if (nameEl) nameEl.textContent = enemy.name;
+        
+        const races = {
+            'HUMAN': 'Nhân Tộc',
+            'SPIRIT_BEAST': 'Yêu Tộc',
+            'DEMON': 'Ma Tộc',
+            'DRAGON': 'Long Tộc',
+            'ZOMBIE': 'Thi Tộc',
+            'GHOST': 'Quỷ Tộc'
+        };
+        if (raceEl) raceEl.textContent = races[enemy.race] || enemy.race;
+        
+        const hpEl = document.getElementById('enemy-stats-hp');
+        const manaEl = document.getElementById('enemy-stats-mana');
+        const atkEl = document.getElementById('enemy-stats-atk');
+        const defEl = document.getElementById('enemy-stats-def');
+        const spdEl = document.getElementById('enemy-stats-spd');
+        const senseEl = document.getElementById('enemy-stats-sense');
+
+        if (hpEl) hpEl.textContent = `${Math.floor(enemy.hp)}/${Math.floor(enemy.maxHp)}`;
+        if (manaEl) manaEl.textContent = `${Math.floor(enemy.mana)}/${Math.floor(enemy.maxMana)}`;
+        if (atkEl) atkEl.textContent = Math.floor(enemy.atk);
+        if (defEl) defEl.textContent = Math.floor(enemy.def);
+        if (spdEl) spdEl.textContent = Math.floor(enemy.spd);
+        if (senseEl) senseEl.textContent = Math.floor(enemy.perception);
+
+        // Populate advanced stats
+        const advContainer = document.getElementById('enemy-advanced-stats-container');
+        if (advContainer) {
+            const advStats = enemy.advancedStats || {};
+
+            const labels = {
+                critRate: { label: 'Tỷ lệ bạo kích', val: (v) => `${Math.round(v * 100)}%`, color: 'text-red-400' },
+                critDmg: { label: 'Sát thương bạo kích', val: (v) => `${v.toFixed(1)}x`, color: 'text-red-500' },
+                pierce: { label: 'Xuyên giáp', val: (v) => `${Math.round(v * 100)}%`, color: 'text-yellow-400' },
+                damageReduction: { label: 'Giảm sát thương', val: (v) => `${Math.round(v * 100)}%`, color: 'text-qi-jade' },
+                lifeSteal: { label: 'Hút máu', val: (v) => `${Math.round(v * 100)}%`, color: 'text-red-600' }
+            };
+
+            let advHtml = '';
+            Object.entries(labels).forEach(([key, cfg]) => {
+                const val = advStats[key] || 0;
+                if (val > 0 || key === 'critRate' || key === 'critDmg') {
+                    advHtml += `
+                        <div class="flex justify-between items-center py-1 border-b border-white/[0.02]">
+                            <span class="text-gray-500 text-[9px]">${cfg.label}</span>
+                            <span class="font-bold ${cfg.color} font-mono text-[9px]">${cfg.val(val)}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            // Element multipliers
+            const elementLabels = {
+                fireDmg: { label: 'Hỏa Sát', color: 'text-orange-400' },
+                waterDmg: { label: 'Thủy Sát', color: 'text-blue-400' },
+                thunderDmg: { label: 'Lôi Sát', color: 'text-purple-400' },
+                poisonDmg: { label: 'Độc Sát', color: 'text-green-400' }
+            };
+            Object.entries(elementLabels).forEach(([key, cfg]) => {
+                const val = advStats[key] || 1.0;
+                if (val > 1.0) {
+                    advHtml += `
+                        <div class="flex justify-between items-center py-1 border-b border-white/[0.02]">
+                            <span class="text-gray-500 text-[9px]">${cfg.label}</span>
+                            <span class="font-bold ${cfg.color} font-mono text-[9px]">+${Math.round((val - 1) * 100)}%</span>
+                        </div>
+                    `;
+                }
+            });
+
+            advContainer.innerHTML = advHtml || '<p class="text-center text-gray-600 text-[8px] py-2">Không có thuộc tính đặc biệt</p>';
+        }
+
+        if (this.enemyStatsModal) {
+            this.enemyStatsModal.classList.remove('hidden');
+        }
+    }
+
+    hideEnemyStats() {
+        if (this.enemyStatsModal) {
+            this.enemyStatsModal.classList.add('hidden');
+        }
+    }
+
     close() {
+        // Also ensure stats modal is hidden when combat closes
+        this.hideEnemyStats();
         state.ui.toggleOverlay(this.overlay, false);
     }
 }

@@ -410,7 +410,9 @@ export class CombatEngine {
         const pierce = this.player.advancedStats.pierce || 0;
         const effectiveEnemyDef = Math.floor(this.enemy.def * (1 - pierce));
         
-        let damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression * racialBonus * envBonus));
+        const eDr = this.enemy.advancedStats?.damageReduction || 0;
+        const eAllRes = this.enemy.advancedStats?.allRes || 0;
+        let damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression * racialBonus * envBonus * (1 - eDr) * (1 - eAllRes)));
 
         // Divine Sense (Perception) Accuracy/Crit
         const pSense = this.player.advancedStats?.perception || 10;
@@ -870,23 +872,42 @@ export class CombatEngine {
             return;
         }
 
+        // Apply Enemy Armor Penetration (pierce)
+        const ePierce = this.enemy.advancedStats?.pierce || 0;
+        const effectivePlayerDef = Math.floor(this.player.def * (1 - ePierce));
+
         const dr = this.player.advancedStats.damageReduction || 0;
         const allRes = this.player.advancedStats.allRes || 0;
-        let damage = Math.max(1, (this.enemy.atk - Math.floor(this.player.def / 2)) * suppression * (1 - dr) * (1 - allRes));
-        let attackMsg = `${this.enemy.name} lao đến tấn công, gây ${Math.floor(damage)} sát thương.`;
+        let damage = Math.max(1, (this.enemy.atk - Math.floor(effectivePlayerDef / 2)) * suppression * (1 - dr) * (1 - allRes));
 
+        // Calculate Enemy Critical Strike
+        let critRate = this.enemy.advancedStats?.critRate || 0.05;
+        critRate += (eSense - pSense) * 0.002;
+        const crit = Math.random() < critRate;
+        const critDmg = this.enemy.advancedStats?.critDmg || 1.5;
+
+        let attackMsg = "";
+        if (crit) {
+            damage = Math.floor(damage * critDmg);
+            attackMsg = `<span class="text-red-500 font-bold">ĐỐI PHƯƠNG BẠO KÍCH!</span> ${this.enemy.name} đánh trúng hiểm yếu, gây ${Math.floor(damage)} sát thương!`;
+        } else {
+            attackMsg = `${this.enemy.name} lao đến tấn công, gây ${Math.floor(damage)} sát thương.`;
+        }
+
+        // Archetypes adjustments
         if (this.enemyArchetype === 'ASSASSIN' && Math.random() < 0.35) {
             const truePart = Math.floor(this.enemy.atk * 0.4);
-            const normalPart = Math.max(1, this.enemy.atk - Math.floor(this.player.def * 0.3));
-            damage = (truePart + normalPart) * suppression;
-            attackMsg = `${this.enemy.name} biến ảo khôn lường, xuyên qua sơ hở gây ${Math.floor(damage)} sát thương!`;
+            const normalPart = Math.max(1, this.enemy.atk - Math.floor(effectivePlayerDef * 0.3));
+            damage = (truePart + normalPart) * suppression * (1 - dr) * (1 - allRes);
+            if (crit) damage = Math.floor(damage * critDmg);
+            attackMsg = `${this.enemy.name} biến ảo khôn lường, xuyên qua sơ hở gây <span class="text-red-400 font-bold">${Math.floor(damage)}</span> sát thương!`;
             if (Math.random() < 0.2) {
                 this.status.player.stun = Math.max(this.status.player.stun, 1);
                 this.addLog(`Ngươi bị trấn áp, rơi vào trạng thái <span class="text-yellow-500">CHOÁNG</span>!`);
             }
         } else if (this.enemyArchetype === 'BERSERKER' && Math.random() < 0.3) {
             damage = Math.floor(damage * 1.5);
-            attackMsg = `${this.enemy.name} cuồng bạo oanh kích, gây ${Math.floor(damage)} sát thương cực lớn!`;
+            attackMsg = `${this.enemy.name} cuồng bạo oanh kích, gây <span class="text-red-500 font-bold">${Math.floor(damage)}</span> sát thương cực lớn!`;
         } else if (this.enemyArchetype === 'TANK' && Math.random() < 0.3) {
             this.enemy.def = Math.floor(this.enemy.def * 1.2);
             this.addLog(`${this.enemy.name} vận kình khí, phòng ngự tăng vọt!`);
@@ -898,9 +919,19 @@ export class CombatEngine {
             this.playerDefending = false;
         }
 
+        // Apply Enemy Lifesteal (lifeSteal)
+        const eLifeSteal = this.enemy.advancedStats?.lifeSteal || 0;
+        if (eLifeSteal > 0 && damage > 0) {
+            const healAmount = Math.floor(damage * eLifeSteal);
+            if (healAmount > 0) {
+                this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + healAmount);
+                this.addLog(`${this.enemy.name} kích hoạt <span class="text-red-400">HÚT MÁU</span>, hồi phục ${healAmount} sinh mệnh!`);
+            }
+        }
+
         this.player.hp -= Math.floor(damage);
         this.addLog(attackMsg);
-        this.onUpdate('damage', { target: 'player', value: Math.floor(damage), crit: false });
+        this.onUpdate('damage', { target: 'player', value: Math.floor(damage), crit });
 
         if (this.player.hp <= 0) {
             this.player.hp = 0;

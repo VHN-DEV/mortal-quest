@@ -27,31 +27,77 @@ export class Enemy {
         const baseMultiplier = Math.pow(1.4, this.realmId - 1) * this.statMult;
         const variance = 0.9 + Math.random() * 0.2;
         
+        // Keep HP & Mana percentage
+        const hpPercent = this.maxHp ? (this.hp / this.maxHp) : 1.0;
+        const manaPercent = this.maxMana ? (this.mana / this.maxMana) : 1.0;
+
         this.maxHp = Math.floor(100 * baseMultiplier * variance * raceMults.hp);
-        this.hp = this.maxHp;
         this.atk = Math.floor(10 * baseMultiplier * variance * raceMults.atk);
         this.def = Math.floor(5 * baseMultiplier * variance * raceMults.def);
         this.spd = Math.floor((10 + (this.realmId * 1.5)) * variance * raceMults.spd);
         
         this.maxMana = Math.floor(50 * baseMultiplier);
-        this.mana = this.maxMana;
         this.perception = Math.floor(5 + (this.realmId * 1.8) * variance);
 
-        // Apply equipment bonuses
-        if (this.equipment.weapon) {
-            this.atk += (this.equipment.weapon.stats?.atk || 0);
-            this.spd += (this.equipment.weapon.stats?.spd || 0);
+        // Initialize Advanced Stats
+        this.advancedStats = {
+            pierce: 0,
+            soulPierce: 0,
+            critRate: 0.05, 
+            critDmg: 1.5,   
+            fireDmg: 1.0,   
+            waterDmg: 1.0,
+            thunderDmg: 1.0,
+            poisonDmg: 1.0,
+            lifeSteal: 0,
+            soulRepress: 0,
+            damageReduction: 0,
+            allRes: 0,
+            techniqueMastery: 1.0
+        };
+
+        // Base advanced stats scaled by cultivation realm
+        this.advancedStats.critRate += this.realmId * 0.01; // 1% crit rate per realm level
+        this.advancedStats.critDmg += this.realmId * 0.02; // +2% crit damage per realm level
+        this.advancedStats.pierce += this.realmId * 0.008; // Xuyên giáp tăng dần theo cảnh giới
+        this.advancedStats.damageReduction = 1 - (1 / (1 + (this.realmId * 0.025))); // Giảm sát thương tăng theo cảnh giới
+
+        // Racial advanced stats adjustments
+        if (this.race === 'DEMON') {
+            this.advancedStats.lifeSteal += 0.05 + this.realmId * 0.005; // Ma tộc có sẵn khả năng hút máu
+        } else if (this.race === 'DRAGON') {
+            this.advancedStats.damageReduction += 0.1; // Long tộc mình đồng da sắt
+            this.advancedStats.thunderDmg += 0.2; // Lôi long bẩm sinh điều khiển sấm sét
+        } else if (this.race === 'SPIRIT_BEAST') {
+            this.advancedStats.critRate += 0.03; // Yêu thú dã tính có tỷ lệ bạo kích cao hơn
+        } else if (this.race === 'GHOST') {
+            this.advancedStats.pierce += 0.05; // Quỷ hồn công kích vô hình dễ xuyên phòng ngự
         }
-        if (this.equipment.armor) {
-            this.def += (this.equipment.armor.stats?.def || 0);
-            this.maxHp += (this.equipment.armor.stats?.hp || 0);
-            if (this.hp > this.maxHp) this.hp = this.maxHp;
-        }
-        if (this.equipment.artifact) {
-            this.atk += (this.equipment.artifact.stats?.atk || 0);
-            this.def += (this.equipment.artifact.stats?.def || 0);
-            this.maxMana += (this.equipment.artifact.stats?.mana || 0);
-        }
+
+        // Apply equipment bonuses dynamically (generic loop over stats)
+        const equippedItems = [this.equipment.weapon, this.equipment.armor, this.equipment.artifact].filter(Boolean);
+        equippedItems.forEach(item => {
+            if (!item.stats) return;
+            
+            Object.entries(item.stats).forEach(([k, v]) => {
+                if (k === 'atk') this.atk += v;
+                else if (k === 'def') this.def += v;
+                else if (k === 'spd') this.spd += v;
+                else if (k === 'hp') this.maxHp += v;
+                else if (k === 'mana') this.maxMana += v;
+                else if (this.advancedStats.hasOwnProperty(k)) {
+                    if (['fireDmg', 'waterDmg', 'thunderDmg', 'poisonDmg', 'qiAbsorb'].includes(k)) {
+                        this.advancedStats[k] *= (1 + v);
+                    } else {
+                        this.advancedStats[k] += v;
+                    }
+                }
+            });
+        });
+
+        // Set final HP and Mana keeping percentage
+        this.hp = Math.round(this.maxHp * hpPercent);
+        this.mana = Math.round(this.maxMana * manaPercent);
     }
 }
 
