@@ -141,10 +141,10 @@ export const WORLDS = {
                 description: 'Thương hội liên giới, nơi có mọi thứ mà tu sĩ cần.',
                 resources: ['Đan Dược', 'Pháp Bảo'],
                 eventProbs: { combat: 0.0, loot: 0.0, npc: 0.8, empty: 0.2 },
-                regionId: 'trung_chau',
-                regionName: 'Trung Châu Thánh Địa',
-                subRegionId: 'thien_dao_thanh',
-                subRegionName: 'Thiên Đạo Thành'
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam Đại Lục',
+                subRegionId: 'viet_quoc',
+                subRegionName: 'Việt Quốc'
             },
             {
                 id: 'linh_bao_lau',
@@ -155,10 +155,10 @@ export const WORLDS = {
                 description: 'Lâu đài chứa đựng vô số linh bảo, cạnh tranh khốc liệt với Vạn Bảo Các.',
                 resources: ['Pháp Bảo Hiếm', 'Vật Phẩm Quý'],
                 eventProbs: { combat: 0.0, loot: 0.0, npc: 0.9, empty: 0.1 },
-                regionId: 'trung_chau',
-                regionName: 'Trung Châu Thánh Địa',
-                subRegionId: 'thien_dao_thanh',
-                subRegionName: 'Thiên Đạo Thành'
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam Đại Lục',
+                subRegionId: 'viet_quoc',
+                subRegionName: 'Việt Quốc'
             },
             {
                 id: 'cong_hoi_luyen_duoc',
@@ -170,10 +170,10 @@ export const WORLDS = {
                 resources: ['Đan Phương', 'Linh Thảo'],
                 eventProbs: { combat: 0.0, loot: 0.0, npc: 0.7, empty: 0.3 },
                 special: 'guild',
-                regionId: 'trung_chau',
-                regionName: 'Trung Châu Thánh Địa',
-                subRegionId: 'thien_dao_thanh',
-                subRegionName: 'Thiên Đạo Thành'
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam Đại Lục',
+                subRegionId: 'viet_quoc',
+                subRegionName: 'Việt Quốc'
             },
             {
                 id: 'thap_van_dai_son',
