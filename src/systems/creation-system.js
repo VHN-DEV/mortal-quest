@@ -27,7 +27,7 @@ export class CreationSystem {
         this.startingLingShi = 0;
         this.startingRealmId = 0;
         this.selectedArtifact = 'none';
-        this.selectedCheatSystem = 'sign_in';
+        this.selectedCheatSystem = null;
 
         // Secondary Talents (Values from 1-100)
         this.talents = {
@@ -68,7 +68,11 @@ export class CreationSystem {
     }
 
     selectCheatSystem(systemId) {
-        this.selectedCheatSystem = systemId;
+        if (this.selectedCheatSystem === systemId) {
+            this.selectedCheatSystem = null;
+        } else {
+            this.selectedCheatSystem = systemId;
+        }
     }
 
 

@@ -822,21 +822,35 @@ window.renderCreationScreen = () => {
             .map(a => {
                 const active = sys.selectedArtifact === a.id;
                 const col = RARITY_COLOR[a.rarity] || { text: 'text-gray-400', bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.1)' };
+                
+                // Get item icon from database or default based on id
+                const itemData = getItemById(a.id);
+                const icon = itemData?.icon || (
+                    a.id.includes('binh') ? '🍶' :
+                    a.id.includes('dinh') ? '🏺' :
+                    a.id.includes('cam') ? '🎻' :
+                    a.id.includes('quan') ? '🎓' : '🔮'
+                );
+
                 return `
                     <button onclick="window.game.selectCreationArtifact('${a.id}')"
-                        class="q-card w-full ${active ? 'active' : 'border-white/10'}"
-                        style="${active ? `border-color: ${col.border}; box-shadow: 0 0 12px ${col.border};` : ''}"
+                        class="q-card text-left w-full ${active ? 'active border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.15)]' : 'text-gray-400 border-white/10'} transition-all duration-300"
                     >
                         <div class="flex justify-between items-start gap-2">
-                            <div class="q-title ${active ? col.text : ''}">${a.name}</div>
-                            <div class="q-cost" style="color: #f87171;">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-base text-red-400">${icon}</span>
+                                <div class="q-title font-ancient ${active ? 'text-red-400 font-bold' : 'text-white/80'}">${a.name}</div>
+                            </div>
+                            <div class="text-[8px] px-2 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-red-400 font-bold uppercase tracking-wider flex items-center gap-0.5">
                                 <i class="ph ph-star"></i>
                                 -${a.cost}
                             </div>
                         </div>
-                        <div class="q-desc">${a.desc}</div>
-                        <div class="q-bonus-list mt-2">
-                            <span class="q-bonus-tag" style="color: ${col.text.replace('text-', '')}; background: ${col.bg}; border-color: ${col.border}">${a.rarity}</span>
+                        <div class="q-desc mt-1.5 text-left">${a.desc}</div>
+                        <div class="q-bonus-list mt-2 flex flex-wrap gap-1">
+                            <span class="q-bonus-tag text-[8px] font-ancient" style="color: ${col.text.replace('text-', '')}; background: ${col.bg}; border-color: ${col.border}">
+                                Phẩm giai: ${a.rarity}
+                            </span>
                         </div>
                     </button>
                 `;
