@@ -7,7 +7,7 @@ import { gsap } from 'gsap';
 import { EnemyGenerator, Enemy } from './core/enemy.js';
 import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
-import { getWorlds, getLocationById, findLocationName } from './configs/map-data.js';
+import { getWorlds, getLocationById, findLocationName, DANGER_LEVELS } from './configs/map-data.js';
 import { ASSETS, preloadAssets } from './configs/asset-data.js';
 import { getRealmById, HUMAN_REALMS } from './configs/realm-data.js';
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
@@ -55,6 +55,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Khởi tạo game engine
         await game.init();
 
+        // Bind Location Detail Popup click trigger
+        const btnLocationDetail = document.getElementById('btn-show-location-detail');
+        if (btnLocationDetail) {
+            btnLocationDetail.onclick = () => {
+                if (state.currentWorldId && state.currentLocId) {
+                    showLocationDetailPopup(state.currentWorldId, state.currentLocId);
+                }
+            };
+        }
+
+        // Close Location Detail Overlay events
+        const overlayLocationDetail = document.getElementById('location-detail-overlay');
+        const btnCloseLocDetail = document.getElementById('close-location-detail-btn');
+        const btnConfirmLocDetail = document.getElementById('loc-detail-confirm-btn');
+
+        if (btnCloseLocDetail) {
+            btnCloseLocDetail.onclick = () => {
+                state.ui.toggleOverlay('location-detail-overlay', false);
+            };
+        }
+
+        if (btnConfirmLocDetail) {
+            btnConfirmLocDetail.onclick = () => {
+                state.ui.toggleOverlay('location-detail-overlay', false);
+            };
+        }
+
+        if (overlayLocationDetail) {
+            overlayLocationDetail.onclick = (e) => {
+                if (e.target === overlayLocationDetail) {
+                    state.ui.toggleOverlay('location-detail-overlay', false);
+                }
+            };
+        }
+
         // Ẩn màn hình loading với hiệu ứng GSAP premium
         if (elLoading) {
             const tl = gsap.timeline({
@@ -93,6 +128,168 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 window.refreshUI = () => game.refreshUI();
 window.switchScreen = (screenId, btn) => state.ui.switchScreen(screenId, btn);
+
+const showLocationDetailPopup = (worldId, locId) => {
+    const loc = getLocationById(worldId, locId);
+    if (!loc) return;
+
+    // Set Name & Description
+    const elName = document.getElementById('loc-detail-name');
+    const elDesc = document.getElementById('loc-detail-description');
+    if (elName) elName.textContent = loc.name;
+    if (elDesc) elDesc.textContent = loc.description || 'Vùng đất thần bí ẩn chứa linh khí thiên địa.';
+
+    // Set Image
+    const elImg = document.getElementById('loc-detail-image');
+    if (elImg) {
+        const defaultBg = ASSETS.backgrounds?.cultivation || '';
+        elImg.src = loc.image || defaultBg;
+    }
+
+    // Set Region & Sub-Region
+    const elRegion = document.getElementById('loc-detail-region');
+    const elSubRegion = document.getElementById('loc-detail-subregion');
+    if (elRegion) elRegion.textContent = loc.regionName || 'Thiên Địa';
+    if (elSubRegion) {
+        if (loc.subRegionName) {
+            elSubRegion.textContent = loc.subRegionName;
+            elSubRegion.classList.remove('hidden');
+        } else {
+            elSubRegion.classList.add('hidden');
+        }
+    }
+
+    // Set Min Realm Yêu Cầu
+    const elMinRealm = document.getElementById('loc-detail-min-realm');
+    if (elMinRealm) {
+        const realmName = getRealmById(loc.minRealm).name;
+        elMinRealm.textContent = realmName;
+        
+        // Color depending on if the player satisfies the realm
+        const satisfies = state.player.realmId >= loc.minRealm;
+        elMinRealm.className = `text-[10px] font-ancient uppercase tracking-wider block ${satisfies ? 'text-cultivation-gold' : 'text-red-500'}`;
+    }
+
+    // Set Danger Level
+    const elDanger = document.getElementById('loc-detail-danger');
+    if (elDanger) {
+        const dangerConfig = DANGER_LEVELS[loc.danger] || DANGER_LEVELS.an_toan;
+        elDanger.textContent = dangerConfig.name;
+        elDanger.style.color = dangerConfig.color;
+    }
+
+    // Set Resources Section
+    const elResourcesSection = document.getElementById('loc-detail-resources-section');
+    const elResources = document.getElementById('loc-detail-resources');
+    if (elResourcesSection && elResources) {
+        if (loc.resources && loc.resources.length > 0) {
+            elResourcesSection.classList.remove('hidden');
+            elResources.innerHTML = loc.resources.map(res => `
+                <span class="px-2.5 py-1 rounded-xl bg-white/5 border border-white/10 text-[9px] font-ancient text-gray-300 flex items-center gap-1 select-none">
+                    🌿 ${res}
+                </span>
+            `).join('');
+        } else {
+            elResourcesSection.classList.add('hidden');
+        }
+    }
+
+    // Set Energies Section
+    const elEnergiesSection = document.getElementById('loc-detail-energies-section');
+    const elEnergies = document.getElementById('loc-detail-energies');
+    if (elEnergiesSection && elEnergies) {
+        if (loc.energies && loc.energies.length > 0) {
+            elEnergiesSection.classList.remove('hidden');
+            const typeMap = {
+                'linh_khi': 'Linh Khí',
+                'ma_khi': 'Ma Khí',
+                'yeu_khi': 'Yêu Khí',
+                'kiem_khi': 'Kiếm Khí',
+                'tu_khi': 'Tử Khí',
+                'hon_khi': 'Hồn Khí',
+                'hao_nhien_chinh_khi': 'Hạo Nhiên Chính Khí',
+                'sinh_khi': 'Sinh Khí'
+            };
+            const purityMap = {
+                'TINH_THUAN': 'Tinh Thuần',
+                'CUC_PHAM': 'Cực Phẩm',
+                'TAP': 'Tạp Chất',
+                'DAO': 'Đạo Vận'
+            };
+            const purityColors = {
+                'TINH_THUAN': '#3b82f6',
+                'CUC_PHAM': '#ef4444',
+                'TAP': '#94a3b8',
+                'DAO': '#d4af37'
+            };
+
+            elEnergies.innerHTML = loc.energies.map(eng => {
+                const typeName = typeMap[eng.type] || eng.type.replace(/_/g, ' ').toUpperCase();
+                const purityName = purityMap[eng.purity] || 'Thường';
+                const purityColor = purityColors[eng.purity] || '#a855f7';
+                
+                let detailStr = `${typeName} (Nồng độ: ${eng.concentration}%)`;
+                if (eng.element) {
+                    detailStr = `${eng.element}-Thuộc Tính ${typeName} (Nồng độ: ${eng.concentration}%)`;
+                }
+
+                return `
+                    <div class="flex items-center justify-between p-2 rounded-xl bg-black/20 border border-white/5 text-[9px] select-none">
+                        <span class="text-white font-medium">${detailStr}</span>
+                        <span class="px-2 py-0.5 rounded text-[8px] font-ancient font-semibold tracking-wider" style="background-color: ${purityColor}15; border: 1px solid ${purityColor}30; color: ${purityColor}">
+                            ${purityName}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            elEnergiesSection.classList.add('hidden');
+        }
+    }
+
+    // Set Elemental Qi (Ngũ Hành) Grid
+    const elElementQiSection = document.getElementById('loc-detail-element-qi-section');
+    const elElementQi = document.getElementById('loc-detail-element-qi');
+    if (elElementQiSection && elElementQi) {
+        const defaultQi = {
+            'Kim': 15, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 15,
+            'Phong': 5, 'Lôi': 5, 'Băng': 5, 'Quang': 5, 'Ám': 5
+        };
+        const elementQi = loc.elementQi || defaultQi;
+        
+        const ELEMENT_COLORS = {
+            'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
+            'Phong': '#94a3b8', 'Lôi': '#fbbf24', 'Băng': '#60a5fa', 'Quang': '#fffbeb', 'Ám': '#a855f7'
+        };
+        const ELEMENT_ICONS = {
+            'Kim': '⚔️', 'Mộc': '🌿', 'Thủy': '💧', 'Hỏa': '🔥', 'Thổ': '⛰️',
+            'Phong': '🌪️', 'Lôi': '⚡', 'Băng': '❄️', 'Quang': '☀️', 'Ám': '🌙'
+        };
+        
+        const elements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ', 'Phong', 'Lôi', 'Băng', 'Quang', 'Ám'];
+        elElementQi.innerHTML = elements.map(el => {
+            const pct = elementQi[el] || 0;
+            const color = ELEMENT_COLORS[el];
+            const icon = ELEMENT_ICONS[el];
+            const active = pct > 0;
+
+            return `
+                <div class="flex items-center justify-between p-1.5 rounded-lg border bg-black/10 transition-all select-none"
+                    style="border-color: ${active ? color + '20' : 'rgba(255,255,255,0.02)'}; opacity: ${active ? '1' : '0.25'}">
+                    <span class="flex items-center space-x-1">
+                        <span class="text-xs" style="color: ${color}">${icon}</span>
+                        <span class="text-[8px] font-ancient font-semibold text-gray-400">${el}</span>
+                    </span>
+                    <span class="text-[9px] font-mono font-bold" style="color: ${active ? color : '#6b7280'}">${pct}%</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Toggle Overlay using state.ui
+    state.ui.toggleOverlay('location-detail-overlay', true);
+};
+window.showLocationDetailPopup = showLocationDetailPopup;
 
 // --- RE-IMPLEMENTING MISSING LOGIC (TEMPORARY) ---
 // Một số logic phức tạp chưa được tách sang Screen sẽ nằm ở đây hoặc SystemsScreen.
