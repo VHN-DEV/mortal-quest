@@ -3,6 +3,7 @@ import { getSectById } from '../../configs/sect-data.js';
 import { getTechniqueById, MASTERY_LEVELS } from '../../configs/technique-data.js';
 import { getPhysiqueById, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../../configs/physique-data.js';
 import { RACE_DATA } from '../../configs/realm-data.js';
+import { TITLES } from '../../configs/fate-data.js';
 
 /**
  * Quản lý giao diện chỉ số nhân vật, cảnh giới và các thông tin liên quan.
@@ -160,8 +161,9 @@ export class CharacterScreen {
         }
         
         if (this.elCharTitle) {
-            this.elCharTitle.textContent = state.player.fate?.activeTitleId || "Vô Danh";
-            // If you have a TITLE_DATA mapping, you could use that for names
+            const activeTitleId = state.player.fate?.activeTitleId;
+            const title = TITLES.find(t => t.id === activeTitleId);
+            this.elCharTitle.textContent = title ? title.name : "Vô Danh";
         }
         
         if (this.elCharDestinyRating) {

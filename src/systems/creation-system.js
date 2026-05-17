@@ -320,6 +320,12 @@ export class CreationSystem {
         origin.resources.items.forEach(itemId => player.inventory.addItem(itemId, 1));
         if (origin.resources.karma) player.karma = origin.resources.karma;
 
+        // Apply starting title if defined in origin
+        if (origin.startingTitle) {
+            player.unlockTitle(origin.startingTitle);
+            player.equipTitle(origin.startingTitle);
+        }
+
         // Apply Traits
         this.selectedTraits.forEach(traitId => {
             const trait = CREATION_TRAITS[traitId];

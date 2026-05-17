@@ -15,6 +15,7 @@ import { SEEDS } from './configs/garden-data.js';
 import { SECTS, getSectById } from './configs/sect-data.js';
 import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS } from './configs/creation-data.js';
 import { PHYSIQUES } from './configs/physique-data.js';
+import { TITLES } from './configs/fate-data.js';
 import { NPCScreen } from './ui/screens/NPCScreen.js';
 
 window.npcScreen = new NPCScreen();
@@ -312,6 +313,11 @@ const formatOriginResources = (origin) => {
             return item ? item.name : id;
         });
         lines.push(`Vật phẩm: ${itemNames.join(', ')}`);
+    }
+
+    if (origin?.startingTitle) {
+        const title = TITLES.find(t => t.id === origin.startingTitle);
+        if (title) lines.push(`Danh hiệu: [${title.name}]`);
     }
 
     return lines.join(' · ');

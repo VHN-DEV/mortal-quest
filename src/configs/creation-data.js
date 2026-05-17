@@ -232,7 +232,43 @@ export const CREATION_ORIGINS = {
     'gia_toc': { id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 40, desc: 'Sinh ra trong gia tộc, có sẵn linh thạch và công pháp.', resources: { lingShi: 1000, items: ['truong_sinh_quyet_book', 'di_hoa_bang', 'di_loi_bang', 'linh_the_luc'] }, monthlyResources: { lingShi: 100 } },
     'tong_mon': { id: 'tong_mon', name: 'Đệ Tử Tông Môn', cost: 60, desc: 'Được tông môn che chở, có pháp bảo phòng thân.', resources: { lingShi: 500, items: ['phi_kiem_go', 'ao_bo_so_cap'] }, monthlyResources: { lingShi: 50 } },
     'ma_dao': { id: 'ma_dao', name: 'Hậu Nhân Ma Đạo', cost: 30, desc: 'Công pháp bá đạo nhưng bị chính đạo truy quét.', resources: { lingShi: 500, items: ['huyet_don_thuat_book'], karma: -50 }, monthlyResources: { lingShi: 0 } },
-    'dai_gia_toc': { id: 'dai_gia_toc', name: 'Đại Thế Gia', cost: 100, desc: 'Con cháu thế gia danh tiếng, tài lực dồi dào.', resources: { lingShi: 10000, items: ['ngung_khi_dan', 'ngung_khi_dan'] }, monthlyResources: { lingShi: 1000 } }
+    'dai_gia_toc': { id: 'dai_gia_toc', name: 'Đại Thế Gia', cost: 100, desc: 'Con cháu thế gia danh tiếng, tài lực dồi dào.', resources: { lingShi: 10000, items: ['ngung_khi_dan', 'ngung_khi_dan'] }, monthlyResources: { lingShi: 1000 } },
+    'thu_nguyen_du_hanh_gia': {
+        id: 'thu_nguyen_du_hanh_gia',
+        name: 'Thứ Nguyên Du Hành Giả',
+        cost: 60,
+        desc: 'Du hành qua vô số thế giới song song, nắm giữ bí mật không gian, thọ nguyên thâm hậu.',
+        resources: {
+            lingShi: 10000,
+            items: ['phong_loi_si', 'bo_thien_lang']
+        },
+        monthlyResources: { lingShi: 100 },
+        startingTitle: 'thu_nguyen_du_hanh_gia'
+    },
+    'hoi_quy_gia': {
+        id: 'hoi_quy_gia',
+        name: 'Hồi Quy Giả',
+        cost: 50,
+        desc: 'Trải qua kiếp trước và được quay ngược thời gian, biết trước thiên cơ, khí vận nghịch thiên.',
+        resources: {
+            lingShi: 5000,
+            items: ['chuong_thien_binh', 'truong_sinh_quyet_book']
+        },
+        monthlyResources: { lingShi: 50 },
+        startingTitle: 'hoi_quy_gia'
+    },
+    'chuyen_sinh_gia': {
+        id: 'chuyen_sinh_gia',
+        name: 'Chuyển Sinh Giả',
+        cost: 40,
+        desc: 'Chuyển sinh từ một thế giới văn minh khác, mang theo ngộ tính và thần hồn cường đại.',
+        resources: {
+            lingShi: 3000,
+            items: ['hu_thien_dinh', 'van_tinh_nho_quan']
+        },
+        monthlyResources: { lingShi: 30 },
+        startingTitle: 'chuyen_sinh_gia'
+    }
 };
 
 export const CREATION_TRAITS = {
@@ -273,6 +309,24 @@ export const CREATION_SCENARIOS = {
         name: 'Xuyên Không Lưu',
         desc: 'Linh hồn từ thế giới khác, mang theo tri thức kỳ lạ.',
         setup: { root: 'di_linh_can', physique: 'binh_thuong', origin: 'tan_tu', traits: ['thong_minh'] }
+    },
+    'thu_nguyen_du_hanh_luu': {
+        id: 'thu_nguyen_du_hanh_luu',
+        name: 'Du Hành Thứ Nguyên Lưu',
+        desc: 'Du hành giả chu du vạn giới, có thọ nguyên vô hạn và linh bảo chí cao hộ thân.',
+        setup: { root: 'di_linh_can', physique: 'hu_khong_the', origin: 'thu_nguyen_du_hanh_gia', traits: ['dai_khi_van', 'thong_minh'] }
+    },
+    'hoi_quy_luu': {
+        id: 'hoi_quy_luu',
+        name: 'Hồi Quy Lưu',
+        desc: 'Nghịch chuyển thời không, mang theo ký ức kiếp trước và tiên tri thiên cơ nghịch thiên.',
+        setup: { root: 'thien_linh_can', physique: 'luan_hoi_the', origin: 'hoi_quy_gia', traits: ['dai_khi_van', 'kiem_dao_ky_tai'] }
+    },
+    'chuyen_sinh_luu': {
+        id: 'chuyen_sinh_luu',
+        name: 'Chuyển Sinh Lưu',
+        desc: 'Linh hồn dị giới chuyển sinh, thần hồn vượt trội vạn vật cận đạo.',
+        setup: { root: 'ngu_hanh_linh_can', physique: 'tien_thien_dao_the', origin: 'chuyen_sinh_gia', traits: ['thong_minh', 'di_hoa_tan_diem'] }
     }
 };
 
