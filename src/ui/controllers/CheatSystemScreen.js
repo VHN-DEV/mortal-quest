@@ -114,6 +114,10 @@ export class CheatSystemScreen {
         const btnSign = document.getElementById('cheat-action-signin');
         if (btnSign) {
             btnSign.onclick = () => {
+                if (cheatSys.player.inventory.isFull) {
+                    state.ui.toast("Hành trang đã đầy! Vui lòng dọn dẹp rương đồ trước khi ký đảo.", "warning");
+                    return;
+                }
                 audioManager.playSfx('breakthrough');
                 const success = cheatSys.actionSignIn();
                 if (success) {
@@ -128,6 +132,10 @@ export class CheatSystemScreen {
         const btnClaimMission = document.getElementById('cheat-action-mission');
         if (btnClaimMission) {
             btnClaimMission.onclick = () => {
+                if (cheatSys.player.inventory.isFull) {
+                    state.ui.toast("Hành trang đã đầy! Vui lòng dọn dẹp rương đồ trước khi nhận Chí Cao phần thưởng.", "warning");
+                    return;
+                }
                 audioManager.playSfx('level_up');
                 const success = cheatSys.actionClaimMission();
                 if (success) {
@@ -142,6 +150,10 @@ export class CheatSystemScreen {
         const btnCheckIn = document.getElementById('cheat-action-checkin');
         if (btnCheckIn) {
             btnCheckIn.onclick = () => {
+                if (cheatSys.player.inventory.isFull) {
+                    state.ui.toast("Hành trang đã đầy! Vui lòng dọn dẹp rương đồ trước khi đánh dấu.", "warning");
+                    return;
+                }
                 audioManager.playSfx('success');
                 const success = cheatSys.actionCheckIn();
                 if (success) {
@@ -236,7 +248,7 @@ export class CheatSystemScreen {
                         <button id="cheat-action-mission" 
                             ${!active ? 'disabled' : ''}
                             class="w-full py-3.5 ${active ? 'btn-gold animate-bounce text-black font-black' : 'bg-white/5 border border-white/5 text-gray-500 cursor-not-allowed'} font-ancient rounded-2xl uppercase tracking-[0.2em] text-[10px] transition-all duration-300">
-                            ${mission.completed ? 'NHẬNSupreme PHẦN THƯỞNG' : 'CHƯA HOÀN THÀNH'}
+                            ${mission.completed ? 'NHẬN CHÍ CAO PHẦN THƯỞNG' : 'CHƯA HOÀN THÀNH'}
                         </button>
                     `}
                 </div>
@@ -339,6 +351,10 @@ export class CheatSystemScreen {
             const btnClaim = document.getElementById('cheat-claim-chest-btn');
             if (btnClaim) {
                 btnClaim.onclick = () => {
+                    if (cheatSys.player.inventory.isFull) {
+                        state.ui.toast("Hành trang đã đầy! Vui lòng dọn dẹp rương đồ trước khi thu hồi.", "warning");
+                        return;
+                    }
                     this.isOpeningChest = false;
                     cheatSys.applyRewardsDirectly();
                     audioManager.playSfx('ui_click');
@@ -437,6 +453,10 @@ export class CheatSystemScreen {
             const btnClaim = document.getElementById('cheat-claim-choose-btn');
             if (btnClaim) {
                 btnClaim.onclick = () => {
+                    if (cheatSys.player.inventory.isFull) {
+                        state.ui.toast("Hành trang đã đầy! Vui lòng dọn dẹp rương đồ trước khi nhận thưởng.", "warning");
+                        return;
+                    }
                     const result = cheatSys.chooseReward(this.selectedChooseIndex);
                     this.selectedChooseIndex = null;
                     if (result) {

@@ -382,5 +382,14 @@ export const getRealmById = (id, type = 'tuvi', race = 'HUMAN') => {
     else {
         list = RACE_DATA[race]?.realms || HUMAN_REALMS;
     }
-    return list.find(r => r.id === id) || list[0];
+    const found = list.find(r => r.id === id);
+    if (found) return found;
+
+    // Safety fallback: if requested ID exceeds the highest realm, return the peak realm instead of index 0
+    const maxRealm = list[list.length - 1];
+    if (maxRealm && id > maxRealm.id) {
+        return maxRealm;
+    }
+
+    return list[0];
 };

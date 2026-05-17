@@ -1,4 +1,4 @@
-import { getRealmById, RACE_DATA } from '../configs/realm-data.js';
+import { getRealmById, RACE_DATA, HUMAN_REALMS, BODY_REALMS, SOUL_REALMS, SWORD_PATH_REALMS, SOUL_PATH_REALMS } from '../configs/realm-data.js';
 import { Inventory } from './inventory.js';
 import { state } from '../state.js';
 import { getItemById } from '../configs/item-data.js';
@@ -659,6 +659,21 @@ export class Player {
     canBreakthrough(type = 'tuvi') {
         const realm = this.getCurrentRealm(type);
         if (!realm) return { can: false, reason: "Cảnh giới không hợp lệ." };
+
+        // Peak Realm Protection: block if already at max realm
+        let list = HUMAN_REALMS;
+        if (type === 'body') list = BODY_REALMS;
+        else if (type === 'soul') list = SOUL_REALMS;
+        else if (type === 'sword') list = SWORD_PATH_REALMS;
+        else if (type === 'soul_path') list = SOUL_PATH_REALMS;
+        else {
+            list = RACE_DATA[this.race]?.realms || HUMAN_REALMS;
+        }
+        const maxRealm = list[list.length - 1];
+        const currentId = type === 'tuvi' ? this.realmId : (type === 'body' ? this.bodyRealmId : (type === 'soul' ? this.soulRealmId : (this.specializedPaths[type]?.realmId || 0)));
+        if (maxRealm && currentId >= maxRealm.id) {
+            return { can: false, reason: "Đã đạt đến cảnh giới chí cao vô thượng, không thể đột phá thêm!" };
+        }
 
         let currentExp = 0;
         if (type === 'tuvi') currentExp = this.tuVi;

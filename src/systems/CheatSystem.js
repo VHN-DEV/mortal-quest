@@ -82,14 +82,14 @@ export class CheatSystem {
 
         // 2. Mission System Roll
         if (this.systemId === 'mission') {
-            if (this.missionState.lastDayRolled < currentDay || !this.missionState.currentMission) {
+            if (!this.missionState.currentMission || (this.missionState.currentMission.claimed && this.missionState.lastDayRolled < currentDay)) {
                 this.rollNewMission(currentDay);
             }
         }
 
         // 3. Location Check-In System Roll
         if (this.systemId === 'check_in_loc') {
-            if (this.locationState.lastDayRolled < currentDay || !this.locationState.targetLocId) {
+            if (!this.locationState.targetLocId || (this.locationState.claimed && this.locationState.lastDayRolled < currentDay)) {
                 this.rollNewLocation(currentDay);
             }
         }
@@ -107,9 +107,14 @@ export class CheatSystem {
         const missions = [
             { id: 'm_cultivate', name: 'Độ Tịch Tu Luyện', desc: 'Tích cực hấp thu linh khí thiên địa 5 lần.', type: 'cultivate', target: 5 },
             { id: 'm_seclusion', name: 'Nhập Định Ngộ Đạo', desc: 'Bế quan tu hành 1 lần để củng cố linh lực.', type: 'seclusion', target: 1 },
-            { id: 'm_lingshi', name: 'Linh Thạch Tiêu Hao', desc: 'Tiêu hao 50 Linh thạch hạ phẩm để lưu thông khí vận.', type: 'spend_lingshi', target: 50 },
-            { id: 'm_breakthrough', name: 'Nghịch Thiên Đột Phá', desc: 'Tiến hành đột phá cảnh giới 1 lần.', type: 'breakthrough', target: 1 }
+            { id: 'm_lingshi', name: 'Linh Thạch Tiêu Hao', desc: 'Tiêu hao 50 Linh thạch hạ phẩm để lưu thông khí vận.', type: 'spend_lingshi', target: 50 }
         ];
+
+        // Check if player is already at peak realm to avoid rolling an uncompletable breakthrough mission
+        const checkBreakthrough = this.player.canBreakthrough('tuvi');
+        if (checkBreakthrough.reason !== "Đã đạt đến cảnh giới chí cao vô thượng, không thể đột phá thêm!") {
+            missions.push({ id: 'm_breakthrough', name: 'Nghịch Thiên Đột Phá', desc: 'Tiến hành đột phá cảnh giới 1 lần.', type: 'breakthrough', target: 1 });
+        }
 
         const roll = missions[Math.floor(Math.random() * missions.length)];
         
@@ -287,9 +292,9 @@ export class CheatSystem {
         }
 
         this.pendingRewards = null;
-        if (typeof window.game?.refreshUI === 'function') {
-            window.game.refreshUI();
-        }
+        
+        // If the day has advanced since the task was rolled, trigger onDayChanged to roll the next daily item immediately
+        this.onDayChanged();
     }
 
     /**
@@ -322,9 +327,8 @@ export class CheatSystem {
         const oldPending = [...this.pendingRewards];
         this.pendingRewards = null;
 
-        if (typeof window.game?.refreshUI === 'function') {
-            window.game.refreshUI();
-        }
+        // If the day has advanced since the task was rolled, trigger onDayChanged to roll the next daily item immediately
+        this.onDayChanged();
 
         return { chosen, all: oldPending };
     }
