@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-C4u3PT4t.js"></script>
+  <script type="module" crossorigin src="./assets/index-DWQu8V2F.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-CEMcQzUQ.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-CrwWtsTN.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -75,16 +75,30 @@
         </p>
 
         <script>
-            // Generate some initial particles for the loading screen
+            // Generate ethereal particles for the loading screen
             const particleContainer = document.getElementById('spirit-particles');
             if (particleContainer) {
-                for (let i = 0; i < 20; i++) {
+                const particleCount = 35; // Increased count for better atmosphere
+                for (let i = 0; i < particleCount; i++) {
                     const p = document.createElement('div');
                     p.className = 'spirit-particle';
+                    
+                    // Randomize position and animation properties
+                    const size = Math.random() * 3 + 1;
+                    p.style.width = size + 'px';
+                    p.style.height = size + 'px';
                     p.style.left = Math.random() * 100 + 'vw';
-                    p.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                    p.style.animationDelay = (Math.random() * 5) + 's';
-                    p.style.opacity = Math.random() * 0.5 + 0.1;
+                    
+                    const duration = Math.random() * 5 + 4;
+                    const delay = Math.random() * 8;
+                    p.style.animationDuration = duration + 's';
+                    p.style.animationDelay = delay + 's';
+                    
+                    // Add subtle glow variation
+                    const blur = Math.random() * 2 + 1;
+                    p.style.filter = `blur(${blur}px)`;
+                    p.style.opacity = Math.random() * 0.4 + 0.2;
+                    
                     particleContainer.appendChild(p);
                 }
             }

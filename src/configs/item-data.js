@@ -14,7 +14,7 @@ export const ITEMS = {
     'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.' },
     'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.' },
     'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.' },
-    
+
     // Trứng Linh Thú
     'trung_thanh_van_ly': {
         id: 'trung_thanh_van_ly',
@@ -780,7 +780,7 @@ export const ITEMS = {
         type: 'spirit_stone',
         grade: 'CUC',
         attribute: 'NORMAL',
-        image: 'items/cu_pham_linh_thach',
+        image: 'items/cuc_pham_linh_thach',
         icon: '🌌',
         quality: 'Linh Bảo',
         price: 1000000,

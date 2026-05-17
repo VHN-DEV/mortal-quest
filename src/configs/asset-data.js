@@ -47,9 +47,9 @@ export const preloadAssets = async (onProgress) => {
  */
 export const getAssetUrl = (path) => {
     if (!path) return '';
-    
+
     const extensions = ['webp', 'png', 'jpg', 'jpeg', 'gif', 'svg'];
-    
+
     // Nếu path đã có phần mở rộng
     if (path.includes('.')) {
         const fullPath = `../assets/images/${path}`;
@@ -67,7 +67,7 @@ export const getAssetUrl = (path) => {
         const fullCleanPath = `../assets/images/${cleanPath}`;
         if (allImages[fullCleanPath]) return allImages[fullCleanPath];
     }
-    
+
     // Thử lần lượt các phần mở rộng
     for (const ext of extensions) {
         const fullPath = `../assets/images/${path}.${ext}`;
@@ -78,8 +78,8 @@ export const getAssetUrl = (path) => {
     if (import.meta.env.DEV) {
         console.warn(`[Asset Missing] Không tìm thấy ảnh: ${path}`);
     }
-    
-    return ''; 
+
+    return '';
 };
 
 // Helper to create a proxy that fallbacks to a default asset if key not found
@@ -87,11 +87,11 @@ const createAssetProxy = (data, category, defaultKey) => {
     return new Proxy(data, {
         get: (target, prop) => {
             if (prop in target) return target[prop];
-            
+
             // Try to resolve dynamically
             const dynamicUrl = getAssetUrl(`${category}/${String(prop)}`);
             if (dynamicUrl) return dynamicUrl;
-            
+
             // Fallback to default
             return target[defaultKey] || '';
         }
@@ -141,7 +141,7 @@ export const ASSETS = {
     items: createAssetProxy({
         spirit_stone: getAssetUrl('items/spirit_stone'),
         healing_pill: getAssetUrl('items/healing_pill'),
-        cu_pham_linh_thach: getAssetUrl('items/cu_pham_linh_thach'),
+        cuc_pham_linh_thach: getAssetUrl('items/cuc_pham_linh_thach'),
         ha_pham_linh_thach: getAssetUrl('items/ha_pham_linh_thach'),
         trung_pham_linh_thach: getAssetUrl('items/trung_pham_linh_thach'),
         thuong_pham_linh_thach: getAssetUrl('items/thuong_pham_linh_thach'),

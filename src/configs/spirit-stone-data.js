@@ -42,7 +42,7 @@ export const SPIRIT_STONE_GRADES = {
         id: 'CUC',
         name: 'Cực Phẩm Linh Thạch',
         shortName: 'Cực',
-        icon: 'items/cu_pham_linh_thach',
+        icon: 'items/cuc_pham_linh_thach',
         value: 1000000,
         multiplier: 1000000,
         nextGrade: 'TIEN',
