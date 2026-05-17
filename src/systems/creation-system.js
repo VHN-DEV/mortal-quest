@@ -638,19 +638,80 @@ export class CreationSystem {
         // Apply Destiny Rating based on leftover points
         player.destinyRating = this.getDestinyRating(this.points);
 
-        // Set Origin-Specific Starting Locations
+        // --- DYNAMIC STARTING LOCATIONS (RACE + ORIGIN + STATUS/PHYSIQUE) ---
         let startWorldId = 'nhan_gioi';
         let startLocId = 'thanh_van_tran';
-        
-        if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
-            startLocId = 'thien_van_thanh';
-        } else if (this.selectedOrigin === 'tong_mon') {
-            startLocId = 'hoang_phong_coc';
-        } else if (this.selectedOrigin === 'ma_dao') {
-            startLocId = 'huyen_am_coc';
-        } else if (this.selectedOrigin === 'thu_nguyen_du_hanh_gia' || this.selectedOrigin === 'hoi_quy_gia' || this.selectedOrigin === 'chuyen_sinh_gia') {
-            startLocId = 'thoi_khong_bi_canh';
-            startWorldId = 'linh_gioi';
+
+        // 1. Race-based default worlds and areas
+        if (this.selectedRace === 'DEMON') {
+            startWorldId = 'ma_gioi';
+            startLocId = 'hac_tuyen_ma_thon'; // Default Demon starting village
+        } else if (this.selectedRace === 'YAO') {
+            startWorldId = 'nhan_gioi';
+            startLocId = 'van_thu_lam'; // Default Yêu Tộc forest
+        } else {
+            startWorldId = 'nhan_gioi';
+            startLocId = 'thanh_van_tran'; // Default Human starting town
+        }
+
+        // 2. Adjust based on Origin (Xuất thân)
+        if (this.selectedRace === 'DEMON') {
+            if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
+                startLocId = 'huyen_am_ma_thanh';
+            } else if (this.selectedOrigin === 'tong_mon') {
+                startLocId = 'thiet_huyen_ma_tran';
+            } else if (this.selectedOrigin === 'ma_dao') {
+                startLocId = 'u_minh_ma_thanh';
+            } else if (this.selectedOrigin === 'vo_gia_cu' || this.selectedOrigin === 'no_nan') {
+                startLocId = 'vong_hon_ma_thon';
+            } else if (this.selectedOrigin === 'thu_nguyen_du_hanh_gia' || this.selectedOrigin === 'hoi_quy_gia' || this.selectedOrigin === 'chuyen_sinh_gia') {
+                startLocId = 'thien_ma_thanh'; // Capital city
+            }
+        } else if (this.selectedRace === 'YAO') {
+            if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
+                startLocId = 'thien_van_thanh';
+            } else if (this.selectedOrigin === 'tong_mon') {
+                startLocId = 'hoang_phong_coc';
+            } else if (this.selectedOrigin === 'ma_dao') {
+                startLocId = 'huyen_am_coc';
+            } else if (this.selectedOrigin === 'vo_gia_cu' || this.selectedOrigin === 'no_nan') {
+                startLocId = 'thap_van_dai_son';
+            } else if (this.selectedOrigin === 'thu_nguyen_du_hanh_gia' || this.selectedOrigin === 'hoi_quy_gia' || this.selectedOrigin === 'chuyen_sinh_gia') {
+                startLocId = 'thoi_khong_bi_canh';
+                startWorldId = 'linh_gioi';
+            }
+        } else { // HUMAN
+            if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
+                startLocId = 'thien_van_thanh';
+            } else if (this.selectedOrigin === 'tong_mon') {
+                startLocId = 'hoang_phong_coc';
+            } else if (this.selectedOrigin === 'ma_dao') {
+                startLocId = 'huyen_am_coc';
+            } else if (this.selectedOrigin === 'vo_gia_cu' || this.selectedOrigin === 'no_nan') {
+                startLocId = 'thanh_van_tran';
+            } else if (this.selectedOrigin === 'thu_nguyen_du_hanh_gia' || this.selectedOrigin === 'hoi_quy_gia' || this.selectedOrigin === 'chuyen_sinh_gia') {
+                startLocId = 'thoi_khong_bi_canh';
+                startWorldId = 'linh_gioi';
+            }
+        }
+
+        // 3. Adjust based on Physique / Status / Identity (Thân phận)
+        // High-level physiques spawn in supreme spots!
+        const premiumPhysiques = ['hon_don_the', 'tien_thien_thanh_the_dao_thai', 'vinh_hang_tien_the', 'hong_mong_dao_the', 'than_vuong_the', 'thuong_thien_phach_the', 'luan_hoi_the', 'van_menh_hu_vo'];
+        if (premiumPhysiques.includes(this.selectedPhysique)) {
+            if (this.selectedRace === 'DEMON') {
+                startLocId = 'thien_ma_thanh'; // Chaos/Supreme demon body starts in capital
+            } else {
+                startLocId = 'thoi_khong_bi_canh';
+                startWorldId = 'linh_gioi'; // Grand human body starts in Spirit Realm secret boundary
+            }
+        } else if (this.selectedPhysique === 'thien_ma_the' || this.selectedPhysique === 'tu_la_huyet_the') {
+            // Demon-bodied characters start in high danger demon zones
+            if (this.selectedRace === 'DEMON') {
+                startLocId = 'sat_luc_ma_thanh';
+            } else {
+                startLocId = 'huyen_am_coc'; // Human demon body starts in Dark Valley
+            }
         }
         
         player.currentWorldId = startWorldId;
