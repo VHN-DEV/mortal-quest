@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-kiO8p0QV.js"></script>
+  <script type="module" crossorigin src="./assets/index-szDo8b2d.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-CrwWtsTN.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-CbDkyGxs.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -28,28 +28,18 @@
             <!-- Dynamically generated particles -->
         </div>
 
-        <!-- Floating Runes -->
-        <div class="rune-float" style="top: 15%; left: 10%; animation-delay: 0s;">乾</div>
-        <div class="rune-float" style="top: 20%; right: 15%; animation-delay: 1.5s;">坤</div>
-        <div class="rune-float" style="bottom: 25%; left: 15%; animation-delay: 3s;">震</div>
-        <div class="rune-float" style="bottom: 15%; right: 10%; animation-delay: 4.5s;">巽</div>
-        
-        <!-- Spiritual Array -->
-        <div class="spiritual-array-container">
-            <svg class="array-svg" viewBox="0 0 200 200">
-                <!-- Ring 1 (Outer) -->
-                <circle class="array-ring-1" cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="1 4" />
-                <circle class="array-ring-1" cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="20 10" />
-                
-                <!-- Ring 2 (Middle) -->
-                <circle class="array-ring-2" cx="100" cy="100" r="75" fill="none" stroke="#4fd1c5" stroke-width="0.5" stroke-dasharray="2 2" />
-                <path class="array-ring-2" d="M100 25 L110 90 L175 100 L110 110 L100 175 L90 110 L25 100 L90 90 Z" fill="none" stroke="#4fd1c5" stroke-width="0.5" />
-                
-                <!-- Ring 3 (Inner) -->
-                <circle class="array-ring-3" cx="100" cy="100" r="55" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="40 20" />
-                <circle class="array-ring-3" cx="100" cy="100" r="50" fill="none" stroke="currentColor" stroke-width="0.5" />
+        <!-- Yin-Yang Centerpiece -->
+        <div class="loading-centerpiece-container">
+            <div class="yinyang-glow-ring"></div>
+            <svg class="yinyang-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <!-- Yin half (Dark ink) -->
+                <path d="M 50,5 A 45,45 0 0,0 50,95 A 22.5,22.5 0 0,0 50,50 A 22.5,22.5 0 0,1 50,5 Z" fill="rgba(10, 10, 12, 0.95)" stroke="rgba(79, 209, 197, 0.3)" stroke-width="0.5" />
+                <!-- Yang half (Glowing cyan) -->
+                <path d="M 50,5 A 45,45 0 0,1 50,95 A 22.5,22.5 0 0,0 50,50 A 22.5,22.5 0 0,1 50,5 Z" fill="#4fd1c5" opacity="0.85" />
+                <!-- Small circles -->
+                <circle cx="50" cy="27.5" r="4.5" fill="#4fd1c5" />
+                <circle cx="50" cy="72.5" r="4.5" fill="rgba(10, 10, 12, 0.95)" />
             </svg>
-            <div class="array-core-glow"></div>
         </div>
 
         <!-- Title -->
@@ -71,33 +61,33 @@
 
         <!-- Footer Tip -->
         <p class="loading-footer-tip">
-            "Đường tu tiên vạn dặm, tâm bất động, đạo bất di."
+            「 Đường tu tiên vạn dặm, tâm bất động, đạo bất di. 」
         </p>
 
         <script>
             // Generate ethereal particles for the loading screen
             const particleContainer = document.getElementById('spirit-particles');
             if (particleContainer) {
-                const particleCount = 35; // Increased count for better atmosphere
+                const particleCount = 12; // Reduced for premium, elegant atmosphere
                 for (let i = 0; i < particleCount; i++) {
                     const p = document.createElement('div');
                     p.className = 'spirit-particle';
                     
                     // Randomize position and animation properties
-                    const size = Math.random() * 3 + 1;
+                    const size = Math.random() * 2 + 1;
                     p.style.width = size + 'px';
                     p.style.height = size + 'px';
                     p.style.left = Math.random() * 100 + 'vw';
                     
-                    const duration = Math.random() * 5 + 4;
-                    const delay = Math.random() * 8;
+                    const duration = Math.random() * 8 + 8; // Much slower (8s - 16s)
+                    const delay = Math.random() * 10;
                     p.style.animationDuration = duration + 's';
                     p.style.animationDelay = delay + 's';
                     
-                    // Add subtle glow variation
-                    const blur = Math.random() * 2 + 1;
+                    // Subtle glow variation
+                    const blur = Math.random() * 1.5 + 1;
                     p.style.filter = `blur(${blur}px)`;
-                    p.style.opacity = Math.random() * 0.4 + 0.2;
+                    p.style.opacity = Math.random() * 0.3 + 0.15;
                     
                     particleContainer.appendChild(p);
                 }
