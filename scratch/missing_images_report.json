@@ -1,0 +1,1078 @@
+{
+  "totalLocations": 207,
+  "existingImagesCount": 56,
+  "missingOwnCount": 153,
+  "missingOwnList": [
+    {
+      "id": "thien_tinh_tong",
+      "name": "Thiên Tinh Tông",
+      "imgId": "thien_tinh_thanh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thien_van_thanh",
+      "name": "Thiên Vân Thành",
+      "imgId": "thien_uyen_thanh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "nguyen_vu_quoc_loc",
+      "name": "Nguyên Vũ Quốc",
+      "imgId": "nguyen_vu_quoc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thien_lan_thao_nguyen_loc",
+      "name": "Thiên Lan Thảo Nguyên",
+      "imgId": "mo_lan_thao_nguyen",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "gia_toc_tu_tien",
+      "name": "Gia Tộc Tu Tiên",
+      "imgId": "mac_phu",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thanh_hu_mon",
+      "name": "Thanh Hư Môn",
+      "imgId": "hoang_phong_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "cu_kiem_mon",
+      "name": "Cự Kiếm Môn",
+      "imgId": "hoang_phong_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hoa_dao_o",
+      "name": "Hóa Đao Ổ",
+      "imgId": "hoang_phong_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thien_khuyet_bao",
+      "name": "Thiên Khuyết Bảo",
+      "imgId": "thien_uyen_thanh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "truc_co_thanh_dia",
+      "name": "Trúc Cơ Thánh Địa",
+      "imgId": "linh_vuc_thanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "tu_kim_linh_mach",
+      "name": "Tử Kim Linh Mạch",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "xa_ky_chien_truong",
+      "name": "Xa Kỵ Chiến Trường",
+      "imgId": "thao_nguyen_chien_truong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "quyet_am_son",
+      "name": "Quyết Âm Sơn",
+      "imgId": "co_ma_phong_an",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hop_hoan_tong",
+      "name": "Hợp Hoan Tông",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_diem_mon",
+      "name": "Ma Diễm Môn",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thien_sat_tong",
+      "name": "Thiên Sát Tông",
+      "imgId": "quy_linh_mon",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ngu_linh_tong",
+      "name": "Ngự Linh Tông",
+      "imgId": "linh_thu_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "khoi_am_tong",
+      "name": "Khôi Âm Tông",
+      "imgId": "quy_linh_mon",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "chinh_dao_minh",
+      "name": "Chính Đạo Minh",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thien_dao_minh",
+      "name": "Thiên Đạo Minh",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "lac_van_tong",
+      "name": "Lạc Vân Tông",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "bach_nhac_phong",
+      "name": "Bách Nhạc Phong",
+      "imgId": "dan_thap",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "cuu_quoc_minh",
+      "name": "Cửu Quốc Minh",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "khon_ngo_son",
+      "name": "Khôn Ngô Sơn",
+      "imgId": "con_ngo_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "con_ngo_dien",
+      "name": "Côn Ngô Điện",
+      "imgId": "linh_vuc_thanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "dai_tan_bien_canh",
+      "name": "Đại Tấn Biên Cảnh",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thien_nam_tu_tien_gioi",
+      "name": "Thiên Nam Tu Tiên Giới",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "tinh_cung",
+      "name": "Tinh Cung",
+      "imgId": "thien_tinh_thanh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "dieu_am_mon",
+      "name": "Diệu Âm Môn",
+      "imgId": "yem_nguyet_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "huyen_cot_dao",
+      "name": "Huyền Cốt Đảo",
+      "imgId": "co_ma_phong_an",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "nghich_tinh_minh",
+      "name": "Nghịch Tinh Minh",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hu_thien_dinh",
+      "name": "Hư Thiên Đỉnh",
+      "imgId": "dan_thap",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hai_thu_cam_khu",
+      "name": "Hải Thú Cấm Khu",
+      "imgId": "minh_ha_chi_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "quy_vu",
+      "name": "Quỷ Vụ",
+      "imgId": "minh_ha_chi_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "am_minh_chi_dia",
+      "name": "Âm Minh Chi Địa",
+      "imgId": "minh_ha_chi_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ky_uyen_dao",
+      "name": "Kỳ Uyên Đảo",
+      "imgId": "thien_tinh_thanh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "yeu_thu_hai_vuc",
+      "name": "Yêu Thú Hải Vực",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hai_dao_nho",
+      "name": "Hải Đảo Nhỏ",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "linh_khoang_dao",
+      "name": "Linh Khoáng Đảo",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hai_yeu_sao_huyet",
+      "name": "Hải Yêu Sào Huyệt",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "kinh_thien_ma_hai",
+      "name": "Kình Thiên Ma Hải",
+      "imgId": "minh_ha_chi_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hai_vuc_thuong_co",
+      "name": "Hải Vực Thượng Cổ",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "tan_kinh",
+      "name": "Tấn Kinh",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "am_la_tong",
+      "name": "Âm La Tông",
+      "imgId": "quy_linh_mon",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "phat_tong",
+      "name": "Phật Tông Tịnh Thổ",
+      "imgId": "dan_thap",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "van_yeu_coc_nhan_gioi",
+      "name": "Vạn Yêu Cốc (Nhân Giới)",
+      "imgId": "man_hoang_co_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "nho_mon",
+      "name": "Nho Môn",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thai_nhat_mon",
+      "name": "Thái Nhất Môn",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "cuu_u_tong",
+      "name": "Cửu U Tông",
+      "imgId": "quy_linh_mon",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "dai_tan_hoang_thanh",
+      "name": "Đại Tấn Hoàng Thành",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thien_co_cac",
+      "name": "Thiên Cơ Các",
+      "imgId": "van_bao_cac",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "dai_tan_linh_mach",
+      "name": "Đại Tấn Linh Mạch",
+      "imgId": "tu_kim_quoc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "bac_da_tieu_cuc_cung",
+      "name": "Bắc Dạ Tiểu Cực Cung",
+      "imgId": "linh_vuc_thanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "bang_hai_hai_vuc",
+      "name": "Băng Hải Hải Vực",
+      "imgId": "tieu_cuc_cung",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "bac_minh_dao",
+      "name": "Bắc Minh Đảo",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "bang_uyen",
+      "name": "Băng Uyên",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "han_ly_dai",
+      "name": "Hàn Ly Đài",
+      "imgId": "tieu_cuc_cung",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "cuc_han_chi_dia",
+      "name": "Cực Hàn Chi Địa",
+      "imgId": "tieu_cuc_cung",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "dot_ngot_toc_doanh_dia",
+      "name": "Đột Ngột Tộc Lãnh Địa",
+      "imgId": "mo_lan_toc_doanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thao_nguyen_te_dan",
+      "name": "Thảo Nguyên Tế Đàn",
+      "imgId": "dot_ngot_thanh_dien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thuong_co_di_tich",
+      "name": "Thượng Cổ Di Tích",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "phat_mon_di_chi",
+      "name": "Phật Môn Di Chỉ",
+      "imgId": "dan_thap",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hac_vu_hai_vuc",
+      "name": "Hắc Vụ Hải Vực",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hai_thu_lanh_dia",
+      "name": "Hải Thú Lãnh Địa",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hai_toc",
+      "name": "Hải Tộc Lãnh Địa",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "khong_gian_tiet_diem",
+      "name": "Không Gian Tiết Điểm",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "khong_gian_loan_luu",
+      "name": "Không Gian Loạn Lưu",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "gioi_dien_thong_dao",
+      "name": "Giới Diện Thông Đạo",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "phi_thang_thong_dao",
+      "name": "Phi Thăng Thông Đạo",
+      "imgId": "linh_vuc_thanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thanh_dao",
+      "name": "Thánh Đảo",
+      "imgId": "linh_vuc_thanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "huyen_vu_thanh",
+      "name": "Huyền Vũ Thành",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thien_nguyen_canh",
+      "name": "Thiên Nguyên Cảnh",
+      "imgId": "linh_vuc_thanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "nhan_toc_13_thien_thanh",
+      "name": "Nhân Tộc 13 Thiên Thành",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thanh_hoang_thanh",
+      "name": "Thánh Hoàng Thành",
+      "imgId": "linh_vuc_thanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "quang_han_gioi",
+      "name": "Quảng Hàn Giới",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "phi_linh_toc_chien_truong",
+      "name": "Phi Linh Tộc Chiến Trường",
+      "imgId": "thao_nguyen_chien_truong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "nhan_yeu_luong_toc",
+      "name": "Nhân Yêu Lưỡng Tộc",
+      "imgId": "linh_vuc_thanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "van_yeu_coc",
+      "name": "Vạn Yêu Cốc",
+      "imgId": "man_hoang_co_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thanh_dia_yeu_toc",
+      "name": "Thánh Địa Yêu Tộc",
+      "imgId": "linh_vuc_thanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thien_ho_toc",
+      "name": "Thiên Hồ Tộc",
+      "imgId": "yem_nguyet_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thien_bang_toc",
+      "name": "Thiên Bằng Tộc",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "cu_vien_toc",
+      "name": "Cự Viên Tộc",
+      "imgId": "van_thu_lam",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "giao_long_toc",
+      "name": "Giao Long Tộc",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "con_bang_lanh_dia",
+      "name": "Côn Bằng Lãnh Địa",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "chan_linh_the_gioi",
+      "name": "Chân Linh Thế Giới",
+      "imgId": "linh_vuc_thanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "van_yeu_son_mach",
+      "name": "Vạn Yêu Sơn Mạch",
+      "imgId": "man_hoang_co_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_nguyen_coc",
+      "name": "Ma Nguyên Cốc",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_gioi_thong_dao",
+      "name": "Ma Giới Thông Đạo",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "huyet_thien_dai_luc",
+      "name": "Huyết Thiên Đại Lục",
+      "imgId": "huyet_sac_cam_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_vuc_chien_truong",
+      "name": "Ma Vực Chiến Trường",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "linh_toc_vuong_canh",
+      "name": "Linh Tộc Vương Cảnh",
+      "imgId": "linh_vuc_thanh_dia",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "anh_toc_thung_lung",
+      "name": "Ảnh Tộc Thung Lũng",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "moc_toc",
+      "name": "Mộc Tộc Lãnh Địa",
+      "imgId": "dot_ngot_thanh_dien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "giac_xi_toc",
+      "name": "Giác Xi Tộc",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "anh_toc_lanh_dia",
+      "name": "Ảnh Tộc Lãnh Địa",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "da_xoa_toc",
+      "name": "Dạ Xoa Tộc",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "phi_linh_toc",
+      "name": "Phi Linh Tộc",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hai_vuong_toc",
+      "name": "Hải Vương Tộc",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "cu_linh_toc",
+      "name": "Cự Linh Tộc",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_kim_son_mach",
+      "name": "Ma Kim Sơn Mạch",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "chan_linh_chi_huyet",
+      "name": "Chân Linh Chi Huyệt",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hu_khong_chi_dia",
+      "name": "Hư Không Chi Địa",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thuong_co_chien_truong",
+      "name": "Thượng Cổ Chiến Trường",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "phi_thang_dai",
+      "name": "Phi Thăng Đài",
+      "imgId": "thuong_co_truyen_tong_tran",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "tiep_dan_dien",
+      "name": "Tiếp Dẫn Điện",
+      "imgId": "thien_tinh_thanh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "phi_thang_quang_truong",
+      "name": "Phi Thăng Quảng Trường",
+      "imgId": "thien_tinh_thanh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "gioi_dien_dai_tran",
+      "name": "Giới Diện Đại Trận",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "tien_phu",
+      "name": "Tiên Phủ",
+      "imgId": "thien_dinh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "chan_tien_dong_phu",
+      "name": "Chân Tiên Động Phủ",
+      "imgId": "tien_gia_duoc_vien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thai_co_chien_truong",
+      "name": "Thái Cổ Chiến Trường",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "loi_minh_dai_luc",
+      "name": "Lôi Minh Đại Lục",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "bac_han_tien_vuc",
+      "name": "Bắc Hàn Tiên Vực",
+      "imgId": "cuu_trong_thien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "luan_hoi_dien",
+      "name": "Luân Hồi Điện",
+      "imgId": "cuu_trong_thien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "chan_tien_gioi",
+      "name": "Chân Tiên Cảnh",
+      "imgId": "cuu_trong_thien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "kim_tien_vuc",
+      "name": "Kim Tiên Vực",
+      "imgId": "cuu_trong_thien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thai_at_tien_vuc",
+      "name": "Thái Ất Tiên Vực",
+      "imgId": "thai_hu_tien_cung",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "dai_la_canh_loc",
+      "name": "Đại La Cảnh",
+      "imgId": "cuu_trong_thien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thoi_gian_phap_tac_khu",
+      "name": "Thời Gian Pháp Tắc Khu",
+      "imgId": "luan_hoi_phap_tac_khu",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "khong_gian_phap_tac_khu",
+      "name": "Không Gian pháp tắc khu",
+      "imgId": "luan_hoi_phap_tac_khu",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hon_don_hu_khong",
+      "name": "Hỗn Độn Hư Không",
+      "imgId": "luan_hoi_phap_tac_khu",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "man_hoang_tien_vuc",
+      "name": "Man Hoang Tiên Vực",
+      "imgId": "cuu_trong_thien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "u_minh_gioi",
+      "name": "U Minh Minh Giới",
+      "imgId": "cuu_trong_thien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hac_tuyen_ma_thon",
+      "name": "Hắc Tuyền Ma Thôn",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "vong_hon_ma_thon",
+      "name": "Vong Hồn Ma Thôn",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thiet_huyen_ma_tran",
+      "name": "Thiết Huyết Ma Trấn",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "huyen_quyet_ma_tran",
+      "name": "Huyễn Quyệt Ma Trấn",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "huyen_am_ma_thanh",
+      "name": "Huyền Âm Ma Thành",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "cuu_u_ma_thanh",
+      "name": "Cửu U Ma Thành",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "huyet_hai_ma_thanh",
+      "name": "Huyết Hải Ma Thành",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "vo_han_ma_thanh",
+      "name": "Vô Hạn Ma Thành",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "tich_diet_ma_thanh",
+      "name": "Tịch Diệt Ma Thành",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "phan_thien_ma_thanh",
+      "name": "Phần Thiên Ma Thành",
+      "imgId": "dan_thap",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "sat_luc_ma_thanh",
+      "name": "Sát Lục Ma Thành",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hac_am_ma_thanh",
+      "name": "Hắc Ám Ma Thành",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "loi_dinh_ma_thanh",
+      "name": "Lôi Đình Ma Thành",
+      "imgId": "thoi_khong_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "bang_phong_ma_thanh",
+      "name": "Băng Phong Ma Thành",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "u_minh_ma_thanh",
+      "name": "U Minh Ma Thành",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thanh_to_ma_cung_mg",
+      "name": "Thánh Tổ Ma Cung",
+      "imgId": "thien_kiem_tong",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_uyen_mg",
+      "name": "Ma Uyên",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "huyet_hai_mg",
+      "name": "Huyết Hải",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "thi_cot_son",
+      "name": "Thi Cốt Sơn",
+      "imgId": "thap_van_dai_son",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_long_coc",
+      "name": "Ma Long Cốc",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hac_an_thanh_thanh",
+      "name": "Hắc Ám Thánh Thành",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "huyet_ha_mg",
+      "name": "Huyết Hà",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "hac_ma_hai",
+      "name": "Hắc Ma Hải",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_thu_lanh_dia",
+      "name": "Ma Thú Lãnh Địa",
+      "imgId": "ma_hoa_bi_canh",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "chan_ma_dien",
+      "name": "Chân Ma Điện",
+      "imgId": "co_ma_phong_an",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_than_te_dan",
+      "name": "Ma Thần Tế Đàn",
+      "imgId": "huyen_am_coc",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "tay_tuy_tri",
+      "name": "Tẩy Tủy Trì",
+      "imgId": "dan_thap",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_nguyen_hai",
+      "name": "Ma Nguyên Hải",
+      "imgId": "loan_tinh_hai",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_ve_doanh",
+      "name": "Ma Vệ Doanh",
+      "imgId": "ma_ton_dien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_quan_doanh",
+      "name": "Ma Quân Doanh",
+      "imgId": "ma_ton_dien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    },
+    {
+      "id": "ma_toc_quan_doan",
+      "name": "Ma Tộc Quân Đoàn",
+      "imgId": "ma_ton_dien",
+      "hasOwnFile": false,
+      "usesSameId": false
+    }
+  ]
+}

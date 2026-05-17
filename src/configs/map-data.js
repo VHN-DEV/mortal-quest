@@ -142,7 +142,7 @@ export const WORLDS = {
                 name: 'Thiên Tinh Tông',
                 minRealm: 5,
                 danger: 'an_toan',
-                image: getLocImg('thien_tinh_thanh'),
+                image: getLocImg('thien_tinh_tong'),
                 description: 'Tông môn lớn của Nguyên Vũ Quốc nổi tiếng với kỹ năng Trận Pháp tinh diệu bậc nhất thiên hạ.',
                 resources: ['Trận Kỳ', 'Trận Pháp Cơ Bản', 'Linh Khoáng'],
                 energies: [{ type: 'linh_khi', concentration: 20, purity: 'TINH_THUAN' }],
