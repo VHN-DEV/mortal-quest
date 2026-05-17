@@ -624,6 +624,62 @@ export class Game {
             state.systems.npc.generate('thuong_nhan', 3, 'thanh_van_tran');
             state.systems.npc.generate('sect_elder', 10, 'thanh_van_tong');
             state.systems.npc.generate('thien_kieu', 5, 'linh_vong_son');
+
+            // --- MA GIỚI INITIAL POPULATION ---
+            // 1 Ma Thần inside Thiên Ma Thành (Capital)
+            state.systems.npc.generate('ma_than', 42, 'thien_ma_thanh');
+
+            // 1 Ma Vương inside Thiên Ma Thành (Capital)
+            state.systems.npc.generate('ma_vuong', 38, 'thien_ma_thanh');
+
+            // 12 Ma Tướng, each guarding one of the 12 Ma Thành
+            const demonCities = [
+                { id: 'huyen_am_ma_thanh', name: 'Huyền Âm Ma Tướng', realm: 20 },
+                { id: 'cuu_u_ma_thanh', name: 'Cửu U Ma Tướng', realm: 22 },
+                { id: 'thien_ma_thanh', name: 'Thiên Ma Tướng', realm: 24 },
+                { id: 'huyet_hai_ma_thanh', name: 'Huyết Hải Ma Tướng', realm: 26 },
+                { id: 'vo_han_ma_thanh', name: 'Vô Hạn Ma Tướng', realm: 28 },
+                { id: 'tich_diet_ma_thanh', name: 'Tịch Diệt Ma Tướng', realm: 30 },
+                { id: 'phan_thien_ma_thanh', name: 'Phần Thiên Ma Tướng', realm: 32 },
+                { id: 'sat_luc_ma_thanh', name: 'Sát Lục Ma Tướng', realm: 34 },
+                { id: 'hac_am_ma_thanh', name: 'Hắc Ám Ma Tướng', realm: 36 },
+                { id: 'loi_dinh_ma_thanh', name: 'Lôi Đình Ma Tướng', realm: 38 },
+                { id: 'bang_phong_ma_thanh', name: 'Băng Phong Ma Tướng', realm: 40 },
+                { id: 'u_minh_ma_thanh', name: 'U Minh Ma Tướng', realm: 42 }
+            ];
+
+            demonCities.forEach(city => {
+                const mt = state.systems.npc.generate('ma_tuong', city.realm, city.id);
+                mt.name = city.name;
+            });
+
+            // Scatter Ma Binh and Ma Dân across all demon areas
+            const demonAreas = [
+                'hac_tuyen_ma_thon', 'vong_hon_ma_thon', 
+                'thiet_huyen_ma_tran', 'huyen_quyet_ma_tran',
+                'huyen_am_ma_thanh', 'cuu_u_ma_thanh', 'thien_ma_thanh', 'huyet_hai_ma_thanh',
+                'vo_han_ma_thanh', 'tich_diet_ma_thanh', 'phan_thien_ma_thanh', 'sat_luc_ma_thanh',
+                'hac_am_ma_thanh', 'loi_dinh_ma_thanh', 'bang_phong_ma_thanh', 'u_minh_ma_thanh'
+            ];
+
+            demonAreas.forEach(area => {
+                // Determine appropriate realm based on the area's difficulty
+                const isVillage = area.includes('thon');
+                const isTown = area.includes('tran');
+                const baseRealm = isVillage ? 1 : (isTown ? 6 : 14);
+
+                // Spawn 1-2 Ma Binhs in each area
+                const soldierCount = isVillage ? 1 : 2;
+                for (let i = 0; i < soldierCount; i++) {
+                    state.systems.npc.generate('ma_binh', baseRealm + Math.floor(Math.random() * 4), area);
+                }
+
+                // Spawn 1-3 Ma Dâns in each area
+                const citizenCount = isVillage ? 3 : (isTown ? 2 : 1);
+                for (let i = 0; i < citizenCount; i++) {
+                    state.systems.npc.generate('ma_dan', baseRealm + Math.floor(Math.random() * 3), area);
+                }
+            });
         }
 
         const elName = document.getElementById('player-name-header');
@@ -1420,8 +1476,12 @@ export class Game {
     }
 
     openNPCDialogue(npc) {
-        if (this.screens.systems) {
-            this.screens.systems.renderNPCDialogue(npc);
+        let npcObj = npc;
+        if (typeof npc === 'string') {
+            npcObj = state.systems.npc?.npcs.find(n => n.id === npc) || state.systems.npc?.npcs.find(n => n.templateId === npc);
+        }
+        if (npcObj && this.screens.systems) {
+            this.screens.systems.renderNPCDialogue(npcObj);
             state.ui.switchScreen('systems', null);
         }
     }

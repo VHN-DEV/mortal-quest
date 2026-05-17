@@ -91,6 +91,24 @@ export class NPC {
         if (this.role === 'Tank') { this.maxHp *= 1.6; this.def *= 1.5; this.atk *= 0.8; }
         if (this.role === 'Healer') { this.maxHp *= 0.9; this.atk *= 0.6; this.spd *= 1.1; }
         if (this.role === 'Sword') { this.atk *= 1.4; this.spd *= 1.2; }
+
+        // Supreme Demon adjustments
+        if (this.templateId === 'ma_than') {
+            this.maxHp *= 5.0;
+            this.atk *= 4.0;
+            this.def *= 3.0;
+            this.spd *= 2.0;
+        } else if (this.templateId === 'ma_vuong') {
+            this.maxHp *= 3.5;
+            this.atk *= 3.0;
+            this.def *= 2.5;
+            this.spd *= 1.7;
+        } else if (this.templateId === 'ma_tuong') {
+            this.maxHp *= 2.5;
+            this.atk *= 2.0;
+            this.def *= 2.0;
+            this.spd *= 1.5;
+        }
         
         this.hp = this.maxHp;
     }
@@ -131,6 +149,23 @@ export class NPC {
     }
 
     generateName() {
+        if (this.templateId === 'ma_than') {
+            return 'Thái Sơ Ma Thần';
+        }
+        if (this.templateId === 'ma_vuong') {
+            return 'Vô Thượng Ma Vương';
+        }
+        if (this.type === 'ma_binh' || this.templateId === 'ma_binh') {
+            const prefixes = ['Hắc Sát', 'Huyết Lang', 'Dạ Xoa', 'U Hồn', 'Thiết Giáp', 'Cửu U', 'Tịch Diệt', 'Huyền Âm'];
+            const suffixes = ['Ma Binh', 'Vệ Sĩ', 'Quỷ Binh', 'Ma Tốt', 'Hắc Vệ'];
+            return prefixes[Math.floor(Math.random() * prefixes.length)] + ' ' + suffixes[Math.floor(Math.random() * suffixes.length)];
+        }
+        if (this.type === 'ma_dan' || this.templateId === 'ma_dan') {
+            const prefixes = ['U Hồn', 'Dạ Xoa', 'Ma Nhân', 'U Linh', 'Hắc Diện', 'Vong Linh'];
+            const givenNames = ['Ma Dân', 'Thôn Dân', 'Trấn Dân', 'Lão Yêu', 'Cô Nương', 'Tiểu Quỷ'];
+            return prefixes[Math.floor(Math.random() * prefixes.length)] + ' ' + givenNames[Math.floor(Math.random() * givenNames.length)];
+        }
+
         const surnames = ['Thanh', 'Lâm', 'Diệp', 'Hàn', 'Trần', 'Lý', 'Vương', 'Tiêu', 'Mộ Dung', 'Âu Dương'];
         const givenNames = ['Phong', 'Vân', 'Lôi', 'Lão Ma', 'Tiên Tử', 'Đạo Nhân', 'Minh', 'Nguyệt', 'Thiên', 'Kiếm'];
         return surnames[Math.floor(Math.random() * surnames.length)] + ' ' + givenNames[Math.floor(Math.random() * givenNames.length)];

@@ -103,6 +103,66 @@ export const NPC_TEMPLATES = {
             'friendly': ['Không ngờ ở nơi hẻo lánh này lại gặp được người như ngươi.', 'Nếu có thể đuổi kịp bước chân ta, ta sẽ coi ngươi là đối thủ.'],
             'hostile': ['Ngươi muốn khiêu chiến ta? Thật nực cười!']
         }
+    },
+    'ma_than': {
+        type: 'ma_than',
+        title: 'Thần Linh Ma Tộc',
+        portrait: ASSETS.portraits.demon,
+        personalities: ['lanh_lung', 'kieu_ngao'],
+        roles: ['Sword', 'Mage'],
+        dialogues: {
+            'meet': ['Phàm nhân bé nhỏ, ngươi dám đứng trước tôn nhan của Ma Thần?', 'Ý chí của ta chính là quy luật của vương quốc này.'],
+            'friendly': ['Ngươi có chút tiềm năng để trở thành tín đồ của ta.'],
+            'hostile': ['Thái Sơ Ma Chưởng! Hãy tan thành tro bụi!']
+        }
+    },
+    'ma_vuong': {
+        type: 'ma_vuong',
+        title: 'Chủ Tể Ma Quốc',
+        portrait: ASSETS.portraits.demon,
+        personalities: ['kieu_ngao', 'quy_quyet'],
+        roles: ['Sword', 'Tank'],
+        dialogues: {
+            'meet': ['Vương triều của ta kéo dài vạn dặm, tiên ma đều phải kính sợ.', 'Có việc gì dâng lên Bản Vương?'],
+            'friendly': ['Bản Vương rất hài lòng với lòng trung thành của ngươi.'],
+            'hostile': ['Dám khiêu chiến uy quyền hoàng tộc Ma tộc? Chết!']
+        }
+    },
+    'ma_tuong': {
+        type: 'ma_tuong',
+        title: 'Hộ Quốc Ma Tướng',
+        portrait: ASSETS.portraits.demon,
+        personalities: ['lanh_lung', 'dien_cuong'],
+        roles: ['Sword', 'Tank', 'Mage'],
+        dialogues: {
+            'meet': ['Bản Tướng canh giữ nơi này vạn năm, kẻ xâm nhập đều phải chết!', 'Ngươi mang sát khí của ma đạo, tốt lắm.'],
+            'friendly': ['Nếu ngươi muốn lập công, bản tướng có thể trọng dụng.'],
+            'hostile': ['Lưỡi kiếm ma quân sẽ nhuốm máu của ngươi!']
+        }
+    },
+    'ma_binh': {
+        type: 'ma_binh',
+        title: 'Tinh Binh Ma Tộc',
+        portrait: ASSETS.portraits.demon,
+        personalities: ['dien_cuong', 'lanh_lung'],
+        roles: ['Sword', 'Tank'],
+        dialogues: {
+            'meet': ['Tránh ra! Việc quân khẩn cấp!', 'Kẻ nào dám bén mảng đến lãnh địa ma quân?'],
+            'friendly': ['Cùng nhau vì Ma giới chiến đấu!'],
+            'hostile': ['Sát! Tiêu diệt kẻ xâm lược!']
+        }
+    },
+    'ma_dan': {
+        type: 'ma_dan',
+        title: 'Bình Dân Ma Tộc',
+        portrait: ASSETS.portraits.demon,
+        personalities: ['hoa_nha', 'tham_lam', 'da_nghi'],
+        roles: ['Mage', 'Healer'],
+        dialogues: {
+            'meet': ['Cuộc sống ở Ma giới thật tàn khốc, nhưng chúng ta vẫn phải sinh tồn.', 'Có linh thạch hắc ám không? Ta muốn đổi bảo vật.'],
+            'friendly': ['Ngươi quả là một ma nhân tốt tính.'],
+            'hostile': ['Đừng tưởng bình dân thì dễ bắt nạt!']
+        }
     }
 };
 
