@@ -1269,6 +1269,43 @@ select option:checked {
   min-height: 40px;
 }
 
+/* Custom Slim Range Sliders for Creation Roots Elements */
+#screen-creation input[type="range"] {
+  min-height: auto !important;
+  height: 5px !important;
+  padding: 0 !important;
+  border-radius: 999px !important;
+  cursor: pointer !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+#screen-creation input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  cursor: pointer !important;
+  border: 1.5px solid #3b82f6 !important;
+  box-shadow: 0 0 5px rgba(59, 130, 246, 0.8) !important;
+  margin-top: 0px !important;
+}
+
+#screen-creation input[type="range"]::-moz-range-thumb {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  cursor: pointer !important;
+  border: 1.5px solid #3b82f6 !important;
+  box-shadow: 0 0 5px rgba(59, 130, 246, 0.8) !important;
+}
+
 #screen-creation #creation-points-container {
   border-radius: 0.85rem;
   padding-inline: 0.8rem;

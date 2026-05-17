@@ -1543,6 +1543,13 @@ export class Game {
         }
     }
 
+    adjustCreationRootProportion(element, value) {
+        if (state.systems.creation) {
+            state.systems.creation.adjustElementProportion(element, value);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
     selectCreationPhysique(physId) {
         if (state.systems.creation) {
             state.systems.creation.selectedPhysique = physId;

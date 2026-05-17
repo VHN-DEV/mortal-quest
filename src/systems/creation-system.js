@@ -17,6 +17,7 @@ export class CreationSystem {
         this.selectedRace = 'HUMAN';
         this.selectedRoot = 'ngu_hanh_linh_can';
         this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+        this.selectedRootElementProportions = { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20 };
         this.selectedPhysique = 'binh_thuong';
         this.selectedOrigin = 'tan_tu';
         this.selectedTraits = [];
@@ -76,6 +77,121 @@ export class CreationSystem {
     }
 
 
+    resetProportions() {
+        const N = this.selectedRootElements.length;
+        if (N === 0) {
+            this.selectedRootElementProportions = {};
+            return;
+        }
+        const base = Math.floor(100 / N);
+        const remainder = 100 - (base * N);
+        
+        this.selectedRootElementProportions = {};
+        this.selectedRootElements.forEach((el, index) => {
+            this.selectedRootElementProportions[el] = base + (index === 0 ? remainder : 0);
+        });
+    }
+
+    adjustElementProportion(targetElement, newValue) {
+        newValue = Math.max(0, Math.min(100, Math.round(newValue)));
+        const N = this.selectedRootElements.length;
+        if (N <= 1) {
+            this.selectedRootElementProportions[targetElement] = 100;
+            return;
+        }
+
+        const oldValue = this.selectedRootElementProportions[targetElement] || 0;
+        const delta = newValue - oldValue;
+        if (delta === 0) return;
+
+        const otherElements = this.selectedRootElements.filter(el => el !== targetElement);
+        const sumOthers = otherElements.reduce((acc, el) => acc + (this.selectedRootElementProportions[el] || 0), 0);
+
+        if (sumOthers > 0) {
+            let remainingDelta = -delta;
+            otherElements.forEach((el, index) => {
+                const currentVal = this.selectedRootElementProportions[el] || 0;
+                let share = 0;
+                if (index === otherElements.length - 1) {
+                    share = remainingDelta;
+                } else {
+                    share = Math.round(-delta * (currentVal / sumOthers));
+                    remainingDelta -= share;
+                }
+                this.selectedRootElementProportions[el] = Math.max(0, Math.min(100, currentVal + share));
+            });
+        } else {
+            let remainingDelta = -delta;
+            otherElements.forEach((el, index) => {
+                const currentVal = this.selectedRootElementProportions[el] || 0;
+                let share = 0;
+                if (index === otherElements.length - 1) {
+                    share = remainingDelta;
+                } else {
+                    share = Math.round(-delta / otherElements.length);
+                    remainingDelta -= share;
+                }
+                this.selectedRootElementProportions[el] = Math.max(0, Math.min(100, currentVal + share));
+            });
+        }
+
+        this.selectedRootElementProportions[targetElement] = newValue;
+        this.sanitizeProportions();
+    }
+
+    sanitizeProportions() {
+        const sum = this.selectedRootElements.reduce((acc, el) => acc + (this.selectedRootElementProportions[el] || 0), 0);
+        const diff = 100 - sum;
+        if (diff === 0) return;
+
+        let maxEl = this.selectedRootElements[0];
+        let maxVal = -1;
+        this.selectedRootElements.forEach(el => {
+            const val = this.selectedRootElementProportions[el] || 0;
+            if (val > maxVal) {
+                maxVal = val;
+                maxEl = el;
+            }
+        });
+        
+        if (maxEl) {
+            this.selectedRootElementProportions[maxEl] = Math.max(0, Math.min(100, (this.selectedRootElementProportions[maxEl] || 0) + diff));
+        }
+    }
+
+    getRootClassification() {
+        const N = this.selectedRootElements.length;
+        if (N <= 1) return { name: CREATION_ROOTS[this.selectedRoot].name, isBalanced: true, multiplierScale: 1.0 };
+
+        const ideal = 100 / N;
+        let maxDeviation = 0;
+        this.selectedRootElements.forEach(el => {
+            const val = this.selectedRootElementProportions[el] || 0;
+            const dev = Math.abs(val - ideal);
+            if (dev > maxDeviation) maxDeviation = dev;
+        });
+
+        const rootName = CREATION_ROOTS[this.selectedRoot].name;
+
+        if (this.selectedRoot === 'ngu_hanh_linh_can') {
+            if (maxDeviation > 15) {
+                return { name: 'Tạp Linh Căn (Nhiều Tạp Chất)', isBalanced: false, multiplierScale: 0.6 };
+            } else if (maxDeviation > 5) {
+                return { name: 'Ngũ Hành Linh Căn (Lệch)', isBalanced: false, multiplierScale: 0.85 };
+            } else {
+                return { name: 'Ngũ Hành Linh Căn (Hòa Hợp)', isBalanced: true, multiplierScale: 1.15 };
+            }
+        }
+
+        if (maxDeviation > 15) {
+            return { name: `${rootName} (Bị Pha Tạp)`, isBalanced: false, multiplierScale: 0.7 };
+        } else if (maxDeviation > 5) {
+            return { name: `${rootName} (Hơi Lệch)`, isBalanced: false, multiplierScale: 0.9 };
+        } else {
+            return { name: `${rootName} (Cân Bằng)`, isBalanced: true, multiplierScale: 1.1 };
+        }
+    }
+
     selectRoot(rootId) {
         this.selectedRoot = rootId;
         // Reset elements based on root type
@@ -85,8 +201,6 @@ export class CreationSystem {
             this.selectedRootElements = ['Hỏa']; // Default
         } else if (rootId === 'di_linh_can') {
             this.selectedRootElements = ['Lôi']; // Default
-        } else if (rootId === 'don_linh_can') {
-            this.selectedRootElements = ['Hỏa'];
         } else if (rootId === 'song_linh_can') {
             this.selectedRootElements = ['Kim', 'Mộc'];
         } else if (rootId === 'tam_linh_can') {
@@ -94,6 +208,7 @@ export class CreationSystem {
         } else if (rootId === 'nguy_linh_can') {
             this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Thổ'];
         }
+        this.resetProportions();
         this.calculatePoints();
     }
 
@@ -104,7 +219,6 @@ export class CreationSystem {
         const maxElements = {
             'thien_linh_can': 1,
             'di_linh_can': 1,
-            'don_linh_can': 1,
             'song_linh_can': 2,
             'tam_linh_can': 3,
             'nguy_linh_can': 4
@@ -122,6 +236,7 @@ export class CreationSystem {
                 this.selectedRootElements = [element];
             }
         }
+        this.resetProportions();
     }
 
     calculatePoints() {
@@ -291,14 +406,18 @@ export class CreationSystem {
 
         // Apply Root
         const rarityData = ROOT_RARITY[this.rootRarity];
+        const classInfo = this.getRootClassification();
+        const multiplier = (root.bonus.qiAbsorb || 1.0) * rarityData.multiplier * (this.rootPurity / 100) * classInfo.multiplierScale;
+        
         player.spiritualRoot = {
             id: root.id,
-            type: root.name,
+            type: classInfo.name,
             elements: [...this.selectedRootElements],
+            proportions: { ...this.selectedRootElementProportions },
             rarity: this.rootRarity,
             rarityName: rarityData.name,
             purity: this.rootPurity,
-            multiplier: (root.bonus.qiAbsorb || 1.0) * rarityData.multiplier * (this.rootPurity / 100),
+            multiplier: multiplier,
             bonus: root.bonus,
             color: rarityData.color
         };

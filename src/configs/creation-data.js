@@ -108,11 +108,6 @@ export const CREATION_ROOTS = {
         desc: 'Linh căn biến dị hiếm gặp (Lôi/Băng/Phong/Độc). Sức mạnh bộc phát cực mạnh.',
         bonus: { qiAbsorb: 1.4, atk: 25, techniqueMastery: 1.3 }
     },
-    'don_linh_can': {
-        id: 'don_linh_can', name: 'Đơn Linh Căn', cost: 40, type: 'basic', quantity: 1,
-        desc: 'Chỉ một thuộc tính tinh thuần. Tốc độ tu luyện vượt trội.',
-        bonus: { qiAbsorb: 1.2, techniqueMastery: 1.2 }
-    },
     'song_linh_can': {
         id: 'song_linh_can', name: 'Song Linh Căn', cost: 30, type: 'basic', quantity: 2,
         desc: 'Hai thuộc tính chính. Linh hoạt trong việc chọn lựa công pháp.',

@@ -198,10 +198,26 @@ export class CharacterScreen {
         if (this.elRoot && state.player.spiritualRoot) {
             const root = state.player.spiritualRoot;
             const rarityName = root.rarityName || 'Phàm';
+            
+            const ELEMENT_COLORS = {
+                'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
+                'Lôi': '#a855f7', 'Băng': '#06b6d4', 'Phong': '#94a3b8', 'Độc': '#10b981'
+            };
+
+            let elementsText = '';
+            if (root.proportions) {
+                elementsText = Object.entries(root.proportions)
+                    .map(([el, pct]) => `<span style="color: ${ELEMENT_COLORS[el] || '#fff'}">${el} ${pct}%</span>`)
+                    .join(' · ');
+            } else if (root.elements) {
+                elementsText = root.elements.map(el => `<span style="color: ${ELEMENT_COLORS[el] || '#fff'}">${el}</span>`).join(' · ');
+            }
+
             this.elRoot.innerHTML = `
-                <div class="flex flex-col items-end leading-tight">
+                <div class="flex flex-col items-end leading-tight text-right">
                     <span style="color: ${root.color}">${rarityName} ${root.type}</span>
-                    <span class="text-[7px] opacity-50 font-normal">Tinh khiết: ${root.purity}%</span>
+                    <span class="text-[8px] font-normal mt-0.5">${elementsText}</span>
+                    <span class="text-[7px] opacity-60 font-normal">Độ Tinh Khiết: ${root.purity}%</span>
                 </div>
             `;
         }

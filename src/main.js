@@ -361,14 +361,16 @@ window.renderCreationScreen = () => {
 
     if (elStatsPreview) {
         // Base stats for a new player (starting realm)
-               const root = CREATION_ROOTS[sys.selectedRoot] || {};
+        const root = CREATION_ROOTS[sys.selectedRoot] || {};
         const phys = PHYSIQUES[sys.selectedPhysique] || {};
         const origin = CREATION_ORIGINS[sys.selectedOrigin] || {};
         const race = CREATION_RACES[sys.selectedRace] || {};
         
+        const classInfo = sys.getRootClassification();
         const rootElementsStr = sys.selectedRootElements.map(e => {
+            const pct = sys.selectedRootElementProportions[e] || 0;
             const el = ROOT_ELEMENTS[e] || SPECIAL_ELEMENTS[e] || { icon: '✨' };
-            return `${el.icon} ${e}`;
+            return `${el.icon} ${e} (${pct}%)`;
         }).join(', ');
 
         elStatsPreview.innerHTML = `
@@ -381,13 +383,14 @@ window.renderCreationScreen = () => {
                     <span class="opacity-60">Linh căn</span>
                     <div class="text-right">
                         <div class="font-medium" style="color: ${ROOT_RARITY[sys.rootRarity].color}">
-                            ${ROOT_RARITY[sys.rootRarity].name} ${root.name}
+                            ${ROOT_RARITY[sys.rootRarity].name} ${classInfo.name}
                         </div>
                         <div class="text-[8px] text-qi-blue opacity-80">
                             Tinh khiết: ${sys.rootPurity}% · ${rootElementsStr}
                         </div>
                     </div>
                 </div>
+                <div class="flex justify-between items-center border-b border-white/5 pb-1">
                     <span class="opacity-60">Thể chất</span>
                     <span class="font-medium">${phys.name || 'Phàm Thể'}</span>
                 </div>
@@ -447,9 +450,10 @@ window.renderCreationScreen = () => {
 
         const sumFlat = (key) => (raceBonus[key] || 0) + (rootBonus[key] || 0) + (physBonus[key] || 0) + (traitBonus[key] || 0) + (elementBonus[key] || 0);
 
-        // Multiplier logic for TVPS & Qi Absorb
-        const tvpsBonus = (raceBonus.tvps || 1) * (rootBonus.tvps || 1) * (physBonus.tvps || 1) * (traitBonus.tvps || 1) * (elementBonus.tvps || 1);
-        const qiBonus = (raceBonus.qiAbsorb || 1) * (rootBonus.qiAbsorb || 1) * (physBonus.qiAbsorb || 1) * (traitBonus.qiAbsorb || 1) * (elementBonus.qiAbsorb || 1);
+        // Multiplier logic for TVPS & Qi Absorb (dynamic based on element proportions balance)
+        const rootMult = (root.bonus?.qiAbsorb || 1.0) * ROOT_RARITY[sys.rootRarity].multiplier * (sys.rootPurity / 100) * classInfo.multiplierScale;
+        const tvpsBonus = (raceBonus.tvps || 1) * rootMult * (physBonus.tvps || 1) * (traitBonus.tvps || 1) * (elementBonus.tvps || 1);
+        const qiBonus = (raceBonus.qiAbsorb || 1) * (root.bonus?.qiAbsorb || 1.0) * (physBonus.qiAbsorb || 1) * (traitBonus.qiAbsorb || 1) * (elementBonus.qiAbsorb || 1);
 
         const previewStats = [
             { label: 'Công', value: Math.floor(base.atk + sumFlat('atk')), color: 'text-red-400' },
@@ -628,42 +632,108 @@ window.renderCreationScreen = () => {
                 const elements = isSpecial ? { ...ROOT_ELEMENTS, ...SPECIAL_ELEMENTS } : ROOT_ELEMENTS;
                 
                 // For Ngu Hanh, always show all 5
+                let selectionButtonsHtml = '';
                 if (r.id === 'ngu_hanh_linh_can') {
-                    elementsHtml = `
-                        <div class="mt-3 pt-3 border-t border-white/5">
-                            <div class="flex flex-wrap gap-1">
-                                ${['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'].map(name => {
-                                    const e = ROOT_ELEMENTS[name];
-                                    return `<span class="text-[8px] px-1.5 py-0.5 rounded bg-white/5 border border-white/10 opacity-60">${e.icon} ${e.name}</span>`;
-                                }).join('')}
-                            </div>
+                    selectionButtonsHtml = `
+                        <div class="flex flex-wrap gap-1">
+                            ${['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'].map(name => {
+                                const e = ROOT_ELEMENTS[name];
+                                return `<span class="text-[8px] px-1.5 py-0.5 rounded bg-white/5 border border-white/10 opacity-60">${e.icon} ${e.name}</span>`;
+                            }).join('')}
                         </div>
                     `;
                 } else {
-                    elementsHtml = `
-                        <div class="mt-3 pt-3 border-t border-white/5">
-                            <div class="text-[8px] uppercase tracking-wider text-qi-blue font-bold opacity-60 mb-2">Chọn Thuộc Tính (${sys.selectedRootElements.length}/${r.quantity})</div>
-                            <div class="flex flex-wrap gap-1.5">
-                                ${Object.values(elements).map(e => {
-                                    const elActive = sys.selectedRootElements.includes(e.name);
-                                    const disabled = !elActive && sys.selectedRootElements.length >= r.quantity && r.quantity > 1;
+                    selectionButtonsHtml = `
+                        <div class="text-[8px] uppercase tracking-wider text-qi-blue font-bold opacity-60 mb-2">Chọn Thuộc Tính (${sys.selectedRootElements.length}/${r.quantity})</div>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${Object.values(elements).map(e => {
+                                const elActive = sys.selectedRootElements.includes(e.name);
+                                const disabled = !elActive && sys.selectedRootElements.length >= r.quantity && r.quantity > 1;
+                                return `
+                                    <button onclick="event.stopPropagation(); window.game.toggleCreationRootElement('${e.name}')" 
+                                        class="px-2 py-1 rounded-md border text-[8px] flex flex-col items-center gap-0.5 transition-all
+                                        ${elActive ? 'bg-qi-blue/20 border-qi-blue text-white' : 'bg-black/40 border-white/10 text-gray-400 opacity-60 hover:opacity-100'}
+                                        ${disabled ? 'cursor-not-allowed grayscale' : 'cursor-pointer'}"
+                                        ${disabled ? 'disabled' : ''}>
+                                        <div class="flex items-center gap-1">
+                                            <span>${e.icon}</span>
+                                            <span class="font-ancient">${e.name}</span>
+                                        </div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+
+                // Render Range Sliders for proportions
+                let slidersHtml = '';
+                if (sys.selectedRootElements.length > 1) {
+                    const ELEMENT_COLORS = {
+                        'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
+                        'Lôi': '#a855f7', 'Băng': '#06b6d4', 'Phong': '#94a3b8', 'Độc': '#10b981'
+                    };
+                    const classInfo = sys.getRootClassification();
+
+                    slidersHtml = `
+                        <div class="mt-3 pt-2 border-t border-white/5 space-y-1.5" onclick="event.stopPropagation()">
+                            <div class="flex justify-between items-center text-[7.5px] uppercase tracking-wider font-bold">
+                                <span class="text-qi-blue">Tỷ Lệ Thuộc Tính (Tổng: 100%)</span>
+                                <span style="color: ${ROOT_RARITY[sys.rootRarity].color}">${classInfo.name}</span>
+                            </div>
+                            <div class="space-y-1">
+                                ${sys.selectedRootElements.map(elName => {
+                                    const pct = sys.selectedRootElementProportions[elName] || 0;
+                                    const el = ROOT_ELEMENTS[elName] || SPECIAL_ELEMENTS[elName] || { icon: '✨' };
+                                    const color = ELEMENT_COLORS[elName] || '#fff';
                                     return `
-                                        <button onclick="event.stopPropagation(); window.game.toggleCreationRootElement('${e.name}')" 
-                                            class="px-2 py-1 rounded-md border text-[8px] flex flex-col items-center gap-0.5 transition-all
-                                            ${elActive ? 'bg-qi-blue/20 border-qi-blue text-white' : 'bg-black/40 border-white/10 text-gray-400 opacity-60 hover:opacity-100'}
-                                            ${disabled ? 'cursor-not-allowed grayscale' : 'cursor-pointer'}"
-                                            ${disabled ? 'disabled' : ''}>
-                                            <div class="flex items-center gap-1">
-                                                <span>${e.icon}</span>
-                                                <span class="font-ancient">${e.name}</span>
+                                        <div class="flex items-center justify-between gap-2 py-0.5">
+                                            <div class="flex items-center gap-1 w-16 shrink-0 text-[8px] font-medium" style="color: ${color}">
+                                                <span>${el.icon}</span>
+                                                <span class="font-ancient">${elName}</span>
+                                                <span class="font-mono font-bold ml-auto">${pct}%</span>
                                             </div>
-                                        </button>
+                                            <input type="range" min="0" max="100" value="${pct}" 
+                                                class="flex-grow h-0.5 bg-white/5 rounded appearance-none cursor-pointer accent-qi-blue transition-all"
+                                                style="background: linear-gradient(to right, ${color} 0%, ${color} ${pct}%, rgba(255,255,255,0.05) ${pct}%, rgba(255,255,255,0.05) 100%) !important"
+                                                oninput="window.game.adjustCreationRootProportion('${elName}', this.value)"
+                                            >
+                                        </div>
                                     `;
                                 }).join('')}
+                            </div>
+                            ${!classInfo.isBalanced ? `
+                                <div class="text-[7px] text-red-400 bg-red-500/5 border border-red-500/10 px-1.5 py-0.5 rounded leading-tight flex items-start gap-1">
+                                    <i class="ph ph-warning-circle text-[8px] mt-0.5 shrink-0"></i>
+                                    <span>Tạp linh căn lệch: giảm ${Math.round((1 - classInfo.multiplierScale) * 100)}% tốc độ tu luyện! Kéo cân bằng để tối ưu.</span>
+                                </div>
+                            ` : `
+                                <div class="text-[7px] text-green-400 bg-green-500/5 border border-green-500/10 px-1.5 py-0.5 rounded leading-tight flex items-start gap-1">
+                                    <i class="ph ph-sparkle text-[8px] mt-0.5 shrink-0"></i>
+                                    <span>Hòa hợp: +${Math.round((classInfo.multiplierScale - 1) * 100)}% tốc độ hấp thu linh lực.</span>
+                                </div>
+                            `}
+                        </div>
+                    `;
+                } else if (sys.selectedRootElements.length === 1) {
+                    const elName = sys.selectedRootElements[0];
+                    const el = ROOT_ELEMENTS[elName] || SPECIAL_ELEMENTS[elName] || { icon: '✨' };
+                    slidersHtml = `
+                        <div class="mt-4 pt-3 border-t border-white/5" onclick="event.stopPropagation()">
+                            <div class="text-[7.5px] text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-1.5 rounded-lg leading-tight flex items-center gap-1">
+                                <i class="ph ph-sparkle text-[9px]"></i>
+                                <span>Tinh thể ${el.icon} ${elName} tinh thuần đạt độ tinh khiết tuyệt đối 100%!</span>
                             </div>
                         </div>
                     `;
                 }
+
+                elementsHtml = `
+                    <div class="mt-3 pt-3 border-t border-white/5">
+                        ${selectionButtonsHtml}
+                        ${slidersHtml}
+                    </div>
+                `;
             }
 
             return `
