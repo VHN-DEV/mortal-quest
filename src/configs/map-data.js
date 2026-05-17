@@ -48,6 +48,10 @@ export const WORLDS = {
                 description: 'Thôn trang phàm nhân hẻo lánh, nơi cuộc hành trình bắt đầu.',
                 resources: ['Linh Thảo', 'Linh Cát'],
                 energies: [{ type: 'linh_khi', concentration: 5, purity: 'TAP' }],
+                elementQi: {
+                    'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20,
+                    'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0
+                },
                 eventProbs: { combat: 0.1, loot: 0.2, npc: 0.1, empty: 0.6 },
                 regionId: 'thien_nam',
                 regionName: 'Thiên Nam Đại Lục',
@@ -66,6 +70,10 @@ export const WORLDS = {
                     { type: 'linh_khi', element: 'Thổ', concentration: 25, purity: 'TINH_THUAN' },
                     { type: 'linh_khi', element: 'Mộc', concentration: 15, purity: 'TINH_THUAN' }
                 ],
+                elementQi: {
+                    'Kim': 10, 'Mộc': 30, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30,
+                    'Phong': 5, 'Lôi': 5, 'Băng': 0, 'Quang': 0, 'Ám': 0
+                },
                 eventProbs: { combat: 0.05, loot: 0.1, npc: 0.45, empty: 0.4 },
                 regionId: 'thien_nam',
                 regionName: 'Thiên Nam Đại Lục',
@@ -81,6 +89,10 @@ export const WORLDS = {
                 description: 'Nơi yêu thú sơ cấp hoành hành, đầy rẫy linh thảo thiên nhiên.',
                 resources: ['Linh Thảo', 'Yêu Đan Hạ Phẩm'],
                 energies: [{ type: 'linh_khi', element: 'Mộc', concentration: 15, purity: 'TINH_THUAN' }, { type: 'yeu_khi', concentration: 20, purity: 'TAP' }, { type: 'sinh_khi', concentration: 5, purity: 'TINH_THUAN' }],
+                elementQi: {
+                    'Kim': 5, 'Mộc': 50, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 10,
+                    'Phong': 10, 'Lôi': 5, 'Băng': 0, 'Quang': 0, 'Ám': 0
+                },
                 eventProbs: { combat: 0.25, loot: 0.15, npc: 0.05, empty: 0.55 },
                 regionId: 'thien_nam',
                 regionName: 'Thiên Nam Đại Lục',
@@ -96,6 +108,10 @@ export const WORLDS = {
                 description: 'Kiếm đạo thánh địa, nơi vạn kiếm quy tông.',
                 resources: ['Kiếm Ý', 'Linh Khoáng'],
                 energies: [{ type: 'kiem_khi', concentration: 60, purity: 'CUC_PHAM' }, { type: 'linh_khi', element: 'Kim', concentration: 30, purity: 'TINH_THUAN' }, { type: 'hao_nhien_chinh_khi', concentration: 10, purity: 'TINH_THUAN' }],
+                elementQi: {
+                    'Kim': 50, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 10,
+                    'Phong': 5, 'Lôi': 5, 'Băng': 0, 'Quang': 0, 'Ám': 0
+                },
                 eventProbs: { combat: 0.02, loot: 0.03, npc: 0.4, empty: 0.55 },
                 regionId: 'thien_nam',
                 regionName: 'Thiên Nam Đại Lục',
@@ -111,6 +127,10 @@ export const WORLDS = {
                 description: 'U ám tà khí, nơi ma tu thường xuyên ẩn nấp phục kích.',
                 resources: ['Âm Sát', 'Ma Thạch'],
                 energies: [{ type: 'ma_khi', concentration: 80, purity: 'TINH_THUAN' }, { type: 'tu_khi', concentration: 40, purity: 'TAP' }, { type: 'hon_khi', concentration: 10, purity: 'TAP' }],
+                elementQi: {
+                    'Kim': 5, 'Mộc': 5, 'Thủy': 10, 'Hỏa': 5, 'Thổ': 5,
+                    'Phong': 10, 'Lôi': 10, 'Băng': 10, 'Quang': 0, 'Ám': 40
+                },
                 eventProbs: { combat: 0.4, loot: 0.1, npc: 0.05, empty: 0.45 },
                 regionId: 'thien_nam',
                 regionName: 'Thiên Nam Đại Lục',
@@ -200,6 +220,10 @@ export const WORLDS = {
                 description: 'Vùng biển hỗn loạn với vô số đảo nhỏ và yêu thú thủy tộc.',
                 resources: ['Thủy Tinh', 'Linh Thạch Hạ Phẩm'],
                 energies: [{ type: 'linh_khi', element: 'Thủy', concentration: 20, purity: 'TINH_THUAN' }],
+                elementQi: {
+                    'Kim': 4, 'Mộc': 5, 'Thủy': 30, 'Hỏa': 5, 'Thổ': 6,
+                    'Phong': 10, 'Lôi': 20, 'Băng': 20, 'Quang': 0, 'Ám': 0
+                },
                 eventProbs: { combat: 0.2, loot: 0.1, npc: 0.05, empty: 0.65 },
                 regionId: 'loan_tinh_hai',
                 regionName: 'Loạn Tinh Hải',

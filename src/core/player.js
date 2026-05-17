@@ -793,47 +793,47 @@ export class Player {
             proportions = { 'Kim': 0.2, 'Mộc': 0.2, 'Thủy': 0.2, 'Hỏa': 0.2, 'Thổ': 0.2 };
         }
 
-        // Calculate environmental Qi absorption
+        // Get location specific elementQi or default balanced
+        const defaultQi = {
+            'Kim': 15, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 15,
+            'Phong': 5, 'Lôi': 5, 'Băng': 5, 'Quang': 5, 'Ám': 5
+        };
+        const elementQi = (loc && loc.elementQi) ? loc.elementQi : defaultQi;
+
+        // Get overall Linh Qi concentration in the area
+        let areaConcentration = 10;
+        let hasLinhKhi = false;
+        energies.forEach(eng => {
+            if (eng.type === 'linh_khi' || eng.type === 'tien_khi') {
+                areaConcentration = Math.max(areaConcentration, eng.concentration);
+                hasLinhKhi = true;
+            }
+        });
+        if (!hasLinhKhi && energies.length > 0) {
+            areaConcentration = Math.max(...energies.map(e => e.concentration || 0));
+        }
+
+        // Calculate environmental Qi absorption based on local distribution
         let totalAbsorbedQi = 0;
         
         // Sum up Qi absorption for each of player's root elements
         Object.entries(proportions).forEach(([elName, elPct]) => {
-            let elQi = 0;
-            let hasSpecificQiInArea = false;
+            const pct = elementQi[elName] || 0;
+            // Get elemental Qi from composition grid
+            let elQi = areaConcentration * (pct / 20);
             
-            // Check if there is specific elemental Qi in the area
-            energies.forEach(eng => {
-                if ((eng.type === 'linh_khi' || eng.type === 'tien_khi') && eng.element === elName) {
-                    elQi += eng.concentration;
-                    hasSpecificQiInArea = true;
-                }
-            });
-
-            // If there's no matching specific element in energies, but general linh_khi/tien_khi exists
-            if (!hasSpecificQiInArea) {
-                energies.forEach(eng => {
-                    if (eng.type === 'linh_khi' || eng.type === 'tien_khi') {
-                        if (!eng.element) {
-                            // General pure Qi contains all elements
-                            elQi += eng.concentration;
-                            hasSpecificQiInArea = true;
-                        }
-                    }
-                });
-            }
-            
-            // Baseline very thin Qi if there is no matching elemental Qi in this area at all
-            if (!hasSpecificQiInArea) {
-                elQi = 0.5; // extremely low! Slows down single elements if not in their matching area
+            // Baseline very thin Qi if not present in the location at all
+            if (pct === 0) {
+                elQi = 0.5;
             }
             
             totalAbsorbedQi += elQi * elPct;
         });
 
-        // Normalize the multiplier: standard starter town (Thanh Vân Trấn) has Qi = 10 -> mult = 1.0
+        // Normalize the multiplier: standard starter town has Qi = 10 -> mult = 1.0
         const mult = totalAbsorbedQi / 10;
         
-        // Keep within safe minimum bound (e.g. 0.02) so it never completely freezes, but feels extremely slow
+        // Keep within safe minimum bound so it never completely freezes
         return Math.max(0.02, mult);
     }
 

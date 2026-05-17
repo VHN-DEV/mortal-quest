@@ -50,6 +50,7 @@ export class MapScreen {
         this.elEnvConcentration = document.getElementById('env-concentration');
         this.elEnvTimeRate = document.getElementById('env-timerate');
         this.elEnvPurityTag = document.getElementById('env-purity-tag');
+        this.elEnvElementQiGrid = document.getElementById('env-element-qi-grid');
 
         // Buttons
         this.btnMove = document.getElementById('btn-move');
@@ -480,6 +481,43 @@ export class MapScreen {
         }
         if (this.elEnvTimeRate) {
             this.elEnvTimeRate.textContent = `${(loc.timeRate || 1.0).toFixed(1)}x`;
+        }
+
+        // Render 10-element Local Qi Distribution Grid
+        if (this.elEnvElementQiGrid) {
+            const ELEMENT_COLORS = {
+                'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
+                'Phong': '#94a3b8', 'Lôi': '#fbbf24', 'Băng': '#60a5fa', 'Quang': '#fffbeb', 'Ám': '#a855f7'
+            };
+            const ELEMENT_ICONS = {
+                'Kim': '⚔️', 'Mộc': '🌿', 'Thủy': '💧', 'Hỏa': '🔥', 'Thổ': '⛰️',
+                'Phong': '🌪️', 'Lôi': '⚡', 'Băng': '❄️', 'Quang': '☀️', 'Ám': '🌙'
+            };
+
+            // Get location specific elementQi or default balanced
+            const defaultQi = {
+                'Kim': 15, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 15,
+                'Phong': 5, 'Lôi': 5, 'Băng': 5, 'Quang': 5, 'Ám': 5
+            };
+            const elementQi = loc.elementQi || defaultQi;
+
+            const elements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ', 'Phong', 'Lôi', 'Băng', 'Quang', 'Ám'];
+            this.elEnvElementQiGrid.innerHTML = elements.map(el => {
+                const pct = elementQi[el] || 0;
+                const color = ELEMENT_COLORS[el];
+                const icon = ELEMENT_ICONS[el];
+                const active = pct > 0;
+
+                return `
+                    <div class="flex flex-col items-center justify-center p-1.5 rounded-lg border transition-all select-none
+                        ${active ? 'bg-white/[0.02] border-white/10' : 'bg-black/10 border-white/[0.02] opacity-30'}"
+                        style="${active ? `border-color: ${color}20 !important; box-shadow: inset 0 0 4px ${color}10 !important;` : ''}">
+                        <span class="text-xs filter drop-shadow-[0_0_2px_${color}]" style="color: ${color}">${icon}</span>
+                        <span class="text-[7px] font-ancient font-semibold text-gray-400 mt-0.5">${el}</span>
+                        <span class="text-[8px] font-mono font-bold mt-0.5" style="color: ${active ? color : '#6b7280'}">${pct}%</span>
+                    </div>
+                `;
+            }).join('');
         }
     }
 
