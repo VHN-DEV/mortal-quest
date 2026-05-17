@@ -190,6 +190,11 @@ export class CheatSystem {
     actionSignIn() {
         if (this.systemId !== 'sign_in' || !this.signInState.available) return false;
 
+        const currentDay = state.systems.time ? state.systems.time.totalDays : 0;
+        this.signInState.totalDays++;
+        this.signInState.lastDayClaimed = currentDay;
+        this.signInState.available = false;
+
         this.generateRewards();
         return true;
     }
@@ -201,6 +206,7 @@ export class CheatSystem {
         if (this.systemId !== 'mission' || !this.missionState.currentMission) return false;
         if (!this.missionState.currentMission.completed || this.missionState.currentMission.claimed) return false;
 
+        this.missionState.currentMission.claimed = true;
         this.generateRewards();
         return true;
     }
@@ -211,6 +217,7 @@ export class CheatSystem {
     actionCheckIn() {
         if (!this.canCheckIn()) return false;
 
+        this.locationState.claimed = true;
         this.generateRewards();
         return true;
     }
@@ -279,18 +286,6 @@ export class CheatSystem {
             }
         });
 
-        // Mark as claimed
-        const currentDay = state.systems.time ? state.systems.time.totalDays : 0;
-        if (this.systemId === 'sign_in') {
-            this.signInState.totalDays++;
-            this.signInState.lastDayClaimed = currentDay;
-            this.signInState.available = false;
-        } else if (this.systemId === 'mission') {
-            this.missionState.currentMission.claimed = true;
-        } else if (this.systemId === 'check_in_loc') {
-            this.locationState.claimed = true;
-        }
-
         this.pendingRewards = null;
         
         // If the day has advanced since the task was rolled, trigger onDayChanged to roll the next daily item immediately
@@ -310,18 +305,6 @@ export class CheatSystem {
             this.player.addLingShi(chosen.qty);
         } else {
             this.player.inventory.addItem(chosen.id, chosen.qty);
-        }
-
-        // Mark system state as claimed
-        const currentDay = state.systems.time ? state.systems.time.totalDays : 0;
-        if (this.systemId === 'sign_in') {
-            this.signInState.totalDays++;
-            this.signInState.lastDayClaimed = currentDay;
-            this.signInState.available = false;
-        } else if (this.systemId === 'mission') {
-            this.missionState.currentMission.claimed = true;
-        } else if (this.systemId === 'check_in_loc') {
-            this.locationState.claimed = true;
         }
 
         const oldPending = [...this.pendingRewards];

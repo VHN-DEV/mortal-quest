@@ -217,7 +217,7 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 500,
         description: 'Ghi chép cách luyện chế [[thanh_tam_dan|Thanh Tâm Đan]] từ [[linh_thao_10y|Linh Thảo (10 năm)]] và [[chu_sa_muc|Chu Sa Linh Mực]].',
-        effect: { type: 'learn_recipe', value: 'than_tam_dan' }
+        effect: { type: 'learn_recipe', value: 'thanh_tam_dan' }
     },
     'dp_truc_co_dan': {
         id: 'dp_truc_co_dan',
@@ -2076,7 +2076,7 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 2500,
         description: 'Ghi chép cách luyện chế Thanh Tâm Đan.',
-        effect: { type: 'learn_recipe', value: 'than_tam_dan' }
+        effect: { type: 'learn_recipe', value: 'thanh_tam_dan' }
     },
     'recipe_truc_co': {
         id: 'recipe_truc_co',

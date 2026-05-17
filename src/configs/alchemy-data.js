@@ -130,9 +130,9 @@ export const ALCHEMY_RECIPES = [
         description: 'Dùng để tăng tốc độ tích lũy linh khí cho Luyện Khí cảnh.'
     },
     {
-        id: 'than_tam_dan',
+        id: 'thanh_tam_dan',
         name: 'Thanh Tâm Đan',
-        resultId: 'than_tam_dan',
+        resultId: 'thanh_tam_dan',
         level: 2,
         materials: [
             { id: 'linh_thao_10y', quantity: 2 },
