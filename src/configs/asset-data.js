@@ -104,6 +104,7 @@ export const ASSETS = {
         player: getAssetUrl('players/player_male'),
         player_male: getAssetUrl('players/player_male'),
         player_female: getAssetUrl('players/player_female'),
+        player_legacy: getAssetUrl('players/player_legacy'),
         bach_tu_linh: getAssetUrl('portraits/bach_tu_linh'),
         du_nhuoc_nhan: getAssetUrl('portraits/du_nhuoc_nhan'),
         han_phi_vu: getAssetUrl('portraits/han_phi_vu'),

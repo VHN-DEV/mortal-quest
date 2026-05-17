@@ -855,13 +855,15 @@ window.renderCreationScreen = () => {
     // Avatar Gallery
     const elAvatarList = document.getElementById('creation-avatar-list');
     if (elAvatarList) {
-        const avatars = ['player_male', 'player_female'];
+        const avatars = sys.playerGender === 'Nam' 
+            ? ['player_male', 'han_phi_vu', 'bach_tu_linh', 'player_legacy']
+            : ['player_female', 'du_nhuoc_nhan', 'phuong_ca', 'phuong_vu', 'tran_tu_huyen', 'xich_nguyet'];
         elAvatarList.innerHTML = avatars.map(key => {
             const active = sys.playerAvatar === key;
             const url = ASSETS.portraits[key] || '';
             return `
                 <div onclick="window.game.selectCreationAvatar('${key}')" 
-                    class="w-16 h-16 shrink-0 rounded-xl border-2 ${active ? 'border-qi-blue' : 'border-transparent'} overflow-hidden cursor-pointer hover:border-qi-blue/50 transition-all">
+                    class="w-16 h-16 shrink-0 rounded-xl border-2 ${active ? 'border-qi-blue font-bold shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 'border-transparent'} overflow-hidden cursor-pointer hover:border-qi-blue/50 transition-all">
                     <img src="${url}" class="w-full h-full object-cover">
                 </div>
             `;
