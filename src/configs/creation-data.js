@@ -402,3 +402,31 @@ export const CREATION_ARTIFACTS = {
         rarity: 'Danh Khí'
     }
 };
+
+export const CREATION_SYSTEMS = [
+    {
+        id: 'sign_in',
+        name: 'Thần Cấp Ký Đáo Hệ Thống',
+        description: 'Điểm danh mỗi ngày để nhận quà ngẫu nhiên hoặc tài bảo cực phẩm từ chư thiên vạn giới.',
+        icon: '💎',
+        difficulty: 'Dễ dàng',
+        rewardStyle: 'Rương Quà / Nhận Trực Tiếp / 3 Chọn 1'
+    },
+    {
+        id: 'mission',
+        name: 'Chí Cao Nhiệm Vụ Hệ Thống',
+        description: 'Mỗi ngày ban bố các nhiệm vụ tu hành đơn giản. Hoàn thành để nhận đại lượng đạo phẩm.',
+        icon: '📜',
+        difficulty: 'Trung bình',
+        rewardStyle: 'Hộp Quà / Lựa Chọn 1 Trong 3'
+    },
+    {
+        id: 'check_in_loc',
+        name: 'Chư Thiên Đánh Dấu Hệ Thống',
+        description: 'Chu du vạn giới, đánh dấu tại các linh sơn phúc địa yêu cầu để nhận tuyệt thế cơ duyên.',
+        icon: '📍',
+        difficulty: 'Khám phá',
+        rewardStyle: 'Trực Tiếp / Cổ Bảo Rương'
+    }
+];
+

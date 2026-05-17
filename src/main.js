@@ -13,7 +13,7 @@ import { getRealmById, HUMAN_REALMS } from './configs/realm-data.js';
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
 import { SEEDS } from './configs/garden-data.js';
 import { SECTS, getSectById } from './configs/sect-data.js';
-import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS } from './configs/creation-data.js';
+import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS, CREATION_SYSTEMS } from './configs/creation-data.js';
 import { PHYSIQUES } from './configs/physique-data.js';
 import { TITLES } from './configs/fate-data.js';
 import { NPCScreen } from './ui/screens/NPCScreen.js';
@@ -778,6 +778,35 @@ window.renderCreationScreen = () => {
             `;
         }).join('');
     }
+
+    // Cheat Systems List
+    const elSystems = document.getElementById('creation-systems-list');
+    if (elSystems) {
+        elSystems.innerHTML = CREATION_SYSTEMS.map(s => {
+            const active = sys.selectedCheatSystem === s.id;
+            return `
+                <button onclick="window.game.selectCreationCheatSystem('${s.id}')" 
+                    class="q-card text-left ${active ? 'active border-amber-500/80 shadow-[0_0_15px_rgba(245,158,11,0.15)]' : 'text-gray-400 border-white/10'} w-full transition-all duration-300">
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-base text-amber-400"><i class="${s.icon}"></i></span>
+                            <div class="q-title font-ancient ${active ? 'text-cultivation-gold' : 'text-white/80'}">${s.name}</div>
+                        </div>
+                        <div class="text-[8px] px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-cultivation-gold uppercase font-bold tracking-wider">
+                            ${s.difficulty}
+                        </div>
+                    </div>
+                    <div class="q-desc mt-1.5 text-left">${s.desc}</div>
+                    <div class="q-bonus-list mt-2 flex flex-wrap gap-1">
+                        <span class="q-bonus-tag text-[8px] font-ancient" style="color: #fbbf24; background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.2)">
+                            Kiểu nhận: ${s.claimStyle === 'direct' ? 'Nhận Trực Tiếp' : s.claimStyle === 'chest' ? 'Rương Ngẫu Nhiên' : 'Chọn 1 Trong 3'}
+                        </span>
+                    </div>
+                </button>
+            `;
+        }).join('');
+    }
+
 
     // --- Artifacts List ---
     const elArtifacts = document.getElementById('creation-artifacts-list');

@@ -100,6 +100,7 @@ export class Player {
         this.age = 18;
         this.createdAt = Date.now();
         this.maxAge = 100;
+        this.cheatSystemId = null;
         this.spiritualRoot = null;
         this.physique = {
             id: 'binh_thuong',
@@ -1773,6 +1774,7 @@ export class Player {
             fame: this.fame,
             evil: this.evil,
             fate: JSON.parse(JSON.stringify(this.fate)),
+            cheatSystemId: this.cheatSystemId,
             
             // Resources
             spiritStoneSettings: { ...this.spiritStoneSettings },
@@ -1921,6 +1923,7 @@ export class Player {
         this.fame = data.fame || 0;
         this.evil = data.evil || 0;
         if (data.fate) this.fate = { ...this.fate, ...data.fate };
+        this.cheatSystemId = data.cheatSystemId || null;
 
         // Resources
         if (data.spiritStoneSettings) this.spiritStoneSettings = { ...this.spiritStoneSettings, ...data.spiritStoneSettings };

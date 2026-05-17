@@ -27,6 +27,7 @@ export class CreationSystem {
         this.startingLingShi = 0;
         this.startingRealmId = 0;
         this.selectedArtifact = 'none';
+        this.selectedCheatSystem = 'sign_in';
 
         // Secondary Talents (Values from 1-100)
         this.talents = {
@@ -65,6 +66,11 @@ export class CreationSystem {
         }
         this.calculatePoints();
     }
+
+    selectCheatSystem(systemId) {
+        this.selectedCheatSystem = systemId;
+    }
+
 
     selectRoot(rootId) {
         this.selectedRoot = rootId;
@@ -325,6 +331,9 @@ export class CreationSystem {
             player.unlockTitle(origin.startingTitle);
             player.equipTitle(origin.startingTitle);
         }
+
+        // Apply Cheat System
+        player.cheatSystemId = this.selectedCheatSystem;
 
         // Apply Traits
         this.selectedTraits.forEach(traitId => {

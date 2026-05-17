@@ -10,6 +10,7 @@ import { getItemById } from './configs/item-data.js';
 import { Preferences } from '@capacitor/preferences';
 import { getSectById } from './configs/sect-data.js';
 import { getRealmById } from './configs/realm-data.js';
+import { CREATION_SYSTEMS } from './configs/creation-data.js';
 
 // Screens will be loaded dynamically
 import { logger } from './utils/logger.js';
@@ -42,6 +43,8 @@ import { MiningSystem } from './systems/mining-system.js';
 
 import { MissionSystem } from './systems/MissionSystem.js';
 import { MissionScreen } from './ui/screens/MissionScreen.js';
+import { CheatSystem } from './systems/CheatSystem.js';
+import { CheatSystemScreen } from './ui/screens/CheatSystemScreen.js';
 
 export class Game {
     constructor() {
@@ -108,6 +111,7 @@ export class Game {
         this.screens.kyTrungBang = new KyTrungBangScreen();
         this.screens.mission = new MissionScreenImport();
         this.screens.loot = new LootScreen();
+        this.screens.cheat = new CheatSystemScreen();
 
         state.systems.creation = new CreationSystem();
 
@@ -192,6 +196,12 @@ export class Game {
             if (state.player.isSecluded) this.exitSeclusion();
             else this.enterSeclusion();
         };
+
+        const btnOpenCheat = document.getElementById('btn-open-cheat-system');
+        if (btnOpenCheat) btnOpenCheat.onclick = () => {
+            if (this.screens.cheat) this.screens.cheat.open();
+        };
+
 
         const muteBtn = document.getElementById('btn-toggle-mute');
         if (muteBtn) {
@@ -400,7 +410,22 @@ export class Game {
         }
         if (this.screens.spiritStone) this.screens.spiritStone.render();
         if (this.screens.mining) this.screens.mining.render();
+
+        // Update Cheat System button
+        const elSystemContainer = document.getElementById('main-cheat-system-container');
+        if (elSystemContainer) {
+            const hasCheat = state.player && !!state.player.cheatSystemId;
+            elSystemContainer.classList.toggle('hidden', !hasCheat);
+            if (hasCheat) {
+                const elSystemName = document.getElementById('main-cheat-system-name');
+                if (elSystemName) {
+                    const sysConfig = (CREATION_SYSTEMS || []).find(s => s.id === state.player.cheatSystemId);
+                    elSystemName.textContent = sysConfig ? sysConfig.name : 'Hệ Thống Bàn Tay Vàng';
+                }
+            }
+        }
     }
+
 
     // --- Persistence ---
     async saveGame() {
@@ -412,6 +437,7 @@ export class Game {
             if (state.systems.time) data.time = state.systems.time.save();
             if (state.systems.npc) data.npcData = state.systems.npc.saveData();
             if (state.systems.social) data.socialData = state.systems.social.getData();
+            if (state.systems.cheat) data.cheat = state.systems.cheat.save();
             if (state.systems.mountain) {
                 data.mountain = {
                     discovery: state.systems.mountain.discovery,
@@ -573,10 +599,12 @@ export class Game {
             social: new SocialSystem(),
             fate: new FateSystem(player, state.ui),
             mining: new MiningSystem(player, state.ui),
-            mission: new MissionSystem()
+            mission: new MissionSystem(),
+            cheat: new CheatSystem(player, state.ui)
         });
 
         state.systems.mission.init();
+        state.systems.cheat.init();
 
         this.screens.fate.player = player;
 
@@ -584,6 +612,7 @@ export class Game {
             if (savedData.npcData) state.systems.npc.loadData(savedData.npcData);
             if (savedData.socialData) state.systems.social.loadData(savedData.socialData);
             if (savedData.time) state.systems.time.load(savedData.time);
+            if (savedData.cheat) state.systems.cheat.load(savedData.cheat);
             if (savedData.mountain) {
                 state.systems.mountain.discovery = savedData.mountain.discovery || {};
                 state.systems.mountain.bossDefeated = savedData.mountain.bossDefeated || {};
@@ -1528,6 +1557,14 @@ export class Game {
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }
+
+    selectCreationCheatSystem(systemId) {
+        if (state.systems.creation) {
+            state.systems.creation.selectCheatSystem(systemId);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
 
     selectCreationArtifact(artifactId) {
         if (state.systems.creation) {

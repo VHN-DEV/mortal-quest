@@ -120,6 +120,9 @@ export class TimeSystem {
 
     onDayChanged() {
         // Daily resets or events
+        if (state.systems.cheat) {
+            state.systems.cheat.onDayChanged();
+        }
     }
 
     onMonthChanged() {
