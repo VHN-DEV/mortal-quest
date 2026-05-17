@@ -21,7 +21,7 @@ export class UISystem {
         
         // Time Display Elements
         this.elTimeEra = document.getElementById('time-era');
-        this.elTimeYearMonth = document.getElementById('time-year-month');
+        this.elTimeYearMonth = document.getElementById('time-date');
         this.elTimeSeason = document.getElementById('time-season');
         this.elTimeHour = document.getElementById('time-hour');
         this.elTimePhenomenon = document.getElementById('time-phenomenon');
