@@ -12,7 +12,7 @@
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
 
     <!-- Loading Screen (Splash) -->
-    <%- include('./src/html/overlays/loading-screen.html') %>
+    <%- include('./src/ui/overlays/loading-screen.html') %>
 
     <!-- Desktop Vignette & Background Overlay -->
     <div
@@ -25,16 +25,16 @@
         class="relative h-screen w-full max-w-md mx-auto bg-black flex flex-col shadow-2xl shadow-qi-purple/20">
 
         <!-- Loot Acquired Overlay -->
-        <%- include('./src/html/overlays/loot-acquired.html') %>
+        <%- include('./src/ui/overlays/loot-acquired.html') %>
 
         <!-- Appearance (Xuất Thế) Overlay for Legendary Items -->
-        <%- include('./src/html/overlays/appearance.html') %>
+        <%- include('./src/ui/overlays/appearance.html') %>
 
         <!-- Global Header -->
-        <%- include('./src/html/components/header.html') %>
+        <%- include('./src/ui/components/header.html') %>
 
         <!-- Time HUD -->
-        <%- include('./src/html/components/time-hud.html') %>
+        <%- include('./src/ui/components/time-hud.html') %>
 
         <!-- Main Content Area (Tabs) -->
         <main class="flex-grow relative overflow-hidden">
@@ -50,83 +50,86 @@
             </div>
 
             <!-- Tab 0: Khởi Tạo Nhân Vật (New) -->
-            <%- include('./src/html/screens/creation.html') %>
+            <%- include('./src/ui/screens/creation.html') %>
 
             <!-- Guide Overlay (Cẩm nang tu tiên) -->
-            <%- include('./src/html/overlays/guide.html') %>
+            <%- include('./src/ui/overlays/guide.html') %>
 
             <!-- Tab 1: Màn Hình Tu Luyện Chính -->
-            <%- include('./src/html/screens/main.html') %>
+            <%- include('./src/ui/screens/main.html') %>
 
             <!-- Tab 2: Nhân Thế (Tab NPC) -->
-            <%- include('./src/html/screens/npc.html') %>
+            <%- include('./src/ui/screens/npc.html') %>
 
             <!-- Tab 3: Lịch Luyện / Bản Đồ Thế Giới -->
-            <%- include('./src/html/screens/adventure.html') %>
+            <%- include('./src/ui/screens/adventure.html') %>
 
             <!-- Tab 4: Bản Tòa / Chỉ Số Nhân Vật -->
-            <%- include('./src/html/screens/character.html') %>
+            <%- include('./src/ui/screens/character.html') %>
 
             <!-- Tab 5: Luyện Đan -->
-            <%- include('./src/html/screens/alchemy.html') %>
+            <%- include('./src/ui/screens/alchemy.html') %>
 
             <!-- Tab 6: Túi Trữ Vật / Trang Bị -->
-            <%- include('./src/html/screens/inventory.html') %>
+            <%- include('./src/ui/screens/inventory.html') %>
 
             <!-- Tab 7: Bách Nghệ Hub chọn ngành nghề phụ -->
-            <%- include('./src/html/screens/crafting-hub.html') %>
+            <%- include('./src/ui/screens/crafting-hub.html') %>
 
             <!-- Sub-views/screens of Tab 7 -->
-            <%- include('./src/html/screens/talisman.html') %>
-            <%- include('./src/html/screens/smithing.html') %>
-            <%- include('./src/html/screens/formation.html') %>
-            <%- include('./src/html/screens/corpse.html') %>
-            <%- include('./src/html/screens/beast.html') %>
-            <%- include('./src/html/screens/puppet.html') %>
+            <%- include('./src/ui/screens/talisman.html') %>
+            <%- include('./src/ui/screens/smithing.html') %>
+            <%- include('./src/ui/screens/formation.html') %>
+            <%- include('./src/ui/screens/corpse.html') %>
+            <%- include('./src/ui/screens/beast.html') %>
+            <%- include('./src/ui/screens/puppet.html') %>
 
             <!-- Tab 8: Công Pháp chủ tu & Bí pháp -->
-            <%- include('./src/html/screens/technique.html') %>
+            <%- include('./src/ui/screens/technique.html') %>
 
         </main>
 
         <!-- Bottom Navigation -->
-        <%- include('./src/html/components/navigation.html') %>
+        <%- include('./src/ui/components/navigation.html') %>
 
         <!-- --- GLOBAL UI OVERLAYS --- -->
-        <%- include('./src/html/overlays/map-location-view.html') %>
-        <%- include('./src/html/overlays/map-explore-view.html') %>
-        <%- include('./src/html/overlays/npc-trade.html') %>
-        <%- include('./src/html/overlays/guild.html') %>
-        <%- include('./src/html/overlays/mountain.html') %>
-        <%- include('./src/html/overlays/tower.html') %>
-        <%- include('./src/html/overlays/sects.html') %>
-        <%- include('./src/html/overlays/npc-detail.html') %>
-        <%- include('./src/html/overlays/shop.html') %>
-        <%- include('./src/html/overlays/garden-menu.html') %>
-        <%- include('./src/html/overlays/stats.html') %>
-        <%- include('./src/html/overlays/destiny.html') %>
-        <%- include('./src/html/overlays/ambush.html') %>
-        <%- include('./src/html/overlays/chase.html') %>
-        <%- include('./src/html/overlays/mining.html') %>
-        <%- include('./src/html/overlays/item-detail.html') %>
-        <%- include('./src/html/overlays/modal.html') %>
-        <%- include('./src/html/overlays/location-detail.html') %>
-        <%- include('./src/html/overlays/di-hoa-bang.html') %>
-        <%- include('./src/html/overlays/di-loi-bang.html') %>
-        <%- include('./src/html/overlays/ky-trung-bang.html') %>
-        <%- include('./src/html/overlays/linh-the-luc.html') %>
-        <%- include('./src/html/overlays/phap-bao-luc.html') %>
-        <%- include('./src/html/overlays/chung-toc-luc.html') %>
-        <%- include('./src/html/overlays/loading.html') %>
-        <%- include('./src/html/overlays/spirit-stone.html') %>
-        <%- include('./src/html/overlays/cheat-system.html') %>
-        <%- include('./src/html/overlays/battle.html') %>
-        <%- include('./src/html/overlays/mission.html') %>
-        <%- include('./src/html/overlays/loot-screen.html') %>
-        <%- include('./src/html/overlays/global-tooltip.html') %>
+        <%- include('./src/ui/overlays/map-location-view.html') %>
+        <%- include('./src/ui/overlays/map-explore-view.html') %>
+        <%- include('./src/ui/overlays/npc-trade.html') %>
+        <%- include('./src/ui/overlays/guild.html') %>
+        <%- include('./src/ui/overlays/mountain.html') %>
+        <%- include('./src/ui/overlays/tower.html') %>
+        <%- include('./src/ui/overlays/sects.html') %>
+        <%- include('./src/ui/overlays/npc-detail.html') %>
+        <%- include('./src/ui/overlays/shop.html') %>
+        <%- include('./src/ui/overlays/garden-menu.html') %>
+        <%- include('./src/ui/overlays/stats.html') %>
+        <%- include('./src/ui/overlays/destiny.html') %>
+        <%- include('./src/ui/overlays/ambush.html') %>
+        <%- include('./src/ui/overlays/chase.html') %>
+        <%- include('./src/ui/overlays/mining.html') %>
+        <%- include('./src/ui/overlays/item-detail.html') %>
+        <%- include('./src/ui/overlays/modal.html') %>
+        <%- include('./src/ui/overlays/location-detail.html') %>
+        <%- include('./src/ui/overlays/di-hoa-bang.html') %>
+        <%- include('./src/ui/overlays/di-loi-bang.html') %>
+        <%- include('./src/ui/overlays/ky-trung-bang.html') %>
+        <%- include('./src/ui/overlays/linh-the-luc.html') %>
+        <%- include('./src/ui/overlays/phap-bao-luc.html') %>
+        <%- include('./src/ui/overlays/chung-toc-luc.html') %>
+        <%- include('./src/ui/overlays/loading.html') %>
+        <%- include('./src/ui/overlays/spirit-stone.html') %>
+        <%- include('./src/ui/overlays/cheat-system.html') %>
+        <%- include('./src/ui/overlays/battle.html') %>
+        <%- include('./src/ui/overlays/mission.html') %>
+        <%- include('./src/ui/overlays/loot-screen.html') %>
+        <%- include('./src/ui/overlays/global-tooltip.html') %>
         
         <!-- Tab: Quản Lý Pháp Bảo (Treasure Management) -->
-        <%- include('./src/html/overlays/treasure.html') %>
+        <%- include('./src/ui/overlays/treasure.html') %>
+
+        <!-- Notification Toast Container -->
+        <div id="notification-container" class="fixed top-4 right-4 left-4 md:left-auto md:w-96 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
 
     </div>
 

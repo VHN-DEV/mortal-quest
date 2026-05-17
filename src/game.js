@@ -42,9 +42,9 @@ import { FateSystem } from './systems/fate-system.js';
 import { MiningSystem } from './systems/mining-system.js';
 
 import { MissionSystem } from './systems/MissionSystem.js';
-import { MissionScreen } from './ui/screens/MissionScreen.js';
+import { MissionScreen } from './ui/controllers/MissionScreen.js';
 import { CheatSystem } from './systems/CheatSystem.js';
-import { CheatSystemScreen } from './ui/screens/CheatSystemScreen.js';
+import { CheatSystemScreen } from './ui/controllers/CheatSystemScreen.js';
 
 export class Game {
     constructor() {
@@ -71,25 +71,25 @@ export class Game {
             { DiLoiBangScreen }, { LinhTheLucScreen }, { PhapBaoLucScreen }, { ChungTocLucScreen },
             { KyTrungBangScreen }, { MissionScreen: MissionScreenImport }, { LootScreen }
         ] = await Promise.all([
-            import('./ui/screens/MapScreen.js'),
-            import('./ui/screens/InventoryScreen.js'),
-            import('./ui/screens/CharacterScreen.js'),
-            import('./ui/screens/SystemsScreen.js'),
-            import('./ui/screens/BattleScreen.js'),
+            import('./ui/controllers/MapScreen.js'),
+            import('./ui/controllers/InventoryScreen.js'),
+            import('./ui/controllers/CharacterScreen.js'),
+            import('./ui/controllers/SystemsScreen.js'),
+            import('./ui/controllers/BattleScreen.js'),
             import('./ui/spirit-stone-ui.js'),
-            import('./ui/screens/TreasureScreen.js'),
-            import('./ui/screens/FateScreen.js'),
-            import('./ui/screens/StartScreen.js'),
-            import('./ui/screens/SaveScreen.js'),
-            import('./ui/screens/MiningScreen.js'),
-            import('./ui/screens/DiHoaBangScreen.js'),
-            import('./ui/screens/DiLoiBangScreen.js'),
-            import('./ui/screens/LinhTheLucScreen.js'),
-            import('./ui/screens/PhapBaoLucScreen.js'),
-            import('./ui/screens/ChungTocLucScreen.js'),
-            import('./ui/screens/KyTrungBangScreen.js'),
-            import('./ui/screens/MissionScreen.js'),
-            import('./ui/screens/LootScreen.js')
+            import('./ui/controllers/TreasureScreen.js'),
+            import('./ui/controllers/FateScreen.js'),
+            import('./ui/controllers/StartScreen.js'),
+            import('./ui/controllers/SaveScreen.js'),
+            import('./ui/controllers/MiningScreen.js'),
+            import('./ui/controllers/DiHoaBangScreen.js'),
+            import('./ui/controllers/DiLoiBangScreen.js'),
+            import('./ui/controllers/LinhTheLucScreen.js'),
+            import('./ui/controllers/PhapBaoLucScreen.js'),
+            import('./ui/controllers/ChungTocLucScreen.js'),
+            import('./ui/controllers/KyTrungBangScreen.js'),
+            import('./ui/controllers/MissionScreen.js'),
+            import('./ui/controllers/LootScreen.js')
         ]);
 
         this.screens.map = new MapScreen();

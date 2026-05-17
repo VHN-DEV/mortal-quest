@@ -16,7 +16,7 @@ import { SECTS, getSectById } from './configs/sect-data.js';
 import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS, CREATION_SYSTEMS } from './configs/creation-data.js';
 import { PHYSIQUES } from './configs/physique-data.js';
 import { TITLES } from './configs/fate-data.js';
-import { NPCScreen } from './ui/screens/NPCScreen.js';
+import { NPCScreen } from './ui/controllers/NPCScreen.js';
 
 window.npcScreen = new NPCScreen();
 
