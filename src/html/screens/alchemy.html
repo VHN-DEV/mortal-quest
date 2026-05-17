@@ -1,0 +1,56 @@
+<!-- Tab 4: Lò Luyện (Crafting - NEW) -->
+<div id="screen-alchemy" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
+    <div class="flex justify-between items-start mb-8">
+        <div class="flex items-center space-x-4">
+            <button onclick="game.screens.systems.openCraftingHub()"
+                class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-all active:scale-90">
+                <i class="ph ph-caret-left text-xl text-cultivation-gold"></i>
+            </button>
+            <div>
+                <h2 class="text-3xl font-charm text-cultivation-gold">Luyện Đan Các</h2>
+                <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Vạn Dược Quy Nguyên</p>
+            </div>
+        </div>
+        <div class="text-right">
+            <div id="alchemy-level-text"
+                class="text-[9px] font-ancient text-qi-blue uppercase tracking-widest">Luyện Dược Sư Sơ Cấp
+            </div>
+            <div class="w-24 h-1 bg-white/5 rounded-full mt-1.5 overflow-hidden border border-white/5">
+                <div id="alchemy-exp-bar"
+                    class="h-full bg-gradient-to-r from-qi-blue to-qi-purple shadow-[0_0_5px_rgba(79,209,197,0.5)]"
+                    style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex space-x-2 mb-8 bg-black/40 p-1 rounded-2xl border border-white/5">
+        <button id="alchemy-tab-recipes"
+            class="flex-grow py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all">Đan
+            Phương</button>
+        <button id="alchemy-tab-garden"
+            class="flex-grow py-3 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all">Linh
+            Điền</button>
+    </div>
+
+    <div id="alchemy-tools-container" class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center space-x-3">
+            <div class="text-2xl">🏺</div>
+            <div>
+                <h4 class="text-[9px] text-gray-500 uppercase">Đan Lư</h4>
+                <p id="alchemy-cauldron-name" class="text-[10px] font-bold text-white italic">Chưa có</p>
+            </div>
+        </div>
+        <div class="bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center space-x-3">
+            <div class="text-2xl">🔥</div>
+            <div>
+                <h4 class="text-[9px] text-gray-500 uppercase">Linh Hỏa</h4>
+                <p id="alchemy-flame-name" class="text-[10px] font-bold text-white italic">Chưa có</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="alchemy-recipes-view" class="flex-grow overflow-y-auto space-y-4 pr-1"></div>
+    <div id="alchemy-garden-view" class="flex-grow overflow-y-auto space-y-4 hidden pr-1">
+        <div id="garden-plots" class="grid grid-cols-1 gap-4"></div>
+    </div>
+</div>

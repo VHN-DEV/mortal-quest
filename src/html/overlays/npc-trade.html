@@ -1,0 +1,65 @@
+<!-- NPC Trade Overlay -->
+<div id="npc-trade-overlay" class="overlay hidden">
+    <div class="w-full h-full flex items-center justify-center p-4 md:p-8 bg-black/80 backdrop-blur-md">
+        <div
+            class="w-full max-w-4xl bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col h-[80vh] shadow-2xl">
+            <!-- Header -->
+            <div
+                class="p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-black to-white/5">
+                <div class="flex items-center space-x-4">
+                    <img id="npc-trade-portrait" src=""
+                        class="w-12 h-12 rounded-xl border border-white/10 object-cover" alt="NPC">
+                    <div>
+                        <h2 class="text-xl font-bold text-white tracking-widest uppercase">Giao Dịch Đạo Hữu
+                        </h2>
+                        <p id="npc-trade-name" class="text-[10px] text-qi-blue uppercase tracking-widest mt-1">
+                            Đang
+                            giao dịch với...</p>
+                    </div>
+                </div>
+                <button
+                    class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white transition-all"
+                    onclick="state.ui.toggleOverlay(document.getElementById('npc-trade-overlay'), false)">
+                    <i class="ph-x"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 flex overflow-hidden">
+                <!-- NPC Stock -->
+                <div class="w-1/2 border-r border-white/5 flex flex-col overflow-hidden">
+                    <div class="p-4 border-b border-white/5 bg-white/5">
+                        <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Vật phẩm của
+                            Đạo
+                            hữu</h3>
+                    </div>
+                    <div id="npc-trade-stock" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+                        <!-- Items go here -->
+                    </div>
+                </div>
+
+                <!-- Player Inventory / Cart -->
+                <div class="w-1/2 flex flex-col overflow-hidden">
+                    <div class="p-4 border-b border-white/5 bg-white/5 flex justify-between items-center">
+                        <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Túi đồ của
+                            ngươi
+                        </h3>
+                        <div class="text-[10px] font-bold text-cultivation-gold uppercase"
+                            id="player-trade-lingshi">0 Linh Thạch</div>
+                    </div>
+                    <div id="player-trade-inventory"
+                        class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+                        <!-- Player items go here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-6 border-t border-white/5 bg-black/40 flex justify-between items-center">
+                <div class="text-xs text-gray-500 italic">"Hàng đã trao tay, nhân quả tự chịu..."</div>
+                <button
+                    class="px-8 py-3 bg-qi-blue/20 hover:bg-qi-blue/30 border border-qi-blue/40 rounded-xl text-xs font-bold text-qi-blue uppercase tracking-widest transition-all"
+                    onclick="state.ui.toggleOverlay(document.getElementById('npc-trade-overlay'), false)">Xong</button>
+            </div>
+        </div>
+    </div>
+</div>

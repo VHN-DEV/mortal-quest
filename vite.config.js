@@ -2,10 +2,12 @@ import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
+import { ViteEjsPlugin } from 'vite-plugin-ejs';
 
 export default defineConfig({
   plugins: [
     tailwindcss(),
+    ViteEjsPlugin(),
     ViteImageOptimizer({
       exclude: /Phosphor-.*\.svg/,
       png: { quality: 80 },

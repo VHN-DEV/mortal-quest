@@ -1,0 +1,98 @@
+<!-- Dị Hỏa Bảng Overlay -->
+<div id="di-hoa-bang-overlay"
+    class="hidden overlay-full z-[450] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
+    <div
+        class="w-full max-w-md h-[90vh] bg-[#050505] border border-red-900/30 rounded-[2.5rem] flex flex-col shadow-[0_0_100px_rgba(153,27,27,0.15)] overflow-hidden relative">
+        <!-- Decorative background elements -->
+        <div
+            class="absolute -top-32 -right-32 w-64 h-64 bg-red-600/10 rounded-full blur-[100px] pointer-events-none">
+        </div>
+        <div
+            class="absolute -bottom-32 -left-32 w-64 h-64 bg-orange-600/10 rounded-full blur-[100px] pointer-events-none">
+        </div>
+
+        <!-- Header -->
+        <div
+            class="relative z-10 p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-b from-red-950/20 to-transparent">
+            <div>
+                <h2
+                    class="text-3xl font-ancient text-red-500 uppercase tracking-widest drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+                    Dị Hỏa Bảng</h2>
+                <p class="text-[9px] text-gray-500 uppercase tracking-[0.4em] mt-1">Thiên Địa Kỳ Hỏa Lục</p>
+            </div>
+            <button id="close-di-hoa-bang-btn"
+                class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-500 hover:text-white transition-all active:scale-90">
+                <i class="ph ph-x text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- List View -->
+        <div id="di-hoa-list-view" class="relative z-10 flex-grow overflow-y-auto p-4 space-y-3 custom-scroll">
+            <!-- Dynamic list items -->
+        </div>
+
+        <!-- Detail View (Initially Hidden) -->
+        <div id="di-hoa-detail-view"
+            class="hidden relative z-10 flex-grow flex flex-col overflow-y-auto custom-scroll p-6 animate-fade-in">
+            <button id="back-to-list-btn"
+                class="absolute top-4 left-4 text-gray-500 hover:text-white flex items-center space-x-2 text-[10px] uppercase tracking-widest transition-all">
+                <i class="ph ph-arrow-left"></i>
+                <span>Quay lại</span>
+            </button>
+
+            <div class="mt-8 flex flex-col items-center text-center space-y-6">
+                <div id="di-hoa-detail-icon-wrap"
+                    class="w-32 h-32 rounded-full border-2 border-red-500/30 flex items-center justify-center bg-black/60 shadow-[0_0_30px_rgba(239,68,68,0.2)] relative">
+                    <div class="absolute inset-0 rounded-full animate-ping bg-red-500/5"></div>
+                    <span id="di-hoa-detail-icon"
+                        class="text-6xl filter drop-shadow-[0_0_15px_rgba(239,68,68,0.6)]">🔥</span>
+                </div>
+
+                <div class="space-y-1">
+                    <div id="di-hoa-detail-rank"
+                        class="text-[10px] font-ancient text-red-500 uppercase tracking-[0.3em]">Hạng 1</div>
+                    <h3 id="di-hoa-detail-name" class="text-3xl font-ancient text-white tracking-widest">Đà Xá
+                        Cổ Đế</h3>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 w-full">
+                    <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                        <div class="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Màu sắc</div>
+                        <div id="di-hoa-detail-color" class="text-xs font-bold text-red-400">Vạn sắc</div>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                        <div class="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Đẳng cấp</div>
+                        <div id="di-hoa-detail-rarity" class="text-xs font-bold text-cultivation-gold">Thần
+                            Thoại</div>
+                    </div>
+                </div>
+
+                <div class="w-full space-y-4 text-left">
+                    <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
+                        <h4
+                            class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">
+                            Nguồn gốc</h4>
+                        <p id="di-hoa-detail-origin" class="text-xs text-gray-300 leading-relaxed italic"></p>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
+                        <h4
+                            class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">
+                            Đặc tính chi tiết</h4>
+                        <p id="di-hoa-detail-desc" class="text-xs text-gray-300 leading-relaxed"></p>
+                    </div>
+                    <div class="bg-red-950/20 rounded-2xl p-5 border border-red-900/20">
+                        <h4
+                            class="text-[9px] text-red-400 uppercase tracking-widest mb-3 border-b border-red-900/10 pb-2">
+                            Hiệu ứng đặc biệt</h4>
+                        <p id="di-hoa-detail-special" class="text-xs text-red-300 font-bold italic"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="relative z-10 p-6 border-t border-white/5 bg-black/40 text-center">
+            <p class="text-[8px] text-gray-600 italic">"Thiên địa hữu dị hỏa, vạn hỏa quy Đế Viêm."</p>
+        </div>
+    </div>
+</div>

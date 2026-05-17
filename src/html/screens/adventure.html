@@ -1,0 +1,33 @@
+<!-- Tab 2: Bản Đồ (Adventure) -->
+<div id="screen-adventure" class="screen hidden flex flex-col h-full overflow-hidden">
+    <div id="map-world-view" class="h-full flex flex-col relative overflow-hidden">
+        <!-- Background Decoration -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <div
+                class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-qi-blue rounded-full blur-[120px]">
+            </div>
+            <div
+                class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-qi-purple rounded-full blur-[120px]">
+            </div>
+        </div>
+
+        <div class="relative z-10 flex flex-col h-full p-6">
+            <header class="flex-none mb-8 text-center">
+                <h2
+                    class="text-4xl font-charm text-cultivation-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.3)]">
+                    Đại Giới Khung</h2>
+                <p class="text-[10px] font-ancient text-gray-500 uppercase tracking-[0.4em] mt-2">Vạn Giới
+                    Nhất Lãm</p>
+                <div class="flex justify-center mt-4">
+                    <div
+                        class="w-24 h-[1px] bg-gradient-to-r from-transparent via-cultivation-gold/50 to-transparent">
+                    </div>
+                </div>
+            </header>
+
+            <div id="world-list" class="flex-grow overflow-y-auto space-y-6 pb-20 custom-scroll">
+                <!-- World cards will be rendered here -->
+            </div>
+        </div>
+    </div>
+</div>

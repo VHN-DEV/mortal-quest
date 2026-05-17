@@ -1,0 +1,29 @@
+<!-- Loading Overlay -->
+<div id="loading-overlay"
+    class="absolute inset-0 z-[1000] hidden flex-col items-center justify-center bg-qi-ink/95 backdrop-blur-2xl">
+    <div class="relative w-32 h-32 mb-12">
+        <!-- Outer Ring with Runes -->
+        <div class="absolute inset-0 border border-dashed border-qi-blue/30 rounded-full animate-spin-slow">
+        </div>
+        <!-- Middle Ring -->
+        <div class="absolute inset-3 border border-qi-purple/20 rounded-full animate-spin-reverse"></div>
+        <!-- Inner Glowing Ring -->
+        <div
+            class="absolute inset-8 border-2 border-t-cultivation-gold border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin">
+        </div>
+        <!-- Center Symbol -->
+        <div class="absolute inset-0 flex items-center justify-center">
+            <i class="ph ph-yin-yang text-4xl text-cultivation-gold animate-pulse"></i>
+        </div>
+        <!-- Background Glow -->
+        <div class="absolute inset-0 bg-qi-blue/5 rounded-full blur-3xl animate-pulse"></div>
+    </div>
+    <div class="flex flex-col items-center space-y-4">
+        <div id="loading-text"
+            class="text-[10px] font-ancient text-cultivation-gold tracking-[0.8em] animate-pulse uppercase text-center">
+            Đang Cảm Ứng Thiên Địa...</div>
+        <div class="w-48 h-[1px] bg-gradient-to-r from-transparent via-qi-blue/30 to-transparent"></div>
+        <div class="text-[8px] text-gray-500 italic font-serif opacity-60">"Vạn vật hữu linh, quy tòng đại đạo"
+        </div>
+    </div>
+</div>

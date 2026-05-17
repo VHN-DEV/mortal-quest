@@ -1,0 +1,92 @@
+<!-- Map Explore Screen -->
+<div id="map-explore-view" class="hidden overlay-full z-[70] bg-[#05070a] relative">
+    <div id="explore-bg" class="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-105">
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-[#05070a]"></div>
+
+    <div class="relative z-20 flex-none p-6 flex justify-between items-start">
+        <button id="back-to-locations"
+            class="w-12 h-12 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 flex items-center justify-center text-qi-blue shadow-2xl active:scale-90 transition-all">
+            <i class="ph ph-arrow-left text-2xl"></i>
+        </button>
+        <div id="env-purity-tag"
+            class="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-qi-blue/20 shadow-lg text-qi-blue text-[8px] font-bold uppercase tracking-widest">
+            Linh Khí Tinh Thuần
+        </div>
+    </div>
+
+    <div class="relative z-10 flex-grow flex flex-col justify-end p-6 pb-10 space-y-8">
+        <div class="text-center space-y-4">
+            <div class="space-y-1">
+                <h3 id="current-location-name" class="text-4xl font-charm text-white drop-shadow-2xl">Vạn Thú
+                    Lâm</h3>
+                <div class="flex items-center justify-center space-x-3 opacity-60">
+                    <div class="w-12 h-[1px] bg-gradient-to-r from-transparent to-qi-blue"></div>
+                    <span id="current-world-name-sub"
+                        class="text-[9px] text-qi-blue font-ancient uppercase tracking-[0.3em]">Phàm Trần
+                        Giới</span>
+                    <div class="w-12 h-[1px] bg-gradient-to-l from-transparent to-qi-blue"></div>
+                </div>
+            </div>
+            <p id="event-text"
+                class="text-sm text-gray-300 font-serif italic leading-relaxed max-w-xs mx-auto opacity-80">
+                “Không gian tĩnh lặng, chỉ nghe tiếng gió lướt qua kẽ lá...”
+            </p>
+        </div>
+
+        <!-- Dashboard Stats Grid -->
+        <div class="grid grid-cols-2 gap-3">
+            <div class="dashboard-stat">
+                <span class="dashboard-stat-label">Linh Khí</span>
+                <span id="env-concentration" class="dashboard-stat-value text-qi-blue">15%</span>
+            </div>
+            <div class="dashboard-stat">
+                <span class="dashboard-stat-label">Thời Gian</span>
+                <span id="env-timerate" class="dashboard-stat-value text-cultivation-gold">1.0x</span>
+            </div>
+        </div>
+
+        <!-- Element Qi Distribution Grid -->
+        <div class="p-3 border border-white/5 rounded-xl bg-black/40 space-y-2">
+            <div class="flex justify-between items-center text-[7.5px] uppercase tracking-wider font-bold mb-1">
+                <span class="text-qi-blue">Tỷ Lệ Linh Khí Địa Phương</span>
+                <span id="env-purity-tag" class="text-gray-500 text-[7px] leading-none">LINH KHÍ</span>
+            </div>
+            <div id="env-element-qi-grid" class="grid grid-cols-5 gap-1.5">
+                <!-- Element Qi values dynamically rendered here -->
+            </div>
+        </div>
+
+        <!-- NPC Section -->
+        <div id="explore-npc-list" class="space-y-3">
+            <!-- NPCs rendered here -->
+        </div>
+
+        <div class="space-y-6">
+            <div class="px-2 space-y-2">
+                <div class="flex justify-between items-end">
+                    <span class="text-[8px] text-gray-500 uppercase tracking-widest font-bold">Lịch Luyện Tiến
+                        Độ</span>
+                    <span id="explore-progress" class="text-xs text-qi-blue font-mono font-bold">0%</span>
+                </div>
+                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
+                    <div id="explore-bar"
+                        class="h-full bg-gradient-to-r from-qi-blue via-qi-purple to-qi-blue bg-[length:200%_100%] animate-gradient-x w-0 transition-all duration-1000">
+                    </div>
+                </div>
+            </div>
+
+            <div id="explore-actions" class="grid grid-cols-2 gap-4">
+                <button id="btn-move"
+                    class="col-span-2 py-3.5 bg-gradient-to-r from-qi-blue/20 to-qi-purple/20 border border-white/10 rounded-2xl active:scale-95 transition-all flex items-center justify-center space-x-3 shadow-2xl">
+                    <i class="ph ph-boot text-qi-blue text-xl"></i>
+                    <span class="text-sm font-bold text-white uppercase tracking-[0.4em]">TIẾN BƯỚC</span>
+                </button>
+                <div id="loc-special-actions" class="col-span-2 grid grid-cols-2 gap-4 hidden"></div>
+                <button id="btn-leave-loc"
+                    class="col-span-2 py-3 bg-white/5 rounded-2xl active:scale-95 transition-all text-[10px] text-gray-500 font-bold uppercase tracking-widest">RỜI
+                    KHU VỰC</button>
+            </div>
+        </div>
+    </div>
+</div>

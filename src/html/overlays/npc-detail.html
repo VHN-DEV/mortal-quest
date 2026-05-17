@@ -1,0 +1,44 @@
+<!-- NPC Detail & Interaction Overlay -->
+<div id="npc-overlay" class="hidden overlay-full animate-fade-in z-[150]">
+    <div class="flex-grow overflow-y-auto p-6 flex flex-col items-center custom-scroll">
+        <div class="relative w-40 h-40 mb-6 flex-none">
+            <div class="absolute inset-0 border border-qi-purple/30 rounded-full animate-spin-slow"></div>
+            <img id="npc-portrait" src=""
+                class="w-full h-full object-cover rounded-full border-2 border-qi-purple/50 shadow-2xl">
+        </div>
+        <div class="text-center mb-8 space-y-2 flex-none">
+            <h4 id="npc-title" class="text-[10px] text-qi-blue font-ancient uppercase tracking-widest">Kẻ Đồng
+                Hành
+            </h4>
+            <h3 id="npc-name" class="text-2xl font-bold text-white font-charm">Lý Đạo Nhân</h3>
+            <p id="npc-realm" class="text-[10px] text-cultivation-gold">Trúc Cơ Sơ Kỳ</p>
+        </div>
+        <div id="npc-dialogue-box"
+            class="w-full p-4 bg-white/5 border border-white/10 rounded-2xl text-sm italic text-gray-300 leading-relaxed text-center mb-4 flex-none">
+            "Đạo hữu xin dừng bước..."</div>
+        <div id="npc-story-options" class="w-full space-y-2 mb-6 hidden flex-none"></div>
+        <div class="grid grid-cols-2 w-full gap-3 flex-none">
+            <button id="btn-npc-talk"
+                class="py-3 bg-white/10 rounded-xl text-sm font-bold active:scale-95 transition-all">ĐÀM
+                ĐẠO</button>
+            <button id="btn-npc-gift"
+                class="py-3 bg-qi-purple/20 text-qi-purple border border-qi-purple/30 rounded-xl text-sm font-bold active:scale-95 transition-all">TẶNG
+                QUÀ</button>
+            <button id="btn-npc-party"
+                class="py-3 bg-qi-blue/20 text-qi-blue border border-qi-blue/30 rounded-xl text-sm font-bold active:scale-95 transition-all">MỜI
+                TỔ ĐỘI</button>
+            <button id="btn-npc-dual"
+                class="py-3 bg-red-900/20 text-red-400 border border-red-500/30 rounded-xl text-sm font-bold active:scale-95 transition-all">SONG
+                TU</button>
+            <button id="btn-npc-trade"
+                class="py-3 bg-cultivation-gold text-black rounded-xl text-sm font-bold active:scale-95 transition-all">GIAO
+                DỊCH</button>
+            <button id="btn-npc-attack"
+                class="py-3 bg-red-900/50 text-red-200 border border-red-500/30 rounded-xl text-sm font-bold active:scale-95 transition-all">TẤN
+                CÔNG</button>
+        </div>
+        <button id="btn-npc-leave"
+            class="w-full py-3 bg-transparent text-gray-500 rounded-xl text-xs active:scale-95 transition-all mt-4 mb-10 flex-none">RỜI
+            ĐI</button>
+    </div>
+</div>

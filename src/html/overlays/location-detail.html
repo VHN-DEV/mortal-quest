@@ -1,0 +1,79 @@
+<!-- Location Detail Popup Overlay -->
+<div id="location-detail-overlay"
+    class="hidden overlay-full z-[850] bg-black/85 backdrop-blur-md flex items-center justify-center p-6">
+    <div id="location-detail-content"
+        class="w-full max-w-[340px] bg-qi-ink border border-cultivation-gold/20 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col max-h-[85vh] relative animate-fade-in">
+        
+        <!-- Close Button -->
+        <button id="close-location-detail-btn"
+            class="absolute top-4 right-4 z-50 w-8 h-8 rounded-full bg-black/60 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-all active:scale-95">
+            <i class="ph ph-x text-lg"></i>
+        </button>
+
+        <!-- Location Banner/Artwork -->
+        <div class="relative w-full h-44 shrink-0 overflow-hidden">
+            <img id="loc-detail-image" src="" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-qi-ink via-qi-ink/40 to-transparent"></div>
+            
+            <!-- Region & Sub-Region Badges -->
+            <div class="absolute bottom-4 left-6 right-6 flex flex-wrap gap-1.5">
+                <span id="loc-detail-region" class="px-2.5 py-0.5 rounded bg-qi-blue/15 border border-qi-blue/30 text-qi-blue text-[8px] font-ancient uppercase tracking-widest">Thiên Nam Đại Lục</span>
+                <span id="loc-detail-subregion" class="px-2.5 py-0.5 rounded bg-qi-purple/15 border border-qi-purple/30 text-qi-purple text-[8px] font-ancient uppercase tracking-widest">Việt Quốc</span>
+            </div>
+        </div>
+
+        <!-- Scrollable Information Area -->
+        <div class="flex-grow overflow-y-auto p-6 space-y-6 custom-scrollbar">
+            <!-- Title & Description -->
+            <div class="space-y-2">
+                <h3 id="loc-detail-name" class="text-2xl font-charm text-cultivation-gold text-glow">Hoàng Phong Cốc</h3>
+                <p id="loc-detail-description" class="text-[10px] text-gray-400 leading-relaxed italic font-serif"></p>
+            </div>
+
+            <!-- Core Requirements & Danger -->
+            <div class="grid grid-cols-2 gap-3 col-span-2">
+                <div class="bg-black/35 border border-white/5 rounded-2xl p-3 text-center space-y-1">
+                    <span class="text-[8px] text-gray-500 uppercase tracking-widest block">Cảnh Giới Yêu Cầu</span>
+                    <span id="loc-detail-min-realm" class="text-[10px] font-ancient text-cultivation-gold uppercase tracking-wider block">Phàm Nhân</span>
+                </div>
+                <div class="bg-black/35 border border-white/5 rounded-2xl p-3 text-center space-y-1">
+                    <span class="text-[8px] text-gray-500 uppercase tracking-widest block">Độ Nguy Hiểm</span>
+                    <span id="loc-detail-danger" class="text-[10px] font-ancient text-qi-jade uppercase tracking-wider block">An Toàn</span>
+                </div>
+            </div>
+
+            <!-- Resources Section -->
+            <div id="loc-detail-resources-section" class="space-y-2">
+                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest border-l border-cultivation-gold/50 pl-2">Sản Vật Địa Phương</h4>
+                <div id="loc-detail-resources" class="flex flex-wrap gap-1.5">
+                    <!-- Badges dynamic -->
+                </div>
+            </div>
+
+            <!-- Energies Section -->
+            <div id="loc-detail-energies-section" class="space-y-2">
+                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest border-l border-qi-blue/50 pl-2">Linh khí & Quy luật</h4>
+                <div id="loc-detail-energies" class="grid grid-cols-1 gap-2">
+                    <!-- list dynamic -->
+                </div>
+            </div>
+
+            <!-- Elemental Qi (Ngũ Hành) Grid -->
+            <div id="loc-detail-element-qi-section" class="space-y-3">
+                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest border-l border-qi-purple/50 pl-2">Phân Bổ Ngũ Hành Linh Khí</h4>
+                <div id="loc-detail-element-qi" class="grid grid-cols-2 gap-2 text-[9px] font-mono">
+                    <!-- element items dynamic -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer (Confirm/Close) -->
+        <div class="p-6 border-t border-white/5 shrink-0 bg-black/10">
+            <button id="loc-detail-confirm-btn"
+                class="w-full py-3 bg-gradient-to-r from-cultivation-gold to-[#b8860b] text-qi-ink font-bold rounded-2xl active:scale-95 transition-all text-[10px] uppercase tracking-widest">
+                XÁC NHẬN
+            </button>
+        </div>
+
+    </div>
+</div>

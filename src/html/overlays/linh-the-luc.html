@@ -1,0 +1,93 @@
+<!-- Linh Thể Lục Overlay -->
+<div id="linh-the-luc-overlay"
+    class="hidden overlay-full z-[450] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
+    <div
+        class="w-full max-w-md h-[90vh] bg-[#020617] border border-purple-900/30 rounded-[2.5rem] flex flex-col shadow-[0_0_100px_rgba(126,34,206,0.15)] overflow-hidden relative">
+        <!-- Decorative background elements -->
+        <div
+            class="absolute -top-32 -right-32 w-64 h-64 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none">
+        </div>
+        <div
+            class="absolute -bottom-32 -left-32 w-64 h-64 bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none">
+        </div>
+
+        <!-- Header -->
+        <div
+            class="relative z-10 p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-b from-purple-950/20 to-transparent">
+            <div>
+                <h2
+                    class="text-3xl font-ancient text-purple-400 uppercase tracking-widest drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">
+                    Linh Thể Lục</h2>
+                <p class="text-[9px] text-gray-500 uppercase tracking-[0.4em] mt-1">Chư Thiên Vạn Thể Chi Quyển
+                </p>
+            </div>
+            <button id="close-linh-the-luc-btn"
+                class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-500 hover:text-white transition-all active:scale-90">
+                <i class="ph ph-x text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- List View -->
+        <div id="linh-the-list-view"
+            class="relative z-10 flex-grow overflow-y-auto p-4 space-y-3 custom-scroll">
+            <!-- Dynamic list items -->
+        </div>
+
+        <!-- Detail View (Initially Hidden) -->
+        <div id="linh-the-detail-view"
+            class="hidden relative z-10 flex-grow flex flex-col overflow-y-auto custom-scroll p-6 animate-fade-in">
+            <button id="back-to-the-list-btn"
+                class="absolute top-4 left-4 text-gray-500 hover:text-white flex items-center space-x-2 text-[10px] uppercase tracking-widest transition-all">
+                <i class="ph ph-arrow-left"></i>
+                <span>Quay lại</span>
+            </button>
+
+            <div class="mt-8 flex flex-col items-center text-center space-y-6">
+                <div id="linh-the-detail-icon-wrap"
+                    class="w-32 h-32 rounded-full border-2 border-purple-500/30 flex items-center justify-center bg-black/60 shadow-[0_0_30px_rgba(16,185,127,0.2)] relative">
+                    <div class="absolute inset-0 rounded-full animate-pulse bg-purple-500/5"></div>
+                    <span id="linh-the-detail-icon"
+                        class="text-6xl filter drop-shadow-[0_0_15px_rgba(168,85,247,0.6)]">🌌</span>
+                </div>
+
+                <div class="space-y-1">
+                    <div id="linh-the-detail-rank"
+                        class="text-[10px] font-ancient text-purple-400 uppercase tracking-[0.3em]">Hạng 1</div>
+                    <h3 id="linh-the-detail-name" class="text-3xl font-ancient text-white tracking-widest">Hỗn
+                        Độn Thể</h3>
+                    <div id="linh-the-detail-title"
+                        class="text-[11px] text-cultivation-gold italic tracking-widest">"Vạn Thể Chi Tổ"</div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 w-full">
+                    <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                        <div class="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Đẳng cấp tiềm năng
+                        </div>
+                        <div id="linh-the-detail-rarity" class="text-xs font-bold text-cultivation-gold">Thần
+                            Thoại</div>
+                    </div>
+                </div>
+
+                <div class="w-full space-y-4 text-left">
+                    <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
+                        <h4
+                            class="text-[9px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-2">
+                            Mô tả thể chất</h4>
+                        <p id="linh-the-detail-desc" class="text-xs text-gray-300 leading-relaxed"></p>
+                    </div>
+                    <div class="bg-purple-950/20 rounded-2xl p-5 border border-purple-900/20">
+                        <h4
+                            class="text-[9px] text-purple-400 uppercase tracking-widest mb-3 border-b border-purple-900/10 pb-2">
+                            Thiên phú đặc biệt</h4>
+                        <p id="linh-the-detail-special" class="text-xs text-purple-300 font-bold italic"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="relative z-10 p-6 border-t border-white/5 bg-black/40 text-center">
+            <p class="text-[8px] text-gray-600 italic">"Chư thiên vạn thể, đạo khởi hồng mông."</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,174 @@
+<!-- Game Guide Overlay -->
+<div id="guide-overlay" class="absolute inset-0 z-[200] hidden">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div
+            class="w-full max-w-lg bg-qi-ink border border-cultivation-gold/30 rounded-3xl overflow-hidden flex flex-col max-h-[85vh] shadow-[0_0_50px_rgba(212,175,55,0.2)]">
+            <!-- Header -->
+            <div
+                class="p-6 border-b border-white/5 flex justify-between items-center bg-cultivation-gold/5">
+                <h3 class="text-xl font-ancient text-cultivation-gold uppercase tracking-widest">Hướng Dẫn
+                    Tu Tiên</h3>
+                <button id="btn-close-guide" class="text-gray-500 hover:text-white transition-all">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-grow overflow-y-auto p-6 space-y-8 custom-scrollbar">
+                <!-- Intro -->
+                <section class="space-y-3">
+                    <div class="flex items-center space-x-3 text-cultivation-gold mb-2">
+                        <div
+                            class="w-10 h-10 bg-cultivation-gold/10 rounded-xl flex items-center justify-center">
+                            <i class="ph ph-scroll text-xl"></i>
+                        </div>
+                        <h4 class="text-sm font-ancient uppercase tracking-widest">Khởi Đầu Hành Trình</h4>
+                    </div>
+                    <p class="text-[11px] text-gray-400 leading-relaxed italic">
+                        Chào mừng đạo hữu bước chân vào thế giới của <span
+                            class="text-white font-bold">Mortal Quest</span>. Một thế giới tu tiên rộng lớn
+                        nơi mỗi quyết định của bạn đều dẫn đến những nhân quả khác nhau.
+                    </p>
+                </section>
+
+                <!-- Cultivation Systems -->
+                <section class="space-y-4">
+                    <h4
+                        class="text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">
+                        Hệ Thống Tu Luyện</h4>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div
+                            class="p-3 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
+                            <div class="flex items-center space-x-2 mb-1">
+                                <i class="ph ph-sparkle text-qi-blue"></i>
+                                <span class="text-[11px] font-bold text-white uppercase">Tam Đại Cảnh
+                                    Giới</span>
+                            </div>
+                            <p class="text-[10px] text-gray-500">Gồm <span class="text-qi-blue">Tu Vi</span>
+                                (tăng công kích), <span class="text-red-400">Luyện Thể</span> (tăng
+                                máu/phòng thủ) và <span class="text-qi-purple">Thần Thức</span> (tăng chính
+                                xác/may mắn). Hãy cân bằng cả ba để đạt sức mạnh tối thượng.</p>
+                        </div>
+                        <div
+                            class="p-3 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
+                            <div class="flex items-center space-x-2 mb-1">
+                                <i class="ph ph-lightning text-cultivation-gold"></i>
+                                <span class="text-[11px] font-bold text-white uppercase">Đột Phá & Thọ
+                                    Nguyên</span>
+                            </div>
+                            <p class="text-[10px] text-gray-500">Mỗi khi đạt giới hạn, bạn cần thực hiện
+                                <span class="text-cultivation-gold">Đột Phá</span> để thăng cấp. Mỗi lần
+                                thăng cấp sẽ gia tăng <span class="text-green-400">Tuổi Thọ</span>. Hãy cẩn
+                                thận, nếu hết thọ nguyên mà chưa đột phá, hành trình sẽ kết thúc.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Features -->
+                <section class="space-y-4">
+                    <h4
+                        class="text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">
+                        Khám Phá & Chiến Đấu</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="p-3 bg-black/40 rounded-xl border border-white/5">
+                            <i class="ph ph-map-trifold text-qi-purple mb-2 text-lg"></i>
+                            <div class="text-[10px] font-bold text-white mb-1">Đại Giới Khung</div>
+                            <p class="text-[9px] text-gray-500">Chu du qua nhiều thế giới, từ Phàm Trần đến
+                                Tiên Giới.</p>
+                        </div>
+                        <div class="p-3 bg-black/40 rounded-xl border border-white/5">
+                            <i class="ph ph-sword text-red-400 mb-2 text-lg"></i>
+                            <div class="text-[10px] font-bold text-white mb-1">Chiến Đấu Theo Lượt</div>
+                            <p class="text-[9px] text-gray-500">Sử dụng bí pháp, pháp bảo để đánh bại yêu
+                                thú và địch nhân.</p>
+                        </div>
+                        <div class="p-3 bg-black/40 rounded-xl border border-white/5">
+                            <i class="ph ph-house-line text-qi-jade mb-2 text-lg"></i>
+                            <div class="text-[10px] font-bold text-white mb-1">Tông Môn & Xã Giao</div>
+                            <p class="text-[9px] text-gray-500">Gia nhập môn phái, kết giao đạo hữu, thành
+                                lập thế lực.</p>
+                        </div>
+                        <div class="p-3 bg-black/40 rounded-xl border border-white/5">
+                            <i class="ph ph-flask text-qi-blue mb-2 text-lg"></i>
+                            <div class="text-[10px] font-bold text-white mb-1">Bách Nghệ</div>
+                            <p class="text-[9px] text-gray-500">Luyện Đan, Luyện Khí, Chế Phù, Nuôi Thú,
+                                Trận Pháp.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tips Section -->
+                <section class="p-4 bg-qi-blue/5 border border-qi-blue/20 rounded-2xl">
+                    <div class="flex items-center space-x-2 mb-3">
+                        <i class="ph ph-lightbulb-filament text-qi-blue"></i>
+                        <h4 class="text-xs font-bold text-qi-blue uppercase">Lời Khuyên Cho Đạo Hữu</h4>
+                    </div>
+                    <ul class="text-[10px] text-gray-400 space-y-2 list-none">
+                        <li class="flex items-start">
+                            <span class="text-qi-blue mr-2">●</span>
+                            <span>Ưu tiên gia tăng <span class="text-white">Linh Thạch</span> thông qua làm
+                                nhiệm vụ hoặc cướp bóc để mua tài nguyên.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-qi-blue mr-2">●</span>
+                            <span>Sử dụng <span class="text-white">Bế Quan</span> khi muốn tu luyện thụ động
+                                hiệu quả cao hơn.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-qi-blue mr-2">●</span>
+                            <span>Đừng quên trang bị <span class="text-white">Pháp Bảo</span>, chúng cung
+                                cấp những chỉ số cực lớn trong chiến đấu.</span>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- Developer Credits -->
+                <section class="mt-10 pt-8 border-t border-white/5 space-y-4">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="text-[9px] text-gray-500 uppercase tracking-[0.3em] mb-2">Người Sáng Lập
+                        </div>
+                        <h4 class="text-lg font-ancient text-cultivation-gold">VŨ HOÀI NAM</h4>
+                        <div class="w-12 h-0.5 bg-cultivation-gold/30 my-3"></div>
+
+                        <div class="flex flex-col space-y-2 w-full max-w-[240px]">
+
+                            <a href="mailto:vhnam18032002@gmail.com"
+                                class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all group">
+                                <div class="flex items-center">
+                                    <i
+                                        class="ph ph-envelope text-lg text-gray-400 group-hover:text-white mr-3"></i>
+                                    <span
+                                        class="text-[10px] text-gray-400 group-hover:text-white">Email</span>
+                                </div>
+                                <span class="text-[10px] text-qi-blue">vhnam...</span>
+                            </a>
+                            <div
+                                class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all group">
+                                <div class="flex items-center">
+                                    <i
+                                        class="ph ph-phone text-lg text-gray-400 group-hover:text-white mr-3"></i>
+                                    <span
+                                        class="text-[10px] text-gray-400 group-hover:text-white">Phone</span>
+                                </div>
+                                <span class="text-[10px] text-qi-blue">0382158065</span>
+                            </div>
+                        </div>
+
+                        <p class="text-[9px] text-gray-600 mt-6 italic">"Đạo khả đạo, phi thường đạo. Danh
+                            khả danh, phi thường danh."</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-6 border-t border-white/5">
+                <button id="btn-guide-got-it"
+                    class="w-full py-3 bg-cultivation-gold/20 border border-cultivation-gold/50 text-cultivation-gold rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-cultivation-gold/30 transition-all">
+                    Đã Hiểu, Bắt Đầu Tu Tiên!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,186 @@
+<!-- Tab: Bách Nghệ Hub (Crafting Hub - NEW) -->
+<div id="screen-crafting-hub" class="screen hidden flex flex-col h-full p-6 overflow-y-auto custom-scroll">
+    <div class="mb-8">
+        <h2 class="text-3xl font-charm text-cultivation-gold">Bách Nghệ Đường</h2>
+        <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Nghề Nghiệp Phụ &
+            Sáng Chế</p>
+    </div>
+
+    <div class="space-y-4 overflow-y-auto custom-scroll pb-6">
+
+        <h4
+            class="text-[10px] font-ancient text-cultivation-gold uppercase tracking-widest border-l-2 border-cultivation-gold pl-3 mb-4">
+            Bách Nghệ Chi Thuật</h4>
+
+        <!-- Alchemy Card -->
+        <div onclick="window.game.openCrafting('alchemy')"
+            class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+            <div
+                class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">
+                🧪</div>
+            <div class="flex items-center space-x-4">
+                <div
+                    class="w-14 h-14 bg-qi-jade/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(0,168,107,0.2)]">
+                    🧪</div>
+                <div class="flex-grow">
+                    <h3 class="text-xl font-ancient text-white group-hover:text-qi-jade transition-colors">
+                        Luyện Đan</h3>
+                    <p id="hub-alchemy-level"
+                        class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Luyện
+                        Dược Sư</p>
+                </div>
+                <i class="ph ph-caret-right text-gray-600"></i>
+            </div>
+        </div>
+
+        <!-- Talisman Card -->
+        <div onclick="window.game.openCrafting('talisman')"
+            class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+            <div
+                class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">
+                📜</div>
+            <div class="flex items-center space-x-4">
+                <div
+                    class="w-14 h-14 bg-qi-blue/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(79,209,197,0.2)]">
+                    📜</div>
+                <div class="flex-grow">
+                    <h3 class="text-xl font-ancient text-white group-hover:text-qi-blue transition-colors">
+                        Phù Lục</h3>
+                    <p id="hub-talisman-level"
+                        class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Phù Sư
+                    </p>
+                </div>
+                <i class="ph ph-caret-right text-gray-600"></i>
+            </div>
+        </div>
+
+        <!-- Smithing Card -->
+        <div onclick="window.game.openCrafting('smithing')"
+            class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+            <div
+                class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">
+                ⚒️</div>
+            <div class="flex items-center space-x-4">
+                <div
+                    class="w-14 h-14 bg-red-500/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+                    ⚒️</div>
+                <div class="flex-grow">
+                    <h3 class="text-xl font-ancient text-white group-hover:text-red-500 transition-colors">
+                        Luyện Khí</h3>
+                    <p id="hub-smithing-level"
+                        class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Luyện
+                        Khí Sư</p>
+                </div>
+                <i class="ph ph-caret-right text-gray-600"></i>
+            </div>
+        </div>
+
+        <!-- Formation Card -->
+        <div onclick="window.game.openCrafting('formation')"
+            class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+            <div
+                class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">
+                🌀</div>
+            <div class="flex items-center space-x-4">
+                <div
+                    class="w-14 h-14 bg-qi-purple/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+                    🌀</div>
+                <div class="flex-grow">
+                    <h3
+                        class="text-xl font-ancient text-white group-hover:text-qi-purple transition-colors">
+                        Trận Pháp</h3>
+                    <p id="hub-formation-level"
+                        class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Trận
+                        Pháp Sư</p>
+                </div>
+                <i class="ph ph-caret-right text-gray-600"></i>
+            </div>
+        </div>
+
+        <!-- Puppet Card (NEW) -->
+        <div onclick="window.game.openCrafting('puppet')"
+            class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+            <div
+                class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">
+                🤖</div>
+            <div class="flex items-center space-x-4">
+                <div
+                    class="w-14 h-14 bg-qi-blue/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(79,209,197,0.2)]">
+                    🤖</div>
+                <div class="flex-grow">
+                    <h3 class="text-xl font-ancient text-white group-hover:text-qi-blue transition-colors">
+                        Khôi Lỗi</h3>
+                    <p id="hub-puppet-level"
+                        class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Khôi Lỗi Sư
+                    </p>
+                </div>
+                <i class="ph ph-caret-right text-gray-600"></i>
+            </div>
+        </div>
+
+        <!-- Corpse Card -->
+        <div onclick="window.game.openCrafting('corpse')"
+            class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+            <div
+                class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">
+                💀</div>
+            <div class="flex items-center space-x-4">
+                <div
+                    class="w-14 h-14 bg-red-900/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(153,27,27,0.2)]">
+                    💀</div>
+                <div class="flex-grow">
+                    <h3 class="text-xl font-ancient text-white group-hover:text-red-500 transition-colors">
+                        Luyện Thi</h3>
+                    <p id="hub-corpse-level"
+                        class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Luyện
+                        Thi Sư</p>
+                </div>
+                <i class="ph ph-caret-right text-gray-600"></i>
+            </div>
+        </div>
+
+        <!-- Beast Card -->
+        <div onclick="window.game.openCrafting('beast')"
+            class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+            <div
+                class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">
+                🐾</div>
+            <div class="flex items-center space-x-4">
+                <div
+                    class="w-14 h-14 bg-cultivation-gold/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+                    🐾</div>
+                <div class="flex-grow">
+                    <h3
+                        class="text-xl font-ancient text-white group-hover:text-cultivation-gold transition-colors">
+                        Ngự Thú</h3>
+                    <p id="hub-beast-level"
+                        class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Ngự Thú
+                        Sư</p>
+                </div>
+                <i class="ph ph-caret-right text-gray-600"></i>
+            </div>
+        </div>
+
+        <!-- Insect Card -->
+        <div onclick="window.game.openCrafting('insect')"
+            class="hub-card group relative p-6 border rounded-3xl cursor-pointer transition-all active:scale-95 overflow-hidden">
+            <div
+                class="absolute -right-4 -top-4 text-6xl opacity-5 group-hover:opacity-10 transition-opacity">
+                🦗</div>
+            <div class="flex items-center space-x-4">
+                <div
+                    class="w-14 h-14 bg-qi-purple/20 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+                    🦗</div>
+                <div class="flex-grow">
+                    <h3
+                        class="text-xl font-ancient text-white group-hover:text-qi-purple transition-colors">
+                        Khu Trùng</h3>
+                    <p id="hub-insect-level"
+                        class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Khu Trùng
+                        Sư</p>
+                </div>
+                <i class="ph ph-caret-right text-gray-600"></i>
+            </div>
+        </div>
+    </div>
+</div>

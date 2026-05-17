@@ -1,0 +1,195 @@
+<!-- Tab 1: Tu Luyện (Main Screen) -->
+<div id="screen-main"
+    class="screen hidden flex flex-col h-full overflow-y-auto custom-scroll animate-fade-in">
+
+    <div class="flex-grow flex flex-col items-center justify-start min-h-full">
+        <!-- Location Badge Pill -->
+        <div class="pt-6 flex justify-center z-20 shrink-0">
+            <div id="btn-show-location-detail" class="flex items-center space-x-2 px-4 py-1.5 rounded-full bg-black/50 border border-white/10 backdrop-blur-md text-[8px] font-ancient uppercase tracking-widest text-qi-blue shadow-lg shadow-black/40 cursor-pointer hover:border-qi-blue/40 hover:shadow-[0_0_15px_rgba(79,209,197,0.2)] hover:scale-105 active:scale-95 transition-all duration-300">
+                <i class="ph ph-map-pin animate-pulse text-qi-blue text-[10px]"></i>
+                <span id="main-current-location" class="font-bold tracking-[0.15em] text-white">Thanh Vân Trấn</span>
+            </div>
+        </div>
+        <div class="m-auto w-full flex flex-col items-center p-6 py-12 space-y-10">
+            <div class="relative w-64 h-64 md:w-72 md:h-72 flex items-center justify-center shrink-0">
+                <!-- Spiritual Rings -->
+                <div
+                    class="absolute inset-0 border-[0.5px] border-qi-blue/10 rounded-full animate-spin-slow">
+                </div>
+                <div class="absolute inset-6 border-[1px] border-qi-purple/10 rounded-full animate-spin-slow"
+                    style="animation-direction: reverse; animation-duration: 20s;"></div>
+                <div class="absolute inset-12 border-[0.5px] border-cultivation-gold/10 rounded-full animate-spin-slow"
+                    style="animation-duration: 30s;"></div>
+
+                <!-- Player Aura -->
+                <div id="aura-glow"
+                    class="absolute inset-16 bg-qi-blue/5 rounded-full blur-3xl animate-pulse aura-glow">
+                </div>
+
+                <!-- Circular Progress Bars -->
+                <div class="absolute inset-0 z-10 pointer-events-none">
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                        <!-- Tu Vi Circle (Outer) -->
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="rgba(79, 209, 197, 0.1)" stroke-width="1.5" />
+                        <circle id="circle-tu-vi" cx="50" cy="50" r="48" fill="none" stroke="#4fd1c5" stroke-width="1.5" 
+                            stroke-dasharray="301.6" stroke-dashoffset="301.6" stroke-linecap="round" class="transition-all duration-700 ease-out" />
+                        
+                        <!-- Body Circle (Middle) -->
+                        <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(239, 68, 68, 0.1)" stroke-width="1.5" />
+                        <circle id="circle-body" cx="50" cy="50" r="44" fill="none" stroke="#ef4444" stroke-width="1.5" 
+                            stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" class="transition-all duration-700 ease-out" />
+                        
+                        <!-- Soul Circle (Inner) -->
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(168, 85, 247, 0.1)" stroke-width="1.5" />
+                        <circle id="circle-soul" cx="50" cy="50" r="40" fill="none" stroke="#9f7aea" stroke-width="1.5" 
+                            stroke-dasharray="251.3" stroke-dashoffset="251.3" stroke-linecap="round" class="transition-all duration-700 ease-out" />
+                    </svg>
+                </div>
+
+                <div id="aura-border"
+                    class="relative w-56 h-56 rounded-full overflow-hidden border border-cultivation-gold/30 shadow-[0_0_60px_rgba(212,175,55,0.15)] group aura-border">
+                    <img id="main-player-portrait" src="./src/assets/images/players/player_male.webp"
+                        class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-qi-ink via-transparent to-transparent">
+                    </div>
+                    <!-- Inner Glow -->
+                    <div class="absolute inset-0 shadow-[inset_0_0_40px_rgba(79,209,197,0.2)]"></div>
+                </div>
+
+                <div class="qi-particles absolute inset-0 pointer-events-none"></div>
+            </div>
+
+            <div class="w-full space-y-4 px-4">
+                <!-- Tu Vi Bar -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-end">
+                        <div class="flex flex-col">
+                            <span class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Cơ
+                                Duyên Tu Vi</span>
+                            <span id="tu-vi-per-sec" class="text-[7px] text-qi-purple/60 italic"></span>
+                        </div>
+                        <span id="tu-vi-text" class="text-[10px] font-mono text-qi-blue">0 / 100</span>
+                    </div>
+                    <div
+                        class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
+                        <div id="tu-vi-progress"
+                            class="h-full bg-gradient-to-r from-qi-blue via-qi-purple to-qi-blue bg-[length:200%_100%] animate-gradient-x transition-all duration-700 shadow-[0_0_8px_rgba(79,209,197,0.4)]"
+                            style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Secondary Progress Bars (Body & Soul) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-end px-0.5">
+                            <span
+                                class="text-[7px] text-gray-600 font-ancient uppercase tracking-widest">Luyện
+                                Thể</span>
+                            <span id="body-text" class="text-[8px] font-mono text-red-400/70">0%</span>
+                        </div>
+                        <div
+                            class="h-1 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                            <div id="body-progress"
+                                class="h-full bg-red-500 shadow-[0_0_5px_rgba(239, 68, 68, 0.3)] transition-all duration-700"
+                                style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-end px-0.5">
+                            <span
+                                class="text-[7px] text-gray-600 font-ancient uppercase tracking-widest">Thần
+                                Thức</span>
+                            <span id="soul-text" class="text-[8px] font-mono text-purple-400/70">0%</span>
+                        </div>
+                        <div
+                            class="h-1 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                            <div id="soul-progress"
+                                class="h-full bg-purple-500 shadow-[0_0_5px_rgba(168, 85, 247, 0.3)] transition-all duration-700"
+                                style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col space-y-4 w-full px-4">
+                <!-- Element Qi Grid Container for Cultivation Screen -->
+                <div class="p-3 border border-white/5 rounded-xl bg-black/40 space-y-2">
+                    <div class="flex justify-between items-center text-[7.5px] uppercase tracking-wider font-bold mb-1">
+                        <span class="text-qi-blue">Tỷ Lệ Linh Khí Địa Phương</span>
+                        <span id="main-purity-tag" class="text-gray-500 text-[7px] leading-none">LINH KHÍ</span>
+                    </div>
+                    <div id="main-element-qi-grid" class="grid grid-cols-5 gap-1.5">
+                        <!-- Element Qi values dynamically rendered here -->
+                    </div>
+                </div>
+
+                <!-- Path Selectors (Sleek Tabs) -->
+                <div
+                    class="flex space-x-1 bg-black/40 p-1 rounded-xl border border-white/5 backdrop-blur-sm">
+                    <button id="focus-tuvi"
+                        class="flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all bg-qi-blue/20 text-qi-blue border border-qi-blue/30 focus-tuvi">Tu
+                        Vi</button>
+                    <button id="focus-body"
+                        class="flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all text-gray-500 border border-transparent hover:text-white">Luyện
+                        Thể</button>
+                    <button id="focus-soul"
+                        class="flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all text-gray-500 border border-transparent hover:text-white">Thần
+                        Thức</button>
+                </div>
+
+                <!-- Main Interaction Area -->
+                <div class="relative group">
+                    <button id="cultivate-btn"
+                        class="relative overflow-hidden w-full py-4 btn-premium rounded-2xl text-white font-bold tracking-[0.3em] font-ancient shadow-xl shadow-black/50 transition-all active:scale-95">
+                        <span class="relative z-10 flex items-center justify-center"
+                            id="cultivate-btn-text">
+                            <i class="ph ph-sparkle mr-2 text-qi-blue"></i>
+                            THU NẠP LINH KHÍ
+                        </span>
+                        <div
+                            class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shine">
+                        </div>
+                    </button>
+
+                    <!-- Mini Auto Toggle Overlay -->
+                    <div
+                        class="absolute -top-3 -right-2 flex items-center space-x-2 bg-qi-ink/90 border border-white/10 rounded-full px-3 py-1.5 shadow-lg backdrop-blur-md z-10">
+                        <span
+                            class="text-[7px] text-gray-500 uppercase tracking-widest font-ancient">Auto</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="auto-cultivate-toggle" class="sr-only peer">
+                            <div
+                                class="w-7 h-4 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-qi-blue">
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Action Grid -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="breakthrough-btn"
+                        class="py-3 btn-gold font-ancient font-black rounded-xl uppercase tracking-widest text-[10px] shadow-lg shadow-black/50 transition-all disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed">
+                        ĐỘT PHÁ
+                    </button>
+                    <button id="seclusion-btn"
+                        class="py-3 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-gray-400 font-ancient tracking-widest transition-all uppercase text-[10px] flex items-center justify-center">
+                        <i class="ph ph-moon mr-2"></i>
+                        BẾ QUAN
+                    </button>
+                </div>
+
+                <!-- Cheat System Banner -->
+                <div id="main-cheat-system-container" class="hidden w-full pt-1">
+                    <button id="btn-open-cheat-system"
+                        class="relative overflow-hidden w-full py-3.5 bg-gradient-to-r from-amber-500/20 via-yellow-500/10 to-amber-500/20 hover:from-amber-500/30 hover:to-amber-500/30 border border-amber-500/40 rounded-2xl text-cultivation-gold font-ancient font-black uppercase tracking-[0.2em] text-[10px] shadow-[0_0_20px_rgba(212,175,55,0.1)] transition-all flex items-center justify-center space-x-2 animate-pulse active:scale-95">
+                        <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shine"></span>
+                        <i class="ph ph-shield-star text-base text-amber-400"></i>
+                        <span id="main-cheat-system-name">Hệ Thống Cheat</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

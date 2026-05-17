@@ -1,0 +1,213 @@
+<!-- Tab 0: Khởi Tạo Nhân Vật (New) -->
+<div id="screen-creation"
+    class="screen hidden flex flex-col h-full bg-qi-ink z-[100] animate-fade-in overflow-hidden">
+    <!-- Scrollable Content -->
+    <div class="flex-grow overflow-y-auto custom-scrollbar">
+        <div class="p-6 md:p-8 space-y-6 md:space-y-8">
+            <div class="relative text-center space-y-1 pt-4">
+                <h2 class="text-3xl md:text-4xl font-charm text-cultivation-gold">Định Hình Tiên Duyên</h2>
+                <p class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest">Mỗi lựa chọn là
+                    một nhân quả</p>
+            </div>
+
+            <!-- Mode Selection -->
+            <div class="creation-mode-wrap space-y-2">
+                <div id="creation-reroll-container" class="pt-4 hidden">
+                    <button id="creation-reroll-btn"
+                        class="w-full py-2.5 text-[9px] md:text-[10px] font-ancient uppercase rounded-xl transition-all bg-qi-purple/15 border border-qi-purple/30 text-qi-purple hover:bg-qi-purple/25">
+                        Gợi ý ngẫu nhiên
+                    </button>
+                </div>
+                <div id="creation-mode-description"
+                    class="text-[9px] md:text-[10px] text-gray-400 bg-black/35 border border-white/10 rounded-xl px-3 py-2 leading-relaxed">
+                </div>
+            </div>
+
+            <!-- Player Name -->
+            <div class="space-y-2">
+                <label class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest ml-1">Danh
+                    Tính</label>
+                <input id="creation-name-input" type="text" placeholder="Nhập tên đạo hữu..."
+                    class="w-full bg-black/60 border border-white/10 rounded-2xl p-4 text-sm text-white focus:border-qi-blue outline-none transition-all font-ancient">
+            </div>
+
+            <!-- Gender & Age -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <label
+                        class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest ml-1">Giới
+                        Tính</label>
+                    <div class="flex space-x-1 bg-black/40 p-1 rounded-xl border border-white/5">
+                        <button onclick="window.game.selectCreationGender('Nam')" id="creation-gender-male"
+                            class="flex-grow py-2 text-[10px] font-ancient uppercase rounded-lg transition-all">Nam</button>
+                        <button onclick="window.game.selectCreationGender('Nữ')" id="creation-gender-female"
+                            class="flex-grow py-2 text-[10px] font-ancient uppercase rounded-lg transition-all">Nữ</button>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label
+                        class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest ml-1">Tuổi
+                        Tác</label>
+                    <input id="creation-age-input" type="number" value="18" min="10" max="100"
+                        class="w-full bg-black/60 border border-white/10 rounded-2xl p-2.5 text-sm text-white focus:border-qi-blue outline-none transition-all font-ancient text-center">
+                </div>
+            </div>
+
+            <!-- Avatar Selection -->
+            <div class="space-y-3">
+                <label class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest ml-1">Ảnh
+                    Đại Diện</label>
+                <div id="creation-avatar-list" class="flex space-x-3 overflow-x-auto pb-2 custom-scrollbar">
+                    <!-- Dynamic avatars here -->
+                </div>
+            </div>
+
+            <!-- Points Counter (Custom Mode only) -->
+            <div id="creation-points-container"
+                class="sticky top-0 z-10 bg-qi-ink/90 backdrop-blur-md py-3 border-b border-white/5 flex justify-between items-center px-2">
+                <div class="flex flex-col">
+                    <span id="creation-points-label"
+                        class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest">Điểm Tiên
+                        Duyên:</span>
+                    <span id="creation-points-note" class="text-[8px] text-gray-500">Điểm dùng để tùy chỉnh
+                        xuất thân/tài nguyên.</span>
+                </div>
+                <div id="creation-points-value"
+                    class="text-xl md:text-2xl font-bold font-mono text-qi-blue">100</div>
+            </div>
+
+
+            <!-- Preview Stats -->
+            <div id="creation-stats-preview" class="grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+
+            <!-- Selection Panels -->
+            <div id="creation-panels" class="space-y-8 md:space-y-10 pb-12">
+                <!-- Races -->
+                <section class="space-y-4">
+                    <h3
+                        class="text-[10px] md:text-xs font-ancient text-red-400 uppercase tracking-widest border-l-2 border-red-400 pl-3">
+                        Chủng Tộc</h3>
+                    <div id="creation-races-list" class="grid gap-2 md:gap-3">
+                        <!-- Dynamic races here -->
+                    </div>
+                </section>
+
+                <!-- Roots -->
+                <section class="space-y-4">
+                    <h3
+                        class="text-[10px] md:text-xs font-ancient text-cultivation-gold uppercase tracking-widest border-l-2 border-cultivation-gold pl-3">
+                        Linh Căn & Thiên Phú</h3>
+                    <div id="creation-roots-grid" class="grid gap-2 md:gap-3"></div>
+                    <div id="creation-root-elements" class="grid grid-cols-1 gap-2 md:gap-3 mt-4 hidden">
+                    </div>
+
+                    <!-- Secondary Talents Section -->
+                    <div id="creation-talents-container"
+                        class="bg-black/30 p-4 rounded-2xl border border-white/5 space-y-4 mt-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[9px] text-gray-500 uppercase tracking-widest">Tố Chất Bản
+                                Thể</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[8px] text-gray-600 italic">Dựa trên cơ duyên</span>
+                            </div>
+                        </div>
+                        <div id="creation-talents-list" class="grid grid-cols-1 gap-3">
+                            <!-- Talents like Ngộ Tính, Khí Vận will be injected here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Physiques -->
+                <section class="space-y-4">
+                    <h3
+                        class="text-[10px] md:text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">
+                        Thể Chất Đặc Biệt</h3>
+                    <div id="creation-physiques-list" class="space-y-2 md:space-y-3"></div>
+                </section>
+
+                <!-- Origins -->
+                <section class="space-y-4">
+                    <h3
+                        class="text-[10px] md:text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">
+                        Xuất Thân</h3>
+                    <div id="creation-origins-list" class="space-y-2 md:space-y-3"></div>
+                </section>
+
+                <!-- Cheat Systems -->
+                <section class="space-y-4">
+                    <h3
+                        class="text-[10px] md:text-xs font-ancient text-cultivation-gold uppercase tracking-widest border-l-2 border-cultivation-gold pl-3">
+                        Hệ Thống Cheat (Bàn Tay Vàng)</h3>
+                    <div id="creation-systems-list" class="space-y-2 md:space-y-3"></div>
+                </section>
+
+
+                <!-- Starting Artifacts -->
+                <section class="space-y-4">
+                    <h3
+                        class="text-[10px] md:text-xs font-ancient text-cultivation-gold uppercase tracking-widest border-l-2 border-cultivation-gold pl-3">
+                        Bảo Vật Khởi Đầu (Không Bắt Buộc)</h3>
+                    <div id="creation-artifacts-list" class="grid grid-cols-1 gap-2 md:gap-3"></div>
+                </section>
+
+                <!-- Starting Resources (Custom Mode only) -->
+                <section id="creation-resources-panel" class="space-y-4 hidden creation-card">
+                    <h3
+                        class="text-[10px] md:text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">
+                        Tài Nguyên Khởi Đầu</h3>
+                    <div class="bg-black/30 p-4 rounded-2xl border border-qi-blue/20 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[9px] text-gray-400 uppercase tracking-widest">Linh Thạch
+                                (Hạ)</label>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="window.game.adjustStartingLingShi(-100)"
+                                    class="w-8 h-8 bg-black/40 border border-white/10 rounded-lg flex items-center justify-center hover:bg-qi-blue/20 transition-all">-</button>
+                                <div class="relative">
+                                    <input id="creation-lingshi-input" type="number" value="0"
+                                        class="w-24 bg-black/60 border border-white/10 rounded-lg p-1 pr-6 text-center text-xs text-qi-blue outline-none">
+                                    <span
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] text-gray-500">Hạ</span>
+                                </div>
+                                <button onclick="window.game.adjustStartingLingShi(100)"
+                                    class="w-8 h-8 bg-black/40 border border-white/10 rounded-lg flex items-center justify-center hover:bg-qi-blue/20 transition-all">+</button>
+                            </div>
+                        </div>
+                        <p class="text-[8px] text-gray-500 italic">"Mỗi 100 Linh Thạch tiêu tốn 1 điểm Tiên
+                            Duyên."</p>
+                    </div>
+                    <div class="bg-black/30 p-4 rounded-2xl border border-qi-purple/20 space-y-2">
+                        <label class="text-[9px] text-gray-400 uppercase tracking-widest">Cảnh Giới Khởi
+                            Đầu</label>
+                        <select id="creation-starting-realm-select"
+                            class="w-full bg-black/60 border border-white/10 rounded-lg p-2 text-xs text-qi-blue outline-none">
+                        </select>
+                        <p class="text-[8px] text-gray-500 italic">Tùy chỉnh cảnh giới bắt đầu cho Tu Vi,
+                            Thân Thể và Thần Thức.</p>
+                    </div>
+                </section>
+
+                <!-- Traits -->
+                <section class="space-y-4">
+                    <h3
+                        class="text-[10px] md:text-xs font-ancient text-gray-400 uppercase tracking-widest border-l-2 border-gray-400 pl-3">
+                        Thiên Phú & Nhân Quả</h3>
+                    <div id="creation-traits-grid" class="grid gap-2 md:gap-3"></div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Start Button Container -->
+    <div
+        class="relative w-full p-4 bg-qi-ink border-t border-white/5 z-20 pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] flex space-x-3">
+        <button id="btn-creation-back"
+            class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 text-gray-400 flex items-center justify-center hover:bg-white/10 hover:text-white transition-all active:scale-95 shrink-0"
+            title="Quay lại">
+            <i class="ph ph-arrow-left text-xl"></i>
+        </button>
+        <button id="creation-start-btn"
+            class="creation-primary-btn flex-grow py-3 text-cultivation-gold rounded-2xl text-xs font-bold uppercase tracking-[0.25em] hover:bg-cultivation-gold/30 transition-all active:scale-95">
+            Bắt Đầu Hành Trình
+        </button>
+    </div>
+</div>

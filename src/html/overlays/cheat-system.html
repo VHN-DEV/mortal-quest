@@ -1,0 +1,26 @@
+<!-- Cheat System Overlay -->
+<div id="cheat-system-overlay" class="hidden absolute inset-0 z-[150] flex items-center justify-center p-6">
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
+    <div class="relative w-full max-w-md bg-[#090b0e] border border-amber-500/30 rounded-[2.5rem] flex flex-col max-h-[85vh] shadow-[0_0_50px_rgba(212,175,55,0.2)] overflow-hidden animate-fade-in">
+        <!-- Header -->
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-amber-500/10 to-transparent">
+            <div class="flex items-center space-x-2">
+                <i class="ph ph-shield-star text-cultivation-gold text-lg animate-pulse"></i>
+                <h3 id="cheat-system-title" class="text-sm font-ancient text-cultivation-gold uppercase tracking-widest">Hệ Thống Bàn Tay Vàng</h3>
+            </div>
+            <button id="close-cheat-system-btn" class="text-gray-500 hover:text-white transition-all transform hover:rotate-90 duration-300">
+                <i class="ph ph-x text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Main Dynamic Content -->
+        <div id="cheat-system-content" class="flex-grow overflow-y-auto p-6 space-y-6 custom-scrollbar">
+            <!-- Injected dynamically by CheatSystemScreen.js -->
+        </div>
+
+        <!-- Premium Footer -->
+        <div class="p-5 border-t border-white/5 text-center bg-black/20">
+            <p class="text-[8px] text-gray-500 font-ancient uppercase tracking-wider">Bàn Tay Vàng Nghịch Thiên Cải Mệnh</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+<!-- Chase Choice Overlay -->
+<div id="chase-overlay"
+    class="hidden overlay-full z-[300] bg-black/90 backdrop-blur-md flex items-center justify-center p-6">
+    <div
+        class="w-full max-w-sm bg-qi-ink border border-qi-blue/30 rounded-[32px] p-8 shadow-[0_0_50px_rgba(0,123,255,0.2)] text-center space-y-8 animate-fade-in">
+        <div class="space-y-4">
+            <div class="relative w-32 h-32 mx-auto">
+                <div class="absolute inset-0 bg-qi-blue/10 rounded-full animate-ping"></div>
+                <div
+                    class="relative w-full h-full rounded-full border-2 border-qi-blue/50 flex items-center justify-center bg-black/60">
+                    <i class="ph ph-footprints text-5xl text-qi-blue"></i>
+                </div>
+            </div>
+            <h3 class="text-3xl font-ancient text-white tracking-widest uppercase">Kẻ Địch Bỏ Chạy!</h3>
+            <p id="chase-desc" class="text-xs text-gray-400 italic">"Đối phương thấy thế yếu liền thi triển độn
+                thuật hòng thoát thân..."</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <button id="btn-chase-start"
+                class="group relative py-3 bg-qi-blue/20 border border-qi-blue/50 rounded-2xl overflow-hidden active:scale-95 transition-all pointer-events-auto">
+                <div
+                    class="absolute inset-0 bg-qi-blue/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <div class="relative z-10 flex flex-col items-center">
+                    <span class="text-[10px] font-bold text-qi-blue uppercase tracking-widest">TRUY ĐUỔI</span>
+                    <p class="text-[7px] text-qi-blue/60 uppercase mt-0.5">Dùng tốc độ</p>
+                </div>
+            </button>
+            <button id="btn-chase-giveup"
+                class="py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold text-gray-500 uppercase tracking-widest active:scale-95 transition-all pointer-events-auto">
+                BỎ QUA
+            </button>
+        </div>
+    </div>
+</div>

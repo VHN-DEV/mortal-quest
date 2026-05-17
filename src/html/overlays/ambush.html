@@ -1,0 +1,37 @@
+<!-- Ambush Choice Overlay -->
+<div id="ambush-overlay"
+    class="hidden overlay-full z-[300] bg-black/90 backdrop-blur-md flex items-center justify-center p-6">
+    <div
+        class="w-full max-w-sm bg-qi-ink border border-cultivation-gold/30 rounded-[32px] p-8 shadow-[0_0_50px_rgba(212,175,55,0.2)] text-center space-y-8 animate-fade-in">
+        <div class="space-y-4">
+            <div class="relative w-32 h-32 mx-auto">
+                <div class="absolute inset-0 bg-cultivation-gold/10 rounded-full animate-ping"></div>
+                <div
+                    class="relative w-full h-full rounded-full border-2 border-cultivation-gold/50 flex items-center justify-center bg-black/60">
+                    <i class="ph ph-eye text-5xl text-cultivation-gold"></i>
+                </div>
+            </div>
+            <h3 class="text-3xl font-ancient text-white tracking-widest uppercase">Phát Hiện Kẻ Địch!</h3>
+            <p id="ambush-desc" class="text-xs text-gray-400 italic">"Ngươi phát hiện một con quái vật đang ẩn
+                nấp
+                phía trước..."</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <button id="btn-ambush-start"
+                class="group relative py-3 bg-red-900/40 border border-red-500/50 rounded-2xl overflow-hidden active:scale-95 transition-all pointer-events-auto">
+                <div
+                    class="absolute inset-0 bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <div class="relative z-10 flex flex-col items-center">
+                    <span class="text-[10px] font-bold text-red-400 uppercase tracking-widest">TẬP KÍCH</span>
+                    <p class="text-[7px] text-red-500/60 uppercase mt-0.5">Ưu tiên tấn công</p>
+                </div>
+            </button>
+            <button id="btn-ambush-escape"
+                class="py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold text-gray-500 uppercase tracking-widest active:scale-95 transition-all pointer-events-auto">
+                LÁNH MẶT
+            </button>
+        </div>
+    </div>
+</div>

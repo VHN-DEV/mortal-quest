@@ -1,0 +1,79 @@
+<!-- Tab 5: Túi Đồ (Inventory) -->
+<div id="screen-inventory" class="screen hidden flex flex-col h-full p-4 overflow-y-auto custom-scroll">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-3xl font-charm text-cultivation-gold">Túi Càn Khôn</h2>
+        <div class="flex items-center space-x-3">
+            <button id="btn-toggle-equipment" class="p-1 bg-gray-800 rounded text-xs hover:bg-gray-700"
+                title="Hiện/Ẩn trang bị">👕</button>
+            <span id="inventory-capacity" class="text-[10px] text-gray-500 font-mono">0/20</span>
+            <button id="btn-inventory-sort"
+                class="p-1 bg-gray-800 rounded text-xs hover:bg-gray-700">🔄</button>
+        </div>
+    </div>
+
+    <div id="inventory-equipment-slots"
+        class="hidden grid grid-cols-5 gap-3 mb-6 bg-black/20 p-4 rounded-2xl border border-white/5">
+        <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50"
+            data-slot="head">
+            <i class="ph ph-crown text-gray-500 text-lg"></i>
+        </div>
+        <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50"
+            data-slot="necklace">
+            <i class="ph ph-diamond text-gray-500 text-lg"></i>
+        </div>
+        <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50"
+            data-slot="attackArtifact">
+            <i class="ph ph-sword text-gray-500 text-lg"></i>
+        </div>
+        <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50"
+            data-slot="defenseArtifact">
+            <i class="ph ph-shield text-gray-500 text-lg"></i>
+        </div>
+        <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50"
+            data-slot="flightArtifact">
+            <i class="ph ph-wind text-gray-500 text-lg"></i>
+        </div>
+        <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50"
+            data-slot="spaceArtifact">
+            <i class="ph ph-backpack text-gray-500 text-lg"></i>
+        </div>
+        <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50"
+            data-slot="shoes">
+            <i class="ph ph-sneaker text-gray-500 text-lg"></i>
+        </div>
+        <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50"
+            data-slot="supportArtifact">
+            <i class="ph ph-sparkle text-gray-500 text-lg"></i>
+        </div>
+        <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50"
+            data-slot="formationArtifact">
+            <i class="ph ph-circles-three text-gray-500 text-lg"></i>
+        </div>
+        <div class="equipment-slot w-full aspect-square border border-white/10 bg-black/60 rounded-xl flex items-center justify-center transition-all cursor-pointer hover:border-qi-blue/50"
+            data-slot="soulArtifact">
+            <i class="ph ph-ghost text-gray-500 text-lg"></i>
+        </div>
+    </div>
+
+    <!-- Bag Tabs (Moved below equipment) -->
+    <div class="mb-1 pt-1 pb-3">
+        <div id="inventory-bag-tabs" class="flex flex-wrap items-center gap-2 px-2">
+            <!-- Dynamic tabs will be here -->
+        </div>
+    </div>
+
+    <div class="flex-grow flex flex-col bg-black/40 rounded-xl border border-gray-800 p-4 overflow-hidden">
+        <div id="inventory-grid" class="grid grid-cols-4 gap-3 flex-grow overflow-y-auto pr-1"></div>
+
+        <!-- Pagination (NEW) -->
+        <div id="inventory-pagination"
+            class="flex justify-between items-center mt-4 pt-3 border-t border-white/5">
+            <button id="btn-inventory-prev"
+                class="px-4 py-2 bg-white/5 text-gray-500 rounded-lg border border-white/10 text-[10px] font-bold active:scale-95 transition-all disabled:opacity-30">LUI</button>
+            <span id="inventory-page-text" class="text-[10px] text-gray-400 font-mono font-bold">1 /
+                1</span>
+            <button id="btn-inventory-next"
+                class="px-4 py-2 bg-white/5 text-gray-500 rounded-lg border border-white/10 text-[10px] font-bold active:scale-95 transition-all disabled:opacity-30">TIẾP</button>
+        </div>
+    </div>
+</div>

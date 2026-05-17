@@ -1,0 +1,236 @@
+<!-- Battle Overlay -->
+<div id="battle-overlay" class="hidden overlay-full animate-fade-in bg-[#05070a] z-[999]">
+    <div id="battle-bg" class="absolute inset-0 bg-cover bg-center transition-all duration-1000"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-[#05070a]"></div>
+
+    <!-- Combat Timeline (Left Side) -->
+    <div id="battle-timeline"
+        class="absolute left-4 top-24 bottom-32 w-12 flex flex-col items-center space-y-4 z-20 pointer-events-none">
+        <!-- Entities turn order will be rendered here -->
+    </div>
+
+    <div class="relative z-10 flex flex-col h-full">
+        <!-- Header -->
+        <div class="flex-none p-3 flex justify-between items-center">
+            <div id="turn-indicator"
+                class="px-2 py-0.5 rounded-full bg-qi-blue/10 border border-qi-blue/20 text-[7px] text-qi-blue font-ancient uppercase tracking-widest animate-pulse">
+                Đến lượt ngươi</div>
+            <div class="flex items-center space-x-2">
+                <div class="text-right">
+                    <div id="battle-energy" class="text-[9px] text-qi-blue font-mono font-bold">Linh Khí Dày Đặc</div>
+                </div>
+                <div class="w-1 h-1 rounded-full bg-qi-blue animate-pulse"></div>
+            </div>
+        </div>
+
+        <!-- Arena View (Compressed) -->
+        <div class="flex-grow flex flex-col justify-center items-center p-2 space-y-2 overflow-hidden min-h-0 relative">
+            
+            <!-- Enemy Team Container -->
+            <div id="enemy-team" class="w-full max-w-4xl flex flex-row flex-wrap justify-center gap-2 overflow-y-auto custom-scroll max-h-[35%]">
+                <!-- Entity Entry (Enemy) -->
+                <div class="relative group flex items-center space-x-2 bg-white/[0.02] border border-white/5 p-1.5 rounded-lg w-48 max-w-full">
+                    <div class="battle-aura scale-50" style="--aura-color: #ef4444;"></div>
+                    <div class="relative flex-none">
+                        <div class="portrait-glow opacity-30" style="--aura-color: #ef4444;"></div>
+                        <div class="w-9 h-9 rounded-md overflow-hidden border border-red-900/20 shadow-md">
+                            <img id="enemy-img" src="" class="w-full h-full object-cover">
+                        </div>
+                        <div id="enemy-status-effects" class="absolute -right-1 -bottom-1 flex space-x-0.5"></div>
+                    </div>
+                    <div class="flex-grow space-y-1 min-w-0">
+                        <div class="flex justify-between items-baseline">
+                            <h3 id="battle-enemy-name" class="text-xs font-ancient text-red-400 truncate">Kẻ Địch</h3>
+                            <span id="enemy-hp-text" class="text-[7px] font-mono text-red-500/80">100/100</span>
+                        </div>
+                        <div class="h-1 w-full bg-red-950/40 rounded-full overflow-hidden border border-red-900/10">
+                            <div id="battle-enemy-hp" class="h-full bg-red-600 bar-liquid" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Duel Divider -->
+            <div class="flex items-center space-x-3 w-full max-w-xs opacity-30">
+                <div class="h-px flex-1 bg-gradient-to-r from-transparent to-qi-blue/20"></div>
+                <div class="text-[6px] text-qi-blue/40 font-ancient uppercase tracking-[0.3em] whitespace-nowrap">Đối Quyết</div>
+                <div class="h-px flex-1 bg-gradient-to-l from-transparent to-qi-blue/20"></div>
+            </div>
+
+            <!-- Player Team Container -->
+            <div id="player-team" class="w-full max-w-4xl flex flex-row flex-wrap justify-center gap-2 overflow-y-auto custom-scroll max-h-[35%]">
+                <div class="relative group flex items-center space-x-2 bg-white/[0.02] border border-white/5 p-1.5 rounded-lg w-48 max-w-full">
+                    <div class="battle-aura scale-50" style="--aura-color: #4fd1c5;"></div>
+                    <div class="relative flex-none">
+                        <div class="portrait-glow opacity-30" style="--aura-color: #4fd1c5;"></div>
+                        <div class="w-9 h-9 rounded-md overflow-hidden border border-qi-blue/20 shadow-md">
+                            <img id="battle-player-img" src="" class="w-full h-full object-cover">
+                        </div>
+                        <div id="player-status-effects" class="absolute -left-1 -bottom-1 flex space-x-0.5"></div>
+                    </div>
+                    <div class="flex-grow space-y-1 min-w-0">
+                        <div class="flex justify-between items-baseline">
+                            <h3 id="battle-player-name" class="text-xs font-ancient text-white truncate">Bản Tọa</h3>
+                            <div class="flex items-center space-x-1.5">
+                                <span id="player-hp-text" class="text-[7px] font-mono text-qi-jade">100/100</span>
+                                <span class="text-[6px] text-gray-600">|</span>
+                                <span id="player-mana-text" class="text-[7px] font-mono text-qi-blue">100/100</span>
+                            </div>
+                        </div>
+                        <div class="space-y-0.5">
+                            <div class="h-1 w-full bg-qi-jade/10 rounded-full overflow-hidden border border-qi-jade/10">
+                                <div id="battle-player-hp" class="h-full bg-qi-jade bar-liquid" style="width: 100%"></div>
+                            </div>
+                            <div class="h-0.5 w-full bg-qi-blue/10 rounded-full overflow-hidden border border-qi-blue/10">
+                                <div id="battle-player-mana" class="h-full bg-qi-blue bar-liquid" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Battle Log & Actions -->
+        <div class="flex-none p-3 space-y-2 bg-gradient-to-t from-black via-black/80 to-transparent">
+            <div id="battle-log"
+                class="h-10 overflow-y-auto text-[9px] text-gray-400 font-serif italic space-y-0.5 custom-scroll mask-fade-top border-l border-white/5 pl-2">
+                <p>Bắt đầu cuộc chiến...</p>
+            </div>
+
+            <!-- Chanting / Preparation Bar -->
+            <div id="battle-chanting-container" class="hidden w-full space-y-1 mb-2">
+                <div class="flex justify-between items-center px-1">
+                    <span
+                        class="text-[8px] text-cultivation-gold uppercase tracking-widest font-bold animate-pulse">Đang
+                        Niệm Chú...</span>
+                    <span id="chanting-turns" class="text-[9px] font-mono text-cultivation-gold">Còn 2
+                        lượt</span>
+                </div>
+                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                    <div id="chanting-progress"
+                        class="h-full bg-gradient-to-r from-cultivation-gold to-orange-500 transition-all duration-700 bar-liquid"
+                        style="width: 50%"></div>
+                </div>
+            </div>
+
+            <div class="relative bg-white/[0.03] rounded-2xl border border-white/10 p-2 backdrop-blur-sm shadow-xl">
+                <!-- Combat Tabs -->
+                <div id="battle-tabs"
+                    class="flex space-x-1.5 overflow-x-auto custom-scrollbar-hidden pb-2 mb-2 border-b border-white/5">
+                    <button data-tab="cong" class="combat-tab active" title="Công kích cơ bản">CÔNG</button>
+                    <button data-tab="thuat" class="combat-tab" title="Thuật pháp & Bí thuật">THUẬT</button>
+                    <button data-tab="thu" class="combat-tab" title="Phòng thủ & Hộ thân">THỦ</button>
+                    <button data-tab="dan" class="combat-tab" title="Sử dụng đan dược">ĐAN</button>
+                    <button data-tab="phu" class="combat-tab hidden" title="Phù lục">PHÙ</button>
+                    <button data-tab="tran" class="combat-tab hidden" title="Trận pháp">TRẬN</button>
+                    <button data-tab="loi" class="combat-tab hidden" title="Khôi lỗi">LỖI</button>
+                    <button data-tab="thi" class="combat-tab hidden" title="Luyện thi">THI</button>
+                    <button data-tab="thu-thu" class="combat-tab hidden" title="Ngự thú">THÚ</button>
+                    <button data-tab="trung" class="combat-tab hidden" title="Kỳ trùng">TRÙNG</button>
+                    <button data-tab="hon" class="combat-tab hidden" title="Hồn đạo">HỒN</button>
+                    <button data-tab="khac" class="combat-tab" title="Khác (Đào tẩu)">KHÁC</button>
+                </div>
+
+                <!-- Tab Content Areas -->
+                <div id="battle-tab-content" class="min-h-[80px]">
+                    <!-- Tab: CÔNG -->
+                    <div id="tab-cong" class="tab-pane grid grid-cols-2 gap-2">
+                        <button id="btn-attack" class="battle-action-btn-new">
+                            <i class="ph ph-sword"></i>
+                            <span>Sát Phạt</span>
+                        </button>
+                        <button id="btn-sword-intent" class="battle-action-btn-new hidden">
+                            <i class="ph ph-flame"></i>
+                            <span>Kiếm Ý</span>
+                        </button>
+                    </div>
+
+                    <!-- Tab: THUẬT -->
+                    <div id="tab-thuat" class="tab-pane hidden grid grid-cols-2 gap-2">
+                        <button id="btn-skill" class="battle-action-btn-new">
+                            <i class="ph ph-sparkles"></i>
+                            <span>Linh Pháp</span>
+                        </button>
+                        <button id="btn-secret" class="battle-action-btn-new">
+                            <i class="ph ph-scroll"></i>
+                            <span>Bí Thuật</span>
+                        </button>
+                        <button id="btn-flame" class="battle-action-btn-new hidden">
+                            <i class="ph ph-fire"></i>
+                            <span>Dị Hỏa</span>
+                        </button>
+                    </div>
+
+                    <!-- Tab: THỦ -->
+                    <div id="tab-thu" class="tab-pane hidden grid grid-cols-2 gap-2">
+                        <button id="btn-defend" class="battle-action-btn-new">
+                            <i class="ph ph-shield"></i>
+                            <span>Phòng Ngự</span>
+                        </button>
+                        <button id="btn-dodge" class="battle-action-btn-new">
+                            <i class="ph ph-sneaker"></i>
+                            <span>Thân Pháp</span>
+                        </button>
+                    </div>
+
+                    <!-- Tab: ĐAN -->
+                    <div id="tab-dan" class="tab-pane hidden grid grid-cols-1 gap-2">
+                        <button id="btn-potion" class="battle-action-btn-new">
+                            <i class="ph ph-flask"></i>
+                            <span>Phục Dụng Linh Đan</span>
+                        </button>
+                    </div>
+
+                    <!-- Other tabs will follow the same pattern, rendered dynamically or kept hidden -->
+                    <div id="tab-phu" class="tab-pane hidden grid grid-cols-1 gap-2">
+                        <button id="btn-talisman" class="battle-action-btn-new">
+                            <i class="ph ph-note"></i>
+                            <span>Thi Triển Phù Lục</span>
+                        </button>
+                    </div>
+                    <div id="tab-tran" class="tab-pane hidden grid grid-cols-1 gap-2">
+                        <button id="btn-formation" class="battle-action-btn-new">
+                            <i class="ph ph-circles-three"></i>
+                            <span>Thiết Lập Trận Pháp</span>
+                        </button>
+                    </div>
+                    <div id="tab-loi" class="tab-pane hidden grid grid-cols-1 gap-2">
+                        <button id="btn-puppet" class="battle-action-btn-new">
+                            <i class="ph ph-robot"></i>
+                            <span>Điều Khiển Lỗi</span>
+                        </button>
+                    </div>
+                    <div id="tab-thi" class="tab-pane hidden grid grid-cols-1 gap-2">
+                        <button id="btn-corpse" class="battle-action-btn-new">
+                            <i class="ph ph-skull"></i>
+                            <span>Triệu Hồi Thi</span>
+                        </button>
+                    </div>
+                    <div id="tab-thu-thu" class="tab-pane hidden grid grid-cols-1 gap-2">
+                        <button id="btn-beast" class="battle-action-btn-new">
+                            <i class="ph ph-dog"></i>
+                            <span>Linh Thú</span>
+                        </button>
+                    </div>
+                    <div id="tab-trung" class="tab-pane hidden grid grid-cols-1 gap-2">
+                        <button id="btn-insect" class="battle-action-btn-new">
+                            <i class="ph ph-bug"></i>
+                            <span>Kỳ Trùng</span>
+                        </button>
+                    </div>
+                    <div id="tab-khac" class="tab-pane hidden grid grid-cols-1 gap-2">
+                        <button id="btn-escape" class="battle-action-btn-new">
+                            <i class="ph ph-running"></i>
+                            <span>Độn Tẩu</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hidden List for Secrets -->
+                <div id="battle-secret-list"
+                    class="hidden absolute bottom-full left-0 right-0 mb-2 p-4 bg-black/95 backdrop-blur-2xl border border-white/10 rounded-2xl z-50 space-y-2 max-h-48 overflow-y-auto custom-scroll shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
