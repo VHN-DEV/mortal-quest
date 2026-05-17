@@ -1685,6 +1685,29 @@ export class SystemsScreen {
 
         const canBreakthrough = entry.masteryLevel >= 4 && (entry.stage < (data.maxStage || 10));
 
+        const isMain = !isSecret && (
+            state.player.mainTechniqueId === id ||
+            state.player.mainBodyTechniqueId === id ||
+            state.player.mainSoulTechniqueId === id
+        );
+
+        let equipBtnHTML = '';
+        if (!isSecret) {
+            if (isMain) {
+                equipBtnHTML = `
+                    <button class="w-full py-4 bg-cultivation-gold/15 text-cultivation-gold border border-cultivation-gold/20 text-xs font-bold rounded-2xl cursor-default opacity-80" disabled>
+                        <i class="ph ph-check-circle mr-1"></i> ĐANG CHỦ TU
+                    </button>
+                `;
+            } else {
+                equipBtnHTML = `
+                    <button class="w-full py-4 bg-cultivation-gold text-black text-xs font-bold rounded-2xl active:scale-95 transition-all" onclick="window.game.setMainTechnique('${id}')">
+                        <i class="ph ph-shield-star mr-1"></i> THIẾT LẬP CHỦ TU
+                    </button>
+                `;
+            }
+        }
+
         this.elTechDetailContent.innerHTML = `
             <div class="flex flex-col items-center text-center space-y-4">
                 <div class="text-6xl p-6 bg-white/5 rounded-full border border-white/10">${data.icon || '📜'}</div>
@@ -1708,6 +1731,7 @@ export class SystemsScreen {
                     <button class="py-4 ${canBreakthrough ? 'bg-cultivation-gold' : 'bg-gray-800 opacity-50'} text-black text-xs font-bold rounded-2xl active:scale-95 transition-all" 
                         onclick="window.game.breakthroughTechnique('${id}', ${isSecret})">ĐỘT PHÁ TẦNG</button>
                 </div>
+                ${equipBtnHTML ? `<div class="mt-3">${equipBtnHTML}</div>` : ''}
             </div>
 
             <div class="space-y-4">

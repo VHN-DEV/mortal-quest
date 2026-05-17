@@ -47,7 +47,9 @@ export class CharacterScreen {
         this.elCharGender = document.getElementById('char-gender');
         this.elCharTitle = document.getElementById('char-title');
         this.elCharDestinyRating = document.getElementById('char-destiny-rating');
-        this.elRoot = document.getElementById('char-root');
+        this.elRootName = document.getElementById('char-root-name');
+        this.elRootElements = document.getElementById('char-root-elements');
+        this.elRootPurity = document.getElementById('char-root-purity');
         this.elPhysique = document.getElementById('char-physique');
         this.elLuck = document.getElementById('char-luck');
         
@@ -195,31 +197,47 @@ export class CharacterScreen {
         }
 
         // Destiny Info
-        if (this.elRoot && state.player.spiritualRoot) {
+        if (this.elRootName && this.elRootElements && this.elRootPurity && state.player.spiritualRoot) {
             const root = state.player.spiritualRoot;
             const rarityName = root.rarityName || 'Phàm';
             
-            const ELEMENT_COLORS = {
-                'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
-                'Lôi': '#a855f7', 'Băng': '#06b6d4', 'Phong': '#94a3b8', 'Độc': '#10b981'
+            const ELEMENT_STYLES = {
+                'Kim': { color: '#fcd34d', bg: 'rgba(252, 211, 77, 0.1)', border: 'rgba(252, 211, 77, 0.25)', shadow: 'rgba(252, 211, 77, 0.15)' },
+                'Mộc': { color: '#4ade80', bg: 'rgba(74, 222, 128, 0.1)', border: 'rgba(74, 222, 128, 0.25)', shadow: 'rgba(74, 222, 128, 0.15)' },
+                'Thủy': { color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)', border: 'rgba(59, 130, 246, 0.25)', shadow: 'rgba(59, 130, 246, 0.15)' },
+                'Hỏa': { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.25)', shadow: 'rgba(239, 68, 68, 0.15)' },
+                'Thổ': { color: '#d97706', bg: 'rgba(217, 119, 6, 0.1)', border: 'rgba(217, 119, 6, 0.25)', shadow: 'rgba(217, 119, 6, 0.15)' },
+                'Lôi': { color: '#a855f7', bg: 'rgba(168, 85, 247, 0.1)', border: 'rgba(168, 85, 247, 0.25)', shadow: 'rgba(168, 85, 247, 0.15)' },
+                'Băng': { color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.1)', border: 'rgba(6, 182, 212, 0.25)', shadow: 'rgba(6, 182, 212, 0.15)' },
+                'Phong': { color: '#94a3b8', bg: 'rgba(148, 163, 184, 0.1)', border: 'rgba(148, 163, 184, 0.25)', shadow: 'rgba(148, 163, 184, 0.15)' },
+                'Độc': { color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)', border: 'rgba(16, 185, 129, 0.25)', shadow: 'rgba(16, 185, 129, 0.15)' }
             };
+
+            const defaultStyle = { color: '#ffffff', bg: 'rgba(255, 255, 255, 0.05)', border: 'rgba(255, 255, 255, 0.15)', shadow: 'transparent' };
 
             let elementsText = '';
             if (root.proportions) {
                 elementsText = Object.entries(root.proportions)
-                    .map(([el, pct]) => `<span style="color: ${ELEMENT_COLORS[el] || '#fff'}">${el} ${pct}%</span>`)
-                    .join(' · ');
+                    .map(([el, pct]) => {
+                        const style = ELEMENT_STYLES[el] || defaultStyle;
+                        return `<span class="px-2 py-0.5 rounded-full border text-[7.5px] font-bold tracking-wide transition-all hover:scale-105 shadow-sm whitespace-nowrap" style="color: ${style.color}; background-color: ${style.bg}; border-color: ${style.border}; box-shadow: 0 0 4px ${style.shadow}">${el} ${pct}%</span>`;
+                    })
+                    .join('');
             } else if (root.elements) {
-                elementsText = root.elements.map(el => `<span style="color: ${ELEMENT_COLORS[el] || '#fff'}">${el}</span>`).join(' · ');
+                elementsText = root.elements.map(el => {
+                    const style = ELEMENT_STYLES[el] || defaultStyle;
+                    return `<span class="px-2 py-0.5 rounded-full border text-[7.5px] font-bold tracking-wide transition-all hover:scale-105 shadow-sm whitespace-nowrap" style="color: ${style.color}; background-color: ${style.bg}; border-color: ${style.border}; box-shadow: 0 0 4px ${style.shadow}">${el}</span>`;
+                }).join('');
             }
 
-            this.elRoot.innerHTML = `
-                <div class="flex flex-col items-end leading-tight text-right">
-                    <span style="color: ${root.color}">${rarityName} ${root.type}</span>
-                    <span class="text-[8px] font-normal mt-0.5">${elementsText}</span>
-                    <span class="text-[7px] opacity-60 font-normal">Độ Tinh Khiết: ${root.purity}%</span>
-                </div>
-            `;
+            // Set root name (type only, colored by rarity)
+            this.elRootName.innerHTML = `<span style="color: ${root.color}; text-shadow: 0 0 8px ${root.color}40" class="font-ancient font-black text-[11px] tracking-wide">${root.type}</span>`;
+            
+            // Set element pills
+            this.elRootElements.innerHTML = elementsText;
+            
+            // Set purity details
+            this.elRootPurity.innerHTML = `<span class="bg-white/5 border border-white/5 px-1.5 py-0.5 rounded-md">Độ Tinh Khiết: <span class="font-bold text-qi-blue font-mono">${root.purity}%</span></span>`;
         }
         if (this.elPhysique) {
             const phys = state.player.physique;

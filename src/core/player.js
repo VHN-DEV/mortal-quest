@@ -181,6 +181,7 @@ export class Player {
         this.lifeBoundTreasureId = null;
         this.age = 18;
         this.maxAge = 100; // Base human lifespan
+        this.permanentLifespanBonus = 0;
 
         // Persistence of location
         this.currentLocId = null;
@@ -1195,7 +1196,7 @@ export class Player {
         
         // 5. Finalize Secondary Stats
         const baseLifespan = raceInfo.baseLifespan || 100;
-        this.maxAge = baseLifespan + (this.realmId * 50) + this.bonusStats.maxAge;
+        this.maxAge = baseLifespan + (this.realmId * 50) + this.bonusStats.maxAge + (this.permanentLifespanBonus || 0);
 
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);
@@ -1822,6 +1823,7 @@ export class Player {
             tuVi: this.tuVi,
             age: this.age,
             maxAge: this.maxAge,
+            permanentLifespanBonus: this.permanentLifespanBonus || 0,
             path: this.path,
             hp: this.hp,
             maxHp: this.maxHp,
@@ -1966,6 +1968,7 @@ export class Player {
         this.tuVi = data.tuVi || 0;
         this.age = data.age || this.age;
         this.maxAge = data.maxAge || this.maxAge;
+        this.permanentLifespanBonus = data.permanentLifespanBonus || 0;
         this.path = data.path || this.path;
         
         // Vitals

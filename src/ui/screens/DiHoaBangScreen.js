@@ -14,10 +14,10 @@ export class DiHoaBangScreen {
         this.overlay = document.getElementById('di-hoa-bang-overlay');
         this.listView = document.getElementById('di-hoa-list-view');
         this.detailView = document.getElementById('di-hoa-detail-view');
-        
+
         this.btnClose = document.getElementById('close-di-hoa-bang-btn');
         this.btnBack = document.getElementById('back-to-list-btn');
-        
+
         this.elDetailIcon = document.getElementById('di-hoa-detail-icon');
         this.elDetailRank = document.getElementById('di-hoa-detail-rank');
         this.elDetailName = document.getElementById('di-hoa-detail-name');
@@ -56,7 +56,7 @@ export class DiHoaBangScreen {
     showDetail(diHoa) {
         this.listView.classList.add('hidden');
         this.detailView.classList.remove('hidden');
-        
+
         this.elDetailIcon.className = "text-6xl mb-4 flame-effect";
         this.elDetailIcon.textContent = "🔥"; // Default emoji, can be changed based on type/color
         this.elDetailRank.textContent = `Hạng ${diHoa.rank}`;
@@ -92,16 +92,16 @@ export class DiHoaBangScreen {
 
     renderList() {
         this.listView.innerHTML = '';
-        
+
         DI_HOA_DATA.forEach(item => {
             const el = document.createElement('div');
             el.className = 'group relative bg-white/5 hover:bg-red-950/20 border border-white/5 hover:border-red-500/30 rounded-2xl p-4 flex items-center space-x-4 cursor-pointer transition-all active:scale-95';
-            
+
             // Quality border color
             const rarityClass = this.getRarityClass(item.rarity);
-            
+
             el.innerHTML = `
-                <div class="flex-none w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-sm font-ancient text-gray-400 group-hover:text-red-500 transition-colors flame-effect">
+                <div class="flex-none w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-sm font-ancient text-gray-400 group-hover:text-blue-500 transition-colors">
                     ${item.rank}
                 </div>
                 <div class="flex-grow">
@@ -113,7 +113,7 @@ export class DiHoaBangScreen {
                 </div>
                 <i class="ph ph-fire text-gray-600 group-hover:text-red-500"></i>
             `;
-            
+
             el.onclick = () => this.showDetail(item);
             this.listView.appendChild(el);
         });

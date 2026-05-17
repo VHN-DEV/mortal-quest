@@ -1264,6 +1264,21 @@ export class Game {
         }
     }
 
+    setMainTechnique(id) {
+        if (state.player) {
+            const success = state.player.setMainTechnique(id);
+            if (success) {
+                state.ui.toast("Đã thiết lập làm Công Pháp Chủ Tu!", "success");
+                if (this.screens.systems) {
+                    this.screens.systems.renderTechniqueDetail(id, false);
+                }
+            } else {
+                state.ui.toast("Không thể thiết lập Công Pháp này!", "error");
+            }
+            this.refreshUI();
+        }
+    }
+
     // --- Combat Actions ---
     startBattle(enemy, ambushType = null, onEndOverride = null) {
         if (!state.player || !enemy) return;

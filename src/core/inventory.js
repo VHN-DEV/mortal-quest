@@ -247,7 +247,8 @@ export class Inventory {
             const healAmount = Math.floor(this.player.maxHp * effect.value);
             this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
         } else if (effect.type === 'lifespan' || effect.type === 'max_age') {
-            this.player.maxAge += effect.value;
+            this.player.permanentLifespanBonus = (this.player.permanentLifespanBonus || 0) + effect.value;
+            this.player.calculateStats();
             state.ui.toast(`Thọ nguyên tăng thêm ${effect.value} năm!`, "success");
         } else if (effect.type === 'mana') {
             const manaAmount = Math.floor(this.player.maxMana * effect.value);
