@@ -23,18 +23,20 @@
             <div id="creation-mode-description" class="hidden"></div>
 
             <!-- Character Profile Row -->
-            <div class="grid grid-cols-12 gap-3 bg-black/40 p-4 rounded-2xl border border-white/5 items-end">
+            <div class="grid grid-cols-12 gap-3 bg-black/40 p-4 rounded-2xl border border-white/5">
                 <!-- Name Input (Col-6) -->
                 <div class="col-span-12 sm:col-span-6 space-y-1.5 text-left">
-                    <label class="text-[8px] md:text-[9px] text-gray-500 uppercase tracking-widest ml-1">Danh Tính</label>
+                    <label class="text-[8px] md:text-[9px] text-gray-500 uppercase tracking-widest ml-1">Danh
+                        Tính</label>
                     <input id="creation-name-input" type="text" placeholder="Nhập tên đạo hữu..."
-                        class="w-full bg-black/40 border border-white/10 rounded-xl py-2 px-3 text-xs text-white focus:border-qi-blue outline-none transition-all font-ancient">
+                        class="w-full h-[38px] bg-black/40 border border-white/10 rounded-xl px-3 text-xs text-white focus:border-qi-blue outline-none transition-all font-ancient">
                 </div>
 
                 <!-- Gender Picker (Col-4) -->
                 <div class="col-span-8 sm:col-span-4 space-y-1.5 text-left">
-                    <label class="text-[8px] md:text-[9px] text-gray-500 uppercase tracking-widest ml-1">Giới Tính</label>
-                    <div class="flex p-0.5 bg-black/50 rounded-xl border border-white/10 h-[34px] items-center">
+                    <label class="text-[8px] md:text-[9px] text-gray-500 uppercase tracking-widest ml-1">Giới
+                        Tính</label>
+                    <div class="flex p-0.5 bg-black/50 rounded-xl h-[38px] items-center">
                         <button onclick="window.game.selectCreationGender('Nam')" id="creation-gender-male"
                             class="flex-grow h-full py-1 text-[9px] font-ancient uppercase rounded-lg transition-all">Nam</button>
                         <button onclick="window.game.selectCreationGender('Nữ')" id="creation-gender-female"
@@ -44,9 +46,9 @@
 
                 <!-- Age Input (Col-2) -->
                 <div class="col-span-4 sm:col-span-2 space-y-1.5 text-left">
-                    <label class="text-[8px] md:text-[9px] text-gray-500 uppercase tracking-widest ml-1 block text-center">Tuổi</label>
+                    <label class="text-[8px] md:text-[9px] text-gray-500 uppercase tracking-widest ml-1">Tuổi</label>
                     <input id="creation-age-input" type="number" value="18" min="10" max="100"
-                        class="w-full h-[34px] bg-black/40 border border-white/10 rounded-xl text-center text-xs text-white focus:border-qi-blue outline-none transition-all font-mono font-bold">
+                        class="w-full h-[38px] bg-black/40 border border-white/10 rounded-xl text-center text-xs text-white focus:border-qi-blue outline-none transition-all font-mono font-bold">
                 </div>
             </div>
 
