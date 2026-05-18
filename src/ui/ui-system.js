@@ -1045,10 +1045,9 @@ export class UISystem {
         
         if (progressBar) progressBar.style.width = `${progress}%`;
         
-        // Entity moves from 6% to 94% roughly
+        // Entity moves from 0% to 100% since it's aligned properly now
         if (entity) {
-            const leftPos = 6 + (progress * 0.88);
-            entity.style.left = `${leftPos}%`;
+            entity.style.left = `${progress}%`;
         }
     }
 
@@ -1076,9 +1075,11 @@ export class UISystem {
         }
 
         el.innerHTML = `
-            <div class="flex items-start space-x-2">
-                <i class="ph-fill ${icon} mt-0.5 shrink-0"></i>
-                <p class="${colorClass}">${msg}</p>
+            <div class="flex items-start space-x-3">
+                <div class="w-5 flex justify-center shrink-0 pt-0.5">
+                    <i class="ph-fill ${icon} text-base"></i>
+                </div>
+                <p class="${colorClass} leading-relaxed flex-1">${msg}</p>
             </div>
         `;
 

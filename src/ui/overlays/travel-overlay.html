@@ -8,19 +8,19 @@
     </div>
 
     <!-- Progress Visualization -->
-    <div class="w-full max-w-2xl px-6 relative mb-8">
-        <!-- Path line -->
-        <div class="h-1 bg-white/10 rounded-full w-full relative overflow-hidden">
-            <div id="travel-progress-bar" class="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 via-purple-500 to-qi-blue w-0 transition-all duration-100 ease-linear shadow-[0_0_10px_rgba(79,209,197,0.8)]"></div>
-        </div>
-        
-        <!-- Markers -->
-        <div class="absolute -top-3 left-6 text-white/50 text-2xl"><i class="ph-fill ph-map-pin"></i></div>
-        <div class="absolute -top-3 right-6 text-qi-blue text-2xl animate-pulse"><i class="ph-fill ph-flag"></i></div>
+    <div class="w-full max-w-2xl px-12 relative mb-12 mt-4">
+        <div class="relative w-full h-1 bg-white/10 rounded-full flex items-center">
+            <!-- Path line -->
+            <div id="travel-progress-bar" class="absolute left-0 h-full bg-gradient-to-r from-blue-500 via-purple-500 to-qi-blue w-0 transition-all duration-100 ease-linear shadow-[0_0_10px_rgba(79,209,197,0.8)] rounded-full"></div>
+            
+            <!-- Markers -->
+            <div class="absolute left-0 -ml-3 text-white/50 text-2xl flex items-center justify-center"><i class="ph-fill ph-map-pin"></i></div>
+            <div class="absolute right-0 -mr-3 text-qi-blue text-2xl animate-pulse flex items-center justify-center"><i class="ph-fill ph-flag"></i></div>
 
-        <!-- Moving Entity (Sword/Cloud) -->
-        <div id="travel-entity" class="absolute -top-6 left-6 text-3xl transition-all duration-100 ease-linear drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">
-            <i class="ph-fill ph-sword text-white rotate-45"></i>
+            <!-- Moving Entity (Sword/Cloud) -->
+            <div id="travel-entity" class="absolute left-0 -ml-4 w-8 h-8 text-3xl transition-all duration-100 ease-linear drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] flex items-center justify-center">
+                <i class="ph-fill ph-sword text-white rotate-90"></i>
+            </div>
         </div>
     </div>
 
