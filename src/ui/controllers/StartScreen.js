@@ -120,6 +120,7 @@ export class StartScreen {
                 const guide = document.getElementById('guide-overlay');
                 if (guide) {
                     state.ui.toggleOverlay(guide, true);
+                    this.initGuideTabs();
                     this.renderWorldTree();
                 }
             };
@@ -275,6 +276,44 @@ export class StartScreen {
         } catch (err) {
             console.error('Failed to render world tree:', err);
             treeContainer.innerHTML = `<div class="text-red-400 text-center py-4">Cảm ứng thất bại: ${err.message}</div>`;
+        }
+    }
+
+    initGuideTabs() {
+        const overlay = document.getElementById('guide-overlay');
+        if (!overlay) return;
+
+        const tabBtns = overlay.querySelectorAll('.guide-tab-btn');
+        const panes = overlay.querySelectorAll('.guide-tab-pane');
+
+        tabBtns.forEach(btn => {
+            btn.onclick = () => {
+                // Remove active classes from all buttons
+                tabBtns.forEach(b => {
+                    b.classList.remove('active', 'border-cultivation-gold/45', 'text-cultivation-gold', 'bg-cultivation-gold/10');
+                    b.classList.add('border-white/5', 'text-gray-400');
+                });
+
+                // Add active classes to clicked button
+                btn.classList.add('active', 'border-cultivation-gold/45', 'text-cultivation-gold', 'bg-cultivation-gold/10');
+                btn.classList.remove('border-white/5', 'text-gray-400');
+
+                // Hide all panes
+                panes.forEach(p => p.classList.add('hidden'));
+
+                // Show targeted pane
+                const tabId = btn.getAttribute('data-tab');
+                const targetPane = overlay.querySelector(`#${tabId}`);
+                if (targetPane) {
+                    targetPane.classList.remove('hidden');
+                }
+            };
+        });
+
+        // Auto reset to default tab (Tân Thủ) when opened
+        const defaultBtn = overlay.querySelector('.guide-tab-btn[data-tab="tab-intro"]');
+        if (defaultBtn) {
+            defaultBtn.click();
         }
     }
 }
