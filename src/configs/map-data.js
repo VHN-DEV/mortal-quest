@@ -368,11 +368,11 @@ export const WORLDS = {
                 subRegionName: 'Việt Quốc'
             },
             {
-                id: 'nguyen_vu_quoc_loc',
+                id: 'nguyen_vu_quoc',
                 name: 'Nguyên Vũ Quốc',
                 minRealm: 5,
                 danger: 'an_toan',
-                image: getLocImg('nguyen_vu_quoc_loc'),
+                image: getLocImg('nguyen_vu_quoc'),
                 description: 'Quốc gia tu tiên láng giềng của Việt Quốc, nơi hội tụ nhiều thế lực luyện khí và chế pháp trận.',
                 resources: ['Linh Thạch Hạ Phẩm', 'Trận Pháp Cơ Bản'],
                 energies: [{ type: 'linh_khi', concentration: 15, purity: 'TINH_THUAN' }],
@@ -3068,6 +3068,22 @@ export const WORLDS = {
                 regionName: 'Các Tiên Vực Lớn',
                 subRegionId: 'hac_son_tien_vuc_sub',
                 subRegionName: 'Hắc Sơn Tiên Vực'
+            },
+            {
+                id: 'thuong_thien_kiem_hai',
+                name: 'Thương Thiên Kiếm Hải',
+                minRealm: 44,
+                danger: 'nguy_hiem',
+                image: getLocImg('thuong_thien_kiem_hai'),
+                description: 'Vùng biển kiếm khí ngập trời chí tôn tại Tiên Giới, nơi chôn vùi vô số tiên kiếm viễn cổ và kiếm ý tối cao.',
+                resources: ['Tiên Kiếm Mảnh', 'Kiếm Ý Tinh Thạch'],
+                energies: [{ type: 'tien_khi', concentration: 240, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 50, 'Mộc': 5, 'Thủy': 20, 'Hỏa': 5, 'Thổ': 10, 'Phong': 10, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.45, loot: 0.3, npc: 0.05, empty: 0.2 },
+                regionId: 'tien_vuc_lon',
+                regionName: 'Các Tiên Vực Lớn',
+                subRegionId: 'thai_at_tien_vuc_sub',
+                subRegionName: 'Thái Ất Tiên Vực'
             },
             {
                 id: 'bat_hoang_son',
