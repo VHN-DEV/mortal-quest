@@ -478,29 +478,8 @@ window.renderTimeHUD = () => {
     if (!state.systems.time) return;
 
     const t = state.systems.time.getFormattedTime();
-
-    const elHour = document.getElementById('time-hour');
-    const elPeriod = document.getElementById('time-period');
-    const elSeason = document.getElementById('time-season');
-    const elDate = document.getElementById('time-date');
-    const elPhenomenon = document.getElementById('time-phenomenon');
-
-    if (elHour) elHour.textContent = t.hourName;
-    if (elPeriod) elPeriod.textContent = `(${t.period === 'Day' ? 'Ban Ngày' : 'Ban Đêm'})`;
-    if (elSeason) {
-        elSeason.textContent = t.seasonName;
-        elSeason.style.color = t.seasonColor;
-        elSeason.style.borderColor = `${t.seasonColor}4d`; // 30% opacity hex
-    }
-    if (elDate) elDate.textContent = `Ngày ${t.day} Tháng ${t.month} Năm ${t.year}`;
-
-    if (elPhenomenon) {
-        if (t.phenomenon) {
-            elPhenomenon.textContent = t.phenomenon;
-            elPhenomenon.classList.remove('hidden');
-        } else {
-            elPhenomenon.classList.add('hidden');
-        }
+    if (state.ui && state.ui.updateTimeUI) {
+        state.ui.updateTimeUI(t);
     }
 };
 

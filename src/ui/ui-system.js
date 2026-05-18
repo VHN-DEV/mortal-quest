@@ -24,6 +24,7 @@ export class UISystem {
         this.elTimeYearMonth = document.getElementById('time-date');
         this.elTimeSeason = document.getElementById('time-season');
         this.elTimeHour = document.getElementById('time-hour');
+        this.elTimePeriod = document.getElementById('time-period');
         this.elTimePhenomenon = document.getElementById('time-phenomenon');
 
         // Tooltip
@@ -36,8 +37,15 @@ export class UISystem {
     updateTimeUI(time) {
         if (!this.elTimeYearMonth) return;
         
-        this.elTimeYearMonth.textContent = `Năm ${time.year} - Tháng ${time.month.toString().padStart(2, '0')} - Ngày ${time.day.toString().padStart(2, '0')}`;
-        this.elTimeHour.textContent = time.hourName;
+        this.elTimeYearMonth.textContent = `Ngày ${time.day} Tháng ${time.month} Năm ${time.year}`;
+        
+        if (this.elTimeHour) {
+            this.elTimeHour.textContent = time.hourName;
+        }
+
+        if (this.elTimePeriod) {
+            this.elTimePeriod.textContent = `(${time.period === 'Day' ? 'Ban Ngày' : 'Ban Đêm'})`;
+        }
         
         if (this.elTimeSeason) {
             this.elTimeSeason.textContent = time.seasonName;
