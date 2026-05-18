@@ -115,12 +115,30 @@ export const ASSETS = {
         sect_elder: getAssetUrl('portraits/sect_elder'),
         merchant: getAssetUrl('portraits/merchant'),
         demon: getAssetUrl('portraits/demon'),
+        
+        // Special NPCs mapped directly to their unique high-fidelity illustrations
+        han_lap: getAssetUrl('portraits/han_lap'),
+        tu_linh: getAssetUrl('portraits/tu_linh'),
+        kiem_vo_tam: getAssetUrl('portraits/kiem_vo_tam'),
+        vo_danh: getAssetUrl('portraits/vo_danh'),
+        bang_nguyet: getAssetUrl('portraits/bang_nguyet'),
+        thanh_lien: getAssetUrl('portraits/thanh_lien'),
+        thanh_nhi: getAssetUrl('portraits/thanh_nhi'),
+        bach_minh_anh: getAssetUrl('portraits/bach_minh_anh'),
+        han_vien: getAssetUrl('portraits/han_vien'),
+        lan_anh: getAssetUrl('portraits/lan_anh'),
+        minh_nguyet: getAssetUrl('portraits/minh_nguyet'),
     }, 'portraits', 'player'),
 
     // Kẻ địch
     enemies: createAssetProxy({
         wolf: getAssetUrl('enemies/spirit_wolf'),
         dragon: getAssetUrl('enemies/fire_dragon'),
+        black_tiger: getAssetUrl('enemies/black_tiger'),
+        rogue_cultivator: getAssetUrl('enemies/rogue_cultivator'),
+        demon_cultivator: getAssetUrl('enemies/demon_cultivator'),
+        zombie: getAssetUrl('enemies/zombie'),
+        ghost: getAssetUrl('enemies/demon_cultivator'),
     }, 'enemies', 'wolf'),
 
     // Yêu Thú (Linh Thú, Dị Thú...)
@@ -128,7 +146,45 @@ export const ASSETS = {
         thanh_van_ly: getAssetUrl('beasts/thanh-van-ly-thu'),
         dia_long: getAssetUrl('beasts/huyen-giap-dia-long'),
         mong_diep: getAssetUrl('beasts/u-minh-mong-diep'),
+        
+        // Insect Vector SVGs
+        bang_tam: getAssetUrl('aberrations/bang-tam.svg'),
+        huyet_ngoc_tri_chu: getAssetUrl('aberrations/huyet-ngoc-tri-chu.svg'),
+        phe_kim_trung: getAssetUrl('aberrations/phe-kim-trung.svg'),
+        
+        // Spiritual Beasts fallback mapping to location themes
+        phe_linh_trung: getAssetUrl('aberrations/luc-duc-suong-cong.svg'),
+        kim_tam: getAssetUrl('aberrations/kim-giap-hac.svg'),
+        thanh_van_hac: getAssetUrl('locations/theme_linh_ngoai'),
+        xich_diem_lang: getAssetUrl('locations/theme_ma_uyen'),
+        loi_duc_su: getAssetUrl('locations/theme_chien_truong'),
+        cuu_vi_thien_ho: getAssetUrl('locations/theme_van_yeu'),
+        thanh_long: getAssetUrl('locations/theme_hai_toc'),
     }, 'beasts', 'thanh_van_ly'),
+
+    // Khôi lỗi & Thi hài
+    puppets: createAssetProxy({
+        thiet_giap_khoi_loi: getAssetUrl('locations/theme_chien_truong'),
+        kiem_khoi: getAssetUrl('locations/theme_chien_truong'),
+    }, 'puppets', 'thiet_giap_khoi_loi'),
+
+    corpses: createAssetProxy({
+        thi_binh: getAssetUrl('locations/theme_huyet_hai'),
+        thi_tuong: getAssetUrl('locations/theme_huyet_hai'),
+        dong_giap_thi: getAssetUrl('locations/theme_ma_uyen'),
+    }, 'corpses', 'thi_binh'),
+
+    // Sự kiện Thẻ Cảnh (Scenery Cards)
+    events: createAssetProxy({
+        rare_herb: getAssetUrl('locations/theme_van_yeu'),
+        chaos_rift: getAssetUrl('locations/theme_khong_gian'),
+        old_friend: getAssetUrl('locations/theme_linh_thanh'),
+        demon_ritual: getAssetUrl('locations/theme_huyet_hai'),
+        heavenly_tribulation: getAssetUrl('locations/theme_ma_uyen'),
+        med_king_valley: getAssetUrl('locations/theme_linh_ngoai'),
+        hidden_library: getAssetUrl('locations/theme_tien_phu'),
+        death_match_arena: getAssetUrl('locations/theme_chien_truong'),
+    }, 'events', 'rare_herb'),
 
     // Bối cảnh & Bản đồ
     backgrounds: createAssetProxy({

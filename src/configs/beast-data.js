@@ -23,6 +23,7 @@ export const BEASTS = {
         type: BEAST_TYPES.LINH_TRUNG,
         bloodline: 'LINH',
         icon: '🦗',
+        image: 'beasts/phe_linh_trung',
         description: 'Loại linh trùng nhỏ bé có khả năng cắn nuốt linh lực.',
         baseStats: { hp: 50, atk: 5, def: 2, spd: 15 },
         abilities: ['Thôn Linh']
@@ -33,6 +34,7 @@ export const BEASTS = {
         type: BEAST_TYPES.LINH_TRUNG,
         bloodline: 'DIA',
         icon: '🐛',
+        image: 'beasts/kim_tam',
         description: 'Tằm vàng quý hiếm, tơ của nó là vật liệu luyện khí cực tốt.',
         baseStats: { hp: 120, atk: 10, def: 20, spd: 5 },
         abilities: ['Kim Ti']
@@ -43,6 +45,7 @@ export const BEASTS = {
         type: BEAST_TYPES.LINH_THU,
         bloodline: 'LINH',
         icon: '🦢',
+        image: 'beasts/thanh_van_hac',
         description: 'Linh hạc cưỡi mây, thường được các tu sĩ dùng làm tọa kỵ.',
         baseStats: { hp: 200, atk: 15, def: 10, spd: 40 },
         abilities: ['Ngự Phong']
@@ -53,6 +56,7 @@ export const BEASTS = {
         type: BEAST_TYPES.LINH_THU,
         bloodline: 'LINH',
         icon: '🐺',
+        image: 'beasts/xich_diem_lang',
         description: 'Sói lửa vùng hỏa núi, tính tình hung dữ.',
         baseStats: { hp: 350, atk: 45, def: 15, spd: 30 },
         abilities: ['Hỏa Trảo']
@@ -63,6 +67,7 @@ export const BEASTS = {
         type: BEAST_TYPES.DI_THU,
         bloodline: 'THIEN',
         icon: '🦁',
+        image: 'beasts/loi_duc_su',
         description: 'Sư tử có cánh mang theo sức mạnh của sấm sét.',
         baseStats: { hp: 1500, atk: 250, def: 100, spd: 80 },
         abilities: ['Thiên Lôi Hống']
@@ -73,6 +78,7 @@ export const BEASTS = {
         type: BEAST_TYPES.THAN_THU,
         bloodline: 'THANH',
         icon: '🦊',
+        image: 'beasts/cuu_vi_thien_ho',
         description: 'Hồ ly chín đuôi trong truyền thuyết, có khả năng mê hoặc chúng sinh.',
         baseStats: { hp: 5000, atk: 800, def: 300, spd: 120 },
         abilities: ['Mê Hồn Huyễn Cảnh']
@@ -83,6 +89,7 @@ export const BEASTS = {
         type: BEAST_TYPES.THAN_THU,
         bloodline: 'THAN',
         icon: '🐉',
+        image: 'beasts/thanh_long',
         description: 'Thần thú trấn giữ phương Đông, đứng đầu tứ linh.',
         baseStats: { hp: 20000, atk: 2500, def: 1500, spd: 200 },
         abilities: ['Long Uy Trấn Áp', 'Thiên Phạt']

@@ -740,6 +740,7 @@ export const EVENTS = [
         id: 'spirit_beast_summon',
         name: 'Linh Thú Nhận Chủ',
         type: 'interactive',
+        image: 'events/rare_herb',
         description: 'Một con Tiểu Hỏa Hồ đang bị mắc kẹt trong bẫy rập linh lực. Nó nhìn ngươi với đôi mắt to tròn đầy vẻ van nài.',
         options: [
             { label: 'Giải cứu và nhận nuôi', value: 'adopt', icon: 'ph-dog' },
@@ -769,6 +770,7 @@ export const EVENTS = [
         id: 'old_friend_meet',
         name: 'Cố Nhân Tương Phùng',
         type: 'interactive',
+        image: 'events/old_friend',
         description: 'Ngươi tình cờ gặp lại một vị tu sĩ từng cùng ngươi tu luyện lúc khởi đầu. Hắn bây giờ có vẻ đã khá giả hơn nhiều.',
         options: [
             { label: 'Hàn huyên tâm sự', value: 'talk', icon: 'ph-chat-circle-dots' },
@@ -795,6 +797,7 @@ export const EVENTS = [
         id: 'demon_ritual',
         name: 'Ma Đạo Tế Lễ',
         type: 'interactive',
+        image: 'events/demon_ritual',
         description: 'Một đám ma tu đang tiến hành nghi lễ hiến tế linh hồn để triệu hoán Ma Thần. Không khí nồng nặc mùi máu.',
         options: [
             { label: 'Ngăn chặn nghi lễ', value: 'stop', icon: 'ph-shield-check' },
@@ -817,6 +820,7 @@ export const EVENTS = [
         id: 'heavenly_tribulation',
         name: 'Thiên Kiếp Bất Ngờ',
         type: 'interactive',
+        image: 'events/heavenly_tribulation',
         description: 'Bầu trời sụp đổ, lôi điện cuồng bạo giáng xuống. Một vị đại năng gần đó đang đột phá, lôi kiếp lan rộng đến tận chỗ ngươi!',
         options: [
             { label: 'Dùng thân kháng lôi', value: 'resist', icon: 'ph-lightning' },
@@ -841,6 +845,7 @@ export const EVENTS = [
         id: 'med_king_valley',
         name: 'Dược Vương Cốc',
         type: 'interactive',
+        image: 'events/med_king_valley',
         description: 'Ngươi lạc bước vào một thung lũng đầy thảo dược. Một lão dược sư đang cần thu thập Linh Thảo để luyện đan.',
         options: [
             { label: 'Đổi Linh Thảo lấy Đan Dược', value: 'trade', icon: 'ph-arrows-left-right' },
@@ -861,6 +866,7 @@ export const EVENTS = [
         id: 'hidden_library',
         name: 'Tàng Kinh Các Phế Tích',
         type: 'interactive',
+        image: 'events/hidden_library',
         description: 'Giữa đống đổ nát của một tông môn cổ đại, một tòa tháp vẫn đứng vững. Đây chính là Tàng Kinh Các!',
         options: [
             { label: 'Tìm kiếm công pháp', value: 'search', icon: 'ph-scroll' },
@@ -883,6 +889,7 @@ export const EVENTS = [
         id: 'death_match_arena',
         name: 'Lôi Đài Sinh Tử',
         type: 'interactive',
+        image: 'events/death_match_arena',
         description: 'Tại một hắc điếm, một trận đấu lôi đài đang diễn ra. Kẻ thắng lấy tất cả, kẻ thua mất mạng.',
         options: [
             { label: 'Lên đài khiêu chiến', value: 'fight', icon: 'ph-sword' },

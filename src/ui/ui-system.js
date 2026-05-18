@@ -221,7 +221,7 @@ export class UISystem {
     /**
      * Show a list of options for the user to choose from
      */
-    promptOptions(title, options, description = '') {
+    promptOptions(title, options, description = '', illustration = '') {
         return new Promise((resolve) => {
             const originalMessage = this.modalMessage.innerHTML;
             const originalConfirmDisplay = this.modalBtnConfirm.style.display;
@@ -251,8 +251,20 @@ export class UISystem {
                 optionsContainer.appendChild(btn);
             });
 
-            this.modalMessage.innerHTML = description ?
-                `<div class="text-xs text-gray-400 mb-4 px-2 italic leading-relaxed border-l-2 border-qi-blue/30 pl-4">${description}</div>` : '';
+            let contentHTML = '';
+            if (illustration) {
+                contentHTML += `
+                    <div class="w-full h-36 rounded-2xl overflow-hidden border border-white/10 mb-4 shadow-lg shadow-black/80 relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
+                        <img src="${illustration}" class="w-full h-full object-cover">
+                    </div>
+                `;
+            }
+            if (description) {
+                contentHTML += `<div class="text-xs text-gray-400 mb-4 px-2 italic leading-relaxed border-l-2 border-qi-blue/30 pl-4">${description}</div>`;
+            }
+
+            this.modalMessage.innerHTML = contentHTML;
             this.modalMessage.appendChild(optionsContainer);
             this.modalBtnConfirm.style.display = 'none';
             this.modalBtnCancel.style.display = 'block';

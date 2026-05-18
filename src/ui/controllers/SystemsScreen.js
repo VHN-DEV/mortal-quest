@@ -1187,10 +1187,14 @@ export class SystemsScreen {
 
                 const locked = state.player.puppetLevel < recipe.skillLevel;
 
+                const puppetImg = ASSETS.puppets[recipe.id];
+
                 el.innerHTML = `
                     <div class="flex justify-between items-start">
                         <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-2xl border border-white/10 group-hover:scale-110 transition-transform">🤖</div>
+                            <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center overflow-hidden border border-white/10 group-hover:scale-110 transition-transform">
+                                ${puppetImg ? `<img src="${puppetImg}" class="w-full h-full object-cover">` : '🤖'}
+                            </div>
                             <div>
                                 <h4 class="font-ancient text-white text-lg">${recipe.name}</h4>
                                 <div class="flex space-x-2 mt-1">
@@ -1345,10 +1349,14 @@ export class SystemsScreen {
                     const lvlInfo = getBeastLevelInfo(beast.level);
                     const blood = BLOODLINES[beast.bloodline];
 
+                    const beastImg = ASSETS.beasts[beast.id];
+
                     const el = document.createElement('div');
                     el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] flex items-center space-x-4';
                     el.innerHTML = `
-                        <div class="text-4xl">${data?.icon || '🐾'}</div>
+                        <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center overflow-hidden border border-white/10 flex-shrink-0">
+                            ${beastImg ? `<img src="${beastImg}" class="w-full h-full object-cover">` : `<span class="text-3xl">${data?.icon || '🐾'}</span>`}
+                        </div>
                         <div class="flex-grow">
                             <div class="flex justify-between items-center">
                                 <h4 class="font-bold text-white">${beast.name}</h4>
@@ -1543,10 +1551,13 @@ export class SystemsScreen {
             view.appendChild(activeHeader);
 
             state.player.refinedCorpses.forEach((corpse, idx) => {
+                const corpseImg = ASSETS.corpses[corpse.id];
                 const el = document.createElement('div');
                 el.className = 'p-4 border border-red-900/30 rounded-2xl bg-red-900/5 mb-4 flex items-center space-x-4';
                 el.innerHTML = `
-                    <div class="text-4xl opacity-80">🧟</div>
+                    <div class="w-12 h-12 bg-red-950/20 rounded-2xl flex items-center justify-center overflow-hidden border border-red-900/20 flex-shrink-0">
+                        ${corpseImg ? `<img src="${corpseImg}" class="w-full h-full object-cover">` : '<span class="text-3xl">🧟</span>'}
+                    </div>
                     <div class="flex-grow">
                         <div class="flex justify-between items-center">
                             <h4 class="font-bold text-red-400">${corpse.name}</h4>
@@ -1573,6 +1584,7 @@ export class SystemsScreen {
             view.appendChild(empty);
         } else {
             known.forEach(type => {
+                const corpseImg = ASSETS.corpses[type.id];
                 const el = document.createElement('div');
                 el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 space-y-3';
 
@@ -1588,9 +1600,14 @@ export class SystemsScreen {
 
                 el.innerHTML = `
                 <div class="flex justify-between items-start">
-                    <div>
-                        <h4 class="font-ancient text-lg text-red-500">${type.name}</h4>
-                        <p class="text-[9px] text-gray-500 mt-1">${type.description}</p>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-red-950/20 rounded-2xl flex items-center justify-center overflow-hidden border border-red-900/20 flex-shrink-0 animate-pulse-subtle">
+                            ${corpseImg ? `<img src="${corpseImg}" class="w-full h-full object-cover">` : '<span class="text-3xl">🧟</span>'}
+                        </div>
+                        <div>
+                            <h4 class="font-ancient text-lg text-red-500">${type.name}</h4>
+                            <p class="text-[9px] text-gray-500 mt-1">${type.description}</p>
+                        </div>
                     </div>
                     ${locked ?
                         `<span class="text-[8px] text-red-500 uppercase font-bold">Cần Cấp ${type.level}</span>` :

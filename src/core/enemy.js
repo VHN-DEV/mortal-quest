@@ -105,9 +105,9 @@ export class EnemyGenerator {
     static generate(playerRealmId) {
         const types = [
             { name: 'Yêu Lang', img: ASSETS.enemies.wolf, statMult: 0.8, race: 'SPIRIT_BEAST' },
-            { name: 'Hắc Hổ', img: ASSETS.enemies.wolf, statMult: 1.0, race: 'SPIRIT_BEAST' },
-            { name: 'Tán Tu', img: ASSETS.enemies.rogue, statMult: 1.1, race: 'HUMAN' },
-            { name: 'Ma Tu', img: ASSETS.enemies.demon, statMult: 1.3, race: 'DEMON' },
+            { name: 'Hắc Hổ', img: ASSETS.enemies.black_tiger, statMult: 1.0, race: 'SPIRIT_BEAST' },
+            { name: 'Tán Tu', img: ASSETS.enemies.rogue_cultivator, statMult: 1.1, race: 'HUMAN' },
+            { name: 'Ma Tu', img: ASSETS.enemies.demon_cultivator, statMult: 1.3, race: 'DEMON' },
             { name: 'Lôi Long', img: ASSETS.enemies.dragon, statMult: 2.0, race: 'DRAGON' },
             { name: 'Hành Thi', img: ASSETS.enemies.zombie, statMult: 0.7, race: 'ZOMBIE' },
             { name: 'Quỷ Hồn', img: ASSETS.enemies.ghost, statMult: 0.9, race: 'GHOST' }

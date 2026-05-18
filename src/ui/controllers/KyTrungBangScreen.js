@@ -1,5 +1,6 @@
 import { KY_TRUNG_DATA } from '../../configs/ky-trung-data.js';
 import { state } from '../../state.js';
+import { ASSETS } from '../../configs/asset-data.js';
 
 /**
  * Màn hình hiển thị danh sách 10 loại Kỳ Trùng.
@@ -59,8 +60,28 @@ export class KyTrungBangScreen {
         if (this.listView) this.listView.classList.add('hidden');
         if (this.detailView) this.detailView.classList.remove('hidden');
         
-        this.elDetailIcon.className = "text-6xl mb-4 bug-effect";
-        this.elDetailIcon.textContent = "🦗"; // Default emoji
+        const mapping = {
+            hon_don_thai_so_trung: ASSETS.beasts.phe_kim_trung,
+            hu_khong_phe_linh_co: ASSETS.beasts.phe_linh_trung,
+            cuu_u_minh_hoang_diep: ASSETS.beasts.mong_diep,
+            phe_kim_trung_vuong: ASSETS.beasts.phe_kim_trung,
+            thai_at_kim_thien: ASSETS.beasts.kim_tam,
+            luc_duc_han_tam: ASSETS.beasts.bang_tam,
+            loi_van_thien_chu: ASSETS.beasts.huyet_ngoc_tri_chu,
+            huyet_ngoc_tri_chu: ASSETS.beasts.huyet_ngoc_tri_chu,
+            thiet_xac_phong: ASSETS.beasts.phe_linh_trung,
+            huyet_van_kien: ASSETS.beasts.phe_linh_trung
+        };
+        const finalImg = mapping[item.id] || ASSETS.beasts.thanh_van_ly;
+
+        this.elDetailIcon.className = "flex justify-center mb-4";
+        this.elDetailIcon.innerHTML = `
+            <div class="w-24 h-24 bg-emerald-950/20 border border-emerald-500/20 rounded-3xl overflow-hidden flex items-center justify-center p-3 shadow-lg shadow-emerald-900/30 group relative">
+                <div class="absolute inset-0 bg-gradient-to-t from-emerald-500/20 via-transparent to-transparent opacity-60"></div>
+                <img src="${finalImg}" class="w-full h-full object-contain animate-pulse-subtle bug-effect">
+            </div>
+        `;
+
         this.elDetailRank.textContent = `Hạng ${item.rank}`;
         this.elDetailName.textContent = item.name;
         this.elDetailColor.textContent = item.color;
@@ -84,8 +105,10 @@ export class KyTrungBangScreen {
         };
 
         const foundColor = rarityColorMap[item.rarity] || "#94a3b8";
-        this.elDetailIcon.style.color = foundColor;
-        this.elDetailIcon.style.filter = `drop-shadow(0 0 15px ${foundColor}80)`;
+        const innerIcon = this.elDetailIcon.querySelector('.bug-effect');
+        if (innerIcon) {
+            innerIcon.style.filter = `drop-shadow(0 0 15px ${foundColor}80)`;
+        }
     }
 
     renderList() {
@@ -98,9 +121,23 @@ export class KyTrungBangScreen {
             
             const rarityClass = this.getRarityClass(item.rarity);
             
+            const mapping = {
+                hon_don_thai_so_trung: ASSETS.beasts.phe_kim_trung,
+                hu_khong_phe_linh_co: ASSETS.beasts.phe_linh_trung,
+                cuu_u_minh_hoang_diep: ASSETS.beasts.mong_diep,
+                phe_kim_trung_vuong: ASSETS.beasts.phe_kim_trung,
+                thai_at_kim_thien: ASSETS.beasts.kim_tam,
+                luc_duc_han_tam: ASSETS.beasts.bang_tam,
+                loi_van_thien_chu: ASSETS.beasts.huyet_ngoc_tri_chu,
+                huyet_ngoc_tri_chu: ASSETS.beasts.huyet_ngoc_tri_chu,
+                thiet_xac_phong: ASSETS.beasts.phe_linh_trung,
+                huyet_van_kien: ASSETS.beasts.phe_linh_trung
+            };
+            const insectImg = mapping[item.id] || ASSETS.beasts.thanh_van_ly;
+
             el.innerHTML = `
-                <div class="flex-none w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-sm font-ancient text-gray-400 group-hover:text-emerald-500 transition-colors">
-                    🦗
+                <div class="flex-none w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center overflow-hidden p-1.5 transition-transform group-hover:scale-110">
+                    <img src="${insectImg}" class="w-full h-full object-contain">
                 </div>
                 <div class="flex-grow">
                     <h4 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">${item.name}</h4>

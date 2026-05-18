@@ -566,7 +566,9 @@ export class MapScreen {
                 setTimeout(async () => {
                     const finalDesc = typeof event.description === 'function' ? event.description(state.player) : event.description;
                     const finalOptions = typeof event.options === 'function' ? event.options(state.player) : event.options;
-                    const choice = await state.ui.promptOptions(event.name, finalOptions, finalDesc);
+                    const eventKey = event.image ? event.image.replace('events/', '') : '';
+                    const eventImage = eventKey ? ASSETS.events[eventKey] : '';
+                    const choice = await state.ui.promptOptions(event.name, finalOptions, finalDesc, eventImage);
                     
                     if (choice && event.resolve) {
                         const result = await event.resolve(choice, state.player, window.game);
