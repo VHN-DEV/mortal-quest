@@ -1,0 +1,55 @@
+<!-- Travel Journey Overlay -->
+<div id="travel-overlay" class="hidden overlay-full z-[100] bg-black/90 backdrop-blur-xl flex-col items-center justify-center">
+    
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h2 id="travel-title" class="text-3xl font-charm text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">Hành Trình Vạn Dặm</h2>
+        <p id="travel-route-text" class="text-qi-blue mt-2 font-ancient text-sm tracking-widest uppercase">Thanh Vân Trấn → Hoàng Phong Cốc</p>
+    </div>
+
+    <!-- Progress Visualization -->
+    <div class="w-full max-w-2xl px-6 relative mb-8">
+        <!-- Path line -->
+        <div class="h-1 bg-white/10 rounded-full w-full relative overflow-hidden">
+            <div id="travel-progress-bar" class="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 via-purple-500 to-qi-blue w-0 transition-all duration-100 ease-linear shadow-[0_0_10px_rgba(79,209,197,0.8)]"></div>
+        </div>
+        
+        <!-- Markers -->
+        <div class="absolute -top-3 left-6 text-white/50 text-2xl"><i class="ph-fill ph-map-pin"></i></div>
+        <div class="absolute -top-3 right-6 text-qi-blue text-2xl animate-pulse"><i class="ph-fill ph-flag"></i></div>
+
+        <!-- Moving Entity (Sword/Cloud) -->
+        <div id="travel-entity" class="absolute -top-6 left-6 text-3xl transition-all duration-100 ease-linear drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">
+            <i class="ph-fill ph-sword text-white rotate-45"></i>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="flex space-x-12 mb-8 bg-white/5 rounded-2xl p-4 border border-white/10">
+        <div class="text-center">
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Khoảng Cách</p>
+            <p id="travel-dist" class="text-white font-mono text-lg">0 dặm</p>
+        </div>
+        <div class="text-center border-l border-white/10 pl-12">
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Thời Gian Dự Kiến</p>
+            <p id="travel-time" class="text-qi-blue font-mono text-lg">0 ngày</p>
+        </div>
+        <div class="text-center border-l border-white/10 pl-12">
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Mức Độ</p>
+            <p id="travel-danger" class="font-bold text-lg">An Toàn</p>
+        </div>
+    </div>
+
+    <!-- Event Logs -->
+    <div class="w-full max-w-xl bg-black/60 border border-white/10 rounded-xl p-4 h-48 overflow-y-auto custom-scroll relative">
+        <div class="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-black/80 to-transparent pointer-events-none"></div>
+        <div id="travel-logs" class="space-y-3 pt-4 text-sm font-ancient flex flex-col justify-end min-h-full">
+            <!-- Logs appear here -->
+        </div>
+    </div>
+
+    <!-- Abort Button -->
+    <button id="btn-abort-travel" class="mt-8 px-6 py-2 rounded-full border border-red-500/50 text-red-400 text-xs tracking-widest uppercase hover:bg-red-500/10 hover:border-red-500 transition-all">
+        Hủy Hành Trình
+    </button>
+</div>

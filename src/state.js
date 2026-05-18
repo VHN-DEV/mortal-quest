@@ -31,7 +31,8 @@ class GameState {
             mining: null,
             spiritStone: null,
             treasure: null,
-            fate: null
+            fate: null,
+            travel: null
         };
 
         // Trạng thái hiện tại

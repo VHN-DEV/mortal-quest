@@ -119,11 +119,12 @@ export class MapScreen {
             await this.selectWorld(state.currentWorldId);
         } else if (savedView === 'explore' && state.currentWorldId && state.currentLocId) {
             // Restore location info and show explore view
+            this.viewedWorldId = state.currentWorldId;
             const w = getWorlds()[state.currentWorldId];
             if (w) this.elCurrentWorldName.textContent = w.name;
             const loc = getLocationById(state.currentWorldId, state.currentLocId);
             if (loc) {
-                await this.startExploration(state.currentLocId, false);
+                await this.startExploration(state.currentLocId, false, true); // skipTravel when restoring
             } else {
                 logger.warn('game', 'MapScreen: Location not found, falling back to world list');
                 this.renderWorldList();
@@ -194,14 +195,7 @@ export class MapScreen {
             return;
         }
 
-        // Only apply travel time and update currentWorldId if it's a DIFFERENT world
-        if (state.currentWorldId !== id) {
-            // Travel time: 1-3 months (1 month = 4320 mins)
-            const travelMins = (1 + Math.floor(Math.random() * 3)) * 4320;
-            if (state.systems.time) state.systems.time.skipTime(travelMins);
-            state.ui.toast(`Ngươi đã lặn lội đường xa, vượt qua biên giới để đến ${w.name}...`, "info");
-            state.currentWorldId = id;
-        }
+        this.viewedWorldId = id;
 
         this.mapNavLevel = 'regions';
         this.selectedRegionId = null;
@@ -216,7 +210,7 @@ export class MapScreen {
     }
 
     renderLocationList() {
-        const w = getWorlds()[state.currentWorldId];
+        const w = getWorlds()[this.viewedWorldId];
         if (!w) return;
         this.elLocList.innerHTML = '';
         
@@ -393,22 +387,34 @@ export class MapScreen {
         return `danger-${danger}`;
     }
 
-    async startExploration(locId, resetProgress = true) {
+    async startExploration(locId, resetProgress = true, skipTravel = false) {
         if (!locId) return;
         
-        const loc = getLocationById(state.currentWorldId, locId);
+        const loc = getLocationById(this.viewedWorldId || state.currentWorldId, locId);
         if (!loc) {
             console.error(`Location not found: ${locId} in world ${state.currentWorldId}`);
             state.ui.toast("Không tìm thấy dữ liệu địa điểm!", "error");
             return;
         }
 
-        // Travel time: 1-7 days (1 day = 12 hours = 144 mins)
-        if (state.currentLocId !== locId) {
-            const travelMins = (1 + Math.floor(Math.random() * 7)) * 144;
-            if (state.systems.time) state.systems.time.skipTime(travelMins);
+        // TRAVEL SYSTEM INTEGRATION
+        if (!skipTravel && state.currentLocId !== locId) {
+            if (state.systems.travel) {
+                const started = state.systems.travel.startTravel(locId);
+                if (started) {
+                    // Halt here. The TravelSystem will call startExploration again with skipTravel=true when done.
+                    return;
+                }
+            } else {
+                // Fallback travel time: 1-7 days (1 day = 12 hours = 144 mins)
+                const travelMins = (1 + Math.floor(Math.random() * 7)) * 144;
+                if (state.systems.time) state.systems.time.skipTime(travelMins);
+            }
         }
 
+        if (this.viewedWorldId) {
+            state.currentWorldId = this.viewedWorldId;
+        }
         state.currentLocId = locId;
         if (state.player && typeof state.player.calculateStats === 'function') {
             state.player.calculateStats();

@@ -4,6 +4,7 @@ import { audioManager } from '../utils/audio-manager.js';
 import { logger } from '../utils/logger.js';
 import { getAssetUrl } from '../configs/asset-data.js';
 import { getItemById } from '../configs/item-data.js';
+import { findLocationName, DANGER_LEVELS } from '../configs/map-data.js';
 
 export class UISystem {
     constructor() {
@@ -985,6 +986,115 @@ export class UISystem {
             lifespan: 'Thọ nguyên', qiAbsorb: 'Hấp thụ Linh khí', alchemyBonus: 'Tỉ lệ Luyện đan'
         };
         return map[statKey] || statKey;
+    }
+
+    // --- Travel System UI Methods ---
+    
+    showTravelOverlay(travelData) {
+        const overlay = document.getElementById('travel-overlay');
+        if (!overlay) return;
+
+        const routeText = document.getElementById('travel-route-text');
+        const dist = document.getElementById('travel-dist');
+        const time = document.getElementById('travel-time');
+        const danger = document.getElementById('travel-danger');
+        const logsContainer = document.getElementById('travel-logs');
+        const progressBar = document.getElementById('travel-progress-bar');
+        const entity = document.getElementById('travel-entity');
+        const btnAbort = document.getElementById('btn-abort-travel');
+
+        if (routeText) {
+            const fromName = findLocationName(travelData.route.from);
+            const toName = findLocationName(travelData.route.to);
+            routeText.textContent = `${fromName} → ${toName}`;
+        }
+        
+        if (dist) dist.textContent = `${travelData.route.baseDistance} dặm`;
+        
+        if (time) {
+            const days = (travelData.gameHours / 24).toFixed(1);
+            time.textContent = `${days} ngày`;
+        }
+
+        if (danger) {
+            const dangerObj = DANGER_LEVELS[travelData.route.baseDanger];
+            danger.textContent = dangerObj ? dangerObj.name : travelData.route.baseDanger;
+            danger.className = `font-bold text-lg danger-${travelData.route.baseDanger}`;
+        }
+
+        if (logsContainer) logsContainer.innerHTML = '';
+        if (progressBar) progressBar.style.width = '0%';
+        if (entity) entity.style.left = '6%';
+
+        if (btnAbort) {
+            btnAbort.onclick = () => {
+                if (window.game && window.game.state && window.game.state.systems && window.game.state.systems.travel) {
+                    window.game.state.systems.travel.abortTravel();
+                } else if (state && state.systems && state.systems.travel) {
+                    state.systems.travel.abortTravel();
+                }
+            };
+        }
+
+        this.toggleOverlay(overlay, true);
+    }
+
+    updateTravelProgress(progress) {
+        const progressBar = document.getElementById('travel-progress-bar');
+        const entity = document.getElementById('travel-entity');
+        
+        if (progressBar) progressBar.style.width = `${progress}%`;
+        
+        // Entity moves from 6% to 94% roughly
+        if (entity) {
+            const leftPos = 6 + (progress * 0.88);
+            entity.style.left = `${leftPos}%`;
+        }
+    }
+
+    addTravelLog(msg, type = 'info') {
+        const container = document.getElementById('travel-logs');
+        if (!container) return;
+
+        const el = document.createElement('div');
+        el.className = `opacity-0 -translate-x-2 transition-all duration-300`;
+        
+        let colorClass = 'text-gray-300';
+        let icon = 'ph-info';
+        
+        if (type === 'warning') {
+            colorClass = 'text-yellow-400';
+            icon = 'ph-warning text-yellow-500';
+        } else if (type === 'error') {
+            colorClass = 'text-red-400';
+            icon = 'ph-warning-circle text-red-500';
+        } else if (type === 'success') {
+            colorClass = 'text-green-400';
+            icon = 'ph-check-circle text-green-500';
+        } else {
+            icon = 'ph-wind text-qi-blue';
+        }
+
+        el.innerHTML = `
+            <div class="flex items-start space-x-2">
+                <i class="ph-fill ${icon} mt-0.5 shrink-0"></i>
+                <p class="${colorClass}">${msg}</p>
+            </div>
+        `;
+
+        container.appendChild(el);
+        
+        // Triggers reflow and animates in
+        setTimeout(() => {
+            el.classList.remove('opacity-0', '-translate-x-2');
+        }, 10);
+
+        container.scrollTop = container.scrollHeight;
+    }
+
+    hideTravelOverlay() {
+        const overlay = document.getElementById('travel-overlay');
+        if (overlay) this.toggleOverlay(overlay, false);
     }
 }
 

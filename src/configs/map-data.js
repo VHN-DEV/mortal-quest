@@ -3867,5 +3867,92 @@ export const findLocationName = (locId) => {
         const loc = world.locations.find(l => l.id === locId);
         if (loc) return loc.name;
     }
-    return locId; // Return ID if not found, but it should be found
+    return locId;
+};
+export const findWorldIdByLocId = (locId) => {
+    if (!locId) return 'nhan_gioi';
+    for (const [worldId, world] of Object.entries(WORLDS)) {
+        if (world.locations.some(l => l.id === locId)) return worldId;
+    }
+    return 'nhan_gioi';
+};
+
+// --- TRAVEL SYSTEM ROUTES ---
+// Explicit overrides for specific paths
+export const MAP_ROUTES = {
+    'viet_quoc_to_loan_tinh_hai': {
+        from: 'gia_nguyen_thanh', // or any in viet_quoc
+        to: 'loan_tinh_hai',
+        baseDistance: 5000,
+        terrain: 'hai_vuc',
+        baseDanger: 'nguy_hiem',
+        requirements: { item: 'hai_do' }
+    },
+    'thien_nam_to_dai_tan': {
+        from: 'thien_la_quoc',
+        to: 'chinh_ma_thap_dao',
+        baseDistance: 10000,
+        terrain: 'thap_van_dai_son',
+        baseDanger: 'cuc_ky_nguy_hiem',
+        requirements: null
+    },
+    'thanh_van_tran_to_hoang_phong_coc': {
+        from: 'thanh_van_tran',
+        to: 'hoang_phong_coc',
+        baseDistance: 50,
+        terrain: 'binh_thuong',
+        baseDanger: 'an_toan',
+        requirements: null
+    }
+};
+
+export const getTravelRoute = (fromLocId, toLocId) => {
+    if (fromLocId === toLocId) return null;
+
+    // Check for explicit route
+    const explicitKey1 = `${fromLocId}_to_${toLocId}`;
+    const explicitKey2 = `${toLocId}_to_${fromLocId}`;
+    if (MAP_ROUTES[explicitKey1]) return MAP_ROUTES[explicitKey1];
+    if (MAP_ROUTES[explicitKey2]) return { ...MAP_ROUTES[explicitKey2], from: fromLocId, to: toLocId };
+
+    const fromWorldId = findWorldIdByLocId(fromLocId);
+    const toWorldId = findWorldIdByLocId(toLocId);
+    
+    const fromLoc = getLocationById(fromWorldId, fromLocId);
+    const toLoc = getLocationById(toWorldId, toLocId);
+
+    if (!fromLoc || !toLoc) return null;
+
+    let baseDistance = 100;
+    let baseDanger = 'ha_cap';
+    let terrain = 'binh_thuong';
+    let requirements = null;
+
+    // Dynamic distance calculation
+    if (fromWorldId !== toWorldId) {
+        baseDistance = 50000;
+        baseDanger = 'tu_dia';
+        terrain = 'khong_gian_loan_luu';
+        requirements = { item: 'truyen_tong_lenh' }; // Need ancient array to cross worlds
+    } else if (fromLoc.regionId !== toLoc.regionId) {
+        baseDistance = 5000;
+        baseDanger = 'nguy_hiem';
+        terrain = 'rung_sau';
+    } else if (fromLoc.subRegionId !== toLoc.subRegionId) {
+        baseDistance = 500;
+        baseDanger = 'trung_cap';
+        terrain = 'duong_nui';
+    } else {
+        baseDistance = 50; // Same subregion
+        baseDanger = Math.random() > 0.5 ? 'an_toan' : 'ha_cap';
+    }
+
+    return {
+        from: fromLocId,
+        to: toLocId,
+        baseDistance,
+        baseDanger,
+        terrain,
+        requirements
+    };
 };
