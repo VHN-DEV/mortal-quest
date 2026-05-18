@@ -431,10 +431,6 @@ export class MapScreen {
             if (window.game.openGuild) window.game.openGuild();
             return;
         }
-        if (SECTS[loc.id]) {
-            if (window.game.openSect) window.game.openSect();
-            return;
-        }
 
         this.elCurrentLocName.textContent = loc.name;
         if (resetProgress) state.explorationProgress = 0;
@@ -632,11 +628,51 @@ export class MapScreen {
             `;
         } else if (SECTS[loc.id]) {
             hasSpecial = true;
-            this.elLocSpecialActions.innerHTML = `
-                <button onclick="window.game.openSect()" class="col-span-2 py-3 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
-                    <i class="ph ph-castle-turret text-lg"></i><span>VÀO TÔNG MÔN</span>
-                </button>
-            `;
+            const isMember = state.player.sectId === loc.id;
+            
+            // Check recruitment time: months 1-2 of even-numbered years
+            const timeSys = state.systems.time;
+            const isEvenYear = timeSys ? (timeSys.getYear() % 2 === 0) : true;
+            const isRecruitMonth = timeSys ? (timeSys.getMonth() === 1 || timeSys.getMonth() === 2) : true;
+            const isRecruiting = isEvenYear && isRecruitMonth;
+            
+            if (isMember) {
+                this.elLocSpecialActions.innerHTML = `
+                    <button onclick="window.game.openSect()" class="col-span-2 py-3 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                        <i class="ph ph-castle-turret text-lg"></i><span>VÀO TÔNG MÔN</span>
+                    </button>
+                `;
+            } else {
+                // If not a member, always show "Bái Nhập Tông Môn" (Apply to Join)
+                let buttonsHTML = `
+                    <button onclick="window.game.startSectApplication('${loc.id}')" class="py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center col-span-2">
+                        <i class="ph ph-user-plus text-lg mb-1"></i>BÁI NHẬP TÔNG MÔN
+                    </button>
+                `;
+
+                if (isRecruiting) {
+                    buttonsHTML = `
+                        <button onclick="window.game.startSectApplication('${loc.id}')" class="py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
+                            <i class="ph ph-user-plus text-lg mb-1"></i>BÁI NHẬP
+                        </button>
+                        <button onclick="window.game.startRecruitmentExam('${loc.id}')" class="py-3 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center animate-pulse">
+                            <i class="ph ph-scroll text-lg mb-1 animate-bounce"></i>THAM GIA KHẢO HẠCH
+                        </button>
+                    `;
+                } else {
+                    const recruitTimeStr = "Tháng 1-2 năm chẵn";
+                    buttonsHTML = `
+                        <button onclick="window.game.startSectApplication('${loc.id}')" class="py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
+                            <i class="ph ph-user-plus text-lg mb-1"></i>BÁI NHẬP TÔNG MÔN
+                        </button>
+                        <div class="flex flex-col items-center justify-center p-2 bg-white/5 border border-white/10 rounded-xl text-center space-y-0.5">
+                            <span class="text-gray-400 text-[8px] font-bold uppercase tracking-wider">ĐẠI TUYỂN CHƯA MỞ</span>
+                            <span class="text-[7px] text-gray-500">${recruitTimeStr}</span>
+                        </div>
+                    `;
+                }
+                this.elLocSpecialActions.innerHTML = buttonsHTML;
+            }
         } else if (loc.special === 'guild') {
             hasSpecial = true;
             this.elLocSpecialActions.innerHTML = `

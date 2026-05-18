@@ -97,7 +97,20 @@ export class Inventory {
         } else if (itemData.type === 'book' && itemData.techniqueId) {
             if (this.player.learnTechnique(itemData.techniqueId)) {
                 this.removeItem(itemId, 1);
+                state.ui.toast(`Lĩnh hội thành công công pháp: ${itemData.name}!`, 'success');
                 return true;
+            } else {
+                state.ui.toast(`Ngươi đã tu luyện công pháp này từ trước rồi!`, 'warning');
+                return false;
+            }
+        } else if (itemData.type === 'book' && itemData.secretId) {
+            if (this.player.learnSecretTechnique(itemData.secretId)) {
+                this.removeItem(itemId, 1);
+                state.ui.toast(`Lĩnh hội thành công bí tịch: ${itemData.name}!`, 'success');
+                return true;
+            } else {
+                state.ui.toast(`Ngươi đã lĩnh hội bí thuật này từ trước rồi!`, 'warning');
+                return false;
             }
         } else if (itemData.type === 'spirit_stone') {
             const ss = state.systems.spiritStone;

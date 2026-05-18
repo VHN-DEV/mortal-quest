@@ -8,7 +8,7 @@ import { getLocationById } from './configs/map-data.js';
 import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
 import { Preferences } from '@capacitor/preferences';
-import { getSectById } from './configs/sect-data.js';
+import { getSectById, SECTS } from './configs/sect-data.js';
 import { getRealmById } from './configs/realm-data.js';
 import { CREATION_SYSTEMS } from './configs/creation-data.js';
 
@@ -1037,6 +1037,410 @@ export class Game {
     openSect() {
         state.ui.toggleOverlay(document.getElementById('sects-overlay'), true);
         if (this.screens.systems) this.screens.systems.renderSects();
+    }
+
+    async buySectScroll(itemId, cost) {
+        if (!state.player) return;
+        if ((state.player.sectContribution || 0) < cost) {
+            state.ui.toast(`Cống hiến tông môn không đủ! Cần thêm ${cost - (state.player.sectContribution || 0)} điểm.`, "error");
+            return;
+        }
+        
+        // Receive item.
+        const received = await this.receiveItem(itemId, 1);
+        if (received) {
+            state.player.sectContribution = (state.player.sectContribution || 0) - cost;
+            state.ui.toast(`Đổi thành công tuyệt học tông môn!`, "success");
+            this.refreshUI();
+            this.saveGame();
+        }
+    }
+
+    joinSect(sectId) {
+        this.startSectApplication(sectId);
+    }
+
+    async startSectApplication(sectId) {
+        const sect = getSectById(sectId);
+        if (!sect) return;
+
+        // Check level requirement
+        if (state.player.realmId < sect.minRealm) {
+            const requiredRealm = getRealmById(sect.minRealm);
+            state.ui.alert(
+                `Nguyên Anh áp lực ép xuống! Sơn môn kết giới ngăn cản bước chân ngươi.<br><br>
+                <span class="text-red-500 font-bold">Yêu cầu cảnh giới đạt từ: ${requiredRealm.name}</span><br>
+                Cảnh giới hiện tại của ngươi chưa đủ để vượt qua kết giới sơn môn. Hãy tu luyện thêm rồi quay lại!`,
+                "Kết Giới Sơn Môn Ngăn Cản"
+            );
+            return;
+        }
+
+        const root = state.player.spiritualRoot;
+        let rootStr = "Chưa giác ngộ";
+        let rootPurity = 0;
+        if (root) {
+            const colors = { 'Kim': 'text-yellow-400', 'Mộc': 'text-green-400', 'Thủy': 'text-blue-400', 'Hỏa': 'text-red-400', 'Thổ': 'text-amber-600', 'Lôi': 'text-purple-400 animate-pulse' };
+            const elementsHTML = root.elements.map(el => `<span class="${colors[el] || 'text-white'} font-bold">${el}</span>`).join(', ');
+            rootStr = `${root.type} [${elementsHTML}]`;
+            rootPurity = root.purity || 0;
+        }
+
+        // Welcome text
+        const welcomeText = `
+            Ngươi đi tới chân núi sơn môn nguy nga lộng lẫy của <span class="text-cultivation-gold font-bold font-ancient">${sect.name}</span>.<br><br>
+            Khói sương mờ ảo bao phủ các tòa lầu các, linh khí xung quanh đậm đặc đến mức hóa thành các tia linh quang bay lượn. Đệ tử tuần tra mặc y phục trang trọng khẽ cản lại: "Đạo hữu dừng chân, đây là sơn môn trọng địa. Ngươi tới đây muốn bái phỏng hay muốn cầu kiến Bái Nhập môn hạ?"<br><br>
+            Ngoại môn Khảo Hạch Trưởng Lão hiển lộ thân ảnh, dùng thần niệm dò xét ngươi: "Muốn nhập tông ta? Hiện nay <span class="text-red-400 font-bold">chưa tới thời điểm đại tuyển chính thức</span> (Đại tuyển mở vào tháng 1-2 năm chẵn). Tuy nhiên tông môn vẫn mở rộng cơ duyên đặc cách nếu ngươi có tư chất vạn người có một hoặc cống hiến Linh Thạch công đức đắp nền!"<br><br>
+            <span class="text-gray-400 font-bold">Thông tin căn cốt của ngươi:</span><br>
+            - Linh Căn: ${rootStr} (Tinh thuần: <span class="text-cultivation-gold font-bold">${rootPurity}%</span>)<br>
+            - Căn cốt (Physique): <span class="text-qi-blue font-bold">${state.player.physiqueTalent || 10}</span><br>
+            - Ngộ tính (Comprehension): <span class="text-qi-purple font-bold">${state.player.comprehension || 10}</span>
+        `;
+
+        const choiceOptions = [
+            { label: "Dựa vào thiên tư bái nhập (Check tư chất)", value: "talent", icon: "ph-sparkles" },
+            { label: "Quyên hiến 1000 Linh Thạch công đức", value: "donate", icon: "ph-coins" },
+            { label: "Thôi bái biệt rời đi", value: "leave", icon: "ph-door-open" }
+        ];
+
+        const choice = await state.ui.promptOptions("Bái Nhập Tông Môn - " + sect.name, choiceOptions, welcomeText);
+        if (!choice || choice === "leave") {
+            state.ui.toast("Ngươi chào hỏi rời đi.", "info");
+            return;
+        }
+
+        if (choice === "talent") {
+            // Check if player is a genius
+            const isGenius = (state.player.comprehension >= 30) || (state.player.physiqueTalent >= 40) || (rootPurity >= 80);
+            if (isGenius) {
+                state.player.sectId = sectId;
+                state.player.sectContribution = 50; // Starter contribution
+                state.player.addReputation(20);
+                
+                await state.ui.alert(
+                    `Trưởng Lão khảo hạch trợn tròn hai mắt, mừng rỡ nắm lấy tay ngươi:<br><br>
+                    "Trời ơi! Thần thể căn cốt cực thịnh, linh căn tinh thuần tuyệt diệu bực này, quả thực là thiên tài vạn năm khó gặp! Không cần đợi đến mùa tuyển, tông môn ta lập tức đặc cách thu nhận ngươi!"<br><br>
+                    <span class="text-green-400 font-bold">Bái nhập thành công! Nhận được Lệnh bài Ngoại môn và 50 cống hiến!</span>`,
+                    "Đặc Cách Thu Nhận!"
+                );
+                
+                state.player.calculateStats();
+                this.refreshUI();
+                this.openSect();
+                this.saveGame();
+            } else {
+                await state.ui.alert(
+                    `Trưởng Lão khảo hạch rờ qua căn cốt, khẽ lắc đầu từ chối:<br><br>
+                    "Tư chất của đạo hữu tuy trung quy trung củ, nhưng chưa đạt tới cấp bậc linh thể hay ngộ tính nghịch thiên để ta phá lệ đặc cách bái nhập off-season. Hãy quyên hiến công đức hoặc đợi mùa tuyển trạch chính thức!"`,
+                    "Tư Chất Chưa Đạt"
+                );
+            }
+        } else if (choice === "donate") {
+            if (state.player.lingShi < 1000) {
+                state.ui.toast("Ngươi không có đủ 1000 Linh Thạch!", "error");
+                return;
+            }
+            state.player.spendLingShi(1000);
+            state.player.sectId = sectId;
+            state.player.sectContribution = 100; // Starter points
+            state.player.addReputation(-10); // Slight negative for hối lộ/bribe
+            
+            await state.ui.alert(
+                `Ngươi dâng lên túi càn khôn chứa đầy 1000 Linh Thạch sáng lấp lánh.<br><br>
+                Trưởng Lão nhanh như chớp cất vào tay áo, nét mặt lập tức hòa ái, tươi cười vuốt râu: "Hảo! Đạo tâm kiên định hướng phái thế này quả thực hiếm thấy! Đan dược, công pháp tu hành luôn cần tài lực ủng hộ. Bản phái phá lệ thu nhận ngươi làm đệ tử!"<br><br>
+                <span class="text-green-400 font-bold">Bái nhập thành công! Nhận được Lệnh bài Ngoại môn và 100 cống hiến!</span>`,
+                "Bái Nhập Nhờ Công Đức"
+            );
+            
+            state.player.calculateStats();
+            this.refreshUI();
+            this.openSect();
+            this.saveGame();
+        }
+    }
+
+    async startRecruitmentExam(sectId) {
+        const sect = getSectById(sectId);
+        if (!sect) return;
+
+        // Check level requirement
+        if (state.player.realmId < sect.minRealm) {
+            const requiredRealm = getRealmById(sect.minRealm);
+            state.ui.alert(
+                `Nguyên Anh áp lực ép xuống! Sơn môn kết giới ngăn cản bước chân ngươi.<br><br>
+                <span class="text-red-500 font-bold">Yêu cầu cảnh giới đạt từ: ${requiredRealm.name}</span><br>
+                Cảnh giới hiện tại của ngươi chưa đủ để vượt qua kết giới sơn môn. Hãy tu luyện thêm rồi quay lại!`,
+                "Kết Giới Sơn Môn Ngăn Cản"
+            );
+            return;
+        }
+
+        // Welcome introduction
+        const introText = `Ngươi bước tới sơn môn của <span class="text-cultivation-gold font-bold font-ancient">${sect.name}</span>.<br><br>
+            Hai vị đệ tử gác cổng mặc y phục tiên phong đạo cốt chắp tay hành lễ: "Hôm nay sơn môn đại mở chiêu mộ đệ tử phong vân, đạo hữu tới đây muốn bái nhập tông môn ta sao?"<br><br>
+            Ngươi được dẫn vào bên trong đại điện bái kiến Ngoại Môn Khảo Hạch Trưởng Lão. Vị trưởng lão râu tóc bạc phơ, ánh mắt như điện nhìn thẳng vào ngươi: "Muốn nhập tông ta, trước tiên phải qua khảo hạch tuyển chọn."`;
+
+        const confirmExam = await state.ui.confirm(introText, "Khảo Hạch Gia Nhập - " + sect.name);
+        if (!confirmExam) {
+            state.ui.toast("Ngươi quyết định rời đi.", "info");
+            return;
+        }
+
+        // Stage 1: Elder's Question (Dao Heart & Intention)
+        const qTitle = "Khảo Hạch Tâm Tính";
+        const qDesc = `Trưởng Lão vuốt râu hỏi: "Hỏi thế gian tu tiên vì cớ gì? Đạo tâm của ngươi hướng về điều chi khi bước chân vào con đường nghịch thiên cải mệnh này?"`;
+        const qOptions = [
+            { label: "Cầu trường sinh bất tử, siêu thoát luân hồi", value: "immortality", icon: "ph-shield-star" },
+            { label: "Bảo vệ nhân gian, diệt trừ tà ma, hộ đạo hộ sinh", value: "righteousness", icon: "ph-heart" },
+            { label: "Mưu cầu sức mạnh tuyệt đối, ngạo thị quần hùng", value: "power", icon: "ph-sword" }
+        ];
+
+        const choice1 = await state.ui.promptOptions(qTitle, qOptions, qDesc);
+        if (!choice1) return;
+
+        let elderReaction = "";
+        if (choice1 === "immortality") {
+            elderReaction = `Trưởng Lão khẽ gật đầu: "Tu tiên vì trường sinh, chí hướng căn bản của chúng tu sĩ, đạo tâm vô cùng thuần phác."`;
+        } else if (choice1 === "righteousness") {
+            elderReaction = `Trưởng Lão mỉm cười tán thưởng: "Hảo! Tâm hoài thiên hạ, có tư chất trở thành trụ cột của chính đạo."`;
+            state.player.addMorality(10); // Moral boost!
+        } else {
+            elderReaction = `Trưởng Lão ánh mắt lóe lên: "Mưu cầu lực lượng? Tuy thẳng thắn nhưng dễ sa đọa vào ma đạo, cần phải mài giũa thêm."`;
+            state.player.addMorality(-10); // Slight chaotic shift
+        }
+
+        // Stage 2: Spiritual Root Test
+        const root = state.player.spiritualRoot;
+        let rootEvaluation = "";
+        let passesRootCheck = true;
+
+        if (root) {
+            const elementsStr = root.elements.map(el => {
+                const colors = { 'Kim': 'text-yellow-400', 'Mộc': 'text-green-400', 'Thủy': 'text-blue-400', 'Hỏa': 'text-red-400', 'Thổ': 'text-amber-600', 'Lôi': 'text-purple-400 animate-pulse' };
+                return `<span class="${colors[el] || 'text-white'} font-bold">${el}</span>`;
+            }).join(', ');
+
+            rootEvaluation = `Tiếp theo, Trưởng Lão đưa ra một miếng Hỗn Nguyên Kiểm Trắc Thạch: "Đặt tay lên đây, kích hoạt linh lực đo đạc linh căn linh tính."<br><br>
+                Ngươi đặt tay lên linh thạch. Chỉ trong chốc lát, linh thạch tỏa ra hào quang rực rỡ, hiển thị <span class="font-bold font-ancient">${root.type}</span> gồm: [${elementsStr}] với độ tinh thuần cực cao đạt <span class="text-cultivation-gold font-bold">${root.purity}%</span>.<br><br>`;
+
+            // Specific Sect logic for Spiritual Roots
+            if (sectId === 'hoang_phong_coc') {
+                if (root.id === 'thien_linh_can' || root.id === 'di_linh_can') {
+                    rootEvaluation += `Trưởng Lão kinh ngạc đứng phắt dậy: "Trời cao ban ơn! Lại là ${root.type}! Tông môn ta đắc ý chí tôn linh căn thế này, tương lai đại hưng!"`;
+                } else if (root.id === 'song_linh_can' || root.id === 'tam_linh_can') {
+                    rootEvaluation += `Trưởng Lão gật đầu vui vẻ: "Tư chất trung thượng, Ngũ Hành Thuật Pháp của Hoàng Phong Cốc ta sẽ rất phù hợp với linh căn của ngươi."`;
+                } else {
+                    rootEvaluation += `Trưởng Lão khẽ chau mày thở dài: "${root.type}, tạp chất quá nhiều, tốc độ tu luyện cực chậm... Tuy nhiên Hoàng Phong Cốc hữu giáo vô loại, chỉ cần đạo tâm vững vàng vẫn có cơ hội."`;
+                }
+            } else if (sectId === 'thien_kiem_tong') {
+                const hasKim = root.elements.includes('Kim');
+                const hasLei = root.elements.includes('Lôi');
+                if (hasKim || hasLei) {
+                    rootEvaluation += `Trưởng Lão đại hỉ: "Tốt! Linh căn chứa linh tính ${hasKim ? 'Kim' : 'Lôi'}, cực kỳ thích hợp để tu luyện Kiếm Ý sắc bén vô song của Thiên Kiếm Tông!"`;
+                } else if (root.id === 'thien_linh_can' || root.id === 'di_linh_can') {
+                    rootEvaluation += `Trưởng Lão hài lòng: "Dù không phải Kim hệ nhưng ${root.type} là kỳ tài trăm năm khó gặp, kiếm đạo vạn pháp quy tông, gia nhập rất tốt!"`;
+                } else {
+                    rootEvaluation += `Trưởng Lão chần chừ: "Kiếm đạo cần sự thuần túy sắc bén. Linh căn của ngươi quá hỗn tạp, sợ rằng kiếm ý sẽ bị phân tán, rất khó ngộ kiếm..."`;
+                    if (state.player.comprehension < 40) {
+                        passesRootCheck = false;
+                    }
+                }
+            } else if (sectId === 'huyen_am_coc') {
+                const hasDark = root.elements.includes('Thủy') || root.elements.includes('Thổ') || root.elements.includes('Lôi') || root.elements.includes('Băng') || root.elements.includes('Phong');
+                if (state.player.fate.morality < 0) {
+                    rootEvaluation += `Trưởng Lão cười khà khà quỷ dị: "Đạo tâm mang sát khí, sát phạt quả quyết! Rất tốt, Huyền Âm Cốc ta thích nhất hạng tu sĩ phóng túng càn quấy này!"`;
+                } else if (hasDark) {
+                    rootEvaluation += `Trưởng Lão gật gù sương khói: "Hàn khí/âm khí dồi dào, thân thể rất thích hợp luyện chế thi khôi và ngự quỷ thuật."`;
+                } else {
+                    rootEvaluation += `Trưởng Lão hừ lạnh: "Chính khí quá thịnh, hoặc linh căn quá thuần dương, e rằng không dung hợp được với U Minh Quy Tắc của cốc ta..."`;
+                    if (state.player.luck < 30) {
+                        passesRootCheck = false;
+                    }
+                }
+            } else {
+                // Dynamic alignment assessments for newly added sects
+                if (sect.isDemonic) {
+                    // Demonic Sect Check
+                    const moralityVal = state.player.fate ? (state.player.fate.morality || 0) : 0;
+                    if (moralityVal > 30) {
+                        rootEvaluation += `Trưởng Lão hừ lạnh một tiếng, quanh thân ma khí cuồn cuộn: "Hừ! Trên người ngươi toát ra một mùi hạo nhiên chính khí vô cùng khó ngửi! Huyền môn chính đạo ngoan cố e rằng không chịu nổi u sầu quy tắc cốc ta!"`;
+                        if (state.player.luck < 40) {
+                            passesRootCheck = false;
+                        }
+                    } else if (moralityVal < -10) {
+                        rootEvaluation += `Trưởng Lão nở nụ cười dữ tợn tán thưởng: "Hắc hắc, tốt! Đạo tâm mang theo ma tính cuồng phóng, phi thường hợp khẩu vị ma môn cốc ta!"`;
+                    } else {
+                        rootEvaluation += `Trưởng Lão vuốt cằm bình thản: "Tư chất tuy bình thường, nhưng chỉ cần dám ra tay độc ác dứt khoát, vẫn có thể trở thành nanh vuốt ma môn ta."`;
+                    }
+                } else {
+                    // Righteous Sect Check
+                    const moralityVal = state.player.fate ? (state.player.fate.morality || 0) : 0;
+                    if (moralityVal < -30) {
+                        rootEvaluation += `Trưởng Lão sắc mặt lập tức trầm xuống, mắt mở trừng trừng nghiêm nghị: "Càn khôn chính đạo, bất dung ma khí! Thân thể ngươi sát nghiệt nặng nề, ma tâm che lấp linh trí, làm sao bái nhập thanh tu chi môn của ta?!"`;
+                        if (state.player.luck < 40) {
+                            passesRootCheck = false;
+                        }
+                    } else if (moralityVal > 10) {
+                        rootEvaluation += `Trưởng Lão nụ cười ôn hòa như gió xuân gật gù: "Hảo! Khí chất trong sạch cương chính, tâm tính đoan chính phi thường thích hợp tu tập huyền môn diệu pháp của ta."`;
+                    } else {
+                        rootEvaluation += `Trưởng Lão cười khẽ chỉ giáo: "Đo lường bình hòa, tâm tính thiện ác trung lập, sau khi vào tông môn hãy nỗ lực hành thiện tích đức."`;
+                    }
+                }
+            }
+        } else {
+            rootEvaluation = `Trưởng Lão xem xét cơ thể ngươi: "Nhục thân phàm nhân phi thường bình thường, không cảm ứng được linh thạch..."`;
+            passesRootCheck = false;
+        }
+
+        await state.ui.alert(`${elderReaction}<br><br>${rootEvaluation}`, "Khảo Hạch Linh Căn");
+
+        if (!passesRootCheck) {
+            const canBribe = state.player.lingShi >= 500;
+            const briberyText = canBribe ? `<br><br><span class="text-yellow-400 font-bold">Lựa chọn bí mật:</span> Ngươi có muốn lén lút "biếu" Trưởng Lão 500 Linh Thạch để ngài du di thông qua không?` : '';
+            
+            const bribeOptions = [
+                { label: "Bái tạ rời đi, lần sau quay lại", value: "leave", icon: "ph-door-open" }
+            ];
+            if (canBribe) {
+                bribeOptions.unshift({ label: "Biếu 500 Linh Thạch lót đường (Hối lộ)", value: "bribe", icon: "ph-coins" });
+            }
+
+            const bribeChoice = await state.ui.promptOptions("Kết Quả Khảo Hạch", bribeOptions, `Trưởng Lão lạnh lùng phất tay: "Tư chất quá kém, linh căn không hợp quy cách, không thể bái nhập tông môn ta! Hãy trở về đi!"${briberyText}`);
+            
+            if (bribeChoice === "bribe") {
+                state.player.spendLingShi(500);
+                state.player.addReputation(-20);
+                state.player.addMorality(-15);
+                state.ui.toast("Trưởng Lão khẽ vuốt tay, 500 linh thạch biến mất, ngài ho một tiếng gật đầu thông qua!", "success");
+            } else {
+                state.ui.toast("Ngươi đã trượt khảo hạch linh căn.", "warning");
+                return;
+            }
+        }
+
+        // Stage 3: Willpower & Attribute Check
+        const finalTitle = "Thử Thách Ý Chí";
+        const finalDesc = `Khảo hạch cuối cùng! Trưởng Lão vận hành Nguyên Anh oai áp bao trùm cả điện, không khí ngưng đọng cực độ nặng nề tựa ngàn cân ép xuống. Ngươi sẽ làm gì?`;
+        const finalOptions = [
+            { label: "Vận hành nhục thân khí huyết cưỡng kháng (Căn cốt check)", value: "physique", icon: "ph-barbell" },
+            { label: "Giữ vững Đạo tâm như bàn thạch, tĩnh tâm chống đỡ (Đạo tâm check)", value: "daotam", icon: "ph-shield-chevron" },
+            { label: "Vận dụng ngộ tính tìm kiếm kẽ hở luồng khí áp (Ngộ tính check)", value: "comprehension", icon: "ph-brain" }
+        ];
+
+        const choice3 = await state.ui.promptOptions(finalTitle, finalOptions, finalDesc);
+        if (!choice3) return;
+
+        let finalSuccess = false;
+        let finalResultText = "";
+
+        if (choice3 === "physique") {
+            const checkVal = state.player.physiqueTalent || 50;
+            if (checkVal >= 35) {
+                finalSuccess = true;
+                finalResultText = `Căn cốt dồi dào khí huyết toàn thân bộc phát như long hổ! Thân thể ngươi sừng sững gánh chịu toàn bộ uy áp Nguyên Anh mà không hề dao động.<br><br>
+                    Trưởng Lão cười lớn đầy đắc ý: "Thần thể tráng kiện! Căn cốt tuyệt hảo! Ngươi chính là khối ngọc thô hiếm có!"`;
+            } else {
+                finalResultText = `Xương cốt vang lên những tiếng răng rắc đau đớn, khí huyết nghịch lưu phun ra ngụm máu tươi, ngươi khuỵu gối xuống nền đại điện.<br><br>
+                    Trưởng Lão thở dài lắc đầu: "Nhục thân quá mức bạc nhược, không chịu nổi thiên phong thối luyện."`;
+            }
+        } else if (choice3 === "daotam") {
+            const checkVal = state.player.daoTam || 50;
+            if (checkVal >= 35) {
+                finalSuccess = true;
+                finalResultText = `Đạo tâm kiên định tựa thái sơn hằng cổ! Linh hồn tĩnh lặng không gợn sóng, phong ba bão táp Nguyên Anh áp lực chỉ như làn gió thoảng qua tai.<br><br>
+                    Trưởng Lão chắp tay khen ngợi: "Ý chí vô song! Đạo tâm cứng cỏi như bàn thạch thế này, tương lai tu tiên lộ chắc chắn tiến cực xa!"`;
+            } else {
+                finalResultText = `Linh hồn rung chuyển kịch liệt, tâm ma thừa cơ cắn trả làm đầu óc trống rỗng hỗn loạn, ngã nhào ra đất thở dốc.<br><br>
+                    Trưởng Lão lắc đầu nguội lạnh: "Ý chí bạc nhược, đạo tâm dao động, e là dễ sa chân ngã ngựa."`;
+            }
+        } else if (choice3 === "comprehension") {
+            const checkVal = state.player.comprehension || 10;
+            if (checkVal >= 20) {
+                finalSuccess = true;
+                finalResultText = `Thần thức nhạy bén cực độ! Trong nháy mắt, ngươi ngộ ra dòng chảy quy luật uy áp của Trưởng Lão, khéo léo lách mình nương theo luồng lực lượng mà hóa giải hoàn toàn oai áp.<br><br>
+                    Trưởng Lão vuốt râu kinh ngạc thốt lên: "Ngộ tính kinh người! Cảm ngộ thiên địa huyền diệu cực kỳ nhanh chóng! Thật sự là thiên kiêu ngộ tính!"`;
+            } else {
+                finalResultText = `Cố gắng cảm ngộ nhưng trí óc mù tịt, lực lượng bá đạo Nguyên Anh ép thẳng vào kinh mạch khiến ngươi ngất xỉu chốc lát.<br><br>
+                    Trưởng Lão lạnh lùng thở dài: "Tư chất ngộ tính quá tầm thường, khó mà lĩnh ngộ đại đạo huyền pháp."`;
+            }
+        }
+
+        await state.ui.alert(finalResultText, "Kết Quả Khảo Hạch Ý Chí");
+
+        if (finalSuccess) {
+            // Welcome to the sect!
+            state.player.sectId = sectId;
+            state.player.sectContribution = 100;
+
+            // Add starter items or money
+            state.player.addLingShi(200);
+            
+            let giftMsg = "Được ban tặng: Lệnh Bài Ngoại Môn, 200 Linh Thạch và 100 Điểm Cống Hiến!";
+            
+            state.ui.alert(
+                `🎉 <span class="text-green-400 font-bold font-ancient">CHÚC MỪNG GIA NHẬP!</span> 🎉<br><br>
+                Trưởng Lão mỉm cười đưa ra một chiếc Lệnh Bài Tông Môn: "Kể từ hôm nay, ngươi chính là đệ tử chính thức của <span class="text-cultivation-gold font-bold font-ancient">${sect.name}</span>! Hãy nỗ lực tu hành, cống hiến vì tông môn!"<br><br>
+                <span class="text-qi-blue font-bold">${giftMsg}</span>`,
+                "Bái Nhập Thành Công!"
+            );
+
+            state.player.calculateStats();
+            this.refreshUI();
+            this.openSect();
+        } else {
+            state.ui.toast("Khảo hạch thất bại. Hãy tu luyện thêm để thử thách lại!", "error");
+        }
+    }
+
+    doMission(missionId) {
+        if (!state.player.sectId) {
+            state.ui.toast("Ngươi chưa gia nhập tông môn nào!", "error");
+            return;
+        }
+
+        const sect = getSectById(state.player.sectId);
+        if (!sect) {
+            state.ui.toast("Không tìm thấy dữ liệu tông môn!", "error");
+            return;
+        }
+
+        const mission = sect.missions.find(m => m.id === missionId);
+        if (!mission) {
+            state.ui.toast("Nhiệm vụ không tồn tại!", "error");
+            return;
+        }
+
+        if (state.player.stamina < mission.stamina) {
+            state.ui.toast(`Không đủ thể lực! Yêu cầu: ${mission.stamina} điểm.`, "error");
+            return;
+        }
+
+        // Deduct stamina
+        state.player.stamina -= mission.stamina;
+
+        // Process rewards
+        let rewardMsg = [];
+        if (mission.reward.contribution) {
+            state.player.sectContribution = (state.player.sectContribution || 0) + mission.reward.contribution;
+            rewardMsg.push(`+${mission.reward.contribution} Điểm Cống Hiến`);
+        }
+        if (mission.reward.tuVi) {
+            state.player.addTuVi(mission.reward.tuVi);
+            rewardMsg.push(`+${mission.reward.tuVi} Tu Vi`);
+        }
+        if (mission.reward.lingShi) {
+            state.player.addLingShi(mission.reward.lingShi);
+            rewardMsg.push(`+${mission.reward.lingShi} Linh Thạch`);
+        }
+
+        // Play success effects
+        state.ui.toast(`Ủy thác thành công: ${mission.name}! (${rewardMsg.join(', ')})`, "success");
+        
+        if (state.systems.cheat) {
+            state.systems.cheat.onAction('do_mission', 1);
+        }
+
+        this.refreshUI();
     }
 
     openGuild() {

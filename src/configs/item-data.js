@@ -2592,8 +2592,349 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 25000,
         description: 'Trứng của Thiên Phong Ngân Uynh, loại kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.'
-    }
+    },
 
+    // --- SECT EXCLUSIVE TECHNIQUES & SECRETS SCROLLS ---
+    'item_thien_kiem_tong_t': {
+        id: 'item_thien_kiem_tong_t',
+        name: '« Cổ Tịch: Thiên Kiếm Quyết »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'thien_kiem_tong_cong_phap',
+        description: 'Bản sách cổ ghi chép công pháp tối cao của Thiên Kiếm Tông. Lực công kích và tốc độ bộc phát sắc bén.'
+    },
+    'item_thien_kiem_tong_s': {
+        id: 'item_thien_kiem_tong_s',
+        name: '« Bí Tịch: Vạn Kiếm Quy Tông »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'thien_kiem_tong_bi_tich',
+        description: 'Mật cuộn khắc ghi bí pháp kiếm đạo tối cao của Thiên Kiếm Tông, triệu gọi cự đại kiếm trận càn quét quần hùng.'
+    },
+    'item_hoang_phong_coc_t': {
+        id: 'item_hoang_phong_coc_t',
+        name: '« Sách Cổ: Hoàng Phong Thần Sa Quyết »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'hoang_phong_coc_cong_phap',
+        description: 'Bản cổ thư ghi chép Hoàng Phong Thần Sa Quyết độc quyền của Hoàng Phong Cốc, điều khiển cuồng sa bảo vệ bản tôn.'
+    },
+    'item_hoang_phong_coc_s': {
+        id: 'item_hoang_phong_coc_s',
+        name: '« Bí Tịch: Hoàng Phong Thần Sa »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'hoang_phong_coc_bi_tich',
+        description: 'Cuộn bí kíp ghi chép pháp thuật cát bụi Hoàng Phong Thần Sa quấn nhiễu phong tỏa linh hồn và làm choáng đối thủ.'
+    },
+    'item_huyen_am_coc_t': {
+        id: 'item_huyen_am_coc_t',
+        name: '« Cổ Tịch: Huyền Âm Chân Kinh »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'huyen_am_coc_cong_phap',
+        description: 'U minh tà thư Huyền Âm Cốc, tu luyện tích lũy u minh khí cực thịnh bồi bổ sinh lực.'
+    },
+    'item_huyen_am_coc_s': {
+        id: 'item_huyen_am_coc_s',
+        name: '« Bí Tịch: Huyền Âm Quỷ Trảo »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'huyen_am_coc_bi_tich',
+        description: 'Bí kíp âm sát quỷ trảo truyền kỳ của Huyền Âm Cốc, hấp thụ huyết tinh sinh mệnh kẻ địch để hồi phục HP.'
+    },
+    'item_yem_nguyet_tong_t': {
+        id: 'item_yem_nguyet_tong_t',
+        name: '« Sách Cổ: Yểm Nguyệt Song Tu Quyết »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'yem_nguyet_tong_cong_phap',
+        description: 'Kỳ thư điều hòa âm dương nổi danh đệ nhất của Yểm Nguyệt Tông, tăng tốc tu vi vùn vụt.'
+    },
+    'item_yem_nguyet_tong_s': {
+        id: 'item_yem_nguyet_tong_s',
+        name: '« Bí Tịch: Mị Ảnh Hoặc Thần »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'yem_nguyet_tong_bi_tich',
+        description: 'Bản mật tịch chứa đựng ảo thuật Nguyệt Minh phong bế thức thần đối phương trong 1 lượt.'
+    },
+    'item_lac_van_tong_t': {
+        id: 'item_lac_van_tong_t',
+        name: '« Cổ Tịch: Lạc Vân Kiếm Trận Biện »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'lac_van_tong_cong_phap',
+        description: 'Phương pháp ngự kiếm kết trận Lạc Vân Tông, mộc linh hộ thể dồi dào sinh cơ.'
+    },
+    'item_lac_van_tong_s': {
+        id: 'item_lac_van_tong_s',
+        name: '« Bí Tịch: Tử Cực Thần Quang »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'lac_van_tong_bi_tich',
+        description: 'Tuyệt diệu quang sát pháp nhắm thẳng vào linh thể kẻ thù, phá sạch phòng ngự giáp sắt.'
+    },
+    'item_thien_tinh_tong_t': {
+        id: 'item_thien_tinh_tong_t',
+        name: '« Cổ Tịch: Thiên Tinh Trận Pháp Quyết »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'thien_tinh_tong_cong_phap',
+        description: 'Tuyệt kỹ trận pháp bảo vệ sơn môn danh bất hư truyền của Thiên Tinh Tông, tăng mạnh phòng thủ trận đạo.'
+    },
+    'item_thien_tinh_tong_s': {
+        id: 'item_thien_tinh_tong_s',
+        name: '« Bí Tịch: Ngũ Hành Huyền Thuẫn »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'thien_tinh_tong_bi_tich',
+        description: 'Phương pháp bố trận kết thuẫn hấp thụ toàn bộ oanh kích bằng 35% máu tối đa.'
+    },
+    'item_linh_thu_son_t': {
+        id: 'item_linh_thu_son_t',
+        name: '« Sách Cổ: Linh Thú Vạn Thú Quyết »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'linh_thu_son_cong_phap',
+        description: 'Tâm pháp cộng sinh cùng linh thú hoang dã Linh Thú Sơn, cường tráng khí huyết.'
+    },
+    'item_linh_thu_son_s': {
+        id: 'item_linh_thu_son_s',
+        name: '« Bí Tịch: Thú Huyết Cuồng Bạo »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'linh_thu_son_bi_tich',
+        description: 'Bí thuật kích hoạt ma thú linh huyết, tăng vọt công lực vật lý và hồi huyết tức thời.'
+    },
+    'item_thanh_hu_mon_t': {
+        id: 'item_thanh_hu_mon_t',
+        name: '« Cổ Tịch: Thanh Hư Đạo Nguyên Kinh »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'thanh_hu_mon_cong_phap',
+        description: 'Mật điên tiên đạo dưỡng thần của Thanh Hư Môn, khí tức thanh khiết dồi dào mana.'
+    },
+    'item_thanh_hu_mon_s': {
+        id: 'item_thanh_hu_mon_s',
+        name: '« Bí Tịch: Thanh Hư Ngọc Lộ »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'thanh_hu_mon_bi_tich',
+        description: 'Thuật pháp hồi linh đỉnh cấp, bổ sung 25% tối đa máu lẫn linh lực cho bản tôn.'
+    },
+    'item_cu_kiem_mon_t': {
+        id: 'item_cu_kiem_mon_t',
+        name: '« Sách Cổ: Cự Kiếm Cương Thiết Thể »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'cu_kiem_mon_cong_phap',
+        description: 'Rèn luyện cơ bắp tráng nhục thể Cự Kiếm Môn, gia tăng cực thịnh công kích và giáp cốt.'
+    },
+    'item_cu_kiem_mon_s': {
+        id: 'item_cu_kiem_mon_s',
+        name: '« Bí Tịch: Cự Kiếm Trảm Thiên »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'cu_kiem_mon_bi_tich',
+        description: 'Cuộn trọng kiếm thiên pháp, chém xuống sát thương cực đại và cơ hội bạo kích chí mạng cực cao.'
+    },
+    'item_hoa_dao_o_t': {
+        id: 'item_hoa_dao_o_t',
+        name: '« Cổ Tịch: Hóa Đao Thần Công »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'hoa_dao_o_cong_phap',
+        description: 'Bộ đao pháp tối cao Hóa Đao Ổ, đao thế cuồng phong chém rách linh lực địch thủ.'
+    },
+    'item_hoa_dao_o_s': {
+        id: 'item_hoa_dao_o_s',
+        name: '« Bí Tịch: Đao Kình Thương Không »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'hoa_dao_o_bi_tich',
+        description: 'Bí điển vung đao xé gió Hóa Đao Ổ, gây sát thương khổng lồ kèm vết rách chảy máu kinh mạch đối phương.'
+    },
+    'item_thien_khuyet_bao_t': {
+        id: 'item_thien_khuyet_bao_t',
+        name: '« Cổ Tịch: Thiên Khuyết Hộ Thể Thuẫn »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'thien_khuyet_bao_cong_phap',
+        description: 'Tuyệt đỉnh hộ thể cương khí Thiên Khuyết Bảo, tạo thành lũy phòng ngự bất khả xâm phạm.'
+    },
+    'item_thien_khuyet_bao_s': {
+        id: 'item_thien_khuyet_bao_s',
+        name: '« Bí Tịch: Thiên Khuyết Kim Giáp »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'thien_khuyet_bao_bi_tich',
+        description: 'Cuộn bí thuật hóa giáp vàng kiên cố bao bọc cơ thể, tăng mạnh 50% phòng ngự toàn diện.'
+    },
+    'item_quy_linh_mon_t': {
+        id: 'item_quy_linh_mon_t',
+        name: '« Sách Cổ: Quỷ Âm Huyền Pháp »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'quy_linh_mon_cong_phap',
+        description: 'Bản sao tà học Quỷ Linh Môn, tăng oai lực công kích ma thuật cùng độc đạo thăng cấp nhanh.'
+    },
+    'item_quy_linh_mon_s': {
+        id: 'item_quy_linh_mon_s',
+        name: '« Bí Tịch: Vạn Quỷ Cắn Xé »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'quy_linh_mon_bi_tich',
+        description: 'Sai khiến vạn linh âm quỷ cắn xé kinh mạch kẻ thù, rút máu và găm sâu độc tố ăn mòn.'
+    },
+    'item_hop_hoan_tong_t': {
+        id: 'item_hop_hoan_tong_t',
+        name: '« Sách Cổ: Âm Dương Hoan Lạc Quyết »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'hop_hoan_tong_cong_phap',
+        description: 'Kỳ thư đoạt tinh phách điên cuồng bậc nhất của Hợp Hoan Tông, đúc tinh nguyên và tốc độ.'
+    },
+    'item_hop_hoan_tong_s': {
+        id: 'item_hop_hoan_tong_s',
+        name: '« Bí Tịch: Mị Hoặc Chúng Sinh »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'hop_hoan_tong_bi_tich',
+        description: 'Hương mị mê hoặc tinh thần chúng sinh, suy giảm nặng nề tốc độ đối phương.'
+    },
+    'item_ma_diem_mon_t': {
+        id: 'item_ma_diem_mon_t',
+        name: '« Cổ Tịch: Thanh Dương Ma Hỏa Kinh »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'ma_diem_mon_cong_phap',
+        description: 'Hỏa ma bí pháp thiêu rụi kinh mạch Ma Diễm Môn, công kích cực đoan vô song.'
+    },
+    'item_ma_diem_mon_s': {
+        id: 'item_ma_diem_mon_s',
+        name: '« Bí Tịch: U Minh Địa Hỏa »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'ma_diem_mon_bi_tich',
+        description: 'Triệu hồi dung nham u minh nóng cháy, bộc phá sát thương thiêu đốt rực rỡ.'
+    },
+    'item_thien_sat_tong_t': {
+        id: 'item_thien_sat_tong_t',
+        name: '« Sách Cổ: Thiên Sát Ma Quyết »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'thien_sat_tong_cong_phap',
+        description: 'Huyết ma bá công Thiên Sát Tông, lấy huyết hóa ma sát tăng vọt sức mạnh cuồng bạo.'
+    },
+    'item_thien_sat_tong_s': {
+        id: 'item_thien_sat_tong_s',
+        name: '« Bí Tịch: Sát Khí Xung Thiên »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'thien_sat_tong_bi_tich',
+        description: 'Cuộn bí kíp bọc nhiếp ma sát cuồng nộ, gia tăng mạnh mẽ 30% công kích vật lý.'
+    },
+    'item_ngu_linh_tong_t': {
+        id: 'item_ngu_linh_tong_t',
+        name: '« Sách Cổ: Vạn Côn Ngự Trùng Thuật »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'ngu_linh_tong_cong_phap',
+        description: 'Bí thuật ngự trùng dưỡng độc côn độc môn Ngự Linh Tông, gia tăng máu sinh dồi dào.'
+    },
+    'item_ngu_linh_tong_s': {
+        id: 'item_ngu_linh_tong_s',
+        name: '« Bí Tịch: Phệ Linh Ma Trùng »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'ngu_linh_tong_bi_tich',
+        description: 'Thả bầy trùng độc phệ linh cắn nuốt oanh tạc giáp phòng ngự đối phương.'
+    },
+    'item_khoi_am_tong_t': {
+        id: 'item_khoi_am_tong_t',
+        name: '« Sách Cổ: Khôi Lỗi U Minh Kinh »',
+        type: 'book',
+        icon: '📘',
+        quality: 'Linh Khí',
+        price: 10000,
+        techniqueId: 'khoi_am_tong_cong_phap',
+        description: 'U Linh khôi lỗi thuật pháp Khôi Âm Tông, tích lũy u minh âm khí luyện xác vững chắc.'
+    },
+    'item_khoi_am_tong_s': {
+        id: 'item_khoi_am_tong_s',
+        name: '« Bí Tịch: Bộc Phá Thi Khôi »',
+        type: 'book',
+        icon: '📜',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        secretId: 'khoi_am_tong_bi_tich',
+        description: 'Tuyệt kỹ sai sử khôi lỗi tự bộc sát thương cực đoan xé tan giáp cốt địch thủ và gây choáng.'
+    }
 };
 
 export const getItemById = (id) => ITEMS[id];

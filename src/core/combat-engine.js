@@ -874,6 +874,12 @@ export class CombatEngine {
         let effectiveEnemyDef = this.enemy.def;
         if (secretId === 'thanh_nguyen_kiem_mang' || secretId === 'bp_thanh_nguyen_kiem_mang') {
             effectiveEnemyDef = Math.floor(this.enemy.def * 0.1); // Ignore 90% armor!
+        } else if (secretId.includes('thien_kiem_tong_bi_tich')) {
+            effectiveEnemyDef = Math.floor(this.enemy.def * 0.5); // Ignore 50% armor!
+            this.addLog(`⚔️ [Vạn Kiếm Quy Tông] Kiếm quang tụ hội, phá vỡ 50% hộ thân linh giáp!`);
+        } else if (secretId.includes('lac_van_tong_bi_tich')) {
+            effectiveEnemyDef = 0; // Ignore 100% armor!
+            this.addLog(`🔮 [Tử Cực Thần Quang] Tử quang oanh kích diệu kỳ, phá hủy hoàn toàn 100% phòng ngự đối thủ!`);
         }
 
         let damage = Math.max(1, Math.floor((this.player.atk * damageMult - Math.floor(effectiveEnemyDef / 2)) * suppression));
@@ -918,6 +924,79 @@ export class CombatEngine {
             this.status.enemy.burn = Math.max(this.status.enemy.burn, 4);
             this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, this.player.atk * 0.25);
             this.addLog(`☠️ [Vạn Độc] Thần kịch độc bám chặt vào kinh mạch kẻ địch, gây ăn mòn xương cốt liên tục trong 4 lượt!`);
+        }
+        else if (secretId.includes('hoang_phong_coc_bi_tich')) {
+            this.status.enemy.stun = Math.max(this.status.enemy.stun, 1);
+            this.addLog(`🌪️ [Hoàng Phong Thần Sa] Phong ba bão cát mù mịt oanh tạc khiến kẻ địch CHOÁNG 1 lượt!`);
+        }
+        else if (secretId.includes('huyen_am_coc_bi_tich')) {
+            const healAmt = Math.floor(damage * 0.40);
+            this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmt);
+            this.addLog(`💀 [Huyền Âm Quỷ Trảo] Quỷ hồn phệ cốt, chuyển hóa hút ${healAmt} khí huyết khôi phục bản thân!`);
+        }
+        else if (secretId.includes('yem_nguyet_tong_bi_tich')) {
+            this.status.enemy.stun = Math.max(this.status.enemy.stun, 1);
+            this.addLog(`🌙 [Mị Ảnh Hoặc Thần] Thần thông mộng ảo mê hoặc tâm trí, khiến đối phương CHOÁNG 1 lượt!`);
+        }
+        else if (secretId.includes('thien_tinh_tong_bi_tich')) {
+            const shieldAmt = Math.floor(this.player.maxHp * 0.35);
+            this.status.player.shield = (this.status.player.shield || 0) + shieldAmt;
+            this.addLog(`🛡️ [Ngũ Hành Huyền Thuẫn] Triển khai trận thuẫn hộ vệ quang mang (+${shieldAmt} Giáp)!`);
+        }
+        else if (secretId.includes('linh_thu_son_bi_tich')) {
+            const healAmt = Math.floor(this.player.maxHp * 0.15);
+            this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmt);
+            this.addLog(`🩸 [Thú Huyết Cuồng Bạo] Đốt cháy tinh huyết bạo phát thú năng, lập tức phục hồi ${healAmt} khí huyết!`);
+        }
+        else if (secretId.includes('thanh_hu_mon_bi_tich')) {
+            const healHp = Math.floor(this.player.maxHp * 0.25);
+            const healMana = Math.floor(this.player.maxMana * 0.25);
+            this.player.hp = Math.min(this.player.maxHp, this.player.hp + healHp);
+            this.player.mana = Math.min(this.player.maxMana, this.player.mana + healMana);
+            this.addLog(`💧 [Thanh Hư Ngọc Lộ] Linh lộ sương mai tinh khiết khôi phục +${healHp} HP và +${healMana} Mana!`);
+        }
+        else if (secretId.includes('cu_kiem_mon_bi_tich')) {
+            this.addLog(`🗡️ [Cự Kiếm Trảm Thiên] Thiên vân trọng kiếm rơi xuống như thần phạt hủy thiên diệt địa!`);
+        }
+        else if (secretId.includes('hoa_dao_o_bi_tich')) {
+            this.status.enemy.burn = Math.max(this.status.enemy.burn, 3);
+            this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, 50);
+            this.addLog(`🔥 [Đao Kình Thương Không] Nhiệt huyết hỏa diễm quấn quanh đao quang gây CHẢY MÁU/THIÊU ĐỐT 3 lượt!`);
+        }
+        else if (secretId.includes('thien_khuyet_bao_bi_tich')) {
+            const shieldAmt = Math.floor(this.player.def * 1.5);
+            this.status.player.shield = (this.status.player.shield || 0) + shieldAmt;
+            this.addLog(`🛡️ [Thiên Khuyết Kim Giáp] Kim thạch cường thân kết thành vách sắt vệ cơ (+${shieldAmt} Giáp)!`);
+        }
+        else if (secretId.includes('quy_linh_mon_bi_tich')) {
+            this.status.enemy.burn = Math.max(this.status.enemy.burn, 4);
+            this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, 40);
+            this.addLog(`👿 [Vạn Quỷ Cắn Xé] Quỷ ảnh cắn nuốt kinh mạch tạo ra thần kịch độc gây ăn mòn cốt tinh 4 lượt!`);
+        }
+        else if (secretId.includes('hop_hoan_tong_bi_tich')) {
+            this.enemy.spd = Math.floor(this.enemy.spd * 0.6);
+            this.addLog(`💋 [Mị Hoặc Chúng Sinh] Hào quang hồng phấn giáng lâm làm suy giảm 40% Tốc độ kẻ địch!`);
+        }
+        else if (secretId.includes('ma_diem_mon_bi_tich')) {
+            this.status.enemy.burn = Math.max(this.status.enemy.burn, 3);
+            this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, 70);
+            this.addLog(`🔥 [U Minh Địa Hỏa] Dung nham phún trào thiêu rụi kinh mạch đối phương liên tục 3 lượt!`);
+        }
+        else if (secretId.includes('thien_sat_tong_bi_tich')) {
+            this.player.atk = Math.floor(this.player.atk * 1.3);
+            this.addLog(`👿 [Sát Khí Xung Thiên] Ma sát quấn thân cuồng bạo kích phát chiến lực, tăng 30% công kích trận này!`);
+        }
+        else if (secretId.includes('ngu_linh_tong_bi_tich')) {
+            this.enemy.def = Math.floor(this.enemy.def * 0.7);
+            this.addLog(`🐛 [Phệ Linh Ma Trùng] Linh trùng gặm nhấm pháp lực hộ thể đối thủ, giảm 30% phòng ngự địch thủ!`);
+        }
+        else if (secretId.includes('khoi_am_tong_bi_tich')) {
+            if (Math.random() < 0.5) {
+                this.status.enemy.stun = Math.max(this.status.enemy.stun, 1);
+                this.addLog(`💥 [Bộc Phá Thi Khôi] Thi khí chấn động, kích nổ khôi lỗi tiễn địch vào CHOÁNG 1 lượt!`);
+            } else {
+                this.addLog(`💥 [Bộc Phá Thi Khôi] Kích nổ thi khôi cực đại làm rung chuyển mặt đất!`);
+            }
         }
 
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });

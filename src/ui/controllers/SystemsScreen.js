@@ -908,9 +908,64 @@ export class SystemsScreen {
                     <div class="p-4 space-y-4">
                         <div class="flex justify-between text-xs">
                             <span class="text-gray-500">Điểm cống hiến:</span>
-                            <span class="text-cultivation-gold">${state.player.sectContribution || 0}</span>
+                            <span class="text-cultivation-gold font-mono font-bold">${state.player.sectContribution || 0}</span>
                         </div>
-                        <h4 class="text-xs font-ancient text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2">Ủy Thác Tông Môn</h4>
+
+                        <!-- TÀNG KINH CÁC (SECT SCRIPTURES) -->
+                        <h4 class="text-xs font-ancient text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2">Tàng Kinh Các (Truyền Thừa Độc Quyền)</h4>
+                        <div class="grid grid-cols-1 gap-3">
+                            ${(() => {
+                                const passiveItemId = `item_${sect.id}_t`;
+                                const activeItemId = `item_${sect.id}_s`;
+                                const passiveItem = getItemById(passiveItemId);
+                                const activeItem = getItemById(activeItemId);
+                                
+                                const hasPassive = passiveItem && state.player.learnedTechniques.some(t => t.id === passiveItem.techniqueId);
+                                const hasActive = activeItem && state.player.learnedSecretTechniques.some(s => s.id === activeItem.secretId);
+                                
+                                let html = '';
+                                if (passiveItem) {
+                                    const passiveBtn = hasPassive 
+                                        ? `<span class="text-[8px] text-green-400 font-bold bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">ĐÃ LĨNH HỘI</span>`
+                                        : `<button class="px-2 py-1 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold text-[9px] font-bold rounded border border-cultivation-gold/30 flex items-center transition-all" onclick="window.game.buySectScroll('${passiveItemId}', 200)">
+                                            <i class="ph ph-shopping-cart-simple mr-0.5"></i>200 Cống Hiến
+                                           </button>`;
+                                    html += `
+                                        <div class="p-3 bg-black/30 rounded-xl border border-white/5 flex justify-between items-center space-x-2">
+                                            <div class="flex-1">
+                                                <div class="text-[11px] font-bold text-white flex items-center"><span class="text-sm mr-1">${passiveItem.icon}</span>${passiveItem.name}</div>
+                                                <div class="text-[9px] text-gray-400 mt-0.5">${passiveItem.description}</div>
+                                            </div>
+                                            <div class="flex-shrink-0 text-right">
+                                                ${passiveBtn}
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                                if (activeItem) {
+                                    const activeBtn = hasActive 
+                                        ? `<span class="text-[8px] text-green-400 font-bold bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">ĐÃ LĨNH HỘI</span>`
+                                        : `<button class="px-2 py-1 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue text-[9px] font-bold rounded border border-qi-blue/30 flex items-center transition-all" onclick="window.game.buySectScroll('${activeItemId}', 400)">
+                                            <i class="ph ph-shopping-cart-simple mr-0.5"></i>400 Cống Hiến
+                                           </button>`;
+                                    html += `
+                                        <div class="p-3 bg-black/30 rounded-xl border border-white/5 flex justify-between items-center space-x-2">
+                                            <div class="flex-1">
+                                                <div class="text-[11px] font-bold text-white flex items-center"><span class="text-sm mr-1">${activeItem.icon}</span>${activeItem.name}</div>
+                                                <div class="text-[9px] text-gray-400 mt-0.5">${activeItem.description}</div>
+                                            </div>
+                                            <div class="flex-shrink-0 text-right">
+                                                ${activeBtn}
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                                return html;
+                            })()}
+                        </div>
+
+                        <!-- SECT MISSIONS -->
+                        <h4 class="text-xs font-ancient text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2 pt-2">Ủy Thác Tông Môn</h4>
                         <div class="space-y-3">
                             ${sect.missions.map(m => `
                                 <div class="p-3 bg-black/40 rounded-lg border border-white/5 flex justify-between items-center">
@@ -928,22 +983,63 @@ export class SystemsScreen {
                 </div>
             `;
         } else {
-            Object.values(SECTS).forEach(sect => {
-                const canJoin = state.player.realmId >= sect.minRealm;
+            const currentLocId = state.currentLocId;
+            const currentSect = SECTS[currentLocId];
+            
+            if (currentSect) {
+                const canJoin = state.player.realmId >= currentSect.minRealm;
+                
+                // Check recruitment month & year: even year, months 1-2
+                const timeSys = state.systems.time;
+                const isEvenYear = timeSys ? (timeSys.getYear() % 2 === 0) : true;
+                const isRecruitMonth = timeSys ? (timeSys.getMonth() === 1 || timeSys.getMonth() === 2) : true;
+                const isRecruiting = isEvenYear && isRecruitMonth;
+                
                 const el = document.createElement('div');
                 el.className = `p-4 border rounded-xl bg-black/40 space-y-3 ${canJoin ? 'border-gray-800' : 'opacity-50 grayscale'}`;
+                
+                let btnHTML = '';
+                if (isRecruiting) {
+                    btnHTML = `
+                        <button class="w-full py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-xl flex items-center justify-center ${canJoin ? '' : 'hidden'}" onclick="window.game.startRecruitmentExam('${currentSect.id}')">
+                            <i class="ph ph-identification-badge mr-2"></i>THAM GIA KHẢO HẠCH
+                        </button>
+                    `;
+                } else {
+                    btnHTML = `
+                        <div class="p-3 bg-white/5 border border-white/10 rounded-xl text-center space-y-1">
+                            <span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider">CHIÊU MỘ CHƯA MỞ</span>
+                            <span class="text-[9px] text-gray-500">Mở lại: Tháng 1-2 năm chẵn</span>
+                            <button disabled class="w-full mt-2 py-2 bg-gray-500/10 border border-gray-500/20 text-gray-500 text-[9px] font-bold rounded-lg uppercase tracking-wider flex items-center justify-center space-x-1">
+                                <i class="ph ph-clock"></i><span>KHÔNG PHẢI MÙA TUYỂN</span>
+                            </button>
+                        </div>
+                    `;
+                }
+
                 el.innerHTML = `
                     <div class="flex justify-between items-center">
-                        <h3 class="text-xl font-ancient text-white">${sect.name}</h3>
-                        <span class="text-[10px] ${canJoin ? 'text-qi-blue' : 'text-red-500'}">${canJoin ? 'Có thể bái nhập' : 'Cần: ' + getRealmById(sect.minRealm).name}</span>
+                        <h3 class="text-xl font-ancient text-white">${currentSect.name}</h3>
+                        <span class="text-[10px] ${canJoin ? 'text-qi-blue' : 'text-red-500'}">${canJoin ? 'Có thể bái nhập' : 'Cần: ' + getRealmById(currentSect.minRealm).name}</span>
                     </div>
-                    <p class="text-xs text-gray-500">${sect.description}</p>
-                    <button class="w-full py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-xl flex items-center justify-center ${canJoin ? '' : 'hidden'}" onclick="window.game.joinSect('${sect.id}')">
-                        <i class="ph ph-identification-badge mr-2"></i>BÁI NHẬP TÔNG MÔN
-                    </button>
+                    <p class="text-xs text-gray-500">${currentSect.description}</p>
+                    ${btnHTML}
                 `;
                 elSects.appendChild(el);
-            });
+            } else {
+                elSects.innerHTML = `
+                    <div class="flex flex-col items-center justify-center text-center p-8 bg-black/40 border border-white/5 rounded-2xl space-y-4">
+                        <i class="ph ph-castle-turret text-4xl text-gray-600 animate-pulse"></i>
+                        <div>
+                            <h3 class="text-base font-ancient text-white mb-1">Vô Môn Vô Phái</h3>
+                            <p class="text-xs text-gray-500 max-w-[280px]">Ngươi chưa gia nhập bất kỳ tông môn nào. Hãy di chuyển đến một sơn môn trên Bản Đồ Lịch Luyện để tham gia khảo hạch bái nhập.</p>
+                        </div>
+                        <button onclick="state.ui.switchScreen('screen-adventure'); state.ui.toggleOverlay(document.getElementById('sects-overlay'), false);" class="px-6 py-2 bg-qi-blue/20 hover:bg-qi-blue/30 border border-qi-blue/30 text-qi-blue text-xs font-bold rounded-xl transition-all">
+                            DI CHUYỂN ĐẾN BẢN ĐỒ
+                        </button>
+                    </div>
+                `;
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import { ARTIFACT_SETS } from '../configs/artifact-data.js';
 import { CREATION_TRAITS, ROOT_ELEMENTS, SPECIAL_ELEMENTS } from '../configs/creation-data.js';
 import { TITLES } from '../configs/fate-data.js';
 import { getLocationById, WORLDS } from '../configs/map-data.js';
+import { getSectById } from '../configs/sect-data.js';
 
 export class Player {
     constructor() {
@@ -1164,11 +1165,15 @@ export class Player {
             }
         }
 
-        // Apply Sect bonuses (Multiplier on total)
+        // Apply Sect bonuses
         if (this.sectId) {
-            this.atk *= 1.1;
-            this.def *= 1.1;
-            this.maxHp *= 1.1;
+            const sect = getSectById(this.sectId);
+            if (sect && sect.bonus) {
+                if (sect.bonus.atk) this.atk += sect.bonus.atk;
+                if (sect.bonus.def) this.def += sect.bonus.def;
+                if (sect.bonus.maxHp) this.maxHp += sect.bonus.maxHp;
+                if (sect.bonus.spd) this.spd += sect.bonus.spd;
+            }
             this.tuViPerSecond *= 1.05;
         }
 

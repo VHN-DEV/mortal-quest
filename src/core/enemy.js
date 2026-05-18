@@ -1,5 +1,6 @@
 import { getRealmById, RACE_DATA } from '../configs/realm-data.js';
 import { ASSETS } from '../configs/asset-data.js';
+import { SECTS } from '../configs/sect-data.js';
 
 export class Enemy {
     get element() {
@@ -133,6 +134,26 @@ export class EnemyGenerator {
         const typeData = types[Math.floor(Math.random() * types.length)];
         
         const enemy = new Enemy(targetRealm, typeData);
+
+        // Intercept for Sect Guard spawning at Sect Gates
+        const currentLocId = window.state?.currentLocId || '';
+        const sect = SECTS[currentLocId];
+        if (sect && (enemy.race === 'HUMAN' || enemy.race === 'DEMON')) {
+            let title = 'Đệ tử Ngoại môn';
+            if (targetRealm >= 30) {
+                title = 'Trưởng lão';
+            } else if (targetRealm >= 15) {
+                title = 'Đệ tử Nội môn';
+            }
+            enemy.name = `${title} ${sect.name} (${enemy.realmName})`;
+            
+            // Apply rare scroll loot drop (12% chance)
+            if (Math.random() < 0.12) {
+                const dropPassive = Math.random() < 0.7;
+                const dropItemId = dropPassive ? `item_${currentLocId}_t` : `item_${currentLocId}_s`;
+                enemy.inventory.push({ id: dropItemId, quantity: 1 });
+            }
+        }
 
         // Populate Enemy Inventory & Equipment
         this.populateLoot(enemy);
