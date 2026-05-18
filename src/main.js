@@ -931,8 +931,8 @@ window.renderCreationScreen = () => {
                 const url = ASSETS.portraits[p.id] || '';
                 return `
                     <div onclick="window.game.selectCreationAvatar('${p.id}')" 
-                        class="relative group rounded-2xl border-2 ${active ? 'border-cultivation-gold shadow-[0_0_12px_rgba(212,175,55,0.4)]' : 'border-white/5'} overflow-hidden cursor-pointer bg-black/40 hover:border-qi-blue/50 transition-all duration-300 flex flex-col items-center p-1.5">
-                        <div class="w-full aspect-square rounded-xl overflow-hidden relative mb-1.5">
+                        class="relative group rounded-2xl border-2 ${active ? 'border-cultivation-gold shadow-[0_0_12px_rgba(212,175,55,0.4)]' : 'border-white/5'} overflow-hidden cursor-pointer bg-black/40 hover:border-qi-blue/50 transition-all duration-300 flex flex-col items-center p-1.5 shrink-0">
+                        <div class="w-full aspect-square rounded-xl overflow-hidden relative mb-1.5 shrink-0">
                             <img src="${url}" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-500">
                             ${active ? `
                                 <div class="absolute top-1 right-1 w-4 h-4 bg-cultivation-gold rounded-full flex items-center justify-center shadow-lg">
