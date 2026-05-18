@@ -558,6 +558,31 @@ export class Game {
         }
     }
 
+    async deleteAllSaves() {
+        const metadata = await SaveSystem.getAllMetadata();
+        const saveCount = Object.keys(metadata).length;
+        if (saveCount === 0) {
+            state.ui.toast("Không có dữ liệu lưu trữ nào để xóa!", "info");
+            return;
+        }
+
+        const confirmed1 = await state.ui.confirm(
+            "Ngươi có chắc chắn muốn XÓA BỎ TOÀN BỘ đạo quả và dữ liệu của tất cả các ô lưu trữ? Hành động này sẽ diệt môn, xóa sổ hoàn toàn mọi tiến trình và KHÔNG thể hoàn tác!", 
+            "Cảnh Báo Diệt Môn Tối Cao"
+        );
+        if (!confirmed1) return;
+
+        const confirmed2 = await state.ui.confirm(
+            "Nhắc nhở cuối cùng: Toàn bộ công sức tu luyện của đạo hữu trên mọi ô lưu sẽ biến mất vĩnh viễn. Ngươi thực sự quyết định hủy diệt thế giới này chứ?", 
+            "Diệt Thế Chi Tai"
+        );
+        if (!confirmed2) return;
+
+        await SaveSystem.clearAll();
+        await this.screens.save.render();
+        state.ui.toast("Toàn bộ Mệnh Đồ Lục đã bị xóa sạch cát bụi!", "success");
+    }
+
     showSaveMenu(slot) {
         const options = [
             { label: 'Tiếp Tục Chơi', value: 'load', icon: 'ph-play' },

@@ -1,4 +1,4 @@
-import{W as o,A as r,X as s,s as n}from"./index-cWnYNq9n.js";import"./vendor-capacitor-DNzPfH2b.js";import"./vendor-gsap-CzGW6FVa.js";class v{constructor(){this.container=document.getElementById("screen-save"),this.init()}init(){this.container||(this.container=document.createElement("div"),this.container.id="screen-save",this.container.className="screen hidden flex flex-col h-full z-[210] bg-qi-ink overflow-hidden",document.querySelector("main").appendChild(this.container))}async render(){const t=await o.getAllMetadata();this.container.innerHTML=`
+import{W as o,A as r,X as n,s}from"./index-DiALkrmN.js";import"./vendor-capacitor-DNzPfH2b.js";import"./vendor-gsap-CzGW6FVa.js";class v{constructor(){this.container=document.getElementById("screen-save"),this.init()}init(){this.container||(this.container=document.createElement("div"),this.container.id="screen-save",this.container.className="screen hidden flex flex-col h-full z-[210] bg-qi-ink overflow-hidden",document.querySelector("main").appendChild(this.container))}async render(){const t=await o.getAllMetadata();this.container.innerHTML=`
             <div class="flex flex-col h-full p-6 space-y-8">
                 <!-- Header -->
                 <div class="flex items-center justify-between">
@@ -6,7 +6,12 @@ import{W as o,A as r,X as s,s as n}from"./index-cWnYNq9n.js";import"./vendor-cap
                         <i class="ph ph-arrow-left text-xl"></i>
                     </button>
                     <h2 class="text-2xl font-charm text-cultivation-gold">Mệnh Đồ Lục</h2>
-                    <div class="w-10"></div>
+                    <button id="btn-delete-all-saves" 
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-red-950/20 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-all duration-300 active:scale-90"
+                        title="Xóa toàn bộ lưu trữ"
+                        onclick="event.stopPropagation(); window.game.deleteAllSaves()">
+                        <i class="ph ph-trash text-xl"></i>
+                    </button>
                 </div>
 
                 <div class="flex-grow space-y-4 overflow-y-auto custom-scroll pb-10">
@@ -74,7 +79,7 @@ import{W as o,A as r,X as s,s as n}from"./index-cWnYNq9n.js";import"./vendor-cap
                             
                             <div class="flex items-center space-x-2 text-gray-400 bg-black/40 px-3 py-1.5 rounded-xl border border-white/5">
                                 <i class="ph ph-map-pin-line text-qi-jade/70"></i>
-                                <span class="text-[10px] text-gray-300 truncate font-ancient tracking-wider uppercase">${s(e.area)}</span>
+                                <span class="text-[10px] text-gray-300 truncate font-ancient tracking-wider uppercase">${n(e.area)}</span>
                             </div>
                         </div>
                     </div>
@@ -97,4 +102,4 @@ import{W as o,A as r,X as s,s as n}from"./index-cWnYNq9n.js";import"./vendor-cap
                     <i class="ph ph-dots-three-circle-vertical text-2xl"></i>
                 </button>
             </div>
-        `}formatPlayTime(t){const e=Math.floor(t/3600),i=Math.floor(t%3600/60);return`${e}h ${i}m`}formatDate(t){if(!t)return"Không rõ";const e=new Date(t);return`${e.getDate()}/${e.getMonth()+1} ${e.getHours()}:${e.getMinutes().toString().padStart(2,"0")}`}bindEvents(){const t=document.getElementById("btn-save-back");t&&(t.onclick=()=>{n.ui.switchScreen("screen-start")})}}export{v as SaveScreen};
+        `}formatPlayTime(t){const e=Math.floor(t/3600),i=Math.floor(t%3600/60);return`${e}h ${i}m`}formatDate(t){if(!t)return"Không rõ";const e=new Date(t);return`${e.getDate()}/${e.getMonth()+1} ${e.getHours()}:${e.getMinutes().toString().padStart(2,"0")}`}bindEvents(){const t=document.getElementById("btn-save-back");t&&(t.onclick=()=>{s.ui.switchScreen("screen-start")})}}export{v as SaveScreen};

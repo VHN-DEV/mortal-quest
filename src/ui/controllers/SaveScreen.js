@@ -29,7 +29,12 @@ export class SaveScreen {
                         <i class="ph ph-arrow-left text-xl"></i>
                     </button>
                     <h2 class="text-2xl font-charm text-cultivation-gold">Mệnh Đồ Lục</h2>
-                    <div class="w-10"></div>
+                    <button id="btn-delete-all-saves" 
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-red-950/20 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-all duration-300 active:scale-90"
+                        title="Xóa toàn bộ lưu trữ"
+                        onclick="event.stopPropagation(); window.game.deleteAllSaves()">
+                        <i class="ph ph-trash text-xl"></i>
+                    </button>
                 </div>
 
                 <div class="flex-grow space-y-4 overflow-y-auto custom-scroll pb-10">
