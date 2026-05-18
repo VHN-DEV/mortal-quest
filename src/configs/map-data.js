@@ -40,6 +40,63 @@ export const WORLDS = {
         description: 'Vùng đất của phàm nhân và các tu sĩ bắt đầu con đường nghịch thiên.',
         locations: [
             {
+                id: 'thanh_nguu_tran',
+                name: 'Thanh Ngưu Trấn',
+                minRealm: 0,
+                danger: 'an_toan',
+                image: getLocImg('thanh_van_tran'),
+                description: 'Thôn trang phàm nhân bình dị tại Kính Châu, nơi Hàn Lập sinh trưởng.',
+                resources: ['Linh Thảo', 'Dược Điển'],
+                energies: [{ type: 'linh_khi', concentration: 5, purity: 'TAP' }],
+                elementQi: {
+                    'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20,
+                    'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0
+                },
+                eventProbs: { combat: 0.05, loot: 0.25, npc: 0.1, empty: 0.6 },
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam',
+                subRegionId: 'viet_quoc_kinh_chau',
+                subRegionName: 'Kính Châu'
+            },
+            {
+                id: 'that_huyen_mon',
+                name: 'Thất Huyền Môn',
+                minRealm: 0,
+                danger: 'an_toan',
+                image: getLocImg('thanh_van_tran'),
+                description: 'Giang hồ môn phái tọa lạc tại Thần Thủ Sơn, nơi Hàn Lập bái sư khởi đầu cơ duyên.',
+                resources: ['Bản Võ Học', 'Thảo Dược'],
+                energies: [{ type: 'linh_khi', concentration: 8, purity: 'TAP' }],
+                elementQi: {
+                    'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20,
+                    'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0
+                },
+                eventProbs: { combat: 0.05, loot: 0.2, npc: 0.25, empty: 0.5 },
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam',
+                subRegionId: 'viet_quoc_kinh_chau',
+                subRegionName: 'Kính Châu'
+            },
+            {
+                id: 'gia_nguyen_thanh',
+                name: 'Gia Nguyên Thành',
+                minRealm: 0,
+                danger: 'an_toan',
+                image: getLocImg('thien_van_thanh'),
+                description: 'Phàm nhân đại thành trì phồn hoa của Việt Quốc, giang hồ thế lực tranh đoạt khốc liệt.',
+                resources: ['Bạc Phàm', 'Bản Thiết'],
+                energies: [{ type: 'linh_khi', concentration: 3, purity: 'TAP' }],
+                elementQi: {
+                    'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20,
+                    'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0
+                },
+                eventProbs: { combat: 0.1, loot: 0.1, npc: 0.4, empty: 0.4 },
+                regionId: 'thien_nam',
+                regionName: 'Thiên Nam',
+                subRegionId: 'viet_quoc',
+                subRegionName: 'Việt Quốc'
+            },
+            {
                 id: 'thanh_van_tran',
                 name: 'Thanh Vân Trấn',
                 minRealm: 0,
@@ -54,7 +111,7 @@ export const WORLDS = {
                 },
                 eventProbs: { combat: 0.1, loot: 0.2, npc: 0.1, empty: 0.6 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -76,7 +133,7 @@ export const WORLDS = {
                 },
                 eventProbs: { combat: 0.05, loot: 0.1, npc: 0.45, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -95,7 +152,7 @@ export const WORLDS = {
                 },
                 eventProbs: { combat: 0.25, loot: 0.15, npc: 0.05, empty: 0.55 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -114,7 +171,7 @@ export const WORLDS = {
                 },
                 eventProbs: { combat: 0.02, loot: 0.03, npc: 0.4, empty: 0.55 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'nguyen_vu_quoc',
                 subRegionName: 'Nguyên Vũ Quốc'
             },
@@ -133,7 +190,7 @@ export const WORLDS = {
                 },
                 eventProbs: { combat: 0.4, loot: 0.1, npc: 0.05, empty: 0.45 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'nguyen_vu_quoc',
                 subRegionName: 'Nguyên Vũ Quốc'
             },
@@ -149,7 +206,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 40, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.2, npc: 0.35, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'nguyen_vu_quoc',
                 subRegionName: 'Nguyên Vũ Quốc'
             },
@@ -178,7 +235,7 @@ export const WORLDS = {
                 resources: ['Đan Dược', 'Pháp Bảo'],
                 eventProbs: { combat: 0.0, loot: 0.0, npc: 0.8, empty: 0.2 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -192,7 +249,7 @@ export const WORLDS = {
                 resources: ['Pháp Bảo Hiếm', 'Vật Phẩm Quý'],
                 eventProbs: { combat: 0.0, loot: 0.0, npc: 0.9, empty: 0.1 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -207,7 +264,7 @@ export const WORLDS = {
                 eventProbs: { combat: 0.0, loot: 0.0, npc: 0.7, empty: 0.3 },
                 special: 'guild',
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -258,7 +315,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.15, npc: 0.5, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -274,9 +331,9 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.1, loot: 0.1, npc: 0.4, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
-                subRegionId: 'viet_quoc',
-                subRegionName: 'Việt Quốc'
+                regionName: 'Thiên Nam',
+                subRegionId: 'viet_quoc_gia_nguyen_thanh',
+                subRegionName: 'Gia Nguyên Thành'
             },
             {
                 id: 'than_thu_coc',
@@ -290,9 +347,9 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 40, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.2, npc: 0.35, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
-                subRegionId: 'viet_quoc',
-                subRegionName: 'Việt Quốc'
+                regionName: 'Thiên Nam',
+                subRegionId: 'viet_quoc_kinh_chau',
+                subRegionName: 'Kính Châu'
             },
             {
                 id: 'hoang_long_son',
@@ -306,7 +363,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 20, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.3, loot: 0.1, npc: 0.2, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -322,7 +379,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.1, loot: 0.1, npc: 0.4, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'nguyen_vu_quoc',
                 subRegionName: 'Nguyên Vũ Quốc'
             },
@@ -338,7 +395,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 40, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.1, loot: 0.2, npc: 0.3, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'tu_kim_quoc',
                 subRegionName: 'Tử Kim Quốc'
             },
@@ -354,7 +411,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 30, 'Thổ': 40, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.3, loot: 0.1, npc: 0.2, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'xa_ky_quoc',
                 subRegionName: 'Xa Kỵ Quốc'
             },
@@ -370,9 +427,9 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 30, 'Thủy': 10, 'Hỏa': 20, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.35, loot: 0.15, npc: 0.25, empty: 0.25 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'mo_lan_thao_nguyen_sub',
-                subRegionName: 'Mộ Lan Thảo Nguyên'
+                subRegionName: 'Mộ Lan nhân'
             },
             {
                 id: 'thien_la_quoc',
@@ -386,7 +443,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 40 },
                 eventProbs: { combat: 0.4, loot: 0.15, npc: 0.15, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'thien_la_quoc_sub',
                 subRegionName: 'Thiên La Quốc'
             },
@@ -434,7 +491,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 30, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 40, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.3, loot: 0.2, npc: 0.2, empty: 0.3 },
                 regionId: 'thien_lan_thao_nguyen',
-                regionName: 'Thiên Lan Thảo Nguyên',
+                regionName: 'Đột Ngột Thảo Nguyên / Thiên Lan',
                 subRegionId: 'thien_lan_thao_nguyen_sub',
                 subRegionName: 'Thiên Lan Thảo Nguyên'
             },
@@ -450,7 +507,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.1, loot: 0.1, npc: 0.5, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -466,7 +523,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 40, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.15, loot: 0.15, npc: 0.3, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -482,7 +539,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 15, 'Mộc': 35, 'Thủy': 15, 'Hỏa': 20, 'Thổ': 15, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.15, npc: 0.4, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -498,7 +555,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 40, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.08, loot: 0.12, npc: 0.4, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -514,7 +571,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 35, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 25, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.08, loot: 0.12, npc: 0.4, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -530,7 +587,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 50, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.15, npc: 0.4, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -546,7 +603,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 20, 'Thủy': 30, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.15, npc: 0.5, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -562,7 +619,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.02, loot: 0.08, npc: 0.6, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -578,7 +635,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 30, 'Thủy': 20, 'Hỏa': 10, 'Thổ': 10, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 20 },
                 eventProbs: { combat: 0.5, loot: 0.25, npc: 0.05, empty: 0.2 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -594,7 +651,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 15, 'Mộc': 30, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 25, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.35, loot: 0.15, npc: 0.05, empty: 0.45 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -610,7 +667,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 40, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.25, loot: 0.2, npc: 0.15, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'tu_kim_quoc',
                 subRegionName: 'Tử Kim Quốc'
             },
@@ -626,7 +683,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 30, 'Mộc': 5, 'Thủy': 5, 'Hỏa': 20, 'Thổ': 10, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 30 },
                 eventProbs: { combat: 0.45, loot: 0.2, npc: 0.05, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'xa_ky_quoc',
                 subRegionName: 'Xa Kỵ Quốc'
             },
@@ -642,7 +699,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 15, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 50 },
                 eventProbs: { combat: 0.4, loot: 0.15, npc: 0.1, empty: 0.35 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'thien_la_quoc',
                 subRegionName: 'Thiên La Quốc'
             },
@@ -658,7 +715,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 15, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 50 },
                 eventProbs: { combat: 0.35, loot: 0.15, npc: 0.2, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'ma_dao_luc_tong',
                 subRegionName: 'Ma Đạo Lục Tông'
             },
@@ -674,7 +731,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 20, 'Thủy': 30, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.1, loot: 0.1, npc: 0.5, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'ma_dao_luc_tong',
                 subRegionName: 'Ma Đạo Lục Tông'
             },
@@ -690,7 +747,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 5, 'Hỏa': 60, 'Thổ': 10, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 10 },
                 eventProbs: { combat: 0.35, loot: 0.15, npc: 0.2, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'ma_dao_luc_tong',
                 subRegionName: 'Ma Đạo Lục Tông'
             },
@@ -706,7 +763,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 40, 'Mộc': 5, 'Thủy': 5, 'Hỏa': 25, 'Thổ': 10, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 15 },
                 eventProbs: { combat: 0.4, loot: 0.15, npc: 0.15, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'ma_dao_luc_tong',
                 subRegionName: 'Ma Đạo Lục Tông'
             },
@@ -722,7 +779,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 40, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.35, loot: 0.15, npc: 0.2, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'ma_dao_luc_tong',
                 subRegionName: 'Ma Đạo Lục Tông'
             },
@@ -738,7 +795,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 5, 'Hỏa': 10, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 10, 'Quang': 0, 'Ám': 40 },
                 eventProbs: { combat: 0.38, loot: 0.17, npc: 0.15, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'ma_dao_luc_tong',
                 subRegionName: 'Ma Đạo Lục Tông'
             },
@@ -754,7 +811,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.15, npc: 0.5, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'lien_minh_the_luc',
                 subRegionName: 'Liên Minh Thế Lực'
             },
@@ -770,7 +827,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.15, npc: 0.5, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'lien_minh_the_luc',
                 subRegionName: 'Liên Minh Thế Lực'
             },
@@ -786,7 +843,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 15, 'Mộc': 35, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.15, npc: 0.5, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'lien_minh_the_luc',
                 subRegionName: 'Liên Minh Thế Lực'
             },
@@ -802,7 +859,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 40, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.02, loot: 0.28, npc: 0.4, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'lien_minh_the_luc',
                 subRegionName: 'Liên Minh Thế Lực'
             },
@@ -818,7 +875,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 30, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.25, loot: 0.15, npc: 0.3, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'lien_minh_the_luc',
                 subRegionName: 'Liên Minh Thế Lực'
             },
@@ -834,7 +891,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 40, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 20 },
                 eventProbs: { combat: 0.45, loot: 0.25, npc: 0.1, empty: 0.2 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'lien_minh_the_luc',
                 subRegionName: 'Liên Minh Thế Lực'
             },
@@ -850,7 +907,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 15, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 20, 'Phong': 10, 'Lôi': 10, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.4, loot: 0.3, npc: 0.1, empty: 0.2 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'lien_minh_the_luc',
                 subRegionName: 'Liên Minh Thế Lực'
             },
@@ -866,7 +923,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 10, 'Ám': 10 },
                 eventProbs: { combat: 0.45, loot: 0.25, npc: 0.1, empty: 0.2 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'lien_minh_the_luc',
                 subRegionName: 'Liên Minh Thế Lực'
             },
@@ -882,7 +939,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.2, loot: 0.15, npc: 0.25, empty: 0.4 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'lien_minh_the_luc',
                 subRegionName: 'Liên Minh Thế Lực'
             },
@@ -898,7 +955,7 @@ export const WORLDS = {
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.15, npc: 0.5, empty: 0.3 },
                 regionId: 'thien_nam',
-                regionName: 'Thiên Nam Đại Lục',
+                regionName: 'Thiên Nam',
                 subRegionId: 'viet_quoc',
                 subRegionName: 'Việt Quốc'
             },
@@ -1368,7 +1425,7 @@ export const WORLDS = {
             },
             {
                 id: 'bang_hai_hai_vuc',
-                name: 'Băng Hải Hải Vực',
+                name: 'Băng Hải',
                 minRealm: 22,
                 danger: 'nguy_hiem',
                 image: getLocImg('bang_hai_hai_vuc'),
@@ -1496,7 +1553,7 @@ export const WORLDS = {
             },
             {
                 id: 'mo_lan_toc_doanh_dia',
-                name: 'Mộ Lan Nhân Lãnh Địa',
+                name: 'Mộ Lan nhân',
                 minRealm: 12,
                 danger: 'trung_cap',
                 image: getLocImg('mo_lan_toc_doanh_dia'),
@@ -1717,6 +1774,54 @@ export const WORLDS = {
                 regionName: 'Vô Biên Hải',
                 subRegionId: 'hac_vu_cam_dia',
                 subRegionName: 'Hắc Vụ Cấm Địa'
+            },
+            {
+                id: 'tu_dai_mat_tong',
+                name: 'Tứ Đại Mật Tông',
+                minRealm: 20,
+                danger: 'cao_cap',
+                image: getLocImg('tieu_cuc_cung'),
+                description: 'Tứ đại môn phái Phật Giáo truyền thừa hiển hách nhất Đại Tấn, linh diệu chí cao.',
+                resources: ['Xá Lợi Tử', 'Phật Môn Điển Tịch'],
+                energies: [{ type: 'linh_khi', concentration: 65, purity: 'TINH_THUAN' }, { type: 'hao_nhien_chinh_khi', concentration: 40, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 20, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 10, 'Băng': 0, 'Quang': 30, 'Ám': 0 },
+                eventProbs: { combat: 0.1, loot: 0.2, npc: 0.5, empty: 0.2 },
+                regionId: 'dai_tan',
+                regionName: 'Đại Tấn',
+                subRegionId: 'dai_tan_sub',
+                subRegionName: 'Đại Tấn'
+            },
+            {
+                id: 'vo_bien_hai',
+                name: 'Vô Biên Hải',
+                minRealm: 10,
+                danger: 'trung_cap',
+                image: getLocImg('yeu_thu_hai_vuc'),
+                description: 'Vùng biển rộng lớn vô tận phân cách Thiên Nam với các đại lục khác, phong ba bão táp nguy hiểm.',
+                resources: ['Hải Vô Thạch', 'Linh Thảo Hải Vực'],
+                energies: [{ type: 'linh_khi', element: 'Thủy', concentration: 25, purity: 'TINH_THUAN' }],
+                elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 40, 'Hỏa': 0, 'Thổ': 10, 'Phong': 20, 'Lôi': 10, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.25, loot: 0.15, npc: 0.1, empty: 0.5 },
+                regionId: 'vo_bien_hai_region',
+                regionName: 'Vô Biên Hải',
+                subRegionId: 'vo_bien_hai_sub',
+                subRegionName: 'Vô Biên Hải'
+            },
+            {
+                id: 'ngu_long_hai',
+                name: 'Ngũ Long Hải',
+                minRealm: 12,
+                danger: 'cao_cap',
+                image: getLocImg('yeu_thu_hai_vuc'),
+                description: 'Hải vực thần bí chứa năm hòn đảo hình rồng khổng lồ, tài nguyên hải thú dồi dào bậc nhất.',
+                resources: ['Ngũ Long Linh Khoáng', 'Yêu Đan Hải Thú'],
+                energies: [{ type: 'linh_khi', concentration: 30, purity: 'TINH_THUAN' }],
+                elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 40, 'Hỏa': 0, 'Thổ': 15, 'Phong': 15, 'Lôi': 10, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.3, loot: 0.2, npc: 0.1, empty: 0.4 },
+                regionId: 'ngu_long_hai_region',
+                regionName: 'Ngũ Long Hải',
+                subRegionId: 'ngu_long_hai_sub',
+                subRegionName: 'Ngũ Long Hải'
             }
         ]
     },
@@ -1766,10 +1871,10 @@ export const WORLDS = {
                 energies: [{ type: 'khong_gian_chi_khi', concentration: 30, purity: 'CUC_PHAM' }, { type: 'thoi_gian_chi_khi', concentration: 10, purity: 'DAO' }],
                 eventProbs: { combat: 0.3, loot: 0.4, npc: 0.1, empty: 0.2 },
                 timeRate: 10,
-                regionId: 'linh_gioi_trung_tam',
-                regionName: 'Linh Giới Trung Tâm',
-                subRegionId: 'than_vuc_thanh_thanh',
-                subRegionName: 'Thần Vực Thánh Thành'
+                regionId: 'tien_vuc_lon',
+                regionName: 'Các Tiên Vực Lớn',
+                subRegionId: 'bac_han_tien_vuc_sub',
+                subRegionName: 'Bắc Hàn Tiên Vực'
             },
             {
                 id: 'thien_uyen_thanh',
@@ -1782,10 +1887,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 90, purity: 'CUC_PHAM' }],
                 elementQi: { 'Kim': 25, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.3, loot: 0.15, npc: 0.35, empty: 0.2 },
-                regionId: 'linh_gioi_trung_tam',
-                regionName: 'Linh Giới Trung Tâm',
-                subRegionId: 'than_vuc_thanh_thanh',
-                subRegionName: 'Thần Vực Thánh Thành'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'nhan_toc_lanh_dia',
+                subRegionName: 'Nhân Tộc lãnh địa'
             },
             {
                 id: 'thanh_dao',
@@ -1798,10 +1903,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 120, purity: 'DAO' }],
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.2, npc: 0.6, empty: 0.15 },
-                regionId: 'linh_gioi_trung_tam',
-                regionName: 'Linh Giới Trung Tâm',
-                subRegionId: 'than_vuc_thanh_thanh',
-                subRegionName: 'Thần Vực Thánh Thành'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'nhan_toc_lanh_dia',
+                subRegionName: 'Nhân Tộc lãnh địa'
             },
             {
                 id: 'huyen_vu_thanh',
@@ -1830,10 +1935,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 80, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.1, loot: 0.2, npc: 0.4, empty: 0.3 },
-                regionId: 'linh_gioi_trung_tam',
-                regionName: 'Linh Giới Trung Tâm',
-                subRegionId: 'than_vuc_thanh_thanh',
-                subRegionName: 'Thần Vực Thánh Thành'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'nhan_toc_lanh_dia',
+                subRegionName: 'Nhân Tộc lãnh địa'
             },
             {
                 id: 'nhan_toc_13_thien_thanh',
@@ -1846,10 +1951,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 90, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.2, loot: 0.2, npc: 0.35, empty: 0.25 },
-                regionId: 'linh_gioi_trung_tam',
-                regionName: 'Linh Giới Trung Tâm',
-                subRegionId: 'than_vuc_thanh_thanh',
-                subRegionName: 'Thần Vực Thánh Thành'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'nhan_toc_lanh_dia',
+                subRegionName: 'Nhân Tộc lãnh địa'
             },
             {
                 id: 'thanh_hoang_thanh',
@@ -1862,10 +1967,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 100, purity: 'CUC_PHAM' }],
                 elementQi: { 'Kim': 30, 'Mộc': 20, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 20, 'Ám': 0 },
                 eventProbs: { combat: 0.05, loot: 0.15, npc: 0.6, empty: 0.2 },
-                regionId: 'linh_gioi_trung_tam',
-                regionName: 'Linh Giới Trung Tâm',
-                subRegionId: 'than_vuc_thanh_thanh',
-                subRegionName: 'Thần Vực Thánh Thành'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'nhan_toc_lanh_dia',
+                subRegionName: 'Nhân Tộc lãnh địa'
             },
             {
                 id: 'quang_han_gioi',
@@ -1942,10 +2047,10 @@ export const WORLDS = {
                 energies: [{ type: 'yeu_khi', concentration: 130, purity: 'DAO' }],
                 elementQi: { 'Kim': 10, 'Mộc': 30, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.35, loot: 0.25, npc: 0.25, empty: 0.15 },
-                regionId: 'van_yeu_vuc',
-                regionName: 'Vạn Yêu Vực',
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
                 subRegionId: 'yeu_toc_lanh_dia',
-                subRegionName: 'Yêu Tộc Lãnh Địa'
+                subRegionName: 'Yêu Tộc lãnh địa'
             },
             {
                 id: 'thien_ho_toc',
@@ -1958,10 +2063,10 @@ export const WORLDS = {
                 energies: [{ type: 'yeu_khi', concentration: 90, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 10, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 10, 'Thổ': 10, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 30 },
                 eventProbs: { combat: 0.25, loot: 0.25, npc: 0.35, empty: 0.15 },
-                regionId: 'van_yeu_vuc',
-                regionName: 'Vạn Yêu Vực',
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
                 subRegionId: 'yeu_toc_lanh_dia',
-                subRegionName: 'Yêu Tộc Lãnh Địa'
+                subRegionName: 'Yêu Tộc lãnh địa'
             },
             {
                 id: 'thien_bang_toc',
@@ -1974,10 +2079,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 95, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 20, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 10, 'Phong': 40, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.35, loot: 0.25, npc: 0.25, empty: 0.15 },
-                regionId: 'van_yeu_vuc',
-                regionName: 'Vạn Yêu Vực',
-                subRegionId: 'yeu_toc_lanh_dia',
-                subRegionName: 'Yêu Tộc Lãnh Địa'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'di_toc_lanh_dia',
+                subRegionName: 'Dị Tộc lãnh địa'
             },
             {
                 id: 'cu_vien_toc',
@@ -1990,10 +2095,10 @@ export const WORLDS = {
                 energies: [{ type: 'yeu_khi', concentration: 100, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 30, 'Mộc': 20, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.4, loot: 0.2, npc: 0.2, empty: 0.2 },
-                regionId: 'van_yeu_vuc',
-                regionName: 'Vạn Yêu Vực',
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
                 subRegionId: 'yeu_toc_lanh_dia',
-                subRegionName: 'Yêu Tộc Lãnh Địa'
+                subRegionName: 'Yêu Tộc lãnh địa'
             },
             {
                 id: 'giao_long_toc',
@@ -2006,10 +2111,10 @@ export const WORLDS = {
                 energies: [{ type: 'yeu_khi', concentration: 110, purity: 'CUC_PHAM' }],
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 50, 'Hỏa': 0, 'Thổ': 10, 'Phong': 10, 'Lôi': 10, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.4, loot: 0.25, npc: 0.15, empty: 0.2 },
-                regionId: 'van_yeu_vuc',
-                regionName: 'Vạn Yêu Vực',
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
                 subRegionId: 'yeu_toc_lanh_dia',
-                subRegionName: 'Yêu Tộc Lãnh Địa'
+                subRegionName: 'Yêu Tộc lãnh địa'
             },
             {
                 id: 'con_bang_lanh_dia',
@@ -2054,10 +2159,10 @@ export const WORLDS = {
                 energies: [{ type: 'yeu_khi', concentration: 80, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 10, 'Mộc': 40, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.3, loot: 0.2, npc: 0.25, empty: 0.25 },
-                regionId: 'van_yeu_vuc',
-                regionName: 'Vạn Yêu Vực',
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
                 subRegionId: 'yeu_toc_lanh_dia',
-                subRegionName: 'Yêu Tộc Lãnh Địa'
+                subRegionName: 'Yêu Tộc lãnh địa'
             },
             {
                 id: 'ma_nguyen_coc',
@@ -2150,10 +2255,10 @@ export const WORLDS = {
                 energies: [{ type: 'ma_khi', concentration: 60, purity: 'TINH_THUAN' }, { type: 'linh_khi', concentration: 40, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 5, 'Hỏa': 5, 'Thổ': 15, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 60 },
                 eventProbs: { combat: 0.4, loot: 0.2, npc: 0.15, empty: 0.25 },
-                regionId: 'di_toc_lanh_dia',
-                regionName: 'Dị Tộc Lãnh Địa',
-                subRegionId: 'di_toc_doanh_dia',
-                subRegionName: 'Dị Tộc Doanh Địa'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'di_toc_lanh_dia',
+                subRegionName: 'Dị Tộc lãnh địa'
             },
             {
                 id: 'moc_toc',
@@ -2166,10 +2271,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 90, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 0, 'Mộc': 60, 'Thủy': 20, 'Hỏa': 0, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.3, loot: 0.3, npc: 0.2, empty: 0.2 },
-                regionId: 'di_toc_lanh_dia',
-                regionName: 'Dị Tộc Lãnh Địa',
-                subRegionId: 'di_toc_doanh_dia',
-                subRegionName: 'Dị Tộc Doanh Địa'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'di_toc_lanh_dia',
+                subRegionName: 'Dị Tộc lãnh địa'
             },
             {
                 id: 'giac_xi_toc',
@@ -2182,10 +2287,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 100, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 30, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 40, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.45, loot: 0.25, npc: 0.15, empty: 0.15 },
-                regionId: 'di_toc_lanh_dia',
-                regionName: 'Dị Tộc Lãnh Địa',
-                subRegionId: 'di_toc_doanh_dia',
-                subRegionName: 'Dị Tộc Doanh Địa'
+                regionId: 'loi_minh_dai_luc_region',
+                regionName: 'Lôi Minh Đại Lục',
+                subRegionId: 'loi_minh_sub',
+                subRegionName: 'Lôi Minh Đại Lục'
             },
             {
                 id: 'anh_toc_lanh_dia',
@@ -2198,10 +2303,10 @@ export const WORLDS = {
                 energies: [{ type: 'ma_khi', concentration: 60, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 5, 'Hỏa': 5, 'Thổ': 15, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 60 },
                 eventProbs: { combat: 0.35, loot: 0.25, npc: 0.2, empty: 0.2 },
-                regionId: 'di_toc_lanh_dia',
-                regionName: 'Dị Tộc Lãnh Địa',
-                subRegionId: 'di_toc_doanh_dia',
-                subRegionName: 'Dị Tộc Doanh Địa'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'di_toc_lanh_dia',
+                subRegionName: 'Dị Tộc lãnh địa'
             },
             {
                 id: 'da_xoa_toc',
@@ -2214,10 +2319,10 @@ export const WORLDS = {
                 energies: [{ type: 'ma_khi', concentration: 90, purity: 'CUC_PHAM' }],
                 elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 10, 'Hỏa': 20, 'Thổ': 10, 'Phong': 5, 'Lôi': 5, 'Băng': 0, 'Quang': 0, 'Ám': 35 },
                 eventProbs: { combat: 0.45, loot: 0.25, npc: 0.1, empty: 0.2 },
-                regionId: 'di_toc_lanh_dia',
-                regionName: 'Dị Tộc Lãnh Địa',
-                subRegionId: 'di_toc_doanh_dia',
-                subRegionName: 'Dị Tộc Doanh Địa'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'di_toc_lanh_dia',
+                subRegionName: 'Dị Tộc lãnh địa'
             },
             {
                 id: 'phi_linh_toc',
@@ -2230,10 +2335,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 90, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 10, 'Phong': 40, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.35, loot: 0.25, npc: 0.2, empty: 0.2 },
-                regionId: 'di_toc_lanh_dia',
-                regionName: 'Dị Tộc Lãnh Địa',
-                subRegionId: 'di_toc_doanh_dia',
-                subRegionName: 'Dị Tộc Doanh Địa'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'di_toc_lanh_dia',
+                subRegionName: 'Dị Tộc lãnh địa'
             },
             {
                 id: 'hai_vuong_toc',
@@ -2246,10 +2351,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 100, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 60, 'Hỏa': 0, 'Thổ': 10, 'Phong': 10, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.4, loot: 0.2, npc: 0.2, empty: 0.2 },
-                regionId: 'di_toc_lanh_dia',
-                regionName: 'Dị Tộc Lãnh Địa',
-                subRegionId: 'di_toc_doanh_dia',
-                subRegionName: 'Dị Tộc Doanh Địa'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'di_toc_lanh_dia',
+                subRegionName: 'Dị Tộc lãnh địa'
             },
             {
                 id: 'cu_linh_toc',
@@ -2262,10 +2367,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 100, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 20, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 50, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.45, loot: 0.2, npc: 0.15, empty: 0.2 },
-                regionId: 'di_toc_lanh_dia',
-                regionName: 'Dị Tộc Lãnh Địa',
-                subRegionId: 'di_toc_doanh_dia',
-                subRegionName: 'Dị Tộc Doanh Địa'
+                regionId: 'phong_nguyen_dai_luc',
+                regionName: 'Phong Nguyên Đại Lục',
+                subRegionId: 'di_toc_lanh_dia',
+                subRegionName: 'Dị Tộc lãnh địa'
             },
             {
                 id: 'minh_ha_chi_dia',
@@ -2310,10 +2415,10 @@ export const WORLDS = {
                 energies: [{ type: 'ma_khi', concentration: 80, purity: 'TINH_THUAN' }, { type: 'linh_khi', concentration: 50, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 40, 'Mộc': 0, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 20 },
                 eventProbs: { combat: 0.45, loot: 0.25, npc: 0.1, empty: 0.2 },
-                regionId: 'cam_dia_linh_gioi',
-                regionName: 'Cấm Địa Linh Giới',
-                subRegionId: 'cam_dia_doanh_dia',
-                subRegionName: 'Cấm Địa Doanh Địa'
+                regionId: 'loi_minh_dai_luc_region',
+                regionName: 'Lôi Minh Đại Lục',
+                subRegionId: 'loi_minh_sub',
+                subRegionName: 'Lôi Minh Đại Lục'
             },
             {
                 id: 'chan_linh_chi_huyet',
@@ -2486,10 +2591,10 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 120, purity: 'CUC_PHAM' }],
                 elementQi: { 'Kim': 0, 'Mộc': 70, 'Thủy': 15, 'Hỏa': 0, 'Thổ': 15, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.3, loot: 0.5, npc: 0.05, empty: 0.15 },
-                regionId: 'linh_gioi_trung_tam',
-                regionName: 'Linh Giới Trung Tâm',
-                subRegionId: 'man_hoang_sub',
-                subRegionName: 'Man Hoang Vùng Hoang Dã'
+                regionId: 'tien_gioi_dinh_phong',
+                regionName: 'Tối Cao Thế Lực',
+                subRegionId: 'tien_cung_vo_thuong_sub',
+                subRegionName: 'Tiên Cung Vô Thượng'
             },
             {
                 id: 'thai_co_chien_truong',
@@ -2518,15 +2623,111 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', concentration: 120, purity: 'CUC_PHAM' }],
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 10, 'Phong': 10, 'Lôi': 40, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.4, loot: 0.25, npc: 0.15, empty: 0.2 },
-                regionId: 'linh_gioi_trung_tam',
-                regionName: 'Linh Giới Trung Tâm',
+                regionId: 'loi_minh_dai_luc_region',
+                regionName: 'Lôi Minh Đại Lục',
                 subRegionId: 'loi_minh_sub',
-                subRegionName: 'Lôi Minh Tiên Thành'
+                subRegionName: 'Lôi Minh Đại Lục'
+            },
+            {
+                id: 'thien_van_thap_tam_toc',
+                name: 'Thiên Vân Thập Tam Tộc',
+                minRealm: 34,
+                danger: 'cao_cap',
+                image: getLocImg('tieu_cuc_cung'),
+                description: 'Liên minh 13 tộc dị tộc tại Lôi Minh Đại Lục, đối đầu kịch liệt với Giác Xi Tộc hùng mạnh.',
+                resources: ['Dị Tộc Linh Tinh', 'Thiên Vân Thạch'],
+                energies: [{ type: 'linh_khi', concentration: 90, purity: 'TINH_THUAN' }],
+                elementQi: { 'Kim': 15, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 15, 'Phong': 10, 'Lôi': 10, 'Băng': 5, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.35, loot: 0.25, npc: 0.2, empty: 0.2 },
+                regionId: 'loi_minh_dai_luc_region',
+                regionName: 'Lôi Minh Đại Lục',
+                subRegionId: 'loi_minh_sub',
+                subRegionName: 'Lôi Minh Đại Lục'
+            },
+            {
+                id: 'hac_coc',
+                name: 'Hắc Cốc',
+                minRealm: 30,
+                danger: 'cao_cap',
+                image: getLocImg('huyen_am_coc'),
+                description: 'Thung lũng u ám thần bí ngập sát khí tại Lôi Minh Đại Lục, nơi ma vật ẩn hiện săn lùng tu sĩ.',
+                resources: ['Ma Tinh Thạch', 'Hắc Sát'],
+                energies: [{ type: 'ma_khi', concentration: 70, purity: 'TINH_THUAN' }, { type: 'tu_khi', concentration: 30, purity: 'TAP' }],
+                elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 10, 'Hỏa': 5, 'Thổ': 10, 'Phong': 10, 'Lôi': 10, 'Băng': 0, 'Quang': 0, 'Ám': 40 },
+                eventProbs: { combat: 0.4, loot: 0.2, npc: 0.1, empty: 0.3 },
+                regionId: 'loi_minh_dai_luc_region',
+                regionName: 'Lôi Minh Đại Lục',
+                subRegionId: 'loi_minh_sub',
+                subRegionName: 'Lôi Minh Đại Lục'
+            },
+            {
+                id: 'huyet_cot_mon',
+                name: 'Huyết Cốt Môn',
+                minRealm: 32,
+                danger: 'cao_cap',
+                image: getLocImg('thien_sat_tong'),
+                description: 'Tông môn tà đạo đỉnh cấp tại Huyết Thiên Đại Lục, nổi danh tu luyện huyết cốt sát công.',
+                resources: ['Huyết Tinh', 'Huyết Hồn Sa'],
+                energies: [{ type: 'ma_khi', concentration: 80, purity: 'TINH_THUAN' }, { type: 'tu_khi', concentration: 20, purity: 'TAP' }],
+                elementQi: { 'Kim': 20, 'Mộc': 5, 'Thủy': 10, 'Hỏa': 25, 'Thổ': 10, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 30 },
+                eventProbs: { combat: 0.35, loot: 0.2, npc: 0.25, empty: 0.2 },
+                regionId: 'huyet_thien_dai_luc',
+                regionName: 'Huyết Thiên Đại Lục',
+                subRegionId: 'huyet_thien_sub',
+                subRegionName: 'Huyết Thiên Đại Lục'
+            },
+            {
+                id: 'huyet_tri',
+                name: 'Huyết Trì',
+                minRealm: 34,
+                danger: 'nguy_hiem',
+                image: getLocImg('dan_thap'),
+                description: 'Bí cảnh hiến tế bằng bể máu khổng lồ của Huyết Cốt Môn, ẩn chứa tu vi vạn năm và sát khí tột bậc.',
+                resources: ['Huyết Tinh Quả', 'Sát Khí'],
+                energies: [{ type: 'ma_khi', concentration: 100, purity: 'CUC_PHAM' }, { type: 'tu_khi', concentration: 50, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 30, 'Hỏa': 25, 'Thổ': 10, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 20 },
+                eventProbs: { combat: 0.45, loot: 0.25, npc: 0.05, empty: 0.25 },
+                regionId: 'huyet_thien_dai_luc',
+                regionName: 'Huyết Thiên Đại Lục',
+                subRegionId: 'huyet_thien_sub',
+                subRegionName: 'Huyết Thiên Đại Lục'
+            },
+            {
+                id: 'lac_nhat_chi_mo',
+                name: 'Lạc Nhật Chi Mộ',
+                minRealm: 32,
+                danger: 'nguy_hiem',
+                image: getLocImg('thap_van_dai_son'),
+                description: 'Thượng cổ cấm địa Linh Giới ngập tràn diễm hỏa và thi hài chân linh viễn cổ chôn vùi.',
+                resources: ['Cổ Ma Mảnh', 'Thượng Cổ Linh Dược'],
+                energies: [{ type: 'linh_khi', concentration: 90, purity: 'TINH_THUAN' }, { type: 'yeu_khi', concentration: 50, purity: 'TINH_THUAN' }],
+                elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 5, 'Hỏa': 40, 'Thổ': 25, 'Phong': 10, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.45, loot: 0.3, npc: 0.05, empty: 0.2 },
+                regionId: 'linh_gioi_cam_dia',
+                regionName: 'Cấm Địa & Bí Cảnh Chung',
+                subRegionId: 'linh_gioi_cam_dia_sub',
+                subRegionName: 'Cấm Địa & Bí Cảnh Chung'
+            },
+            {
+                id: 'y_thien_thanh',
+                name: 'Ỷ Thiên Thành',
+                minRealm: 34,
+                danger: 'an_toan',
+                image: getLocImg('thien_tinh_thanh'),
+                description: 'Thành trì cổ kiên cố bậc nhất xây dựng giữa ranh giới nhân tộc và dị tộc Linh Giới.',
+                resources: ['Linh Thạch Hạ Phẩm', 'Dị Tộc Bí Pháp'],
+                energies: [{ type: 'linh_khi', concentration: 80, purity: 'TINH_THUAN' }],
+                elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.05, loot: 0.15, npc: 0.6, empty: 0.2 },
+                regionId: 'linh_gioi_cam_dia',
+                regionName: 'Cấm Địa & Bí Cảnh Chung',
+                subRegionId: 'linh_gioi_cam_dia_sub',
+                subRegionName: 'Cấm Địa & Bí Cảnh Chung'
             }
         ]
     },
     'tien_gioi': {
-        name: 'Thượng Cổ Tiên Giới',
+        name: 'Tiên Giới (Chân Tiên Giới)',
         minRealm: 42,
         description: 'Đỉnh cao của chư thiên vạn giới.',
         locations: [
@@ -2541,9 +2742,9 @@ export const WORLDS = {
                 energies: [{ type: 'tien_khi', concentration: 300, purity: 'DAO' }, { type: 'hong_mong_tu_khi', concentration: 5, purity: 'DAO' }, { type: 'hon_don_khi', concentration: 2, purity: 'DAO' }],
                 eventProbs: { combat: 0.6, loot: 0.2, npc: 0.1, empty: 0.1 },
                 regionId: 'tien_gioi_dinh_phong',
-                regionName: 'Tiên Giới Đỉnh Phong',
-                subRegionId: 'cuu_trong_thien_vuc',
-                subRegionName: 'Cửu Trọng Thiên Vực'
+                regionName: 'Tối Cao Thế Lực',
+                subRegionId: 'tien_cung_vo_thuong_sub',
+                subRegionName: 'Tiên Cung Vô Thượng'
             },
             {
                 id: 'thai_hu_tien_cung',
@@ -2575,10 +2776,10 @@ export const WORLDS = {
                 energies: [{ type: 'tien_khi', concentration: 200, purity: 'CUC_PHAM' }],
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 10, 'Phong': 10, 'Lôi': 10, 'Băng': 30, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.4, loot: 0.25, npc: 0.2, empty: 0.15 },
-                regionId: 'bac_han_tien_vuc_reg',
-                regionName: 'Bắc Hàn Tiên Vực',
-                subRegionId: 'bac_han_quan',
-                subRegionName: 'Bắc Hàn Tiên Phủ'
+                regionId: 'tien_vuc_lon',
+                regionName: 'Các Tiên Vực Lớn',
+                subRegionId: 'bac_han_tien_vuc_sub',
+                subRegionName: 'Bắc Hàn Tiên Vực'
             },
             {
                 id: 'cuu_nguyen_quan',
@@ -2671,10 +2872,10 @@ export const WORLDS = {
                 energies: [{ type: 'tien_khi', concentration: 300, purity: 'DAO' }],
                 elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.45, loot: 0.3, npc: 0.15, empty: 0.1 },
-                regionId: 'chan_tien_vuc',
-                regionName: 'Chân Tiên Vực',
-                subRegionId: 'chan_tien_vuc_sub',
-                subRegionName: 'Chân Tiên Khu'
+                regionId: 'tien_vuc_lon',
+                regionName: 'Các Tiên Vực Lớn',
+                subRegionId: 'thai_at_tien_vuc_sub',
+                subRegionName: 'Thái Ất Tiên Vực'
             },
             {
                 id: 'dai_la_canh_loc',
@@ -2703,10 +2904,10 @@ export const WORLDS = {
                 energies: [{ type: 'tien_khi', concentration: 500, purity: 'DAO' }, { type: 'thoi_gian_chi_khi', concentration: 150, purity: 'DAO' }],
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 10, 'Phong': 10, 'Lôi': 10, 'Băng': 10, 'Quang': 20, 'Ám': 0 },
                 eventProbs: { combat: 0.5, loot: 0.35, npc: 0.1, empty: 0.05 },
-                regionId: 'phap_tac_vuc',
-                regionName: 'Pháp Tắc Vực',
-                subRegionId: 'phap_tac_vuc_sub',
-                subRegionName: 'Pháp Tắc Cấm Khu'
+                regionId: 'tien_gioi_dinh_phong',
+                regionName: 'Tối Cao Thế Lực',
+                subRegionId: 'tien_cung_vo_thuong_sub',
+                subRegionName: 'Tiên Cung Vô Thượng'
             },
             {
                 id: 'khong_gian_phap_tac_khu',
@@ -2719,10 +2920,10 @@ export const WORLDS = {
                 energies: [{ type: 'tien_khi', concentration: 500, purity: 'DAO' }, { type: 'khong_gian_chi_khi', concentration: 150, purity: 'DAO' }],
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 10, 'Phong': 20, 'Lôi': 10, 'Băng': 10, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.5, loot: 0.35, npc: 0.1, empty: 0.05 },
-                regionId: 'phap_tac_vuc',
-                regionName: 'Pháp Tắc Vực',
-                subRegionId: 'phap_tac_vuc_sub',
-                subRegionName: 'Pháp Tắc Cấm Khu'
+                regionId: 'tien_gioi_dinh_phong',
+                regionName: 'Tối Cao Thế Lực',
+                subRegionId: 'tien_cung_vo_thuong_sub',
+                subRegionName: 'Tiên Cung Vô Thượng'
             },
             {
                 id: 'luan_hoi_phap_tac_khu',
@@ -2735,10 +2936,10 @@ export const WORLDS = {
                 energies: [{ type: 'tien_khi', concentration: 500, purity: 'DAO' }, { type: 'luan_hoi_chi_khi', concentration: 150, purity: 'DAO' }],
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 10, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 40 },
                 eventProbs: { combat: 0.5, loot: 0.35, npc: 0.1, empty: 0.05 },
-                regionId: 'phap_tac_vuc',
-                regionName: 'Pháp Tắc Vực',
-                subRegionId: 'phap_tac_vuc_sub',
-                subRegionName: 'Pháp Tắc Cấm Khu'
+                regionId: 'tien_gioi_dinh_phong',
+                regionName: 'Tối Cao Thế Lực',
+                subRegionId: 'tien_cung_vo_thuong_sub',
+                subRegionName: 'Tiên Cung Vô Thượng'
             },
             {
                 id: 'hon_don_hu_khong',
@@ -2767,14 +2968,14 @@ export const WORLDS = {
                 energies: [{ type: 'tien_khi', concentration: 280, purity: 'CUC_PHAM' }],
                 elementQi: { 'Kim': 15, 'Mộc': 30, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 25, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.45, loot: 0.25, npc: 0.1, empty: 0.2 },
-                regionId: 'tien_gioi_dinh_phong',
-                regionName: 'Tiên Giới Đỉnh Phong',
-                subRegionId: 'man_hoang_tien_vuc_sub',
-                subRegionName: 'Man Hoang Tiên Khu'
+                regionId: 'man_hoang_gioi_vuc_region',
+                regionName: 'Man Hoang Giới Vực',
+                subRegionId: 'man_hoang_gioi_vuc_sub',
+                subRegionName: 'Man Hoang Giới Vực'
             },
             {
                 id: 'u_minh_gioi',
-                name: 'U Minh Minh Giới',
+                name: 'U Minh Giới (Âm Ty)',
                 minRealm: 46,
                 danger: 'tu_dia',
                 image: getLocImg('cuu_trong_thien'),
@@ -2783,10 +2984,154 @@ export const WORLDS = {
                 energies: [{ type: 'tien_khi', concentration: 200, purity: 'TINH_THUAN' }, { type: 'tu_khi', concentration: 150, purity: 'CUC_PHAM' }],
                 elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 30, 'Hỏa': 0, 'Thổ': 15, 'Phong': 10, 'Lôi': 0, 'Băng': 10, 'Quang': 0, 'Ám': 40 },
                 eventProbs: { combat: 0.5, loot: 0.3, npc: 0.05, empty: 0.15 },
-                regionId: 'tien_gioi_dinh_phong',
-                regionName: 'Tiên Giới Đỉnh Phong',
+                regionId: 'cac_gioi_dien_song_song',
+                regionName: 'Các Giới Diện Song Song',
                 subRegionId: 'u_minh_gioi_sub',
-                subRegionName: 'U Minh Minh Hải'
+                subRegionName: 'U Minh Giới'
+            },
+            {
+                id: 'hoi_gioi',
+                name: 'Hôi Giới',
+                minRealm: 44,
+                danger: 'nguy_hiem',
+                image: getLocImg('cuu_trong_thien'),
+                description: 'Giới diện song song u ám tĩnh mịch, chứa đầy sát khí và hôi khí hoang sơ cấm kỵ.',
+                resources: ['Hôi Sát Tinh', 'Linh Dược Thượng Cổ'],
+                energies: [{ type: 'tien_khi', concentration: 150, purity: 'TINH_THUAN' }, { type: 'ma_khi', concentration: 80, purity: 'TAP' }],
+                elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 10, 'Hỏa': 5, 'Thổ': 15, 'Phong': 20, 'Lôi': 0, 'Băng': 10, 'Quang': 0, 'Ám': 45 },
+                eventProbs: { combat: 0.45, loot: 0.25, npc: 0.1, empty: 0.2 },
+                regionId: 'cac_gioi_dien_song_song',
+                regionName: 'Các Giới Diện Song Song',
+                subRegionId: 'hoi_gioi_sub',
+                subRegionName: 'Hôi Giới'
+            },
+            {
+                id: 'cuu_u_vuc',
+                name: 'Cửu U Vực',
+                minRealm: 46,
+                danger: 'cuc_ky_nguy_hiem',
+                image: getLocImg('cuu_trong_thien'),
+                description: 'Lãnh thổ hắc ám bậc nhất của Hôi Giới, trị vì bởi Cửu U vực chủ viễn cổ.',
+                resources: ['U Hồn Tinh', 'Cổ Thiết'],
+                energies: [{ type: 'tien_khi', concentration: 180, purity: 'CUC_PHAM' }, { type: 'ma_khi', concentration: 100, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 15, 'Mộc': 0, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 20, 'Phong': 15, 'Lôi': 0, 'Băng': 10, 'Quang': 0, 'Ám': 50 },
+                eventProbs: { combat: 0.5, loot: 0.3, npc: 0.05, empty: 0.15 },
+                regionId: 'cac_gioi_dien_song_song',
+                regionName: 'Các Giới Diện Song Song',
+                subRegionId: 'hoi_gioi_sub',
+                subRegionName: 'Hôi Giới'
+            },
+            {
+                id: 'chuc_long_dao',
+                name: 'Chúc Long Đạo',
+                minRealm: 40,
+                danger: 'an_toan',
+                image: getLocImg('tien_tinh_thanh'),
+                description: 'Đỉnh cấp tông môn trấn thủ Bắc Hàn Tiên Vực, nơi Hàn Lập tá túc tu luyện pháp tắc thời gian.',
+                resources: ['Thời Gian Pháp Tắc Mảnh', 'Đan Phương Tiên Cấp'],
+                energies: [{ type: 'tien_khi', concentration: 200, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.05, loot: 0.15, npc: 0.6, empty: 0.2 },
+                regionId: 'tien_vuc_lon',
+                regionName: 'Các Tiên Vực Lớn',
+                subRegionId: 'bac_han_tien_vuc_sub',
+                subRegionName: 'Bắc Hàn Tiên Vực'
+            },
+            {
+                id: 'bach_tao_son',
+                name: 'Bách Tạo Sơn',
+                minRealm: 44,
+                danger: 'an_toan',
+                image: getLocImg('van_bao_cac'),
+                description: 'Môn phái luyện khí số một Tiên Giới tọa lạc tại Kim Nguyên Tiên Vực, danh tiếng vô song.',
+                resources: ['Tiên Khí Thiết Thiết', 'Thần Thiết Mảnh'],
+                energies: [{ type: 'tien_khi', concentration: 220, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 50, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 20, 'Thổ': 10, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.05, loot: 0.2, npc: 0.55, empty: 0.2 },
+                regionId: 'tien_vuc_lon',
+                regionName: 'Các Tiên Vực Lớn',
+                subRegionId: 'kim_nguyen_tien_vuc_sub',
+                subRegionName: 'Kim Nguyên Tiên Vực'
+            },
+            {
+                id: 'hac_son_tien_vuc',
+                name: 'Hắc Sơn Tiên Vực',
+                minRealm: 42,
+                danger: 'cao_cap',
+                image: getLocImg('huyen_am_coc'),
+                description: 'Tiên vực u tối tĩnh mịch với many mỏ khoáng quý hiếm cấm kỵ cùng sinh vật tà linh.',
+                resources: ['Hắc Sơn Khoáng', 'Cổ Đan Dược'],
+                energies: [{ type: 'tien_khi', concentration: 160, purity: 'TINH_THUAN' }],
+                elementQi: { 'Kim': 15, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 25, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 30 },
+                eventProbs: { combat: 0.35, loot: 0.25, npc: 0.15, empty: 0.25 },
+                regionId: 'tien_vuc_lon',
+                regionName: 'Các Tiên Vực Lớn',
+                subRegionId: 'hac_son_tien_vuc_sub',
+                subRegionName: 'Hắc Sơn Tiên Vực'
+            },
+            {
+                id: 'bat_hoang_son',
+                name: 'Bát Hoang Sơn',
+                minRealm: 48,
+                danger: 'nguy_hiem',
+                image: getLocImg('cuu_trong_thien'),
+                description: 'Ngọn thần sơn chí tôn của Man Hoang Giới Vực, nơi tụ hội của vạn yêu chân linh viễn cổ.',
+                resources: ['Chân Linh Yêu Đan', 'Hỗn Độn Linh Thảo'],
+                energies: [{ type: 'tien_khi', concentration: 260, purity: 'CUC_PHAM' }, { type: 'yeu_khi', concentration: 150, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 10, 'Mộc': 30, 'Thủy': 10, 'Hỏa': 15, 'Thổ': 20, 'Phong': 15, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.45, loot: 0.25, npc: 0.1, empty: 0.2 },
+                regionId: 'man_hoang_gioi_vuc_region',
+                regionName: 'Man Hoang Giới Vực',
+                subRegionId: 'man_hoang_gioi_vuc_sub',
+                subRegionName: 'Man Hoang Giới Vực'
+            },
+            {
+                id: 'lanh_dia_chan_linh',
+                name: 'Lãnh địa Chân Linh',
+                minRealm: 50,
+                danger: 'nguy_hiem',
+                image: getLocImg('cuu_trong_thien'),
+                description: 'Lãnh địa tổ cư của các đại tộc Chân Linh như Chân Long, Thiên Phượng cực kỳ thần bí chí tôn.',
+                resources: ['Chân Linh Tiên Cốt', 'Long Phượng Huyết'],
+                energies: [{ type: 'tien_khi', concentration: 300, purity: 'DAO' }],
+                elementQi: { 'Kim': 20, 'Mộc': 20, 'Thủy': 20, 'Hỏa': 20, 'Thổ': 20, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
+                eventProbs: { combat: 0.5, loot: 0.3, npc: 0.05, empty: 0.15 },
+                regionId: 'man_hoang_gioi_vuc_region',
+                regionName: 'Man Hoang Giới Vực',
+                subRegionId: 'man_hoang_gioi_vuc_sub',
+                subRegionName: 'Man Hoang Giới Vực'
+            },
+            {
+                id: 'tu_di_son',
+                name: 'Tu Di Sơn',
+                minRealm: 48,
+                danger: 'an_toan',
+                image: getLocImg('tieu_cuc_cung'),
+                description: 'Thần sơn Phật môn chí cao ngự trị vạn pháp Tiên Giới, linh diệu từ bi bảo vệ quy tắc.',
+                resources: ['Phật Linh Xá Lợi', 'Tu Di Điển Tịch'],
+                energies: [{ type: 'tien_khi', concentration: 250, purity: 'CUC_PHAM' }, { type: 'hao_nhien_chinh_khi', concentration: 100, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 20, 'Mộc': 10, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 30, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 20, 'Ám': 0 },
+                eventProbs: { combat: 0.02, loot: 0.08, npc: 0.7, empty: 0.2 },
+                regionId: 'tien_gioi_dinh_phong',
+                regionName: 'Tối Cao Thế Lực',
+                subRegionId: 'phat_tong_tien_gioi_sub',
+                subRegionName: 'Tu Di Phật Tông'
+            },
+            {
+                id: 'bo_de_yen',
+                name: 'Bồ Đề Yến',
+                minRealm: 50,
+                danger: 'an_toan',
+                image: getLocImg('tien_gia_duoc_vien'),
+                description: 'Đại yến hội chí cao trăm vạn năm phẩm định quả Bồ Đề tại Tiên Cung, chư thiên tôn giả hội tụ.',
+                resources: ['Bồ Đề Quả Mảnh', 'Đạo Ý'],
+                energies: [{ type: 'tien_khi', concentration: 350, purity: 'DAO' }],
+                elementQi: { 'Kim': 10, 'Mộc': 50, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 10, 'Phong': 0, 'Lôi': 0, 'Băng': 0, 'Quang': 10, 'Ám': 0 },
+                eventProbs: { combat: 0.0, loot: 0.1, npc: 0.8, empty: 0.1 },
+                regionId: 'tien_gioi_dinh_phong',
+                regionName: 'Tối Cao Thế Lực',
+                subRegionId: 'dai_dien_tien_cung_sub',
+                subRegionName: 'Đại Điển Tiên Cung'
             }
         ]
     },
@@ -3115,8 +3460,8 @@ export const WORLDS = {
                 eventProbs: { combat: 0.35, loot: 0.2, npc: 0.15, empty: 0.3 },
                 regionId: 'thanh_ma_dai_luc',
                 regionName: 'Thánh Ma Đại Lục',
-                subRegionId: 'thanh_to_ma_cung_sect',
-                subRegionName: 'Thánh Tổ Ma Cung'
+                subRegionId: 'thanh_ma_dai_luc_sub',
+                subRegionName: 'Thánh Ma Đại Lục'
             },
             {
                 id: 'ma_long_coc',
@@ -3131,8 +3476,8 @@ export const WORLDS = {
                 eventProbs: { combat: 0.4, loot: 0.25, npc: 0.1, empty: 0.25 },
                 regionId: 'thanh_ma_dai_luc',
                 regionName: 'Thánh Ma Đại Lục',
-                subRegionId: 'thanh_to_ma_cung_sect',
-                subRegionName: 'Thánh Tổ Ma Cung'
+                subRegionId: 'thanh_ma_dai_luc_sub',
+                subRegionName: 'Thánh Ma Đại Lục'
             },
             {
                 id: 'hac_an_thanh_thanh',
@@ -3389,6 +3734,38 @@ export const WORLDS = {
                 regionName: 'Cổ Ma Di Tích',
                 subRegionId: 'co_ma_di_tich_sub',
                 subRegionName: 'Cổ Ma Bí Cảnh'
+            },
+            {
+                id: 'huyen_da_thanh',
+                name: 'Huyễn Dạ Thành',
+                minRealm: 36,
+                danger: 'an_toan',
+                image: getLocImg('thien_ma_thanh'),
+                description: 'Đại tiên thành nguy nga rực rỡ bậc nhất Ma Giới, trung tâm giao thương sầm uất chốn hắc ám.',
+                resources: ['Ma Thạch Cao Cấp', 'Hắc Long Đan'],
+                energies: [{ type: 'ma_khi', concentration: 90, purity: 'TINH_THUAN' }],
+                elementQi: { 'Kim': 20, 'Mộc': 5, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 15, 'Phong': 10, 'Lôi': 10, 'Băng': 0, 'Quang': 0, 'Ám': 40 },
+                eventProbs: { combat: 0.02, loot: 0.08, npc: 0.7, empty: 0.2 },
+                regionId: 'ma_gioi_quan_the',
+                regionName: 'Địa Danh Trọng Yếu',
+                subRegionId: 'ma_gioi_quan_the_sub',
+                subRegionName: 'Địa Danh Trọng Yếu'
+            },
+            {
+                id: 'kho_cuc_chi_dia',
+                name: 'Khổ Cực Chi Địa',
+                minRealm: 38,
+                danger: 'cuc_ky_nguy_hiem',
+                image: getLocImg('thap_van_dai_son'),
+                description: 'Vùng đất hoang vu cằn cỗi khắc nghiệt cùng cực chốn biên ải Ma Giới, giam cầm thượng cổ tà thần.',
+                resources: ['Ma Sát Tinh', 'Khổ Cực Chi Thủy'],
+                energies: [{ type: 'ma_khi', concentration: 110, purity: 'CUC_PHAM' }, { type: 'tu_khi', concentration: 80, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 15, 'Mộc': 0, 'Thủy': 5, 'Hỏa': 20, 'Thổ': 30, 'Phong': 20, 'Lôi': 10, 'Băng': 0, 'Quang': 0, 'Ám': 40 },
+                eventProbs: { combat: 0.5, loot: 0.25, npc: 0.05, empty: 0.2 },
+                regionId: 'ma_gioi_quan_the',
+                regionName: 'Địa Danh Trọng Yếu',
+                subRegionId: 'ma_gioi_quan_the_sub',
+                subRegionName: 'Địa Danh Trọng Yếu'
             }
         ]
     }
