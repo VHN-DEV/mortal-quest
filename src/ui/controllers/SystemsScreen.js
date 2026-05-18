@@ -67,6 +67,7 @@ export class SystemsScreen {
         this.elTechPoints = document.getElementById('tech-points');
         this.btnTechTabCultivation = document.getElementById('tech-tab-cultivation');
         this.btnTechTabSecret = document.getElementById('tech-tab-secret');
+        this.btnTechTabCustom = document.getElementById('tech-tab-custom');
         this.btnTechBack = document.getElementById('tech-back-btn');
         this.elGuildMissions = document.getElementById('guild-mission-list');
         this.elGuildRooms = document.getElementById('guild-room-list');
@@ -116,6 +117,7 @@ export class SystemsScreen {
         // Technique Tabs
         if (this.btnTechTabCultivation) this.btnTechTabCultivation.onclick = () => this.renderTechniques('cultivation');
         if (this.btnTechTabSecret) this.btnTechTabSecret.onclick = () => this.renderTechniques('secret');
+        if (this.btnTechTabCustom) this.btnTechTabCustom.onclick = () => this.renderTechniques('custom');
         if (this.btnTechBack) this.btnTechBack.onclick = () => {
             this.elTechListView.classList.remove('hidden');
             this.elTechDetailView.classList.add('hidden');
@@ -1631,13 +1633,17 @@ export class SystemsScreen {
         state.activeTechTab = tab;
 
         // Update tab styles
-        if (this.btnTechTabCultivation && this.btnTechTabSecret) {
+        if (this.btnTechTabCultivation && this.btnTechTabSecret && this.btnTechTabCustom) {
+            this.btnTechTabCultivation.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            this.btnTechTabSecret.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            this.btnTechTabCustom.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            
             if (tab === 'cultivation') {
                 this.btnTechTabCultivation.className = 'flex-grow py-2 bg-qi-blue/20 text-qi-blue border border-qi-blue/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
-                this.btnTechTabSecret.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
-            } else {
-                this.btnTechTabCultivation.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            } else if (tab === 'secret') {
                 this.btnTechTabSecret.className = 'flex-grow py-2 bg-qi-purple/20 text-qi-purple border border-qi-purple/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            } else if (tab === 'custom') {
+                this.btnTechTabCustom.className = 'flex-grow py-2 bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
             }
         }
 
@@ -1646,13 +1652,123 @@ export class SystemsScreen {
             this.elTechListView.classList.remove('hidden');
             if (this.elTechDetailView) this.elTechDetailView.classList.add('hidden');
 
+            if (tab === 'custom') {
+                this.elTechListView.innerHTML = `
+                    <div class="bg-black/40 p-5 rounded-3xl border border-white/5 space-y-6">
+                        <div>
+                            <h3 class="font-ancient text-cultivation-gold text-lg">Khai Tông Sáng Lập</h3>
+                            <p class="text-[9px] text-gray-500 mt-1 uppercase tracking-widest">Tự Sáng Tạo Công Pháp Chí Cao</p>
+                        </div>
+
+                        <!-- Cost Alert -->
+                        <div class="bg-white/[0.02] p-4 rounded-2xl border border-white/5 flex justify-between items-center text-xs">
+                            <div class="space-y-1 w-full">
+                                <div class="text-[9px] text-gray-500 uppercase tracking-wider mb-2">Tiêu hao sáng lập:</div>
+                                <div class="flex justify-between items-center">
+                                    <span class="font-mono ${state.player.tuVi >= 50000 ? 'text-qi-jade' : 'text-red-500'}">50,000 Tu Vi (${Math.floor(state.player.tuVi).toLocaleString()})</span>
+                                    <span class="font-mono ${state.player.techniquePoints >= 100 ? 'text-qi-jade' : 'text-red-500'}">100 Điểm Công Pháp (${state.player.techniquePoints})</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Name Input -->
+                        <div class="space-y-2">
+                            <label class="text-[9px] text-gray-500 uppercase tracking-widest">Tên Công Pháp</label>
+                            <input id="custom-tech-name" type="text" placeholder="Ví dụ: Cửu Thiên Đạo Quyết" 
+                                class="w-full bg-black/50 border border-white/10 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-cultivation-gold transition-colors">
+                        </div>
+
+                        <!-- Element Select -->
+                        <div class="space-y-2">
+                            <label class="text-[9px] text-gray-500 uppercase tracking-widest">Thuộc Tính Ngũ Hành</label>
+                            <select id="custom-tech-element" 
+                                class="w-full bg-black/50 border border-white/10 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-cultivation-gold transition-colors">
+                                <option value="Neutral">Hỗn Độn (Vô thuộc tính)</option>
+                                <option value="Kim">Kim (Canh Kim Kiếm Khí)</option>
+                                <option value="Mộc">Mộc (Trường Xuân Trường Sinh)</option>
+                                <option value="Thủy">Thủy (Huyền Âm Chân Thủy)</option>
+                                <option value="Hỏa">Hỏa (Tam Muội Chân Hỏa)</option>
+                                <option value="Thổ">Thổ (Hậu Thổ Minh Vương)</option>
+                                <option value="Phong">Phong (Cực Tốc Thần Phong)</option>
+                                <option value="Lôi">Lôi (Ngũ Lôi Oanh Đỉnh)</option>
+                                <option value="Băng">Băng (Cực Hàn Băng Sương)</option>
+                                <option value="Âm">Âm (U Minh Ma Đạo)</option>
+                                <option value="Dương">Dương (Thuần Dương Đạo Pháp)</option>
+                            </select>
+                        </div>
+
+                        <!-- Stat Boost -->
+                        <div class="space-y-2">
+                            <label class="text-[9px] text-gray-500 uppercase tracking-widest">Thiên Hướng Cộng Thuộc Tính</label>
+                            <select id="custom-tech-stat" 
+                                class="w-full bg-black/50 border border-white/10 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-cultivation-gold transition-colors">
+                                <option value="atk">Tăng Cường Công Kích (+180 Công Kích)</option>
+                                <option value="hp">Hồi Linh Khí Huyết (+600 Sinh Mệnh)</option>
+                                <option value="spd">Phi Thăng Tốc Độ (+15 Thân Pháp)</option>
+                            </select>
+                        </div>
+
+                        <!-- Special Effect -->
+                        <div class="space-y-2">
+                            <label class="text-[9px] text-gray-500 uppercase tracking-widest">Hiệu Ứng Bẩm Sinh</label>
+                            <select id="custom-tech-effect" 
+                                class="w-full bg-black/50 border border-white/10 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-cultivation-gold transition-colors">
+                                <option value="swordDmg">Kiếm Ý Thông Thiên (+15% Sát thương Kiếm)</option>
+                                <option value="tvps">Linh Lực Tinh Thuần (+3.0 Tu Vi/s)</option>
+                                <option value="lifeSteal">Huyết Ma Nghịch Thiên (+12% Hút Máu)</option>
+                            </select>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button id="custom-tech-submit"
+                            class="w-full py-4 bg-cultivation-gold text-black text-xs font-bold rounded-2xl hover:brightness-110 active:scale-[0.98] transition-all">
+                            ⚡ KHAI TÔNG LẬP PHÁP
+                        </button>
+                    </div>
+                `;
+
+                // Wire Submit
+                const btnSubmit = document.getElementById('custom-tech-submit');
+                if (btnSubmit) {
+                    btnSubmit.onclick = () => {
+                        const name = document.getElementById('custom-tech-name').value;
+                        const element = document.getElementById('custom-tech-element').value;
+                        const statVal = document.getElementById('custom-tech-stat').value;
+                        const effectVal = document.getElementById('custom-tech-effect').value;
+
+                        if (!name || name.trim() === '') {
+                            state.ui.toast("Tên công pháp không được để trống!", "error");
+                            return;
+                        }
+
+                        // Map choice into stats/effects payload
+                        const chosenStats = {};
+                        if (statVal === 'atk') chosenStats.atk = 180;
+                        else if (statVal === 'hp') chosenStats.hp = 600;
+                        else if (statVal === 'spd') chosenStats.spd = 15;
+
+                        const chosenEffects = {};
+                        if (effectVal === 'swordDmg') chosenEffects.swordDmg = 1.15;
+                        else if (effectVal === 'tvps') chosenEffects.tvps = 3.0;
+                        else if (effectVal === 'lifeSteal') chosenEffects.lifeSteal = 0.12;
+
+                        window.game.createCustomTechnique(name, element, chosenStats, chosenEffects);
+                    };
+                }
+                
+                if (this.elTechPoints) this.elTechPoints.textContent = state.player.techniquePoints || 0;
+                return;
+            }
+
             const list = tab === 'cultivation' ? state.player.learnedTechniques : state.player.learnedSecretTechniques;
 
             if (list.length === 0) {
                 this.elTechListView.innerHTML = `<div class="text-center py-20 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ ${tab === 'cultivation' ? 'công pháp' : 'bí pháp'} nào...</div>`;
             } else {
                 list.forEach(entry => {
-                    const data = tab === 'cultivation' ? getTechniqueById(entry.id) : getSecretTechniqueById(entry.id);
+                    const data = tab === 'cultivation' 
+                        ? (getTechniqueById(entry.id) || (state.player.customTechniques || []).find(t => t.id === entry.id))
+                        : getSecretTechniqueById(entry.id);
                     if (!data) return;
 
                     const mastery = MASTERY_LEVELS.find(m => m.id === (entry.masteryLevel || 1));
@@ -1687,7 +1803,9 @@ export class SystemsScreen {
         if (!this.elTechDetailContent) return;
 
         const entry = isSecret ? state.player.learnedSecretTechniques.find(s => s.id === id) : state.player.learnedTechniques.find(t => t.id === id);
-        const data = isSecret ? getSecretTechniqueById(id) : getTechniqueById(id);
+        const data = isSecret 
+            ? getSecretTechniqueById(id) 
+            : (getTechniqueById(id) || (state.player.customTechniques || []).find(t => t.id === id));
         if (!entry || !data) return;
 
         this.elTechListView.classList.add('hidden');

@@ -378,6 +378,10 @@ export class Game {
                     state.ui.toast(ev.msg, ev.eventType === 'insight' ? 'success' : 'warning');
                 } else if (ev.type === 'forced_breakthrough') {
                     state.ui.alert(ev.msg, ev.success ? 'Thiên Đạo Ban Ân' : 'Thiên Đạo Phạt Tội');
+                } else if (ev.type === 'backlash') {
+                    state.ui.alert(ev.msg, "Kinh Mạch Phản Phệ!");
+                } else if (ev.type === 'deviation_end') {
+                    state.ui.toast(ev.msg, "success");
                 }
             });
         }
@@ -1361,19 +1365,48 @@ export class Game {
         }
     }
 
-    setMainTechnique(id) {
+    setMainTechnique(id, force = false) {
         if (state.player) {
-            const success = state.player.setMainTechnique(id);
-            if (success) {
+            const result = state.player.setMainTechnique(id, force);
+            if (result && result.requireConfirmation) {
+                state.ui.showModal({
+                    title: "CẢNH BÁO PHẢN PHỆ",
+                    message: result.msg,
+                    confirmText: "QUYẾT TÂM ĐỔI",
+                    cancelText: "HỦY BỎ",
+                    icon: "ph-warning",
+                    showCancel: true,
+                    onConfirm: () => {
+                        this.setMainTechnique(id, true);
+                    }
+                });
+            } else if (result && result.success) {
                 state.ui.toast("Đã thiết lập làm Công Pháp Chủ Tu!", "success");
                 if (this.screens.systems) {
                     this.screens.systems.renderTechniqueDetail(id, false);
                 }
             } else {
-                state.ui.toast("Không thể thiết lập Công Pháp này!", "error");
+                state.ui.toast(result.msg || "Không thể thiết lập Công Pháp này!", "error");
             }
             this.refreshUI();
         }
+    }
+
+    createCustomTechnique(name, element, chosenStats, chosenEffects) {
+        if (state.systems.technique) {
+            const res = state.systems.technique.createCustomTechnique(name, element, chosenStats, chosenEffects);
+            if (res.success) {
+                state.ui.toast(res.msg, 'success');
+                if (this.screens.systems) {
+                    this.screens.systems.renderTechniques('cultivation');
+                }
+            } else {
+                state.ui.toast(res.msg, 'error');
+            }
+            this.refreshUI();
+            return res;
+        }
+        return { success: false, msg: "Lỗi hệ thống công pháp." };
     }
 
     // --- Combat Actions ---

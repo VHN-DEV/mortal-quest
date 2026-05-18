@@ -1,4 +1,4 @@
-import { getSecretTechniqueById } from '../configs/technique-data.js';
+import { getTechniqueById, getSecretTechniqueById } from '../configs/technique-data.js';
 import { getFlameById } from '../configs/alchemy-data.js';
 import { getItemById } from '../configs/item-data.js';
 
@@ -86,6 +86,37 @@ export class CombatEngine {
         }
 
         return mult;
+    }
+
+    getElementalMultiplier(attackerElement, defenderElement) {
+        if (!attackerElement || !defenderElement || attackerElement === 'Neutral' || defenderElement === 'Neutral') {
+            return 1.0;
+        }
+
+        const counterMap = {
+            'Thủy': 'Hỏa',
+            'Hỏa': 'Kim',
+            'Kim': 'Mộc',
+            'Mộc': 'Thổ',
+            'Thổ': 'Thủy',
+            'Phong': 'Thổ',
+            'Lôi': 'Âm',
+            'Băng': 'Thủy',
+            'Âm': 'Dương',
+            'Dương': 'Âm'
+        };
+
+        if (counterMap[attackerElement] === defenderElement) {
+            this.addLog(`<span class="text-emerald-400 font-bold">Ngũ Hành Tương Khắc!</span> Thuộc tính [${attackerElement}] khắc chế [${defenderElement}], tăng 30% sát thương!`);
+            return 1.30;
+        }
+
+        if (counterMap[defenderElement] === attackerElement) {
+            this.addLog(`<span class="text-orange-400">Ngũ Hành Bị Khắc!</span> Thuộc tính [${attackerElement}] bị [${defenderElement}] khắc chế, giảm 20% sát thương!`);
+            return 0.80;
+        }
+
+        return 1.0;
     }
 
     start() {
@@ -407,12 +438,23 @@ export class CombatEngine {
         if (this.environment === 'FIRE' && this.player.specializedPaths?.fire?.realmId > 0) envBonus = 1.2;
         if (this.environment === 'DEMON_QI' && this.player.race === 'DEMON') envBonus = 1.15;
 
+        // Get elements and apply countered multiplier
+        let playerElement = 'Neutral';
+        if (this.player.mainTechniqueId) {
+            const techData = getTechniqueById(this.player.mainTechniqueId) || (this.player.customTechniques || []).find(t => t.id === this.player.mainTechniqueId);
+            if (techData && techData.element) {
+                playerElement = techData.element;
+            }
+        }
+        const enemyElement = this.enemy.element || 'Neutral';
+        const elementalMult = this.getElementalMultiplier(playerElement, enemyElement);
+
         const pierce = this.player.advancedStats.pierce || 0;
         const effectiveEnemyDef = Math.floor(this.enemy.def * (1 - pierce));
         
         const eDr = this.enemy.advancedStats?.damageReduction || 0;
         const eAllRes = this.enemy.advancedStats?.allRes || 0;
-        let damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression * racialBonus * envBonus * (1 - eDr) * (1 - eAllRes)));
+        let damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression * racialBonus * envBonus * elementalMult * (1 - eDr) * (1 - eAllRes)));
 
         // Divine Sense (Perception) Accuracy/Crit
         const pSense = this.player.advancedStats?.perception || 10;
@@ -829,13 +871,54 @@ export class CombatEngine {
         const damageMult = masteryBonus?.damageMult || secretData.effects?.damageMult || 1.0;
         const critChance = masteryBonus?.critChance || secretData.effects?.critChance || 0;
 
-        let damage = Math.floor(this.player.atk * damageMult * suppression);
+        let effectiveEnemyDef = this.enemy.def;
+        if (secretId === 'thanh_nguyen_kiem_mang' || secretId === 'bp_thanh_nguyen_kiem_mang') {
+            effectiveEnemyDef = Math.floor(this.enemy.def * 0.1); // Ignore 90% armor!
+        }
+
+        let damage = Math.max(1, Math.floor((this.player.atk * damageMult - Math.floor(effectiveEnemyDef / 2)) * suppression));
         if (Math.random() < critChance) {
             damage = Math.floor(damage * 2.0);
-            this.addLog(`Bí pháp bạo kích!`);
+            this.addLog(`⚡ Bí pháp bạo kích!`);
         }
+
         this.enemy.hp -= damage;
         this.addLog(`Ngươi thi triển ${secretData.name} bộc phát ${damage} sát thương!`);
+
+        // Handle Specialized Active Effects
+        if (secretId.includes('ho_the_kiem_don')) {
+            const shieldAmt = Math.floor(this.player.maxHp * 0.25);
+            this.status.player.shield = (this.status.player.shield || 0) + shieldAmt;
+            this.playerDodging = true;
+            this.addLog(`✨ [Kiếm Hộ] Kiếm khí đan xen hóa thành lôi thuẫn hộ thể (+${shieldAmt} Giáp), đồng thời thân pháp phi thăng khó lòng bị đánh trúng!`);
+        }
+        else if (secretId.includes('minh_vuong_kim_than')) {
+            const shieldAmt = Math.floor(this.player.maxHp * 0.35);
+            this.status.player.shield = (this.status.player.shield || 0) + shieldAmt;
+            this.player.hp = Math.min(this.player.maxHp, this.player.hp + Math.floor(this.player.maxHp * 0.15));
+            this.addLog(`🛡️ [Kim Thân] Hóa thân Minh Vương bất hoại! Nhận ${shieldAmt} Giáp và lập tức phục hồi 15% khí huyết!`);
+        }
+        else if (secretId.includes('dai_dien_than_niem')) {
+            this.status.enemy.stun = Math.max(this.status.enemy.stun, 1);
+            this.addLog(`🌀 [Thần Niệm] Thần thức sắc bén ngưng tụ thành kim nhọn oanh tạc ý thức, khiến đối phương rơi vào trạng thái CHOÁNG 1 lượt!`);
+        }
+        else if (secretId.includes('huyet_sat_cuong_bao')) {
+            const healAmt = Math.floor(damage * 0.40);
+            this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmt);
+            this.status.enemy.burn = Math.max(this.status.enemy.burn, 3);
+            this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, this.player.atk * 0.15);
+            this.addLog(`🩸 [Huyết Sát] Hút ${healAmt} khí huyết và gây chảy máu liên tục 3 lượt lên đối phương!`);
+        }
+        else if (secretId.includes('bat_quai_ho_than')) {
+            const shieldAmt = this.player.maxHp * 2.0;
+            this.status.player.shield = (this.status.player.shield || 0) + shieldAmt;
+            this.addLog(`✨ [Bát Quái] Hộ thiên trận pháp giáng thế! Ngươi hoàn toàn miễn nhiễm sát thương (Hộ giáp ${shieldAmt}) trong lượt này!`);
+        }
+        else if (secretId.includes('van_doc_hoat_cot')) {
+            this.status.enemy.burn = Math.max(this.status.enemy.burn, 4);
+            this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, this.player.atk * 0.25);
+            this.addLog(`☠️ [Vạn Độc] Thần kịch độc bám chặt vào kinh mạch kẻ địch, gây ăn mòn xương cốt liên tục trong 4 lượt!`);
+        }
 
         this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
 
@@ -876,9 +959,20 @@ export class CombatEngine {
         const ePierce = this.enemy.advancedStats?.pierce || 0;
         const effectivePlayerDef = Math.floor(this.player.def * (1 - ePierce));
 
+        // Get elements and apply countered multiplier
+        let playerElement = 'Neutral';
+        if (this.player.mainTechniqueId) {
+            const techData = getTechniqueById(this.player.mainTechniqueId) || (this.player.customTechniques || []).find(t => t.id === this.player.mainTechniqueId);
+            if (techData && techData.element) {
+                playerElement = techData.element;
+            }
+        }
+        const enemyElement = this.enemy.element || 'Neutral';
+        const elementalMult = this.getElementalMultiplier(enemyElement, playerElement);
+
         const dr = this.player.advancedStats.damageReduction || 0;
         const allRes = this.player.advancedStats.allRes || 0;
-        let damage = Math.max(1, (this.enemy.atk - Math.floor(effectivePlayerDef / 2)) * suppression * (1 - dr) * (1 - allRes));
+        let damage = Math.max(1, (this.enemy.atk - Math.floor(effectivePlayerDef / 2)) * suppression * elementalMult * (1 - dr) * (1 - allRes));
 
         // Calculate Enemy Critical Strike
         let critRate = this.enemy.advancedStats?.critRate || 0.05;
@@ -929,9 +1023,22 @@ export class CombatEngine {
             }
         }
 
-        this.player.hp -= Math.floor(damage);
+        let finalPlayerDamage = Math.floor(damage);
+        if (this.status.player.shield && this.status.player.shield > 0) {
+            if (this.status.player.shield >= finalPlayerDamage) {
+                this.status.player.shield -= finalPlayerDamage;
+                this.addLog(`🛡️ Hộ giáp linh lực hấp thụ hoàn toàn ${finalPlayerDamage} sát thương! (Giáp còn: ${this.status.player.shield})`);
+                finalPlayerDamage = 0;
+            } else {
+                finalPlayerDamage -= this.status.player.shield;
+                this.addLog(`🛡️ Hộ giáp linh lực hấp thụ ${this.status.player.shield} sát thương! (Giáp vỡ)`);
+                this.status.player.shield = 0;
+            }
+        }
+
+        this.player.hp -= finalPlayerDamage;
         this.addLog(attackMsg);
-        this.onUpdate('damage', { target: 'player', value: Math.floor(damage), crit });
+        this.onUpdate('damage', { target: 'player', value: finalPlayerDamage, crit });
 
         if (this.player.hp <= 0) {
             this.player.hp = 0;

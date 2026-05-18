@@ -126,6 +126,8 @@ export class Player {
         this.equippedSecretTechniqueIds = [];
         this.secretTechniqueCooldowns = {};
         this.techniquePoints = 0;
+        this.customTechniques = []; // Stores player-created custom techniques
+        this.deviationTime = 0;     // Remaining duration of deviation (Tẩu Hỏa Nhập Ma)
         this.karma = 0; // -1000 to 1000
         
         // Alchemy System
@@ -491,6 +493,19 @@ export class Player {
 
         // Update Buffs
         this.updateBuffs(delta);
+
+        // Tick down deviation status
+        if (this.deviationTime > 0) {
+            const oldTime = this.deviationTime;
+            this.deviationTime = Math.max(0, this.deviationTime - delta);
+            if (this.deviationTime === 0 && oldTime > 0) {
+                this.pendingEvents.push({
+                    type: 'deviation_end',
+                    msg: "Kinh mạch dần ổn định, trạng thái Tẩu Hỏa Nhập Ma đã biến mất!"
+                });
+                this.calculateStats();
+            }
+        }
 
         // 7. Mortality Check
         this.checkMortality();
@@ -876,10 +891,10 @@ export class Player {
         
         this.advancedStats = {
             pierce: 0, soulPierce: 0, critRate: 0.05, critDmg: 1.5,
-            fireDmg: 1.0, waterDmg: 1.0, thunderDmg: 1.0,
+            fireDmg: 1.0, waterDmg: 1.0, thunderDmg: 1.0, poisonDmg: 1.0, swordDmg: 1.0,
             qiAbsorb: 1.0, lifeSteal: 0, alchemySuccess: 0,
             soulRepress: 0, perception: 5 + (soulLevel * 2), daoVun: 0, murderQi: 0,
-            allRes: 0, damageReduction: 0, techniqueMastery: 1.0
+            allRes: 0, damageReduction: 0, techniqueMastery: 1.0, dodge: 0, reflectDmg: 0
         };
 
         // 1. Calculate BASE STATS (from Realms)
@@ -1215,6 +1230,75 @@ export class Player {
         // Apply Environmental Qi Multiplier to Cultivation Speed
         this.tuViPerSecond *= this.getEnvironmentalQiMultiplier();
         
+        // --- 7 CULTIVATION PATHS (CLASSES) SYSTEM ---
+        this.cultivationPath = null;
+        
+        // Kiếm Tu (Sword Cultivator)
+        if (this.mainTechniqueId === 'thanh_nguyen_kiem_quyet') {
+            this.cultivationPath = 'Kiếm Tu';
+            this.advancedStats.critRate += 0.15;
+            this.advancedStats.pierce += 0.25;
+            this.advancedStats.swordDmg *= 1.25;
+        }
+        // Pháp Tu (Spell Cultivator)
+        else if (['liet_duong_cong', 'han_thuy_quyet', 'thanh_moc_tam_kinh', 'canh_kim_quyet', 'hau_tho_cong', 'phong_loi_quyet'].includes(this.mainTechniqueId)) {
+            this.cultivationPath = 'Pháp Tu';
+            this.advancedStats.fireDmg *= 1.2;
+            this.advancedStats.waterDmg *= 1.2;
+            this.advancedStats.thunderDmg *= 1.2;
+            this.advancedStats.poisonDmg *= 1.2;
+            this.maxMana = Math.floor(this.maxMana * 1.2);
+        }
+        // Ma Tu (Demon Cultivator)
+        else if (this.mainTechniqueId === 'phe_huyet_ma_cong') {
+            this.cultivationPath = 'Ma Tu';
+            this.atk = Math.floor(this.atk * 1.25);
+            this.advancedStats.lifeSteal += 0.25;
+            this.karma -= 2; // Suffer minor demonic karma decrease over time/recalculations
+        }
+        // Độc Tu (Poison Cultivator)
+        else if (this.mainTechniqueId === 'van_doc_hoa_cot_quyet') {
+            this.cultivationPath = 'Độc Tu';
+            this.advancedStats.poisonDmg *= 1.3;
+            this.advancedStats.pierce += 0.15;
+        }
+        // Trận Tu (Formation Cultivator)
+        else if (this.mainTechniqueId === 'hu_thien_tran_phap_quyen') {
+            this.cultivationPath = 'Trận Tu';
+            this.advancedStats.dodge += 0.15;
+            this.def = Math.floor(this.def * 1.2);
+        }
+        
+        // Thể Tu (Body Cultivator) - Secondary or primary based on main body technique
+        if (this.mainBodyTechniqueId && ['cuu_chuyen_kim_than', 'minh_vuong_quyet', 'man_nguu_kinh'].includes(this.mainBodyTechniqueId)) {
+            if (!this.cultivationPath) this.cultivationPath = 'Thể Tu';
+            this.maxHp = Math.floor(this.maxHp * 1.3);
+            this.advancedStats.damageReduction = (this.advancedStats.damageReduction || 0) + 0.20;
+        }
+        
+        // Hồn Tu (Soul Cultivator) - Secondary or primary based on main soul technique
+        if (this.mainSoulTechniqueId && ['dai_dien_quyet', 'u_minh_huy_ngan', 'duong_than_quyet'].includes(this.mainSoulTechniqueId)) {
+            if (!this.cultivationPath) this.cultivationPath = 'Hồn Tu';
+            this.advancedStats.perception = Math.floor(this.advancedStats.perception * 1.4);
+        }
+
+        // Custom creation technique path matching
+        if (!this.cultivationPath && this.mainTechniqueId) {
+            const customTech = (this.customTechniques || []).find(t => t.id === this.mainTechniqueId);
+            if (customTech) {
+                this.cultivationPath = 'Cơ Duyên'; // Self-created custom path!
+                this.atk = Math.floor(this.atk * 1.15);
+                this.def = Math.floor(this.def * 1.15);
+            }
+        }
+        
+        // --- DEVIATION (TẨU HỎA NHẬP MA) DEBUFF ---
+        if (this.deviationTime > 0) {
+            this.atk = Math.max(1, Math.floor(this.atk * 0.5));
+            this.def = Math.max(1, Math.floor(this.def * 0.5));
+            this.spd = Math.max(1, Math.floor(this.spd * 0.5));
+        }
+
         // 5. Finalize Secondary Stats
         const baseLifespan = raceInfo.baseLifespan || 100;
         this.maxAge = baseLifespan + (this.realmId * 50) + this.bonusStats.maxAge + (this.permanentLifespanBonus || 0);
@@ -1248,7 +1332,7 @@ export class Player {
 
     applyTechniqueToStats(path, techId) {
         if (!techId) return;
-        const techData = getTechniqueById(techId);
+        const techData = getTechniqueById(techId) || (this.customTechniques || []).find(t => t.id === techId);
         const playerTech = this.learnedTechniques.find(t => t.id === techId);
         if (!techData || !playerTech) return;
 
@@ -1307,10 +1391,17 @@ export class Player {
             if (techData.stats.spd) this.bonusStats.spd += techData.stats.spd * finalMult;
         }
 
-        // Apply lifespan bonus if defined in effects
+        // Apply lifespan bonus and other advanced effects if defined in effects
         if (techData.effects) {
             if (techData.effects.lifespanBonus) this.bonusStats.maxAge += techData.effects.lifespanBonus * finalMult;
             if (techData.effects.allRes) this.advancedStats.allRes += techData.effects.allRes * finalMult;
+            if (techData.effects.pierce) this.advancedStats.pierce += techData.effects.pierce * finalMult;
+            if (techData.effects.dodge) this.advancedStats.dodge += techData.effects.dodge * finalMult;
+            if (techData.effects.lifeSteal) this.advancedStats.lifeSteal += techData.effects.lifeSteal * finalMult;
+            if (techData.effects.counterDamage) this.advancedStats.reflectDmg += techData.effects.counterDamage * finalMult;
+            if (techData.effects.perception) this.advancedStats.perception += techData.effects.perception * finalMult;
+            if (techData.effects.swordDmg) this.advancedStats.swordDmg *= (1 + (techData.effects.swordDmg - 1) * finalMult);
+            if (techData.effects.poisonDmg) this.advancedStats.poisonDmg *= (1 + (techData.effects.poisonDmg - 1) * finalMult);
         }
     }
 
@@ -1714,18 +1805,38 @@ export class Player {
         return { leveledUp: false };
     }
 
-    setMainTechnique(techId) {
+    setMainTechnique(techId, force = false) {
         const techEntry = this.learnedTechniques.find(t => t.id === techId);
-        const techData = getTechniqueById(techId);
+        const techData = getTechniqueById(techId) || (this.customTechniques || []).find(t => t.id === techId);
         if (techEntry && techData) {
-            if (techData.type === 'Linh Lực') this.mainTechniqueId = techId;
+            if (techData.type === 'Linh Lực') {
+                if (this.mainTechniqueId && this.mainTechniqueId !== techId && !force) {
+                    return {
+                        success: false,
+                        requireConfirmation: true,
+                        msg: "Việc phế bỏ công pháp chủ tu cũ để chuyển sang công pháp mới sẽ gây phản phệ kinh mạch dữ dội! Ngươi sẽ tổn thất 50% HP hiện tại, 20% Tu Vi tích lũy và bị Tẩu Hỏa Nhập Ma giảm 50% chỉ số trong 60 giây. Ngươi có chắc muốn tiếp tục?"
+                    };
+                }
+                if (this.mainTechniqueId && this.mainTechniqueId !== techId && force) {
+                    // Suffer backlash
+                    this.hp = Math.max(1, Math.floor(this.hp * 0.5));
+                    const tvLoss = Math.floor(this.tuVi * 0.2);
+                    this.tuVi = Math.max(0, this.tuVi - tvLoss);
+                    this.deviationTime = 60; // 60 seconds
+                    this.pendingEvents.push({
+                        type: 'backlash',
+                        msg: `Phế bỏ công pháp chủ tu cũ để chuyển sang ${techData.name} gây phản phệ kinh mạch cực kỳ dữ dội! Ngươi tổn hao 50% HP, 20% Tu Vi (${tvLoss} điểm) và rơi vào trạng thái Tẩu Hỏa Nhập Ma trong 60 giây!`
+                    });
+                }
+                this.mainTechniqueId = techId;
+            }
             else if (techData.type === 'Luyện Thể') this.mainBodyTechniqueId = techId;
             else if (techData.type === 'Thần Thức') this.mainSoulTechniqueId = techId;
             
             if (typeof this.calculateStats === 'function') this.calculateStats();
-            return true;
+            return { success: true };
         }
-        return false;
+        return { success: false, msg: "Không tìm thấy công pháp." };
     }
 
     unlockProfession(id) {
@@ -1897,6 +2008,8 @@ export class Player {
             learnedSecretTechniques: [...this.learnedSecretTechniques],
             equippedSecretTechniqueIds: [...this.equippedSecretTechniqueIds],
             techniquePoints: this.techniquePoints,
+            customTechniques: [...(this.customTechniques || [])],
+            deviationTime: this.deviationTime || 0,
             
             // Professions & Systems
             unlockedProfessions: [...this.unlockedProfessions],
@@ -2051,6 +2164,8 @@ export class Player {
         this.learnedSecretTechniques = data.learnedSecretTechniques || [];
         this.equippedSecretTechniqueIds = data.equippedSecretTechniqueIds || [];
         this.techniquePoints = data.techniquePoints || 0;
+        this.customTechniques = data.customTechniques || [];
+        this.deviationTime = data.deviationTime || 0;
         
         // Professions
         this.unlockedProfessions = Array.isArray(data.unlockedProfessions) ? data.unlockedProfessions : [];

@@ -42,7 +42,7 @@ export class TechniqueSystem {
      */
     breakthroughStage(techId) {
         const playerTech = this.player.learnedTechniques.find(t => t.id === techId);
-        const techData = getTechniqueById(techId);
+        const techData = getTechniqueById(techId) || (this.player.customTechniques || []).find(t => t.id === techId);
         if (!playerTech || !techData) return { success: false, msg: "Không tìm thấy công pháp." };
 
         if (playerTech.stage >= techData.maxStage) {
@@ -228,7 +228,7 @@ export class TechniqueSystem {
      * @param {string} techId 
      */
     calculateBonus(techId) {
-        const techData = getTechniqueById(techId);
+        const techData = getTechniqueById(techId) || (this.player.customTechniques || []).find(t => t.id === techId);
         const playerTech = this.player.learnedTechniques.find(t => t.id === techId);
         if (!techData || !playerTech) return {};
 
@@ -293,7 +293,7 @@ export class TechniqueSystem {
             return { success: false, msg: "Không đủ Điểm Công Pháp." };
         }
 
-        const techData = isSecret ? getSecretTechniqueById(techId) : getTechniqueById(techId);
+        const techData = isSecret ? getSecretTechniqueById(techId) : (getTechniqueById(techId) || (this.player.customTechniques || []).find(t => t.id === techId));
         if (!techData) return { success: false, msg: "Không tìm thấy công pháp." };
 
         this.player.techniquePoints -= 1;
@@ -321,27 +321,100 @@ export class TechniqueSystem {
             }
         }
 
-        const baseGain = 10 + Math.floor(Math.random() * 10);
+        // Epiphany (Đốn ngộ) - 2% chance to trigger massive mastery boost
+        let epiphanyTriggered = false;
+        let baseGain = 10 + Math.floor(Math.random() * 10);
+        if (Math.random() < 0.02) {
+            epiphanyTriggered = true;
+            baseGain = 150 + Math.floor(Math.random() * 250);
+        }
+
         const gain = Math.max(1, Math.floor(baseGain * rootMult));
         
         if (isSecret) {
             const res = this.addSecretMastery(techId, gain);
-            let msg = res.leveledUp ? `Lĩnh ngộ bí pháp tăng tiến! Đạt đến: ${res.newLevel}` : `Lĩnh ngộ bí pháp tăng thêm ${gain} điểm.`;
-            if (rootMult > 1.2) {
+            let msgPrefix = epiphanyTriggered 
+                ? `⚡ [ĐỐN NGỘ] Vạn vật đồng nhất, đạo pháp tự nhiên! Ngươi rơi vào trạng thái đốn ngộ! ` 
+                : "";
+            let msg = res.leveledUp ? `${msgPrefix}Lĩnh ngộ bí pháp tăng tiến! Đạt đến: ${res.newLevel}` : `${msgPrefix}Lĩnh ngộ bí pháp tăng thêm ${gain} điểm.`;
+            if (rootMult > 1.2 && !epiphanyTriggered) {
                 msg += ` (Linh căn tương hợp cực kỳ tốt! +${Math.round((rootMult - 1) * 100)}% tốc độ)`;
-            } else if (rootMult < 0.5) {
+            } else if (rootMult < 0.5 && !epiphanyTriggered) {
                 msg += ` (Linh căn bất tương hợp! Bị giảm ${Math.round((1 - rootMult) * 100)}% tốc độ)`;
             }
             return { success: true, msg };
         } else {
             this.addMastery(techId, gain);
-            let msg = `Tu luyện thành công! Nhận ${gain} điểm thuần thục.`;
-            if (rootMult > 1.2) {
+            let msgPrefix = epiphanyTriggered 
+                ? `⚡ [ĐỐN NGỘ] Linh quang bỗng hiện, đại triệt đại ngộ! Ngươi rơi vào trạng thái đốn ngộ! ` 
+                : "";
+            let msg = `${msgPrefix}Tu luyện thành công! Nhận ${gain} điểm thuần thục.`;
+            if (rootMult > 1.2 && !epiphanyTriggered) {
                 msg += ` (Linh căn tương hợp cực kỳ tốt! +${Math.round((rootMult - 1) * 100)}% tốc độ)`;
-            } else if (rootMult < 0.5) {
+            } else if (rootMult < 0.5 && !epiphanyTriggered) {
                 msg += ` (Linh căn bất tương hợp! Bị giảm ${Math.round((1 - rootMult) * 100)}% tốc độ)`;
             }
             return { success: true, msg };
         }
+    }
+
+    /**
+     * Tự sáng tạo công pháp (Custom scripture creation)
+     * @param {string} name Tên công pháp
+     * @param {string} element Thuộc tính ngũ hành
+     * @param {object} chosenStats Chỉ số lựa chọn cộng thêm
+     * @param {object} chosenEffects Hiệu ứng lựa chọn
+     */
+    createCustomTechnique(name, element, chosenStats, chosenEffects) {
+        if (!name || name.trim() === '') {
+            return { success: false, msg: "Tên công pháp không được để trống." };
+        }
+        
+        const costTuVi = 50000;
+        const costTP = 100;
+        if (this.player.tuVi < costTuVi) {
+            return { success: false, msg: `Cần ${costTuVi} tu vi để tự sáng tạo công pháp.` };
+        }
+        if (this.player.techniquePoints < costTP) {
+            return { success: false, msg: `Cần ${costTP} Điểm Công Pháp để tự sáng tạo công pháp.` };
+        }
+
+        // Deduct cost
+        this.player.tuVi -= costTuVi;
+        this.player.techniquePoints -= costTP;
+
+        const customId = `custom_tech_${Date.now()}`;
+        const newCustomTech = {
+            id: customId,
+            name: name,
+            type: 'Linh Lực',
+            element: element || 'Neutral',
+            quality: 'Địa Giai',
+            description: `Công pháp chí cao do chính ${this.player.name} khai tông sáng lập, tích lũy thiên địa chi lực.`,
+            maxStage: 9,
+            stageLabel: 'Tầng',
+            stats: chosenStats || { atk: 150, hp: 500 },
+            effects: chosenEffects || { tvps: 3.0, swordDmg: 1.15 }
+        };
+
+        // Initialize customTechniques if not exists
+        if (!this.player.customTechniques) this.player.customTechniques = [];
+        this.player.customTechniques.push(newCustomTech);
+
+        // Learn the technique
+        this.player.learnedTechniques.push({
+            id: customId,
+            stage: 1,
+            mastery: 0,
+            masteryLevel: 1, // 1: Nhập Môn
+            quality: { id: 'DIA_GIAI', name: 'Địa Giai', multiplier: 2.5 }
+        });
+
+        this.player.calculateStats();
+        return {
+            success: true,
+            msg: `🎉 [ĐẠI THÀNH CÔNG] Chúc mừng đạo hữu! Đã tự sáng lập ra công pháp riêng biệt mang tên: "${name}"!`,
+            techId: customId
+        };
     }
 }

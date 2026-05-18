@@ -268,6 +268,108 @@ export const TECHNIQUES = {
         maxStage: 5,
         stats: { hp: 100 },
         effects: { tvps: 1.2, lifespanBonus: 100 }
+    },
+    'thanh_nguyen_kiem_quyet': {
+        id: 'thanh_nguyen_kiem_quyet',
+        name: 'Thanh Nguyên Kiếm Quyết',
+        type: 'Linh Lực',
+        element: 'Kim',
+        quality: 'Huyền Giai',
+        description: 'Kiếm quyết danh chấn Thiên Nam của Hàn Lập, mộc kim lưỡng hệ linh lực giao hòa, biến ảo khôn lường.',
+        maxStage: 9,
+        stageLabel: 'Tầng',
+        stats: { atk: 120, spd: 40 },
+        effects: { tvps: 2.2, swordDmg: 1.25, pierce: 0.15 },
+        compatibility: {
+            'Kim': 1.3,
+            'Mộc': 1.3,
+            'Thiên Linh Căn': 1.6
+        },
+        divineAbilities: {
+            3: 'thanh_nguyen_kiem_mang',
+            5: 'ho_the_kiem_don',
+            9: 'bach_nhap_kiem_tran'
+        }
+    },
+    'dai_dien_quyet': {
+        id: 'dai_dien_quyet',
+        name: 'Đại Diễn Quyết',
+        type: 'Thần Thức',
+        element: 'Neutral',
+        quality: 'Huyền Giai',
+        description: 'Thần chí tu luyện chí pháp của Cực Âm Tổ Sư, luyện thành thần thức vượt xa cảnh giới, khống chế khôi lỗi cực đoan.',
+        maxStage: 7,
+        stageLabel: 'Tầng',
+        stats: { mana: 400, spd: 25 },
+        effects: { soulPs: 2.5, perception: 35, cooldownReduction: 0.15 },
+        divineAbilities: {
+            3: 'dai_dien_than_niem',
+            7: 'khoi_loi_vo_song'
+        }
+    },
+    'minh_vuong_quyet': {
+        id: 'minh_vuong_quyet',
+        name: 'Minh Vương Quyết',
+        type: 'Luyện Thể',
+        element: 'Thổ',
+        quality: 'Huyền Giai',
+        description: 'Phật môn luyện thể cực đạo chi pháp, tu luyện đến cực hạn nhục thân bất hoại, phản chấn thương thế.',
+        maxStage: 9,
+        stageLabel: 'Trọng',
+        stats: { hp: 1200, def: 350 },
+        effects: { bodyPs: 2.4, physRes: 0.25, counterDamage: 0.2 },
+        divineAbilities: {
+            3: 'minh_vuong_kim_than',
+            7: 'phat_mon_phat_quan'
+        }
+    },
+    'phe_huyet_ma_cong': {
+        id: 'phe_huyet_ma_cong',
+        name: 'Phệ Huyết Ma Công',
+        type: 'Linh Lực',
+        element: 'Âm',
+        quality: 'Huyền Giai',
+        description: 'Ma đạo công pháp bá đạo cực tốc, thôn phệ tinh huyết địch nhân gia tăng tu vi, cực kỳ dễ tẩu hỏa.',
+        maxStage: 9,
+        stageLabel: 'Tầng',
+        stats: { atk: 300, spd: 50 },
+        effects: { tvps: 3.5, lifeSteal: 0.15, deviationChance: 2.0 },
+        divineAbilities: {
+            3: 'huyet_sat_cuong_bao',
+            9: 'van_ma_phuc_the'
+        }
+    },
+    'van_doc_hoa_cot_quyet': {
+        id: 'van_doc_hoa_cot_quyet',
+        name: 'Vạn Độc Hóa Cốt Quyết',
+        type: 'Linh Lực',
+        element: 'Mộc',
+        quality: 'Huyền Giai',
+        description: 'Độc môn tu luyện bí pháp, linh lực ẩn chứa kịch độc hóa cốt, ăn mòn phòng ngự đối phương.',
+        maxStage: 9,
+        stageLabel: 'Tầng',
+        stats: { hp: 600, atk: 120 },
+        effects: { tvps: 2.0, poisonDmg: 1.3, penet: 0.2 },
+        divineAbilities: {
+            3: 'van_doc_kiem_khi',
+            9: 'thien_doc_phat_quan'
+        }
+    },
+    'hu_thien_tran_phap_quyen': {
+        id: 'hu_thien_tran_phap_quyen',
+        name: 'Hư Thiên Trận Pháp Quyển',
+        type: 'Linh Lực',
+        element: 'Thổ',
+        quality: 'Huyền Giai',
+        description: 'Trận đạo tông sư truyền thừa thiên thư, dung hợp ngũ hành linh lực tạo lập trận pháp áp chế hoàn mỹ.',
+        maxStage: 9,
+        stageLabel: 'Tầng',
+        stats: { def: 200, mana: 300 },
+        effects: { tvps: 1.8, formationPower: 1.4, dodge: 0.15 },
+        divineAbilities: {
+            3: 'tran_phap_ap_che',
+            9: 'bat_quai_ho_than'
+        }
     }
 };
 
@@ -370,7 +472,151 @@ export const SECRET_TECHNIQUES = {
             4: { talismanExpBonus: 2.0, talismanSuccess: 1.3, talismanPower: 1.5, twinWrite: 0.2 }
         }
     },
+    'thanh_nguyen_kiem_mang': {
+        id: 'thanh_nguyen_kiem_mang',
+        name: 'Thanh Nguyên Kiếm Mang',
+        type: 'attack',
+        quality: 'Huyền Giai',
+        icon: '🗡️',
+        description: 'Vung kiếm kích hoạt kiếm mang sắc bén bỏ qua 30% phòng ngự.',
+        costs: { mana: 40 },
+        cooldown: 5,
+        effects: { damageMult: 3.2, ignoreDef: 0.3 }
+    },
+    'ho_the_kiem_don': {
+        id: 'ho_the_kiem_don',
+        name: 'Hộ Thể Kiếm Độn',
+        type: 'buff',
+        quality: 'Huyền Giai',
+        icon: '🛡️',
+        description: 'Kiếm khí quanh thân hình thành giáp độn tăng né tránh và phòng thủ.',
+        costs: { mana: 50 },
+        cooldown: 8,
+        effects: { shield: 300, dodge: 0.3 }
+    },
+    'bach_nhap_kiem_tran': {
+        id: 'bach_nhap_kiem_tran',
+        name: 'Bách Nhập Kiếm Trận',
+        type: 'attack',
+        quality: 'Địa Giai',
+        icon: '⚔️',
+        description: 'Triệu hồi hàng trăm phi kiếm tụ hợp thành kiếm trận bao vây chém giết kẻ địch.',
+        costs: { mana: 150 },
+        cooldown: 12,
+        effects: { damageMult: 7.5, critChance: 0.4 }
+    },
+    'dai_dien_than_niem': {
+        id: 'dai_dien_than_niem',
+        name: 'Đại Diễn Thần Niệm',
+        type: 'attack',
+        quality: 'Huyền Giai',
+        icon: '🧠',
+        description: 'Phóng ra thần niệm trùng kích vào thần hồn đối phương gây choáng.',
+        costs: { mana: 60 },
+        cooldown: 6,
+        effects: { damageMult: 2.0, stun: true }
+    },
+    'khoi_loi_vo_song': {
+        id: 'khoi_loi_vo_song',
+        name: 'Khôi Lỗi Vô Song',
+        type: 'buff',
+        quality: 'Địa Giai',
+        icon: '🤖',
+        description: 'Kích hoạt cơ quan hỏa khí khôi lỗi, tăng cường 100% sát thương khôi lỗi.',
+        costs: { mana: 100 },
+        cooldown: 10,
+        effects: { puppetDmgMult: 2.0 }
+    },
+    'minh_vuong_kim_than': {
+        id: 'minh_vuong_kim_than',
+        name: 'Minh Vương Kim Thân',
+        type: 'buff',
+        quality: 'Huyền Giai',
+        icon: '🥋',
+        description: 'Minh Vương hộ thể phát ra ánh sáng vàng, tăng phòng thủ 100% và phản hồi 30% sát thương.',
+        costs: { hp: 10 },
+        cooldown: 8,
+        effects: { defMult: 2.0, reflectDmg: 0.3 }
+    },
+    'phat_mon_phat_quan': {
+        id: 'phat_mon_phat_quan',
+        name: 'Phật Môn Phật Quang',
+        type: 'heal',
+        quality: 'Địa Giai',
+        icon: '📿',
+        description: 'Phật quang phổ chiếu hồi phục lượng lớn sinh mệnh và hộ thân cực mạnh.',
+        costs: { mana: 80 },
+        cooldown: 10,
+        effects: { healPct: 0.35, shield: 500 }
+    },
+    'huyet_sat_cuong_bao': {
+        id: 'huyet_sat_cuong_bao',
+        name: 'Huyết Sát Cuồng Bạo',
+        type: 'attack',
+        quality: 'Huyền Giai',
+        icon: '🩸',
+        description: 'Bạo kích ma huyết oanh kích đối phương hồi sinh mệnh bằng 40% sát thương gây ra.',
+        costs: { hp: 15 },
+        cooldown: 5,
+        effects: { damageMult: 4.5, lifeSteal: 0.4 }
+    },
+    'van_ma_phuc_the': {
+        id: 'van_ma_phuc_the',
+        name: 'Vạn Ma Phục Thể',
+        type: 'buff',
+        quality: 'Địa Giai',
+        icon: '😈',
+        description: 'Triệu hoán ma thần hư ảnh nhập thể, tăng bạo kích và sát thương cực độ.',
+        costs: { hp: 20, mana: 80 },
+        cooldown: 15,
+        effects: { atkMult: 1.8, critChance: 0.3 }
+    },
+    'van_doc_kiem_khi': {
+        id: 'van_doc_kiem_khi',
+        name: 'Vạn Độc Kiếm Khí',
+        type: 'attack',
+        quality: 'Huyền Giai',
+        icon: '☣️',
+        description: 'Kiếm khí ngập tràn kịch độc ăn mòn, gây sát thương liên tục mỗi lượt.',
+        costs: { mana: 40 },
+        cooldown: 6,
+        effects: { damageMult: 2.2, poisonDot: 0.08 }
+    },
+    'thien_doc_phat_quan': {
+        id: 'thien_doc_phat_quan',
+        name: 'Thiên Độc Phát Quan',
+        type: 'attack',
+        quality: 'Địa Giai',
+        icon: '🤢',
+        description: 'Bộc phát làn sương độc toàn bản đồ, làm giảm phòng ngự và làm chậm đối phương.',
+        costs: { mana: 100 },
+        cooldown: 10,
+        effects: { damageMult: 4.0, enemyDefReduce: 0.4 }
+    },
+    'tran_phap_ap_che': {
+        id: 'tran_phap_ap_che',
+        name: 'Trận Pháp Áp Chế',
+        type: 'attack',
+        quality: 'Huyền Giai',
+        icon: '🕸️',
+        description: 'Kích hoạt hư không pháp trận làm chậm tốc độ kẻ địch 50%.',
+        costs: { mana: 50 },
+        cooldown: 7,
+        effects: { damageMult: 1.5, enemySpdReduce: 0.5 }
+    },
+    'bat_quai_ho_than': {
+        id: 'bat_quai_ho_than',
+        name: 'Bát Quái Hộ Thân',
+        type: 'buff',
+        quality: 'Địa Giai',
+        icon: '☯️',
+        description: 'Vẽ ra bát quái linh trận miễn dịch tất cả sát thương trong lượt hiện tại.',
+        costs: { mana: 120 },
+        cooldown: 12,
+        effects: { invulnerable: true }
+    }
 };
 
 export const getTechniqueById = (id) => TECHNIQUES[id];
 export const getSecretTechniqueById = (id) => SECRET_TECHNIQUES[id];
+

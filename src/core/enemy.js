@@ -2,6 +2,22 @@ import { getRealmById, RACE_DATA } from '../configs/realm-data.js';
 import { ASSETS } from '../configs/asset-data.js';
 
 export class Enemy {
+    get element() {
+        if (this.race === 'DEMON') return 'Âm';
+        if (this.race === 'DRAGON') return 'Lôi';
+        if (this.race === 'GHOST' || this.race === 'ZOMBIE') return 'Âm';
+        if (this.name.includes('Lôi') || this.name.includes('Sét')) return 'Lôi';
+        if (this.name.includes('Hỏa') || this.name.includes('Lửa')) return 'Hỏa';
+        if (this.name.includes('Băng') || this.name.includes('Tuyết')) return 'Băng';
+        if (this.name.includes('Thủy') || this.name.includes('Nước')) return 'Thủy';
+        if (this.name.includes('Mộc') || this.name.includes('Lục')) return 'Mộc';
+        if (this.name.includes('Kim')) return 'Kim';
+        if (this.name.includes('Thổ') || this.name.includes('Đá') || this.name.includes('Thạch')) return 'Thổ';
+        
+        const elements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+        return elements[this.realmId % elements.length];
+    }
+
     constructor(realmId, typeData) {
         this.realmId = realmId;
         this.race = typeData.race || 'HUMAN';
