@@ -133,7 +133,13 @@ export class CharacterScreen {
             this.elCharStability.textContent = `${Math.floor(stability)}%`;
             this.elCharStability.className = stability > 90 ? 'text-green-400' : (stability < 40 ? 'text-red-500' : 'text-cultivation-gold');
         }
-        if (this.elCharComprehension) this.elCharComprehension.textContent = Math.floor(state.player.comprehension || 0);
+        if (this.elCharComprehension) {
+            const tier = state.player.getComprehensionTier();
+            this.elCharComprehension.innerHTML = `
+                <span class="font-mono font-bold">${Math.floor(state.player.comprehension || 0)}</span>
+                <span class="ml-1 text-[7px] px-1.5 py-0.5 rounded font-bold uppercase whitespace-nowrap" style="color: ${tier.color}; background-color: ${tier.color}15; border: 1px solid ${tier.color}30" title="${tier.description}">${tier.name}</span>
+            `;
+        }
 
         // Render Realms & Progress
         const tuviRealm = state.player.getCurrentRealm('tuvi');

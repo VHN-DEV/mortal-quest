@@ -401,6 +401,19 @@ export class Game {
 
     render() {
         if (typeof window.renderMainStats === 'function') window.renderMainStats();
+
+        // Throttled technique screen real-time progress update (runs once per 1000ms)
+        const now = Date.now();
+        if (state.ui && state.ui.currentScreenId === 'screen-technique' && this.screens.systems) {
+            if (now - (this.lastTechRenderTime || 0) >= 1000) {
+                const activeTab = state.activeTechTab || 'cultivation';
+                const isDetailHidden = this.screens.systems.elTechDetailView && this.screens.systems.elTechDetailView.classList.contains('hidden');
+                if (isDetailHidden && (activeTab === 'cultivation' || activeTab === 'secret')) {
+                    this.screens.systems.renderTechniques(activeTab);
+                }
+                this.lastTechRenderTime = now;
+            }
+        }
     }
 
     refreshUI() {

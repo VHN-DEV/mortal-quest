@@ -2382,11 +2382,160 @@ export class SystemsScreen {
                 return;
             }
 
-            const list = tab === 'cultivation' ? state.player.learnedTechniques : state.player.learnedSecretTechniques;
+            const isSecretTab = tab === 'secret';
+            const compList = (state.player.comprehendingTechniques || []).filter(c => c.isSecret === isSecretTab);
+            const list = isSecretTab ? state.player.learnedSecretTechniques : state.player.learnedTechniques;
+            
+            // 1. Render active/waiting comprehension progress bars
+            if (compList.length > 0) {
+                const header = document.createElement('div');
+                header.className = 'mb-4 border-b border-white/5 pb-2 mt-2';
+                header.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-[10px] font-ancient text-cultivation-gold uppercase tracking-[0.2em] flex items-center">
+                            <i class="ph ph-brain mr-1.5 animate-pulse text-xs"></i>
+                            Đang Tham Ngộ Bí Tịch
+                        </h3>
+                        <span class="text-[8px] bg-cultivation-gold/10 text-cultivation-gold px-1.5 py-0.5 rounded border border-cultivation-gold/20 font-bold uppercase">${compList.length} Đang Đọc</span>
+                    </div>
+                `;
+                this.elTechListView.appendChild(header);
 
+                compList.forEach((current, idx) => {
+                    const techData = current.isSecret 
+                        ? getSecretTechniqueById(current.id) 
+                        : (getTechniqueById(current.id) || (state.player.customTechniques || []).find(t => t.id === current.id));
+                    
+                    if (!techData) return;
+
+                    const info = state.player.getTechniqueComprehensionInfo(current.id);
+                    const timeRemaining = Math.max(0, current.durationLeft);
+                    
+                    let timeStr = '';
+                    if (timeRemaining > 3600) {
+                        const h = Math.floor(timeRemaining / 3600);
+                        const m = Math.floor((timeRemaining % 3600) / 60);
+                        timeStr = `${h}h ${m}m`;
+                    } else if (timeRemaining > 60) {
+                        const m = Math.floor(timeRemaining / 60);
+                        const s = Math.floor(timeRemaining % 60);
+                        timeStr = `${m}m ${s}s`;
+                    } else {
+                        timeStr = `${Math.ceil(timeRemaining)}s`;
+                    }
+
+                    const isActive = idx === 0;
+                    const barColorClass = isSecretTab ? 'bg-qi-purple' : 'bg-qi-blue';
+                    const activePill = isActive 
+                        ? `<span class="text-[7px] px-1.5 py-0.5 bg-green-500/10 text-green-400 border border-green-500/25 rounded font-bold uppercase tracking-wider animate-pulse whitespace-nowrap">Đang Đọc</span>`
+                        : `<span class="text-[7px] px-1.5 py-0.5 bg-gray-500/10 text-gray-400 border border-gray-500/25 rounded font-bold uppercase tracking-wider whitespace-nowrap">Đang Đợi</span>`;
+
+                    let breakdownHtml = '';
+                    if (isActive && current.speedBreakdown) {
+                        const sb = current.speedBreakdown;
+                        let physiqueRow = '';
+                        if (sb.physique && sb.physique !== 1.0) {
+                            physiqueRow = `
+                                <div class="flex justify-between items-center">
+                                    <span class="flex items-center"><span class="mr-1">🦴</span> Thể Chất:</span>
+                                    <span class="text-green-400 font-mono font-bold">${sb.physiqueText || 'Phù Hợp'} (${sb.physique.toFixed(2)}x)</span>
+                                </div>
+                            `;
+                        }
+                        let meridianRow = '';
+                        if (sb.meridian && sb.meridian !== 1.0) {
+                            meridianRow = `
+                                <div class="flex justify-between items-center">
+                                    <span class="flex items-center"><span class="mr-1">🕸️</span> Kinh Mạch:</span>
+                                    <span class="${sb.meridian < 1.0 ? 'text-red-400' : 'text-green-400'} font-mono font-bold">${sb.meridianText || 'Khơi Thông'} (${sb.meridian.toFixed(2)}x)</span>
+                                </div>
+                            `;
+                        }
+                        let bloodlineRow = '';
+                        if (sb.bloodline && sb.bloodline !== 1.0) {
+                            bloodlineRow = `
+                                <div class="flex justify-between items-center">
+                                    <span class="flex items-center"><span class="mr-1">🩸</span> Huyết Mạch:</span>
+                                    <span class="text-green-400 font-mono font-bold">${sb.bloodlineText || 'Huyết Trạch'} (${sb.bloodline.toFixed(2)}x)</span>
+                                </div>
+                            `;
+                        }
+
+                        breakdownHtml = `
+                            <div class="mt-2 p-2 bg-black/20 border border-white/5 rounded-xl space-y-1 text-[8px] text-gray-400">
+                                <div class="flex justify-between items-center">
+                                    <span class="flex items-center"><span class="mr-1">🧠</span> Ngộ Tính:</span>
+                                    <span class="text-white font-mono font-bold">${sb.savvy.toFixed(2)}x</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="flex items-center"><span class="mr-1">💧</span> Linh Căn:</span>
+                                    <span class="${sb.root < 1.0 ? 'text-red-400' : 'text-green-400'} font-mono font-bold">${sb.rootText || 'Bình thường'} (${sb.root.toFixed(2)}x)</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="flex items-center"><span class="mr-1">👁️</span> Thần Thức:</span>
+                                    <span class="text-white font-mono font-bold">${sb.soul.toFixed(2)}x</span>
+                                </div>
+                                ${physiqueRow}
+                                ${meridianRow}
+                                ${bloodlineRow}
+                            </div>
+                        `;
+                    }
+
+                    const el = document.createElement('div');
+                    el.className = `p-4 border ${isActive ? 'border-cultivation-gold/30 bg-cultivation-gold/[0.02]' : 'border-white/5 bg-white/[0.01] opacity-70'} rounded-2xl mb-4 space-y-3 relative overflow-hidden`;
+                    
+                    if (isActive) {
+                        el.classList.add('shadow-[0_0_15px_rgba(217,119,6,0.05)]');
+                    }
+
+                    el.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center space-x-3">
+                                <div class="text-2xl">${techData.icon || (isSecretTab ? '✨' : '📜')}</div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-white font-ancient flex items-center">
+                                        ${techData.name}
+                                        <span class="ml-2 text-[7px] px-1.5 py-0.2 bg-white/5 rounded text-gray-400 font-mono font-normal">${techData.quality || 'Hoàng Giai'}</span>
+                                    </h4>
+                                    <p class="text-[8px] text-gray-500 mt-0.5">Độ khó: <span class="font-bold text-cultivation-gold">${info.difficultyName}</span> | Còn lại: <span class="font-mono text-white">${timeStr}</span></p>
+                                </div>
+                            </div>
+                            ${activePill}
+                        </div>
+                        <div class="space-y-1">
+                            <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
+                                <div class="h-full ${barColorClass} transition-all duration-300" style="width: ${current.progress}%"></div>
+                            </div>
+                            <div class="flex justify-between items-center text-[8px] text-gray-500">
+                                <span>Tiến độ: ${current.progress}%</span>
+                                ${isActive ? `<span class="italic text-qi-blue font-bold">Tốc độ: ${(current.speedMult || 1.0).toFixed(2)}x</span>` : ''}
+                            </div>
+                            ${breakdownHtml}
+                        </div>
+                    `;
+                    this.elTechListView.appendChild(el);
+                });
+            }
+
+            // 2. Render learned techniques list below
             if (list.length === 0) {
-                this.elTechListView.innerHTML = `<div class="text-center py-20 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ ${tab === 'cultivation' ? 'công pháp' : 'bí pháp'} nào...</div>`;
+                if (compList.length === 0) {
+                    this.elTechListView.innerHTML = `<div class="text-center py-20 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ ${tab === 'cultivation' ? 'công pháp' : 'bí pháp'} nào...</div>`;
+                }
             } else {
+                if (compList.length > 0) {
+                    const separator = document.createElement('div');
+                    separator.className = 'mb-4 border-b border-white/5 pb-2 mt-6';
+                    separator.innerHTML = `
+                        <h3 class="text-[10px] font-ancient text-gray-500 uppercase tracking-[0.2em] flex items-center">
+                            <i class="ph ph-scroll mr-1.5 text-xs"></i>
+                            Công Pháp Đã Lĩnh Ngộ
+                        </h3>
+                    `;
+                    this.elTechListView.appendChild(separator);
+                }
+
                 list.forEach(entry => {
                     const data = tab === 'cultivation' 
                         ? (getTechniqueById(entry.id) || (state.player.customTechniques || []).find(t => t.id === entry.id))

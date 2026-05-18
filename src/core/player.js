@@ -125,6 +125,7 @@ export class Player {
         this.learnedTechniques = []; // Array of { id, stage, mastery, masteryLevel, quality }
         this.learnedSecretTechniques = []; // Array of { id, mastery, masteryLevel }
         this.equippedSecretTechniqueIds = [];
+        this.comprehendingTechniques = []; // Array of { id, progress, durationLeft, totalDuration, isSecret }
         this.secretTechniqueCooldowns = {};
         this.techniquePoints = 0;
         this.customTechniques = []; // Stores player-created custom techniques
@@ -507,6 +508,9 @@ export class Player {
                 this.calculateStats();
             }
         }
+
+        // Tick technique and secret manual comprehension
+        this.tickComprehendingTechniques(delta);
 
         // 7. Mortality Check
         this.checkMortality();
@@ -1746,6 +1750,366 @@ export class Player {
 
 
     // Technique Methods
+    getComprehensionTier() {
+        const comp = this.comprehension || 30;
+        if (comp < 30) {
+            return { id: 'dan_don', name: 'Đần Độn', description: 'Khó hiểu công pháp, tốc độ tu luyện cực chậm', color: '#6b7280' };
+        } else if (comp < 50) {
+            return { id: 'binh_thuong', name: 'Bình Thường', description: 'Phổ thông đại chúng, hiểu biết bình thường', color: '#10b981' };
+        } else if (comp < 70) {
+            return { id: 'thong_minh', name: 'Thông Minh', description: 'Học nhanh hiểu rộng, tư duy nhạy bén', color: '#3b82f6' };
+        } else if (comp < 90) {
+            return { id: 'thien_tai', name: 'Thiên Tài', description: 'Lĩnh ngộ cực mạnh, trăm năm khó gặp', color: '#8b5cf6' };
+        } else {
+            return { id: 'yeu_nghiet', name: 'Yêu Nghiệt', description: 'Ngộ tính nghịch thiên, tự sáng lập đạo pháp', color: '#f59e0b' };
+        }
+    }
+
+    getTechniqueComprehensionInfo(techId) {
+        const tech = getTechniqueById(techId) || getSecretTechniqueById(techId) || (this.customTechniques || []).find(t => t.id === techId);
+        if (!tech) return { baseTime: 60, difficultyName: 'Phổ Thông', element: 'Neutral', type: 'Linh Lực' };
+        
+        const quality = tech.quality || 'Phàm Giai';
+        let baseTime = 60;
+        let difficultyName = 'Phổ Thông';
+        
+        if (tech.comprehendDifficulty) {
+            baseTime = tech.comprehendDifficulty.baseTime;
+            difficultyName = tech.comprehendDifficulty.difficultyName;
+        } else {
+            if (quality.includes('Phàm')) { baseTime = 30; difficultyName = 'Rất Dễ'; }
+            else if (quality.includes('Hoàng')) { baseTime = 90; difficultyName = 'Dễ'; }
+            else if (quality.includes('Huyền')) { baseTime = 300; difficultyName = 'Bình Thường'; }
+            else if (quality.includes('Địa')) { baseTime = 900; difficultyName = 'Khó'; }
+            else if (quality.includes('Thiên')) { baseTime = 2700; difficultyName = 'Cực Khó'; }
+            else if (quality.includes('Linh')) { baseTime = 7200; difficultyName = 'Huyền Diệu'; }
+            else if (quality.includes('Thánh')) { baseTime = 14400; difficultyName = 'Thần Bí'; }
+            else if (quality.includes('Tiên')) { baseTime = 28800; difficultyName = 'Nghịch Thiên'; }
+            else if (quality.includes('Đế')) { baseTime = 57600; difficultyName = 'Đế Khó'; }
+            else if (quality.includes('Đạo')) { baseTime = 115200; difficultyName = 'Vô Thượng'; }
+        }
+        
+        return { 
+            baseTime, 
+            difficultyName,
+            element: tech.element || 'Neutral',
+            type: tech.type || 'Linh Lực'
+        };
+    }
+
+    startComprehendingTechnique(techId, isSecret = false) {
+        const learned = isSecret 
+            ? this.learnedSecretTechniques.some(t => t.id === techId)
+            : this.learnedTechniques.some(t => t.id === techId);
+        
+        if (learned) {
+            return { success: false, msg: `Ngươi đã lĩnh ngộ ${isSecret ? 'bí thuật' : 'công pháp'} này từ trước rồi!` };
+        }
+
+        const inProgress = this.comprehendingTechniques.some(t => t.id === techId);
+        if (inProgress) {
+            return { success: false, msg: `Ngươi đang trong quá trình lĩnh ngộ ${isSecret ? 'bí thuật' : 'công pháp'} này rồi!` };
+        }
+
+        const techData = isSecret 
+            ? getSecretTechniqueById(techId) 
+            : (getTechniqueById(techId) || (this.customTechniques || []).find(t => t.id === techId));
+            
+        if (!techData) {
+            return { success: false, msg: "Không tìm thấy thông tin bí tịch!" };
+        }
+
+        const info = this.getTechniqueComprehensionInfo(techId);
+        const totalDuration = info.baseTime;
+
+        this.comprehendingTechniques.push({
+            id: techId,
+            progress: 0,
+            durationLeft: totalDuration,
+            totalDuration: totalDuration,
+            isSecret: isSecret
+        });
+
+        return { 
+            success: true, 
+            msg: `Bắt đầu tham ngộ « ${techData.name} »! Độ khó: ${info.difficultyName}.` 
+        };
+    }
+
+    tickComprehendingTechniques(delta) {
+        if (!this.comprehendingTechniques || this.comprehendingTechniques.length === 0) return;
+
+        // Focus on the first technique in the queue
+        const current = this.comprehendingTechniques[0];
+        if (!current) return;
+
+        const techData = current.isSecret 
+            ? getSecretTechniqueById(current.id) 
+            : (getTechniqueById(current.id) || (this.customTechniques || []).find(t => t.id === current.id));
+            
+        if (!techData) {
+            this.comprehendingTechniques.shift();
+            return;
+        }
+
+        const tier = this.getComprehensionTier();
+        
+        // 1. NGỘ TÍNH (Savvy / Comprehension)
+        let savvySpeed = 1.0;
+        if (tier.id === 'dan_don') savvySpeed = 0.5;
+        else if (tier.id === 'binh_thuong') savvySpeed = 1.0;
+        else if (tier.id === 'thong_minh') savvySpeed = 1.8;
+        else if (tier.id === 'thien_tai') savvySpeed = 3.5;
+        else if (tier.id === 'yeu_nghiet') savvySpeed = 8.0;
+
+        // Savvy points scaling
+        savvySpeed *= (1 + (this.comprehension || 0) / 100);
+
+        // 2. LINH CĂN (Spiritual Root) Compatibility
+        let rootMult = 1.0;
+        let rootBonusText = '';
+        const techElement = techData.element || 'Neutral';
+        
+        if (this.spiritualRoot) {
+            if (techElement === 'Neutral') {
+                if (this.spiritualRoot.type.includes('Thiên Linh Căn') || this.spiritualRoot.type.includes('Ngũ Hành')) {
+                    rootMult = 1.2;
+                    rootBonusText = 'Ngũ Hành/Thiên Linh (+20%)';
+                }
+            } else {
+                let elPct = 0;
+                if (this.spiritualRoot.proportions) {
+                    elPct = (this.spiritualRoot.proportions[techElement] || 0) / 100;
+                } else if (this.spiritualRoot.elements) {
+                    if (this.spiritualRoot.elements.includes(techElement)) {
+                        elPct = 1.0 / this.spiritualRoot.elements.length;
+                    }
+                }
+                
+                if (elPct > 0) {
+                    if (this.spiritualRoot.type.includes('Thiên Linh Căn')) {
+                        rootMult = 2.5;
+                        rootBonusText = 'Thiên Linh Căn Thuần Khiết (+150%)';
+                    } else if (this.spiritualRoot.type.includes('Dị Linh Căn')) {
+                        rootMult = 2.2;
+                        rootBonusText = 'Dị Linh Căn Biến Dị (+120%)';
+                    } else if (this.spiritualRoot.type.includes('Ngũ Hành Linh Căn')) {
+                        rootMult = 1.5;
+                        rootBonusText = 'Ngũ Hành Hòa Hợp (+50%)';
+                    } else {
+                        rootMult = 1.0 + elPct * 1.5;
+                        rootBonusText = `Linh Căn Tương Hợp (+${Math.round(elPct * 150)}%)`;
+                    }
+                } else {
+                    rootMult = 0.3;
+                    rootBonusText = 'Linh Căn Xung Khắc (-70%)';
+                }
+            }
+        }
+
+        // 3. THẦN HỒN / THẦN THỨC (Soul / Divine Sense)
+        const soulMod = 1.0 + (this.divineSense || 0) / 200; // e.g. 100 points = +50% speed
+        
+        // 4. THỂ CHẤT (Physique) for Luyện Thể techniques
+        let physiqueMult = 1.0;
+        let physiqueBonusText = '';
+        const isBodyRefining = techData.type === 'Luyện Thể';
+        
+        if (isBodyRefining && this.physique && this.physique.id) {
+            const premiumPhysiques = ['hoang_co_thanh_the', 'kim_cuong_bao_the', 'van_menh_hu_vo', 'thon_thien_the', 'tu_la_huyet_the', 'chan_long_the', 'dau_chien_thanh_the', 'hon_don_the', 'tien_thien_thanh_the_dao_thai', 'vinh_hang_tien_the'];
+            const elementPhysiquesMap = {
+                'loi_linh_the': 'Lôi',
+                'hoa_linh_the': 'Hỏa',
+                'thuy_linh_the': 'Thủy',
+                'thai_duong_thanh_the': 'Hỏa'
+            };
+            
+            if (premiumPhysiques.includes(this.physique.id)) {
+                physiqueMult = 2.5;
+                physiqueBonusText = 'Thánh Thể/Cực Đạo Thể Luyện Thể (+150%)';
+            } else if (elementPhysiquesMap[this.physique.id] && elementPhysiquesMap[this.physique.id] === techElement) {
+                physiqueMult = 2.0;
+                physiqueBonusText = 'Thể Chất Thuộc Tính Tương Hợp (+100%)';
+            } else if (this.physique.id !== 'binh_thuong') {
+                physiqueMult = 1.3;
+                physiqueBonusText = 'Linh Thể Bổ Trợ (+30%)';
+            }
+        }
+
+        // 5. KINH MẠCH (Meridians)
+        let meridianMult = 1.0;
+        let meridianBonusText = '';
+        const hasKinhMachTanKhuyet = this.talents && this.talents.some(t => t.id === 'kinh_mach_tan_khuyet');
+        const hasTuyetMachPheThe = this.physique && this.physique.id === 'tuyet_mach_phe_the';
+        const hasTienThienDaoThe = this.physique && this.physique.id === 'tien_thien_dao_the';
+
+        if (hasKinhMachTanKhuyet || hasTuyetMachPheThe) {
+            meridianMult = 0.5;
+            meridianBonusText = 'Kinh Mạch Bế Tắc (-50%)';
+        } else if (hasTienThienDaoThe || (this.stability && this.stability > 80)) {
+            meridianMult = 1.2;
+            meridianBonusText = 'Kinh Mạch Hoàn Mỹ (+20%)';
+        }
+
+        // 6. HUYẾT MẠCH (Bloodline)
+        let bloodlineMult = 1.0;
+        let bloodlineBonusText = '';
+        const isMaDaoOrigin = this.origin && this.origin.id === 'ma_dao';
+        if ((this.race === 'DEMON' || isMaDaoOrigin) && techData.quality && (techData.quality.includes('Địa') || techData.quality.includes('Huyền')) && techData.description && (techData.description.includes('Ma') || techData.description.includes('Quỷ'))) {
+            bloodlineMult = 1.8;
+            bloodlineBonusText = 'Ma Tộc Huyết Mạch (+80%)';
+        } else if (this.race === 'YAO' && techData.description && (techData.description.includes('Thú') || techData.description.includes('Yêu'))) {
+            bloodlineMult = 1.8;
+            bloodlineBonusText = 'Yêu Tộc Huyết Mạch (+80%)';
+        }
+
+        // --- Calculate Combined Speed Multiplier ---
+        let speedMult = savvySpeed * rootMult * soulMod * physiqueMult * meridianMult * bloodlineMult;
+        
+        // Safety cap: minimum 0.05x speed
+        speedMult = Math.max(0.05, speedMult);
+
+        // Store breakdown for UI to render
+        current.speedMult = speedMult;
+        current.speedBreakdown = {
+            savvy: savvySpeed,
+            root: rootMult,
+            rootText: rootBonusText,
+            soul: soulMod,
+            physique: physiqueMult,
+            physiqueText: physiqueBonusText,
+            meridian: meridianMult,
+            meridianText: meridianBonusText,
+            bloodline: bloodlineMult,
+            bloodlineText: bloodlineBonusText
+        };
+
+        // --- BACKLASH CHECKS ---
+        const quality = techData.quality || 'Phàm Giai';
+        
+        // Minimum divine sense requirements
+        let minDivineSense = 0;
+        if (quality.includes('Huyền')) minDivineSense = 30;
+        else if (quality.includes('Địa')) minDivineSense = 60;
+        else if (quality.includes('Thiên')) minDivineSense = 100;
+        else if (quality.includes('Tiên') || quality.includes('Linh') || quality.includes('Thánh')) minDivineSense = 200;
+
+        // Minimum physique talent (Căn Cốt) requirements for Luyện Thể
+        let minCanCot = 0;
+        if (isBodyRefining) {
+            if (quality.includes('Huyền')) minCanCot = 30;
+            else if (quality.includes('Địa')) minCanCot = 60;
+            else if (quality.includes('Thiên')) minCanCot = 100;
+        }
+
+        // Trigger Backlash per second (adjusted for tick delta)
+        const backlashChance = 0.015 * delta; // 1.5% chance per second of tick
+        const isImmuneToBodyBacklash = this.physique && ['hoang_co_thanh_the', 'kim_cuong_bao_the', 'van_menh_hu_vo', 'chan_long_the', 'hon_don_the'].includes(this.physique.id);
+
+        if (Math.random() < backlashChance) {
+            // Check Soul Backlash
+            if ((techData.type === 'Thần Thức' || minDivineSense > 0) && (this.divineSense || 0) < minDivineSense) {
+                const stabilityLoss = 5 + Math.floor(Math.random() * 6);
+                const hpLoss = Math.floor((this.maxHp || 100) * (0.02 + Math.random() * 0.03));
+                const manaLoss = Math.floor((this.maxMana || 50) * (0.05 + Math.random() * 0.05));
+
+                this.stability = Math.max(0, (this.stability || 100) - stabilityLoss);
+                this.hp = Math.max(1, (this.hp || 100) - hpLoss);
+                this.mana = Math.max(0, (this.mana || 50) - manaLoss);
+
+                this.pendingEvents.push({
+                    type: 'seclusion_event',
+                    eventType: 'backlash',
+                    msg: `⚡ [THẦN HỒN PHẢN PHỆ] Công pháp « ${techData.name} » quá mức thâm sâu vượt trội Thần Thức hiện tại (${this.divineSense}/${minDivineSense})! Linh thức ngươi bị trùng kích dữ dội, chấn động linh hải! (Khấu trừ ${hpLoss} HP, ${manaLoss} Mana, -${stabilityLoss}% Độ Ổn Định)`
+                });
+            }
+
+            // Check Physical Backlash
+            if (isBodyRefining && minCanCot > 0 && (this.physiqueTalent || 0) < minCanCot && !isImmuneToBodyBacklash) {
+                const stabilityLoss = 3 + Math.floor(Math.random() * 4);
+                const hpLoss = Math.floor((this.maxHp || 100) * (0.04 + Math.random() * 0.04));
+
+                this.stability = Math.max(0, (this.stability || 100) - stabilityLoss);
+                this.hp = Math.max(1, (this.hp || 100) - hpLoss);
+
+                this.pendingEvents.push({
+                    type: 'seclusion_event',
+                    eventType: 'backlash',
+                    msg: `☠️ [NHỤC THÂN KIỆT SỨC] Thân thể không chịu nổi gánh nặng của công pháp Luyện Thể đòi hỏi Căn Cốt cao (${this.physiqueTalent}/${minCanCot})! Cơ nhục nứt rách, huyết khí hỗn loạn! (Khấu trừ ${hpLoss} HP, -${stabilityLoss}% Độ Ổn Định)`
+                });
+            }
+        }
+
+        // Automatic Stop Safeguard
+        if (this.hp < (this.maxHp || 100) * 0.1) {
+            this.pendingEvents.push({
+                type: 'forced_breakthrough',
+                success: false,
+                msg: `⚠️ CẢNH BÁO TỬ VONG! Trạng thái khí huyết quá yếu ớt do Phản Phệ (<10% HP)! Quá trình tham ngộ « ${techData.name} » đã tự động đình chỉ để tránh tẩu hỏa nhập ma vong mạng!`
+            });
+            return;
+        }
+
+        // Apply background progress
+        const secondsProgress = delta * speedMult;
+        current.durationLeft = Math.max(0, current.durationLeft - secondsProgress);
+        current.progress = Math.min(100, Math.floor(((current.totalDuration - current.durationLeft) / current.totalDuration) * 100));
+
+        // Epiphany checks (Tỷ lệ đốn ngộ) - Scaled by Ngộ Tính & Khí Vận
+        let epiphanyChancePerSec = 0.001;
+        if (tier.id === 'dan_don') epiphanyChancePerSec = 0.0003;
+        else if (tier.id === 'binh_thuong') epiphanyChancePerSec = 0.001;
+        else if (tier.id === 'thong_minh') epiphanyChancePerSec = 0.003;
+        else if (tier.id === 'thien_tai') epiphanyChancePerSec = 0.008;
+        else if (tier.id === 'yeu_nghiet') epiphanyChancePerSec = 0.02;
+
+        // Luck scaling on epiphany rate
+        epiphanyChancePerSec *= (1 + (this.luck || 50) / 100);
+
+        if (Math.random() < epiphanyChancePerSec * delta) {
+            // Luck also increases epiphany boost power
+            const luckBonus = (this.luck || 50) / 400; // e.g., 100 luck = +25% size boost
+            const boostPercent = 0.25 + luckBonus + Math.random() * 0.25;
+            const durationBoost = current.totalDuration * boostPercent;
+            current.durationLeft = Math.max(0, current.durationLeft - durationBoost);
+            current.progress = Math.min(100, Math.floor(((current.totalDuration - current.durationLeft) / current.totalDuration) * 100));
+
+            this.pendingEvents.push({
+                type: 'seclusion_event',
+                eventType: 'insight',
+                msg: `⚡ [ĐỐN NGỘ] Linh quang thiên địa bỗng hiển hiện! Đầu óc ngươi thông suốt cực đại, đại đạo chí giản, trực tiếp lĩnh ngộ vượt bậc « ${techData.name} »! (Tiến độ tăng vọt ${Math.round(boostPercent * 100)}%)`
+            });
+        }
+
+        // Check completion
+        if (current.durationLeft <= 0) {
+            this.comprehendingTechniques.shift(); // Remove from queue
+
+            if (current.isSecret) {
+                this.learnSecretTechnique(current.id);
+            } else {
+                this.learnTechnique(current.id);
+            }
+
+            // High Savvy + Luck Hidden Talent bonus reward (Unlock hidden skill)
+            let hiddenSkillMsg = '';
+            // Base chance 25% for Thiên Tài, 80% for Yêu Nghiệt, scaled by Luck
+            const hiddenRewardChance = (tier.id === 'yeu_nghiet' ? 0.8 : (tier.id === 'thien_tai' ? 0.25 : 0.05)) * (1 + (this.luck || 50) / 150);
+            
+            if (Math.random() < hiddenRewardChance) {
+                const tpReward = Math.floor(Math.random() * 16) + 15; // 15 to 30 Technique Points
+                this.techniquePoints = (this.techniquePoints || 0) + tpReward;
+                hiddenSkillMsg = `\n\n✨ [THIÊN PHÚ BÁ KIỆT] Nhờ vào Ngộ Tính cấp ${tier.name} và Đại Khí Vận bẩm sinh, ngươi đã ngộ ra huyền cơ ẩn giấu bên trong bí tịch, tự đục đẽo ra chân lý nhận thêm ${tpReward} Điểm Công Pháp!`;
+            }
+
+            this.pendingEvents.push({
+                type: 'forced_breakthrough',
+                success: true,
+                msg: `🎉 LĨNH NGỘ VIÊN MÃN!\n\nNgươi đã hoàn tất quá trình tham ngộ, chính thức nắm vững: « ${techData.name} »!${hiddenSkillMsg}`
+            });
+        }
+    }
+
     learnTechnique(techId, qualityId = 'BINH_THUONG') {
         const existing = this.learnedTechniques.find(t => t.id === techId);
         if (existing) return false;
@@ -2012,6 +2376,7 @@ export class Player {
             learnedTechniques: [...this.learnedTechniques],
             learnedSecretTechniques: [...this.learnedSecretTechniques],
             equippedSecretTechniqueIds: [...this.equippedSecretTechniqueIds],
+            comprehendingTechniques: [...this.comprehendingTechniques],
             techniquePoints: this.techniquePoints,
             customTechniques: [...(this.customTechniques || [])],
             deviationTime: this.deviationTime || 0,
@@ -2168,6 +2533,7 @@ export class Player {
         this.learnedTechniques = data.learnedTechniques || [];
         this.learnedSecretTechniques = data.learnedSecretTechniques || [];
         this.equippedSecretTechniqueIds = data.equippedSecretTechniqueIds || [];
+        this.comprehendingTechniques = data.comprehendingTechniques || [];
         this.techniquePoints = data.techniquePoints || 0;
         this.customTechniques = data.customTechniques || [];
         this.deviationTime = data.deviationTime || 0;
