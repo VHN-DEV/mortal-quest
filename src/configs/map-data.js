@@ -3038,54 +3038,6 @@ export const WORLDS = {
                 subRegionName: 'Man Hoang Giới Vực'
             },
             {
-                id: 'u_minh_gioi',
-                name: 'U Minh Giới (Âm Ty)',
-                minRealm: 46,
-                danger: 'tu_dia',
-                image: getLocImg('cuu_trong_thien'),
-                description: 'Giới diện thần bí bên cạnh Tiên Giới, nơi ngự trị của Luân Hồi chư thần và vong hồn đại năng.',
-                resources: ['U Minh Tiên Thạch', 'Vong Xuyên Chi Thủy'],
-                energies: [{ type: 'tien_khi', concentration: 200, purity: 'TINH_THUAN' }, { type: 'tu_khi', concentration: 150, purity: 'CUC_PHAM' }],
-                elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 30, 'Hỏa': 0, 'Thổ': 15, 'Phong': 10, 'Lôi': 0, 'Băng': 10, 'Quang': 0, 'Ám': 40 },
-                eventProbs: { combat: 0.5, loot: 0.3, npc: 0.05, empty: 0.15 },
-                regionId: 'cac_gioi_dien_song_song',
-                regionName: 'Các Giới Diện Song Song',
-                subRegionId: 'u_minh_gioi_sub',
-                subRegionName: 'U Minh Giới'
-            },
-            {
-                id: 'hoi_gioi',
-                name: 'Hôi Giới',
-                minRealm: 44,
-                danger: 'nguy_hiem',
-                image: getLocImg('cuu_trong_thien'),
-                description: 'Giới diện song song u ám tĩnh mịch, chứa đầy sát khí và hôi khí hoang sơ cấm kỵ.',
-                resources: ['Hôi Sát Tinh', 'Linh Dược Thượng Cổ'],
-                energies: [{ type: 'tien_khi', concentration: 150, purity: 'TINH_THUAN' }, { type: 'ma_khi', concentration: 80, purity: 'TAP' }],
-                elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 10, 'Hỏa': 5, 'Thổ': 15, 'Phong': 20, 'Lôi': 0, 'Băng': 10, 'Quang': 0, 'Ám': 45 },
-                eventProbs: { combat: 0.45, loot: 0.25, npc: 0.1, empty: 0.2 },
-                regionId: 'cac_gioi_dien_song_song',
-                regionName: 'Các Giới Diện Song Song',
-                subRegionId: 'hoi_gioi_sub',
-                subRegionName: 'Hôi Giới'
-            },
-            {
-                id: 'cuu_u_vuc',
-                name: 'Cửu U Vực',
-                minRealm: 46,
-                danger: 'cuc_ky_nguy_hiem',
-                image: getLocImg('cuu_trong_thien'),
-                description: 'Lãnh thổ hắc ám bậc nhất của Hôi Giới, trị vì bởi Cửu U vực chủ viễn cổ.',
-                resources: ['U Hồn Tinh', 'Cổ Thiết'],
-                energies: [{ type: 'tien_khi', concentration: 180, purity: 'CUC_PHAM' }, { type: 'ma_khi', concentration: 100, purity: 'CUC_PHAM' }],
-                elementQi: { 'Kim': 15, 'Mộc': 0, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 20, 'Phong': 15, 'Lôi': 0, 'Băng': 10, 'Quang': 0, 'Ám': 50 },
-                eventProbs: { combat: 0.5, loot: 0.3, npc: 0.05, empty: 0.15 },
-                regionId: 'cac_gioi_dien_song_song',
-                regionName: 'Các Giới Diện Song Song',
-                subRegionId: 'hoi_gioi_sub',
-                subRegionName: 'Hôi Giới'
-            },
-            {
                 id: 'chuc_long_dao',
                 name: 'Chúc Long Đạo',
                 minRealm: 40,
@@ -3846,6 +3798,61 @@ export const WORLDS = {
                 regionName: 'Địa Danh Trọng Yếu',
                 subRegionId: 'ma_gioi_quan_the_sub',
                 subRegionName: 'Địa Danh Trọng Yếu'
+            }
+        ]
+    },
+    'song_song': {
+        name: 'Giới Diện Song Song',
+        minRealm: 44,
+        description: 'Các giới diện phụ, song song hoặc âm ty nằm bên cạnh phàm nhân và tiên nhân giới.',
+        locations: [
+            {
+                id: 'u_minh_gioi',
+                name: 'U Minh Giới (Âm Ty)',
+                minRealm: 46,
+                danger: 'tu_dia',
+                image: getLocImg('cuu_trong_thien'),
+                description: 'Giới diện thần bí bên cạnh Tiên Giới, nơi ngự trị của Luân Hồi chư thần và vong hồn đại năng.',
+                resources: ['U Minh Tiên Thạch', 'Vong Xuyên Chi Thủy'],
+                energies: [{ type: 'tien_khi', concentration: 200, purity: 'TINH_THUAN' }, { type: 'tu_khi', concentration: 150, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 30, 'Hỏa': 0, 'Thổ': 15, 'Phong': 10, 'Lôi': 0, 'Băng': 10, 'Quang': 0, 'Ám': 40 },
+                eventProbs: { combat: 0.5, loot: 0.3, npc: 0.05, empty: 0.15 },
+                regionId: 'cac_gioi_dien_song_song',
+                regionName: 'Các Giới Diện Song Song',
+                subRegionId: 'u_minh_gioi_sub',
+                subRegionName: 'U Minh Giới'
+            },
+            {
+                id: 'hoi_gioi',
+                name: 'Hôi Giới',
+                minRealm: 44,
+                danger: 'nguy_hiem',
+                image: getLocImg('cuu_trong_thien'),
+                description: 'Giới diện song song u ám tĩnh mịch, chứa đầy sát khí và hôi khí hoang sơ cấm kỵ.',
+                resources: ['Hôi Sát Tinh', 'Linh Dược Thượng Cổ'],
+                energies: [{ type: 'tien_khi', concentration: 150, purity: 'TINH_THUAN' }, { type: 'ma_khi', concentration: 80, purity: 'TAP' }],
+                elementQi: { 'Kim': 10, 'Mộc': 5, 'Thủy': 10, 'Hỏa': 5, 'Thổ': 15, 'Phong': 20, 'Lôi': 0, 'Băng': 10, 'Quang': 0, 'Ám': 45 },
+                eventProbs: { combat: 0.45, loot: 0.25, npc: 0.1, empty: 0.2 },
+                regionId: 'cac_gioi_dien_song_song',
+                regionName: 'Các Giới Diện Song Song',
+                subRegionId: 'hoi_gioi_sub',
+                subRegionName: 'Hôi Giới'
+            },
+            {
+                id: 'cuu_u_vuc',
+                name: 'Cửu U Vực',
+                minRealm: 46,
+                danger: 'cuc_ky_nguy_hiem',
+                image: getLocImg('cuu_trong_thien'),
+                description: 'Lãnh thổ hắc ám bậc nhất của Hôi Giới, trị vì bởi Cửu U vực chủ viễn cổ.',
+                resources: ['U Hồn Tinh', 'Cổ Thiết'],
+                energies: [{ type: 'tien_khi', concentration: 180, purity: 'CUC_PHAM' }, { type: 'ma_khi', concentration: 100, purity: 'CUC_PHAM' }],
+                elementQi: { 'Kim': 15, 'Mộc': 0, 'Thủy': 10, 'Hỏa': 10, 'Thổ': 20, 'Phong': 15, 'Lôi': 0, 'Băng': 10, 'Quang': 0, 'Ám': 50 },
+                eventProbs: { combat: 0.5, loot: 0.3, npc: 0.05, empty: 0.15 },
+                regionId: 'cac_gioi_dien_song_song',
+                regionName: 'Các Giới Diện Song Song',
+                subRegionId: 'hoi_gioi_sub',
+                subRegionName: 'Hôi Giới'
             }
         ]
     }
