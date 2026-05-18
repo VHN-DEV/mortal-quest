@@ -581,6 +581,36 @@ const formatOriginResources = (origin) => {
     return lines.join(' · ');
 };
 
+const PORTRAIT_REGISTRY = [
+    // Males
+    { id: 'player_male', name: 'Nam Tiên Sĩ', gender: 'Nam', race: 'HUMAN' },
+    { id: 'han_lap', name: 'Hàn Lập', gender: 'Nam', race: 'HUMAN' },
+    { id: 'han_phi_vu', name: 'Hàn Phi Vũ', gender: 'Nam', race: 'HUMAN' },
+    { id: 'bach_tu_linh', name: 'Bạch Tử Linh', gender: 'Nam', race: 'HUMAN' },
+    { id: 'han_vien', name: 'Hàn Viên', gender: 'Nam', race: 'HUMAN' },
+    { id: 'kiem_vo_tam', name: 'Kiếm Vô Tâm', gender: 'Nam', race: 'HUMAN' },
+    { id: 'vo_danh', name: 'Vô Danh Tiên Khách', gender: 'Nam', race: 'HUMAN' },
+    { id: 'bang_nguyet', name: 'Băng Nguyệt', gender: 'Nam', race: 'HUMAN' },
+    { id: 'player_legacy', name: 'Cổ Đạo Hữu', gender: 'Nam', race: 'HUMAN' },
+    { id: 'sect_elder', name: 'Tông Môn Trưởng Lão', gender: 'Nam', race: 'HUMAN' },
+    { id: 'merchant', name: 'Vạn Bảo Thương Nhân', gender: 'Nam', race: 'HUMAN' },
+    { id: 'demon', name: 'Ma Tộc Chân Ma', gender: 'Nam', race: 'DEMON' },
+
+    // Females
+    { id: 'player_female', name: 'Nữ Tiên Sĩ', gender: 'Nữ', race: 'HUMAN' },
+    { id: 'du_nhuoc_nhan', name: 'Dư Nhược Nhan', gender: 'Nữ', race: 'HUMAN' },
+    { id: 'phuong_ca', name: 'Phương Ca', gender: 'Nữ', race: 'HUMAN' },
+    { id: 'phuong_vu', name: 'Phương Vũ', gender: 'Nữ', race: 'HUMAN' },
+    { id: 'tran_tu_huyen', name: 'Trần Tử Huyền', gender: 'Nữ', race: 'HUMAN' },
+    { id: 'xich_nguyet', name: 'Xích Nguyệt', gender: 'Nữ', race: 'HUMAN' },
+    { id: 'tu_linh', name: 'Tử Linh Tiên Tử', gender: 'Nữ', race: 'HUMAN' },
+    { id: 'thanh_lien', name: 'Thanh Liên Nữ Đế', gender: 'Nữ', race: 'HUMAN' },
+    { id: 'thanh_nhi', name: 'Thanh Nhi', gender: 'Nữ', race: 'HUMAN' },
+    { id: 'bach_minh_anh', name: 'Bạch Minh Anh', gender: 'Nữ', race: 'HUMAN' },
+    { id: 'lan_anh', name: 'Lan Anh', gender: 'Nữ', race: 'HUMAN' },
+    { id: 'minh_nguyet', name: 'Minh Nguyệt', gender: 'Nữ', race: 'HUMAN' }
+];
+
 window.renderCreationScreen = () => {
     const sys = state.systems.creation;
     if (!sys) return;
@@ -837,22 +867,86 @@ window.renderCreationScreen = () => {
         };
     }
 
-    // Avatar Gallery
-    const elAvatarList = document.getElementById('creation-avatar-list');
-    if (elAvatarList) {
-        const avatars = sys.playerGender === 'Nam' 
-            ? ['player_male', 'han_phi_vu', 'bach_tu_linh', 'han_lap', 'han_vien', 'kiem_vo_tam', 'vo_danh', 'player_legacy']
-            : ['player_female', 'du_nhuoc_nhan', 'phuong_ca', 'phuong_vu', 'tran_tu_huyen', 'xich_nguyet', 'tu_linh', 'bang_nguyet', 'thanh_lien', 'thanh_nhi', 'bach_minh_anh', 'lan_anh', 'minh_nguyet'];
-        elAvatarList.innerHTML = avatars.map(key => {
-            const active = sys.playerAvatar === key;
-            const url = ASSETS.portraits[key] || '';
-            return `
-                <div onclick="window.game.selectCreationAvatar('${key}')" 
-                    class="w-16 h-16 shrink-0 rounded-xl border-2 ${active ? 'border-qi-blue font-bold shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 'border-transparent'} overflow-hidden cursor-pointer hover:border-qi-blue/50 transition-all">
-                    <img src="${url}" class="w-full h-full object-cover">
+    // 1. Render main screen preview avatar card
+    const elAvatarPreview = document.getElementById('creation-avatar-preview');
+    const elAvatarName = document.getElementById('creation-avatar-name');
+    if (elAvatarPreview) {
+        elAvatarPreview.src = ASSETS.portraits[sys.playerAvatar] || '';
+    }
+    if (elAvatarName) {
+        const found = PORTRAIT_REGISTRY.find(p => p.id === sys.playerAvatar);
+        elAvatarName.textContent = found ? found.name : 'Vô Danh';
+    }
+
+    // 2. Filter buttons visual updates inside modal
+    const genderFilters = {
+        all: document.getElementById('avatar-filter-gender-all'),
+        Nam: document.getElementById('avatar-filter-gender-nam'),
+        Nữ: document.getElementById('avatar-filter-gender-nu')
+    };
+    Object.entries(genderFilters).forEach(([g, btn]) => {
+        if (!btn) return;
+        const active = sys.avatarFilterGender === g;
+        btn.className = `avatar-filter-btn flex-grow py-1.5 text-[8.5px] font-ancient uppercase rounded-lg transition-all text-center ${active ? 'bg-qi-blue/20 text-white border border-qi-blue/30 shadow-lg' : 'text-gray-500 hover:text-white'}`;
+    });
+
+    const raceFilters = {
+        all: document.getElementById('avatar-filter-race-all'),
+        HUMAN: document.getElementById('avatar-filter-race-human'),
+        YAO: document.getElementById('avatar-filter-race-yao'),
+        DEMON: document.getElementById('avatar-filter-race-demon')
+    };
+    Object.entries(raceFilters).forEach(([r, btn]) => {
+        if (!btn) return;
+        const active = sys.avatarFilterRace === r;
+        btn.className = `avatar-filter-btn flex-grow py-1.5 text-[8.5px] font-ancient uppercase rounded-lg transition-all text-center ${active ? 'bg-qi-purple/20 text-white border border-qi-purple/30 shadow-lg' : 'text-gray-500 hover:text-white'}`;
+    });
+
+    // 3. Render popup modal grid
+    const elAvatarPopupGrid = document.getElementById('creation-avatar-popup-grid');
+    if (elAvatarPopupGrid) {
+        const filteredAvatars = PORTRAIT_REGISTRY.filter(p => {
+            const matchGender = sys.avatarFilterGender === 'all' || p.gender === sys.avatarFilterGender;
+            let matchRace = true;
+            if (sys.avatarFilterRace !== 'all') {
+                if (sys.avatarFilterRace === 'YAO') {
+                    const yaoFriendly = ['kiem_vo_tam', 'bach_tu_linh', 'xich_nguyet', 'tu_linh', 'bang_nguyet', 'thanh_lien', 'player_legacy'];
+                    matchRace = yaoFriendly.includes(p.id);
+                } else {
+                    matchRace = p.race === sys.avatarFilterRace;
+                }
+            }
+            return matchGender && matchRace;
+        });
+
+        if (filteredAvatars.length === 0) {
+            elAvatarPopupGrid.innerHTML = `
+                <div class="col-span-full py-8 text-center text-[10px] text-gray-500 font-ancient uppercase tracking-wider">
+                    Không tìm thấy diện mạo phù hợp
                 </div>
             `;
-        }).join('');
+        } else {
+            elAvatarPopupGrid.innerHTML = filteredAvatars.map(p => {
+                const active = sys.playerAvatar === p.id;
+                const url = ASSETS.portraits[p.id] || '';
+                return `
+                    <div onclick="window.game.selectCreationAvatar('${p.id}')" 
+                        class="relative group rounded-2xl border-2 ${active ? 'border-cultivation-gold shadow-[0_0_12px_rgba(212,175,55,0.4)]' : 'border-white/5'} overflow-hidden cursor-pointer bg-black/40 hover:border-qi-blue/50 transition-all duration-300 flex flex-col items-center p-1.5">
+                        <div class="w-full aspect-square rounded-xl overflow-hidden relative mb-1.5">
+                            <img src="${url}" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-500">
+                            ${active ? `
+                                <div class="absolute top-1 right-1 w-4 h-4 bg-cultivation-gold rounded-full flex items-center justify-center shadow-lg">
+                                    <i class="ph ph-check text-[10px] text-qi-ink font-bold"></i>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <span class="text-[7.5px] text-gray-400 group-hover:text-white font-ancient font-semibold uppercase tracking-wider truncate w-full text-center transition-colors">
+                            ${p.name}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        }
     }
 
     // Race List

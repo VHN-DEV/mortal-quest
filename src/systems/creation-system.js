@@ -30,6 +30,8 @@ export class CreationSystem {
         this.startingRealmId = 0;
         this.selectedArtifact = 'none';
         this.selectedCheatSystem = null;
+        this.avatarFilterGender = 'all';
+        this.avatarFilterRace = 'all';
 
         // Secondary Talents (Values from 1-100)
         this.talents = {

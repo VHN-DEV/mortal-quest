@@ -2065,11 +2065,44 @@ export class Game {
         }
     }
 
+    openAvatarSelector() {
+        const modal = document.getElementById('creation-avatar-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            if (state.systems.creation) {
+                state.systems.creation.avatarFilterGender = state.systems.creation.playerGender;
+                state.systems.creation.avatarFilterRace = 'all';
+            }
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    closeAvatarSelector() {
+        const modal = document.getElementById('creation-avatar-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+
+    filterAvatarGender(gender) {
+        if (state.systems.creation) {
+            state.systems.creation.avatarFilterGender = gender;
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    filterAvatarRace(race) {
+        if (state.systems.creation) {
+            state.systems.creation.avatarFilterRace = race;
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
     selectCreationGender(gender) {
         if (state.systems.creation) {
             state.systems.creation.playerGender = gender;
-            // Also update avatar to match gender
             state.systems.creation.playerAvatar = gender === 'Nam' ? 'player_male' : 'player_female';
+            state.systems.creation.avatarFilterGender = gender;
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }

@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-xMN1_xlN.js"></script>
+  <script type="module" crossorigin src="./assets/index-BJ7m0yPo.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-C98mg1FK.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-BiXolcuQ.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -422,11 +422,26 @@
             </div>
 
             <!-- Avatar Selection -->
-            <div class="space-y-3">
-                <label class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest ml-1">Ảnh
-                    Đại Diện</label>
-                <div id="creation-avatar-list" class="flex space-x-3 overflow-x-auto pb-2 custom-scrollbar">
-                    <!-- Dynamic avatars here -->
+            <div class="bg-black/40 p-4 rounded-2xl border border-white/5 space-y-4">
+                <label class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-widest ml-1 block">Ảnh Đại Diện</label>
+                <div class="flex items-center space-x-4">
+                    <!-- Large Avatar Circle Preview -->
+                    <div onclick="window.game.openAvatarSelector()" id="creation-avatar-preview-container" class="relative w-20 h-20 rounded-2xl border-2 border-cultivation-gold/50 overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.15)] shrink-0 cursor-pointer hover:scale-105 active:scale-95 transition-all duration-300">
+                        <img id="creation-avatar-preview" src="./assets/player_male-DpNHBHn2.webp" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-center pb-1">
+                            <span class="text-[7px] text-cultivation-gold font-ancient tracking-widest uppercase">Thay Đổi</span>
+                        </div>
+                    </div>
+                    <!-- Right content: Button and Info -->
+                    <div class="flex-grow space-y-2">
+                        <h4 id="creation-avatar-name" class="text-xs font-ancient font-bold text-white uppercase tracking-widest">Tiên Sĩ</h4>
+                        <p class="text-[8px] text-gray-500">Mạo diện bên ngoài tương hợp với linh căn ngộ tính, đại diện cho hiển lộ chí tôn.</p>
+                        <button id="btn-open-avatar-selector" onclick="window.game.openAvatarSelector()" 
+                            class="px-4 py-2 bg-qi-blue/15 hover:bg-qi-blue/25 border border-qi-blue/30 text-qi-blue rounded-xl text-[9px] font-ancient uppercase tracking-widest transition-all duration-300 flex items-center space-x-1.5 active:scale-95">
+                            <i class="ph ph-user-focus text-sm animate-pulse"></i>
+                            <span>Chọn Diện Mạo</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -577,6 +592,58 @@
             class="creation-primary-btn flex-grow py-3 text-cultivation-gold rounded-2xl text-xs font-bold uppercase tracking-[0.25em] hover:bg-cultivation-gold/30 transition-all active:scale-95">
             Bắt Đầu Hành Trình
         </button>
+    </div>
+
+    <!-- Avatar Selector Glassmorphic Modal -->
+    <div id="creation-avatar-modal" class="fixed inset-0 bg-black/85 backdrop-blur-xl z-[1500] hidden flex items-center justify-center p-4 md:p-6 animate-fade-in pointer-events-auto">
+        <div class="w-full max-w-lg bg-qi-ink/95 border border-white/10 rounded-3xl p-6 md:p-8 shadow-[0_0_60px_rgba(0,0,0,0.8)] flex flex-col max-h-[85vh]">
+            <!-- Header -->
+            <div class="flex justify-between items-center border-b border-white/5 pb-4 mb-4 shrink-0">
+                <div class="space-y-0.5">
+                    <h3 class="text-lg md:text-xl font-ancient text-cultivation-gold uppercase tracking-widest">Chọn Diện Mạo Tiên Nhân</h3>
+                    <p class="text-[8px] md:text-[9px] text-gray-500 uppercase tracking-widest text-left">Vạn tướng quy tông, lựa chọn thần thái tương hợp</p>
+                </div>
+                <button onclick="window.game.closeAvatarSelector()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-all duration-300">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="space-y-3 mb-4 shrink-0">
+                <!-- Gender filter tabs -->
+                <div class="flex items-center space-x-2">
+                    <span class="text-[8px] text-gray-500 uppercase tracking-widest w-12 shrink-0 text-left">Giới Tính</span>
+                    <div class="flex-grow flex p-0.5 bg-black/40 rounded-xl border border-white/5">
+                        <button onclick="window.game.filterAvatarGender('all')" id="avatar-filter-gender-all" class="avatar-filter-btn flex-grow py-1.5 text-[8.5px] font-ancient uppercase rounded-lg transition-all text-center">Tất Cả</button>
+                        <button onclick="window.game.filterAvatarGender('Nam')" id="avatar-filter-gender-nam" class="avatar-filter-btn flex-grow py-1.5 text-[8.5px] font-ancient uppercase rounded-lg transition-all text-center">Nam</button>
+                        <button onclick="window.game.filterAvatarGender('Nữ')" id="avatar-filter-gender-nu" class="avatar-filter-btn flex-grow py-1.5 text-[8.5px] font-ancient uppercase rounded-lg transition-all text-center">Nữ</button>
+                    </div>
+                </div>
+
+                <!-- Race filter tabs -->
+                <div class="flex items-center space-x-2">
+                    <span class="text-[8px] text-gray-500 uppercase tracking-widest w-12 shrink-0 text-left">Chủng Tộc</span>
+                    <div class="flex-grow flex p-0.5 bg-black/40 rounded-xl border border-white/5">
+                        <button onclick="window.game.filterAvatarRace('all')" id="avatar-filter-race-all" class="avatar-filter-btn flex-grow py-1.5 text-[8.5px] font-ancient uppercase rounded-lg transition-all text-center">Tất Cả</button>
+                        <button onclick="window.game.filterAvatarRace('HUMAN')" id="avatar-filter-race-human" class="avatar-filter-btn flex-grow py-1.5 text-[8.5px] font-ancient uppercase rounded-lg transition-all text-center">Nhân Tộc</button>
+                        <button onclick="window.game.filterAvatarRace('YAO')" id="avatar-filter-race-yao" class="avatar-filter-btn flex-grow py-1.5 text-[8.5px] font-ancient uppercase rounded-lg transition-all text-center">Yêu Tộc</button>
+                        <button onclick="window.game.filterAvatarRace('DEMON')" id="avatar-filter-race-demon" class="avatar-filter-btn flex-grow py-1.5 text-[8.5px] font-ancient uppercase rounded-lg transition-all text-center">Ma Tộc</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Avatar Grid (Scrollable) -->
+            <div id="creation-avatar-popup-grid" class="flex-grow grid grid-cols-3 sm:grid-cols-4 gap-3 overflow-y-auto custom-scroll p-1 mb-6">
+                <!-- Dynamically rendered avatars with tooltips/names -->
+            </div>
+
+            <!-- Action footer -->
+            <div class="flex space-x-3 shrink-0 border-t border-white/5 pt-4">
+                <button onclick="window.game.closeAvatarSelector()" class="flex-grow py-3 bg-gradient-to-r from-cultivation-gold to-[#b8860b] text-qi-ink font-black rounded-2xl active:scale-95 transition-all shadow-lg shadow-cultivation-gold/15 uppercase tracking-[0.15em] text-xs">
+                    Xác Nhận Diện Mạo
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -926,6 +993,13 @@
                         </label>
                     </div>
                 </div>
+
+                <!-- Công Pháp Quick Access Button -->
+                <button onclick="document.getElementById('nav-technique').click()"
+                    class="w-full py-3.5 bg-qi-blue/10 hover:bg-qi-blue/20 border border-qi-blue/30 rounded-2xl text-qi-blue font-ancient font-black uppercase tracking-[0.2em] text-[10px] shadow-[0_0_15px_rgba(79,209,197,0.1)] transition-all flex items-center justify-center space-x-2 active:scale-95 duration-300 shrink-0">
+                    <i class="ph ph-scroll text-base text-qi-blue animate-pulse"></i>
+                    <span>CÔNG PHÁP & BÍ THUẬT</span>
+                </button>
 
                 <!-- Action Grid -->
                 <div class="grid grid-cols-2 gap-3">
@@ -2058,7 +2132,7 @@
         <span class="text-[8px] uppercase font-ancient tracking-widest">Lịch Luyện</span>
     </div>
     <div id="nav-technique"
-        class="nav-item flex flex-col items-center justify-center space-y-1 text-gray-500 cursor-pointer">
+        class="nav-item hidden flex-col items-center justify-center space-y-1 text-gray-500 cursor-pointer">
         <i class="ph ph-scroll text-xl"></i>
         <span class="text-[8px] uppercase font-ancient tracking-widest">Công Pháp</span>
     </div>
