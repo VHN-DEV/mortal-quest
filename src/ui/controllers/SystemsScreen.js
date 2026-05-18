@@ -1,7 +1,7 @@
 import { state } from '../../state.js';
 import { getLocationById } from '../../configs/map-data.js';
-
 import { getItemById } from '../../configs/item-data.js';
+import { EnemyGenerator } from '../../core/enemy.js';
 import { ALCHEMY_RECIPES, getAlchemyLevelInfo, getFlameById, getCauldronById } from '../../configs/alchemy-data.js';
 import { SMITHING_RECIPES, getSmithingLevelInfo } from '../../configs/smithing-data.js';
 import { SEEDS, SOILS, FIELD_GRADES, FIELD_ATTRIBUTES, HERB_AGE_MILESTONES } from '../../configs/garden-data.js';
@@ -29,6 +29,7 @@ export class SystemsScreen {
         this.shopQualityFilter = 'all';
         this.shopSearchQuery = '';
         this.shopSortMode = 'default';
+        this.activeSectZone = null;
         this.initElements();
         this.initEvents();
     }
@@ -895,91 +896,59 @@ export class SystemsScreen {
 
         if (state.player.sectId) {
             const sect = getSectById(state.player.sectId);
+            
+            // Check if player is viewing a detailed zone
+            if (this.activeSectZone) {
+                this.renderSectZoneDetail(sect, this.activeSectZone);
+                return;
+            }
+
+            // Otherwise, render the main beautiful Sect dashboard and its 10 Zones!
+            const zones = [
+                { id: 'son_mon', name: 'Sơn Môn', icon: '⛩️', desc: 'Hộ tông đại trận, đệ tử canh phòng.' },
+                { id: 'quang_truong', name: 'Quảng Trường Tông Môn', icon: '🏟️', desc: 'Nhiệm vụ, luận đạo học hỏi.' },
+                { id: 'dai_dien', name: 'Đại Điện / Chủ Điện', icon: '🏛️', desc: 'Bái kiến Tông chủ & hội nghị trưởng lão.' },
+                { id: 'tang_kinh_cac', name: 'Tàng Kinh Các', icon: '📚', desc: 'Nhiơi học công pháp & bí tịch truyền thừa.' },
+                { id: 'luyen_dan', name: 'Luyện Đan Phòng', icon: '🧪', desc: 'Địa hỏa linh thất đan dược (+10% thành công).' },
+                { id: 'luyen_khi', name: 'Luyện Khí Các', icon: '⚒️', desc: 'Đúc đập thần binh pháp bảo.' },
+                { id: 'linh_thu', name: 'Linh Thú Viên', icon: '🦁', desc: 'Thuần thú ngự trùng dưỡng kỳ lân.' },
+                { id: 'duoc_vien', name: 'Dược Viên / Linh Điền', icon: '🌿', desc: 'Tiên dược quý hiếm trồng trọt.' },
+                { id: 'dong_phu', name: 'Động Phủ Đệ Tử', icon: '🛕', desc: 'Động phủ tu luyện cá nhân tĩnh cơ.' },
+                { id: 'bi_canh', name: 'Bí Cảnh Thí Luyện', icon: '🗼', desc: 'Thí Luyện Tháp, vượt ải ảo ảnh.' }
+            ];
+
             elSects.innerHTML = `
-                <div class="bg-white/5 rounded-2xl border border-qi-blue/30 overflow-hidden">
+                <div class="bg-white/5 rounded-2xl border border-qi-blue/30 overflow-hidden mb-4 animate-fade-in">
                     <div class="h-32 relative">
                         <img src="${sect.portrait || ASSETS.backgrounds.sect}" class="w-full h-full object-cover opacity-40">
                         <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                         <div class="absolute bottom-4 left-4">
                             <h3 class="text-2xl font-ancient text-white">${sect.name}</h3>
-                            <p class="text-[10px] text-qi-blue uppercase">Đệ tử nội môn</p>
+                            <p class="text-[10px] text-qi-blue uppercase font-bold tracking-widest">${state.player.realmId >= 30 ? 'Trưởng lão tông môn' : state.player.realmId >= 15 ? 'Đệ tử Nội môn' : 'Đệ tử Ngoại môn'}</p>
                         </div>
                     </div>
-                    <div class="p-4 space-y-4">
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-500">Điểm cống hiến:</span>
-                            <span class="text-cultivation-gold font-mono font-bold">${state.player.sectContribution || 0}</span>
-                        </div>
-
-                        <!-- TÀNG KINH CÁC (SECT SCRIPTURES) -->
-                        <h4 class="text-xs font-ancient text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2">Tàng Kinh Các (Truyền Thừa Độc Quyền)</h4>
-                        <div class="grid grid-cols-1 gap-3">
-                            ${(() => {
-                                const passiveItemId = `item_${sect.id}_t`;
-                                const activeItemId = `item_${sect.id}_s`;
-                                const passiveItem = getItemById(passiveItemId);
-                                const activeItem = getItemById(activeItemId);
-                                
-                                const hasPassive = passiveItem && state.player.learnedTechniques.some(t => t.id === passiveItem.techniqueId);
-                                const hasActive = activeItem && state.player.learnedSecretTechniques.some(s => s.id === activeItem.secretId);
-                                
-                                let html = '';
-                                if (passiveItem) {
-                                    const passiveBtn = hasPassive 
-                                        ? `<span class="text-[8px] text-green-400 font-bold bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">ĐÃ LĨNH HỘI</span>`
-                                        : `<button class="px-2 py-1 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold text-[9px] font-bold rounded border border-cultivation-gold/30 flex items-center transition-all" onclick="window.game.buySectScroll('${passiveItemId}', 200)">
-                                            <i class="ph ph-shopping-cart-simple mr-0.5"></i>200 Cống Hiến
-                                           </button>`;
-                                    html += `
-                                        <div class="p-3 bg-black/30 rounded-xl border border-white/5 flex justify-between items-center space-x-2">
-                                            <div class="flex-1">
-                                                <div class="text-[11px] font-bold text-white flex items-center"><span class="text-sm mr-1">${passiveItem.icon}</span>${passiveItem.name}</div>
-                                                <div class="text-[9px] text-gray-400 mt-0.5">${passiveItem.description}</div>
-                                            </div>
-                                            <div class="flex-shrink-0 text-right">
-                                                ${passiveBtn}
-                                            </div>
-                                        </div>
-                                    `;
-                                }
-                                if (activeItem) {
-                                    const activeBtn = hasActive 
-                                        ? `<span class="text-[8px] text-green-400 font-bold bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">ĐÃ LĨNH HỘI</span>`
-                                        : `<button class="px-2 py-1 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue text-[9px] font-bold rounded border border-qi-blue/30 flex items-center transition-all" onclick="window.game.buySectScroll('${activeItemId}', 400)">
-                                            <i class="ph ph-shopping-cart-simple mr-0.5"></i>400 Cống Hiến
-                                           </button>`;
-                                    html += `
-                                        <div class="p-3 bg-black/30 rounded-xl border border-white/5 flex justify-between items-center space-x-2">
-                                            <div class="flex-1">
-                                                <div class="text-[11px] font-bold text-white flex items-center"><span class="text-sm mr-1">${activeItem.icon}</span>${activeItem.name}</div>
-                                                <div class="text-[9px] text-gray-400 mt-0.5">${activeItem.description}</div>
-                                            </div>
-                                            <div class="flex-shrink-0 text-right">
-                                                ${activeBtn}
-                                            </div>
-                                        </div>
-                                    `;
-                                }
-                                return html;
-                            })()}
-                        </div>
-
-                        <!-- SECT MISSIONS -->
-                        <h4 class="text-xs font-ancient text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2 pt-2">Ủy Thác Tông Môn</h4>
-                        <div class="space-y-3">
-                            ${sect.missions.map(m => `
-                                <div class="p-3 bg-black/40 rounded-lg border border-white/5 flex justify-between items-center">
-                                    <div>
-                                        <div class="text-sm font-bold">${m.name}</div>
-                                        <div class="text-[9px] text-gray-500">${m.desc}</div>
-                                    </div>
-                                    <button class="px-4 py-2 bg-qi-purple/10 text-qi-purple text-[10px] font-bold rounded-lg flex items-center justify-center border border-qi-purple/20" onclick="window.game.doMission('${m.id}')">
-                                        <i class="ph ph-scroll mr-1"></i>LÀM
-                                    </button>
-                                </div>
-                            `).join('')}
-                        </div>
+                    <div class="p-4 flex justify-between items-center text-xs">
+                        <span class="text-gray-400">Điểm cống hiến:</span>
+                        <span class="text-cultivation-gold font-mono font-bold text-sm">${state.player.sectContribution || 0}</span>
                     </div>
+                </div>
+
+                <h4 class="text-xs font-ancient text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2 mb-3">Khu Vực Tông Môn</h4>
+                
+                <div class="grid grid-cols-2 gap-3 pb-8">
+                    ${zones.map(z => `
+                        <div class="p-3 bg-black/40 hover:bg-black/60 rounded-xl border border-white/5 hover:border-qi-blue/30 cursor-pointer flex flex-col justify-between space-y-2 transition-all animate-fade-in" 
+                             onclick="window.game.screens.systems.activeSectZone = '${z.id}'; window.game.screens.systems.renderSects();">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-2xl">${z.icon}</span>
+                                <div class="font-bold text-xs text-white">${z.name}</div>
+                            </div>
+                            <div class="text-[9px] text-gray-400 leading-tight">${z.desc}</div>
+                            <div class="text-[8px] text-qi-blue font-bold flex items-center justify-end uppercase tracking-wider">
+                                Đi tới <i class="ph ph-caret-right ml-0.5"></i>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
             `;
         } else {
@@ -1028,7 +997,7 @@ export class SystemsScreen {
                 elSects.appendChild(el);
             } else {
                 elSects.innerHTML = `
-                    <div class="flex flex-col items-center justify-center text-center p-8 bg-black/40 border border-white/5 rounded-2xl space-y-4">
+                    <div class="flex flex-col items-center justify-center text-center p-8 bg-black/40 border border-white/5 rounded-2xl space-y-4 animate-fade-in">
                         <i class="ph ph-castle-turret text-4xl text-gray-600 animate-pulse"></i>
                         <div>
                             <h3 class="text-base font-ancient text-white mb-1">Vô Môn Vô Phái</h3>
@@ -1041,6 +1010,563 @@ export class SystemsScreen {
                 `;
             }
         }
+    }
+
+    renderSectZoneDetail(sect, zoneId) {
+        const elSects = document.getElementById('sects-view');
+        if (!elSects) return;
+
+        let contentHTML = '';
+        
+        switch (zoneId) {
+            case 'son_mon':
+                contentHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">🛡️ Hộ Sơn Đại Trận</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Trận pháp bảo vệ cổng sơn môn hùng vĩ. Khi linh khí đầy đủ, đệ tử ngoại môn cùng ngự quân bất khả xâm phạm.</p>
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="text-gray-500">Trạng thái đại trận:</span>
+                                <span class="text-green-400 font-bold">Hoạt động ổn định (100%)</span>
+                            </div>
+                            <button class="w-full py-2 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('son_mon', 'reinforce_array')">
+                                <i class="ph ph-lightning mr-1"></i> Truyền Linh Khí Gia Cố (-50 Linh Lực)
+                            </button>
+                        </div>
+
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">📜 Bia Đá Tông Quy</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Nơi ghi khắc 10 điều luật sắt của tông môn. Đọc và khắc ghi quy tắc củng cố tinh thần tu sĩ đạo tâm.</p>
+                            <button class="w-full py-2 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('son_mon', 'vow_rules')">
+                                <i class="ph ph-scroll mr-1"></i> Tuyên Thệ Tuân Thủ Tông Quy (Hàng Ngày)
+                            </button>
+                        </div>
+
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">💂 Sentinel Guard</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Thủ môn đệ tử chăm chỉ tuần tra an ninh tông môn.</p>
+                            <button class="w-full py-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('son_mon', 'talk_guard')">
+                                <i class="ph ph-chat-centered-text mr-1"></i> Trò Chuyện Tuần Tra
+                            </button>
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'quang_truong':
+                contentHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">💬 Luận Đạo Hội</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Tham gia đối chất linh thức luận đạo cùng đồng môn, so kè ngộ tính để đốn ngộ chân pháp.</p>
+                            <button class="w-full py-2 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('quang_truong', 'debate_dao')">
+                                <i class="ph ph-brain mr-1"></i> Bắt Đầu Luận Đạo (-20 Linh Lực)
+                            </button>
+                        </div>
+
+                        <!-- SECT MISSIONS (INLINE MISSION BOARD) -->
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">📋 Bảng Ủy Thác Nhiệm Vụ</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Nhận và thực hiện các nhiệm vụ tông môn phân phó để tích lũy uy tín và điểm cống hiến.</p>
+                            <div class="space-y-3 mt-2">
+                                ${sect.missions.map(m => `
+                                    <div class="p-3 bg-black/40 rounded-lg border border-white/5 flex justify-between items-center">
+                                        <div>
+                                            <div class="text-xs font-bold text-white">${m.name}</div>
+                                            <div class="text-[8px] text-gray-500">${m.desc}</div>
+                                        </div>
+                                        <button class="px-3 py-1 bg-qi-purple/10 text-qi-purple text-[9px] font-bold rounded border border-qi-purple/20 flex items-center" onclick="window.game.doMission('${m.id}')">
+                                            <i class="ph ph-scroll mr-0.5"></i>LÀM
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'dai_dien':
+                contentHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">🙇 Thỉnh An Tông Chủ</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Cúi chào kính cẩn Tông Chủ tối cao, dâng cống hiến lòng trung thành nhận ân huệ hàng ngày.</p>
+                            <button class="w-full py-2 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('dai_dien', 'bow_master')">
+                                <i class="ph ph-crown mr-1"></i> Cúi chào Tông Chủ (Hàng Ngày)
+                            </button>
+                        </div>
+
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">🧘 Giảng Kinh Phục Pháp</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Nghe giảng pháp giải đáp từ Truyền công Trưởng lão. Chi phí: 100 Linh Thạch dâng trà.</p>
+                            <button class="w-full py-2 bg-qi-purple/10 hover:bg-qi-purple/20 text-qi-purple border border-qi-purple/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('dai_dien', 'listen_lecture')">
+                                <i class="ph ph-student mr-1"></i> Bái nghe Thuyết Pháp (-100 Linh Thạch)
+                            </button>
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'tang_kinh_cac':
+                {
+                    const passiveItemId = `item_${sect.id}_t`;
+                    const activeItemId = `item_${sect.id}_s`;
+                    const passiveItem = getItemById(passiveItemId);
+                    const activeItem = getItemById(activeItemId);
+                    
+                    const hasPassive = passiveItem && state.player.learnedTechniques.some(t => t.id === passiveItem.techniqueId);
+                    const hasActive = activeItem && state.player.learnedSecretTechniques.some(s => s.id === activeItem.secretId);
+                    
+                    let scripturesHTML = '';
+                    if (passiveItem) {
+                        const passiveBtn = hasPassive 
+                            ? `<span class="text-[8px] text-green-400 font-bold bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">ĐÃ LĨNH HỘI</span>`
+                            : `<button class="px-2 py-1 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold text-[9px] font-bold rounded border border-cultivation-gold/30 flex items-center transition-all" onclick="window.game.buySectScroll('${passiveItemId}', 200)">
+                                <i class="ph ph-shopping-cart-simple mr-0.5"></i>200 Cống Hiến
+                               </button>`;
+                        scripturesHTML += `
+                            <div class="p-3 bg-black/30 rounded-xl border border-white/5 flex justify-between items-center space-x-2">
+                                <div class="flex-1">
+                                    <div class="text-[11px] font-bold text-white flex items-center"><span class="text-sm mr-1">${passiveItem.icon}</span>${passiveItem.name}</div>
+                                    <div class="text-[9px] text-gray-400 mt-0.5">${passiveItem.description}</div>
+                                </div>
+                                <div class="flex-shrink-0 text-right">
+                                    ${passiveBtn}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    if (activeItem) {
+                        const activeBtn = hasActive 
+                            ? `<span class="text-[8px] text-green-400 font-bold bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">ĐÃ LĨNH HỘI</span>`
+                            : `<button class="px-2 py-1 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue text-[9px] font-bold rounded border border-qi-blue/30 flex items-center transition-all" onclick="window.game.buySectScroll('${activeItemId}', 400)">
+                                <i class="ph ph-shopping-cart-simple mr-0.5"></i>400 Cống Hiến
+                               </button>`;
+                        scripturesHTML += `
+                            <div class="p-3 bg-black/30 rounded-xl border border-white/5 flex justify-between items-center space-x-2">
+                                <div class="flex-1">
+                                    <div class="text-[11px] font-bold text-white flex items-center"><span class="text-sm mr-1">${activeItem.icon}</span>${activeItem.name}</div>
+                                    <div class="text-[9px] text-gray-400 mt-0.5">${activeItem.description}</div>
+                                </div>
+                                <div class="flex-shrink-0 text-right">
+                                    ${activeBtn}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    contentHTML = `
+                        <div class="space-y-4">
+                            <p class="text-[10px] text-gray-400">Các công pháp và bí thuật thượng thừa của tông môn hoàn toàn bảo mật tuyệt đối, đệ tử tích cực lập công đức đổi cống hiến linh tinh trao học.</p>
+                            <div class="grid grid-cols-1 gap-3">
+                                ${scripturesHTML}
+                            </div>
+                        </div>
+                    `;
+                }
+                break;
+
+            case 'luyen_dan':
+                contentHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">🔥 Địa Hỏa Thất (Đan Điện)</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Mượn đan lò hỏa mạch cực thịnh của tông môn, nâng cao tỷ lệ thành công chế luyện dược phẩm lên +10%!</p>
+                            <button class="w-full py-2 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="state.ui.toggleOverlay(document.getElementById('sects-overlay'), false); window.game.screens.systems.openCrafting('alchemy');">
+                                <i class="ph ph-flame mr-1"></i> Vào Lò Luyện Đan (+10% Thành Công)
+                            </button>
+                        </div>
+
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">🌿 Hiến Tặng Linh Thảo Dược</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Quyên góp 5 cọng Linh Thảo cấp thấp của bản thân đóng góp làm dược thô cho đan điện.</p>
+                            <div class="flex justify-between text-[10px] text-gray-500 mb-2">
+                                <span>Linh Thảo hiện có:</span>
+                                <span class="font-bold text-white">${state.player.inventory.getItemQuantity('item_linh_thao')} / 5</span>
+                            </div>
+                            <button class="w-full py-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('luyen_dan', 'donate_herbs')">
+                                <i class="ph ph-hand-heart mr-1"></i> Quyên Hiến 5 Linh Thảo
+                            </button>
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'luyen_khi':
+                contentHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">⚒️ Thiết Khí Các</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Nơi luyện pháp bảo khôi lỗi, cường hóa trang bị thần binh.</p>
+                            <button class="w-full py-2 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="state.ui.toggleOverlay(document.getElementById('sects-overlay'), false); window.game.screens.systems.openCrafting('smithing');">
+                                <i class="ph ph-hammer mr-1"></i> Bắt Đầu Chế Tạo Pháp Bảo
+                            </button>
+                        </div>
+
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">💎 Đóng Góp Linh Quặng</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Hiến hiếu linh thạch vụn nâng trợ kinh phí luyện đúc cơ khí cho các đệ tử rèn kiếm.</p>
+                            <button class="w-full py-2 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('luyen_khi', 'donate_scrap')">
+                                <i class="ph ph-coins mr-1"></i> Quyên Góp 200 Linh Thạch
+                            </button>
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'linh_thu':
+                contentHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">🦁 Vui Đùa Linh Thú</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Thân cận vui vẻ chải lông chăm nuôi cùng linh thú ngự thú vườn.</p>
+                            <button class="w-full py-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('linh_thu', 'play_beasts')">
+                                <i class="ph ph-paw-print mr-1"></i> Tương Tác Linh Thú (-20 Linh Lực)
+                            </button>
+                        </div>
+
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">🕸️ Bẫy Linh Trùng Hoang Dã</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Sử dụng thần thức sương bẫy săn tìm linh trùng hoang dã nấp ở linh viên. Có cơ hội bắt được Phệ Kim Trùng quý hiếm!</p>
+                            <button class="w-full py-2 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('linh_thu', 'catch_insect')">
+                                <i class="ph ph-bug mr-1"></i> Bẫy Kỳ Trùng (-30 Linh Lực)
+                            </button>
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'duoc_vien':
+                contentHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">🌿 Linh Điền Tông Môn</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Vào linh điền của tông môn phì nhiêu tụ tinh khí trồng trọt linh thảo tiên dược.</p>
+                            <button class="w-full py-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="state.ui.toggleOverlay(document.getElementById('sects-overlay'), false); window.game.screens.systems.openCrafting('alchemy');">
+                                <i class="ph ph-plant mr-1"></i> Mở Linh Thảo Viên Trồng Trọt
+                            </button>
+                        </div>
+
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">💧 Chăm Sóc Tưới Linh Thảo</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Được phó thác tưới nước sương bổ linh căn cho các tiên mầm, thưởng hạt giống linh chi.</p>
+                            <button class="w-full py-2 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('duoc_vien', 'water_garden')">
+                                <i class="ph ph-drop mr-1"></i> Tưới Tắm Linh Thảo (-30 Linh Lực)
+                            </button>
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'dong_phu':
+                contentHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">🌀 Vận Công Đại Chu Thiên</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Động phủ tu luyện cá nhân linh khí dồi dào, xếp bằng chu thiên điều hòa chân khí chuyển hóa thọ tinh thành tu vi.</p>
+                            <button class="w-full py-2 bg-qi-purple/10 hover:bg-qi-purple/20 text-qi-purple border border-qi-purple/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('dong_phu', 'circulate_qi')">
+                                <i class="ph ph-infinity mr-1"></i> Vận Công Khai Huyệt (-100 Linh Lực)
+                            </button>
+                        </div>
+
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">💎 Thiết Lập Tụ Linh Trận</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Đầu tư linh thạch gia cố cường hóa pháp trận tụ nồng độ linh khí, mở mang ngộ đạo căn bản.</p>
+                            <button class="w-full py-2 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/20 text-xs font-bold rounded-lg transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('dong_phu', 'upgrade_array')">
+                                <i class="ph ph-diamonds mr-1"></i> Gia Cố Pháp Trận (-500 Linh Thạch)
+                            </button>
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'bi_canh':
+                contentHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="text-sm font-bold text-white mb-2">⚔️ Thí Luyện Ảo Ảnh</div>
+                            <p class="text-[10px] text-gray-400 mb-3">Ảo ảnh ma đạo pháp trận do tổ sư thiết lập để mài giũa bản lĩnh chiến đấu cho đệ tử. Đánh thắng nhận Contribution tích lũy.</p>
+                            <button class="w-full py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-bold rounded-xl transition-all"
+                                    onclick="window.game.screens.systems.handleSectZoneAction('bi_canh', 'trial_fight')">
+                                <i class="ph ph-sword mr-1"></i> Khiêu Chiến Ảo Ảnh Đệ Tử
+                            </button>
+                        </div>
+                    </div>
+                `;
+                break;
+        }
+
+        const zone = [
+            { id: 'son_mon', name: 'Sơn Môn', icon: '⛩️' },
+            { id: 'quang_truong', name: 'Quảng Trường', icon: '🏟️' },
+            { id: 'dai_dien', name: 'Đại Điện', icon: '🏛️' },
+            { id: 'tang_kinh_cac', name: 'Tàng Kinh Các', icon: '📚' },
+            { id: 'luyen_dan', name: 'Luyện Đan Phòng', icon: '🧪' },
+            { id: 'luyen_khi', name: 'Luyện Khí Các', icon: '⚒️' },
+            { id: 'linh_thu', name: 'Linh Thú Viên', icon: '🦁' },
+            { id: 'duoc_vien', name: 'Dược Viên / Linh Điền', icon: '🌿' },
+            { id: 'dong_phu', name: 'Động Phủ Đệ Tử', icon: '🛕' },
+            { id: 'bi_canh', name: 'Bí Cảnh Thí Luyện', icon: '🗼' }
+        ].find(z => z.id === zoneId);
+
+        elSects.innerHTML = `
+            <button class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg flex items-center text-xs font-bold transition-all mb-4" 
+                    onclick="window.game.screens.systems.activeSectZone = null; window.game.screens.systems.renderSects();">
+                <i class="ph ph-arrow-left mr-1"></i> Quay Lại Tông Môn
+            </button>
+
+            <div class="bg-white/5 rounded-2xl border border-qi-blue/30 overflow-hidden mb-4 animate-fade-in">
+                <div class="h-24 relative">
+                    <img src="${sect.portrait || ASSETS.backgrounds.sect}" class="w-full h-full object-cover opacity-30">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                    <div class="absolute bottom-3 left-4 flex items-center space-x-2">
+                        <span class="text-3xl">${zone.icon}</span>
+                        <div>
+                            <h3 class="text-lg font-ancient text-white">${zone.name}</h3>
+                            <p class="text-[8px] text-qi-blue uppercase tracking-widest">${sect.name}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pb-12 custom-scroll overflow-y-auto animate-fade-in">
+                ${contentHTML}
+            </div>
+        `;
+    }
+
+    handleSectZoneAction(zoneId, actionId) {
+        const currentDay = state.systems.time ? state.systems.time.totalDays : 0;
+        
+        switch (actionId) {
+            case 'vow_rules':
+                if (state.player.lastSectVowDay === currentDay) {
+                    state.ui.toast("Hôm nay ngươi đã tuyên thệ rồi, không nên quá thường xuyên bái bản tông!", "warning");
+                    return;
+                }
+                state.player.lastSectVowDay = currentDay;
+                state.player.tuVi = (state.player.tuVi || 0) + 15;
+                state.ui.toast("Ngươi chắp tay tuyên thệ tuân thủ Tông quy nghiêm nghị. Đạo tâm tu sĩ chấn chỉnh vững chắc! (+15 Tu vi)", "success");
+                break;
+                
+            case 'reinforce_array':
+                if (state.player.mana < 50) {
+                    state.ui.toast("Linh lực bất túc, không đủ 50 Linh Lực truyền pháp gia cố trận pháp!", "error");
+                    return;
+                }
+                state.player.mana -= 50;
+                state.player.sectContribution = (state.player.sectContribution || 0) + 5;
+                state.ui.toast("Ngươi dẫn tinh linh khí gia cố kết giới mạch trận thành công! Tông môn thưởng +5 Cống hiến!", "success");
+                break;
+
+            case 'talk_guard':
+                {
+                    const msgs = [
+                        "Thủ môn đệ tử: Tu luyện không thèm chểnh mảng, kiên trì nhất định thành tựu thiên kiếp sơ kỳ!",
+                        "Thủ môn đệ tử: Ngoại sơn môn phong quang vô cùng, có yêu điểu rình rập, đi đứng xin nhớ mang theo phi kiếm.",
+                        "Thủ môn đệ tử: Cổ truyền tông đại trận vô cùng chắc chắn, tà ma ngoại đạo bất khả xâm phạm!"
+                    ];
+                    state.ui.toast(msgs[Math.floor(Math.random() * msgs.length)], "info");
+                }
+                break;
+
+            case 'debate_dao':
+                if (state.player.mana < 20) {
+                    state.ui.toast("Linh lực cạn kiệt, tinh thần mệt mỏi!", "error");
+                    return;
+                }
+                state.player.mana -= 20;
+                {
+                    const comp = state.player.advancedStats?.comprehension || 10;
+                    const roll = Math.random() * 40;
+                    if (comp >= roll) {
+                        state.player.tuVi = (state.player.tuVi || 0) + 30;
+                        state.player.sectContribution = (state.player.sectContribution || 0) + 8;
+                        state.ui.toast("Biện luận xuất chúng! Lời nói chứa linh cơ đốn ngộ! Nhận +30 Tu vi, +8 Cống hiến!", "success");
+                    } else {
+                        state.player.tuVi = (state.player.tuVi || 0) + 10;
+                        state.ui.toast("Tranh luận đạo tâm rơi vào thế bí, tuy nhiên vẫn thu hoạch được chút ngộ đạo. Nhận +10 Tu vi!", "info");
+                    }
+                }
+                break;
+
+            case 'bow_master':
+                if (state.player.lastSectBowDay === currentDay) {
+                    state.ui.toast("Hôm nay sư phụ bế quan bận rộn hội họp, ngày mai hãy tới thỉnh an!", "warning");
+                    return;
+                }
+                state.player.lastSectBowDay = currentDay;
+                state.player.sectContribution = (state.player.sectContribution || 0) + 15;
+                state.ui.toast("Ngươi khấu đầu cung kính thỉnh an Tông Chủ tối cao. Nhận thưởng +15 Điểm Cống hiến!", "success");
+                break;
+
+            case 'listen_lecture':
+                if (state.player.lastSectLectureDay === currentDay) {
+                    state.ui.toast("Trưởng lão hôm nay đã truyền pháp xong rồi, hãy quay lại vào ngày mai!", "warning");
+                    return;
+                }
+                if (state.player.gold < 100) {
+                    state.ui.toast("Ngươi không đủ 100 Linh Thạch dâng kính trà lễ!", "error");
+                    return;
+                }
+                state.player.gold -= 100;
+                state.player.lastSectLectureDay = currentDay;
+                state.player.tuVi = (state.player.tuVi || 0) + 150;
+                state.ui.toast("Bái nghe Trưởng lão giảng giải đạo lý ngưng cốt. Thần khí sảng khoái đốn ngộ vô cùng! Nhận +150 Tu vi!", "success");
+                break;
+
+            case 'donate_herbs':
+                {
+                    const count = state.player.inventory.getItemQuantity('item_linh_thao');
+                    if (count < 5) {
+                        state.ui.toast("Ngươi bất túc 5 cọng Linh Thảo để đóng góp!", "error");
+                        return;
+                    }
+                    state.player.inventory.removeItem('item_linh_thao', 5);
+                    state.player.sectContribution = (state.player.sectContribution || 0) + 20;
+                    state.ui.toast("Hiến quyên thành công 5 Linh Thảo cấp thấp làm linh dược thô. Nhận +20 Cống hiến!", "success");
+                }
+                break;
+
+            case 'donate_scrap':
+                if (state.player.gold < 200) {
+                    state.ui.toast("Không đủ 200 Linh Thạch đóng góp khoáng vật chế khí!", "error");
+                    return;
+                }
+                state.player.gold -= 200;
+                state.player.sectContribution = (state.player.sectContribution || 0) + 10;
+                state.ui.toast("Đóng góp 200 Linh Thạch chế tạo linh tài. Thủ Các Trưởng lão ghi nhận: +10 Cống hiến!", "success");
+                break;
+
+            case 'play_beasts':
+                if (state.player.mana < 20) {
+                    state.ui.toast("Linh lực mệt mỏi bất khả!", "error");
+                    return;
+                }
+                state.player.mana -= 20;
+                state.ui.toast("Ngươi ân cần tiếp xúc cho linh thú ăn linh thảo trong vườn. Linh thú tâm tình vui vẻ vô cùng!", "success");
+                break;
+
+            case 'catch_insect':
+                if (state.player.lastSectCatchDay === currentDay) {
+                    state.ui.toast("Hôm nay ngươi đã bắt sâu ở ngự thú viên rồi, hãy đợi ngày mai linh trùng bò ra!", "warning");
+                    return;
+                }
+                if (state.player.mana < 30) {
+                    state.ui.toast("Linh lực cạn kiệt không đủ ngự khí giăng lưới!", "error");
+                    return;
+                }
+                state.player.mana -= 30;
+                state.player.lastSectCatchDay = currentDay;
+                if (Math.random() < 0.25) {
+                    state.player.inventory.addItem('item_phe_kim_trung', 1);
+                    state.ui.toast("💥 Thành công bắt được 1 con Phệ Kim Trùng hoang dã bò trên linh thạch!", "success");
+                } else {
+                    state.ui.toast("Hụt mất! Linh trùng bò rất nhanh đã lẩn trốn vào kẽ đá cấm địa.", "info");
+                }
+                break;
+
+            case 'water_garden':
+                if (state.player.lastSectWaterDay === currentDay) {
+                    state.ui.toast("Linh điền đã nhận đủ linh lộ tưới tiêu hôm nay rồi!", "warning");
+                    return;
+                }
+                if (state.player.mana < 30) {
+                    state.ui.toast("Linh lực cạn kiệt bất khả xách sương dẫn thủy!", "error");
+                    return;
+                }
+                state.player.mana -= 30;
+                state.player.lastSectWaterDay = currentDay;
+                {
+                    const seeds = ['linh_chi_seed', 'nhan_sam_seed', 'tuyet_lien_seed'];
+                    const chosen = seeds[Math.floor(Math.random() * seeds.length)];
+                    state.player.inventory.addItem(chosen, 1);
+                    state.player.sectContribution = (state.player.sectContribution || 0) + 15;
+                    state.ui.toast("Tưới sương bắt sâu thảo điền chu đáo! Nhận +15 Cống hiến và 1 Hạt giống linh thảo ngẫu nhiên!", "success");
+                }
+                break;
+
+            case 'circulate_qi':
+                if (state.player.lastSectQiDay === currentDay) {
+                    state.ui.toast("Kinh mạch chấn động bão hòa linh lực, bế quan tu luyện thêm sẽ đứt vỡ!", "warning");
+                    return;
+                }
+                if (state.player.mana < 100) {
+                    state.ui.toast("Linh khí bất túc đại chu thiên tuần hoàn (Cần 100 Linh Lực)!", "error");
+                    return;
+                }
+                state.player.mana -= 100;
+                state.player.lastSectQiDay = currentDay;
+                {
+                    const gain = Math.floor(state.player.atk * 15 + state.player.level * 50);
+                    state.player.tuVi = (state.player.tuVi || 0) + gain;
+                    state.ui.toast(`Xếp bằng đại chu thiên vận chuyển đạo pháp ngưng khí 36 vòng! Hấp thu vô vàn linh cơ: +${gain} Tu vi!`, "success");
+                }
+                break;
+
+            case 'upgrade_array':
+                if (state.player.gold < 500) {
+                    state.ui.toast("Ngươi thiếu hụt 500 Linh Thạch cải tiến pháp trận động phủ!", "error");
+                    return;
+                }
+                state.player.gold -= 500;
+                state.player.tuVi = (state.player.tuVi || 0) + 300;
+                state.ui.toast("Nâng cấp pháp trận tụ linh động phủ thành công! Nâng cao căn cơ tĩnh tâm hành thiền. Nhận +300 Tu vi!", "success");
+                break;
+
+            case 'trial_fight':
+                if (state.player.hp < state.player.maxHp * 0.2) {
+                    state.ui.toast("Trạng thái suy nhược cực độ khí huyết quá thấp bất khả thí luyện!", "error");
+                    return;
+                }
+                {
+                    const enemy = EnemyGenerator.generate(state.player.realmId);
+                    enemy.name = `Ảo Ảnh Thí Luyện (${enemy.realmName})`;
+                    enemy.inventory = []; // Clear scroll drops to avoid farming drops
+                    
+                    state.ui.toast("Kích hoạt Ảo Ảnh Pháp Trận, trận chiến mở màn!", "info");
+                    
+                    setTimeout(() => {
+                        state.ui.toggleOverlay(document.getElementById('sects-overlay'), false);
+                        
+                        window.game.startBattle(enemy, null, (isWin) => {
+                            if (isWin) {
+                                state.player.sectContribution = (state.player.sectContribution || 0) + 50;
+                                state.ui.toast("🏆 Thách đấu thành công ảo cảnh! Tông môn thưởng +50 Điểm Cống hiến!", "success");
+                            } else {
+                                state.ui.toast("Khiêu chiến thất bại! Cố gắng ngộ đạo thêm hãy quay lại.", "error");
+                            }
+                            
+                            setTimeout(() => {
+                                state.ui.toggleOverlay(document.getElementById('sects-overlay'), true);
+                                window.game.screens.systems.renderSects();
+                            }, 1200);
+                        });
+                    }, 800);
+                }
+                break;
+        }
+
+        window.game.saveState();
+        window.game.refreshUI();
+        this.renderSects();
     }
 
     renderEnergy() {
