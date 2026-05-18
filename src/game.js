@@ -680,6 +680,32 @@ export class Game {
                     state.systems.npc.generate('ma_dan', baseRealm + Math.floor(Math.random() * 3), area);
                 }
             });
+
+            // --- SPAWN SPECIAL NPCS ---
+            const specialNpcSpawns = {
+                'han_phi_vu': { location: 'than_thu_coc', realm: 1 },
+                'bach_tu_linh': { location: 'thanh_van_tong', realm: 8 },
+                'du_nhuoc_nhan': { location: 'thien_uyen_thanh', realm: 30 },
+                'phuong_ca': { location: 'linh_vong_son', realm: 12 },
+                'phuong_vu': { location: 'quang_han_gioi', realm: 34 },
+                'tran_tu_huyen': { location: 'quy_linh_mon', realm: 18 },
+                'xich_nguyet': { location: 'thanh_dia_yeu_toc', realm: 24 },
+                'han_lap': { location: 'bach_nhac_phong', realm: 42 },
+                'tu_linh': { location: 'dieu_am_mon', realm: 30 },
+                'kiem_vo_tam': { location: 'cu_kiem_mon', realm: 24 },
+                'vo_danh': { location: 'hu_thien_dien_nhan', realm: 28 },
+                'bang_nguyet': { location: 'tieu_cuc_cung', realm: 26 },
+                'thanh_lien': { location: 'phat_tong', realm: 20 },
+                'thanh_nhi': { location: 'thien_ho_toc', realm: 12 },
+                'bach_minh_anh': { location: 'thai_nhat_mon', realm: 18 },
+                'han_vien': { location: 'huyen_cot_dao', realm: 22 },
+                'lan_anh': { location: 'dan_thap', realm: 20 },
+                'minh_nguyet': { location: 'yem_nguyet_tong', realm: 16 }
+            };
+
+            Object.entries(specialNpcSpawns).forEach(([id, config]) => {
+                state.systems.npc.generate(id, config.realm, config.location);
+            });
         }
 
         const elName = document.getElementById('player-name-header');

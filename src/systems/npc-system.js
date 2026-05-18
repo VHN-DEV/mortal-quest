@@ -1,25 +1,27 @@
-import { NPC_TEMPLATES, NPC_PERSONALITIES, NPC_GOALS, NPC_RELATIONSHIP_LEVELS, NPC_SPECIAL_RELATIONS } from '../configs/npc-data.js';
+import { NPC_TEMPLATES, NPC_PERSONALITIES, NPC_GOALS, NPC_RELATIONSHIP_LEVELS, NPC_SPECIAL_RELATIONS, SPECIAL_NPCS } from '../configs/npc-data.js';
 import { getRealmById } from '../configs/realm-data.js';
 import { CREATION_ROOTS, CREATION_PHYSIQUES } from '../configs/creation-data.js';
 
 export class NPC {
     constructor(templateId, realmId) {
-        const template = NPC_TEMPLATES[templateId];
+        const isSpecial = SPECIAL_NPCS && SPECIAL_NPCS[templateId];
+        const template = isSpecial ? SPECIAL_NPCS[templateId] : NPC_TEMPLATES[templateId];
+        
         this.templateId = templateId;
-        this.id = Math.random().toString(36).substr(2, 9);
-        this.type = template.type;
-        this.role = template.roles[Math.floor(Math.random() * template.roles.length)];
+        this.id = isSpecial ? template.id : Math.random().toString(36).substr(2, 9);
+        this.type = isSpecial ? 'special' : template.type;
+        this.role = isSpecial ? template.role : template.roles[Math.floor(Math.random() * template.roles.length)];
         this.title = template.title;
-        this.name = this.generateName();
-        this.gender = Math.random() > 0.5 ? 'Nam' : 'Nữ';
-        this.age = 18 + Math.floor(Math.random() * 100);
+        this.name = isSpecial ? template.name : this.generateName();
+        this.gender = isSpecial ? template.gender : (Math.random() > 0.5 ? 'Nam' : 'Nữ');
+        this.age = isSpecial ? (100 + Math.floor(Math.random() * 200)) : (18 + Math.floor(Math.random() * 100));
         this.portrait = template.portrait;
         
         // Character Traits
-        this.personalityIds = template.personalities;
-        this.goalId = Object.keys(NPC_GOALS)[Math.floor(Math.random() * Object.keys(NPC_GOALS).length)];
-        this.daoHeart = 50 + Math.floor(Math.random() * 50); // 0-100
-        this.luck = Math.random() > 0.9 ? 150 : 50 + Math.floor(Math.random() * 50); // High luck for some
+        this.personalityIds = isSpecial ? [template.personality] : template.personalities;
+        this.goalId = isSpecial ? template.goal : Object.keys(NPC_GOALS)[Math.floor(Math.random() * Object.keys(NPC_GOALS).length)];
+        this.daoHeart = isSpecial ? 90 : 50 + Math.floor(Math.random() * 50); // 0-100
+        this.luck = isSpecial ? 150 : 50 + Math.floor(Math.random() * 50);
         
         // Cultivation Attributes
         this.realmId = realmId;
@@ -34,6 +36,9 @@ export class NPC {
         this.mood = 'Bình thường';
         
         this.dialogues = template.dialogues;
+        this.isSpecial = isSpecial;
+        this.desc = isSpecial ? template.desc : '';
+        this.isRomanceable = isSpecial ? template.isRomanceable : false;
         
         // Schedule & Location
         this.activity = 'Tu luyện';
@@ -187,11 +192,19 @@ export class NPC {
         if (type === 'become_disciple') this.changeRelationship(30);
     }
 
-    changeRelationship(amount) {
-        this.relationship = Math.max(-100, Math.min(100, this.relationship + amount));
-    }
+       generateDialogue(player) {
+        if (this.isSpecial && this.dialogues) {
+            if (this.relationship >= 80 && this.dialogues.romance && this.isRomanceable) {
+                return this.dialogues.romance[Math.floor(Math.random() * this.dialogues.romance.length)];
+            }
+            if (this.relationship >= 40 && this.dialogues.friendly) {
+                return this.dialogues.friendly[Math.floor(Math.random() * this.dialogues.friendly.length)];
+            }
+            if (this.dialogues.meet) {
+                return this.dialogues.meet[Math.floor(Math.random() * this.dialogues.meet.length)];
+            }
+        }
 
-    generateDialogue(player) {
         const fate = player.fate;
         const fateSys = window.game?.systems?.fate;
         
@@ -210,8 +223,8 @@ export class NPC {
         // 2. High Sin reaction (Moral conflict)
         if (fate.sin > 100) {
              if (morality.id.includes('ac') || morality.id === 'ma_dau') {
-                 if (this.daoHeart > 70) return `Hừ, sát khí trên người ngươi nồng nặc như vậy, chắc chắn đã làm không ít chuyện thương thiên hại lý! Đạo bất đồng bất tương vi mưu, tránh xa ta ra!`;
-                 return `Ha ha, sát khí thật nồng đậm! Đúng là đồng đạo trung nhân, nhìn ngươi ta lại thấy hứng khởi vô cùng. Có muốn cùng ta làm một vố lớn không?`;
+                  if (this.daoHeart > 70) return `Hừ, sát khí trên người ngươi nồng nặc như vậy, chắc chắn đã làm không ít chuyện thương thiên hại lý! Đạo bất đồng bất tương vi mưu, tránh xa ta ra!`;
+                  return `Ha ha, sát khí thật nồng đậm! Đúng là đồng đạo trung nhân, nhìn ngươi ta lại thấy hứng khởi vô cùng. Có muốn cùng ta làm một vố lớn không?`;
              }
         }
 

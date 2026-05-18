@@ -856,8 +856,8 @@ window.renderCreationScreen = () => {
     const elAvatarList = document.getElementById('creation-avatar-list');
     if (elAvatarList) {
         const avatars = sys.playerGender === 'Nam' 
-            ? ['player_male', 'han_phi_vu', 'bach_tu_linh', 'player_legacy']
-            : ['player_female', 'du_nhuoc_nhan', 'phuong_ca', 'phuong_vu', 'tran_tu_huyen', 'xich_nguyet'];
+            ? ['player_male', 'han_phi_vu', 'bach_tu_linh', 'han_lap', 'han_vien', 'kiem_vo_tam', 'vo_danh', 'player_legacy']
+            : ['player_female', 'du_nhuoc_nhan', 'phuong_ca', 'phuong_vu', 'tran_tu_huyen', 'xich_nguyet', 'tu_linh', 'bang_nguyet', 'thanh_lien', 'thanh_nhi', 'bach_minh_anh', 'lan_anh', 'minh_nguyet'];
         elAvatarList.innerHTML = avatars.map(key => {
             const active = sys.playerAvatar === key;
             const url = ASSETS.portraits[key] || '';
