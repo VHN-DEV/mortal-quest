@@ -28,6 +28,9 @@ export class UISystem {
 
         // Tooltip
         this.elTooltip = document.getElementById('global-tooltip');
+        
+        // Track current screen in-memory for render performance optimization
+        this.currentScreenId = 'screen-main';
     }
 
     updateTimeUI(time) {
@@ -783,6 +786,7 @@ export class UISystem {
      * Smoothly transition screen
      */
     async switchScreen(screenId, btn) {
+        this.currentScreenId = screenId;
         const screens = document.querySelectorAll('.screen');
         const navButtons = document.querySelectorAll('.nav-item');
 

@@ -347,12 +347,18 @@ export class Game {
 
     // --- Core Lifecycle ---
     startLoop() {
+        let lastRenderTime = 0;
         const loop = () => {
             if (state.player) {
                 const now = Date.now();
                 const delta = (now - state.player.lastUpdate) / 1000;
                 this.update(delta);
-                this.render();
+                
+                // Throttle visual rendering to 10 FPS (every 100ms) to dramatically reduce CPU & battery overhead
+                if (now - lastRenderTime >= 100) {
+                    this.render();
+                    lastRenderTime = now;
+                }
             }
             requestAnimationFrame(loop);
         };

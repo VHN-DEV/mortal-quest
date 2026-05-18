@@ -1,0 +1,322 @@
+import{s as t,t as S,u as _,v as $,e as A,h as x,i as T,F as E,w as I,d as P,x as C,y as j,G as K,z as F,C as G,E as R,n as D,A as f,S as V,b as O,a as U,H as B,f as Q,P as Y,J as W,K as k,T as z,B as M,L as w,N as q,O as J,Q as X,U as Z,j as N,k as H,r as L}from"./index-C_zatyFb.js";import"./vendor-capacitor-DNzPfH2b.js";import"./vendor-gsap-CzGW6FVa.js";const ee=[{floor:1,name:"Ngoại Tháp - Tầng 1",description:"Nơi tập trung các luyện dược sư trẻ tuổi tài năng.",minAlchemyLevel:3,rewards:{expMult:1.2}},{floor:2,name:"Nội Tháp - Tầng 2",description:"Chỉ dành cho những người có thần thức mạnh mẽ.",minAlchemyLevel:5,rewards:{expMult:1.5,qualityBonus:.1}},{floor:3,name:"Thánh Đan Điện",description:"Nơi cư ngụ của các bậc Đan Thánh.",minAlchemyLevel:7,rewards:{expMult:2,qualityBonus:.25}}];class ae{constructor(){this.shopSubFilter="all",this.shopQualityFilter="all",this.shopSearchQuery="",this.shopSortMode="default",this.initElements(),this.initEvents()}initElements(){this.btnAlchemyTabRecipes=document.getElementById("alchemy-tab-recipes"),this.btnAlchemyTabGarden=document.getElementById("alchemy-tab-garden"),this.viewAlchemyRecipes=document.getElementById("alchemy-recipes-view"),this.viewAlchemyGarden=document.getElementById("alchemy-garden-view"),this.elAlchemyLvlText=document.getElementById("alchemy-level-text"),this.elAlchemyExpBar=document.getElementById("alchemy-exp-bar"),this.elGardenPlots=document.getElementById("garden-plots"),this.elShopLingShi=document.getElementById("shop-ling-shi"),this.elShopBuyView=document.getElementById("shop-buy-view"),this.elShopSellView=document.getElementById("shop-sell-view"),this.elShopSellGrid=document.getElementById("shop-sell-grid"),this.elShopSectionNav=document.getElementById("shop-section-nav"),this.elShopSubFilterNav=document.getElementById("shop-subfilter-nav"),this.elShopQualityFilterNav=document.getElementById("shop-quality-filter-nav"),this.elShopFiltersWrap=document.getElementById("shop-filters-wrap"),this.btnShopTabBuy=document.getElementById("shop-tab-buy"),this.btnShopTabSell=document.getElementById("shop-tab-sell"),this.elShopSearchInput=document.getElementById("shop-search-input"),this.elShopSortSelect=document.getElementById("shop-sort-select"),this.elGuildCerts=document.getElementById("guild-cert-list"),this.elTechListView=document.getElementById("tech-list-view"),this.elTechDetailView=document.getElementById("tech-detail-view"),this.elTechDetailContent=document.getElementById("tech-detail-content"),this.elTechPoints=document.getElementById("tech-points"),this.btnTechTabCultivation=document.getElementById("tech-tab-cultivation"),this.btnTechTabSecret=document.getElementById("tech-tab-secret"),this.btnTechBack=document.getElementById("tech-back-btn"),this.elGuildMissions=document.getElementById("guild-mission-list"),this.elGuildRooms=document.getElementById("guild-room-list"),this.elTowerFloors=document.getElementById("tower-floor-list"),this.elSectsView=document.getElementById("sects-view")}initEvents(){this.btnAlchemyTabRecipes&&(this.btnAlchemyTabRecipes.onclick=()=>{t.views.alchemy="recipes",this.renderAlchemy()}),this.btnAlchemyTabGarden&&(this.btnAlchemyTabGarden.onclick=()=>{t.views.alchemy="garden",this.renderAlchemy()}),this.btnShopTabBuy&&(this.btnShopTabBuy.onclick=()=>{t.views.shop="buy",this.renderShop()}),this.btnShopTabSell&&(this.btnShopTabSell.onclick=()=>{t.views.shop="sell",this.renderShop()}),this.elShopSearchInput&&(this.elShopSearchInput.oninput=n=>{this.shopSearchQuery=n.target.value.toLowerCase().trim(),this.renderShop()}),this.elShopSortSelect&&(this.elShopSortSelect.onchange=n=>{this.shopSortMode=n.target.value,this.renderShop()}),this.btnTechTabCultivation&&(this.btnTechTabCultivation.onclick=()=>this.renderTechniques("cultivation")),this.btnTechTabSecret&&(this.btnTechTabSecret.onclick=()=>this.renderTechniques("secret")),this.btnTechBack&&(this.btnTechBack.onclick=()=>{this.elTechListView.classList.remove("hidden"),this.elTechDetailView.classList.add("hidden")})}renderAlchemy(){if(!t.player)return;const n=document.getElementById("alchemy-tools-container");t.views.alchemy==="recipes"?(this.viewAlchemyRecipes.classList.remove("hidden"),this.viewAlchemyGarden.classList.add("hidden"),n&&n.classList.remove("hidden"),this.btnAlchemyTabRecipes&&(this.btnAlchemyTabRecipes.className="flex-grow py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all"),this.btnAlchemyTabGarden&&(this.btnAlchemyTabGarden.className="flex-grow py-3 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all")):(this.viewAlchemyRecipes.classList.add("hidden"),this.viewAlchemyGarden.classList.remove("hidden"),n&&n.classList.add("hidden"),this.btnAlchemyTabRecipes&&(this.btnAlchemyTabRecipes.className="flex-grow py-3 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all"),this.btnAlchemyTabGarden&&(this.btnAlchemyTabGarden.className="flex-grow py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all"));const i=S(t.player.alchemyLevel);this.elAlchemyLvlText.textContent=i.name;const s=Math.max(1,t.player.alchemyLevel*100*Math.pow(1.5,t.player.alchemyLevel-1));this.elAlchemyExpBar.style.width=`${Math.min(100,t.player.alchemyExp/s*100)}%`,t.views.alchemy==="recipes"?this.renderRecipes():this.renderGarden();const e=document.getElementById("alchemy-cauldron-name"),a=document.getElementById("alchemy-flame-name");if(e){const l=_(t.player.currentCauldron);l?e.innerHTML=`<span class="text-white">${l.name}</span>`:e.innerHTML=`<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'phap_bao')" class="ml-2 text-[8px] text-qi-blue underline hover:text-white transition-colors">MUA NGAY</button>`}if(a){const l=$(t.player.currentFlame);l?a.innerHTML=`<span class="text-white">${l.name}</span>`:a.innerHTML=`<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'phap_bao')" class="ml-2 text-[8px] text-qi-blue underline hover:text-white transition-colors">MUA NGAY</button>`}}renderRecipes(){this.viewAlchemyRecipes.innerHTML="";const n=A.filter(i=>t.player.knownRecipes.includes(i.id));if(n.length===0){this.viewAlchemyRecipes.innerHTML='<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ được đan phương nào...</div>';return}n.forEach(i=>{const s=x(i.resultId);if(!s)return;const e=this.getQualityClass(s.quality),a=document.createElement("div");a.className="p-4 border border-gray-800 rounded-2xl bg-white/5 space-y-3";let l="";i.materials.forEach(o=>{const d=x(o.id);if(!d)return;const p=t.player.inventory.allItems.find(c=>c.id===o.id),u=p?p.quantity:0,h=u>=o.quantity;l+=`<div class="text-[10px] ${h?"text-gray-400":"text-red-500"}">${d.name}: ${u}/${o.quantity}</div>`});const r=t.player.alchemyLevel<i.level;a.innerHTML=`
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <span class="text-xl mr-2">${s.image?`<img src="${T(s.image)}" class="w-6 h-6 object-contain inline-block">`:s.icon||""}</span>
+                        <span class="font-bold quality-${e} font-ancient">${s.name}</span>
+                    </div>
+                    ${r?`<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${i.level}</span>`:`<button class="px-3 py-1.5 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap" onclick="window.game.craft('${i.id}')">LUYỆN CHẾ</button>`}
+                </div>
+                <div class="grid grid-cols-2 gap-1">${l}</div>
+                <div class="text-[9px] text-gray-500 italic">${i.description}</div>
+            `,this.viewAlchemyRecipes.appendChild(a)})}renderGarden(){this.elGardenPlots.innerHTML="",t.player.gardenPlots.forEach((n,i)=>{const s=document.createElement("div"),e=E[n.grade]||E.PHAM,a=I[n.attribute]||I.NORMAL;s.className="p-4 border rounded-3xl bg-white/5 flex flex-col space-y-4 transition-all hover:border-qi-jade/30 border-white/5 relative overflow-hidden";const l=document.createElement("div");l.className="absolute -right-2 -bottom-2 text-4xl opacity-5 pointer-events-none",l.textContent=a.icon,s.appendChild(l);let r=`
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-[9px] px-2 py-0.5 rounded-full border bg-white/5 text-gray-400 border-white/10 uppercase font-bold">${e.name}</span>
+                            <span class="text-[9px] px-2 py-0.5 rounded-full border bg-white/5 text-[${a.color}] border-white/10 uppercase font-bold" style="color: ${a.color}">${a.icon} ${a.name}</span>
+                        </div>
+                    </div>
+                    <button class="p-1.5 hover:bg-white/10 rounded-full transition-colors" onclick="window.game.showFieldMenu(${i})">
+                        <i class="ph ph-gear text-gray-500 text-xs"></i>
+                    </button>
+                </div>
+            `;if(n.seedId){const o=P.find(p=>p.id===n.seedId),d=x(o.herbId);r+=`
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-2xl border border-white/10">
+                            ${(d==null?void 0:d.icon)||"🌱"}
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="text-xs font-ancient text-white">${o.name}</h4>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <span class="text-[10px] text-qi-jade font-bold">${n.stage}</span>
+                                <span class="text-[9px] text-gray-500">(${Math.floor(n.age)} năm)</span>
+                            </div>
+                        </div>
+                        <button class="px-3 py-1.5 bg-qi-jade/10 text-qi-jade text-[10px] font-bold rounded-xl border border-qi-jade/20 active:scale-95 transition-all" onclick="window.game.harvest(${i})">THU HOẠCH</button>
+                    </div>
+                `}else r+=`
+                    <div class="flex flex-col items-center justify-center py-4 space-y-3">
+                        <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-dashed border-white/20">
+                            <i class="ph ph-plus text-gray-600"></i>
+                        </div>
+                        <button class="px-6 py-2 bg-white/5 hover:bg-white/10 text-gray-400 text-[10px] font-bold rounded-xl border border-white/10 transition-all" onclick="window.game.showPlantMenu(${i})">GIEO HẠT</button>
+                    </div>
+                `;s.innerHTML+=r,this.elGardenPlots.appendChild(s)})}renderShop(){if(!t.player)return;this.elShopLingShi.innerHTML=t.player.getFormattedLingShi();const n=document.getElementById("shop-vip-level");n&&(n.textContent=`VIP ${t.player.vipLevel}`,n.className=`px-2 py-0.5 rounded bg-gray-800 text-[8px] font-bold text-gray-400 border border-white/5 bg-vip-${t.player.vipLevel}`);const i=document.getElementById("shop-overlay-title");if(i&&t.systems.shop){const s=C[t.systems.shop.currentShopId];s&&(i.textContent=s.name.split(" - ")[0])}this.renderShopSections(),this.renderShopSubFilters(),this.btnShopTabBuy&&this.btnShopTabSell&&(t.views.shop==="buy"?(this.btnShopTabBuy.className="flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold text-xs",this.btnShopTabSell.className="flex-grow py-3 text-gray-500 border-b-2 border-transparent text-xs"):(this.btnShopTabBuy.className="flex-grow py-3 text-gray-500 border-b-2 border-transparent text-xs",this.btnShopTabSell.className="flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold text-xs")),t.views.shop==="buy"?(this.elShopBuyView.classList.remove("hidden"),this.elShopSellView.classList.add("hidden"),this.renderShopBuy()):(this.elShopBuyView.classList.add("hidden"),this.elShopSellView.classList.remove("hidden"),this.renderShopSell())}renderShopSections(){if(!this.elShopSectionNav)return;const n=t.systems.shop,i=[{id:"dan_duoc",name:"Đan Dược",icon:"💊"},{id:"phap_bao",name:"Trang Bị",icon:"⚔️"},{id:"cong_phap",name:"Bí Tịch",icon:"📜"},{id:"bach_nghe",name:"Bách Nghệ",icon:"⚒️"},{id:"ky_vat",name:"Kỳ Vật",icon:"💎"}];this.elShopSectionNav.querySelectorAll("button").length!==i.length&&(this.elShopSectionNav.innerHTML="",this.elShopSectionNav.dataset.shopId=n.currentShopId,i.forEach(e=>{const a=document.createElement("button");a.dataset.category=e.id,a.onclick=()=>{t.systems.shop&&(t.systems.shop.currentSection=e.id,this.shopSubFilter="all",this.shopQualityFilter="all",this.renderShop())},this.elShopSectionNav.appendChild(a)})),this.elShopSectionNav.querySelectorAll("button").forEach(e=>{const a=e.dataset.category,l=i.find(o=>o.id===a),r=n.currentSection===a;e.className=`px-4 py-2.5 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all whitespace-nowrap shrink-0 flex items-center space-x-2 ${r?"bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/30 shadow-[0_0_15px_rgba(212,175,55,0.1)]":"text-gray-500 border border-white/5 hover:border-white/10 bg-white/[0.02]"}`,e.innerHTML=`<span>${l.icon}</span> <span>${l.name}</span>`})}renderShopSubFilters(){var a;if(!this.elShopSubFilterNav)return;const n=t.systems.shop;if(!n)return;this.renderShopQualityFilters();const i=n.currentSection;let s=[];if(i==="phap_bao"?s=[{id:"all",name:"--- Lọc Loại Trang Bị ---"},{id:"weapon",name:"Linh Khí (Vũ Khí)"},{id:"armor",name:"Pháp Y (Giáp)"},{id:"accessory",name:"Trang Sức"},{id:"attackArtifact",name:"Pháp Bảo: Chủ Chiến"},{id:"defenseArtifact",name:"Pháp Bảo: Hộ Thân"},{id:"flightArtifact",name:"Pháp Bảo: Phi Hành"},{id:"spaceArtifact",name:"Pháp Bảo: Càn Khôn"},{id:"formationArtifact",name:"Pháp Bảo: Trận Đạo"},{id:"supportArtifact",name:"Pháp Bảo: Phụ Trợ"},{id:"soulArtifact",name:"Pháp Bảo: Hồn Đạo"}]:i==="cong_phap"?s=[{id:"all",name:"--- Lọc Loại Bí Tịch ---"},{id:"cultivation",name:"Công Pháp Tu Luyện"},{id:"manual",name:"Bí Tịch Kỹ Năng"}]:i==="bach_nghe"?s=[{id:"all",name:"--- Lọc Loại Bách Nghệ ---"},{id:"nguyen_lieu",name:"Nguyên Liệu"},{id:"phu_luc",name:"Phù Lục"},{id:"tran_phap",name:"Trận Pháp"},{id:"luyen_khi",name:"Luyện Khí"},{id:"linh_dien",name:"Linh Điền"}]:i==="ky_vat"&&(s=[{id:"all",name:"--- Lọc Loại Kỳ Vật ---"},{id:"tui_tru_vat",name:"Túi Trữ Vật"},{id:"ky_trung",name:"Kỳ Trùng"},{id:"linh_thu",name:"Linh Thú"}]),(a=this.elShopFiltersWrap)==null||a.classList.remove("hidden"),s.length===0){this.elShopSubFilterNav.innerHTML="",this.elShopSubFilterNav.classList.add("hidden");return}this.elShopSubFilterNav.classList.remove("hidden"),this.elShopSubFilterNav.className="p-2",this.elShopSubFilterNav.innerHTML=`
+            <select id="shop-subfilter-select" class="w-full bg-black/40 text-qi-blue border border-qi-blue/20 rounded-lg px-2 py-1.5 text-[9px] font-ancient uppercase tracking-widest outline-none transition-all focus:border-qi-blue/50">
+                ${s.map(l=>`<option value="${l.id}" ${this.shopSubFilter===l.id?"selected":""}>${l.name}</option>`).join("")}
+            </select>
+        `;const e=this.elShopSubFilterNav.querySelector("#shop-subfilter-select");e.onchange=l=>{this.shopSubFilter=l.target.value,this.renderShop()}}renderShopQualityFilters(){if(!this.elShopQualityFilterNav)return;const n=t.systems.shop;if(!n)return;const i=n.currentSection;if(!["phap_bao","dan_duoc","cong_phap","bach_nghe"].includes(i)){this.elShopQualityFilterNav.classList.add("hidden"),this.elShopSubFilterNav.classList.remove("border-r","border-white/5"),this.elShopQualityFilterNav.innerHTML="";return}this.elShopSubFilterNav.classList.add("border-r","border-white/5");const e=[{id:"all",name:"Tất cả phẩm"},{id:"Phàm Khí",name:"Phàm Khí"},{id:"Pháp Khí",name:"Pháp Khí"},{id:"Linh Khí",name:"Linh Khí"},{id:"Pháp Bảo",name:"Pháp Bảo"},{id:"Cổ Bảo",name:"Cổ Bảo"},{id:"Linh Bảo",name:"Linh Bảo"},{id:"Thông Thiên Linh Bảo",name:"Thông Thiên Linh Bảo"},{id:"Tiên Khí",name:"Tiên Khí"},{id:"Danh Khí",name:"Danh Khí"}];this.elShopQualityFilterNav.classList.remove("hidden"),this.elShopQualityFilterNav.className="p-2 flex-1 border-white/5",this.elShopQualityFilterNav.innerHTML=`
+            <select id="shop-quality-select" class="w-full bg-black/40 text-cultivation-gold border border-cultivation-gold/20 rounded-lg px-2 py-1.5 text-[9px] font-ancient uppercase tracking-widest outline-none transition-all focus:border-cultivation-gold/50">
+                ${e.map(l=>`<option value="${l.id}" ${this.shopQualityFilter===l.id?"selected":""}>${l.name}</option>`).join("")}
+            </select>
+        `;const a=this.elShopQualityFilterNav.querySelector("#shop-quality-select");a.onchange=l=>{this.shopQualityFilter=l.target.value,this.renderShop()}}renderShopBuy(){const n=t.systems.shop;let i=n.getShopInventory();if(this.elShopBuyView.innerHTML="",this.shopSearchQuery&&(i=i.filter(s=>{const e=x(s.id);return e&&e.name.toLowerCase().includes(this.shopSearchQuery)})),this.shopSubFilter!=="all"&&(i=i.filter(s=>{var a;const e=x(s.id);if(!e)return!1;if(n.currentSection==="phap_bao")return e.type===this.shopSubFilter;if(n.currentSection==="cong_phap"){const l=e.action&&(e.action.startsWith("open_")||e.action.includes("linh_the_luc")||((a=e.effect)==null?void 0:a.type)==="unlock_profession"),r=(e.type==="book"||e.type==="technique")&&!l,o=e.type==="recipe"||e.type==="talisman_recipe"||l;if(this.shopSubFilter==="cultivation")return r;if(this.shopSubFilter==="manual")return o}else if(["bach_nghe","ky_vat"].includes(n.currentSection))return(C[n.currentShopId].sections[this.shopSubFilter]||[]).some(o=>o.id===s.id);return!0})),this.shopQualityFilter!=="all"&&(i=i.filter(s=>{const e=x(s.id);return e&&e.quality===this.shopQualityFilter})),this.shopSortMode!=="default"&&i.sort((s,e)=>{const a=x(s.id),l=x(e.id);if(!a||!l)return 0;if(this.shopSortMode==="price-asc")return a.price-l.price;if(this.shopSortMode==="price-desc")return l.price-a.price;if(this.shopSortMode==="quality"){const r=["Phàm Khí","Pháp Khí","Linh Khí","Pháp Bảo","Cổ Bảo","Linh Bảo","Thông Thiên Linh Bảo","Tiên Khí","Danh Khí","Hạ phẩm","Trung phẩm","Thượng phẩm","Cực phẩm","Hoàn Mỹ"];return r.indexOf(l.quality)-r.indexOf(a.quality)}return 0}),i.length===0){this.elShopBuyView.innerHTML='<div class="text-center py-10 text-gray-600 italic text-xs">Không tìm thấy bảo vật phù hợp...</div>';return}i.forEach(s=>{const e=x(s.id);if(!e)return;const a=this.getQualityClass(e.quality),l=document.createElement("div");l.className=`flex items-center justify-between p-3 bg-black/40 border border-gray-800 rounded-xl hover:border-${a} cursor-pointer transition-colors duration-200`,l.onclick=()=>{window.game.screens.inventory&&window.game.screens.inventory.selectItem(s.id,!0)};const r=document.createElement("div");r.className="flex items-center space-x-3",r.innerHTML=`
+                <div class="text-2xl bg-black/60 p-2 rounded-lg border border-${a}/30">${e.image?`<img src="${T(e.image)}" class="w-8 h-8 object-contain">`:e.icon||""}</div>
+                <div>
+                    <div class="text-sm font-bold text-white">${e.name}</div>
+                    <div class="text-[9px] font-bold quality-${a}">${e.quality}${e.quality.toLowerCase().includes("khí")||e.quality.toLowerCase().includes("bảo")||e.quality.toLowerCase().includes("phẩm")||e.quality.toLowerCase().includes("giai")||e.quality.toLowerCase().includes("hỏa")||e.quality.toLowerCase().includes("lôi")||["Hoàn Mỹ","Tiên Khí","Linh Bảo","Danh Khí"].includes(e.quality)?"":" phẩm"} | Kho: ${s.stock}</div>
+                </div>
+            `;const o=Math.floor(e.price*(1-Math.min(.25,t.player.vipLevel*.05))),d=s.minVip&&t.player.vipLevel<s.minVip,p=document.createElement("div");p.className="flex items-center space-x-3",p.innerHTML=`
+                <div class="text-right">
+                    <div class="text-[8px] text-gray-500 line-through">${e.price} LT</div>
+                    <div class="text-xs font-mono text-cultivation-gold whitespace-nowrap">${o} LT</div>
+                    ${d?`<div class="text-[7px] text-red-500 font-bold uppercase animate-pulse">Yêu cầu VIP ${s.minVip}</div>`:""}
+                </div>
+            `;const u=document.createElement("button"),h=s.stock<=0;u.className=`px-3 py-1.5 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap ${h||d?"opacity-50 grayscale pointer-events-none":""}`,u.innerHTML='<i class="ph ph-shopping-cart-simple mr-1"></i>TRAO ĐỔI',u.onclick=c=>{c.stopPropagation(),window.game.buyItem(s.id)},p.appendChild(u),l.appendChild(r),l.appendChild(p),this.elShopBuyView.appendChild(l)})}renderShopSell(){if(this.elShopSellGrid.innerHTML="",!t.player||!t.player.inventory)return;const n=t.systems.shop.currentSection,i=this.shopSubFilter;let s=[...t.player.inventory.allItems];if(this.shopSearchQuery&&(s=s.filter(e=>{const a=x(e.id);return a&&a.name.toLowerCase().includes(this.shopSearchQuery)})),s=s.filter(e=>{var p;const a=x(e.id);if(!a)return!1;const l={dan_duoc:["consumable"],phap_bao:["weapon","armor","accessory","treasure","head","necklace","shoes","attackArtifact","defenseArtifact","flightArtifact","spaceArtifact","formationArtifact","supportArtifact","soulArtifact"],nguyen_lieu:["material","herb","ore","wood"],cong_phap:["book","technique","recipe","talisman_recipe","consumable"],tran_phap:["formation"],phu_luc:["talisman"],luyen_khi:["material","smithing_tool"],tui_tru_vat:["consumable"],ky_trung:["consumable"],linh_thu:["supportArtifact"]},d=({dan_duoc:["dan_duoc"],phap_bao:["phap_bao"],cong_phap:["cong_phap"],bach_nghe:["nguyen_lieu","phu_luc","tran_phap","luyen_khi","linh_dien"],ky_vat:["tui_tru_vat","ky_trung","linh_thu"]}[n]||[n]).flatMap(u=>l[u]||[]);if(d.length>0&&!d.includes(a.type))return!1;if(n==="cong_phap"){const u=a.action&&(a.action.startsWith("open_")||a.action.includes("linh_the_luc")),h=(a.type==="book"||a.type==="technique")&&!u,c=a.type==="recipe"||a.type==="talisman_recipe"||a.type==="consumable"&&((p=a.effect)==null?void 0:p.type)==="unlock_profession"||u;if(i==="cultivation"&&!h||i==="manual"&&h||i==="manual"&&!c&&!h||i==="all"&&!h&&!c)return!1}return!(["bach_nghe","ky_vat"].includes(n)&&i!=="all"&&(!l[i]||!l[i].includes(a.type))||n==="phap_bao"&&i!=="all"&&a.type!==i||i==="tui_tru_vat"&&a.action!=="expand_inventory"||this.shopQualityFilter!=="all"&&a.quality!==this.shopQualityFilter)}),this.shopSortMode!=="default"&&s.sort((e,a)=>{const l=x(e.id),r=x(a.id);if(!l||!r)return 0;if(this.shopSortMode==="price-asc")return l.price-r.price;if(this.shopSortMode==="price-desc")return r.price-l.price;if(this.shopSortMode==="quality"){const o=["Phàm Khí","Pháp Khí","Linh Khí","Pháp Bảo","Cổ Bảo","Linh Bảo","Thông Thiên Linh Bảo","Tiên Khí","Danh Khí","Hạ phẩm","Trung phẩm","Thượng phẩm","Cực phẩm","Hoàn Mỹ"];return o.indexOf(r.quality)-o.indexOf(l.quality)}return 0}),s.length===0){this.elShopSellGrid.innerHTML='<div class="col-span-4 text-center py-10 text-gray-600 italic text-xs">Không có bảo vật nào để giao dịch...</div>';return}s.forEach(e=>{const a=x(e.id);if(!a)return;const l=this.getQualityClass(a.quality);let r=.5;["material","herb","ore","wood"].includes(a.type)&&(r=.3);const o=document.createElement("div");o.className=`p-2 border border-gray-800 rounded-lg bg-black/20 flex flex-col items-center cursor-pointer hover:border-${l} transition-colors duration-200 active:scale-95`,o.innerHTML=`
+                <div class="text-2xl mb-1">${a.image?`<img src="${T(a.image)}" class="w-8 h-8 object-contain">`:a.icon||""}</div>
+                <div class="text-[9px] text-gray-400">x${e.quantity}</div>
+                <div class="text-[8px] text-cultivation-gold mt-1">${Math.floor(a.price*r)} LT</div>
+            `,o.onclick=()=>{window.game.screens.inventory&&window.game.screens.inventory.selectItem(e.id,!1,!0)},this.elShopSellGrid.appendChild(o)})}renderGuild(){t.player&&(this.elGuildCerts.innerHTML="",this.elGuildMissions=document.getElementById("guild-mission-list"),this.elGuildRooms=document.getElementById("guild-room-list"),j.forEach(n=>{var e;const i=t.player.alchemyLevel<n.requirements.alchemyLevel,s=document.createElement("div");s.className="p-4 border border-white/5 rounded-xl bg-white/5 flex justify-between items-center",s.innerHTML=`
+                <div>
+                    <h4 class="text-sm font-ancient text-white">${n.name}</h4>
+                    <p class="text-[10px] text-gray-500">Phí: ${n.requirements.fee} LT | Cần luyện: ${n.task.quantity} ${((e=x(n.task.targetId))==null?void 0:e.name)||"đan dược"}</p>
+                </div>
+                <button class="px-3 py-1.5 bg-qi-blue text-black text-[10px] font-bold rounded-lg ${i?"opacity-50":""}" 
+                    onclick="window.game.guildCertify(${n.level})">KHẢO HẠCH</button>
+            `,this.elGuildCerts.appendChild(s)}),this.elGuildMissions&&(this.elGuildMissions.innerHTML="",K.forEach(n=>{const i=document.createElement("div");i.className="p-4 border border-white/5 rounded-xl bg-white/5 space-y-2",i.innerHTML=`
+                    <div class="flex justify-between items-center">
+                        <h4 class="text-sm font-ancient text-white">${n.name}</h4>
+                        <button class="px-3 py-1 bg-qi-purple text-white text-[10px] font-bold rounded-lg" 
+                            onclick="window.game.guildMission('${n.id}')">GIAO NỘP</button>
+                    </div>
+                    <p class="text-[10px] text-gray-400 italic">${n.description}</p>
+                    <p class="text-[9px] text-cultivation-gold">Thưởng: ${n.rewards.lingShi} LT | Danh vọng: ${n.rewards.reputation}</p>
+                `,this.elGuildMissions.appendChild(i)})),this.elGuildRooms&&(this.elGuildRooms.innerHTML="",F.forEach(n=>{const i=t.player.currentAlchemyRoom===n.id,s=document.createElement("div");s.className=`p-4 border border-white/5 rounded-xl bg-white/5 flex justify-between items-center ${i?"border-cultivation-gold":""}`,s.innerHTML=`
+                    <div>
+                        <h4 class="text-sm font-ancient text-white">${n.name} ${i?"⭐":""}</h4>
+                        <p class="text-[10px] text-gray-500">Phí thuê: ${n.fee} LT | Tăng ${n.successBonus*100}% thành công</p>
+                    </div>
+                    <button class="px-3 py-1.5 ${i?"bg-gray-800":"bg-cultivation-gold"} text-black text-[10px] font-bold rounded-lg" 
+                        onclick="window.game.guildRent('${n.id}')">${i?"ĐANG THUÊ":"THUÊ"}</button>
+                `,this.elGuildRooms.appendChild(s)})))}renderTower(){const n=document.getElementById("tower-floor-list");n&&(n.innerHTML="",ee.forEach(i=>{const s=t.player.alchemyLevel<i.minAlchemyLevel,e=document.createElement("div");e.className=`p-6 border border-white/5 rounded-2xl bg-white/5 space-y-3 ${s?"opacity-40":"hover:border-cultivation-gold/50 cursor-pointer"}`,e.innerHTML=`
+                <div class="flex justify-between items-center">
+                    <h4 class="text-lg font-ancient text-cultivation-gold">${i.name}</h4>
+                    ${s?`<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${i.minAlchemyLevel}</span>`:'<i class="ph ph-caret-right text-gray-500"></i>'}
+                </div>
+                <p class="text-xs text-gray-400">${i.description}</p>
+            `,s||(e.onclick=()=>t.ui.toast(`Đang tiến vào ${i.name}...`,"success")),n.appendChild(e)}))}renderMountain(){const n=document.getElementById("mountain-layer-name"),i=document.getElementById("mountain-layer-desc"),s=document.getElementById("mountain-layer-progress-text"),e=document.getElementById("mountain-layer-progress-bar"),a=document.getElementById("mountain-oxygen-text"),l=document.getElementById("mountain-oxygen-bar"),r=document.getElementById("mountain-toxicity-text"),o=document.getElementById("mountain-toxicity-bar");if(document.getElementById("mountain-event-log"),!t.player.mountainSurvival)return;const d=t.systems.mountain,p=G.find(m=>m.id===d.currentLayer),u=R.find(m=>m.id===p.tier);if(n){const m={ngoai_son:"text-green-400",trung_son:"text-blue-400",noi_son:"text-purple-400",cam_khu:"text-red-500"}[p.tier]||"text-red-400";n.innerHTML=`<span class="text-[10px] block opacity-60 uppercase tracking-tighter">${u.name}</span>${p.name}`,n.className=`text-2xl font-ancient ${m} mb-1`}i&&(i.textContent=p.description);const h=d.discovery[d.currentLayer]||0;s&&(s.textContent=`${Math.floor(d.layerProgress)}% (Khám phá: ${Math.floor(h)}%)`),e&&(e.style.width=`${d.layerProgress}%`),a&&(a.textContent=`${Math.ceil(t.player.mountainSurvival.oxygen)}%`),l&&(l.style.width=`${t.player.mountainSurvival.oxygen}%`),r&&(r.textContent=`${Math.ceil(t.player.mountainSurvival.toxicity)}%`),o&&(o.style.width=`${t.player.mountainSurvival.toxicity}%`);const c=document.getElementById("btn-mountain-deeper");if(c){const m=d.bossDefeated[p.tier];d.layerProgress>=100&&!m?c.innerHTML='<span class="relative z-10 text-xs font-bold text-red-500 uppercase tracking-[0.2em] animate-pulse">KHIÊU CHIẾN THỦ LĨNH</span>':c.innerHTML='<span class="relative z-10 text-xs font-bold text-red-400 uppercase tracking-[0.2em]">TẦNG KẾ TIẾP</span>'}t.player.hp<=0&&(t.systems.mountain.stop(),t.ui.toggleOverlay(document.getElementById("mountain-overlay"),!1))}renderSects(){const n=document.getElementById("sects-view");if(n)if(n.innerHTML="",t.player.sectId){const i=D(t.player.sectId);n.innerHTML=`
+                <div class="bg-white/5 rounded-2xl border border-qi-blue/30 overflow-hidden">
+                    <div class="h-32 relative">
+                        <img src="${i.portrait||f.backgrounds.sect}" class="w-full h-full object-cover opacity-40">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <h3 class="text-2xl font-ancient text-white">${i.name}</h3>
+                            <p class="text-[10px] text-qi-blue uppercase">Đệ tử nội môn</p>
+                        </div>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-500">Điểm cống hiến:</span>
+                            <span class="text-cultivation-gold">${t.player.sectContribution||0}</span>
+                        </div>
+                        <h4 class="text-xs font-ancient text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2">Ủy Thác Tông Môn</h4>
+                        <div class="space-y-3">
+                            ${i.missions.map(s=>`
+                                <div class="p-3 bg-black/40 rounded-lg border border-white/5 flex justify-between items-center">
+                                    <div>
+                                        <div class="text-sm font-bold">${s.name}</div>
+                                        <div class="text-[9px] text-gray-500">${s.desc}</div>
+                                    </div>
+                                    <button class="px-4 py-2 bg-qi-purple/10 text-qi-purple text-[10px] font-bold rounded-lg flex items-center justify-center border border-qi-purple/20" onclick="window.game.doMission('${s.id}')">
+                                        <i class="ph ph-scroll mr-1"></i>LÀM
+                                    </button>
+                                </div>
+                            `).join("")}
+                        </div>
+                    </div>
+                </div>
+            `}else Object.values(V).forEach(i=>{const s=t.player.realmId>=i.minRealm,e=document.createElement("div");e.className=`p-4 border rounded-xl bg-black/40 space-y-3 ${s?"border-gray-800":"opacity-50 grayscale"}`,e.innerHTML=`
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-ancient text-white">${i.name}</h3>
+                        <span class="text-[10px] ${s?"text-qi-blue":"text-red-500"}">${s?"Có thể bái nhập":"Cần: "+O(i.minRealm).name}</span>
+                    </div>
+                    <p class="text-xs text-gray-500">${i.description}</p>
+                    <button class="w-full py-3 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-xl flex items-center justify-center ${s?"":"hidden"}" onclick="window.game.joinSect('${i.id}')">
+                        <i class="ph ph-identification-badge mr-2"></i>BÁI NHẬP TÔNG MÔN
+                    </button>
+                `,n.appendChild(e)})}renderEnergy(){if(!t.player)return;const n=document.getElementById("env-energy-list"),i=document.getElementById("env-purity-tag");if(n&&t.currentLocId){const e=U(t.currentWorldId,t.currentLocId);if(e&&e.energies){if(i&&e.energies.length>0){const a=e.energies[0].purity||"TINH_THUAN",l=t.systems.energy.getPurity(a);i.textContent=l.name}n.innerHTML=e.energies.map(a=>{const l=t.systems.energy.getEnergyType(a.type);return`
+                        <div class="flex flex-col items-center space-y-1">
+                            <span class="text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]">${l.icon}</span>
+                            <div class="flex flex-col items-center">
+                                <span class="text-[9px] text-white font-mono font-bold">${a.concentration}%</span>
+                                <span class="text-[7px] text-gray-500 font-ancient uppercase tracking-widest">${l.name}</span>
+                            </div>
+                        </div>
+                    `}).join("")}else n.innerHTML=""}const s=document.getElementById("char-energy-list");if(s){const e=Object.entries(t.player.qiAccumulated).filter(([a,l])=>l.amount>0);e.length===0?s.innerHTML='<div class="text-[9px] text-gray-600 italic">Chưa có khí tức tích lũy</div>':s.innerHTML=e.map(([a,l])=>{const r=t.systems.energy.getEnergyType(a),o=t.systems.energy.getPurity(l.purity),d=Math.log10(l.amount+1);return`
+                        <div class="p-2 bg-white/5 border border-white/10 rounded-lg flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm">${r.icon}</span>
+                                <div>
+                                    <div class="text-[9px] font-bold text-white font-ancient">${r.name}</div>
+                                    <div class="text-[7px] text-qi-blue uppercase">${o.name}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[8px] font-mono text-gray-400">${Math.floor(l.amount).toLocaleString()} Qi</div>
+                                <div class="text-[7px] text-cultivation-gold">+${(d*10).toFixed(1)} Bonus</div>
+                            </div>
+                        </div>
+                    `}).join("")}}getQualityClass(n){return{"Phàm Khí":"pham-khi","Pháp Khí":"phap-khi","Linh Khí":"linh-khi","Pháp Bảo":"phap-bao","Cổ Bảo":"co-bao","Linh Bảo":"linh-bao","Thông Thiên Linh Bảo":"thong-thien","Tiên Khí":"tien-khi","Danh Khí":"danh-khi","Hạ phẩm":"pham","Trung phẩm":"hoang","Thượng phẩm":"huyen","Cực phẩm":"dia","Hoàn Mỹ":"thien"}[n]||"pham"}renderSmithing(){const n=document.getElementById("smithing-recipes");if(!n)return;n.innerHTML="";const i=document.getElementById("smithing-tool-name"),s=document.getElementById("smithing-flame-name");if(i){const r=t.player.smithingTool?x(t.player.smithingTool):null;r?i.innerHTML=`<span class="text-white">${r.name}</span>`:i.innerHTML=`<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'luyen_khi')" class="ml-2 text-[8px] text-red-400 underline hover:text-white transition-colors">MUA NGAY</button>`}if(s){const r=$(t.player.currentFlame);r?s.innerHTML=`<span class="text-white">${r.name}</span>`:s.innerHTML=`<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'phap_bao')" class="ml-2 text-[8px] text-red-400 underline hover:text-white transition-colors">MUA NGAY</button>`}const e=B(t.player.smithingLevel),a=document.getElementById("smithing-level-text");a&&(a.textContent=e.name);const l=Object.values(Q).filter(r=>t.player.knownSmithingRecipes.includes(r.id));if(l.length===0){n.innerHTML='<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ được bản vẽ nào...</div>';return}l.forEach(r=>{const o=x(r.id);if(!o)return;const d=this.getQualityClass(o.quality),p=document.createElement("div");p.className="p-4 border border-gray-800 rounded-2xl bg-white/5 space-y-3";let u="";r.materials.forEach(c=>{var b;const m=x(c.id),y=((b=t.player.inventory.allItems.find(v=>v.id===c.id))==null?void 0:b.quantity)||0,g=y>=c.quantity;u+=`<div class="text-[10px] ${g?"text-gray-400":"text-red-500"}">${(m==null?void 0:m.name)||c.id}: ${y}/${c.quantity}</div>`});const h=t.player.smithingLevel<r.level;p.innerHTML=`
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <span class="text-xl mr-2">${o.image?`<img src="${T(o.image)}" class="w-6 h-6 object-contain inline-block">`:o.icon||""}</span>
+                        <span class="font-bold quality-${d} font-ancient">${o.name}</span>
+                    </div>
+                    ${h?`<span class="text-[8px] text-red-500 uppercase font-ancient">Cần Cấp ${r.level}</span>`:`<button class="px-4 py-2 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap" onclick="window.game.forge('${r.id}')">${r.type==="bag_upgrade"?"NÂNG CẤP":"RÈN ĐÚC"}</button>`}
+                </div>
+                <div class="grid grid-cols-2 gap-1">${u}</div>
+                <div class="text-[9px] text-gray-500 italic">Thể lực: ${r.staminaCost} | Linh lực: ${r.manaCost}</div>
+            `,n.appendChild(p)})}openCrafting(n){if(!t.player)return;if(!t.player.unlockedProfessions.includes(n)){t.ui.toast("Ngươi chưa nắm vững bí pháp của nghề này!","error");return}const e={alchemy:"screen-alchemy",smithing:"screen-smithing",talisman:"screen-talisman",formation:"screen-formation",beast:"screen-beast",puppet:"screen-puppet",corpse:"screen-corpse"}[n];e&&(t.ui.switchScreen(e),n==="alchemy"&&this.renderAlchemy(),n==="smithing"&&this.renderSmithing(),n==="talisman"&&this.renderTalisman(),n==="formation"&&this.renderFormation(),n==="beast"&&this.renderBeast(),n==="puppet"&&this.renderPuppet(),n==="corpse"&&this.renderCorpse())}openCraftingHub(){["screen-alchemy","screen-talisman","screen-smithing","screen-formation","screen-corpse","screen-beast","screen-puppet"].forEach(s=>{const e=document.getElementById(s);e&&(e.classList.add("hidden"),e.classList.remove("flex"))});const i=document.getElementById("screen-crafting-hub");i&&(i.classList.remove("hidden"),i.classList.add("flex"))}renderPuppet(){if(!t.player)return;const n=document.getElementById("puppet-level-text"),i=document.getElementById("puppet-exp-bar"),s=document.getElementById("puppet-list");if(n&&(n.textContent=`Khôi Lỗi Sư - Cấp ${t.player.puppetLevel}`),i){const e=Math.max(1,t.player.puppetLevel*100*Math.pow(1.5,t.player.puppetLevel-1));i.style.width=`${Math.min(100,t.player.puppetExp/e*100)}%`}if(s){s.innerHTML="";const e=Y.filter(a=>t.player.knownPuppetRecipes.includes(a.id));if(e.length===0){s.innerHTML='<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa có bản thiết kế khôi lỗi nào...</div>';return}e.forEach(a=>{const l=document.createElement("div");l.className="p-5 border border-white/5 rounded-3xl bg-white/[0.02] space-y-4 group hover:border-qi-blue/30 transition-all";let r="";a.materials.forEach(p=>{var m;const u=x(p.id),h=((m=t.player.inventory.allItems.find(y=>y.id===p.id))==null?void 0:m.quantity)||0,c=h>=p.quantity;r+=`
+                        <div class="flex justify-between items-center bg-black/20 p-2 rounded-xl border ${c?"border-white/5":"border-red-500/20"}">
+                            <span class="text-[10px] text-gray-400">${(u==null?void 0:u.name)||p.id}</span>
+                            <span class="text-[10px] font-mono ${c?"text-qi-jade":"text-red-500"}">${h}/${p.quantity}</span>
+                        </div>
+                    `});const o=t.player.puppetLevel<a.skillLevel,d=f.puppets[a.id];l.innerHTML=`
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center overflow-hidden border border-white/10 group-hover:scale-110 transition-transform">
+                                ${d?`<img src="${d}" class="w-full h-full object-cover">`:"🤖"}
+                            </div>
+                            <div>
+                                <h4 class="font-ancient text-white text-lg">${a.name}</h4>
+                                <div class="flex space-x-2 mt-1">
+                                    <span class="text-[8px] px-2 py-0.5 bg-qi-blue/10 text-qi-blue rounded-full border border-qi-blue/20 uppercase font-bold">${W[a.grade].name}</span>
+                                    <span class="text-[8px] px-2 py-0.5 bg-white/5 text-gray-500 rounded-full border border-white/10 uppercase font-bold">${a.type}</span>
+                                </div>
+                            </div>
+                        </div>
+                        ${o?`<div class="text-[9px] text-red-500 font-bold uppercase py-2">Cần Cấp ${a.skillLevel}</div>`:`<button class="px-5 py-2.5 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue text-[10px] font-bold rounded-xl border border-qi-blue/20 active:scale-95 transition-all" onclick="window.game.craftPuppet('${a.id}')">LUYỆN CHẾ</button>`}
+                    </div>
+                    <p class="text-[10px] text-gray-500 italic leading-relaxed">${a.description}</p>
+                    <div class="grid grid-cols-2 gap-2">${r}</div>
+                `,s.appendChild(l)})}}renderTalisman(){if(!t.player)return;const n=k(t.player.talismanLevel),i=document.getElementById("talisman-level-text"),s=document.getElementById("talisman-exp-bar"),e=document.getElementById("talisman-recipes");if(i&&(i.textContent=n.name),s){const l=Math.max(1,t.player.talismanLevel*100*Math.pow(1.5,t.player.talismanLevel-1));s.style.width=`${Math.min(100,t.player.talismanExp/l*100)}%`}const a=document.getElementById("current-pen-name");if(a){const l=t.player.currentTalismanPen?x(t.player.currentTalismanPen):null;l?a.innerHTML=`<span class="text-white">${l.name}</span>`:a.innerHTML=`<span class="text-gray-500 italic">Chưa có</span> <button onclick="window.game.openShop('buy', 'van_bao_cac', 'phu_luc')" class="ml-2 text-[8px] text-qi-blue underline hover:text-white transition-colors">MUA NGAY</button>`}if(e){e.innerHTML="";const l=Object.values(z).filter(r=>t.player.knownTalismanRecipes.includes(r.id));if(l.length===0){e.innerHTML='<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ được phù văn nào...</div>';return}l.forEach(r=>{const o=document.createElement("div");o.className="p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3";let d="";r.materials.forEach(u=>{var m;const h=x(u.id),c=((m=t.player.inventory.allItems.find(y=>y.id===u.id))==null?void 0:m.quantity)||0;d+=`<div class="text-[9px] ${c>=u.quantity?"text-gray-400":"text-red-500"}">${h.name} x${u.quantity} (${c})</div>`});const p=t.player.talismanLevel<r.level;o.innerHTML=`
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-bold text-qi-blue">${r.name}</h4>
+                        ${p?`<span class="text-[8px] text-red-500 uppercase">Cần Cấp ${r.level}</span>`:`<button class="px-3 py-1 bg-qi-blue/10 text-qi-blue text-[10px] rounded border border-qi-blue/20" onclick="window.game.drawTalisman('${r.id}')">VẼ PHÙ</button>`}
+                    </div>
+                    <div class="grid grid-cols-2 gap-1 mb-2">${d}</div>
+                    <div class="text-[8px] text-gray-500 italic">Mana: ${r.manaCost} | Stamina: ${r.staminaCost}</div>
+                `,e.appendChild(o)})}}renderBeast(){if(!t.player)return;const n=document.getElementById("beast-list-view"),i=document.getElementById("beast-hatch-view"),s=document.getElementById("beast-tab-beast"),e=document.getElementById("beast-tab-insect"),a=document.getElementById("beast-tab-hatch");t.views.beast||(t.views.beast="beast"),t.views.beast==="hatch"?(n&&n.classList.add("hidden"),i&&i.classList.remove("hidden")):(n&&n.classList.remove("hidden"),i&&i.classList.add("hidden"));const l=["bg-qi-jade/10","text-qi-jade","border-qi-jade/20"],r=["bg-transparent","text-gray-500","border-transparent"];[s,e,a].forEach(h=>{if(h){h.classList.remove(...l,...r);const c=h===s&&t.views.beast==="beast"||h===e&&t.views.beast==="insect"||h===a&&t.views.beast==="hatch";h.classList.add(...c?l:r)}});const o=document.getElementById("beast-level-text"),d=document.getElementById("beast-exp-bar"),p=t.views.beast==="insect"?t.player.insectLevel:t.player.beastLevel,u=t.views.beast==="insect"?t.player.insectExp:t.player.beastExp;if(o&&(o.textContent=`Cấp ${p}`),d){const h=Math.max(1,p*100*Math.pow(1.5,p-1));d.style.width=`${Math.min(100,u/h*100)}%`}if(n&&t.views.beast!=="hatch"){n.innerHTML="";const h=t.player.beasts.filter(c=>{const m=M[c.id];return m?t.views.beast==="beast"?[w.LINH_THU,w.DI_THU,w.THAN_THU].includes(m.type):t.views.beast==="insect"?[w.LINH_TRUNG,w.KY_TRUNG].includes(m.type):!0:!1});if(h.length===0){const c=t.views.beast==="beast"?"linh thú":"kỳ trùng";n.innerHTML=`<div class="text-center py-10 text-gray-600 italic">Ngươi chưa có ${c} nào...</div>`}else h.forEach(c=>{const m=M[c.id],y=q(c.level),g=J[c.bloodline],b=f.beasts[c.id],v=document.createElement("div");v.className="p-4 border border-white/5 rounded-2xl bg-white/[0.02] flex items-center space-x-4",v.innerHTML=`
+                        <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center overflow-hidden border border-white/10 flex-shrink-0">
+                            ${b?`<img src="${b}" class="w-full h-full object-cover">`:`<span class="text-3xl">${(m==null?void 0:m.icon)||"🐾"}</span>`}
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-white">${c.name}</h4>
+                                <span class="text-[9px] font-bold" style="color: ${g.color}">${g.name}</span>
+                            </div>
+                            <div class="text-[9px] text-gray-500 mt-0.5">Cấp ${c.level} (${y.name})</div>
+                            <div class="w-full h-1 bg-white/5 rounded-full mt-1 overflow-hidden">
+                                <div class="h-full bg-qi-jade" style="width: ${c.exp/y.expRequired*100}%"></div>
+                            </div>
+                        </div>
+                    `,n.appendChild(v)})}if(i&&t.views.beast==="hatch"){i.innerHTML="";const h=t.player.inventory.allItems.filter(c=>x(c.id).type==="beast_egg");h.length===0?i.innerHTML='<div class="text-center py-10 text-gray-600 italic">Ngươi không có trứng linh thú nào...</div>':h.forEach(c=>{const m=x(c.id),y=document.createElement("div");y.className="p-4 border border-white/5 rounded-2xl bg-white/[0.02] flex justify-between items-center",y.innerHTML=`
+                        <div class="flex items-center space-x-3">
+                            <div class="text-2xl">${m.icon}</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">${m.name}</h4>
+                                <p class="text-[9px] text-gray-500">Số lượng: ${c.quantity}</p>
+                            </div>
+                        </div>
+                        <button class="px-4 py-2 bg-qi-jade/10 text-qi-jade text-[10px] rounded-xl border border-qi-jade/20" onclick="window.game.hatchBeast('${c.id}')">ẤP NỞ</button>
+                    `,i.appendChild(y)})}s&&(s.onclick=()=>{t.views.beast="beast",this.renderBeast()}),e&&(e.onclick=()=>{t.views.beast="insect",this.renderBeast()}),a&&(a.onclick=()=>{t.views.beast="hatch",this.renderBeast()})}renderCraftingHub(){if(!t.player)return;[{id:"alchemy",key:"alchemy",name:"Luyện Dược Sư",level:t.player.alchemyLevel,exp:t.player.alchemyExp,getLevelInfo:S},{id:"talisman",key:"talisman",name:"Phù Sư",level:t.player.talismanLevel,exp:t.player.talismanExp,getLevelInfo:k},{id:"smithing",key:"smithing",name:"Luyện Khí Sư",level:t.player.smithingLevel,exp:t.player.smithingExp,getLevelInfo:B},{id:"formation",key:"formation",name:"Trận Pháp Sư",level:t.player.formationLevel,exp:t.player.formationExp,getLevelInfo:i=>({name:`Cấp ${i}`})},{id:"puppet",key:"puppet",name:"Khôi Lỗi Sư",level:t.player.puppetLevel,exp:t.player.puppetExp,getLevelInfo:i=>({name:`Cấp ${i}`})},{id:"corpse",key:"corpse",name:"Luyện Thi Sư",level:t.player.corpseLevel,exp:t.player.corpseExp,getLevelInfo:i=>({name:`Cấp ${i}`})},{id:"beast",key:"beast",name:"Ngự Thú Sư",level:t.player.beastLevel,exp:t.player.beastExp,getLevelInfo:q},{id:"insect",key:"insect",name:"Khu Trùng Sư",level:t.player.insectLevel,exp:t.player.insectExp,getLevelInfo:i=>({name:`Cấp ${i}`})}].forEach(i=>{const s=document.getElementById(`hub-${i.id}-level`),e=s==null?void 0:s.closest(".hub-card");if(!s||!e)return;const a=t.player.unlockedProfessions.includes(i.id);e.onclick=()=>window.game.openCrafting(i.id);const l={alchemy:"Đan Đạo Chân Giải",talisman:"Thái Thượng Phù Kinh",smithing:"Luyện Khí Tổng Cương",formation:"Trận Đạo Thiên Thư",puppet:"Cơ Quan Linh Kỹ",corpse:"Cửu U Luyện Thi Thuật",beast:"Vạn Thú Ngự Pháp",insect:"Thiên Trùng Bí Lục"};if(a){const r=i.getLevelInfo?i.getLevelInfo(i.level):{name:`Cấp ${i.level}`},o=i.level*100*Math.pow(1.5,i.level-1),d=Math.floor(i.exp/o*100);s.innerHTML=`${i.name} - ${r.name} <span class="text-white/30 ml-2">(${d}%)</span>`,e.classList.remove("opacity-40","grayscale"),e.classList.add("cursor-pointer")}else s.innerHTML=`
+                    <div class="flex flex-col">
+                        <span class="text-red-500/60 flex items-center"><i class="ph ph-lock-key mr-1"></i> Chưa mở khóa</span>
+                        <span class="text-[7px] text-gray-600 italic mt-0.5">Cần: « ${l[i.id]} »</span>
+                    </div>
+                `,e.classList.add("opacity-40","grayscale"),e.classList.remove("cursor-pointer")})}renderFormation(){if(!t.player)return;const n=document.getElementById("formation-list");if(!n)return;if(n.innerHTML="",t.player.activeFormations.length>0){const e=document.createElement("h3");e.className="text-[10px] text-gray-500 uppercase tracking-widest mb-2",e.textContent="Trận Pháp Đang Hoạt Động",n.appendChild(e),t.player.activeFormations.forEach(a=>{const l=document.createElement("div");l.className="p-4 border border-qi-purple/30 rounded-2xl bg-qi-purple/5 mb-4 flex justify-between items-center",l.innerHTML=`
+                    <div>
+                        <h4 class="font-bold text-qi-purple">${a.name}</h4>
+                        <p class="text-[9px] text-gray-500 mt-1">Đang kích hoạt...</p>
+                    </div>
+                    <button class="px-4 py-2 bg-red-500/10 text-red-500 text-[10px] rounded-xl border border-red-500/20" onclick="window.game.deactivateFormation('${a.id}')">THU HỒI</button>
+                `,n.appendChild(l)})}const i=t.player.knownFormations||[],s=document.createElement("h3");if(s.className="text-[10px] text-gray-500 uppercase tracking-widest mt-6 mb-2",s.textContent="Trận Đồ Đã Lĩnh Ngộ",n.appendChild(s),i.length===0){const e=document.createElement("div");e.className="text-center py-6 text-gray-700 italic text-xs",e.textContent="Trống rỗng...",n.appendChild(e)}else i.forEach(e=>{const a=x(e);if(!a)return;const l=t.player.activeFormations.some(o=>o.id===e),r=document.createElement("div");r.className="p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 flex justify-between items-center",r.innerHTML=`
+                    <div class="flex items-center space-x-3">
+                        <div class="text-2xl">${a.icon||"📜"}</div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">${a.name}</h4>
+                            <p class="text-[9px] text-gray-500">${a.description||""}</p>
+                        </div>
+                    </div>
+                    ${l?'<span class="text-[9px] text-qi-purple font-bold">ĐÃ KÍCH HOẠT</span>':`<button class="px-4 py-2 bg-qi-purple/10 text-qi-purple text-[10px] rounded-xl border border-qi-purple/20" onclick="window.game.activateFormation('${e}')">KÍCH HOẠT</button>`}
+                `,n.appendChild(r)})}renderCorpse(){if(!t.player)return;const n=document.getElementById("corpse-list"),i=document.getElementById("corpse-level-text"),s=document.getElementById("corpse-exp-bar");if(i&&(i.textContent=X(t.player.corpseLevel).name),s){const l=t.player.corpseLevel*100*Math.pow(1.5,t.player.corpseLevel-1);s.style.width=`${t.player.corpseExp/l*100}%`}if(!n)return;if(n.innerHTML="",t.player.refinedCorpses.length>0){const l=document.createElement("h3");l.className="text-[10px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-1",l.textContent="Thi Hài Đang Khống Chế",n.appendChild(l),t.player.refinedCorpses.forEach((r,o)=>{const d=f.corpses[r.id],p=document.createElement("div");p.className="p-4 border border-red-900/30 rounded-2xl bg-red-900/5 mb-4 flex items-center space-x-4",p.innerHTML=`
+                    <div class="w-12 h-12 bg-red-950/20 rounded-2xl flex items-center justify-center overflow-hidden border border-red-900/20 flex-shrink-0">
+                        ${d?`<img src="${d}" class="w-full h-full object-cover">`:'<span class="text-3xl">🧟</span>'}
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-red-400">${r.name}</h4>
+                            <span class="text-[9px] px-2 py-0.5 bg-red-500/10 text-red-500 rounded border border-red-500/20 font-bold uppercase">${r.quality}</span>
+                        </div>
+                        <div class="text-[9px] text-gray-500 mt-1">Cấp ${r.level} | ATK: ${r.stats.atk} | HP: ${r.stats.hp}</div>
+                    </div>
+                `,n.appendChild(p)})}const e=document.createElement("h3");e.className="text-[10px] text-gray-500 uppercase tracking-widest mt-6 mb-3 border-b border-white/5 pb-1",e.textContent="Bản Vẽ Luyện Thi",n.appendChild(e);const a=Object.values(Z).filter(l=>t.player.knownCorpseRecipes.includes(l.id));if(a.length===0){const l=document.createElement("div");l.className="text-center py-6 text-gray-700 italic text-xs",l.textContent="Ngươi chưa có bí phương luyện thi nào...",n.appendChild(l)}else a.forEach(l=>{const r=f.corpses[l.id],o=document.createElement("div");o.className="p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 space-y-3";let d="";l.materials.forEach(h=>{var y;const c=x(h.id),m=((y=t.player.inventory.allItems.find(g=>g.id===h.id))==null?void 0:y.quantity)||0;d+=`<div class="text-[9px] ${m>=h.quantity?"text-gray-400":"text-red-500"}">${(c==null?void 0:c.name)||h.id} x${h.quantity} (${m})</div>`});const p=t.player.corpseLevel<l.level,u=Math.floor((.7-l.level*.1+t.player.corpseLevel*.05)*100);o.innerHTML=`
+                <div class="flex justify-between items-start">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-red-950/20 rounded-2xl flex items-center justify-center overflow-hidden border border-red-900/20 flex-shrink-0 animate-pulse-subtle">
+                            ${r?`<img src="${r}" class="w-full h-full object-cover">`:'<span class="text-3xl">🧟</span>'}
+                        </div>
+                        <div>
+                            <h4 class="font-ancient text-lg text-red-500">${l.name}</h4>
+                            <p class="text-[9px] text-gray-500 mt-1">${l.description}</p>
+                        </div>
+                    </div>
+                    ${p?`<span class="text-[8px] text-red-500 uppercase font-bold">Cần Cấp ${l.level}</span>`:`<button class="px-4 py-2 bg-red-900/20 text-red-400 text-[10px] font-bold rounded-xl border border-red-900/30" onclick="window.game.refineCorpse('${l.id}')">LUYỆN CHẾ</button>`}
+                </div>
+                <div class="grid grid-cols-2 gap-2">${d}</div>
+                <div class="flex justify-between items-center text-[8px] text-gray-500 italic">
+                    <span>Tỷ lệ thành công: ${u}%</span>
+                    <span>Phản phệ: ${100-u}%</span>
+                </div>
+            `,n.appendChild(o)})}renderTechniques(n="cultivation"){if(t.player){if(t.activeTechTab=n,this.btnTechTabCultivation&&this.btnTechTabSecret&&(n==="cultivation"?(this.btnTechTabCultivation.className="flex-grow py-2 bg-qi-blue/20 text-qi-blue border border-qi-blue/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all",this.btnTechTabSecret.className="flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all"):(this.btnTechTabCultivation.className="flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all",this.btnTechTabSecret.className="flex-grow py-2 bg-qi-purple/20 text-qi-purple border border-qi-purple/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all")),this.elTechListView){this.elTechListView.innerHTML="",this.elTechListView.classList.remove("hidden"),this.elTechDetailView&&this.elTechDetailView.classList.add("hidden");const i=n==="cultivation"?t.player.learnedTechniques:t.player.learnedSecretTechniques;i.length===0?this.elTechListView.innerHTML=`<div class="text-center py-20 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ ${n==="cultivation"?"công pháp":"bí pháp"} nào...</div>`:i.forEach(s=>{const e=n==="cultivation"?N(s.id):H(s.id);if(!e)return;const a=L.find(d=>d.id===(s.masteryLevel||1)),l=e.stageLabel||"Tầng",r=e.stageNames&&e.stageNames[s.stage-1]?e.stageNames[s.stage-1]:`${l} ${s.stage||1}`,o=document.createElement("div");o.className=`p-4 border ${n==="cultivation"?"border-qi-blue/10 bg-qi-blue/5":"border-qi-purple/10 bg-qi-purple/5"} rounded-2xl flex items-center justify-between hover:bg-white/5 cursor-pointer transition-all mb-3`,o.innerHTML=`
+                        <div class="flex items-center space-x-4">
+                            <div class="text-2xl">${e.icon||(n==="cultivation"?"📜":"✨")}</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">${e.name}</h4>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="text-[8px] px-1.5 py-0.5 bg-black/40 rounded border border-white/5 text-gray-400 font-mono">${r}</span>
+                                    <span class="text-[8px] text-cultivation-gold font-bold">${(a==null?void 0:a.name)||"Nhập Môn"}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="ph ph-caret-right text-gray-600"></i>
+                    `,o.onclick=()=>this.renderTechniqueDetail(s.id,n==="secret"),this.elTechListView.appendChild(o)})}this.elTechPoints&&(this.elTechPoints.textContent=t.player.techniquePoints||0)}}renderTechniqueDetail(n,i){if(!this.elTechDetailContent)return;const s=i?t.player.learnedSecretTechniques.find(c=>c.id===n):t.player.learnedTechniques.find(c=>c.id===n),e=i?H(n):N(n);if(!s||!e)return;this.elTechListView.classList.add("hidden"),this.elTechDetailView.classList.remove("hidden");const a=L.findIndex(c=>c.id===(s.masteryLevel||1)),l=L[a],r=L[a+1],o=e.stageLabel||"Tầng",d=e.stageNames&&e.stageNames[s.stage-1]?e.stageNames[s.stage-1]:`${o} ${s.stage||1}`,p=s.masteryLevel>=4&&s.stage<(e.maxStage||10),u=!i&&(t.player.mainTechniqueId===n||t.player.mainBodyTechniqueId===n||t.player.mainSoulTechniqueId===n);let h="";i||(u?h=`
+                    <button class="w-full py-4 bg-cultivation-gold/15 text-cultivation-gold border border-cultivation-gold/20 text-xs font-bold rounded-2xl cursor-default opacity-80" disabled>
+                        <i class="ph ph-check-circle mr-1"></i> ĐANG CHỦ TU
+                    </button>
+                `:h=`
+                    <button class="w-full py-4 bg-cultivation-gold text-black text-xs font-bold rounded-2xl active:scale-95 transition-all" onclick="window.game.setMainTechnique('${n}')">
+                        <i class="ph ph-shield-star mr-1"></i> THIẾT LẬP CHỦ TU
+                    </button>
+                `),this.elTechDetailContent.innerHTML=`
+            <div class="flex flex-col items-center text-center space-y-4">
+                <div class="text-6xl p-6 bg-white/5 rounded-full border border-white/10">${e.icon||"📜"}</div>
+                <div>
+                    <h3 class="text-2xl font-ancient text-white">${e.name}</h3>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${e.quality||"Phàm Khí"}${(e.quality||"Phàm Khí").toLowerCase().includes("khí")||(e.quality||"Phàm Khí").toLowerCase().includes("bảo")||(e.quality||"Phàm Khí").toLowerCase().includes("phẩm")||(e.quality||"Phàm Khí").toLowerCase().includes("giai")||(e.quality||"Phàm Khí").toLowerCase().includes("hỏa")||(e.quality||"Phàm Khí").toLowerCase().includes("lôi")||["Hoàn Mỹ","Tiên Khí","Linh Bảo","Danh Khí"].includes(e.quality||"Phàm Khí")?"":" Phẩm"} | ${d}</p>
+                </div>
+            </div>
+
+            <div class="bg-black/40 p-5 rounded-3xl border border-white/5 space-y-4">
+                <div class="flex justify-between items-end mb-1">
+                    <span class="text-[9px] text-gray-500 uppercase tracking-widest">Độ Thuần Thục: ${(l==null?void 0:l.name)||"Nhập Môn"}</span>
+                    <span class="text-[10px] font-mono text-white">${s.mastery} / ${(r==null?void 0:r.threshold)||"MAX"}</span>
+                </div>
+                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-cultivation-gold" style="width: ${s.masteryLevel>=4?100:s.mastery/((r==null?void 0:r.threshold)||1)*100}%"></div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 mt-6">
+                    <button class="py-4 bg-qi-blue text-black text-xs font-bold rounded-2xl active:scale-95 transition-all" onclick="window.game.cultivateTechnique('${n}', ${i})">TU LUYỆN</button>
+                    <button class="py-4 ${p?"bg-cultivation-gold":"bg-gray-800 opacity-50"} text-black text-xs font-bold rounded-2xl active:scale-95 transition-all" 
+                        onclick="window.game.breakthroughTechnique('${n}', ${i})">ĐỘT PHÁ TẦNG</button>
+                </div>
+                ${h?`<div class="mt-3">${h}</div>`:""}
+            </div>
+
+            <div class="space-y-4">
+                <h4 class="text-xs font-ancient text-gray-500 uppercase tracking-widest border-l-2 border-gray-500 pl-3">Mô tả & Hiệu ứng</h4>
+                <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-xs text-gray-400 leading-relaxed">
+                    ${e.description||"Không có mô tả."}
+                </div>
+            </div>
+        `}}export{ae as SystemsScreen};

@@ -300,6 +300,19 @@ window.renderMainStats = () => {
     const player = state.player;
     if (!player) return;
 
+    // 1. Render global stats (Header & Time HUD) - always update!
+    const realm = player.getCurrentRealm();
+    const elRealm = document.getElementById('current-realm');
+    if (elRealm) elRealm.textContent = realm.name;
+
+    const elLingShiText = document.getElementById('ling-shi-text');
+    if (elLingShiText) elLingShiText.innerHTML = player.getFormattedLingShi();
+
+    renderTimeHUD();
+
+    // 2. Skip the rest of cultivation screen rendering if it is not currently visible!
+    if (state.ui && state.ui.currentScreenId !== 'screen-main') return;
+
     // Render current location name and background dynamically
     const elLocName = document.getElementById('main-current-location');
     const elMainScreen = document.getElementById('screen-main');
@@ -374,14 +387,11 @@ window.renderMainStats = () => {
         }
     }
 
-    const realm = player.getCurrentRealm();
     const progress = (player.tuVi / realm.expRequired) * 100;
 
-    const elRealm = document.getElementById('current-realm');
     const elProgress = document.getElementById('tu-vi-progress');
     const elTuViText = document.getElementById('tu-vi-text');
     const elPerSec = document.getElementById('tu-vi-per-sec');
-    const elLingShiText = document.getElementById('ling-shi-text');
     const elBodyProgress = document.getElementById('body-progress');
     const elBodyText = document.getElementById('body-text');
     const elSoulProgress = document.getElementById('soul-progress');
@@ -389,7 +399,6 @@ window.renderMainStats = () => {
     const elBtnBreakthrough = document.getElementById('breakthrough-btn');
     const elBtnCultivateText = document.getElementById('cultivate-btn-text');
 
-    if (elRealm) elRealm.textContent = realm.name;
     if (elProgress) {
         // Sử dụng style.width trực tiếp thay vì GSAP trong vòng lặp render mỗi khung hình
         // để tránh xung đột hoạt ảnh và đảm bảo khớp 100% với con số hiển thị.
@@ -404,7 +413,6 @@ window.renderMainStats = () => {
     }
 
     if (elPerSec) elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
-    if (elLingShiText) elLingShiText.innerHTML = player.getFormattedLingShi();
 
     const bodyRealm = player.getCurrentRealm('body');
     const soulRealm = player.getCurrentRealm('soul');
@@ -464,8 +472,6 @@ window.renderMainStats = () => {
         elBtnBreakthrough.disabled = !check.can;
         elBtnBreakthrough.title = check.can ? '' : (check.reason || 'Chưa đủ điều kiện');
     }
-
-    renderTimeHUD();
 };
 
 window.renderTimeHUD = () => {
