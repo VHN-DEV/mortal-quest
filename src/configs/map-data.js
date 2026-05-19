@@ -1331,7 +1331,7 @@ export const WORLDS = {
             },
             {
                 id: 'van_yeu_coc_nhan_gioi',
-                name: 'Vạn Yêu Cốc (Nhân Giới)',
+                name: 'Vạn Yêu Cốc',
                 minRealm: 20,
                 danger: 'tu_dia',
                 image: getLocImg('van_yeu_coc_nhan_gioi'),
@@ -1571,7 +1571,7 @@ export const WORLDS = {
             },
             {
                 id: 'dot_ngot_thanh_dien',
-                name: 'Đột Ngột Thánh Điện',
+                name: 'Thiên Lan Thánh Điện',
                 minRealm: 14,
                 danger: 'cao_cap',
                 image: getLocImg('dot_ngot_thanh_dien'),
@@ -1587,7 +1587,7 @@ export const WORLDS = {
             },
             {
                 id: 'mo_lan_toc_doanh_dia',
-                name: 'Mộ Lan nhân',
+                name: 'Mộ Lan Nhân',
                 minRealm: 12,
                 danger: 'trung_cap',
                 image: getLocImg('mo_lan_toc_doanh_dia'),
@@ -1862,7 +1862,7 @@ export const WORLDS = {
         ]
     },
     'linh_gioi': {
-        name: 'Linh Tiên Giới',
+        name: 'Linh Giới',
         minRealm: 30,
         description: 'Vùng đất của linh khí tinh thuần, nơi cường giả tụ hội.',
         locations: [
@@ -2042,7 +2042,7 @@ export const WORLDS = {
             },
             {
                 id: 'nhan_yeu_luong_toc',
-                name: 'Nhân Yêu Lưỡng Tộc',
+                name: 'Nhân Yêu Lưỡng Tộc Lãnh Địa',
                 minRealm: 30,
                 danger: 'an_toan',
                 image: getLocImg('linh_vuc_thanh_dia'),
@@ -2298,7 +2298,7 @@ export const WORLDS = {
             },
             {
                 id: 'moc_toc',
-                name: 'Mộc Tộc Lãnh Địa',
+                name: 'Mộc Tộc',
                 minRealm: 32,
                 danger: 'cao_cap',
                 image: getLocImg('dot_ngot_thanh_dien'),
@@ -2330,7 +2330,7 @@ export const WORLDS = {
             },
             {
                 id: 'anh_toc_lanh_dia',
-                name: 'Ảnh Tộc Lãnh Địa',
+                name: 'Ảnh Tộc',
                 minRealm: 32,
                 danger: 'cao_cap',
                 image: getLocImg('huyen_am_coc'),
@@ -2585,8 +2585,8 @@ export const WORLDS = {
                 subRegionName: 'Man Hoang Vùng Hoang Dã'
             },
             {
-                id: 'tien_phu',
-                name: 'Tiên Phủ',
+                id: 'minh_han_tien_phu',
+                name: 'Minh Hàn Tiên Phủ',
                 minRealm: 38,
                 danger: 'nguy_hiem',
                 image: getLocImg('thien_dinh'),
@@ -2763,7 +2763,7 @@ export const WORLDS = {
         ]
     },
     'tien_gioi': {
-        name: 'Tiên Giới (Chân Tiên Giới)',
+        name: 'TIÊN GIỚI',
         minRealm: 42,
         description: 'Đỉnh cao của chư thiên vạn giới.',
         locations: [
@@ -2791,7 +2791,7 @@ export const WORLDS = {
                 description: 'Cung điện cổ xưa lơ lửng trong hư không, nơi chứa đựng bí mật về Thái Hư quy luật.',
                 resources: ['Thái Hư Đạo Quả', 'Tiên Khí Cực Phẩm', 'Hư Không Chi Tinh'],
                 energies: [
-                    { type: 'tien_khi', concentration: 400, purity: 'DAO' }, 
+                    { type: 'tien_khi', concentration: 400, purity: 'DAO' },
                     { type: 'khong_gian_chi_khi', concentration: 150, purity: 'CUC_PHAM' },
                     { type: 'thai_hu_chi_luc', concentration: 50, purity: 'DAO' }
                 ],
@@ -2979,7 +2979,7 @@ export const WORLDS = {
             },
             {
                 id: 'khong_gian_phap_tac_khu',
-                name: 'Không Gian pháp tắc khu',
+                name: 'Không Gian Pháp Tắc Khu',
                 minRealm: 54,
                 danger: 'tu_dia',
                 image: getLocImg('luan_hoi_phap_tac_khu'),
@@ -2995,7 +2995,7 @@ export const WORLDS = {
             },
             {
                 id: 'luan_hoi_phap_tac_khu',
-                name: 'Luân Hồi pháp tắc khu',
+                name: 'Luân Hồi Pháp Tắc Khu',
                 minRealm: 54,
                 danger: 'tu_dia',
                 image: getLocImg('luan_hoi_phap_tac_khu'),
@@ -3373,7 +3373,7 @@ export const WORLDS = {
             },
             {
                 id: 'hac_am_ma_thanh',
-                name: 'Hắc Ám Ma Thành',
+                name: 'Hắc Ám Thánh Thành',
                 minRealm: 28,
                 danger: 'cao_cap',
                 image: getLocImg('huyen_am_coc'),
@@ -3613,7 +3613,7 @@ export const WORLDS = {
             },
             {
                 id: 'tay_tuy_tri',
-                name: 'Tẩy Tủy Trì',
+                name: 'Tẩy Tủy Trì (Ma Tộc)',
                 minRealm: 36,
                 danger: 'an_toan',
                 image: getLocImg('dan_thap'),
@@ -3806,13 +3806,13 @@ export const WORLDS = {
         ]
     },
     'song_song': {
-        name: 'Giới Diện Song Song',
+        name: 'CÁC GIỚI DIỆN SONG SONG',
         minRealm: 44,
         description: 'Các giới diện phụ, song song hoặc âm ty nằm bên cạnh phàm nhân và tiên nhân giới.',
         locations: [
             {
                 id: 'u_minh_gioi',
-                name: 'U Minh Giới (Âm Ty)',
+                name: 'U Minh Giới',
                 minRealm: 46,
                 danger: 'tu_dia',
                 image: getLocImg('cuu_trong_thien'),
@@ -3921,7 +3921,7 @@ export const getTravelRoute = (fromLocId, toLocId) => {
 
     const fromWorldId = findWorldIdByLocId(fromLocId);
     const toWorldId = findWorldIdByLocId(toLocId);
-    
+
     const fromLoc = getLocationById(fromWorldId, fromLocId);
     const toLoc = getLocationById(toWorldId, toLocId);
 
