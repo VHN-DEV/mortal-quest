@@ -863,19 +863,40 @@ export class Game {
         if (state.player.isSecluded) return;
 
         const options = [
-            { label: 'Bế quan 1 năm', value: 1, icon: 'ph-moon' },
-            { label: 'Bế quan 10 năm', value: 10, icon: 'ph-moon-stars' },
-            { label: 'Bế quan 50 năm', value: 50, icon: 'ph-stars' },
-            { label: 'Bế quan 100 năm', value: 100, icon: 'ph-yin-yang' }
+            { label: 'Bế quan 1 năm (Cần 360 Tịch Cốc Đan)', value: 1, icon: 'ph-moon' },
+            { label: 'Bế quan 10 năm (Cần 3600 Tịch Cốc Đan)', value: 10, icon: 'ph-moon-stars' },
+            { label: 'Bế quan 50 năm (Cần 18000 Tịch Cốc Đan)', value: 50, icon: 'ph-stars' },
+            { label: 'Bế quan 100 năm (Cần 36000 Tịch Cốc Đan)', value: 100, icon: 'ph-yin-yang' }
         ];
 
         const durationYears = await state.ui.promptOptions(
             "Định Hình Bế Quan",
             options,
-            "Ngươi muốn bế quan trong bao lâu? Trong thời gian này, tu vi sẽ tăng trưởng vượt bậc nhưng thọ nguyên cũng sẽ cạn kiệt tương ứng."
+            "Ngươi muốn bế quan trong bao lâu? Trong thời gian này, tu vi sẽ tăng trưởng vượt bậc nhưng thọ nguyên cũng sẽ cạn kiệt tương ứng. Bạn phải chuẩn bị đủ Tịch Cốc Đan tương ứng với số ngày bế quan."
         );
 
         if (!durationYears) return;
+
+        // Verify player has enough Tịch Cốc Đan
+        const requiredPills = durationYears * 360;
+        let currentPills = 0;
+        if (state.player.inventory && state.player.inventory.bags) {
+            for (const bag of state.player.inventory.bags) {
+                const item = bag.items.find(i => i.id === 'tich_coc_dan');
+                if (item) {
+                    currentPills += item.quantity;
+                }
+            }
+        }
+
+        if (currentPills < requiredPills) {
+            state.ui.alert(
+                `Hành động thất bại! Bế quan trong ${durationYears} năm yêu cầu phải có đủ <span class="text-red-400 font-bold">${requiredPills.toLocaleString()} viên Tịch Cốc Đan</span> (mỗi viên duy trì 1 ngày).<br><br>
+                Hiện tại ngươi chỉ có <span class="text-yellow-400 font-bold">${currentPills.toLocaleString()} viên</span>. Hãy chuẩn bị thêm rồi quay lại!`,
+                "Thiếu Tịch Cốc Đan"
+            );
+            return;
+        }
 
         // Calculate total minutes: 12 months * 30 days * 12 hours = 4320 mins/year
         const totalMinutes = durationYears * 4320;
@@ -893,11 +914,28 @@ export class Game {
         const totalGain = baseGainPerMins * totalMinutes * seclusionMult * (1 + (state.player.comprehension / 100));
 
         const confirm = await state.ui.confirm(
-            `Ngươi chắc chắn muốn bế quan ${durationYears} năm? Dự kiến tu vi sẽ tăng thêm khoảng ${Math.floor(totalGain).toLocaleString()} điểm.`,
+            `Ngươi chắc chắn muốn tiêu hao <span class="text-yellow-400 font-bold">${requiredPills.toLocaleString()} viên Tịch Cốc Đan</span> để bế quan trong ${durationYears} năm?<br><br>Dự kiến tu vi sẽ tăng thêm khoảng <span class="text-green-400 font-bold">${Math.floor(totalGain).toLocaleString()}</span> điểm.`,
             "Xác Nhận Nhập Định"
         );
 
         if (!confirm) return;
+
+        // Consume Tịch Cốc Đan
+        let remainingToConsume = requiredPills;
+        for (const bag of state.player.inventory.bags) {
+            const index = bag.items.findIndex(i => i.id === 'tich_coc_dan');
+            if (index > -1) {
+                const item = bag.items[index];
+                if (item.quantity > remainingToConsume) {
+                    item.quantity -= remainingToConsume;
+                    remainingToConsume = 0;
+                    break;
+                } else {
+                    remainingToConsume -= item.quantity;
+                    bag.items.splice(index, 1);
+                }
+            }
+        }
 
         state.ui.showLoading(true, "Đang thâm tầng định cảnh...");
         

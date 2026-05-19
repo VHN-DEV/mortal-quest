@@ -51,6 +51,8 @@ export const SHOPS = {
                 { id: 'to_nga_suong_nguyet_luan', stock: 1, minVip: 5 }
             ],
             'nguyen_lieu': [
+                { id: 'tich_coc_thao', stock: 500 },
+                { id: 'linh_coc', stock: 1000 },
                 { id: 'linh_thao_thap', stock: 200 },
                 { id: 'linh_thao_10y', stock: 50 },
                 { id: 'linh_thao_100y', stock: 10, minVip: 1 },
@@ -104,6 +106,7 @@ export const SHOPS = {
                 { id: 'tran_dao_thien_thu', stock: 1 },
                 { id: 'co_quan_linh_ky', stock: 1 },
                 { id: 'cuu_u_luyen_thi_thuat', stock: 1 },
+                { id: 'dp_tich_coc_dan', stock: 5 },
                 { id: 'dp_ngung_khi_dan', stock: 5 },
                 { id: 'dp_than_tam_dan', stock: 2 },
                 { id: 'dp_truc_co_dan', stock: 1, minVip: 2 },
@@ -170,6 +173,8 @@ export const SHOPS = {
                 { id: 'truyen_tong_lenh', stock: 2 }
             ],
             'nguyen_lieu': [
+                { id: 'tich_coc_thao', stock: 300 },
+                { id: 'linh_coc', stock: 500 },
                 { id: 'linh_thao_100y', stock: 50 },
                 { id: 'yeu_dan_so', stock: 100 },
                 { id: 'hoa_tinh_thach', stock: 30 }

@@ -118,6 +118,19 @@ export const ALCHEMY_TECHNIQUES = {
 
 export const ALCHEMY_RECIPES = [
     {
+        id: 'tich_coc_dan',
+        name: 'Tịch Cốc Đan',
+        resultId: 'tich_coc_dan',
+        level: 1,
+        materials: [
+            { id: 'tich_coc_thao', quantity: 2 },
+            { id: 'linh_coc', quantity: 3 }
+        ],
+        baseSuccessRate: 0.9,
+        time: 2,
+        description: 'Đan dược cơ bản giúp tu sĩ bế quan không cần ăn uống, mỗi viên duy trì 1 ngày.'
+    },
+    {
         id: 'ngung_khi_dan',
         name: 'Ngưng Khí Đan',
         resultId: 'ngung_khi_dan',

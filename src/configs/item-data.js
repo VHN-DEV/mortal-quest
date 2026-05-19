@@ -448,8 +448,36 @@ export const ITEMS = {
         icon: '💊',
         quality: 'Phàm Khí',
         price: 30,
-        description: 'Đan dược giúp tu sĩ không cần ăn uống, tập trung bế quan. Tăng nhẹ tốc độ tu luyện trong 1 giờ.',
+        description: 'Đan dược giúp tu sĩ không cần ăn uống, duy trì sinh mệnh khi bế quan (mỗi ngày bế quan tiêu hao 1 viên). Sử dụng riêng lẻ giúp tăng nhẹ tốc độ tu luyện trong 1 giờ.',
         effect: { type: 'buff', stat: 'tu_vi_speed', value: 1.1, duration: 3600 }
+    },
+    'tich_coc_thao': {
+        id: 'tich_coc_thao',
+        name: 'Tịch Cốc Thảo',
+        type: 'material',
+        icon: '🌿',
+        quality: 'Phàm Khí',
+        price: 10,
+        description: 'Loại thảo dược đặc biệt chứa chất dinh dưỡng cực kỳ cô đọng, là nguyên liệu chính luyện chế Tịch Cốc Đan.'
+    },
+    'linh_coc': {
+        id: 'linh_coc',
+        name: 'Phàm Cấp Linh Cốc',
+        type: 'material',
+        icon: '🌾',
+        quality: 'Phàm Khí',
+        price: 5,
+        description: 'Hạt thóc mang linh khí loãng, dùng để bổ sung sinh cơ cho phàm nhân và tu sĩ cấp thấp.'
+    },
+    'dp_tich_coc_dan': {
+        id: 'dp_tich_coc_dan',
+        name: 'Đan Phương: Tịch Cốc Đan',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Phàm Khí',
+        price: 100,
+        description: 'Ghi chép cách luyện chế [[tich_coc_dan|Tịch Cốc Đan]] từ [[tich_coc_thao|Tịch Cốc Thảo]] và [[linh_coc|Phàm Cấp Linh Cốc]].',
+        effect: { type: 'learn_recipe', value: 'tich_coc_dan' }
     },
     'ngung_khi_dan': {
         id: 'ngung_khi_dan',
