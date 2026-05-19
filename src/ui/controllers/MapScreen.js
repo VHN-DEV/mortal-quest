@@ -1166,6 +1166,13 @@ export class MapScreen {
                     const trigrams = ['☰', '☱', '☲', '☳', '☴', '☵', '☶', '☷'];
                     const trigram = trigrams[(x + y) % 8];
                     el.innerHTML = `<span class="text-sm font-bold opacity-30 select-none">${trigram}</span>`;
+                } else if (cell.type === 'corpse') {
+                    el.classList.add('grid-cell-corpse');
+                    el.innerHTML = `
+                        <div class="w-[85%] h-[85%] rounded-xl border border-qi-purple shadow-[0_0_10px_rgba(168,85,247,0.7)] flex items-center justify-center bg-purple-950/40 animate-pulse" title="${cell.corpseName || 'Thi Thể'}">
+                            <span class="text-lg select-none">${cell.icon || '📦'}</span>
+                        </div>
+                    `;
                 } else if (cell.status === 'unlocked') {
                     el.classList.add('grid-cell-unlocked');
 
@@ -1256,6 +1263,9 @@ export class MapScreen {
         }
 
         if (distance === 0) {
+            if (cell.type === 'corpse') {
+                window.game.screens.loot.open(null, cell);
+            }
             return;
         }
 
@@ -1303,6 +1313,12 @@ export class MapScreen {
         this.renderGridMap();
 
         if (window.game && window.game.saveGame) window.game.saveGame();
+
+        // Xử lý ô xác chết / hòm loot đồ
+        if (cell.type === 'corpse') {
+            window.game.screens.loot.open(null, cell);
+            return;
+        }
 
         // Xử lý sự kiện nếu ô cờ chưa giải quyết
         if (!cell.resolved) {

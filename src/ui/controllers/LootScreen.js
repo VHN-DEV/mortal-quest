@@ -32,30 +32,42 @@ export class LootScreen {
     /**
      * Mở màn hình loot
      * @param {Object} enemy Đối thủ bị tiêu diệt
+     * @param {Object} corpseCell Ô bản đồ chứa thi thể (nếu mở lại)
      */
-    open(enemy) {
+    open(enemy, corpseCell = null) {
         this.enemy = enemy;
-        this.targetName.textContent = enemy.name || 'Thi Thể Đối Thủ';
-        
-        // Chuẩn bị danh sách vật phẩm từ enemy
-        this.victimItems = [];
-        
-        // 1. Items từ inventory
-        if (enemy.inventory) {
-            enemy.inventory.forEach(item => {
-                if (item.quantity > 0) {
-                    this.victimItems.push({ ...item });
-                }
-            });
+        this.corpseCell = corpseCell;
+
+        if (enemy && state.currentCombat) {
+            state.currentCombat.lootScreenOpened = true;
         }
         
-        // 2. Trang bị (80% cơ hội rơi)
-        if (enemy.equipment) {
-            Object.values(enemy.equipment).forEach(item => {
-                if (item && Math.random() < 0.8) {
-                    this.victimItems.push({ id: item.id, quantity: 1, metadata: item.metadata || {} });
-                }
-            });
+        if (corpseCell) {
+            this.targetName.textContent = corpseCell.corpseName || 'Thi Thể Đối Thủ';
+            this.victimItems = corpseCell.corpseItems || [];
+        } else {
+            this.targetName.textContent = enemy.name || 'Thi Thể Đối Thủ';
+            
+            // Chuẩn bị danh sách vật phẩm từ enemy
+            this.victimItems = [];
+            
+            // 1. Items từ inventory
+            if (enemy.inventory) {
+                enemy.inventory.forEach(item => {
+                    if (item.quantity > 0) {
+                        this.victimItems.push({ ...item });
+                    }
+                });
+            }
+            
+            // 2. Trang bị (80% cơ hội rơi)
+            if (enemy.equipment) {
+                Object.values(enemy.equipment).forEach(item => {
+                    if (item && Math.random() < 0.8) {
+                        this.victimItems.push({ id: item.id, quantity: 1, metadata: item.metadata || {} });
+                    }
+                });
+            }
         }
 
         state.ui.toggleOverlay(this.overlay, true);
@@ -212,7 +224,41 @@ export class LootScreen {
 
     close() {
         state.ui.toggleOverlay(this.overlay, false);
+
+        const hasCombatActive = !!state.currentCombat;
+
+        if (this.corpseCell) {
+            // Nếu đã nhặt sạch đồ trong xác, xóa ô xác trên bản đồ
+            if (this.victimItems.length === 0) {
+                this.corpseCell.type = 'empty';
+                this.corpseCell.icon = '⬜';
+                delete this.corpseCell.corpseName;
+                delete this.corpseCell.corpseItems;
+            }
+            if (window.game.screens.map && typeof window.game.screens.map.renderGridMap === 'function') {
+                window.game.screens.map.renderGridMap();
+            }
+        } else if (this.enemy) {
+            // Nếu là sau trận chiến, và còn vật phẩm chưa loot hết
+            const gridState = state.player?.gridExplorationState;
+            if (gridState && gridState.grid && gridState.playerPos && this.victimItems.length > 0) {
+                const cell = gridState.grid[gridState.playerPos.y][gridState.playerPos.x];
+                if (cell) {
+                    cell.type = 'corpse';
+                    cell.icon = '📦';
+                    cell.corpseName = this.enemy.name || 'Thi Thể Đối Thủ';
+                    cell.corpseItems = [...this.victimItems];
+                    state.ui.toast("Thi thể đối thủ vẫn còn ở ô này, có thể quay lại nhặt sau.", "info");
+                }
+            }
+        }
+
         this.enemy = null;
+        this.corpseCell = null;
         this.victimItems = [];
+
+        if (hasCombatActive) {
+            state.currentCombat?.onEnd('win');
+        }
     }
 }

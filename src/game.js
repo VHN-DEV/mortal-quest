@@ -1913,10 +1913,15 @@ export class Game {
         if (result === 'win') {
             const combat = state.currentCombat;
             if (combat?.enemy) {
-                // Collect all loot to show in one flashy popup if needed
-                const loot = combat.enemy.inventory || [];
-                for (const item of loot) {
-                    await window.game.receiveItem(item.id, item.quantity);
+                const isGridExploration = !!state.player?.gridExplorationState;
+                const lootScreenOpened = combat?.lootScreenOpened;
+
+                if (!isGridExploration || !lootScreenOpened) {
+                    // Collect all loot to show in one flashy popup if needed
+                    const loot = combat.enemy.inventory || [];
+                    for (const item of loot) {
+                        await window.game.receiveItem(item.id, item.quantity);
+                    }
                 }
                 const tuvi = combat.enemy.realmId * 50;
                 state.player.addTuVi(tuvi);

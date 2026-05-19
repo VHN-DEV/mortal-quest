@@ -206,25 +206,17 @@ export class BattleScreen {
                 .then(choice => {
                     if (choice === 'materials') {
                         this.extractMonsterMaterials(enemy);
+                        setTimeout(() => state.currentCombat?.onEnd('win'), 1000);
                     } else if (choice === 'corpse') {
                         this.collectMonsterCorpse(enemy);
+                        setTimeout(() => state.currentCombat?.onEnd('win'), 1000);
                     } else if (choice === 'search') {
                         window.game.screens.loot.open(enemy);
                     }
-                    
-                    // Always show victory message after choice
-                    setTimeout(() => state.currentCombat?.onEnd('win'), 1000);
                 });
         } else {
             // Đối với Tu sĩ/Chủng tộc thông minh -> Mở màn hình Loot PUBG
             window.game.screens.loot.open(enemy);
-            // Loot screen closing will trigger combat end via user confirmation or we can handle it here
-            // For simplicity, we trigger end when they close the loot screen or take all
-            const originalClose = window.game.screens.loot.close.bind(window.game.screens.loot);
-            window.game.screens.loot.close = () => {
-                originalClose();
-                state.currentCombat?.onEnd('win');
-            };
         }
     }
 

@@ -2612,6 +2612,23 @@ select option:checked {
     text-shadow: 0 0 10px currentColor;
 }
 
+/* Thi thể / Hòm xác của đối thủ (Corpse / Loot box) */
+.grid-cell-corpse {
+    background: radial-gradient(circle at center, rgba(168, 85, 247, 0.22) 0%, rgba(15, 8, 25, 0.95) 100%) !important;
+    border-color: rgba(168, 85, 247, 0.6) !important;
+    color: #e9d5ff !important;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.45), inset 0 0 8px rgba(168, 85, 247, 0.25) !important;
+}
+
+.grid-cell-corpse:hover {
+    background: radial-gradient(circle at center, rgba(168, 85, 247, 0.35) 0%, rgba(20, 10, 35, 0.95) 100%) !important;
+    border-color: #a855f7 !important;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 24px rgba(168, 85, 247, 0.55) !important;
+    z-index: 5;
+}
+
+
 
 
 
