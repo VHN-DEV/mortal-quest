@@ -971,8 +971,8 @@ export class MapScreen {
         for (let y = 0; y < size; y++) {
             grid[y] = [];
             for (let x = 0; x < size; x++) {
-                // Điểm xuất phát ở góc dưới-trái (0, 7)
-                if (x === 0 && y === 7) {
+                // Điểm xuất phát ở góc giữa bản đồ (3, 3)
+                if (x === 3 && y === 3) {
                     if (floor === 1) {
                         grid[y][x] = {
                             x, y,
@@ -1054,7 +1054,7 @@ export class MapScreen {
             currentFloor: 1,
             maxFloors: maxFloors,
             floors: {},
-            playerPos: { x: 0, y: 7 }
+            playerPos: { x: 3, y: 3 }
         };
 
         state.player.gridExplorationState.floors[1] = this.generateFloorGrid(locId, 1, maxFloors);
@@ -1067,7 +1067,7 @@ export class MapScreen {
 
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
-                const dist = Math.abs(x - 0) + Math.abs(y - 7);
+                const dist = Math.abs(x - 3) + Math.abs(y - 3);
                 if (dist <= range) {
                     const cell = gridState.grid[y][x];
                     if (cell && cell.status === 'locked') cell.status = 'unlocked';
@@ -1157,7 +1157,7 @@ export class MapScreen {
                     const portraitUrl = ASSETS.portraits[portraitKey] || './src/assets/images/players/player_male.webp';
 
                     el.innerHTML = `
-                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-cultivation-gold shadow-[0_0_10px_gold] flex items-center justify-center animate-pulse">
+                        <div class="w-[85%] h-[85%] rounded-full overflow-hidden border border-[#d4af37] shadow-[0_0_8px_rgba(212,175,55,0.8)] flex items-center justify-center">
                             <img src="${portraitUrl}" class="w-full h-full object-cover">
                         </div>
                     `;
@@ -1184,7 +1184,7 @@ export class MapScreen {
                         const beastIdx = (x * 7 + y * 13) % BEAST_IMAGES.length;
                         const imgUrl = getAssetUrl(BEAST_IMAGES[beastIdx]);
                         el.innerHTML = `
-                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 ${cell.type === 'boss' ? 'border-red-600 shadow-[0_0_15px_red]' : 'border-red-400 shadow-md'} flex items-center justify-center animate-pulse">
+                            <div class="w-[85%] h-[85%] rounded-full overflow-hidden border ${cell.type === 'boss' ? 'border-red-600 shadow-[0_0_12px_rgba(239,68,68,0.8)]' : 'border-red-400 shadow-[0_0_6px_rgba(239,68,68,0.5)]'} flex items-center justify-center">
                                 <img src="${imgUrl}" class="w-full h-full object-cover">
                             </div>
                         `;
@@ -1192,12 +1192,12 @@ export class MapScreen {
                         const npcIdx = (x * 5 + y * 11) % NPC_IMAGES.length;
                         const imgUrl = getAssetUrl(NPC_IMAGES[npcIdx]);
                         el.innerHTML = `
-                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-qi-blue shadow-md flex items-center justify-center animate-pulse">
+                            <div class="w-[85%] h-[85%] rounded-full overflow-hidden border border-qi-blue shadow-[0_0_8px_rgba(59,130,246,0.6)] flex items-center justify-center">
                                 <img src="${imgUrl}" class="w-full h-full object-cover">
                             </div>
                         `;
                     } else {
-                        el.innerHTML = `<span class="text-2xl md:text-3xl animate-pulse">${cell.icon}</span>`;
+                        el.innerHTML = `<span class="text-lg md:text-xl select-none">${cell.icon}</span>`;
                     }
                 } else if (cell.status === 'visited') {
                     el.classList.add('grid-cell-visited');
@@ -1207,7 +1207,7 @@ export class MapScreen {
                     else if (cell.type === 'sect_entrance') el.classList.add('grid-cell-sect-gate');
                     else if (cell.type === 'dungeon_entrance') el.classList.add('grid-cell-stairs-up');
                     
-                    el.innerHTML = `<span class="text-xl opacity-25">${cell.icon}</span>`;
+                    el.innerHTML = `<span class="text-base opacity-25 select-none">${cell.icon}</span>`;
                 }
 
                 // Nếu là ô Boss, rực đỏ cảnh báo hiểm họa
@@ -1345,12 +1345,12 @@ export class MapScreen {
                             gridState.floors[gridState.currentFloor] = this.generateFloorGrid(gridState.locationId, gridState.currentFloor, gridState.maxFloors);
                         }
                         gridState.grid = gridState.floors[gridState.currentFloor];
-                        gridState.playerPos = { x: 0, y: 7 }; // Đi vào ở ô xuất phát góc dưới-trái
+                        gridState.playerPos = { x: 3, y: 3 }; // Đi vào ở ô xuất phát góc giữa bản đồ
                         
                         // Quét Thần thức ban đầu xung quanh ô mới bước vào
                         for (let ny = 0; ny < size; ny++) {
                             for (let nx = 0; nx < size; nx++) {
-                                const dist = Math.abs(nx - 0) + Math.abs(ny - 7);
+                                const dist = Math.abs(nx - 3) + Math.abs(ny - 3);
                                 if (dist <= range) {
                                     const cell = gridState.grid[ny][nx];
                                     if (cell && cell.status === 'locked') cell.status = 'unlocked';

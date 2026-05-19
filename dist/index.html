@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-Apv-Iscn.js"></script>
+  <script type="module" crossorigin src="./assets/index-BGvlkQw2.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-BW2jbjDF.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-DtZdV-Ti.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -2327,10 +2327,11 @@
                     <div class="w-12 h-[1px] bg-gradient-to-l from-transparent to-qi-blue"></div>
                 </div>
             </div>
-            <p id="event-text"
-                class="text-sm text-gray-300 font-serif italic leading-relaxed max-w-xs mx-auto opacity-80">
-                “Không gian tĩnh lặng, chỉ nghe tiếng gió lướt qua kẽ lá...”
-            </p>
+            <div class="px-4 py-3 bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl max-w-xs mx-auto shadow-inner">
+                <p id="event-text" class="text-xs text-teal-200/90 font-serif italic leading-relaxed">
+                    “Không gian tĩnh lặng, chỉ nghe tiếng gió lướt qua kẽ lá...”
+                </p>
+            </div>
         </div>
 
         <!-- Bagua Grid Map Panel -->
@@ -2340,32 +2341,23 @@
                 <span id="explore-grid-title">Ma Trận Mật Cảnh</span>
                 <span id="grid-coordinates" class="font-mono text-cultivation-gold text-[9px]">Dò Xét: Cấp 1</span>
             </div>
-            <!-- Cuộn ngang dọc cho bản đồ siêu rộng -->
+            <!-- Bản đồ tự động thích ứng với khung hình điện thoại -->
             <div id="explore-grid-scroll-area"
-                class="overflow-auto max-h-[320px] w-full p-2 rounded-xl scrollbar-thin scrollbar-thumb-qi-blue/20 bg-black/30 border border-white/5 cursor-grab flex">
-                <div id="explore-grid-board" class="grid grid-cols-8 gap-2 w-[600px] h-[600px] m-auto flex-none">
+                class="w-full p-1 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center">
+                <div id="explore-grid-board" class="grid grid-cols-8 gap-1.5 w-full aspect-square m-auto flex-none">
                     <!-- Grid Cells rendered dynamically -->
                 </div>
             </div>
             <!-- Legend / Giải nghĩa ký hiệu -->
-            <div
-                class="flex justify-between items-center px-1 text-[7px] text-gray-500 font-bold border-t border-white/5 pt-1.5">
-                <span class="flex items-center space-x-0.5"><span>🌾</span> <span
-                        class="tracking-tighter">Cỏ</span></span>
-                <span class="flex items-center space-x-0.5"><span>🪨</span> <span
-                        class="tracking-tighter">Đá</span></span>
-                <span class="flex items-center space-x-0.5"><span>🌊</span> <span
-                        class="tracking-tighter">Giang</span></span>
-                <span class="flex items-center space-x-0.5"><span>💀</span> <span
-                        class="tracking-tighter">Thú</span></span>
-                <span class="flex items-center space-x-0.5"><span>🌀</span> <span
-                        class="tracking-tighter">Linh</span></span>
-                <span class="flex items-center space-x-0.5"><span>👤</span> <span
-                        class="tracking-tighter">Nhân</span></span>
-                <span class="flex items-center space-x-0.5"><span>🏠</span> <span class="tracking-tighter">Sơn
-                        Môn</span></span>
-                <span class="flex items-center space-x-0.5"><span>🪜</span> <span
-                        class="tracking-tighter">Thang</span></span>
+            <div class="grid grid-cols-4 gap-1.5 text-[8px] text-gray-400 font-bold border-t border-white/5 pt-2 mt-2">
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🌾</span> <span>Cỏ</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🪨</span> <span>Đá</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🌊</span> <span>Giang</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>💀</span> <span>Thú</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🌀</span> <span>Linh</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>👤</span> <span>Nhân</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🏠</span> <span>Sơn Môn</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🪜</span> <span>Thang</span></span>
             </div>
         </div>
 
