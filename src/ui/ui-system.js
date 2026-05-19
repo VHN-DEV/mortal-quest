@@ -4,7 +4,7 @@ import { audioManager } from '../utils/audio-manager.js';
 import { logger } from '../utils/logger.js';
 import { getAssetUrl } from '../configs/asset-data.js';
 import { getItemById } from '../configs/item-data.js';
-import { findLocationName, DANGER_LEVELS } from '../configs/map-data.js';
+import { findLocationName, DANGER_LEVELS, getWorlds } from '../configs/map-data.js';
 
 export class UISystem {
     constructor() {
@@ -1099,5 +1099,152 @@ export class UISystem {
         const overlay = document.getElementById('travel-overlay');
         if (overlay) this.toggleOverlay(overlay, false);
     }
-}
 
+    showGuide() {
+        const guide = document.getElementById('guide-overlay');
+        if (guide) {
+            this.toggleOverlay(guide, true);
+            this.initGuideTabs();
+            this.renderWorldTree();
+        }
+    }
+
+    renderWorldTree() {
+        const treeContainer = document.getElementById('guide-world-tree');
+        if (!treeContainer) return;
+
+        try {
+            const worlds = getWorlds();
+            let html = '';
+
+            for (const [worldId, world] of Object.entries(worlds)) {
+                html += `<div class="world-node space-y-1.5 border-b border-white/5 pb-2 last:border-b-0 last:pb-0">`;
+                html += `
+                    <div class="world-title flex items-center space-x-2 font-ancient text-cultivation-gold cursor-pointer hover:text-white transition-all py-1 select-none">
+                        <i class="ph ph-caret-down text-xs transition-transform duration-300"></i>
+                        <span class="tracking-wider uppercase font-bold text-[12px]">${world.name}</span>
+                    </div>
+                `;
+                html += `<div class="world-children pl-4 border-l border-white/5 space-y-2.5 mt-0.5">`;
+
+                // Group by regionName
+                const regions = {};
+                world.locations.forEach(loc => {
+                    const rName = loc.regionName || 'Bí Cảnh Khác';
+                    const sName = loc.subRegionName || 'Phân Khu Khác';
+                    if (!regions[rName]) regions[rName] = {};
+                    if (!regions[rName][sName]) regions[rName][sName] = [];
+                    regions[rName][sName].push(loc);
+                });
+
+                for (const [rName, subregions] of Object.entries(regions)) {
+                    html += `<div class="region-node space-y-1">`;
+                    html += `
+                        <div class="region-title flex items-center space-x-2 text-white font-semibold cursor-pointer hover:text-cultivation-gold transition-all py-0.5 select-none text-[11px]">
+                            <i class="ph ph-caret-down text-[10px] text-gray-500 transition-transform duration-300"></i>
+                            <span>${rName}</span>
+                        </div>
+                    `;
+                    html += `<div class="region-children pl-4 border-l border-white/5 space-y-2 mt-0.5">`;
+
+                    for (const [sName, locs] of Object.entries(subregions)) {
+                        const hasSubregion = sName !== 'Phân Khu Khác' && sName !== rName;
+                        if (hasSubregion) {
+                            html += `<div class="subregion-node space-y-1">`;
+                            html += `
+                                <div class="subregion-title flex items-center space-x-2 text-qi-blue font-medium cursor-pointer hover:text-white transition-all py-0.5 select-none text-[10px]">
+                                    <i class="ph ph-caret-down text-[8px] text-gray-500 transition-transform duration-300"></i>
+                                    <span>${sName}</span>
+                                </div>
+                            `;
+                            html += `<div class="subregion-children pl-4 border-l border-white/5 space-y-1 mt-0.5">`;
+                        }
+
+                        locs.forEach(loc => {
+                            html += `
+                                <div class="loc-node flex items-center space-x-2 py-0.5 text-gray-400 hover:text-white transition-all text-[10px]">
+                                    <span class="w-1 h-1 bg-qi-blue/50 rounded-full"></span>
+                                    <span>${loc.name}</span>
+                                    ${loc.danger === 'nguy_hiem' ? '<span class="text-[8px] px-1 bg-red-950/50 border border-red-500/20 text-red-400 rounded-sm font-sans scale-90">Nguy Hiểm</span>' : ''}
+                                    ${loc.danger === 'an_toan' ? '<span class="text-[8px] px-1 bg-green-950/50 border border-green-500/20 text-green-400 rounded-sm font-sans scale-90">An Toàn</span>' : ''}
+                                </div>
+                            `;
+                        });
+
+                        if (hasSubregion) {
+                            html += `</div></div>`; // close subregion children, subregion node
+                        }
+                    }
+
+                    html += `</div></div>`; // close region children, region node
+                }
+
+                html += `</div></div>`; // close world children, world node
+            }
+
+            treeContainer.innerHTML = html;
+
+            // Bind click collapse-expand logic using event delegation
+            treeContainer.onclick = (e) => {
+                const header = e.target.closest('.world-title, .region-title, .subregion-title');
+                if (header) {
+                    const parent = header.parentElement;
+                    const children = parent.querySelector('.world-children, .region-children, .subregion-children');
+                    const caret = header.querySelector('.ph-caret-down');
+                    if (children) {
+                        const isHidden = children.classList.contains('hidden');
+                        if (isHidden) {
+                            children.classList.remove('hidden');
+                            if (caret) caret.style.transform = 'rotate(0deg)';
+                        } else {
+                            children.classList.add('hidden');
+                            if (caret) caret.style.transform = 'rotate(-90deg)';
+                        }
+                    }
+                }
+            };
+
+        } catch (err) {
+            console.error('Failed to render world tree:', err);
+            treeContainer.innerHTML = `<div class="text-red-400 text-center py-4">Cảm ứng thất bại: ${err.message}</div>`;
+        }
+    }
+
+    initGuideTabs() {
+        const overlay = document.getElementById('guide-overlay');
+        if (!overlay) return;
+
+        const tabBtns = overlay.querySelectorAll('.guide-tab-btn');
+        const panes = overlay.querySelectorAll('.guide-tab-pane');
+
+        tabBtns.forEach(btn => {
+            btn.onclick = () => {
+                // Remove active classes from all buttons
+                tabBtns.forEach(b => {
+                    b.classList.remove('active', 'border-cultivation-gold/45', 'text-cultivation-gold', 'bg-cultivation-gold/10');
+                    b.classList.add('border-white/5', 'text-gray-400');
+                });
+
+                // Add active classes to clicked button
+                btn.classList.add('active', 'border-cultivation-gold/45', 'text-cultivation-gold', 'bg-cultivation-gold/10');
+                btn.classList.remove('border-white/5', 'text-gray-400');
+
+                // Hide all panes
+                panes.forEach(p => p.classList.add('hidden'));
+
+                // Show targeted pane
+                const tabId = btn.getAttribute('data-tab');
+                const targetPane = overlay.querySelector(`#${tabId}`);
+                if (targetPane) {
+                    targetPane.classList.remove('hidden');
+                }
+            };
+        });
+
+        // Auto reset to default tab (Tân Thủ) when opened
+        const defaultBtn = overlay.querySelector('.guide-tab-btn[data-tab="tab-intro"]');
+        if (defaultBtn) {
+            defaultBtn.click();
+        }
+    }
+}

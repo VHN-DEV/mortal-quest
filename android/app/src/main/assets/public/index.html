@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-CXw_kvA1.js"></script>
+  <script type="module" crossorigin src="./assets/index-Bh-EtoGx.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-DU4reCVT.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-Dcq9PMzp.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -317,6 +317,10 @@
         </div>
     </div>
     <div class="flex items-center space-x-2">
+        <button onclick="state.ui.showGuide()"
+            class="w-8 h-8 flex items-center justify-center bg-black/40 border border-cultivation-gold/30 rounded-full text-cultivation-gold hover:text-white hover:bg-cultivation-gold/20 transition-all active:scale-90" title="Sổ Tay Tu Tiên">
+            <i class="ph ph-book-open text-lg"></i>
+        </button>
         <button id="btn-toggle-mute"
             class="w-8 h-8 flex items-center justify-center bg-black/40 border border-white/5 rounded-full text-gray-500 hover:text-white transition-all active:scale-90">
             <i id="mute-icon" class="ph ph-speaker-high"></i>
@@ -676,170 +680,333 @@
             <!-- Guide Overlay (Cẩm nang tu tiên) -->
             <!-- Game Guide Overlay -->
 <div id="guide-overlay" class="absolute inset-0 z-[200] hidden">
-    <div class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
+    <div class="absolute inset-0 bg-black/85 backdrop-blur-md"></div>
     <div class="absolute inset-0 flex items-center justify-center p-4">
         <div
-            class="w-full max-w-lg bg-qi-ink border border-cultivation-gold/30 rounded-3xl overflow-hidden flex flex-col max-h-[85vh] shadow-[0_0_50px_rgba(212,175,55,0.2)]">
+            class="w-full max-w-xl bg-qi-ink border border-cultivation-gold/30 rounded-3xl overflow-hidden flex flex-col max-h-[90vh] shadow-[0_0_60px_rgba(212,175,55,0.25)]">
+
             <!-- Header -->
-            <div
-                class="p-6 border-b border-white/5 flex justify-between items-center bg-cultivation-gold/5">
-                <h3 class="text-xl font-ancient text-cultivation-gold uppercase tracking-widest">Hướng Dẫn
-                    Tu Tiên</h3>
-                <button id="btn-close-guide" class="text-gray-500 hover:text-white transition-all">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center bg-cultivation-gold/5">
+                <div class="flex items-center space-x-3">
+                    <div class="w-2.5 h-2.5 bg-cultivation-gold rounded-full animate-ping"></div>
+                    <h3 class="text-xl font-ancient text-cultivation-gold uppercase tracking-widest">Sổ Tay Tu Tiên</h3>
+                </div>
+                <button id="btn-close-guide"
+                    class="text-gray-500 hover:text-white transition-all transform hover:scale-110">
                     <i class="ph ph-x text-2xl"></i>
                 </button>
             </div>
 
-            <!-- Content -->
-            <div class="flex-grow overflow-y-auto p-6 space-y-8 custom-scrollbar">
-                <!-- Intro -->
-                <section class="space-y-3">
-                    <div class="flex items-center space-x-3 text-cultivation-gold mb-2">
-                        <div
-                            class="w-10 h-10 bg-cultivation-gold/10 rounded-xl flex items-center justify-center">
-                            <i class="ph ph-scroll text-xl"></i>
-                        </div>
-                        <h4 class="text-sm font-ancient uppercase tracking-widest">Khởi Đầu Hành Trình</h4>
-                    </div>
-                    <p class="text-[11px] text-gray-400 leading-relaxed italic">
-                        Chào mừng đạo hữu bước chân vào thế giới của <span
-                            class="text-white font-bold">Mortal Quest</span>. Một thế giới tu tiên rộng lớn
-                        nơi mỗi quyết định của bạn đều dẫn đến những nhân quả khác nhau.
-                    </p>
-                </section>
+            <!-- Navigation Tabs -->
+            <div
+                class="px-4 py-2 bg-black/40 border-b border-white/5 flex space-x-2 overflow-x-auto custom-scroll-x pb-2 select-none text-[10px] font-ancient uppercase tracking-wider">
+                <button
+                    class="guide-tab-btn active px-3 py-2 rounded-xl border border-cultivation-gold/45 text-cultivation-gold bg-cultivation-gold/10 transition-all whitespace-nowrap flex items-center space-x-1.5"
+                    data-tab="tab-intro">
+                    <i class="ph ph-sparkle text-xs"></i>
+                    <span>Tân Thủ</span>
+                </button>
+                <button
+                    class="guide-tab-btn px-3 py-2 rounded-xl border border-white/5 text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center space-x-1.5"
+                    data-tab="tab-destiny">
+                    <i class="ph ph-scroll text-xs"></i>
+                    <span>Cơ Duyên</span>
+                </button>
+                <button
+                    class="guide-tab-btn px-3 py-2 rounded-xl border border-white/5 text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center space-x-1.5"
+                    data-tab="tab-crafting">
+                    <i class="ph ph-flask text-xs"></i>
+                    <span>Bách Nghệ</span>
+                </button>
+                <button
+                    class="guide-tab-btn px-3 py-2 rounded-xl border border-white/5 text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center space-x-1.5"
+                    data-tab="tab-adventure">
+                    <i class="ph ph-map-trifold text-xs"></i>
+                    <span>Khám Phá</span>
+                </button>
+                <button
+                    class="guide-tab-btn px-3 py-2 rounded-xl border border-white/5 text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center space-x-1.5"
+                    data-tab="tab-world">
+                    <i class="ph ph-tree-structure text-xs"></i>
+                    <span>Thế Giới</span>
+                </button>
+            </div>
 
-                <!-- Cultivation Systems -->
-                <section class="space-y-4">
-                    <h4
-                        class="text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">
-                        Hệ Thống Tu Luyện</h4>
-                    <div class="grid grid-cols-1 gap-3">
-                        <div
-                            class="p-3 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
-                            <div class="flex items-center space-x-2 mb-1">
-                                <i class="ph ph-sparkle text-qi-blue"></i>
-                                <span class="text-[11px] font-bold text-white uppercase">Tam Đại Cảnh
-                                    Giới</span>
+            <!-- Content Panel -->
+            <div id="guide-tab-content" class="flex-grow overflow-y-auto p-6 space-y-6 custom-scrollbar max-h-[50vh]">
+
+                <!-- Tab 1: Tân Thủ Vấn Đạo -->
+                <div id="tab-intro" class="guide-tab-pane space-y-5 animate-fade-in">
+                    <div class="p-4 bg-white/5 border border-white/5 rounded-2xl">
+                        <p class="text-[11px] text-gray-400 leading-relaxed italic text-center">
+                            "Đại đạo vô hình, sinh dục thiên địa. Đạo hữu bước vào thế giới <span
+                                class="text-white font-bold">Mortal Quest</span> là khởi đầu một hành trình nghịch thiên
+                            cải mệnh, vấn đỉnh trường sinh."
+                        </p>
+                    </div>
+
+                    <!-- Tam Đại Cảnh Giới -->
+                    <div class="space-y-3">
+                        <h4
+                            class="text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">
+                            Tam Đại Cảnh Giới Cốt Lõi</h4>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div
+                                class="p-3 bg-qi-blue/5 rounded-2xl border border-qi-blue/10 hover:bg-qi-blue/10 transition-all flex items-start space-x-3">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-qi-blue/10 flex items-center justify-center text-qi-blue shrink-0 mt-0.5">
+                                    <i class="ph ph-sparkle text-lg"></i></div>
+                                <div>
+                                    <div class="text-[11px] font-bold text-white uppercase">Tu Vi (Qi Cultivation)</div>
+                                    <p class="text-[10px] text-gray-500 mt-1">Nguồn năng lượng pháp thuật cốt lõi, trực
+                                        tiếp gia tăng **sức tấn công vật lý & pháp thuật** của đạo hữu trong mọi trận
+                                        chiến.</p>
+                                </div>
                             </div>
-                            <p class="text-[10px] text-gray-500">Gồm <span class="text-qi-blue">Tu Vi</span>
-                                (tăng công kích), <span class="text-red-400">Luyện Thể</span> (tăng
-                                máu/phòng thủ) và <span class="text-qi-purple">Thần Thức</span> (tăng chính
-                                xác/may mắn). Hãy cân bằng cả ba để đạt sức mạnh tối thượng.</p>
+                            <div
+                                class="p-3 bg-red-500/5 rounded-2xl border border-red-500/10 hover:bg-red-500/10 transition-all flex items-start space-x-3">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 shrink-0 mt-0.5">
+                                    <i class="ph ph-heart text-lg"></i></div>
+                                <div>
+                                    <div class="text-[11px] font-bold text-white uppercase">Luyện Thể (Body Tempering)
+                                    </div>
+                                    <p class="text-[10px] text-gray-500 mt-1">Cơ thể sắt đá chấn nhiếp hoang dã, gia
+                                        tăng cực mạnh **Khí Huyết (HP)** tối đa và chỉ số **Phòng Thủ** tráng kiện.</p>
+                                </div>
+                            </div>
+                            <div
+                                class="p-3 bg-qi-purple/5 rounded-2xl border border-qi-purple/10 hover:bg-qi-purple/10 transition-all flex items-start space-x-3">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-qi-purple/10 flex items-center justify-center text-qi-purple shrink-0 mt-0.5">
+                                    <i class="ph ph-eye text-lg"></i></div>
+                                <div>
+                                    <div class="text-[11px] font-bold text-white uppercase">Thần Thức (Soul Sense)</div>
+                                    <p class="text-[10px] text-gray-500 mt-1">Cảm nhận thiên địa vi diệu, tăng tỷ lệ
+                                        **Chính Xác**, **Bạo Kích** và điểm **May Mắn** khi đi lịch luyện.</p>
+                                </div>
+                            </div>
                         </div>
-                        <div
-                            class="p-3 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
-                            <div class="flex items-center space-x-2 mb-1">
-                                <i class="ph ph-lightning text-cultivation-gold"></i>
-                                <span class="text-[11px] font-bold text-white uppercase">Đột Phá & Thọ
-                                    Nguyên</span>
+                    </div>
+
+                    <!-- Tu Luyện & Bế Quan -->
+                    <div class="space-y-3">
+                        <h4
+                            class="text-xs font-ancient text-cultivation-gold uppercase tracking-widest border-l-2 border-cultivation-gold pl-3">
+                            Tu Luyện & Khổ Ải Bế Quan</h4>
+                        <div class="p-4 bg-black/40 rounded-2xl border border-white/5 space-y-3">
+                            <p class="text-[10px] text-gray-400 leading-relaxed">
+                                Đạo hữu có thể tu luyện chủ động bằng cách nhấp chọn <span
+                                    class="text-white font-bold">"Tu Luyện"</span>, hoặc nhập định thâm cảnh bằng tính
+                                năng <span class="text-cultivation-gold font-bold">"Bế Quan"</span> lên tới **100 năm**.
+                            </p>
+                            <div
+                                class="p-3 bg-cultivation-gold/5 rounded-xl border border-cultivation-gold/15 text-[10px] text-gray-500 leading-relaxed">
+                                <span class="text-cultivation-gold font-bold">⚠️ Cảnh báo Thiên Đạo:</span> Mỗi năm bế
+                                quan sẽ tiêu hao thọ nguyên tương ứng. Nếu **Thọ Nguyên** cạn kiệt về không trước khi
+                                đạt tới đột phá cảnh giới tiếp theo, linh hồn đạo hữu sẽ tiêu tán, đạo quả bị hủy (**Xóa
+                                Slot Lưu Trực Tiếp**). Hãy tính toán thật kỹ lưỡng!
                             </div>
-                            <p class="text-[10px] text-gray-500">Mỗi khi đạt giới hạn, bạn cần thực hiện
-                                <span class="text-cultivation-gold">Đột Phá</span> để thăng cấp. Mỗi lần
-                                thăng cấp sẽ gia tăng <span class="text-green-400">Tuổi Thọ</span>. Hãy cẩn
-                                thận, nếu hết thọ nguyên mà chưa đột phá, hành trình sẽ kết thúc.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Tiên Nhân Duyên Phận (Cơ Duyên) -->
+                <div id="tab-destiny" class="guide-tab-pane hidden space-y-5 animate-fade-in">
+                    <!-- Linh Căn -->
+                    <div class="space-y-3">
+                        <h4
+                            class="text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">
+                            Ngũ Hành & Dị Linh Căn</h4>
+                        <p class="text-[10px] text-gray-400">Linh căn quyết định căn cơ của mỗi tu sĩ. Độ tinh khiết
+                            càng cao, tốc độ hấp thu linh khí hệ đó càng vượt bậc:</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="p-3 bg-black/40 rounded-xl border border-white/5">
+                                <div class="text-[11px] font-bold text-white mb-1">Ngũ Hành Linh Căn</div>
+                                <p class="text-[9px] text-gray-500">Kim, Mộc, Thủy, Hỏa, Thổ. Cân bằng ngũ hành hoặc độc
+                                    tu nhất hệ cực tinh khiết.</p>
+                            </div>
+                            <div class="p-3 bg-black/40 rounded-xl border border-white/5">
+                                <div class="text-[11px] font-bold text-qi-blue mb-1">Dị Linh Căn</div>
+                                <p class="text-[9px] text-gray-500">Lôi, Phong, Băng, Quang, Ám. Đột biến thiên địa,
+                                    sinh ra sở hữu thần thông biến hóa khó lường.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thể chất ẩn -->
+                    <div class="space-y-3">
+                        <h4
+                            class="text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">
+                            Thể Chất Đặc Biệt</h4>
+                        <div class="p-4 bg-white/5 border border-white/5 rounded-2xl">
+                            <p class="text-[10px] text-gray-500 leading-relaxed">
+                                Sở hữu thể chất tiên thiên huyền bí như <span class="text-white">Cực Dương Chi
+                                    Thể</span>, <span class="text-white">Huyền Âm Chi Thể</span>, <span
+                                    class="text-white">Không Minh Thể Chất</span>... giúp gia tăng các chỉ số chiến đấu
+                                ẩn đặc biệt và tăng tiến đan dược vượt bậc.
                             </p>
                         </div>
                     </div>
-                </section>
 
-                <!-- Features -->
-                <section class="space-y-4">
-                    <h4
-                        class="text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">
-                        Khám Phá & Chiến Đấu</h4>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="p-3 bg-black/40 rounded-xl border border-white/5">
-                            <i class="ph ph-map-trifold text-qi-purple mb-2 text-lg"></i>
-                            <div class="text-[10px] font-bold text-white mb-1">Đại Giới Khung</div>
-                            <p class="text-[9px] text-gray-500">Chu du qua nhiều thế giới, từ Phàm Trần đến
-                                Tiên Giới.</p>
-                        </div>
-                        <div class="p-3 bg-black/40 rounded-xl border border-white/5">
-                            <i class="ph ph-sword text-red-400 mb-2 text-lg"></i>
-                            <div class="text-[10px] font-bold text-white mb-1">Chiến Đấu Theo Lượt</div>
-                            <p class="text-[9px] text-gray-500">Sử dụng bí pháp, pháp bảo để đánh bại yêu
-                                thú và địch nhân.</p>
-                        </div>
-                        <div class="p-3 bg-black/40 rounded-xl border border-white/5">
-                            <i class="ph ph-house-line text-qi-jade mb-2 text-lg"></i>
-                            <div class="text-[10px] font-bold text-white mb-1">Tông Môn & Xã Giao</div>
-                            <p class="text-[9px] text-gray-500">Gia nhập môn phái, kết giao đạo hữu, thành
-                                lập thế lực.</p>
-                        </div>
-                        <div class="p-3 bg-black/40 rounded-xl border border-white/5">
-                            <i class="ph ph-flask text-qi-blue mb-2 text-lg"></i>
-                            <div class="text-[10px] font-bold text-white mb-1">Bách Nghệ</div>
-                            <p class="text-[9px] text-gray-500">Luyện Đan, Luyện Khí, Chế Phù, Nuôi Thú,
-                                Trận Pháp.</p>
+                    <!-- Bàn Tay Vàng -->
+                    <div class="space-y-3">
+                        <h4
+                            class="text-xs font-ancient text-cultivation-gold uppercase tracking-widest border-l-2 border-cultivation-gold pl-3">
+                            Bàn Tay Vàng (Cheat System)</h4>
+                        <p class="text-[10px] text-gray-400">Một tu sĩ nghịch thiên luôn có những cơ duyên nghịch thiên
+                            hộ thể:</p>
+                        <div class="p-3 bg-cultivation-gold/5 rounded-xl border border-cultivation-gold/10 space-y-2">
+                            <div class="flex items-center space-x-2 text-[10px] font-bold text-white">
+                                <i class="ph ph-yin-yang text-cultivation-gold"></i>
+                                <span>Chưởng Thiên Bình (Bình Thần Kỳ)</span>
+                            </div>
+                            <p class="text-[9px] text-gray-500 leading-relaxed">Lấy dịch xanh từ tinh hoa nhật nguyệt,
+                                kích phát tốc độ tăng trưởng linh thảo lên vạn năm chỉ trong chớp mắt.</p>
+
+                            <div class="flex items-center space-x-2 text-[10px] font-bold text-white pt-1">
+                                <i class="ph ph-cpu text-qi-blue"></i>
+                                <span>Siêu Cấp Máy Tính</span>
+                            </div>
+                            <p class="text-[9px] text-gray-500 leading-relaxed">Phân tích dòng chảy linh khí chư thiên,
+                                tự động tính toán chính xác tuyệt đối tỷ lệ thành công của đột phá cảnh giới.</p>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <!-- Tips Section -->
-                <section class="p-4 bg-qi-blue/5 border border-qi-blue/20 rounded-2xl">
-                    <div class="flex items-center space-x-2 mb-3">
-                        <i class="ph ph-lightbulb-filament text-qi-blue"></i>
-                        <h4 class="text-xs font-bold text-qi-blue uppercase">Lời Khuyên Cho Đạo Hữu</h4>
-                    </div>
-                    <ul class="text-[10px] text-gray-400 space-y-2 list-none">
-                        <li class="flex items-start">
-                            <span class="text-qi-blue mr-2">●</span>
-                            <span>Ưu tiên gia tăng <span class="text-white">Linh Thạch</span> thông qua làm
-                                nhiệm vụ hoặc cướp bóc để mua tài nguyên.</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-qi-blue mr-2">●</span>
-                            <span>Sử dụng <span class="text-white">Bế Quan</span> khi muốn tu luyện thụ động
-                                hiệu quả cao hơn.</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-qi-blue mr-2">●</span>
-                            <span>Đừng quên trang bị <span class="text-white">Pháp Bảo</span>, chúng cung
-                                cấp những chỉ số cực lớn trong chiến đấu.</span>
-                        </li>
-                    </ul>
-                </section>
+                <!-- Tab 3: Bách Nghệ Chi Đạo -->
+                <div id="tab-crafting" class="guide-tab-pane hidden space-y-5 animate-fade-in">
+                    <p class="text-[10px] text-gray-400">Không chỉ có chiến đấu, tu tiên giả còn cần tinh thông trăm
+                        nghề để tích lũy tài nguyên và tăng cường bảo mệnh:</p>
 
-                <!-- Developer Credits -->
-                <section class="mt-10 pt-8 border-t border-white/5 space-y-4">
-                    <div class="flex flex-col items-center text-center">
-                        <div class="text-[9px] text-gray-500 uppercase tracking-[0.3em] mb-2">Người Sáng Lập
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-3 bg-black/40 rounded-2xl border border-white/5 space-y-1">
+                            <div class="flex items-center space-x-2 text-[10px] font-bold text-white">
+                                <i class="ph ph-flask text-qi-blue text-sm"></i>
+                                <span>Luyện Đan Chi Thuật</span>
+                            </div>
+                            <p class="text-[9px] text-gray-500">Kết hợp linh dược luyện chế thần đan tăng vọt tu vi, đột
+                                phá đan hải đại thành.</p>
                         </div>
-                        <h4 class="text-lg font-ancient text-cultivation-gold">VŨ HOÀI NAM</h4>
-                        <div class="w-12 h-0.5 bg-cultivation-gold/30 my-3"></div>
+                        <div class="p-3 bg-black/40 rounded-2xl border border-white/5 space-y-1">
+                            <div class="flex items-center space-x-2 text-[10px] font-bold text-white">
+                                <i class="ph ph-hammer text-red-400 text-sm"></i>
+                                <span>Luyện Khí Tông Sư</span>
+                            </div>
+                            <p class="text-[9px] text-gray-500">Đúc rèn linh thạch phôi quặng thành thần binh linh khí
+                                uy chấn bát hoang.</p>
+                        </div>
+                        <div class="p-3 bg-black/40 rounded-2xl border border-white/5 space-y-1">
+                            <div class="flex items-center space-x-2 text-[10px] font-bold text-white">
+                                <i class="ph ph-scribble-loop text-qi-purple text-sm"></i>
+                                <span>Pháp Phù Chế Tác</span>
+                            </div>
+                            <p class="text-[9px] text-gray-500">Vẽ linh phù hộ thân lực, hoặc ngưng tụ cự phù công kích
+                                chớp nhoáng đối thủ.</p>
+                        </div>
+                        <div class="p-3 bg-black/40 rounded-2xl border border-white/5 space-y-1">
+                            <div class="flex items-center space-x-2 text-[10px] font-bold text-white">
+                                <i class="ph ph-grid-four text-qi-jade text-sm"></i>
+                                <span>Thiết Lập Trận Pháp</span>
+                            </div>
+                            <p class="text-[9px] text-gray-500">Bố trí tụ linh bảo trận đẩy nhanh tốc độ tu luyện hoặc
+                                bẫy sát địch mạnh mẽ.</p>
+                        </div>
+                    </div>
 
-                        <div class="flex flex-col space-y-2 w-full max-w-[240px]">
+                    <!-- Linh Thú & Khôi Lỗi -->
+                    <div class="p-4 bg-qi-jade/5 rounded-2xl border border-qi-jade/10 space-y-2">
+                        <div class="flex items-center space-x-2 text-[11px] font-bold text-qi-jade">
+                            <i class="ph ph-paw-print text-lg"></i>
+                            <span class="font-ancient">Linh Thú, Khôi Lỗi & Hoạt Thi</span>
+                        </div>
+                        <p class="text-[10px] text-gray-500 leading-relaxed">
+                            Nuôi dưỡng **Linh Thú** truyền thuyết hỗ trợ đòn đánh, chế tạo **Chiến Khôi Lỗi** chịu đòn
+                            cực mạnh, hoặc tu luyện bí thuật **Luyện Thi** để hiệu lệnh âm binh viễn cổ trợ chiến kề vai
+                            sát cánh.
+                        </p>
+                    </div>
+                </div>
 
-                            <a href="mailto:vhnam18032002@gmail.com"
-                                class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all group">
-                                <div class="flex items-center">
-                                    <i
-                                        class="ph ph-envelope text-lg text-gray-400 group-hover:text-white mr-3"></i>
-                                    <span
-                                        class="text-[10px] text-gray-400 group-hover:text-white">Email</span>
-                                </div>
-                                <span class="text-[10px] text-qi-blue">vhnam...</span>
-                            </a>
-                            <div
-                                class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all group">
-                                <div class="flex items-center">
-                                    <i
-                                        class="ph ph-phone text-lg text-gray-400 group-hover:text-white mr-3"></i>
-                                    <span
-                                        class="text-[10px] text-gray-400 group-hover:text-white">Phone</span>
-                                </div>
-                                <span class="text-[10px] text-qi-blue">0382158065</span>
+                <!-- Tab 4: Chư Thiên Khám Phá -->
+                <div id="tab-adventure" class="guide-tab-pane hidden space-y-5 animate-fade-in">
+                    <!-- Bản Đồ Lịch Luyện -->
+                    <div class="space-y-3">
+                        <h4
+                            class="text-xs font-ancient text-qi-blue uppercase tracking-widest border-l-2 border-qi-blue pl-3">
+                            Khám Phá Bản Đồ (Lịch Luyện)</h4>
+                        <p class="text-[10px] text-gray-400 leading-relaxed">
+                            Mỗi bước di chuyển trên bản đồ vùng miền sẽ kích hoạt tỷ lệ ngẫu nhiên một trong các cơ
+                            duyên:
+                        </p>
+                        <div class="grid grid-cols-2 gap-2 text-[9px] text-gray-500">
+                            <div class="p-2 bg-black/40 rounded-xl border border-white/5 flex items-center space-x-2">
+                                <i class="ph ph-sword text-red-400 text-sm"></i>
+                                <span>**Chiến Đấu:** Gặp ma nhân, yêu thú tranh đoạt.</span>
+                            </div>
+                            <div class="p-2 bg-black/40 rounded-xl border border-white/5 flex items-center space-x-2">
+                                <i class="ph ph-treasure-chest text-cultivation-gold text-sm"></i>
+                                <span>**Nhặt Đồ:** Tìm thấy khoáng thạch cổ đan rơi rớt.</span>
+                            </div>
+                            <div class="p-2 bg-black/40 rounded-xl border border-white/5 flex items-center space-x-2">
+                                <i class="ph ph-users text-qi-blue text-sm"></i>
+                                <span>**NPC Sự Kiện:** Giao thương, song tu hoặc cướp bóc.</span>
+                            </div>
+                            <div class="p-2 bg-black/40 rounded-xl border border-white/5 flex items-center space-x-2">
+                                <i class="ph ph-compass text-green-400 text-sm"></i>
+                                <span>**Ô Trống:** Tĩnh lặng ngộ đạo đắc linh khí.</span>
                             </div>
                         </div>
-
-                        <p class="text-[9px] text-gray-600 mt-6 italic">"Đạo khả đạo, phi thường đạo. Danh
-                            khả danh, phi thường danh."</p>
                     </div>
-                </section>
+
+                    <!-- Môn Phái & Xã Giao -->
+                    <div class="space-y-3">
+                        <h4
+                            class="text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">
+                            Tông Môn & Xã Giao NPC</h4>
+                        <div
+                            class="p-3 bg-white/5 rounded-2xl border border-white/5 space-y-2 text-[10px] text-gray-500 leading-relaxed">
+                            <div class="flex items-start space-x-2">
+                                <span class="text-qi-purple">•</span>
+                                <span>**Gia Nhập Tông Môn:** Đóng góp tài nguyên nhận cống hiến đổi Tuyệt Học Công Pháp
+                                    tối thượng của môn quy.</span>
+                            </div>
+                            <div class="flex items-start space-x-2">
+                                <span class="text-qi-purple">•</span>
+                                <span>**NPC Tương Tác:** Gặp gỡ chư vị đạo hữu, tặng quà gắn kết cơ duyên **Song Tu**,
+                                    giao dịch thương hội hoặc nhẫn tâm **Động Thủ Cướp Đoạt**!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pháp Bảo & Kỳ Trùng -->
+                    <div class="space-y-3">
+                        <h4
+                            class="text-xs font-ancient text-cultivation-gold uppercase tracking-widest border-l-2 border-cultivation-gold pl-3">
+                            Pháp Bảo Lục & Kỳ Trùng Bang</h4>
+                        <p class="text-[10px] text-gray-500 leading-relaxed">
+                            Sưu tầm cổ bảo chư thiên thượng cổ để ghi danh danh tiếng trong **Pháp Bảo Lục**, hay nuôi
+                            dưỡng linh trùng chấn áp yêu thú, xếp thứ bậc cao quý trong **Kỳ Trùng Bang** viễn cổ.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tab 5: Đại Giới Khung -->
+                <div id="tab-world" class="guide-tab-pane hidden space-y-4 animate-fade-in">
+                    <p class="text-[10px] text-gray-400 leading-relaxed text-center italic">
+                        "Tam giới mênh mông, chư thiên vô tận. Sơ đồ cây phân cấp dưới đây phản ánh toàn bộ kết cấu giới
+                        diện đại lục hiện hữu trong trò chơi."
+                    </p>
+                    <div id="guide-world-tree"
+                        class="p-4 bg-black/40 rounded-2xl border border-white/5 space-y-3 text-[11px] max-h-[300px] overflow-y-auto custom-scrollbar">
+                        <div class="text-gray-500 text-center py-4">Đang cảm ứng chư thiên giới diện...</div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Footer -->
-            <div class="p-6 border-t border-white/5">
+            <div class="p-6 border-t border-white/5 bg-black/10">
                 <button id="btn-guide-got-it"
                     class="w-full py-3 bg-cultivation-gold/20 border border-cultivation-gold/50 text-cultivation-gold rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-cultivation-gold/30 transition-all">
                     Đã Hiểu, Bắt Đầu Tu Tiên!
@@ -848,7 +1015,6 @@
         </div>
     </div>
 </div>
-
 
             <!-- Tab 1: Màn Hình Tu Luyện Chính -->
             <!-- Tab 1: Tu Luyện (Main Screen) -->
@@ -2197,9 +2363,11 @@
                 <p id="current-world-name-sub" class="text-[8px] text-gray-500 uppercase tracking-widest">Chọn địa điểm lịch luyện</p>
             </div>
         </div>
-        <div
-            class="w-10 h-10 rounded-xl bg-qi-blue/10 border border-qi-blue/20 flex items-center justify-center text-qi-blue">
-            <i class="ph ph-map-pin text-xl"></i>
+        <div class="flex flex-col items-end">
+            <div class="w-10 h-10 mb-1 rounded-xl bg-qi-blue/10 border border-qi-blue/20 flex items-center justify-center text-qi-blue">
+                <i class="ph ph-map-pin text-xl"></i>
+            </div>
+            <span id="player-current-loc-badge" class="text-[8px] text-qi-blue font-ancient border border-qi-blue/30 bg-qi-blue/10 px-2 py-0.5 rounded-md inline-block whitespace-nowrap">Đang ở: Chưa rõ</span>
         </div>
     </header>
     <div id="location-list" class="flex-grow min-h-0 p-6 overflow-y-auto space-y-6 custom-scroll pb-24"></div>
@@ -2235,10 +2403,38 @@
                     <div class="w-12 h-[1px] bg-gradient-to-l from-transparent to-qi-blue"></div>
                 </div>
             </div>
-            <p id="event-text"
-                class="text-sm text-gray-300 font-serif italic leading-relaxed max-w-xs mx-auto opacity-80">
-                “Không gian tĩnh lặng, chỉ nghe tiếng gió lướt qua kẽ lá...”
-            </p>
+            <div class="px-4 py-3 bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl max-w-xs mx-auto shadow-inner">
+                <p id="event-text" class="text-xs text-teal-200/90 font-serif italic leading-relaxed">
+                    “Không gian tĩnh lặng, chỉ nghe tiếng gió lướt qua kẽ lá...”
+                </p>
+            </div>
+        </div>
+
+        <!-- Bagua Grid Map Panel -->
+        <div id="explore-grid-container"
+            class="my-2 p-3 border border-white/5 rounded-2xl bg-black/60 backdrop-blur-md space-y-2.5 shadow-2xl relative">
+            <div class="flex justify-between items-center text-[8px] uppercase tracking-widest font-bold text-qi-blue">
+                <span id="explore-grid-title">Ma Trận Mật Cảnh</span>
+                <span id="grid-coordinates" class="font-mono text-cultivation-gold text-[9px]">Dò Xét: Cấp 1</span>
+            </div>
+            <!-- Bản đồ tự động thích ứng với khung hình điện thoại -->
+            <div id="explore-grid-scroll-area"
+                class="w-full p-1 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center">
+                <div id="explore-grid-board" class="grid grid-cols-8 gap-1.5 w-full aspect-square m-auto flex-none">
+                    <!-- Grid Cells rendered dynamically -->
+                </div>
+            </div>
+            <!-- Legend / Giải nghĩa ký hiệu -->
+            <div class="grid grid-cols-4 gap-1.5 text-[8px] text-gray-400 font-bold border-t border-white/5 pt-2 mt-2">
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🌾</span> <span>Cỏ</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🪨</span> <span>Đá</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🌊</span> <span>Giang</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>💀</span> <span>Thú</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🌀</span> <span>Linh</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>👤</span> <span>Nhân</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🏠</span> <span>Sơn Môn</span></span>
+                <span class="legend-item-badge flex items-center justify-center space-x-1"><span>🪜</span> <span>Thang</span></span>
+            </div>
         </div>
 
         <!-- Dashboard Stats Grid -->
@@ -2250,17 +2446,6 @@
             <div class="dashboard-stat">
                 <span class="dashboard-stat-label">Thời Gian</span>
                 <span id="env-timerate" class="dashboard-stat-value text-cultivation-gold">1.0x</span>
-            </div>
-        </div>
-
-        <!-- Element Qi Distribution Grid -->
-        <div class="p-3 border border-white/5 rounded-xl bg-black/40 space-y-2">
-            <div class="flex justify-between items-center text-[7.5px] uppercase tracking-wider font-bold mb-1">
-                <span class="text-qi-blue">Tỷ Lệ Linh Khí Địa Phương</span>
-                <span id="env-purity-tag" class="text-gray-500 text-[7px] leading-none">LINH KHÍ</span>
-            </div>
-            <div id="env-element-qi-grid" class="grid grid-cols-5 gap-1.5">
-                <!-- Element Qi values dynamically rendered here -->
             </div>
         </div>
 
@@ -2297,7 +2482,6 @@
         </div>
     </div>
 </div>
-
         <!-- NPC Trade Overlay -->
 <div id="npc-trade-overlay" class="overlay hidden">
     <div class="w-full h-full flex items-center justify-center p-4 md:p-8 bg-black/80 backdrop-blur-md">
@@ -3023,7 +3207,7 @@
     class="hidden overlay-full z-[850] bg-black/85 backdrop-blur-md flex items-center justify-center p-6">
     <div id="location-detail-content"
         class="w-full max-w-[340px] bg-qi-ink border border-cultivation-gold/20 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col max-h-[85vh] relative animate-fade-in">
-        
+
         <!-- Close Button -->
         <button id="close-location-detail-btn"
             class="absolute top-4 right-4 z-50 w-8 h-8 rounded-full bg-black/60 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-all active:scale-95">
@@ -3034,11 +3218,15 @@
         <div class="relative w-full h-44 shrink-0 overflow-hidden">
             <img id="loc-detail-image" src="" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-qi-ink via-qi-ink/40 to-transparent"></div>
-            
+
             <!-- Region & Sub-Region Badges -->
             <div class="absolute bottom-4 left-6 right-6 flex flex-wrap gap-1.5">
-                <span id="loc-detail-region" class="px-2.5 py-0.5 rounded bg-qi-blue/15 border border-qi-blue/30 text-qi-blue text-[8px] font-ancient uppercase tracking-widest">Thiên Nam Đại Lục</span>
-                <span id="loc-detail-subregion" class="px-2.5 py-0.5 rounded bg-qi-purple/15 border border-qi-purple/30 text-qi-purple text-[8px] font-ancient uppercase tracking-widest">Việt Quốc</span>
+                <span id="loc-detail-region"
+                    class="px-2.5 py-0.5 rounded bg-qi-blue/15 border border-qi-blue/30 text-qi-blue text-[8px] font-ancient uppercase tracking-widest">Thiên
+                    Nam Đại Lục</span>
+                <span id="loc-detail-subregion"
+                    class="px-2.5 py-0.5 rounded bg-qi-purple/15 border border-qi-purple/30 text-qi-purple text-[8px] font-ancient uppercase tracking-widest">Việt
+                    Quốc</span>
             </div>
         </div>
 
@@ -3046,7 +3234,8 @@
         <div class="flex-grow overflow-y-auto p-6 space-y-6 custom-scrollbar">
             <!-- Title & Description -->
             <div class="space-y-2">
-                <h3 id="loc-detail-name" class="text-2xl font-charm text-cultivation-gold text-glow">Hoàng Phong Cốc</h3>
+                <h3 id="loc-detail-name" class="text-2xl font-charm text-cultivation-gold text-glow">Hoàng Phong Cốc
+                </h3>
                 <p id="loc-detail-description" class="text-[10px] text-gray-400 leading-relaxed italic font-serif"></p>
             </div>
 
@@ -3054,17 +3243,21 @@
             <div class="grid grid-cols-2 gap-3 col-span-2">
                 <div class="bg-black/35 border border-white/5 rounded-2xl p-3 text-center space-y-1">
                     <span class="text-[8px] text-gray-500 uppercase tracking-widest block">Cảnh Giới Yêu Cầu</span>
-                    <span id="loc-detail-min-realm" class="text-[10px] font-ancient text-cultivation-gold uppercase tracking-wider block">Phàm Nhân</span>
+                    <span id="loc-detail-min-realm"
+                        class="text-[10px] font-ancient text-cultivation-gold uppercase tracking-wider block">Phàm
+                        Nhân</span>
                 </div>
                 <div class="bg-black/35 border border-white/5 rounded-2xl p-3 text-center space-y-1">
                     <span class="text-[8px] text-gray-500 uppercase tracking-widest block">Độ Nguy Hiểm</span>
-                    <span id="loc-detail-danger" class="text-[10px] font-ancient text-qi-jade uppercase tracking-wider block">An Toàn</span>
+                    <span id="loc-detail-danger"
+                        class="text-[10px] font-ancient text-qi-jade uppercase tracking-wider block">An Toàn</span>
                 </div>
             </div>
 
             <!-- Resources Section -->
             <div id="loc-detail-resources-section" class="space-y-2">
-                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest border-l border-cultivation-gold/50 pl-2">Sản Vật Địa Phương</h4>
+                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest border-l border-cultivation-gold/50 pl-2">
+                    Sản Vật Địa Phương</h4>
                 <div id="loc-detail-resources" class="flex flex-wrap gap-1.5">
                     <!-- Badges dynamic -->
                 </div>
@@ -3072,7 +3265,8 @@
 
             <!-- Energies Section -->
             <div id="loc-detail-energies-section" class="space-y-2">
-                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest border-l border-qi-blue/50 pl-2">Linh khí & Quy luật</h4>
+                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest border-l border-qi-blue/50 pl-2">Linh khí
+                    & Quy luật</h4>
                 <div id="loc-detail-energies" class="grid grid-cols-1 gap-2">
                     <!-- list dynamic -->
                 </div>
@@ -3080,8 +3274,9 @@
 
             <!-- Elemental Qi (Ngũ Hành) Grid -->
             <div id="loc-detail-element-qi-section" class="space-y-3">
-                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest border-l border-qi-purple/50 pl-2">Phân Bổ Ngũ Hành Linh Khí</h4>
-                <div id="loc-detail-element-qi" class="grid grid-cols-2 gap-2 text-[9px] font-mono">
+                <h4 class="text-[8px] text-gray-500 uppercase tracking-widest border-l border-qi-purple/50 pl-2">Phân Bổ
+                    Ngũ Hành Linh Khí</h4>
+                <div id="loc-detail-element-qi" class="grid grid-cols-3 gap-2 text-[9px] font-mono">
                     <!-- element items dynamic -->
                 </div>
             </div>
@@ -3097,7 +3292,6 @@
 
     </div>
 </div>
-
         <!-- Dị Hỏa Bảng Overlay -->
 <div id="di-hoa-bang-overlay"
     class="hidden overlay-full z-[450] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
@@ -3637,6 +3831,62 @@
             <p class="text-[8px] text-gray-600 italic">"Vạn tộc tranh phong, ai là chính thống?"</p>
         </div>
     </div>
+</div>
+
+        <!-- Travel Journey Overlay -->
+<div id="travel-overlay" class="hidden overlay-full z-[100] bg-black/90 backdrop-blur-xl flex-col items-center justify-center">
+    
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h2 id="travel-title" class="text-3xl font-charm text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">Hành Trình Vạn Dặm</h2>
+        <p id="travel-route-text" class="text-qi-blue mt-2 font-ancient text-sm tracking-widest uppercase">Thanh Vân Trấn → Hoàng Phong Cốc</p>
+    </div>
+
+    <!-- Progress Visualization -->
+    <div class="w-full max-w-2xl px-12 relative mb-12 mt-4">
+        <div class="relative w-full h-1 bg-white/10 rounded-full flex items-center">
+            <!-- Path line -->
+            <div id="travel-progress-bar" class="absolute left-0 h-full bg-gradient-to-r from-blue-500 via-purple-500 to-qi-blue w-0 transition-all duration-100 ease-linear shadow-[0_0_10px_rgba(79,209,197,0.8)] rounded-full"></div>
+            
+            <!-- Markers -->
+            <div class="absolute left-0 -ml-3 text-white/50 text-2xl flex items-center justify-center"><i class="ph-fill ph-map-pin"></i></div>
+            <div class="absolute right-0 -mr-3 text-qi-blue text-2xl animate-pulse flex items-center justify-center"><i class="ph-fill ph-flag"></i></div>
+
+            <!-- Moving Entity (Sword/Cloud) -->
+            <div id="travel-entity" class="absolute left-0 -ml-4 w-8 h-8 text-3xl transition-all duration-100 ease-linear drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] flex items-center justify-center">
+                <i class="ph-fill ph-sword text-white rotate-90"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="flex space-x-12 mb-8 bg-white/5 rounded-2xl p-4 border border-white/10">
+        <div class="text-center">
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Khoảng Cách</p>
+            <p id="travel-dist" class="text-white font-mono text-lg">0 dặm</p>
+        </div>
+        <div class="text-center border-l border-white/10 pl-12">
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Thời Gian Dự Kiến</p>
+            <p id="travel-time" class="text-qi-blue font-mono text-lg">0 ngày</p>
+        </div>
+        <div class="text-center border-l border-white/10 pl-12">
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Mức Độ</p>
+            <p id="travel-danger" class="font-bold text-lg">An Toàn</p>
+        </div>
+    </div>
+
+    <!-- Event Logs -->
+    <div class="w-full max-w-xl bg-black/60 border border-white/10 rounded-xl p-4 h-48 overflow-y-auto custom-scroll relative">
+        <div class="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-black/80 to-transparent pointer-events-none"></div>
+        <div id="travel-logs" class="space-y-3 pt-4 text-sm font-ancient flex flex-col justify-end min-h-full">
+            <!-- Logs appear here -->
+        </div>
+    </div>
+
+    <!-- Abort Button -->
+    <button id="btn-abort-travel" class="mt-8 px-6 py-2 rounded-full border border-red-500/50 text-red-400 text-xs tracking-widest uppercase hover:bg-red-500/10 hover:border-red-500 transition-all">
+        Hủy Hành Trình
+    </button>
 </div>
 
         <!-- Loading Overlay -->
