@@ -657,6 +657,8 @@ export const WORLDS = {
             },
             {
                 id: 'huyet_sac_cam_dia',
+                maxRealm: 13,
+                maxRealmMessage: 'Cấm địa sức chịu đựng có hạn, tu sĩ Trúc Cơ trở lên tiến vào sẽ làm không gian cấm địa sụp đổ!',
                 name: 'Huyết Sắc Cấm Địa',
                 minRealm: 9,
                 danger: 'tu_dia',
@@ -1633,6 +1635,8 @@ export const WORLDS = {
             },
             {
                 id: 'sa_hai_bi_canh',
+                maxRealm: 21,
+                maxRealmMessage: 'Bí cảnh sa hải kết giới quá yếu, Nguyên Anh kỳ trở lên tiến vào sẽ làm lực lượng kết giới bạo tẩu sụp đổ!',
                 name: 'Sa Hải Bí Cảnh',
                 minRealm: 14,
                 danger: 'trung_cap',

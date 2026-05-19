@@ -14,6 +14,8 @@ export const SHOPS = {
                 { id: 'linh_hoa_item', stock: 10 },
                 { id: 'phi_kiem_go', stock: 5 },
                 { id: 'ao_bo_so_cap', stock: 5 },
+                { id: 'ngu_phong_phi_chu', stock: 2 },
+                { id: 'truyen_tong_lenh', stock: 1 },
                 { id: 'thanh_hong_kiem', stock: 1, minVip: 1 },
                 { id: 'phi_kiem_thanh_tuyen', stock: 3 },
                 { id: 'bat_quai_kinh', stock: 1, minVip: 1 },
@@ -80,7 +82,8 @@ export const SHOPS = {
                 { id: 'chu_sa_muc', stock: 50 },
                 { id: 'truc_phu_but', stock: 1 },
                 { id: 'hoa_cau_phu', stock: 20 },
-                { id: 'kim_cuong_phu', stock: 5, minVip: 1 }
+                { id: 'kim_cuong_phu', stock: 5, minVip: 1 },
+                { id: 'pha_khong_phu', stock: 5 }
             ],
             'luyen_khi': [
                 { id: 'de_khi_dai', stock: 5 },
@@ -162,7 +165,9 @@ export const SHOPS = {
                 { id: 'phi_kiem_thanh_tuyen', stock: 10 },
                 { id: 'bat_quai_kinh', stock: 5 },
                 { id: 'huyen_lu_item', stock: 5 },
-                { id: 'tao_hoa_tien_dinh', stock: 1, minVip: 5 }
+                { id: 'tao_hoa_tien_dinh', stock: 1, minVip: 5 },
+                { id: 'ngu_phong_phi_chu', stock: 3 },
+                { id: 'truyen_tong_lenh', stock: 2 }
             ],
             'nguyen_lieu': [
                 { id: 'linh_thao_100y', stock: 50 },
@@ -179,7 +184,8 @@ export const SHOPS = {
             ],
             'phu_luc': [
                 { id: 'hoa_cau_phu', stock: 50 },
-                { id: 'kim_cuong_phu', stock: 10 }
+                { id: 'kim_cuong_phu', stock: 10 },
+                { id: 'pha_khong_phu', stock: 10 }
             ],
             'luyen_khi': [
                 { id: 'huyen_thiet', stock: 100 },

@@ -658,6 +658,40 @@ export const ITEMS = {
         durability: 80,
         maxDurability: 80
     },
+    'ngu_phong_phi_chu': {
+        id: 'ngu_phong_phi_chu',
+        name: 'Ngự Phong Phi Chu',
+        type: 'flightArtifact',
+        quality: 'Pháp Bảo',
+        tier: 'PHAP_BAO',
+        icon: '🚢',
+        description: 'Phi chu bằng linh mộc ngàn năm, khắc họa Ngự Phong Trận Pháp pháp trận, ngự phong nhi hành tốc độ cực nhanh, lướt sóng vượt biển nhàn nhã.',
+        price: 150000,
+        stats: { spd: 80 },
+        durability: 200,
+        maxDurability: 200
+    },
+    'truyen_tong_lenh': {
+        id: 'truyen_tong_lenh',
+        name: 'Thượng Cổ Truyền Tống Lệnh',
+        type: 'supportArtifact',
+        quality: 'Cổ Bảo',
+        tier: 'CO_BAO',
+        icon: '🏅',
+        description: 'Tấm lệnh bài làm từ linh thạch cổ xưa phát ra hào quang xám nhạt, che chở tu sĩ trước áp lực xé rách của không gian khi đi qua Truyền Tống Trận.',
+        price: 300000,
+        stats: { luck: 15 }
+    },
+    'pha_khong_phu': {
+        id: 'pha_khong_phu',
+        name: 'Phá Không Phù',
+        type: 'consumable',
+        quality: 'Pháp Bảo',
+        tier: 'PHAP_BAO',
+        icon: '📜',
+        description: 'Linh phù quý hiếm dùng để phá vỡ chướng ngại không gian, bảo vệ nhục thân khi thăng hoa giới diện hoặc cưỡng ép dịch chuyển xuyên vách ngăn hư không (tiêu hao khi dùng).',
+        price: 50000
+    },
     'tu_linh_chau': {
         id: 'tu_linh_chau',
         name: 'Tụ Linh Châu',

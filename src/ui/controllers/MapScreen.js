@@ -320,7 +320,10 @@ export class MapScreen {
             const filteredLocs = w.locations.filter(loc => loc.subRegionId === this.selectedSubRegionId);
 
             filteredLocs.forEach(loc => {
-                const locked = state.player.realmId < loc.minRealm;
+                const minLocked = state.player.realmId < loc.minRealm;
+                const maxLocked = loc.maxRealm !== undefined && state.player.realmId > loc.maxRealm;
+                const locked = minLocked || maxLocked;
+                
                 const el = document.createElement('div');
                 el.className = `location-card h-40 p-5 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
 
@@ -328,6 +331,12 @@ export class MapScreen {
                 const dangerInfo = DANGER_LEVELS[relDanger] || { name: relDanger };
                 const dangerClass = `danger-${relDanger}`;
                 const reqRealmName = getRealmById(loc.minRealm).name;
+
+                let reqLabel = `Yêu cầu: ${reqRealmName}`;
+                if (loc.maxRealm !== undefined) {
+                    const maxRealmName = getRealmById(loc.maxRealm).name;
+                    reqLabel = `Giới hạn: ${reqRealmName} - ${maxRealmName}`;
+                }
 
                 el.innerHTML = `
                     <img src="${loc.image || ASSETS.backgrounds.cultivation}" class="location-card-image">
@@ -339,14 +348,19 @@ export class MapScreen {
                         <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">${loc.description}</p>
                         <div class="flex items-center space-x-2 pt-1">
                             <span class="px-2 py-0.5 rounded border text-[7px] uppercase font-bold tracking-widest ${dangerClass}">${dangerInfo.name}</span>
-                            <span class="text-[7px] text-gray-500 uppercase tracking-widest">Yêu cầu: ${reqRealmName}</span>
+                            <span class="text-[7px] text-gray-500 uppercase tracking-widest">${reqLabel}</span>
                         </div>
                     </div>
                 `;
 
                 el.onclick = () => {
-                    if (locked) {
+                    if (minLocked) {
                         state.ui.toast(`Cảnh giới không đủ! Yêu cầu: ${reqRealmName}`, 'warning');
+                        return;
+                    }
+                    if (maxLocked) {
+                        const failMsg = loc.maxRealmMessage || `Cảnh giới của ngươi quá cao để vào cấm địa này! Sức ép không gian sẽ làm nó sụp đổ!`;
+                        state.ui.toast(failMsg, 'warning');
                         return;
                     }
                     this.startExploration(loc.id);

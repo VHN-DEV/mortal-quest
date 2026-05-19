@@ -162,12 +162,20 @@ const showLocationDetailPopup = (worldId, locId) => {
     // Set Min Realm Yêu Cầu
     const elMinRealm = document.getElementById('loc-detail-min-realm');
     if (elMinRealm) {
-        const realmName = getRealmById(loc.minRealm).name;
-        elMinRealm.textContent = realmName;
-        
-        // Color depending on if the player satisfies the realm
-        const satisfies = state.player.realmId >= loc.minRealm;
-        elMinRealm.className = `text-[10px] font-ancient uppercase tracking-wider block ${satisfies ? 'text-cultivation-gold' : 'text-red-500'}`;
+        if (loc.maxRealm !== undefined) {
+            const minRealmName = getRealmById(loc.minRealm).name;
+            const maxRealmName = getRealmById(loc.maxRealm).name;
+            elMinRealm.textContent = `${minRealmName} - ${maxRealmName}`;
+            
+            const satisfies = state.player.realmId >= loc.minRealm && state.player.realmId <= loc.maxRealm;
+            elMinRealm.className = `text-[10px] font-ancient uppercase tracking-wider block ${satisfies ? 'text-cultivation-gold' : 'text-red-500'}`;
+        } else {
+            const realmName = getRealmById(loc.minRealm).name;
+            elMinRealm.textContent = realmName;
+            
+            const satisfies = state.player.realmId >= loc.minRealm;
+            elMinRealm.className = `text-[10px] font-ancient uppercase tracking-wider block ${satisfies ? 'text-cultivation-gold' : 'text-red-500'}`;
+        }
     }
 
     // Set Danger Level

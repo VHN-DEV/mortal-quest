@@ -1,5 +1,6 @@
 import { state } from '../state.js';
 import { getTravelRoute, findLocationName, findWorldIdByLocId, DANGER_LEVELS } from '../configs/map-data.js';
+import { getItemById } from '../configs/item-data.js';
 
 export class TravelSystem {
     constructor(player, ui) {
@@ -11,18 +12,42 @@ export class TravelSystem {
 
     // Tốc độ di chuyển dựa trên Cảnh giới (Tu vi)
     getRealmSpeedMultiplier() {
-        const r = this.player.realm;
-        if (r < 4) return 1; // Đi bộ / Khinh công (Luyện Khí sơ kỳ)
-        if (r < 10) return 2; // Ngự Khí (Trúc Cơ)
-        if (r < 16) return 5; // Phi Hành (Kết Đan)
-        if (r < 22) return 15; // Độn Quang (Nguyên Anh)
-        if (r < 28) return 50; // Xuyên Không Ngắn (Hóa Thần)
-        return 100; // Đại Thừa trở lên
+        const r = this.player.realmId || 0;
+        if (r < 1) return 1; // Phàm nhân
+        if (r < 14) return 2; // Khinh Công (Luyện Khí)
+        if (r < 18) return 5; // Phi Hành (Trúc Cơ)
+        if (r < 22) return 15; // Độn Quang (Kết Đan)
+        if (r < 26) return 50; // Hóa Kiếp (Nguyên Anh)
+        if (r < 30) return 150; // Xuyên Không Ngắn (Hóa Thần)
+        return 300; // Đại Thừa / Luyện Hư trở lên
     }
 
     // Tốc độ bổ sung từ Tọa Kỵ, Phi Chu
     getEquipmentSpeedMultiplier() {
-        // Tương lai có thể check player.equipment.mount hoặc ship
+        // 1. Kiểm tra phi chu được trang bị
+        const equippedId = this.player.equipment ? this.player.equipment.flightArtifact : null;
+        if (equippedId) {
+            const item = getItemById(equippedId);
+            if (item && item.stats && item.stats.spd) {
+                return 1 + (item.stats.spd / 50);
+            }
+        }
+
+        // 2. Nếu không trang bị, tìm phi chu tốt nhất trong túi đồ
+        if (this.player.inventory && typeof this.player.inventory.allItems !== 'undefined') {
+            const flightArtifacts = this.player.inventory.allItems
+                .map(i => getItemById(i.id))
+                .filter(item => item && item.type === 'flightArtifact');
+            
+            if (flightArtifacts.length > 0) {
+                flightArtifacts.sort((a, b) => ((b.stats?.spd || 0) - (a.stats?.spd || 0)));
+                const best = flightArtifacts[0];
+                if (best && best.stats && best.stats.spd) {
+                    return 1 + (best.stats.spd / 50);
+                }
+            }
+        }
+
         return 1;
     }
 
@@ -55,8 +80,48 @@ export class TravelSystem {
             return false;
         }
 
-        // Check requirements (Tu vi, Item)
-        // ... handled in MapScreen typically before calling this, but double check here if needed
+        // 1. Kiểm tra yêu cầu Hải Vực (Terrain: 'hai_vuc')
+        if (route.terrain === 'hai_vuc') {
+            const isKietDan = this.player.realmId >= 18;
+            const hasVessel = this.player.equipment?.flightArtifact || (this.player.inventory?.allItems?.some(i => getItemById(i.id)?.type === 'flightArtifact'));
+            if (!isKietDan && !hasVessel) {
+                this.ui.toast("Vượt biển yêu cầu đạt Kết Đan kỳ (phi hành độn quang) hoặc sở hữu Phi Chu (Phi Hành Pháp Bảo) trong hành trang!", "error");
+                return false;
+            }
+        }
+
+        // 2. Kiểm tra dịch chuyển giới diện (fromWorld !== toWorld)
+        const fromWorldId = findWorldIdByLocId(fromLocId);
+        const toWorldId = findWorldIdByLocId(toLocId);
+        if (fromWorldId && toWorldId && fromWorldId !== toWorldId) {
+            // Yêu cầu cảnh giới tối thiểu tùy giới diện mục tiêu
+            let minRealmReq = 26; // Hóa Thần cho Linh Giới
+            let worldName = "Linh Giới";
+            if (toWorldId === 'tien_gioi') {
+                minRealmReq = 42; // Chân Tiên
+                worldName = "Tiên Giới";
+            }
+            
+            if (this.player.realmId < minRealmReq) {
+                this.ui.toast(`Cảnh giới chưa đủ để phi thăng ${worldName}! Nhục thân ngươi sẽ bị lực lượng giới diện xé rách!`, "error");
+                return false;
+            }
+
+            // Yêu cầu vật phẩm dịch chuyển
+            const hasToken = this.player.inventory?.allItems?.some(i => i.id === 'truyen_tong_lenh');
+            const hasTalisman = this.player.inventory?.allItems?.some(i => i.id === 'pha_khong_phu');
+
+            if (!hasToken && !hasTalisman) {
+                this.ui.toast("Dịch chuyển xuyên giới diện yêu cầu sở hữu [Thượng Cổ Truyền Tống Lệnh] hoặc tiêu hao [Phá Không Phù] để hộ thân!", "error");
+                return false;
+            }
+
+            // Nếu không có lệnh bài vĩnh viễn nhưng có bùa tiêu hao, trừ bùa tiêu hao
+            if (!hasToken && hasTalisman) {
+                this.player.inventory.removeItem('pha_khong_phu', 1);
+                this.ui.toast("[Phá Không Phù] hóa thành tro bụi sau khi chống đỡ áp lực hư không loạn lưu!", "warning");
+            }
+        }
 
         const gameHours = this.calculateTravelTime(route.baseDistance);
         const realMs = this.calculateRealTimeDuration(route.baseDistance);
@@ -130,12 +195,20 @@ export class TravelSystem {
             this.player.addLingShi(Math.floor(Math.random() * 10) + 1);
         } else {
             // Normal travel log
-            const msgs = [
-                "Phi kiếm xé gió, lướt qua những rặng núi trùng điệp...",
-                "Ngắm nhìn cảnh sắc phàm trần từ trên cao, tâm tình tĩnh lặng.",
-                "Hành trình vạn dặm, đạo tâm kiên định.",
-                "Thưởng thức phong cảnh núi non hùng vĩ dọc đường đi."
-            ];
+            const hasVessel = this.player.equipment?.flightArtifact || (this.player.inventory?.allItems?.some(i => getItemById(i.id)?.type === 'flightArtifact'));
+            const msgs = hasVessel
+                ? [
+                    "Phi chu ngự phong phá sóng, lướt nhanh trên tầng vân tiêu...",
+                    "Từ trên phi chu nhìn xuống, mây trôi nước chảy tráng lệ khôn cùng.",
+                    "Phi chu tự động phi hành theo la bàn, ngươi ngơi nghỉ tĩnh tọa dưỡng thần.",
+                    "Linh quang hộ trướng rực rỡ, bảo vệ phi chu trước hư không cuồng phong."
+                ]
+                : [
+                    "Phi kiếm xé gió, lướt qua những rặng núi trùng điệp...",
+                    "Ngắm nhìn cảnh sắc phàm trần từ trên cao, tâm tình tĩnh lặng.",
+                    "Hành trình vạn dặm, đạo tâm kiên định.",
+                    "Thưởng thức phong cảnh núi non hùng vĩ dọc đường đi."
+                ];
             logMsg = msgs[Math.floor(Math.random() * msgs.length)];
         }
 
