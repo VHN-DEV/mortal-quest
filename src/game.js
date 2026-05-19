@@ -1871,9 +1871,10 @@ export class Game {
         state.currentCombat.start();
     }
 
-    handleCombatEncounter(worldId, locId, onEnd = null) {
+    handleCombatEncounter(worldId, locId, onEnd = null, overrideImage = null) {
         const loc = getLocationById(worldId, locId);
         const enemy = EnemyGenerator.generate(loc?.dangerLevel || 1);
+        if (overrideImage) enemy.image = overrideImage;
         this.pendingEncounter = { worldId, locId, enemy, onEnd };
 
         const playerPerc = state.player.advancedStats.perception || 5;

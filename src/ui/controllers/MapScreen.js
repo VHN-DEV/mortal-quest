@@ -1,7 +1,7 @@
 import { state } from '../../state.js';
 import { getWorlds, getLocationById, DANGER_LEVELS, findLocationName } from '../../configs/map-data.js';
 import { getRealmById } from '../../configs/realm-data.js';
-import { ASSETS } from '../../configs/asset-data.js';
+import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 import { logger } from '../../utils/logger.js';
 import { getRandomEvent } from '../../configs/event-data.js';
 import { SECTS } from '../../configs/sect-data.js';
@@ -11,6 +11,45 @@ import { audioManager } from '../../utils/audio-manager.js';
 import { gsap } from 'gsap';
 import { getItemById } from '../../configs/item-data.js';
 import { EnemyGenerator } from '../../core/enemy.js';
+
+const BEAST_IMAGES = [
+    'beasts/huyen-giap-dia-long',
+    'beasts/thanh-van-ly-thu',
+    'beasts/u-minh-mong-diep',
+    'enemies/black_tiger',
+    'enemies/demon_cultivator',
+    'enemies/dragon_legacy',
+    'enemies/fire_dragon',
+    'enemies/rogue_cultivator',
+    'enemies/spirit_wolf',
+    'enemies/wolf_legacy',
+    'enemies/zombie'
+];
+
+const NPC_IMAGES = [
+    'portraits/bach_minh_anh',
+    'portraits/bach_tu_linh',
+    'portraits/bang_nguyet',
+    'portraits/cultivator_legacy',
+    'portraits/demon',
+    'portraits/du_nhuoc_nhan',
+    'portraits/han_lap',
+    'portraits/han_phi_vu',
+    'portraits/han_vien',
+    'portraits/kiem_vo_tam',
+    'portraits/lan_anh',
+    'portraits/merchant',
+    'portraits/minh_nguyet',
+    'portraits/phuong_ca',
+    'portraits/phuong_vu',
+    'portraits/sect_elder',
+    'portraits/thanh_lien',
+    'portraits/thanh_nhi',
+    'portraits/tran_tu_huyen',
+    'portraits/tu_linh',
+    'portraits/vo_danh',
+    'portraits/xich_nguyet'
+];
 
 
 /**
@@ -40,6 +79,7 @@ export class MapScreen {
         // Bagua Grid Map Panel
         this.elExploreGridContainer = document.getElementById('explore-grid-container');
         this.elExploreGridBoard = document.getElementById('explore-grid-board');
+        this.elExploreGridScrollArea = document.getElementById('explore-grid-scroll-area');
 
         // Info Displays
         this.elCurrentWorldName = document.getElementById('current-world-name');
@@ -106,6 +146,47 @@ export class MapScreen {
                 await Preferences.set({ key: 'mortal_quest_map_view', value: 'locations' });
                 if (state.systems.time) state.systems.time.timeMultiplier = 1.0;
             };
+        }
+
+        if (this.elExploreGridScrollArea) {
+            let isDown = false;
+            let startX;
+            let startY;
+            let scrollLeft;
+            let scrollTop;
+
+            this.elExploreGridScrollArea.addEventListener('mousedown', (e) => {
+                isDown = true;
+                this.elExploreGridScrollArea.classList.add('cursor-grabbing');
+                this.elExploreGridScrollArea.classList.remove('cursor-grab');
+                startX = e.pageX - this.elExploreGridScrollArea.offsetLeft;
+                startY = e.pageY - this.elExploreGridScrollArea.offsetTop;
+                scrollLeft = this.elExploreGridScrollArea.scrollLeft;
+                scrollTop = this.elExploreGridScrollArea.scrollTop;
+            });
+
+            this.elExploreGridScrollArea.addEventListener('mouseleave', () => {
+                isDown = false;
+                this.elExploreGridScrollArea.classList.add('cursor-grab');
+                this.elExploreGridScrollArea.classList.remove('cursor-grabbing');
+            });
+
+            this.elExploreGridScrollArea.addEventListener('mouseup', () => {
+                isDown = false;
+                this.elExploreGridScrollArea.classList.add('cursor-grab');
+                this.elExploreGridScrollArea.classList.remove('cursor-grabbing');
+            });
+
+            this.elExploreGridScrollArea.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - this.elExploreGridScrollArea.offsetLeft;
+                const y = e.pageY - this.elExploreGridScrollArea.offsetTop;
+                const walkX = (x - startX) * 1.5; 
+                const walkY = (y - startY) * 1.5; 
+                this.elExploreGridScrollArea.scrollLeft = scrollLeft - walkX;
+                this.elExploreGridScrollArea.scrollTop = scrollTop - walkY;
+            });
         }
     }
 
@@ -1076,7 +1157,7 @@ export class MapScreen {
                     const portraitUrl = ASSETS.portraits[portraitKey] || './src/assets/images/players/player_male.webp';
 
                     el.innerHTML = `
-                        <div class="w-9 h-9 rounded-full overflow-hidden border border-cultivation-gold shadow-md flex items-center justify-center animate-pulse">
+                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-cultivation-gold shadow-[0_0_10px_gold] flex items-center justify-center animate-pulse">
                             <img src="${portraitUrl}" class="w-full h-full object-cover">
                         </div>
                     `;
@@ -1099,7 +1180,25 @@ export class MapScreen {
                     else if (cell.type === 'sect_entrance') el.classList.add('grid-cell-sect-gate');
                     else if (cell.type === 'dungeon_entrance') el.classList.add('grid-cell-stairs-up');
 
-                    el.innerHTML = `<span class="text-sm animate-pulse">${cell.icon}</span>`;
+                    if (cell.type === 'guard' || cell.type === 'boss') {
+                        const beastIdx = (x * 7 + y * 13) % BEAST_IMAGES.length;
+                        const imgUrl = getAssetUrl(BEAST_IMAGES[beastIdx]);
+                        el.innerHTML = `
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 ${cell.type === 'boss' ? 'border-red-600 shadow-[0_0_15px_red]' : 'border-red-400 shadow-md'} flex items-center justify-center animate-pulse">
+                                <img src="${imgUrl}" class="w-full h-full object-cover">
+                            </div>
+                        `;
+                    } else if (cell.type === 'npc_event') {
+                        const npcIdx = (x * 5 + y * 11) % NPC_IMAGES.length;
+                        const imgUrl = getAssetUrl(NPC_IMAGES[npcIdx]);
+                        el.innerHTML = `
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-qi-blue shadow-md flex items-center justify-center animate-pulse">
+                                <img src="${imgUrl}" class="w-full h-full object-cover">
+                            </div>
+                        `;
+                    } else {
+                        el.innerHTML = `<span class="text-2xl md:text-3xl animate-pulse">${cell.icon}</span>`;
+                    }
                 } else if (cell.status === 'visited') {
                     el.classList.add('grid-cell-visited');
                     if (cell.type === 'river') el.classList.add('grid-cell-river');
@@ -1108,7 +1207,7 @@ export class MapScreen {
                     else if (cell.type === 'sect_entrance') el.classList.add('grid-cell-sect-gate');
                     else if (cell.type === 'dungeon_entrance') el.classList.add('grid-cell-stairs-up');
                     
-                    el.innerHTML = `<span class="text-[10px] opacity-25">${cell.icon}</span>`;
+                    el.innerHTML = `<span class="text-xl opacity-25">${cell.icon}</span>`;
                 }
 
                 // Nếu là ô Boss, rực đỏ cảnh báo hiểm họa
@@ -1347,9 +1446,12 @@ export class MapScreen {
                 }
                 case 'guard':
                 case 'combat': {
+                    const beastIdx = (x * 7 + y * 13) % BEAST_IMAGES.length;
+                    const overrideImage = getAssetUrl(BEAST_IMAGES[beastIdx]);
+
                     this.updateEventDisplay(`👹 [YÊU THÚ TRẤN ẢI] Một đầu cự yêu hung ác từ sương mù gầm rú chặn đứng cổ lộ! Chiến đấu nổ ra!`);
                     setTimeout(() => {
-                        window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId);
+                        window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId, null, overrideImage);
                     }, 1000);
                     break;
                 }
@@ -1429,6 +1531,9 @@ export class MapScreen {
                         bossEnemy.hp = Math.floor(bossEnemy.hp * 1.8);
                         bossEnemy.maxHp = bossEnemy.hp;
                         bossEnemy.atk = Math.floor(bossEnemy.atk * 1.3);
+
+                        const beastIdx = (x * 7 + y * 13) % BEAST_IMAGES.length;
+                        bossEnemy.image = getAssetUrl(BEAST_IMAGES[beastIdx]);
 
                         window.game.startBattle(bossEnemy, null, async (win) => {
                             if (win) {

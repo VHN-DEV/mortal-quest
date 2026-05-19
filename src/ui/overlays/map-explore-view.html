@@ -35,27 +35,38 @@
         </div>
 
         <!-- Bagua Grid Map Panel -->
-        <div id="explore-grid-container" class="my-2 p-3 border border-white/5 rounded-2xl bg-black/60 backdrop-blur-md space-y-2.5 shadow-2xl relative">
+        <div id="explore-grid-container"
+            class="my-2 p-3 border border-white/5 rounded-2xl bg-black/60 backdrop-blur-md space-y-2.5 shadow-2xl relative">
             <div class="flex justify-between items-center text-[8px] uppercase tracking-widest font-bold text-qi-blue">
                 <span id="explore-grid-title">Ma Trận Mật Cảnh</span>
                 <span id="grid-coordinates" class="font-mono text-cultivation-gold text-[9px]">Dò Xét: Cấp 1</span>
             </div>
             <!-- Cuộn ngang dọc cho bản đồ siêu rộng -->
-            <div class="overflow-auto max-h-[260px] w-full p-1 rounded-xl scrollbar-thin scrollbar-thumb-qi-blue/20 bg-black/30 border border-white/5 flex justify-center">
-                <div id="explore-grid-board" class="grid grid-cols-8 gap-1.5 w-[340px] h-[340px] flex-none">
+            <div id="explore-grid-scroll-area"
+                class="overflow-auto max-h-[320px] w-full p-2 rounded-xl scrollbar-thin scrollbar-thumb-qi-blue/20 bg-black/30 border border-white/5 cursor-grab flex">
+                <div id="explore-grid-board" class="grid grid-cols-8 gap-2 w-[600px] h-[600px] m-auto flex-none">
                     <!-- Grid Cells rendered dynamically -->
                 </div>
             </div>
             <!-- Legend / Giải nghĩa ký hiệu -->
-            <div class="flex justify-between items-center px-1 text-[7px] text-gray-500 font-bold border-t border-white/5 pt-1.5">
-                <span class="flex items-center space-x-0.5"><span>🌾</span> <span class="tracking-tighter">Cỏ</span></span>
-                <span class="flex items-center space-x-0.5"><span>🪨</span> <span class="tracking-tighter">Đá</span></span>
-                <span class="flex items-center space-x-0.5"><span>🌊</span> <span class="tracking-tighter">Giang</span></span>
-                <span class="flex items-center space-x-0.5"><span>💀</span> <span class="tracking-tighter">Thú</span></span>
-                <span class="flex items-center space-x-0.5"><span>🌀</span> <span class="tracking-tighter">Linh</span></span>
-                <span class="flex items-center space-x-0.5"><span>👤</span> <span class="tracking-tighter">Nhân</span></span>
-                <span class="flex items-center space-x-0.5"><span>🏠</span> <span class="tracking-tighter">Sơn Môn</span></span>
-                <span class="flex items-center space-x-0.5"><span>🪜</span> <span class="tracking-tighter">Thang</span></span>
+            <div
+                class="flex justify-between items-center px-1 text-[7px] text-gray-500 font-bold border-t border-white/5 pt-1.5">
+                <span class="flex items-center space-x-0.5"><span>🌾</span> <span
+                        class="tracking-tighter">Cỏ</span></span>
+                <span class="flex items-center space-x-0.5"><span>🪨</span> <span
+                        class="tracking-tighter">Đá</span></span>
+                <span class="flex items-center space-x-0.5"><span>🌊</span> <span
+                        class="tracking-tighter">Giang</span></span>
+                <span class="flex items-center space-x-0.5"><span>💀</span> <span
+                        class="tracking-tighter">Thú</span></span>
+                <span class="flex items-center space-x-0.5"><span>🌀</span> <span
+                        class="tracking-tighter">Linh</span></span>
+                <span class="flex items-center space-x-0.5"><span>👤</span> <span
+                        class="tracking-tighter">Nhân</span></span>
+                <span class="flex items-center space-x-0.5"><span>🏠</span> <span class="tracking-tighter">Sơn
+                        Môn</span></span>
+                <span class="flex items-center space-x-0.5"><span>🪜</span> <span
+                        class="tracking-tighter">Thang</span></span>
             </div>
         </div>
 
@@ -68,17 +79,6 @@
             <div class="dashboard-stat">
                 <span class="dashboard-stat-label">Thời Gian</span>
                 <span id="env-timerate" class="dashboard-stat-value text-cultivation-gold">1.0x</span>
-            </div>
-        </div>
-
-        <!-- Element Qi Distribution Grid -->
-        <div class="p-3 border border-white/5 rounded-xl bg-black/40 space-y-2">
-            <div class="flex justify-between items-center text-[7.5px] uppercase tracking-wider font-bold mb-1">
-                <span class="text-qi-blue">Tỷ Lệ Linh Khí Địa Phương</span>
-                <span id="env-purity-tag" class="text-gray-500 text-[7px] leading-none">LINH KHÍ</span>
-            </div>
-            <div id="env-element-qi-grid" class="grid grid-cols-5 gap-1.5">
-                <!-- Element Qi values dynamically rendered here -->
             </div>
         </div>
 
