@@ -12,9 +12,11 @@
                 <p id="current-world-name-sub" class="text-[8px] text-gray-500 uppercase tracking-widest">Chọn địa điểm lịch luyện</p>
             </div>
         </div>
-        <div
-            class="w-10 h-10 rounded-xl bg-qi-blue/10 border border-qi-blue/20 flex items-center justify-center text-qi-blue">
-            <i class="ph ph-map-pin text-xl"></i>
+        <div class="flex flex-col items-end">
+            <div class="w-10 h-10 mb-1 rounded-xl bg-qi-blue/10 border border-qi-blue/20 flex items-center justify-center text-qi-blue">
+                <i class="ph ph-map-pin text-xl"></i>
+            </div>
+            <span id="player-current-loc-badge" class="text-[8px] text-qi-blue font-ancient border border-qi-blue/30 bg-qi-blue/10 px-2 py-0.5 rounded-md inline-block whitespace-nowrap">Đang ở: Chưa rõ</span>
         </div>
     </header>
     <div id="location-list" class="flex-grow min-h-0 p-6 overflow-y-auto space-y-6 custom-scroll pb-24"></div>

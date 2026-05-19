@@ -1,5 +1,5 @@
 import { state } from '../../state.js';
-import { getWorlds, getLocationById, DANGER_LEVELS } from '../../configs/map-data.js';
+import { getWorlds, getLocationById, DANGER_LEVELS, findLocationName } from '../../configs/map-data.js';
 import { getRealmById } from '../../configs/realm-data.js';
 import { ASSETS } from '../../configs/asset-data.js';
 import { logger } from '../../utils/logger.js';
@@ -215,6 +215,10 @@ export class MapScreen {
         this.elLocList.innerHTML = '';
         
         const elSub = this.elCurrentWorldNameSub || document.getElementById('current-world-name-sub');
+        const elCurrentLocBadge = document.getElementById('player-current-loc-badge');
+        if (elCurrentLocBadge && state.currentLocId) {
+            elCurrentLocBadge.textContent = `Đang ở: ${findLocationName(state.currentLocId)}`;
+        }
 
         if (this.mapNavLevel === 'regions') {
             this.elCurrentWorldName.textContent = w.name;
