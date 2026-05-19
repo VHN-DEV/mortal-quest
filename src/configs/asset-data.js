@@ -74,6 +74,12 @@ export const getAssetUrl = (path) => {
         if (allImages[fullPath]) return allImages[fullPath];
     }
 
+    // Fallback cho ảnh địa điểm chưa có ảnh riêng
+    if (path.startsWith('locations/') && path !== 'locations/default') {
+        const defaultPath = '../assets/images/locations/default.webp';
+        if (allImages[defaultPath]) return allImages[defaultPath];
+    }
+
     // Console warn only in dev
     if (import.meta.env.DEV) {
         console.warn(`[Asset Missing] Không tìm thấy ảnh: ${path}`);
