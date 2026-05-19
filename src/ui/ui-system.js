@@ -246,19 +246,21 @@ export class UISystem {
             const optionsContainer = document.createElement('div');
             optionsContainer.className = 'flex flex-col space-y-2 w-full mt-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar';
 
-            options.forEach(opt => {
+             options.forEach(opt => {
+                const label = opt.label !== undefined ? opt.label : (opt.text !== undefined ? opt.text : '');
+                const value = opt.value !== undefined ? opt.value : opt.id;
                 const btn = document.createElement('button');
                 btn.className = 'w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-ancient text-gray-300 transition-all active:scale-95 flex items-center justify-center space-x-2 group';
                 btn.innerHTML = `
                     ${opt.icon ? `<i class="ph ${opt.icon} text-lg group-hover:scale-110 transition-transform"></i>` : ''}
-                    <span>${opt.label}</span>
+                    <span>${label}</span>
                 `;
                 btn.onclick = () => {
                     this.toggleOverlay(this.modalOverlay, false, () => {
                         this.modalMessage.innerHTML = originalMessage; // Restore
                         this._restoreButtons(originalConfirmDisplay, originalCancelDisplay, originalCancelText);
                     });
-                    resolve(opt.value);
+                    resolve(value);
                 };
                 optionsContainer.appendChild(btn);
             });

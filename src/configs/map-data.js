@@ -2763,7 +2763,7 @@ export const WORLDS = {
         ]
     },
     'tien_gioi': {
-        name: 'TIÊN GIỚI',
+        name: 'Tiên Giới',
         minRealm: 42,
         description: 'Đỉnh cao của chư thiên vạn giới.',
         locations: [
@@ -3806,7 +3806,7 @@ export const WORLDS = {
         ]
     },
     'song_song': {
-        name: 'CÁC GIỚI DIỆN SONG SONG',
+        name: 'Các Giới Diện Song Song',
         minRealm: 44,
         description: 'Các giới diện phụ, song song hoặc âm ty nằm bên cạnh phàm nhân và tiên nhân giới.',
         locations: [
