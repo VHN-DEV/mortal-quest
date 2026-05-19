@@ -476,7 +476,7 @@ export const WORLDS = {
                 eventProbs: { combat: 0.4, loot: 0.15, npc: 0.15, empty: 0.3 },
                 regionId: 'thien_nam',
                 regionName: 'Thiên Nam',
-                subRegionId: 'thien_la_quoc_sub',
+                subRegionId: 'thien_la_quoc',
                 subRegionName: 'Thiên La Quốc'
             },
             {
@@ -1838,7 +1838,7 @@ export const WORLDS = {
                 energies: [{ type: 'linh_khi', element: 'Thủy', concentration: 25, purity: 'TINH_THUAN' }],
                 elementQi: { 'Kim': 10, 'Mộc': 10, 'Thủy': 40, 'Hỏa': 0, 'Thổ': 10, 'Phong': 20, 'Lôi': 10, 'Băng': 0, 'Quang': 0, 'Ám': 0 },
                 eventProbs: { combat: 0.25, loot: 0.15, npc: 0.1, empty: 0.5 },
-                regionId: 'vo_bien_hai_region',
+                regionId: 'vo_bien_hai',
                 regionName: 'Vô Biên Hải',
                 subRegionId: 'vo_bien_hai_sub',
                 subRegionName: 'Vô Biên Hải'
@@ -2797,7 +2797,7 @@ export const WORLDS = {
                 ],
                 eventProbs: { combat: 0.5, loot: 0.3, npc: 0.1, empty: 0.1 },
                 regionId: 'tien_gioi_dinh_phong',
-                regionName: 'Tiên Giới Đỉnh Phong',
+                regionName: 'Tối Cao Thế Lực',
                 subRegionId: 'cuu_trong_thien_vuc',
                 subRegionName: 'Cửu Trọng Thiên Vực'
             },
