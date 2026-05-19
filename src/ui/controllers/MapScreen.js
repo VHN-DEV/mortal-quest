@@ -9,6 +9,9 @@ import { Preferences } from '@capacitor/preferences';
 import { MINING_NODES } from '../../configs/mining-data.js';
 import { audioManager } from '../../utils/audio-manager.js';
 import { gsap } from 'gsap';
+import { getItemById } from '../../configs/item-data.js';
+import { EnemyGenerator } from '../../core/enemy.js';
+
 
 /**
  * Quản lý giao diện và logic của màn hình Khám phá / Bản đồ.
@@ -33,6 +36,10 @@ export class MapScreen {
         this.elWorldList = document.getElementById('world-list');
         this.elLocList = document.getElementById('location-list');
         this.elLocSpecialActions = document.getElementById('loc-special-actions');
+
+        // Bagua Grid Map Panel
+        this.elExploreGridContainer = document.getElementById('explore-grid-container');
+        this.elExploreGridBoard = document.getElementById('explore-grid-board');
 
         // Info Displays
         this.elCurrentWorldName = document.getElementById('current-world-name');
@@ -451,13 +458,16 @@ export class MapScreen {
             if (window.game.openTower) window.game.openTower();
             return;
         }
-        if (loc.special === 'guild') {
-            if (window.game.openGuild) window.game.openGuild();
-            return;
-        }
 
         this.elCurrentLocName.textContent = loc.name;
-        if (resetProgress) state.explorationProgress = 0;
+
+        // Sinh mới hoặc nạp lại ma trận Bát Quái Lịch Luyện
+        if (!state.player.gridExplorationState || state.player.gridExplorationState.locationId !== locId) {
+            this.generateGridMap(locId);
+        }
+
+        // Ẩn nút "TIẾN BƯỚC" phẳng truyền thống
+        if (this.btnMove) this.btnMove.style.display = 'none';
 
         state.ui.toggleOverlay(this.viewExplore, true);
         
@@ -465,8 +475,11 @@ export class MapScreen {
         
         await Preferences.set({ key: 'mortal_quest_map_view', value: 'explore' });
 
+        // Đồng bộ tiến độ từ ma trận ô cờ đã giải quyết
+        this.syncExplorationProgress();
         this.updateExplorationUI();
-        this.updateEventDisplay('Ngươi đã tới địa điểm.', '🚶');
+        this.renderGridMap();
+        this.updateEventDisplay('Thần thức dung hợp, trận đồ hiển lộ, tu sĩ tiến bước...', '🚶');
 
         if (state.systems.time) {
             state.systems.time.timeMultiplier = loc.timeRate || 1.0;
@@ -634,6 +647,24 @@ export class MapScreen {
         this.elLocSpecialActions.innerHTML = '';
         let hasSpecial = false;
 
+        // Cơ chế bảo vệ Sơn Môn & Công Hội: Phải tới ô Sơn Môn (🏠) mới mở thao tác tông môn
+        const isSectOrGuild = SECTS[loc.id] || loc.special === 'guild';
+        if (isSectOrGuild) {
+            const gridState = state.player.gridExplorationState;
+            const isAtGate = gridState && gridState.playerPos && gridState.playerPos.x === 7 && gridState.playerPos.y === 0;
+            
+            if (!isAtGate) {
+                this.elLocSpecialActions.innerHTML = `
+                    <div class="col-span-2 text-center p-3.5 text-[10px] text-gray-400 font-bold bg-black/40 border border-white/5 rounded-2xl space-y-1.5 shadow-lg">
+                        <span class="text-cultivation-gold flex items-center justify-center space-x-1"><span>🏰</span> <span>SƠN MÔN TRẬN PHÁP PHONG TỎA</span></span>
+                        <span class="block text-[8px] text-gray-500 font-normal leading-normal">Đạo hữu cần di chuyển Thần Thức đến ô Sơn Môn (🏠) ở góc trên-phải bản đồ để có thể bái kiến hoặc tiến vào!</span>
+                    </div>
+                `;
+                state.ui.toggleOverlay(this.elLocSpecialActions, true);
+                return;
+            }
+        }
+
         // Special actions mapped to window.game functions
         if (loc.id === 'van_bao_cac' || loc.id === 'linh_bao_lau') {
             hasSpecial = true;
@@ -794,5 +825,642 @@ export class MapScreen {
                 `).join('')}
                 </div>
             `;
+    }
+
+    getLocMaxFloors(loc) {
+        if (!loc) return 1;
+        if (loc.id === 'thap_van_dai_son') return 5;
+        const danger = loc.danger || 'ha_cap';
+        if (danger === 'an_toan') return 1;
+        if (danger === 'ha_cap') return 2;
+        if (danger === 'trung_cap') return 3;
+        if (danger === 'cao_cap') return 4;
+        return 5;
+    }
+
+    generateFloorGrid(locId, floor, maxFloors) {
+        const grid = [];
+        const size = 8;
+        const loc = getLocationById(this.viewedWorldId || state.currentWorldId, locId);
+        const isSectOrGuild = SECTS[locId] || (loc && loc.special === 'guild');
+
+        // Phân phối ngẫu nhiên các loại sự kiện cho 62 ô trung gian (trừ Start và Exit)
+        let types = [];
+        if (isSectOrGuild) {
+            // Sơn Môn/Công Hội yên bình, trang nghiêm
+            types = [
+                'rock', 'rock', 'rock', 'rock',                 // 4 Đá cảnh / Tượng cổ sơn môn
+                'river', 'river',                               // 2 Linh thủy đình hồ sen
+                'grass', 'grass', 'grass', 'grass', 'grass', 'grass',
+                'grass', 'grass', 'grass', 'grass',             // 10 Vườn dược thảo dược linh tông môn
+                'qi', 'qi', 'qi', 'qi', 'qi', 'qi', 
+                'qi', 'qi', 'qi', 'qi',                         // 10 Mắt Linh Khí tu luyện tĩnh tọa
+                'event', 'event', 'event', 'event', 'event', 'event',
+                'event', 'event', 'event', 'event', 'event', 'event',
+                'event', 'event',                               // 14 Kỳ ngộ đối thoại đệ tử/ghi chép thư viện
+                'npc_event', 'npc_event', 'npc_event', 'npc_event',
+                'npc_event', 'npc_event', 'npc_event', 'npc_event',
+                'npc_event', 'npc_event', 'npc_event', 'npc_event', // 12 Đệ tử / Chấp sự / Tông môn trưởng lão
+                'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty' // 10 Hành lang đá cổ thanh tịnh
+            ];
+        } else {
+            // Mật cảnh/Dungeons hiểm nguy
+            types = [
+                'rock', 'rock', 'rock', 'rock', 'rock', 'rock', 'rock', 'rock', // 8 Đá chặn đường
+                'river', 'river', 'river', 'river', 'river', 'river',          // 6 Dòng sông Linh Giang dữ dội
+                'grass', 'grass', 'grass', 'grass', 'grass', 'grass', 
+                'grass', 'grass', 'grass', 'grass', 'grass', 'grass',          // 12 Bụi cỏ hoang
+                'guard', 'guard', 'guard', 'guard', 'guard', 'guard',
+                'guard', 'guard', 'guard', 'guard', 'guard', 'guard',          // 12 Yêu thú hoành hành chắn đường
+                'qi', 'qi', 'qi', 'qi', 'qi', 'qi',                            // 6 Mắt trận khí địa linh
+                'event', 'event', 'event', 'event', 'event', 'event',          // 6 Kỳ ngộ bí kính hoang cổ
+                'npc_event', 'npc_event', 'npc_event', 'npc_event',            // 4 Cổ nhân di tích / Tu sĩ lạc lối
+                'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty' // 8 Ô trống đường mòn hoang vắng
+            ];
+        }
+
+        // Shuffle thuật toán Fisher-Yates để phân bố tự nhiên
+        for (let i = types.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [types[i], types[j]] = [types[j], types[i]];
+        }
+
+        let typeIdx = 0;
+
+        for (let y = 0; y < size; y++) {
+            grid[y] = [];
+            for (let x = 0; x < size; x++) {
+                // Điểm xuất phát ở góc dưới-trái (0, 7)
+                if (x === 0 && y === 7) {
+                    if (floor === 1) {
+                        grid[y][x] = {
+                            x, y,
+                            type: 'dungeon_entrance',
+                            status: 'visited',
+                            resolved: true,
+                            icon: isSectOrGuild ? '🚪' : '🕳️'
+                        };
+                    } else {
+                        grid[y][x] = {
+                            x, y,
+                            type: 'stairs_up',
+                            status: 'visited',
+                            resolved: true,
+                            icon: '⬆️'
+                        };
+                    }
+                }
+                // Điểm Exit ở góc đối diện trên-phải (7, 0)
+                else if (x === 7 && y === 0) {
+                    if (isSectOrGuild) {
+                        grid[y][x] = {
+                            x, y,
+                            type: 'sect_entrance',
+                            status: 'locked',
+                            resolved: false,
+                            icon: '🏠'
+                        };
+                    } else if (floor === maxFloors) {
+                        grid[y][x] = {
+                            x, y,
+                            type: 'boss',
+                            status: 'locked',
+                            resolved: false,
+                            icon: '🏛️'
+                        };
+                    } else {
+                        grid[y][x] = {
+                            x, y,
+                            type: 'stairs_down',
+                            status: 'locked',
+                            resolved: false,
+                            icon: '⬇️'
+                        };
+                    }
+                }
+                else {
+                    const type = types[typeIdx++];
+                    const iconMap = {
+                        'rock': '🪨',
+                        'river': '🌊',
+                        'grass': '🌾',
+                        'guard': '💀',
+                        'qi': '🌀',
+                        'event': '❓',
+                        'npc_event': '👤',
+                        'empty': '⬜'
+                    };
+                    grid[y][x] = {
+                        x, y,
+                        type,
+                        status: 'locked',
+                        resolved: false,
+                        icon: iconMap[type]
+                    };
+                }
+            }
+        }
+
+        return grid;
+    }
+
+    generateGridMap(locId) {
+        const loc = getLocationById(this.viewedWorldId || state.currentWorldId, locId);
+        const maxFloors = this.getLocMaxFloors(loc);
+
+        state.player.gridExplorationState = {
+            locationId: locId,
+            currentFloor: 1,
+            maxFloors: maxFloors,
+            floors: {},
+            playerPos: { x: 0, y: 7 }
+        };
+
+        state.player.gridExplorationState.floors[1] = this.generateFloorGrid(locId, 1, maxFloors);
+        state.player.gridExplorationState.grid = state.player.gridExplorationState.floors[1];
+
+        // Mở sương mù dựa theo tầm quét Thần Thức ban đầu ở tầng 1
+        const rId = state.player.realmId || 0;
+        const range = rId >= 4 ? 3 : (rId >= 2 ? 2 : 1);
+        const gridState = state.player.gridExplorationState;
+
+        for (let y = 0; y < 8; y++) {
+            for (let x = 0; x < 8; x++) {
+                const dist = Math.abs(x - 0) + Math.abs(y - 7);
+                if (dist <= range) {
+                    const cell = gridState.grid[y][x];
+                    if (cell && cell.status === 'locked') cell.status = 'unlocked';
+                }
+            }
+        }
+
+        state.explorationProgress = 0;
+    }
+
+    syncExplorationProgress() {
+        const gridState = state.player.gridExplorationState;
+        if (!gridState || !gridState.grid || !gridState.floors) return;
+
+        let visitedCount = 0;
+        let totalCount = 64 * gridState.maxFloors;
+
+        for (let f = 1; f <= gridState.maxFloors; f++) {
+            const floorGrid = gridState.floors[f];
+            if (floorGrid) {
+                for (let y = 0; y < 8; y++) {
+                    for (let x = 0; x < 8; x++) {
+                        if (floorGrid[y] && floorGrid[y][x] && floorGrid[y][x].status === 'visited') {
+                            visitedCount++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Cập nhật tiến độ thám hiểm mật cảnh
+        const lastFloorGrid = gridState.floors[gridState.maxFloors];
+        const bossCell = lastFloorGrid ? lastFloorGrid[0][7] : null;
+        
+        if (bossCell && bossCell.status === 'visited') {
+            state.explorationProgress = 100;
+        } else {
+            state.explorationProgress = Math.min(95, Math.floor((visitedCount / totalCount) * 100));
+        }
+
+        if (state.player) state.player.explorationProgress = state.explorationProgress;
+    }
+
+    renderGridMap() {
+        if (!this.elExploreGridBoard) return;
+
+        const gridState = state.player.gridExplorationState;
+        if (!gridState || !gridState.grid) return;
+
+        this.elExploreGridBoard.innerHTML = '';
+        const playerPos = gridState.playerPos;
+
+        // Cập nhật tiêu đề hiển thị tên mật cảnh / tông môn kèm tầng số
+        const elTitle = document.getElementById('explore-grid-title');
+        const loc = getLocationById(this.viewedWorldId || state.currentWorldId, gridState.locationId);
+        if (elTitle && loc) {
+            const isSectOrGuild = SECTS[gridState.locationId] || loc.special === 'guild';
+            if (isSectOrGuild) {
+                elTitle.textContent = `Sơn Môn - ${loc.name}`;
+            } else if (gridState.maxFloors > 1) {
+                elTitle.textContent = `${loc.name} - Tầng ${gridState.currentFloor}/${gridState.maxFloors}`;
+            } else {
+                elTitle.textContent = `Mật Cảnh - ${loc.name}`;
+            }
+        }
+
+        // Cập nhật thông số Thần Thức hiển thị trên giao diện
+        const elCoords = document.getElementById('grid-coordinates');
+        const rId = state.player.realmId || 0;
+        const range = rId >= 4 ? 3 : (rId >= 2 ? 2 : 1);
+        if (elCoords) elCoords.textContent = `Thần Thức: Quét ${range} Ô`;
+
+        for (let y = 0; y < 8; y++) {
+            for (let x = 0; x < 8; x++) {
+                const cell = gridState.grid[y][x];
+                const isPlayer = playerPos.x === x && playerPos.y === y;
+
+                const el = document.createElement('div');
+                el.className = 'grid-cell-mystic';
+
+                // Trạng thái đồ họa của ô lưới
+                if (isPlayer) {
+                    el.classList.add('grid-cell-player');
+                    
+                    const player = state.player;
+                    const portraitKey = player.avatar || (player.gender === 'Nữ' ? 'player_female' : 'player_male');
+                    const portraitUrl = ASSETS.portraits[portraitKey] || './src/assets/images/players/player_male.webp';
+
+                    el.innerHTML = `
+                        <div class="w-9 h-9 rounded-full overflow-hidden border border-cultivation-gold shadow-md flex items-center justify-center animate-pulse">
+                            <img src="${portraitUrl}" class="w-full h-full object-cover">
+                        </div>
+                    `;
+                } else if (cell.status === 'locked') {
+                    el.classList.add('grid-cell-foggy');
+                    const trigrams = ['☰', '☱', '☲', '☳', '☴', '☵', '☶', '☷'];
+                    const trigram = trigrams[(x + y) % 8];
+                    el.innerHTML = `<span class="text-sm font-bold opacity-30 select-none">${trigram}</span>`;
+                } else if (cell.status === 'unlocked') {
+                    el.classList.add('grid-cell-unlocked');
+
+                    // Gán các class địa hình tiên hiệp đặc hữu
+                    if (cell.type === 'rock') el.classList.add('grid-cell-rock');
+                    else if (cell.type === 'river') el.classList.add('grid-cell-river');
+                    else if (cell.type === 'grass') el.classList.add('grid-cell-grass');
+                    else if (cell.type === 'guard') el.classList.add('grid-cell-guard');
+                    else if (cell.type === 'npc_event') el.classList.add('grid-cell-npc');
+                    else if (cell.type === 'stairs_up') el.classList.add('grid-cell-stairs-up');
+                    else if (cell.type === 'stairs_down') el.classList.add('grid-cell-stairs-down');
+                    else if (cell.type === 'sect_entrance') el.classList.add('grid-cell-sect-gate');
+                    else if (cell.type === 'dungeon_entrance') el.classList.add('grid-cell-stairs-up');
+
+                    el.innerHTML = `<span class="text-sm animate-pulse">${cell.icon}</span>`;
+                } else if (cell.status === 'visited') {
+                    el.classList.add('grid-cell-visited');
+                    if (cell.type === 'river') el.classList.add('grid-cell-river');
+                    else if (cell.type === 'stairs_up') el.classList.add('grid-cell-stairs-up');
+                    else if (cell.type === 'stairs_down') el.classList.add('grid-cell-stairs-down');
+                    else if (cell.type === 'sect_entrance') el.classList.add('grid-cell-sect-gate');
+                    else if (cell.type === 'dungeon_entrance') el.classList.add('grid-cell-stairs-up');
+                    
+                    el.innerHTML = `<span class="text-[10px] opacity-25">${cell.icon}</span>`;
+                }
+
+                // Nếu là ô Boss, rực đỏ cảnh báo hiểm họa
+                if (cell.type === 'boss' && cell.status !== 'visited' && cell.status === 'unlocked') {
+                    el.classList.remove('grid-cell-unlocked');
+                    el.classList.add('grid-cell-boss');
+                }
+
+                // Gắn sự kiện click
+                el.onclick = () => this.handleGridCellClick(x, y);
+
+                this.elExploreGridBoard.appendChild(el);
+            }
+        }
+
+        // Cập nhật lại các thao tác đặc biệt để đồng bộ trạng thái khi di chuyển tới Sơn Môn (🏠)
+        if (loc) {
+            this.renderSpecialActions(loc);
+        }
+    }
+
+    async handleGridCellClick(x, y) {
+        const gridState = state.player.gridExplorationState;
+        if (!gridState || !gridState.grid) return;
+
+        const cell = gridState.grid[y][x];
+        const playerPos = gridState.playerPos;
+
+        // Tránh click ô bị khóa sương mù
+        if (cell.status === 'locked') {
+            state.ui.toast('Cổ trận sương mù phong ấn lối đi, thần thức không thể định vị!', 'error');
+            return;
+        }
+
+        // Tảng đá kiên cố hoàn toàn chặn đường, không thể di chuyển vào
+        if (cell.type === 'rock') {
+            state.ui.toast('Cổ thạch nghìn năm kiên cố chặn đường, không thể vượt qua!', 'warning');
+            return;
+        }
+
+        // Kiểm tra tính kề cạnh (chỉ đi lên, xuống, trái, phải)
+        const distance = Math.abs(playerPos.x - x) + Math.abs(playerPos.y - y);
+        if (distance !== 1 && distance !== 0) {
+            state.ui.toast('Vị trí này cách quá xa vùng thần thức hiện tại!', 'warning');
+            return;
+        }
+
+        if (distance === 0) {
+            return;
+        }
+
+        // Tính toán chi phí Stamina (Linh giang tốn 10, ô khác tốn 5; nếu đã đi qua thì Linh giang tốn 5, ô khác 0)
+        const isVisited = cell.status === 'visited';
+        const isRiver = cell.type === 'river';
+        const staminaCost = isRiver ? (isVisited ? 5 : 10) : (isVisited ? 0 : 5);
+
+        if (state.player.stamina < staminaCost) {
+            state.ui.toast(`Thể lực khô cạn! Cần ${staminaCost} thể lực để vượt địa hình này.`, 'error');
+            return;
+        }
+
+        // Khấu trừ tài nguyên
+        state.player.stamina -= staminaCost;
+
+        // Tiến trình thời gian tu tiên
+        if (state.systems.time) state.systems.time.advanceTime(1);
+        audioManager.playSfx('move');
+
+        // Cập nhật vị trí tu sĩ
+        gridState.playerPos = { x, y };
+        cell.status = 'visited';
+
+        // Quét thần thức lật mở sương mù dựa theo cảnh giới
+        const rId = state.player.realmId || 0;
+        const range = rId >= 4 ? 3 : (rId >= 2 ? 2 : 1);
+        const size = 8;
+
+        for (let ny = 0; ny < size; ny++) {
+            for (let nx = 0; nx < size; nx++) {
+                const dist = Math.abs(nx - x) + Math.abs(ny - y);
+                if (dist <= range) {
+                    const neighbor = gridState.grid[ny][nx];
+                    if (neighbor && neighbor.status === 'locked') {
+                        neighbor.status = 'unlocked';
+                    }
+                }
+            }
+        }
+
+        // Đồng bộ và render UI lập tức để tạo phản hồi nhanh nhạy
+        this.syncExplorationProgress();
+        this.updateExplorationUI();
+        this.renderGridMap();
+
+        if (window.game && window.game.saveGame) window.game.saveGame();
+
+        // Xử lý sự kiện nếu ô cờ chưa giải quyết
+        if (!cell.resolved) {
+            cell.resolved = true;
+
+            const loc = getLocationById(this.viewedWorldId || state.currentWorldId, state.currentLocId);
+
+            switch (cell.type) {
+                case 'dungeon_entrance': {
+                    const choice = await state.ui.promptOptions(
+                        "Lối Ra Mật Cảnh",
+                        [
+                            { id: 'exit', text: "Rời khỏi Mật Cảnh (Về bản đồ chính)" },
+                            { id: 'stay', text: "Tiếp tục thám hiểm" }
+                        ],
+                        "Trước mặt đạo hữu chính là hang động linh môn mở ra thông đạo rời khỏi Mật cảnh. Đạo hữu muốn ra ngoài?"
+                    );
+                    if (choice === 'exit') {
+                        state.player.gridExplorationState = null;
+                        audioManager.playSfx('menu_click');
+                        state.ui.toggleOverlay(this.viewExplore, false);
+                        if (window.game && window.game.saveGame) window.game.saveGame();
+                        return;
+                    }
+                    cell.resolved = false; // Có thể tương tác lại lần sau
+                    break;
+                }
+                case 'stairs_down': {
+                    const choice = await state.ui.promptOptions(
+                        "Lối Xuống Tầng Cổ Kính",
+                        [
+                            { id: 'down', text: "Đi xuống Tầng tiếp theo" },
+                            { id: 'stay', text: "Ở lại tầng hiện tại" }
+                        ],
+                        `Một lối cầu thang cổ xưa bằng đá rêu phong mở ra, dẫn xuống tầng thứ ${gridState.currentFloor + 1} của Bí cảnh. Đạo hữu muốn bước tiếp?`
+                    );
+                    if (choice === 'down') {
+                        gridState.currentFloor += 1;
+                        if (!gridState.floors[gridState.currentFloor]) {
+                            gridState.floors[gridState.currentFloor] = this.generateFloorGrid(gridState.locationId, gridState.currentFloor, gridState.maxFloors);
+                        }
+                        gridState.grid = gridState.floors[gridState.currentFloor];
+                        gridState.playerPos = { x: 0, y: 7 }; // Đi vào ở ô xuất phát góc dưới-trái
+                        
+                        // Quét Thần thức ban đầu xung quanh ô mới bước vào
+                        for (let ny = 0; ny < size; ny++) {
+                            for (let nx = 0; nx < size; nx++) {
+                                const dist = Math.abs(nx - 0) + Math.abs(ny - 7);
+                                if (dist <= range) {
+                                    const cell = gridState.grid[ny][nx];
+                                    if (cell && cell.status === 'locked') cell.status = 'unlocked';
+                                }
+                            }
+                        }
+                        state.ui.toast(`Xuống Tầng ${gridState.currentFloor}!`, 'success');
+                        this.updateEventDisplay(`🪜 Đạo hữu đã đi xuống Tầng ${gridState.currentFloor} của Bí cảnh.`);
+                        this.syncExplorationProgress();
+                        this.updateExplorationUI();
+                        this.renderGridMap();
+                    } else {
+                        cell.resolved = false;
+                    }
+                    break;
+                }
+                case 'stairs_up': {
+                    const choice = await state.ui.promptOptions(
+                        "Lối Lên Tầng Trên",
+                        [
+                            { id: 'up', text: "Leo lên tầng trước đó" },
+                            { id: 'stay', text: "Ở lại thám hiểm tiếp" }
+                        ],
+                        `Một lối cầu thang dẫn ngược lên tầng thứ ${gridState.currentFloor - 1} của Bí cảnh. Đạo hữu muốn quay lại tầng trước?`
+                    );
+                    if (choice === 'up') {
+                        gridState.currentFloor -= 1;
+                        gridState.grid = gridState.floors[gridState.currentFloor];
+                        gridState.playerPos = { x: 7, y: 0 }; // Xuất hiện tại đúng ô Cầu thang xuống (7, 0)
+                        
+                        // Quét Thần thức ban đầu xung quanh ô mới bước vào
+                        for (let ny = 0; ny < size; ny++) {
+                            for (let nx = 0; nx < size; nx++) {
+                                const dist = Math.abs(nx - 7) + Math.abs(ny - 0);
+                                if (dist <= range) {
+                                    const cell = gridState.grid[ny][nx];
+                                    if (cell && cell.status === 'locked') cell.status = 'unlocked';
+                                }
+                            }
+                        }
+                        state.ui.toast(`Quay lại Tầng ${gridState.currentFloor}!`, 'success');
+                        this.updateEventDisplay(`🪜 Đạo hữu đã leo lên Tầng ${gridState.currentFloor} của Bí cảnh.`);
+                        this.syncExplorationProgress();
+                        this.updateExplorationUI();
+                        this.renderGridMap();
+                    } else {
+                        cell.resolved = false;
+                    }
+                    break;
+                }
+                case 'sect_entrance': {
+                    this.updateEventDisplay(`🏠 [SƠN MÔN TÔNG MÔN] Đã tới Sơn Môn / Điện Đường oai nghiêm bậc nhất! Hãy sử dụng bảng thao tác tông môn phía dưới để bái kiến Tông Môn.`);
+                    break;
+                }
+                case 'empty': {
+                    const emptyMsgs = [
+                        'Ngươi tiến vào vùng cổ lộ yên tĩnh, thanh âm xào xạc hòa quyện.',
+                        'Nơi đây chỉ có sỏi đá phong trần, không gặp bất cứ chướng ngại nào.',
+                        'Dừng chân tĩnh tọa, cảm nhận thiên địa an lành.',
+                        'Đường đi rộng mở, thần thức thoải mái sảng khoái.'
+                    ];
+                    this.updateEventDisplay(emptyMsgs[Math.floor(Math.random() * emptyMsgs.length)]);
+                    break;
+                }
+                case 'river': {
+                    this.updateEventDisplay(`🌊 [LINH GIANG RỘNG LỚN] Băng qua dòng sông linh khí cuộn trào cuồng bạo, hao tổn 10 Thể Lực!`);
+                    break;
+                }
+                case 'grass':
+                case 'herbs': {
+                    const herbDrops = loc && loc.resources ? loc.resources.filter(r => r.type === 'herb' || r.type === 'ore') : [];
+                    let rewardId = 'linh_thao_thuong';
+                    if (herbDrops.length > 0) {
+                        rewardId = herbDrops[Math.floor(Math.random() * herbDrops.length)].id;
+                    }
+                    
+                    const qty = 1 + Math.floor(Math.random() * 2);
+                    const droppedShi = Math.floor(Math.random() * 12 * state.player.realmId) + 5;
+
+                    await window.game.receiveItem(rewardId, qty);
+                    state.player.addLingShi(droppedShi);
+
+                    this.updateEventDisplay(`🌾 [BỤI CỎ TÌM KIẾM] Thu thập thành công [${qty}x Thảo dược] và [💎 ${droppedShi}x Linh thạch] ẩn giấu dưới lớp cỏ rậm!`);
+                    break;
+                }
+                case 'qi': {
+                    const tuViGain = state.player.realmId * 180 + 120;
+                    state.player.addTuVi(tuViGain);
+                    state.player.stamina = Math.min(state.player.maxStamina, state.player.stamina + 15);
+
+                    this.updateEventDisplay(`🌀 [LINH KHÍ NHÃN] Ngươi tìm thấy một mắt trận sinh cơ phồn thịnh! Tụ nạp linh khí giúp tu vi tăng vọt và hồi phục 15 Thể lực! (+${tuViGain} Tu Vi)`);
+                    break;
+                }
+                case 'guard':
+                case 'combat': {
+                    this.updateEventDisplay(`👹 [YÊU THÚ TRẤN ẢI] Một đầu cự yêu hung ác từ sương mù gầm rú chặn đứng cổ lộ! Chiến đấu nổ ra!`);
+                    setTimeout(() => {
+                        window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId);
+                    }, 1000);
+                    break;
+                }
+                case 'npc_event': {
+                    this.updateEventDisplay(`👤 [CỔ NHÂN DI TÍCH] Ngươi gặp một tu sĩ đồng đạo đang tĩnh tọa...`);
+                    setTimeout(async () => {
+                        const choice = await state.ui.promptOptions(
+                            "Bất Ngờ Gặp Đồng Đạo",
+                            [
+                                { id: 'talk', text: "Đàm đạo và bồi lễ (-50 Linh thạch, +Tu vi)" },
+                                { id: 'trade', text: "Giao dịch bí bảo mua Linh Thảo" },
+                                { id: 'leave', text: "Chắp tay rời đi" }
+                            ],
+                            "Vị tu sĩ thần sắc thâm trầm, thở ra khí xám chắp tay: 'Đạo hữu hữu duyên dừng bước, cùng nhau đàm đạo trao đổi đan dược chứ?'"
+                        );
+                        if (choice === 'talk') {
+                            if (state.player.inventory.hasItem('linh_thach', 50) || state.player.lingShi >= 50) {
+                                state.player.addLingShi(-50);
+                                const bonusTuVi = state.player.realmId * 500 + 300;
+                                state.player.addTuVi(bonusTuVi);
+                                this.updateEventDisplay(`👤 Đàm đạo vô cùng thống khoái! Đạo hữu tặng ngươi chỉ dẫn ngộ đạo, tăng thêm ${bonusTuVi} Tu vi.`);
+                            } else {
+                                state.ui.toast("Không đủ Linh thạch để bồi lễ!", "warning");
+                                this.updateEventDisplay(`👤 Tu sĩ phất tay áo chán ghét rời đi vì ngươi quá nghèo túng.`);
+                            }
+                        } else if (choice === 'trade') {
+                            await window.game.receiveItem('linh_thao_cuc_pham', 1);
+                            this.updateEventDisplay(`👤 Giao dịch hoàn tất! Ngươi nhận được 1x [Linh Thảo Cực Phẩm] tuyệt diệu.`);
+                        } else {
+                            this.updateEventDisplay(`👤 Ngươi chắp tay cáo từ, an toàn tiếp tục hành trình.`);
+                        }
+                        this.renderGridMap();
+                    }, 1000);
+                    break;
+                }
+                case 'event': {
+                    this.updateEventDisplay(`📜 PHÁT HIỆN KỲ NGỘ CỔ KÍNH...`);
+                    setTimeout(async () => {
+                        const probs = { npc: 0.3, interactive: 0.7, combat: 0.0 };
+                        const event = getRandomEvent(probs);
+                        if (event) {
+                            const finalDesc = typeof event.description === 'function' ? event.description(state.player) : event.description;
+                            const finalOptions = typeof event.options === 'function' ? event.options(state.player) : event.options;
+                            const eventKey = event.image ? event.image.replace('events/', '') : '';
+                            const eventImage = eventKey ? ASSETS.events[eventKey] : '';
+                            const choice = await state.ui.promptOptions(event.name, finalOptions, finalDesc, eventImage);
+                            
+                            if (choice && event.resolve) {
+                                const result = await event.resolve(choice, state.player, window.game);
+                                if (result) {
+                                    if (result.msg) this.updateEventDisplay(result.msg);
+                                    if (result.type === 'combat_then_loot') {
+                                        window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId, (win) => {
+                                            if (win && result.loot) {
+                                                window.game.receiveItem(result.loot, 1);
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        } else {
+                            this.updateEventDisplay("Chỉ là tàn thư phong hóa lâu năm, ghi chép đã phai mờ.");
+                        }
+                        if (window.game) window.game.saveGame();
+                        this.renderGridMap();
+                    }, 1000);
+                    break;
+                }
+                case 'boss': {
+                    this.updateEventDisplay(`🏛️ [CẤM ĐIỆN BOSS] Trấn thủ Mật cảnh Mộc Nhân Vương / Cổ Thần Thú xuất thế! Sát khí đè nặng linh thức!`);
+                    setTimeout(() => {
+                        const loc = getLocationById(this.viewedWorldId || state.currentWorldId, state.currentLocId);
+                        const dangerLvl = Math.min(10, (loc.dangerLevel || 1) + 2);
+                        const bossEnemy = EnemyGenerator.generate(dangerLvl);
+                        
+                        bossEnemy.name = `👑 THỦ LĨNH: ` + bossEnemy.name;
+                        bossEnemy.hp = Math.floor(bossEnemy.hp * 1.8);
+                        bossEnemy.maxHp = bossEnemy.hp;
+                        bossEnemy.atk = Math.floor(bossEnemy.atk * 1.3);
+
+                        window.game.startBattle(bossEnemy, null, async (win) => {
+                            if (win) {
+                                cell.status = 'visited';
+                                this.syncExplorationProgress();
+                                this.updateExplorationUI();
+                                this.renderGridMap();
+
+                                const bossTuVi = dangerLvl * 600;
+                                state.player.addTuVi(bossTuVi);
+
+                                const rewards = ['dan_kinh_mach', 'dan_linh_nguyen', 'chan_vu_nho_quan_ta', 'chan_vu_nho_quan_huu', 'linh_thao_cuc_pham'];
+                                const itemReward = rewards[Math.floor(Math.random() * rewards.length)];
+                                await window.game.receiveItem(itemReward, 1);
+
+                                state.ui.toast(`🎉 Chúc mừng! Hạ gục Boss thành công và thanh lọc toàn bộ mật cảnh!`, 'success');
+                                this.updateEventDisplay(`🎉 MẬT CẢNH KHAI PHÁ VIÊN MÃN!\n\nĐạo hữu đã dẹp yên Cổ Cấm Điện! Nhận thưởng [💎 ${bossTuVi}x Tu vi] và di vật cổ bảo [🎁 1x ${getItemById(itemReward)?.name || 'Cổ Bảo'}].`);
+                                
+                                // Giải phóng ma trận cũ để người chơi tạo ma trận mới tiếp tục thám hiểm
+                                state.player.gridExplorationState = null;
+                                if (window.game && window.game.saveGame) window.game.saveGame();
+                            } else {
+                                this.updateEventDisplay(`☠️ Phản phệ thảm hại! Ngươi bị Boss Mật cảnh trọng thương tàn tạ!`);
+                            }
+                        });
+                    }, 1000);
+                    break;
+                }
+            }
+        }
+
+        this.renderGridMap();
+        if (window.game && window.game.saveGame) window.game.saveGame();
     }
 }

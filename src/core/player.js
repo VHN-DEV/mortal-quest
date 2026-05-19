@@ -190,6 +190,7 @@ export class Player {
         // Persistence of location
         this.currentLocId = null;
         this.explorationProgress = 0;
+        this.gridExplorationState = null;
 
         // Formation System
         this.activeFormations = []; // { id, startTime, staminaConsumed }
@@ -2449,6 +2450,7 @@ export class Player {
             currentWorldId: this.currentWorldId,
             currentLocId: this.currentLocId,
             explorationProgress: this.explorationProgress,
+            gridExplorationState: this.gridExplorationState || null,
             createdAt: this.createdAt,
             
             // External systems data
@@ -2620,6 +2622,7 @@ export class Player {
         this.currentWorldId = data.currentWorldId || 'nhan_gioi';
         this.currentLocId = data.currentLocId || 'thanh_van_tran';
         this.explorationProgress = data.explorationProgress || 0;
+        this.gridExplorationState = data.gridExplorationState || null;
 
         this.calculateStats();
     }
