@@ -1,4 +1,4 @@
-# 1. NHÂN GIỚI [Giới Diện]
+# 1. Nhân Giới [Giới Diện]
 
 ├── 1.1 Thiên Nam [Vùng Lãnh Thổ]
 │ ├── 1.1.1 Việt Quốc [Quốc Gia]
@@ -114,13 +114,13 @@
 │
 ├── 1.6 Vô Biên Hải [Hải Vực]
 ├── 1.7 Ngũ Long Hải [Hải Vực]
-└── 1.8 Không Gian Tiết Điểm [Điểm Phi Thăng LINH GIỚI]
+└── 1.8 Không Gian Tiết Điểm [Điểm Phi Thăng Linh Giới]
 
-# 2. LINH GIỚI [Giới Diện]
+# 2. Linh Giới [Giới Diện]
 
 ├── 2.1 Phong Nguyên Đại Lục [Châu Lục]
 │ ├── 2.1.1 Nhân Yêu Lưỡng Tộc Lãnh Địa [Khu Vực Trung Tâm]
-│ │ ├── 2.1.1.1 Thiên Uyên Thành [Trấn Ải / Điểm Phi Thăng TIÊN GIỚI]
+│ │ ├── 2.1.1.1 Thiên Uyên Thành [Trấn Ải / Điểm Phi Thăng Tiên Giới]
 │ │ ├── 2.1.1.2 Nhân Yêu 13 Thiên Thành [Hệ Thống Thành Trì]
 │ │ │ ├── 2.1.1.2.1 Thiên Linh Thành [Thành Trì]
 │ │ │ ├── 2.1.1.2.2 Thiên Uy Thành [Thành Trì]
@@ -173,7 +173,7 @@
 ├── 2.4.5 Vực Ngoại Thiên Ma Chiến Trường [Chiến Trường]
 └── 2.4.6 Tẩy Tủy Trì (Chân Linh) [Bí Cảnh]
 
-# 3. MA GIỚI [Giới Diện]
+# 3. Ma Giới [Giới Diện]
 
 ├── 3.1 Thánh Ma Đại Lục [Châu Lục]
 │ ├── 3.1.1 Thánh Tổ Ma Cung [Thế Lực]
@@ -205,7 +205,7 @@
 ├── 3.4.2 Không Gian Khe Nứt [Không Gian]
 └── 3.4.3 Chân Ma Điện [Di Tích]
 
-# 4. CÁC GIỚI DIỆN SONG SONG [Giới Diện Phụ]
+# 4. Các Giới Diện Song Song [Giới Diện Phụ]
 
 ├── 4.1 Hôi Giới [Giới Diện]
 │ ├── 4.1.1 Cửu U Vực [Khu Vực]
@@ -223,7 +223,7 @@
 ├── 4.2.2 Minh Hà [Sông Luân Hồi]
 └── 4.2.3 Cầu Nại Hà [Địa Danh]
 
-# 5. TIÊN GIỚI [Giới Diện Tối Cao]
+# 5. Tiên Giới [Giới Diện Tối Cao]
 
 ├── 5.1 Bắc Hàn Tiên Vực [Tiên Vực]
 │ ├── 5.1.1 Cổ Vân Đại Lục [Châu Lục]
