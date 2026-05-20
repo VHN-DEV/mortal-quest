@@ -1,4 +1,6 @@
 import { HOURS, SEASONS, PHENOMENA } from '../configs/time-data.js';
+import { WORLDS } from '../configs/map-data.js';
+import { BEASTS } from '../configs/beast-data.js';
 import { state } from '../state.js';
 
 export class TimeSystem {
@@ -140,10 +142,81 @@ export class TimeSystem {
                 this.ui.toast(`Nhận bổng lộc hàng tháng từ ${this.player.origin.name}: +${monthly.lingShi} Linh Thạch`, "success");
             }
         }
+        
+        // Scan for Secret Realms opening this month
+        this.checkSecretRealms();
     }
 
     onYearChanged() {
         this.ui.toast(`Chúc mừng năm mới! Năm ${this.getYear()}`, "success");
+        
+        // Auction House event every 5 years
+        if (this.getYear() % 5 === 0) {
+            if (state.systems.npc) {
+                state.systems.npc.addNews(`[Đại Đấu Giá] Vạn Bảo Các long trọng tổ chức Đại Đấu Giá Hội, kính mời các bậc đại năng tứ phương tề tựu!`);
+            }
+        }
+
+        // World Boss spawn (roughly 20% chance every year, max 1 boss)
+        if (Math.random() < 0.2 && state.worldEvents.activeBosses.length === 0) {
+            this.spawnWorldBoss();
+        }
+    }
+
+    checkSecretRealms() {
+        const y = this.getYear();
+        const m = this.getMonth();
+        
+        for (const wId in WORLDS) {
+            const locations = WORLDS[wId].locations;
+            for (const lId in locations) {
+                const loc = locations[lId];
+                if (loc.openingRules) {
+                    const isOpeningYear = (y % loc.openingRules.yearInterval === 0);
+                    
+                    // Only broadcast exactly on the opening month of the opening year
+                    if (isOpeningYear && m === loc.openingRules.startMonth) {
+                        if (state.systems.npc) {
+                            state.systems.npc.addNews(`[Bí Cảnh Khai Mở] Thiên địa dị biến, sương mù tản đi! Bí cảnh [${loc.name}] tại ${WORLDS[wId].name} đã chính thức khai mở!`);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    spawnWorldBoss() {
+        // Find all locations with danger level > 0
+        const validLocs = [];
+        for (const wId in WORLDS) {
+            const locations = WORLDS[wId].locations;
+            for (const lId in locations) {
+                if (locations[lId].dangerLevel > 0) {
+                    validLocs.push({ wId, lId, loc: locations[lId] });
+                }
+            }
+        }
+        
+        if (validLocs.length === 0) return;
+        
+        const randomTarget = validLocs[Math.floor(Math.random() * validLocs.length)];
+        const bossKeys = Object.keys(BEASTS);
+        const randomBossId = bossKeys[Math.floor(Math.random() * bossKeys.length)];
+        const bossData = BEASTS[randomBossId];
+        
+        const bossLevel = Math.max(10, randomTarget.loc.dangerLevel * 10 + Math.floor(Math.random() * 20));
+        
+        state.worldEvents.activeBosses.push({
+            worldId: randomTarget.wId,
+            locId: randomTarget.lId,
+            bossId: randomBossId,
+            level: bossLevel,
+            spawnYear: this.getYear()
+        });
+        
+        if (state.systems.npc) {
+            state.systems.npc.addNews(`[Đại Yêu Thú] Oán khí ngút trời! Một con [${bossData.name}] bất ngờ giáng lâm tại ${randomTarget.loc.name}, tàn sát vô số sinh linh!`);
+        }
     }
 
     getFormattedTime() {

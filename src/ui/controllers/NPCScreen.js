@@ -46,12 +46,18 @@ export class NPCScreen {
                                 : 'bg-white/5 text-gray-500 border border-white/10 hover:text-gray-300'}">
                             <i class="ph ph-star mr-1"></i>Nhân Quả
                         </button>
+                        <button onclick="window.npcScreen.setTab('news')"
+                            class="flex-1 py-2.5 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all ${this.activeTab === 'news'
+                                ? 'bg-qi-purple/20 text-qi-purple border border-qi-purple/40 shadow-[0_0_12px_rgba(168,85,247,0.15)]'
+                                : 'bg-white/5 text-gray-500 border border-white/10 hover:text-gray-300'}">
+                            <i class="ph ph-scroll mr-1"></i>Tin Tức
+                        </button>
                     </div>
                 </div>
 
                 <!-- Content -->
                 <div id="npc-screen-content" class="flex-1 overflow-hidden relative">
-                    ${this.activeTab === 'npcs' ? this.renderNpcsView() : this.renderFateView()}
+                    ${this.activeTab === 'npcs' ? this.renderNpcsView() : (this.activeTab === 'fate' ? this.renderFateView() : this.renderNewsView())}
                 </div>
 
                 <!-- NPC Detail Overlay (bottom sheet) -->
@@ -217,6 +223,64 @@ export class NPCScreen {
         return `
             <div id="fate-tab-container" class="w-full h-full overflow-y-auto custom-scroll p-5">
                 <!-- Fate content will be injected here -->
+            </div>
+        `;
+    }
+
+    renderNewsView() {
+        const news = state.systems.npc.worldNews || [];
+        
+        if (news.length === 0) {
+            return `
+                <div class="flex flex-col items-center justify-center h-full space-y-4 p-8 text-center">
+                    <div class="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                        <i class="ph ph-scroll text-4xl text-gray-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-sm font-ancient">Tu Tiên Giới Bình Yên</p>
+                        <p class="text-gray-600 text-[10px] mt-1 italic">Chưa có sự kiện chấn động nào xảy ra gần đây...</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="h-full overflow-y-auto custom-scroll p-5 space-y-3">
+                ${news.map(item => {
+                    let icon = 'ph-scroll';
+                    let colorClass = 'text-gray-400';
+                    let bgClass = 'bg-white/5 border-white/10';
+                    
+                    if (item.msg.includes('[Huyết Chiến]') || item.msg.includes('[Vẫn Lạc]') || item.msg.includes('[Sát Trận]') || item.msg.includes('[Tự Phù]')) {
+                        icon = 'ph-skull';
+                        colorClass = 'text-red-400';
+                        bgClass = 'bg-red-500/10 border-red-500/20';
+                    } else if (item.msg.includes('[Đột Phá]')) {
+                        icon = 'ph-lightning';
+                        colorClass = 'text-cultivation-gold';
+                        bgClass = 'bg-cultivation-gold/10 border-cultivation-gold/20';
+                    } else if (item.msg.includes('[Luận Bàn]') || item.msg.includes('[Giao Lưu]')) {
+                        icon = 'ph-handshake';
+                        colorClass = 'text-qi-blue';
+                        bgClass = 'bg-qi-blue/10 border-qi-blue/20';
+                    } else if (item.msg.includes('[Thất Bại]')) {
+                        icon = 'ph-warning-circle';
+                        colorClass = 'text-orange-400';
+                        bgClass = 'bg-orange-500/10 border-orange-500/20';
+                    }
+
+                    return `
+                        <div class="p-4 rounded-2xl border ${bgClass} flex gap-3 transition-all hover:bg-white/10">
+                            <div class="flex-none mt-1">
+                                <i class="ph ${icon} ${colorClass} text-xl"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[11px] text-gray-300 leading-relaxed">${item.msg}</p>
+                                <p class="text-[8px] font-mono text-gray-500 mt-2">${item.timeStr || new Date(item.time).toLocaleString()}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
             </div>
         `;
     }

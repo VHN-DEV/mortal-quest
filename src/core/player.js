@@ -612,6 +612,44 @@ export class Player {
         });
     }
 
+    killNPC(npcId) {
+        if (!state.systems.npc) return;
+        const npcSystem = state.systems.npc;
+        const npc = npcSystem.npcs.find(n => n.id === npcId);
+        if (npc) {
+            npc.hp = 0;
+            npcSystem.handleKarmaFallout(npc, this);
+            
+            // Add sin for killing an NPC (can be modified based on morality)
+            this.addKarma(50, 0); 
+
+            // Loot NPC
+            let lootMsg = '';
+            if (npc.lingShi > 0) {
+                this.addLingShi(npc.lingShi);
+                lootMsg += `💎 ${npc.lingShi} Linh thạch`;
+            }
+            if (npc.inventory && npc.inventory.length > 0) {
+                for (const item of npc.inventory) {
+                    if (window.game && window.game.receiveItem) {
+                        window.game.receiveItem(item.id, item.quantity);
+                    }
+                }
+                if (lootMsg) lootMsg += ' và ';
+                lootMsg += `${npc.inventory.length} loại bảo vật`;
+            }
+
+            if (npcSystem.addNews) {
+                npcSystem.addNews(`[Sát Trận] ${this.name} đã nhẫn tâm tiêu diệt ${npc.name}, cướp sạch tài sản!`);
+            }
+            
+            this.pendingEvents.push({
+                type: 'npc_killed',
+                msg: `Bạn đã tiêu diệt ${npc.name}. Nhân quả đã được gieo xuống... ${lootMsg ? `\nThu hoạch: ${lootMsg}` : ''}`
+            });
+        }
+    }
+
     unlockTitle(titleId) {
         if (!this.fate.titles.includes(titleId)) {
             this.fate.titles.push(titleId);

@@ -1,6 +1,8 @@
 import { NPC_TEMPLATES, NPC_PERSONALITIES, NPC_GOALS, NPC_RELATIONSHIP_LEVELS, NPC_SPECIAL_RELATIONS, SPECIAL_NPCS } from '../configs/npc-data.js';
 import { getRealmById } from '../configs/realm-data.js';
 import { CREATION_ROOTS, CREATION_PHYSIQUES } from '../configs/creation-data.js';
+import { WORLDS } from '../configs/map-data.js';
+import { NPCAI } from './npc-ai.js';
 
 export class NPC {
     constructor(templateId, realmId) {
@@ -42,25 +44,45 @@ export class NPC {
         
         // Schedule & Location
         this.activity = 'Tu luyện';
+        this.currentLocId = null;
+        this.currentWorldId = 'nhan_gioi';
+        
+        // Relatives (Karma System)
+        this.relatives = [];
         
         // NPC Inventory for trading
         this.inventory = []; 
+        this.lingShi = 0;
         this.generateInitialInventory();
 
         this.calculateStats();
     }
 
     generateInitialInventory() {
-        // Based on type, give some items
+        // Base lingShi based on realm
+        this.lingShi = 100 * Math.pow(2, this.realmId) + Math.floor(Math.random() * 500);
+
+        // Based on type and realm, give some items
+        const pills = ['ngung_khi_dan', 'truc_co_dan', 'thuy_tinh_dan'];
+        const pillId = pills[Math.min(pills.length - 1, this.realmId - 1)] || 'ngung_khi_dan';
+        
         if (this.type === 'thuong_nhan') {
-            this.inventory.push({ id: 'ngung_khi_dan', quantity: 5 + Math.floor(Math.random() * 10), price: 150 });
-            this.inventory.push({ id: 'truc_co_dan', quantity: 1 + Math.floor(Math.random() * 3), price: 2500 });
-            this.inventory.push({ id: 'linh_thach_trung', quantity: 10, price: 100 });
-        } else if (this.type === 'tan_tu') {
-            this.inventory.push({ id: 'ngung_khi_dan', quantity: 2, price: 200 });
-            this.inventory.push({ id: 'thiet_giap_phu', quantity: 1, price: 500 });
+            this.inventory.push({ id: 'ngung_khi_dan', quantity: 15 + Math.floor(Math.random() * 20), price: 150 });
+            this.inventory.push({ id: 'truc_co_dan', quantity: 5 + Math.floor(Math.random() * 10), price: 2500 });
+            this.inventory.push({ id: 'linh_thach_trung', quantity: 20, price: 100 });
+            this.lingShi += 5000;
+        } else {
+            // Normal NPCs have some pills for cultivation
+            this.inventory.push({ id: pillId, quantity: 2 + Math.floor(Math.random() * 5), price: 200 });
+            
+            // Random chance for a weapon or defensive item
+            if (Math.random() > 0.5) {
+                this.inventory.push({ id: 'thiet_giap_phu', quantity: 1, price: 500 });
+            }
+            if (Math.random() > 0.8) {
+                this.inventory.push({ id: 'linh_thao_cuc_pham', quantity: 1, price: 1000 });
+            }
         }
-        // Add more logic for other types
     }
 
     generateRoot() {
@@ -118,23 +140,64 @@ export class NPC {
         this.hp = this.maxHp;
     }
 
-    simulate(delta, worldTime) {
-        // 1. Cultivation
+    simulate(delta, worldTime, npcSystem) {
+        if (this.hp <= 0) return; // Dead
+
+        // 1. Cultivation & Item Usage
+        let pillBonus = 1.0;
+        // Check if NPC has pills to consume
+        const pillIndex = this.inventory.findIndex(item => item.id.includes('_dan'));
+        if (pillIndex !== -1 && Math.random() < 0.05 * delta) {
+            this.inventory[pillIndex].quantity--;
+            pillBonus = 2.0; // Double speed for this tick
+            if (this.inventory[pillIndex].quantity <= 0) {
+                this.inventory.splice(pillIndex, 1);
+            }
+        }
+
         const rootMultiplier = CREATION_ROOTS[this.rootId]?.bonus?.tvps || 1;
         const physiqueMultiplier = this.physiqueId !== 'bin_thuong' ? 1.5 : 1.0;
         const moodMultiplier = this.mood === 'Vui vẻ' ? 1.2 : (this.mood === 'U sầu' ? 0.8 : 1.0);
         
-        const tuViGain = (this.realmId * 0.8) * rootMultiplier * physiqueMultiplier * moodMultiplier * delta;
+        const tuViGain = (this.realmId * 0.8) * rootMultiplier * physiqueMultiplier * moodMultiplier * pillBonus * delta;
         this.tuVi += tuViGain;
         
-        // Breakthrough
+        // Breakthrough Logic
         const currentRealm = getRealmById(this.realmId);
         if (currentRealm && this.tuVi >= currentRealm.expRequired) {
-            this.realmId++;
-            this.tuVi = 0;
-            this.calculateStats();
-            this.mood = 'Vui vẻ';
-            console.log(`NPC ${this.name} đã đột phá lên ${getRealmById(this.realmId).name}`);
+            // Base chance 50%, up to +30% based on Dao Heart and Luck
+            const successChance = 50 + (this.daoHeart / 100) * 15 + (this.luck / 100) * 15;
+            const roll = Math.random() * 100;
+
+            if (roll <= successChance) {
+                // Success
+                this.realmId++;
+                this.tuVi = 0;
+                this.calculateStats();
+                this.mood = 'Vui vẻ';
+                if (npcSystem && npcSystem.addNews) {
+                    npcSystem.addNews(`[Đột Phá] ${this.name} đã đột phá thành công lên ${getRealmById(this.realmId).name}! Thiên địa dị tượng xuất hiện.`);
+                }
+            } else {
+                // Failure
+                this.tuVi = Math.floor(currentRealm.expRequired * 0.5); // Lose 50% exp
+                this.mood = 'U sầu';
+                
+                // Death chance on failure (higher realms have higher death chance)
+                const deathChance = this.realmId * 5; 
+                const deathRoll = Math.random() * 100;
+                
+                if (deathRoll <= deathChance) {
+                    this.hp = 0; // Died
+                    if (npcSystem && npcSystem.addNews) {
+                        npcSystem.addNews(`[Vẫn Lạc] ${this.name} trong lúc đột phá ${currentRealm.name} đã bị thiên kiếp đánh nát tàn hồn, thân tử đạo tiêu!`);
+                    }
+                } else {
+                    if (npcSystem && npcSystem.addNews && Math.random() < 0.2) {
+                        npcSystem.addNews(`[Thất Bại] ${this.name} trùng kích cảnh giới thất bại, kinh mạch tổn thương nghiêm trọng.`);
+                    }
+                }
+            }
         }
 
         // 2. Activity / Schedule
@@ -260,32 +323,152 @@ export class NPC {
 export class NPCSystem {
     constructor() {
         this.npcs = [];
+        this.worldNews = [];
     }
 
-    generate(templateId, realmId, locationId) {
+    addNews(msg) {
+        const timeStr = window.game && window.game.systems && window.game.systems.time 
+            ? window.game.systems.time.getFormattedTime() 
+            : '';
+        this.worldNews.unshift({ msg, time: Date.now(), timeStr });
+        if (this.worldNews.length > 50) this.worldNews.pop();
+    }
+
+    processNPCInteractions(delta) {
+        if (Math.random() > 0.05 * delta) return; // Giới hạn tần suất tính toán
+
+        const locGroups = {};
+        for (const npc of this.npcs) {
+            if (npc.hp <= 0) continue;
+            const key = npc.currentWorldId + '_' + npc.currentLocId;
+            if (!locGroups[key]) locGroups[key] = [];
+            locGroups[key].push(npc);
+        }
+
+        for (const key in locGroups) {
+            const group = locGroups[key];
+            if (group.length < 2) continue;
+
+            const npc1 = group[Math.floor(Math.random() * group.length)];
+            const npc2 = group[Math.floor(Math.random() * group.length)];
+            if (npc1.id === npc2.id) continue;
+
+            if (npc1.goalId === 'bao_thu' || npc1.personalityIds.includes('dien_cuong') || npc1.personalityIds.includes('tham_lam')) {
+                const powerDiff = npc1.realmId - npc2.realmId;
+                if (powerDiff >= 0 && Math.random() < 0.3) {
+                    npc2.hp = 0; 
+                    this.addNews(`[Huyết Chiến] Vì tranh đoạt cơ duyên, ${npc1.name} đã hạ sát ${npc2.name} tại bản đồ!`);
+                    this.handleKarmaFallout(npc2, null, npc1);
+                } else if (powerDiff < -1 && Math.random() < 0.2) {
+                    npc1.hp = 0; 
+                    this.addNews(`[Tự Phù] ${npc1.name} muốn mai phục ${npc2.name} nhưng tài nghệ kém cỏi, bị phản sát tại chỗ!`);
+                    this.handleKarmaFallout(npc1, null, npc2);
+                }
+            } else if (Math.random() < 0.05) {
+                this.addNews(`[Luận Bàn] ${npc1.name} và ${npc2.name} gặp gỡ luận võ, cùng nhau thăng tiến tu vi!`);
+                npc1.tuVi += 150 * npc1.realmId;
+                npc2.tuVi += 150 * npc2.realmId;
+                npc1.changeRelationship(10);
+                npc2.changeRelationship(10);
+            }
+        }
+    }
+
+    generate(templateId, realmId, locationId, worldId = 'nhan_gioi') {
         const npc = new NPC(templateId, realmId);
-        npc.location = locationId;
+        npc.currentLocId = locationId;
+        npc.currentWorldId = worldId;
         this.npcs.push(npc);
         return npc;
     }
 
     update(delta, worldTime) {
+        this.processNPCInteractions(delta);
+
         this.npcs.forEach(npc => {
-            npc.simulate(delta, worldTime);
+            npc.simulate(delta, worldTime, this);
+            
+            // Map Movement (approx 1% chance per second to change location)
+            if (Math.random() < 0.01 * delta) {
+                const world = WORLDS[npc.currentWorldId];
+                if (world && world.locations) {
+                    const newLoc = NPCAI.decideMovement(npc, world.locations);
+                    if (newLoc) {
+                        npc.currentLocId = newLoc;
+                    }
+                }
+            }
+        });
+    }
+
+    getNPCsAtLocation(locId, worldId = 'nhan_gioi') {
+        return this.npcs.filter(npc => npc.currentLocId === locId && npc.currentWorldId === worldId && npc.hp > 0);
+    }
+
+    triggerPlayerInteractions(player) {
+        const locId = player.currentLocId;
+        const worldId = player.currentWorldId || 'nhan_gioi';
+        const npcsHere = this.getNPCsAtLocation(locId, worldId);
+        
+        for (const npc of npcsHere) {
+            const interaction = NPCAI.evaluateMapInteraction(npc, player);
+            if (interaction.action !== 'NONE') {
+                player.pendingEvents.push({
+                    type: 'npc_event',
+                    npcId: npc.id,
+                    action: interaction.action,
+                    msg: interaction.msg
+                });
+                // Limit to one active interaction per tick to avoid spam
+                break;
+            }
+        }
+    }
+
+    handleKarmaFallout(victimNpc, killerPlayer, killerNpc = null) {
+        if (!victimNpc || !victimNpc.relatives) return;
+        victimNpc.relatives.forEach(relativeId => {
+            const rel = this.npcs.find(n => n.id === relativeId);
+            if (rel) {
+                rel.changeRelationship(-100);
+                rel.goalId = 'bao_thu';
+                rel.memory.push({ type: 'killed_relative', time: Date.now() });
+                
+                if (killerPlayer) {
+                    killerPlayer.addKarmaLink({
+                        id: 'karma_' + Date.now(),
+                        npcId: rel.id,
+                        type: 'vengeance',
+                        strength: 100,
+                        description: `${rel.name} thề sẽ giết ngươi để trả thù cho ${victimNpc.name}.`
+                    });
+                } else if (killerNpc) {
+                    rel.addMemory('attacked');
+                }
+            }
         });
     }
 
     saveData() {
-        return this.npcs.map(npc => ({ ...npc }));
+        return {
+            npcs: this.npcs.map(npc => ({ ...npc })),
+            worldNews: this.worldNews
+        };
     }
 
     loadData(data) {
         if (!data) return;
-        this.npcs = data.map(npcData => {
-            const templateId = npcData.templateId || npcData.type;
-            const npc = new NPC(templateId, npcData.realmId);
-            Object.assign(npc, npcData);
-            return npc;
-        });
+        const npcsData = Array.isArray(data) ? data : data.npcs; // Support old saves
+        if (npcsData) {
+            this.npcs = npcsData.map(npcData => {
+                const templateId = npcData.templateId || npcData.type;
+                const npc = new NPC(templateId, npcData.realmId);
+                Object.assign(npc, npcData);
+                return npc;
+            });
+        }
+        if (data.worldNews) {
+            this.worldNews = data.worldNews;
+        }
     }
 }

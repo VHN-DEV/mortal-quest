@@ -43,6 +43,11 @@ class GameState {
         this.currentLocId = null;
         this.explorationProgress = 0;
         
+        // World Events State
+        this.worldEvents = {
+            activeBosses: [] // Array of { locId, worldId, bossId, level, spawnYear }
+        };
+        
         // View states
         this.views = {
             shop: 'buy',

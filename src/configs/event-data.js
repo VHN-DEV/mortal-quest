@@ -2,12 +2,29 @@ export const EVENTS = [
     {
         id: 'ancient_cave',
         name: 'Phát hiện động phủ cổ',
-        type: 'loot',
-        description: 'Ngươi vô tình phát hiện một động phủ bị bỏ hoang từ vạn năm trước.',
-        result: (player) => {
-            const reward = Math.floor(player.tuViPerSecond * 100);
-            player.tuVi += reward;
-            return `Ngươi tìm thấy một ít linh đan cũ, nhận được ${reward} tu vi!`;
+        type: 'interactive',
+        description: 'Ngươi vô tình phát hiện một động phủ bị bỏ hoang từ vạn năm trước. Trận pháp bảo vệ đã mờ nhạt nhưng vẫn toát ra uy áp đáng sợ.',
+        options: [
+            { label: 'Dùng Thần Niệm dò xét', value: 'explore', icon: 'ph-eye' },
+            { label: 'Dùng bạo lực phá cửa', value: 'force', icon: 'ph-sword' },
+            { label: 'Cẩn thận rời đi', value: 'leave', icon: 'ph-walking' }
+        ],
+        resolve: async (choice, player, game) => {
+            if (choice === 'explore') {
+                const tuViGain = player.realmId * 500 + 1000;
+                player.addTuVi(tuViGain);
+                return { msg: `Ngươi cẩn thận men theo kẽ hở của trận pháp tiến vào. May mắn nhặt được một bình đan dược cổ, nhận được ${tuViGain} Tu vi.` };
+            } else if (choice === 'force') {
+                if (Math.random() > 0.5) {
+                    player.hp = Math.max(1, player.hp - (player.maxHp * 0.3));
+                    return { msg: `Ngươi dốc sức công kích trận pháp! Trận pháp phản phệ khiến ngươi trọng thương mất 30% Khí Huyết, đành phải lui lại.` };
+                } else {
+                    const ls = player.realmId * 100;
+                    player.addLingShi(ls);
+                    return { msg: `May mắn trận pháp đã quá suy yếu, ngươi thành công phá vỡ và cướp được ${ls} Linh thạch bên trong.` };
+                }
+            }
+            return { msg: 'Ngươi quyết định an toàn là trên hết, chậm rãi rời đi.' };
         }
     },
     {
@@ -58,10 +75,35 @@ export const EVENTS = [
     },
     {
         id: 'mysterious_merchant',
-        name: 'Gặp thương nhân thần bí',
-        type: 'npc',
-        description: 'Một lão già gầy gò với chiếc túi lớn vẫy tay chào ngươi.',
-        result: () => 'Lão già cười khà khà: "Hữu duyên thiên lý năng tương ngộ, có muốn mua gì không?" (Tính năng giao dịch sắp ra mắt)'
+        name: 'Thương nhân thần bí',
+        type: 'interactive',
+        description: 'Một lão già gầy gò với chiếc túi lớn vẫy tay chào ngươi. "Khà khà, tiểu hữu có muốn mua chút cơ duyên không?"',
+        options: [
+            { label: 'Mua cơ duyên (1000 Linh Thạch)', value: 'buy', icon: 'ph-coin' },
+            { label: 'Cướp đoạt!', value: 'rob', icon: 'ph-skull' },
+            { label: 'Từ chối', value: 'leave', icon: 'ph-x' }
+        ],
+        resolve: async (choice, player, game) => {
+            if (choice === 'buy') {
+                if (player.lingShi >= 1000) {
+                    player.addLingShi(-1000);
+                    const techPoints = player.realmId * 10 + 20;
+                    player.techniquePoints = (player.techniquePoints || 0) + techPoints;
+                    return { msg: `Ngươi bỏ ra 1000 Linh Thạch mua được một cuốn sách rách. Hóa ra là tàn quyển thượng cổ! Nhận được ${techPoints} Điểm công pháp.` };
+                } else {
+                    return { msg: `Lão già bĩu môi: "Không đủ tiền mà cũng muốn cơ duyên?" rồi biến mất trong làn khói.` };
+                }
+            } else if (choice === 'rob') {
+                if (game.systems.fate) game.systems.fate.addSin(20);
+                if (Math.random() > 0.7) {
+                    player.addLingShi(500);
+                    return { msg: `[Nghiệt: +20] Ngươi hung hãn xông lên! Lão già giật mình bỏ chạy rơi lại 500 Linh Thạch.` };
+                } else {
+                    return { type: 'combat', msg: `[Nghiệt: +20] Lão già cười lạnh: "Muốn cướp của ta? Lão phu từng là Hóa Thần kỳ đấy!"` };
+                }
+            }
+            return { msg: 'Ngươi cảnh giác lắc đầu từ chối rồi bước đi.' };
+        }
     },
     {
         id: 'elder_guidance',
@@ -77,8 +119,28 @@ export const EVENTS = [
     {
         id: 'sect_conflict',
         name: 'Chứng kiến tranh đấu',
-        type: 'combat',
-        description: 'Phía trước có hai nhóm tu sĩ đang tranh đoạt một gốc linh thảo. Thấy ngươi tiến tới, cả hai đều nhìn ngươi với ánh mắt cảnh giác.'
+        type: 'interactive',
+        description: 'Phía trước có hai nhóm cường giả đang liều mạng tranh đoạt một thanh kiếm rực lửa. Sát khí bủa vây khắp nơi.',
+        options: [
+            { label: 'Trợ giúp phe yếu', value: 'help', icon: 'ph-handshake' },
+            { label: 'Tọa sơn quan hổ đấu', value: 'wait', icon: 'ph-eye' },
+            { label: 'Lặng lẽ rời đi', value: 'leave', icon: 'ph-walking' }
+        ],
+        resolve: async (choice, player, game) => {
+            if (choice === 'help') {
+                if (game.systems.fate) game.systems.fate.addMerit(10);
+                return { type: 'combat', msg: `[Công đức: +10] Ngươi rút khí giới lao vào trận chiến bảo vệ kẻ yếu!` };
+            } else if (choice === 'wait') {
+                if (game.systems.fate) game.systems.fate.addSin(10);
+                if (Math.random() > 0.5) {
+                    player.techniquePoints = (player.techniquePoints || 0) + 15;
+                    return { msg: `[Nghiệt: +10] Đợi đến khi cả hai bên trọng thương gục ngã, ngươi lao ra nẫng tay trên! Nhận được 15 Điểm công pháp từ thi thể.` };
+                } else {
+                    return { type: 'combat', msg: `[Nghiệt: +10] Bất ngờ một gã cường giả nhận ra ngươi đang rình rập liền điên cuồng tấn công ngươi!` };
+                }
+            }
+            return { msg: 'Ngươi không muốn dính líu đến thị phi, liền vận khinh công rời khỏi hiện trường.' };
+        }
     },
     {
         id: 'ma_toc_encounter',

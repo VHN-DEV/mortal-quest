@@ -383,6 +383,16 @@ export class Game {
                     state.ui.alert(ev.msg, "Kinh Mạch Phản Phệ!");
                 } else if (ev.type === 'deviation_end') {
                     state.ui.toast(ev.msg, "success");
+                } else if (ev.type === 'npc_event') {
+                    if (ev.action === 'TRUY_SAT') {
+                        state.ui.alert(ev.msg, "Kẻ Thù Truy Sát!");
+                    } else if (ev.action === 'CUOP_BOC' || ev.action === 'LUAN_BAN') {
+                        state.ui.alert(ev.msg, "Đụng Độ!");
+                    } else {
+                        state.ui.toast(ev.msg, 'info');
+                    }
+                } else if (ev.type === 'npc_killed') {
+                    state.ui.toast(ev.msg, 'error');
                 }
             });
         }
@@ -392,7 +402,16 @@ export class Game {
         if (state.systems.mission) state.systems.mission.update();
         if (state.systems.mining) state.systems.mining.processTimeEvents(delta / 60); // minutes
         if (state.systems.mountain && state.systems.mountain.isActive) state.systems.mountain.update(delta);
-        if (state.systems.npc && state.systems.time) state.systems.npc.update(delta, state.systems.time.totalMinutes);
+        if (state.systems.npc && state.systems.time) {
+            state.systems.npc.update(delta, state.systems.time.totalMinutes);
+            this.npcInteractionTimer = (this.npcInteractionTimer || 0) + delta;
+            if (this.npcInteractionTimer > 10) { // Check every 10 real seconds
+                this.npcInteractionTimer = 0;
+                if (!state.player.isSecluded) {
+                    state.systems.npc.triggerPlayerInteractions(state.player);
+                }
+            }
+        }
         if (state.systems.social) state.systems.social.update(delta);
         if (state.systems.fate) state.systems.fate.checkTribulation();
         if (state.systems.treasure) state.systems.treasure.update(delta);
@@ -756,6 +775,18 @@ export class Game {
             Object.entries(specialNpcSpawns).forEach(([id, config]) => {
                 state.systems.npc.generate(id, config.realm, config.location);
             });
+            
+            // --- Initialize Web of Relationships ---
+            const hanLap = state.systems.npc.npcs.find(n => n.templateId === 'han_lap');
+            const tuLinh = state.systems.npc.npcs.find(n => n.templateId === 'tu_linh');
+            if (hanLap && tuLinh) {
+                hanLap.relationship = 100;
+                tuLinh.relationship = 100;
+                hanLap.specialRelation = 'dao_lu';
+                tuLinh.specialRelation = 'dao_lu';
+                hanLap.relatives.push(tuLinh.id);
+                tuLinh.relatives.push(hanLap.id);
+            }
         }
 
         const elName = document.getElementById('player-name-header');

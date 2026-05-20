@@ -11,6 +11,7 @@ import { audioManager } from '../../utils/audio-manager.js';
 import { gsap } from 'gsap';
 import { getItemById } from '../../configs/item-data.js';
 import { EnemyGenerator } from '../../core/enemy.js';
+import { BEASTS } from '../../configs/beast-data.js';
 
 const BEAST_IMAGES = [
     'beasts/huyen-giap-dia-long',
@@ -585,6 +586,53 @@ export class MapScreen {
             state.player.calculateStats();
         }
 
+        // --- WORLD BOSS CHECK ---
+        if (state.worldEvents && state.worldEvents.activeBosses) {
+            const bossEventIdx = state.worldEvents.activeBosses.findIndex(b => b.locId === locId);
+            if (bossEventIdx !== -1) {
+                const bossEvent = state.worldEvents.activeBosses[bossEventIdx];
+                const bossData = BEASTS[bossEvent.bossId];
+                
+                if (bossData) {
+                    const choice = await state.ui.promptOptions(
+                        `ĐẠI YÊU THÚ GIÁNG LÂM`,
+                        [
+                            { id: 'fight', text: "Quyết chiến đoạt bảo!" },
+                            { id: 'flee', text: "Lui lại tránh mũi nhọn" }
+                        ],
+                        `Một con [${bossData.name}] đang chiếm giữ ${loc.name}! Sát khí của nó bao trùm toàn bộ không gian, ngươi không thể thám hiểm bình thường nếu không tiêu diệt nó.`,
+                        getAssetUrl(bossData.image) || null
+                    );
+                    
+                    if (choice === 'fight') {
+                        // Trigger combat with Boss
+                        setTimeout(() => {
+                            window.game.handleCombatEncounter(bossEvent.worldId, bossEvent.locId, (win) => {
+                                if (win) {
+                                    // Remove boss event
+                                    state.worldEvents.activeBosses.splice(bossEventIdx, 1);
+                                    if (state.systems.npc) {
+                                        state.systems.npc.addNews(`[Trừ Yêu] Thật chấn động! Tu sĩ ${state.player.name} đã anh dũng tiêu diệt Đại Yêu Thú [${bossData.name}] tại ${loc.name}!`);
+                                    }
+                                    state.ui.toast("Đã tiêu diệt Đại Yêu Thú! Có thể thám hiểm bình thường.", "success");
+                                    // Resume exploration
+                                    this.startExploration(locId, resetProgress, true);
+                                } else {
+                                    state.ui.toast("Ngươi đã bị Đại Yêu Thú đánh bại, phải lui về dưỡng thương!", "error");
+                                    // Player stays outside or whatever handleCombatEncounter defaults to
+                                }
+                            }, getAssetUrl(bossData.image));
+                        }, 500);
+                        return; // Halt exploration until combat resolves
+                    } else {
+                        // Go back
+                        return;
+                    }
+                }
+            }
+        }
+        // --- END WORLD BOSS CHECK ---
+
         // LOGIC: If it's a direct-entry special location, skip the dashboard
         if (loc.special === 'mountain') {
             if (window.game.openMountain) window.game.openMountain();
@@ -1010,8 +1058,8 @@ export class MapScreen {
                 'river', 'river', 'river', 'river', 'river', 'river',          // 6 Dòng sông Linh Giang dữ dội
                 'grass', 'grass', 'grass', 'grass', 'grass', 'grass', 
                 'grass', 'grass', 'grass', 'grass', 'grass', 'grass',          // 12 Bụi cỏ hoang
-                'guard', 'guard', 'guard', 'guard', 'guard', 'guard',
-                'guard', 'guard', 'guard', 'guard', 'guard', 'guard',          // 12 Yêu thú hoành hành chắn đường
+                'empty', 'empty', 'empty', 'empty', 'empty', 'empty',          // 6 Ô trống bù đắp
+                'guard', 'guard', 'guard', 'guard', 'guard', 'guard',          // 6 Yêu thú hoành hành chắn đường (giảm từ 12)
                 'qi', 'qi', 'qi', 'qi', 'qi', 'qi',                            // 6 Mắt trận khí địa linh
                 'event', 'event', 'event', 'event', 'event', 'event',          // 6 Kỳ ngộ bí kính hoang cổ
                 'npc_event', 'npc_event', 'npc_event', 'npc_event',            // 4 Cổ nhân di tích / Tu sĩ lạc lối
@@ -1024,6 +1072,38 @@ export class MapScreen {
             const j = Math.floor(Math.random() * (i + 1));
             [types[i], types[j]] = [types[j], types[i]];
         }
+
+        // Tạo danh sách NPC/Thú duy nhất cho tầng này
+        const floorNpcs = [...NPC_IMAGES].sort(() => Math.random() - 0.5);
+        const floorBeasts = [...BEAST_IMAGES].sort(() => Math.random() - 0.5);
+        let npcCounter = 0;
+        let beastCounter = 0;
+
+        const npcNamesMap = {
+            'portraits/bach_minh_anh': 'Bạch Minh Anh',
+            'portraits/bach_tu_linh': 'Bạch Tử Linh',
+            'portraits/bang_nguyet': 'Băng Nguyệt Tiên Tử',
+            'portraits/demon': 'Hắc Sát Ma Đầu',
+            'portraits/du_nhuoc_nhan': 'Dụ Nhược Nhan',
+            'portraits/han_lap': 'Hàn Lập',
+            'portraits/han_phi_vu': 'Hàn Phi Vũ',
+            'portraits/han_vien': 'Hàn Viên',
+            'portraits/kiem_vo_tam': 'Kiếm Vô Tâm',
+            'portraits/lan_anh': 'Lan Anh',
+            'portraits/merchant': 'Hắc Tâm Thương Nhân',
+            'portraits/minh_nguyet': 'Minh Nguyệt',
+            'portraits/phuong_ca': 'Phượng Ca',
+            'portraits/phuong_vu': 'Phượng Vũ',
+            'portraits/sect_elder': 'Tông Môn Trưởng Lão',
+            'portraits/thanh_lien': 'Thanh Liên',
+            'portraits/thanh_nhi': 'Thanh Nhi',
+            'portraits/tran_tu_huyen': 'Trần Tử Huyên',
+            'portraits/tu_linh': 'Tử Linh',
+            'portraits/vo_danh': 'Vô Danh Lão Giả',
+            'portraits/xich_nguyet': 'Xích Nguyệt'
+        };
+
+        const randomNames = ['Lâm Phong', 'Diệp Vô Đạo', 'Tiêu Cửu', 'Vương Đằng', 'Lý Tầm', 'Mặc Lão'];
 
         let typeIdx = 0;
 
@@ -1090,13 +1170,27 @@ export class MapScreen {
                         'npc_event': '👤',
                         'empty': '⬜'
                     };
-                    grid[y][x] = {
+                    
+                    const cellData = {
                         x, y,
                         type,
                         status: 'locked',
                         resolved: false,
                         icon: iconMap[type]
                     };
+
+                    // Gán chỉ số duy nhất để ảnh/npc không trùng lặp trên cùng 1 map
+                    if (type === 'npc_event') {
+                        const imgPath = floorNpcs[npcCounter % floorNpcs.length];
+                        cellData.npcIdx = NPC_IMAGES.indexOf(imgPath);
+                        cellData.npcName = npcNamesMap[imgPath] || randomNames[npcCounter % randomNames.length];
+                        npcCounter++;
+                    } else if (type === 'guard') {
+                        cellData.beastIdx = BEAST_IMAGES.indexOf(floorBeasts[beastCounter % floorBeasts.length]);
+                        beastCounter++;
+                    }
+
+                    grid[y][x] = cellData;
                 }
             }
         }
@@ -1247,7 +1341,7 @@ export class MapScreen {
                     else if (cell.type === 'dungeon_entrance') el.classList.add('grid-cell-stairs-up');
 
                     if (cell.type === 'guard' || cell.type === 'boss') {
-                        const beastIdx = (x * 7 + y * 13) % BEAST_IMAGES.length;
+                        const beastIdx = cell.beastIdx !== undefined ? cell.beastIdx : ((x * 7 + y * 13) % BEAST_IMAGES.length);
                         const imgUrl = getAssetUrl(BEAST_IMAGES[beastIdx]);
                         el.innerHTML = `
                             <div class="w-[85%] h-[85%] rounded-full overflow-hidden border ${cell.type === 'boss' ? 'border-red-600 shadow-[0_0_12px_rgba(239,68,68,0.8)]' : 'border-red-400 shadow-[0_0_6px_rgba(239,68,68,0.5)]'} flex items-center justify-center">
@@ -1255,7 +1349,7 @@ export class MapScreen {
                             </div>
                         `;
                     } else if (cell.type === 'npc_event') {
-                        const npcIdx = (x * 5 + y * 11) % NPC_IMAGES.length;
+                        const npcIdx = cell.npcIdx !== undefined ? cell.npcIdx : ((x * 5 + y * 11) % NPC_IMAGES.length);
                         const imgUrl = getAssetUrl(NPC_IMAGES[npcIdx]);
                         el.innerHTML = `
                             <div class="w-[85%] h-[85%] rounded-full overflow-hidden border border-qi-blue shadow-[0_0_8px_rgba(59,130,246,0.6)] flex items-center justify-center">
@@ -1521,7 +1615,7 @@ export class MapScreen {
                 }
                 case 'guard':
                 case 'combat': {
-                    const beastIdx = (x * 7 + y * 13) % BEAST_IMAGES.length;
+                    const beastIdx = cell.beastIdx !== undefined ? cell.beastIdx : ((x * 7 + y * 13) % BEAST_IMAGES.length);
                     const overrideImage = getAssetUrl(BEAST_IMAGES[beastIdx]);
 
                     this.updateEventDisplay(`👹 [YÊU THÚ TRẤN ẢI] Một đầu cự yêu hung ác từ sương mù gầm rú chặn đứng cổ lộ! Chiến đấu nổ ra!`);
@@ -1531,32 +1625,33 @@ export class MapScreen {
                     break;
                 }
                 case 'npc_event': {
-                    this.updateEventDisplay(`👤 [CỔ NHÂN DI TÍCH] Ngươi gặp một tu sĩ đồng đạo đang tĩnh tọa...`);
+                    const npcName = cell.npcName || "Cổ nhân di tích";
+                    this.updateEventDisplay(`👤 [KỲ NGỘ] Ngươi gặp tu sĩ ${npcName} đang tĩnh tọa...`);
                     setTimeout(async () => {
                         const choice = await state.ui.promptOptions(
-                            "Bất Ngờ Gặp Đồng Đạo",
+                            `Bất Ngờ Gặp ${npcName}`,
                             [
                                 { id: 'talk', text: "Đàm đạo và bồi lễ (-50 Linh thạch, +Tu vi)" },
                                 { id: 'trade', text: "Giao dịch bí bảo mua Linh Thảo" },
                                 { id: 'leave', text: "Chắp tay rời đi" }
                             ],
-                            "Vị tu sĩ thần sắc thâm trầm, thở ra khí xám chắp tay: 'Đạo hữu hữu duyên dừng bước, cùng nhau đàm đạo trao đổi đan dược chứ?'"
+                            `${npcName} thần sắc thâm trầm, thở ra khí xám chắp tay: 'Đạo hữu hữu duyên dừng bước, cùng nhau đàm đạo trao đổi đan dược chứ?'`
                         );
                         if (choice === 'talk') {
                             if (state.player.inventory.hasItem('linh_thach', 50) || state.player.lingShi >= 50) {
                                 state.player.addLingShi(-50);
                                 const bonusTuVi = state.player.realmId * 500 + 300;
                                 state.player.addTuVi(bonusTuVi);
-                                this.updateEventDisplay(`👤 Đàm đạo vô cùng thống khoái! Đạo hữu tặng ngươi chỉ dẫn ngộ đạo, tăng thêm ${bonusTuVi} Tu vi.`);
+                                this.updateEventDisplay(`👤 Đàm đạo vô cùng thống khoái! ${npcName} tặng ngươi chỉ dẫn ngộ đạo, tăng thêm ${bonusTuVi} Tu vi.`);
                             } else {
                                 state.ui.toast("Không đủ Linh thạch để bồi lễ!", "warning");
-                                this.updateEventDisplay(`👤 Tu sĩ phất tay áo chán ghét rời đi vì ngươi quá nghèo túng.`);
+                                this.updateEventDisplay(`👤 ${npcName} phất tay áo chán ghét rời đi vì ngươi quá nghèo túng.`);
                             }
                         } else if (choice === 'trade') {
                             await window.game.receiveItem('linh_thao_cuc_pham', 1);
-                            this.updateEventDisplay(`👤 Giao dịch hoàn tất! Ngươi nhận được 1x [Linh Thảo Cực Phẩm] tuyệt diệu.`);
+                            this.updateEventDisplay(`👤 Giao dịch hoàn tất! Ngươi nhận được 1x [Linh Thảo Cực Phẩm] tuyệt diệu từ ${npcName}.`);
                         } else {
-                            this.updateEventDisplay(`👤 Ngươi chắp tay cáo từ, an toàn tiếp tục hành trình.`);
+                            this.updateEventDisplay(`👤 Ngươi chắp tay cáo từ ${npcName}, an toàn tiếp tục hành trình.`);
                         }
                         this.renderGridMap();
                     }, 1000);
@@ -1607,7 +1702,7 @@ export class MapScreen {
                         bossEnemy.maxHp = bossEnemy.hp;
                         bossEnemy.atk = Math.floor(bossEnemy.atk * 1.3);
 
-                        const beastIdx = (x * 7 + y * 13) % BEAST_IMAGES.length;
+                        const beastIdx = cell.beastIdx !== undefined ? cell.beastIdx : ((x * 7 + y * 13) % BEAST_IMAGES.length);
                         bossEnemy.image = getAssetUrl(BEAST_IMAGES[beastIdx]);
 
                         window.game.startBattle(bossEnemy, null, async (win) => {
