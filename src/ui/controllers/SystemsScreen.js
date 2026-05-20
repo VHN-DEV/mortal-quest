@@ -893,6 +893,7 @@ export class SystemsScreen {
         const elSects = document.getElementById('sects-view');
         if (!elSects) return;
         elSects.innerHTML = '';
+        elSects.scrollTop = 0;
 
         if (state.player.sectId) {
             const sect = getSectById(state.player.sectId);
@@ -1091,6 +1092,7 @@ export class SystemsScreen {
     renderSectZoneDetail(sect, zoneId) {
         const elSects = document.getElementById('sects-view');
         if (!elSects) return;
+        elSects.scrollTop = 0;
 
         let contentHTML = '';
         
@@ -1524,7 +1526,7 @@ export class SystemsScreen {
                 </div>
             </div>
 
-            <div class="pb-12 custom-scroll overflow-y-auto animate-fade-in">
+            <div class="pb-12 animate-fade-in">
                 ${contentHTML}
             </div>
         `;
