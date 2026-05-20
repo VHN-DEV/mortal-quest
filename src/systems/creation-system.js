@@ -182,6 +182,7 @@ export class CreationSystem {
             this.selectedRoot = 'ngu_hanh_linh_can';
         }
 
+        this.checkMutation();
         this.calculatePoints();
     }
 
@@ -250,13 +251,62 @@ export class CreationSystem {
         if (maxEl) {
             this.selectedRootElementProportions[maxEl] = Math.max(0, Math.min(100, (this.selectedRootElementProportions[maxEl] || 0) + diff));
         }
+
+        this.checkMutation();
+    }
+
+    checkMutation() {
+        this.isMutated = false;
+        this.mutatedElement = null;
+
+        const N = this.selectedRootElements.length;
+        if (N === 2) {
+            // Check if proportions are balanced (between 40% and 60%)
+            let isBalanced = true;
+            this.selectedRootElements.forEach(el => {
+                const val = this.selectedRootElementProportions[el] || 0;
+                if (val < 40 || val > 60) {
+                    isBalanced = false;
+                }
+            });
+
+            if (isBalanced) {
+                const elements = [...this.selectedRootElements].sort().join('_');
+                const recipes = {
+                    'Kim_Thủy': 'Lôi',
+                    'Thổ_Thủy': 'Băng', // Thủy + Thổ
+                    'Mộc_Thổ': 'Phong',
+                    'Mộc_Thủy': 'Độc',
+                    'Hỏa_Kim': 'Quang', // Kim + Hỏa
+                    'Hỏa_Thủy': 'Ám'    // Thủy + Hỏa
+                };
+
+                if (recipes[elements]) {
+                    this.isMutated = true;
+                    this.mutatedElement = recipes[elements];
+                    this.selectedRoot = 'di_linh_can';
+                    this.calculatePoints();
+                    return;
+                }
+            }
+        }
+        
+        // If not mutated, recalculate root type based on elements
+        if (this.selectedRoot === 'di_linh_can') {
+            if (N === 1) this.selectedRoot = 'thien_linh_can';
+            else if (N === 2) this.selectedRoot = 'song_linh_can';
+            else if (N === 3) this.selectedRoot = 'tam_linh_can';
+            else if (N === 4) this.selectedRoot = 'nguy_linh_can';
+            else if (N === 5) this.selectedRoot = 'ngu_hanh_linh_can';
+            this.calculatePoints();
+        }
     }
 
     getRootClassification() {
         const N = this.selectedRootElements.length;
 
-        if (this.selectedRoot === 'di_linh_can') {
-            return { name: `Dị Linh Căn (${this.selectedRootElements.join(' - ') || 'Không'})`, isBalanced: true, multiplierScale: 1.15 };
+        if (this.isMutated && this.mutatedElement) {
+            return { name: `Dị Linh Căn (${this.mutatedElement})`, isBalanced: true, multiplierScale: 1.15 };
         }
 
         if (N === 1) {
@@ -478,15 +528,32 @@ export class CreationSystem {
         // Roll Purity
         this.rootPurity = Math.floor(Math.random() * 71) + 30; // 30-100
 
-        const rootKeys = Object.keys(CREATION_ROOTS);
         this.selectedRoot = rootKeys[Math.floor(Math.random() * rootKeys.length)];
-        this.rootTab = (this.selectedRoot === 'di_linh_can' ? 'mutated' : 'normal');
-
+        // Dị linh căn is now generated via recipes naturally, so we convert random di_linh_can rolls into a valid pair
         if (this.selectedRoot === 'di_linh_can') {
-            const diElements = ['Phong', 'Lôi', 'Băng', 'Quang', 'Ám'];
-            const chosen = diElements[Math.floor(Math.random() * diElements.length)];
-            this.selectedRootElements = [chosen];
-            this.selectedRootElementProportions = { [chosen]: 100 };
+            const diRecipes = [
+                ['Kim', 'Thủy'], ['Thủy', 'Thổ'], ['Mộc', 'Thổ'], 
+                ['Mộc', 'Thủy'], ['Kim', 'Hỏa'], ['Hỏa', 'Thủy']
+            ];
+            const chosenPair = diRecipes[Math.floor(Math.random() * diRecipes.length)];
+            this.selectedRootElements = [...chosenPair];
+            
+            // Randomize slightly but keep within 40-60 ratio
+            const el1Pct = Math.floor(Math.random() * 21) + 40; // 40 to 60
+            const el2Pct = 100 - el1Pct;
+            
+            this.selectedRootElementProportions = {
+                [chosenPair[0]]: el1Pct,
+                [chosenPair[1]]: el2Pct
+            };
+            
+            const allNormal = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+            allNormal.forEach(el => {
+                if (!this.selectedRootElementProportions[el]) {
+                    this.selectedRootElementProportions[el] = 0;
+                }
+            });
+            this.checkMutation();
         } else {
             const normalElements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
             // Shuffle
@@ -578,7 +645,9 @@ export class CreationSystem {
             purity: this.rootPurity,
             multiplier: multiplier,
             bonus: root.bonus,
-            color: rarityData.color
+            color: rarityData.color,
+            isMutated: this.isMutated,
+            mutatedElement: this.mutatedElement
         };
 
         // Apply Talents

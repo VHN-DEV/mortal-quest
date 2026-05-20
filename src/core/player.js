@@ -1016,7 +1016,7 @@ export class Player {
             // Apply Elemental Bonuses
             if (this.spiritualRoot.elements) {
                 this.spiritualRoot.elements.forEach(elName => {
-                    const elData = ROOT_ELEMENTS[elName] || SPECIAL_ELEMENTS[elName];
+                    const elData = ROOT_ELEMENTS[elName];
                     if (elData && elData.bonus) {
                         Object.entries(elData.bonus).forEach(([key, val]) => {
                             if (this.advancedStats.hasOwnProperty(key)) {
@@ -1025,10 +1025,30 @@ export class Player {
                                 } else {
                                     this.advancedStats[key] += val;
                                 }
+                            } else if (this.baseStats.hasOwnProperty(key)) {
+                                this.baseStats[key] += val;
                             }
                         });
                     }
                 });
+            }
+            
+            // Apply Mutated Bonus
+            if (this.spiritualRoot.mutatedElement) {
+                const mutData = SPECIAL_ELEMENTS[this.spiritualRoot.mutatedElement];
+                if (mutData && mutData.bonus) {
+                    Object.entries(mutData.bonus).forEach(([key, val]) => {
+                        if (this.advancedStats.hasOwnProperty(key)) {
+                            if (['fireDmg', 'waterDmg', 'thunderDmg', 'poisonDmg', 'skillDmg', 'dotDmg', 'qiAbsorb'].includes(key)) {
+                                this.advancedStats[key] *= val;
+                            } else {
+                                this.advancedStats[key] += val;
+                            }
+                        } else if (this.baseStats.hasOwnProperty(key)) {
+                            this.baseStats[key] += val;
+                        }
+                    });
+                }
             }
         }
 

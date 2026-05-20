@@ -995,10 +995,9 @@ window.renderCreationScreen = () => {
         const rootData = CREATION_ROOTS[sys.selectedRoot];
         const bonuses = (formatCreationBonus(rootData.bonus) || 'Chỉ số cơ bản').split(' · ');
 
-        const normalActive = sys.rootTab === 'normal';
-        const mutatedActive = sys.rootTab === 'mutated';
 
-        if (normalActive) {
+
+        if (true) { // normal elements always active
             ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'].forEach(elName => {
                 const pct = sys.selectedRootElementProportions[elName] || 0;
                 if (pct > 0) {
@@ -1006,16 +1005,21 @@ window.renderCreationScreen = () => {
                     bonuses.push(`${icon} Hấp thu hệ ${elName} +${pct}%`);
                 }
             });
-        } else {
             sys.selectedRootElements.forEach(elName => {
-                const icon = SPECIAL_ELEMENTS[elName]?.icon || '✨';
+                const baseElement = ROOT_ELEMENTS[elName];
+                const icon = baseElement?.icon || '✨';
                 bonuses.push(`${icon} Hấp thu hệ ${elName} +100%`);
             });
         }
+        
+        if (sys.isMutated && sys.mutatedElement) {
+            const mutatedEl = SPECIAL_ELEMENTS[sys.mutatedElement];
+            if (mutatedEl) {
+                bonuses.push(`${mutatedEl.icon} Đột biến hệ ${mutatedEl.name}`);
+            }
+        }
 
-        let tabContentHtml = '';
-        if (normalActive) {
-            tabContentHtml = `
+        let tabContentHtml = `
                 <div class="mt-4 p-4 rounded-xl border border-white/5 bg-black/20 space-y-3">
                     <div class="flex justify-between items-center text-[8px] uppercase tracking-wider font-bold mb-1">
                         <span class="text-qi-blue">Tỷ Lệ Thuộc Tính (Tổng: 100%)</span>
@@ -1072,52 +1076,9 @@ window.renderCreationScreen = () => {
                     `}
                 </div>
             `;
-        } else {
-            tabContentHtml = `
-                <div class="mt-4 p-4 rounded-xl border border-white/5 bg-black/20 space-y-3">
-                    <div class="text-[8px] uppercase tracking-wider font-bold text-qi-purple mb-1">
-                        Chọn Thuộc Tính Dị Linh Căn (Duy nhất 1)
-                    </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mt-2">
-                        ${['Phong', 'Lôi', 'Băng', 'Quang', 'Ám'].map(elName => {
-                const el = SPECIAL_ELEMENTS[elName];
-                const elActive = sys.selectedRootElements.includes(elName);
-                const color = ELEMENT_COLORS[elName];
-                return `
-                                <button onclick="window.game.selectCreationMutatedElement('${elName}')" 
-                                    class="p-3 rounded-xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer select-none relative group
-                                    ${elActive ? 'bg-qi-purple/10 border-qi-purple text-white shadow-lg' : 'bg-black/30 border-white/5 text-gray-400 hover:border-white/10 hover:text-white'}"
-                                    style="${elActive ? `border-color: ${color} !important; box-shadow: 0 0 8px ${color}40 !important;` : ''}">
-                                    <span class="text-xl filter drop-shadow" style="${elActive ? `text-shadow: 0 0 10px ${color}` : ''}">${el.icon}</span>
-                                    <span class="text-[9px] font-ancient font-bold" style="color: ${elActive ? color : ''}">${elName}</span>
-                                    <span class="text-[7px] text-gray-500 leading-none">${el.orientation}</span>
-                                    ${el.origin ? `<div class="absolute -bottom-8 left-1/2 -translate-x-1/2 w-max max-w-[120px] bg-black/90 text-white text-[7px] px-2 py-1 rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 break-words">${el.origin}</div>` : ''}
-                                </button>
-                            `;
-            }).join('')}
-                    </div>
-                    
-                    <div class="text-[7.5px] text-purple-400 bg-purple-500/5 border border-purple-500/10 px-2.5 py-2 rounded-lg leading-relaxed flex items-start gap-1.5 mt-2">
-                        <i class="ph ph-sparkle text-[10px] mt-0.5 shrink-0"></i>
-                        <span>Dị Linh Căn đột biến sở hữu các thuộc tính vô cùng hiếm gặp trong tự nhiên. +15% tốc độ tu luyện và mang lại các hiệu ứng đặc thù bá đạo khi chiến đấu!</span>
-                    </div>
-                </div>
-            `;
-        }
+
 
         elRoots.innerHTML = `
-            <div class="flex gap-2 p-1 bg-black/40 rounded-xl border border-white/5 mb-4">
-                <button onclick="window.game.selectCreationRootTab('normal')" 
-                    class="flex-1 py-2 px-3 rounded-lg text-[9px] uppercase tracking-wider font-bold transition-all text-center cursor-pointer
-                    ${normalActive ? 'bg-qi-blue/20 text-white border border-qi-blue/30 shadow-lg shadow-qi-blue/5' : 'text-gray-400 border border-transparent hover:text-white'}">
-                    Linh Căn Thường
-                </button>
-                <button onclick="window.game.selectCreationRootTab('mutated')" 
-                    class="flex-1 py-2 px-3 rounded-lg text-[9px] uppercase tracking-wider font-bold transition-all text-center cursor-pointer
-                    ${mutatedActive ? 'bg-qi-purple/20 text-white border border-qi-purple/30 shadow-lg shadow-qi-purple/5' : 'text-gray-400 border border-transparent hover:text-white'}">
-                    Dị Linh Căn
-                </button>
-            </div>
             
             <div class="q-card active border-qi-blue/30 p-4 rounded-xl bg-gradient-to-br from-black/40 to-white/[0.02] border border-white/5 flex flex-col gap-2.5">
                 <div class="flex justify-between items-center">
