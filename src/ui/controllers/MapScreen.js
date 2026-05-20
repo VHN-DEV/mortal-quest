@@ -328,8 +328,37 @@ export class MapScreen {
             }
 
             regionsMap.forEach((regionName, regionId) => {
+                let isLocked = false;
+                let lockReason = '';
+
+                if (this.viewedWorldId === 'nhan_gioi' && regionId === 'loan_tinh_hai') {
+                    const currentLoc = getLocationById(state.currentWorldId, state.currentLocId);
+                    const isAlreadyThere = currentLoc && currentLoc.regionId === 'loan_tinh_hai';
+                    if (!isAlreadyThere) {
+                        const atTeleport = state.currentLocId === 'thuong_co_truyen_tong_tran';
+                        const hasTalisman = state.player.inventory && (
+                            state.player.inventory.hasItem('pha_khong_phu') || 
+                            state.player.inventory.hasItem('thun_di_phu') || 
+                            state.player.inventory.hasItem('truyen_tong_lenh')
+                        );
+                        const hasBoat = state.player.inventory && (
+                            state.player.inventory.hasItem('ngu_phong_phi_chu') || 
+                            state.player.inventory.hasItem('linh_thuyen_so')
+                        );
+
+                        if (!atTeleport && !hasTalisman && !hasBoat) {
+                            isLocked = true;
+                            lockReason = 'Cần Truyền Tống Trận, Phi Chu hoặc Truyền Tống Phù';
+                        }
+                    }
+                }
+
                 const el = document.createElement('div');
-                el.className = 'location-card h-40 p-5 flex flex-col justify-end cursor-pointer';
+                if (isLocked) {
+                    el.className = 'location-card h-40 p-5 flex flex-col justify-end opacity-65 grayscale';
+                } else {
+                    el.className = 'location-card h-40 p-5 flex flex-col justify-end cursor-pointer';
+                }
 
                 const previewLoc = w.locations.find(loc => loc.regionId === regionId);
                 const previewImg = previewLoc?.image || ASSETS.backgrounds.cultivation;
@@ -338,14 +367,22 @@ export class MapScreen {
                     <img src="${previewImg}" class="location-card-image">
                     <div class="relative z-10 space-y-1">
                         <div class="flex justify-between items-center">
-                            <h4 class="text-xl font-bold text-white group-hover:text-qi-blue transition-colors">${regionName}</h4>
-                            <i class="ph ph-caret-right text-qi-blue text-xl"></i>
+                            <h4 class="text-xl font-bold text-white group-hover:text-qi-blue transition-colors">
+                                ${regionName} ${isLocked ? '🔒' : ''}
+                            </h4>
+                            ${isLocked ? '<i class="ph ph-lock text-red-500 text-lg"></i>' : '<i class="ph ph-caret-right text-qi-blue text-xl"></i>'}
                         </div>
-                        <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">Lịch luyện thám hiểm khu vực ${regionName}</p>
+                        <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">
+                            ${isLocked ? lockReason : `Lịch luyện thám hiểm khu vực ${regionName}`}
+                        </p>
                     </div>
                 `;
 
                 el.onclick = () => {
+                    if (isLocked) {
+                        state.ui.toast("Để đến Loạn Tinh Hải, đạo hữu cần ở Thượng Cổ Truyền Tống Trận, hoặc có Phi Chu (Linh Thuyền, Phi Chu), hoặc có Truyền Tống Phù (Thuấn Di Phù, Phá Không Phù).", "warning");
+                        return;
+                    }
                     this.selectedRegionId = regionId;
                     this.mapNavLevel = 'subregions';
                     this.renderLocationList();
@@ -410,7 +447,21 @@ export class MapScreen {
             filteredLocs.forEach(loc => {
                 const minLocked = state.player.realmId < loc.minRealm;
                 const maxLocked = loc.maxRealm !== undefined && state.player.realmId > loc.maxRealm;
-                const locked = minLocked || maxLocked;
+                
+                let isTimeLocked = false;
+                let timeMessage = '';
+                if (loc.openingRules && state.systems.time) {
+                    const timeSys = state.systems.time;
+                    const { cycleYears, months, message } = loc.openingRules;
+                    const yearMatches = (timeSys.getYear() % cycleYears) === 0;
+                    const monthMatches = months.includes(timeSys.getMonth());
+                    if (!yearMatches || !monthMatches) {
+                        isTimeLocked = true;
+                        timeMessage = message || `Chỉ mở vào Tháng ${months.join(', ')} mỗi ${cycleYears} năm.`;
+                    }
+                }
+
+                const locked = minLocked || maxLocked || isTimeLocked;
                 
                 const el = document.createElement('div');
                 el.className = `location-card h-40 p-5 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
@@ -424,6 +475,10 @@ export class MapScreen {
                 if (loc.maxRealm !== undefined) {
                     const maxRealmName = getRealmById(loc.maxRealm).name;
                     reqLabel = `Giới hạn: ${reqRealmName} - ${maxRealmName}`;
+                }
+                if (loc.openingRules) {
+                    const statusStr = isTimeLocked ? `[Đóng - Hẹn ${timeMessage}]` : `[Đang Mở Cửa!]`;
+                    reqLabel += ` | ${statusStr}`;
                 }
 
                 el.innerHTML = `
@@ -449,6 +504,10 @@ export class MapScreen {
                     if (maxLocked) {
                         const failMsg = loc.maxRealmMessage || `Cảnh giới của ngươi quá cao để vào cấm địa này! Sức ép không gian sẽ làm nó sụp đổ!`;
                         state.ui.toast(failMsg, 'warning');
+                        return;
+                    }
+                    if (isTimeLocked) {
+                        state.ui.toast(`Bí cảnh chưa mở! ${timeMessage}`, 'warning');
                         return;
                     }
                     this.startExploration(loc.id);

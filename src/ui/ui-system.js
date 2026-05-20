@@ -1,10 +1,12 @@
 import { Preferences } from '@capacitor/preferences';
 import { gsap } from 'gsap';
+import { state } from '../state.js';
 import { audioManager } from '../utils/audio-manager.js';
 import { logger } from '../utils/logger.js';
 import { getAssetUrl } from '../configs/asset-data.js';
 import { getItemById } from '../configs/item-data.js';
-import { findLocationName, DANGER_LEVELS, getWorlds } from '../configs/map-data.js';
+import { findLocationName, DANGER_LEVELS, getWorlds, getLocationById } from '../configs/map-data.js';
+import { getRealmById } from '../configs/realm-data.js';
 
 export class UISystem {
     constructor() {
@@ -1138,45 +1140,104 @@ export class UISystem {
                 });
 
                 for (const [rName, subregions] of Object.entries(regions)) {
+                    let isLocked = false;
+                    if (worldId === 'nhan_gioi' && rName === 'Loạn Tinh Hải') {
+                        if (state) {
+                            const currentLoc = state.currentLocId ? 
+                                (typeof getLocationById === 'function' ? getLocationById(state.currentWorldId, state.currentLocId) : null)
+                                : null;
+                            const isAlreadyThere = currentLoc && currentLoc.regionId === 'loan_tinh_hai';
+                            if (!isAlreadyThere) {
+                                const atTeleport = state.currentLocId === 'thuong_co_truyen_tong_tran';
+                                const hasTalisman = state.player?.inventory && (
+                                    state.player.inventory.hasItem('pha_khong_phu') || 
+                                    state.player.inventory.hasItem('thun_di_phu') || 
+                                    state.player.inventory.hasItem('truyen_tong_lenh')
+                                );
+                                const hasBoat = state.player?.inventory && (
+                                    state.player.inventory.hasItem('ngu_phong_phi_chu') || 
+                                    state.player.inventory.hasItem('linh_thuyen_so')
+                                );
+                                if (!atTeleport && !hasTalisman && !hasBoat) {
+                                    isLocked = true;
+                                }
+                            }
+                        }
+                    }
+
                     html += `<div class="region-node space-y-1">`;
                     html += `
                         <div class="region-title flex items-center space-x-2 text-white font-semibold cursor-pointer hover:text-cultivation-gold transition-all py-0.5 select-none text-[11px]">
                             <i class="ph ph-caret-down text-[10px] text-gray-500 transition-transform duration-300"></i>
-                            <span>${rName}</span>
+                            <span>${rName} ${isLocked ? '🔒' : ''}</span>
                         </div>
                     `;
-                    html += `<div class="region-children pl-4 border-l border-white/5 space-y-2 mt-0.5">`;
+                    
+                    if (isLocked) {
+                        html += `<div class="region-children pl-4 border-l border-white/5 space-y-2 mt-0.5">`;
+                        html += `
+                            <div class="p-2 bg-red-950/20 border border-red-500/10 rounded-xl text-[9px] text-gray-500 italic leading-normal">
+                                ⚠️ Để đến Loạn Tinh Hải, đạo hữu cần ở Thượng Cổ Truyền Tống Trận, hoặc có Phi Chu, hoặc mang theo Truyền Tống Phù.
+                            </div>
+                        `;
+                        html += `</div>`;
+                    } else {
+                        html += `<div class="region-children pl-4 border-l border-white/5 space-y-2 mt-0.5">`;
 
-                    for (const [sName, locs] of Object.entries(subregions)) {
-                        const hasSubregion = sName !== 'Phân Khu Khác' && sName !== rName;
-                        if (hasSubregion) {
-                            html += `<div class="subregion-node space-y-1">`;
-                            html += `
-                                <div class="subregion-title flex items-center space-x-2 text-qi-blue font-medium cursor-pointer hover:text-white transition-all py-0.5 select-none text-[10px]">
-                                    <i class="ph ph-caret-down text-[8px] text-gray-500 transition-transform duration-300"></i>
-                                    <span>${sName}</span>
-                                </div>
-                            `;
-                            html += `<div class="subregion-children pl-4 border-l border-white/5 space-y-1 mt-0.5">`;
+                        for (const [sName, locs] of Object.entries(subregions)) {
+                            const hasSubregion = sName !== 'Phân Khu Khác' && sName !== rName;
+                            if (hasSubregion) {
+                                html += `<div class="subregion-node space-y-1">`;
+                                html += `
+                                    <div class="subregion-title flex items-center space-x-2 text-qi-blue font-medium cursor-pointer hover:text-white transition-all py-0.5 select-none text-[10px]">
+                                        <i class="ph ph-caret-down text-[8px] text-gray-500 transition-transform duration-300"></i>
+                                        <span>${sName}</span>
+                                    </div>
+                                `;
+                                html += `<div class="subregion-children pl-4 border-l border-white/5 space-y-1 mt-0.5">`;
+                            }
+
+                            locs.forEach(loc => {
+                                const minLocked = state.player?.realmId < loc.minRealm;
+                                const maxLocked = loc.maxRealm !== undefined && state.player?.realmId > loc.maxRealm;
+                                
+                                let isTimeLocked = false;
+                                let timeMessage = '';
+                                if (loc.openingRules && state.systems.time) {
+                                    const timeSys = state.systems.time;
+                                    const { cycleYears, months } = loc.openingRules;
+                                    const yearMatches = (timeSys.getYear() % cycleYears) === 0;
+                                    const monthMatches = months.includes(timeSys.getMonth());
+                                    if (!yearMatches || !monthMatches) {
+                                        isTimeLocked = true;
+                                    }
+                                }
+
+                                const isLocLocked = minLocked || maxLocked || isTimeLocked;
+                                let statusTag = '';
+                                if (minLocked) statusTag = `<span class="text-[7px] px-1 bg-red-950/50 border border-red-500/20 text-red-400 rounded-sm font-sans scale-90">Cần ${getRealmById(loc.minRealm).name}</span>`;
+                                else if (maxLocked) statusTag = `<span class="text-[7px] px-1 bg-red-950/50 border border-red-500/20 text-red-400 rounded-sm font-sans scale-90">Giới hạn Cảnh giới</span>`;
+                                else if (isTimeLocked) statusTag = `<span class="text-[7px] px-1 bg-yellow-950/50 border border-yellow-500/20 text-yellow-400 rounded-sm font-sans scale-90">Đang đóng</span>`;
+
+                                html += `
+                                    <div class="loc-node flex items-center space-x-2 py-0.5 ${isLocLocked ? 'text-gray-600' : 'text-gray-400 hover:text-white'} transition-all text-[10px]">
+                                        <span class="w-1 h-1 ${isLocLocked ? 'bg-gray-600' : 'bg-qi-blue/50'} rounded-full"></span>
+                                        <span>${loc.name} ${isLocLocked ? '🔒' : ''}</span>
+                                        ${statusTag}
+                                        ${loc.danger === 'nguy_hiem' && !isLocLocked ? '<span class="text-[8px] px-1 bg-red-950/50 border border-red-500/20 text-red-400 rounded-sm font-sans scale-90">Nguy Hiểm</span>' : ''}
+                                        ${loc.danger === 'an_toan' && !isLocLocked ? '<span class="text-[8px] px-1 bg-green-950/50 border border-green-500/20 text-green-400 rounded-sm font-sans scale-90">An Toàn</span>' : ''}
+                                    </div>
+                                `;
+                            });
+
+                            if (hasSubregion) {
+                                html += `</div></div>`;
+                            }
                         }
 
-                        locs.forEach(loc => {
-                            html += `
-                                <div class="loc-node flex items-center space-x-2 py-0.5 text-gray-400 hover:text-white transition-all text-[10px]">
-                                    <span class="w-1 h-1 bg-qi-blue/50 rounded-full"></span>
-                                    <span>${loc.name}</span>
-                                    ${loc.danger === 'nguy_hiem' ? '<span class="text-[8px] px-1 bg-red-950/50 border border-red-500/20 text-red-400 rounded-sm font-sans scale-90">Nguy Hiểm</span>' : ''}
-                                    ${loc.danger === 'an_toan' ? '<span class="text-[8px] px-1 bg-green-950/50 border border-green-500/20 text-green-400 rounded-sm font-sans scale-90">An Toàn</span>' : ''}
-                                </div>
-                            `;
-                        });
-
-                        if (hasSubregion) {
-                            html += `</div></div>`; // close subregion children, subregion node
-                        }
+                        html += `</div>`;
                     }
-
-                    html += `</div></div>`; // close region children, region node
+                    html += `</div>`;
                 }
 
                 html += `</div></div>`; // close world children, world node

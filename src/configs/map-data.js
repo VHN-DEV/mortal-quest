@@ -347,6 +347,8 @@ export const WORLDS = {
                 id: "huyet_sac_cam_dia",
                 name: "Huyết Sắc Cấm Địa",
                 minRealm: 9,
+                maxRealm: 13,
+                maxRealmMessage: "Đạo hữu đã là Trúc Cơ kỳ cao nhân, sức ép không gian của Huyết Sắc Cấm Địa sẽ xé rách đạo cơ nếu ngươi cố tình cưỡng nhập!",
                 danger: "tu_dia",
                 image: getLocImg("huyet_sac_cam_dia"),
                 description: "Thượng cổ cấm địa bí ẩn, chứa vô số linh thảo thượng cổ cực kỳ nguy hiểm.",
@@ -357,7 +359,12 @@ export const WORLDS = {
                 regionId: "thien_nam",
                 regionName: "Thiên Nam",
                 subRegionId: "viet_quoc",
-                subRegionName: "Việt Quốc"
+                subRegionName: "Việt Quốc",
+                openingRules: {
+                    cycleYears: 5,
+                    months: [1, 2],
+                    message: "Huyết Sắc Cấm Địa chỉ mở ra mỗi 5 năm một lần vào Tháng 1 và Tháng 2!"
+                }
             },
             {
                 id: "tuong_chau",
@@ -1351,7 +1358,7 @@ export const WORLDS = {
                 subRegionId: "noi_hai",
                 subRegionName: "Nội Hải"
             },
-            {
+             {
                 id: "hu_thien_dien_nhan",
                 name: "Hư Thiên Điện",
                 minRealm: 18,
@@ -1365,7 +1372,12 @@ export const WORLDS = {
                 regionId: "loan_tinh_hai",
                 regionName: "Loạn Tinh Hải",
                 subRegionId: "noi_hai",
-                subRegionName: "Nội Hải"
+                subRegionName: "Nội Hải",
+                openingRules: {
+                    cycleYears: 10,
+                    months: [6, 7],
+                    message: "Hư Thiên Điện ẩn hiển vô định, chỉ mở ra mỗi 10 năm một lần vào Tháng 6 và Tháng 7!"
+                }
             },
             {
                 id: "ngoai_hai_loc",

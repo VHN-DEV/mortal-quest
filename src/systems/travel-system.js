@@ -1,6 +1,7 @@
 import { state } from '../state.js';
-import { getTravelRoute, findLocationName, findWorldIdByLocId, DANGER_LEVELS } from '../configs/map-data.js';
+import { getTravelRoute, findLocationName, findWorldIdByLocId, DANGER_LEVELS, getLocationById } from '../configs/map-data.js';
 import { getItemById } from '../configs/item-data.js';
+import { getRealmById } from '../configs/realm-data.js';
 
 export class TravelSystem {
     constructor(player, ui) {
@@ -78,6 +79,59 @@ export class TravelSystem {
         if (!route) {
             this.ui.toast("Không tìm thấy đường đi tới địa điểm này!", "error");
             return false;
+        }
+
+        // 1.5. Kiểm tra điều kiện đến Loạn Tinh Hải
+        const toLocWorldId = findWorldIdByLocId(toLocId);
+        const toLoc = getLocationById(toLocWorldId, toLocId);
+        if (toLoc && toLoc.regionId === 'loan_tinh_hai') {
+            const fromLocWorldId = findWorldIdByLocId(fromLocId);
+            const fromLoc = getLocationById(fromLocWorldId, fromLocId);
+            const isAlreadyThere = fromLoc && fromLoc.regionId === 'loan_tinh_hai';
+            if (!isAlreadyThere) {
+                const atTeleport = fromLocId === 'thuong_co_truyen_tong_tran';
+                const hasTalisman = this.player.inventory && (
+                    this.player.inventory.hasItem('pha_khong_phu') || 
+                    this.player.inventory.hasItem('thun_di_phu') || 
+                    this.player.inventory.hasItem('truyen_tong_lenh')
+                );
+                const hasBoat = this.player.inventory && (
+                    this.player.inventory.hasItem('ngu_phong_phi_chu') || 
+                    this.player.inventory.hasItem('linh_thuyen_so')
+                );
+
+                if (!atTeleport && !hasTalisman && !hasBoat) {
+                    this.ui.toast("Không thể định vị giới diện Loạn Tinh Hải! Cần ở Thượng Cổ Truyền Tống Trận, hoặc có Phi Chu (Linh Thuyền, Phi Chu), hoặc có Truyền Tống Phù (Thuấn Di Phù, Phá Không Phù).", "error");
+                    return false;
+                }
+            }
+        }
+
+        // 1.55. Kiểm tra giới hạn cảnh giới và thời gian mở của địa điểm mục tiêu
+        if (toLoc) {
+            // Kiểm tra cảnh giới tối thiểu
+            if (this.player.realmId < toLoc.minRealm) {
+                const reqRealmName = getRealmById(toLoc.minRealm)?.name || 'Cảnh giới cao hơn';
+                this.ui.toast(`Cảnh giới không đủ để bước vào ${toLoc.name}! Yêu cầu: ${reqRealmName}`, "error");
+                return false;
+            }
+            // Kiểm tra cảnh giới tối đa
+            if (toLoc.maxRealm !== undefined && this.player.realmId > toLoc.maxRealm) {
+                const failMsg = toLoc.maxRealmMessage || `Cảnh giới của ngươi quá cao để vào cấm địa này!`;
+                this.ui.toast(failMsg, "error");
+                return false;
+            }
+            // Kiểm tra thời gian mở bí cảnh
+            if (toLoc.openingRules && state.systems.time) {
+                const timeSys = state.systems.time;
+                const { cycleYears, months, message } = toLoc.openingRules;
+                const yearMatches = (timeSys.getYear() % cycleYears) === 0;
+                const monthMatches = months.includes(timeSys.getMonth());
+                if (!yearMatches || !monthMatches) {
+                    this.ui.toast(`Bí cảnh ${toLoc.name} hiện đang đóng cửa! ${message || ''}`, "error");
+                    return false;
+                }
+            }
         }
 
         // 1. Kiểm tra yêu cầu Hải Vực (Terrain: 'hai_vuc')
