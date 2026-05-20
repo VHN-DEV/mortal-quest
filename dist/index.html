@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-BZZ9v_Ak.js"></script>
+  <script type="module" crossorigin src="./assets/index-Bmpx7-94.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-DNzPfH2b.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
-  <link rel="stylesheet" crossorigin href="./assets/index-BVrePqSk.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-D_fKzKLF.css">
 </head>
 
 <body class="bg-qi-ink text-gray-300 font-serif selection:bg-qi-blue/30 overflow-hidden select-none">
@@ -523,6 +523,22 @@
                         class="text-[10px] md:text-xs font-ancient text-qi-purple uppercase tracking-widest border-l-2 border-qi-purple pl-3">
                         Xuất Thân</h3>
                     <div id="creation-origins-list" class="space-y-2 md:space-y-3"></div>
+                </section>
+
+                <!-- Starting Location -->
+                <section class="space-y-4">
+                    <h3
+                        class="text-[10px] md:text-xs font-ancient text-green-400 uppercase tracking-widest border-l-2 border-green-400 pl-3">
+                        Địa Điểm Khởi Đầu</h3>
+                    <div class="bg-black/30 p-4 rounded-2xl border border-white/5 space-y-3">
+                        <label class="text-[9px] text-gray-400 uppercase tracking-widest block">Chọn Nơi Bắt Đầu</label>
+                        <select id="creation-starting-location-select"
+                            class="w-full bg-black/60 border border-white/10 rounded-lg p-2.5 text-xs text-green-400 font-ancient outline-none focus:border-green-400/50 transition-all appearance-none cursor-pointer">
+                            <option value="auto">🌟 Tự Động (Theo Chủng Tộc & Thể Chất)</option>
+                            <!-- Dynamic locations will be injected here -->
+                        </select>
+                        <p class="text-[8.5px] text-gray-500 mt-2">Nếu chọn "Tự Động", hệ thống sẽ sắp xếp một địa điểm khởi đầu phù hợp nhất với thân phận và thể chất của bạn.</p>
+                    </div>
                 </section>
 
                 <!-- Cheat Systems -->

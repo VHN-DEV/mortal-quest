@@ -7,7 +7,7 @@ import { gsap } from 'gsap';
 import { EnemyGenerator, Enemy } from './core/enemy.js';
 import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
-import { getWorlds, getLocationById, findLocationName, DANGER_LEVELS } from './configs/map-data.js';
+import { getWorlds, getLocationById, findLocationName, DANGER_LEVELS, WORLDS } from './configs/map-data.js';
 import { ASSETS, preloadAssets } from './configs/asset-data.js';
 import { getRealmById, HUMAN_REALMS } from './configs/realm-data.js';
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
@@ -1238,6 +1238,35 @@ window.renderCreationScreen = () => {
                 </button>
             `;
         }).join('');
+    }
+
+    // Starting Location Dropdown
+    const elStartingLocation = document.getElementById('creation-starting-location-select');
+    if (elStartingLocation) {
+        // Collect all locations
+        let optionsHtml = `<option value="auto" ${sys.selectedStartingLocation === 'auto' ? 'selected' : ''}>🌟 Tự Động (Theo Chủng Tộc & Thể Chất)</option>`;
+        
+        // Group by world/danger level for better organization, but simple list is fine for now
+        // Let's group by World
+        for (const [worldId, world] of Object.entries(WORLDS)) {
+            if (world.locations && world.locations.length > 0) {
+                optionsHtml += `<optgroup label="${world.name}">`;
+                world.locations.forEach(loc => {
+                    const selected = sys.selectedStartingLocation === loc.id ? 'selected' : '';
+                    optionsHtml += `<option value="${loc.id}" ${selected}>[${DANGER_LEVELS[loc.danger]?.name || 'An Toàn'}] ${loc.name}</option>`;
+                });
+                optionsHtml += `</optgroup>`;
+            }
+        }
+        
+        // Use a flag to avoid infinite loops if setting innerHTML triggers onchange
+        if (elStartingLocation.innerHTML !== optionsHtml) {
+            elStartingLocation.innerHTML = optionsHtml;
+        }
+
+        elStartingLocation.onchange = (e) => {
+            sys.selectedStartingLocation = e.target.value;
+        };
     }
 
     // Cheat Systems List

@@ -1,4 +1,5 @@
 import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS } from '../configs/creation-data.js';
+import { WORLDS } from '../configs/map-data.js';
 import { Player } from '../core/player.js';
 
 const RANDOM_NAMES = [
@@ -30,6 +31,7 @@ export class CreationSystem {
         this.startingRealmId = 0;
         this.selectedArtifact = 'none';
         this.selectedCheatSystem = null;
+        this.selectedStartingLocation = 'auto'; // Added starting location
         this.avatarFilterGender = 'all';
         this.avatarFilterRace = 'all';
 
@@ -100,7 +102,7 @@ export class CreationSystem {
 
         const allNormal = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
         const otherElements = allNormal.filter(el => el !== targetElement);
-        
+
         // Sum of other active elements (value > 0)
         const activeOthers = otherElements.filter(el => (this.selectedRootElementProportions[el] || 0) > 0);
         const sumOthers = activeOthers.reduce((acc, el) => acc + (this.selectedRootElementProportions[el] || 0), 0);
@@ -141,7 +143,7 @@ export class CreationSystem {
         }
 
         this.selectedRootElementProportions[targetElement] = newValue;
-        
+
         // Ensure total sum is exactly 100
         let sum = allNormal.reduce((acc, el) => acc + (this.selectedRootElementProportions[el] || 0), 0);
         let diff = 100 - sum;
@@ -244,7 +246,7 @@ export class CreationSystem {
                 maxEl = el;
             }
         });
-        
+
         if (maxEl) {
             this.selectedRootElementProportions[maxEl] = Math.max(0, Math.min(100, (this.selectedRootElementProportions[maxEl] || 0) + diff));
         }
@@ -252,11 +254,11 @@ export class CreationSystem {
 
     getRootClassification() {
         const N = this.selectedRootElements.length;
-        
+
         if (this.selectedRoot === 'di_linh_can') {
             return { name: `Dị Linh Căn (${this.selectedRootElements.join(' - ') || 'Không'})`, isBalanced: true, multiplierScale: 1.15 };
         }
-        
+
         if (N === 1) {
             return { name: `Thiên Linh Căn (${this.selectedRootElements[0]})`, isBalanced: true, multiplierScale: 1.25 };
         }
@@ -294,7 +296,7 @@ export class CreationSystem {
     selectRoot(rootId) {
         this.selectedRoot = rootId;
         this.rootTab = (rootId === 'di_linh_can' ? 'mutated' : 'normal');
-        
+
         if (rootId === 'di_linh_can') {
             this.selectedRootElements = ['Lôi'];
             this.selectedRootElementProportions = { 'Lôi': 100 };
@@ -310,12 +312,12 @@ export class CreationSystem {
             } else if (rootId === 'nguy_linh_can') {
                 this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Thổ'];
             }
-            
+
             // Reinitialize proportions
             const N = this.selectedRootElements.length;
             const base = Math.floor(100 / N);
             const remainder = 100 - (base * N);
-            
+
             this.selectedRootElementProportions = {};
             // Set active ones
             this.selectedRootElements.forEach((el, index) => {
@@ -491,7 +493,7 @@ export class CreationSystem {
             const shuffled = [...normalElements].sort(() => Math.random() - 0.5);
             const qty = CREATION_ROOTS[this.selectedRoot].quantity;
             this.selectedRootElements = shuffled.slice(0, qty);
-            
+
             this.selectedRootElementProportions = {};
             if (qty === 1) {
                 this.selectedRootElementProportions[this.selectedRootElements[0]] = 100;
@@ -565,7 +567,7 @@ export class CreationSystem {
         const rarityData = ROOT_RARITY[this.rootRarity];
         const classInfo = this.getRootClassification();
         const multiplier = (root.bonus.qiAbsorb || 1.0) * rarityData.multiplier * (this.rootPurity / 100) * classInfo.multiplierScale;
-        
+
         player.spiritualRoot = {
             id: root.id,
             type: classInfo.name,
@@ -644,78 +646,95 @@ export class CreationSystem {
         let startWorldId = 'nhan_gioi';
         let startLocId = 'thanh_van_tran';
 
-        // 1. Race-based default worlds and areas
-        if (this.selectedRace === 'DEMON') {
-            startWorldId = 'ma_gioi';
-            startLocId = 'hac_tuyen_ma_thon'; // Default Demon starting village
-        } else if (this.selectedRace === 'YAO') {
-            startWorldId = 'nhan_gioi';
-            startLocId = 'van_thu_lam'; // Default Yêu Tộc forest
+        if (this.selectedStartingLocation !== 'auto') {
+            // Find which world this location belongs to
+            // This requires searching WORLDS, which we'll do in the game layer.
+            // But for here, we just set it. We'll resolve the worldId later if needed, 
+            // or just assume it's set correctly by the system.
+            // Let's import WORLDS or just use a helper later. Actually, `player.currentWorldId` 
+            // will just be updated by the caller if needed, or we can resolve it now.
+            // It's safer to resolve it now, but we don't have WORLDS imported.
+            // Let's just set startLocId and leave worldId to be resolved.
+            // Actually, we can import WORLDS from '../configs/map-data.js'. Let's do that!
+            startLocId = this.selectedStartingLocation;
         } else {
-            startWorldId = 'nhan_gioi';
-            startLocId = 'thanh_van_tran'; // Default Human starting town
+            // 1. Race-based default worlds and areas
+            if (this.selectedRace === 'DEMON') {
+                startWorldId = 'ma_gioi';
+                startLocId = 'hac_tuyen_ma_thon'; // Default Demon starting village
+            } else if (this.selectedRace === 'YAO') {
+                startWorldId = 'nhan_gioi';
+                startLocId = 'van_thu_lam'; // Default Yêu Tộc forest
+            } else {
+                startWorldId = 'nhan_gioi';
+                startLocId = 'thanh_van_tran'; // Default Human starting town
+            }
+
+            // 2. Adjust based on Origin (Xuất thân)
+            if (this.selectedRace === 'DEMON') {
+                if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
+                    startLocId = 'huyen_am_ma_thanh';
+                } else if (this.selectedOrigin === 'tong_mon') {
+                    startLocId = 'thiet_huyen_ma_tran';
+                } else if (this.selectedOrigin === 'ma_dao') {
+                    startLocId = 'u_minh_ma_thanh';
+                } else if (this.selectedOrigin === 'vo_gia_cu' || this.selectedOrigin === 'no_nan') {
+                    startLocId = 'vong_hon_ma_thon';
+                } else if (this.selectedOrigin === 'thu_nguyen_du_hanh_gia' || this.selectedOrigin === 'hoi_quy_gia' || this.selectedOrigin === 'chuyen_sinh_gia') {
+                    startLocId = 'thien_ma_thanh'; // Capital city
+                }
+            } else if (this.selectedRace === 'YAO') {
+                if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
+                    startLocId = 'thien_van_thanh';
+                } else if (this.selectedOrigin === 'tong_mon') {
+                    startLocId = 'hoang_phong_coc';
+                } else if (this.selectedOrigin === 'ma_dao') {
+                    startLocId = 'huyen_am_coc';
+                } else if (this.selectedOrigin === 'vo_gia_cu' || this.selectedOrigin === 'no_nan') {
+                    startLocId = 'thap_van_dai_son';
+                } else if (this.selectedOrigin === 'thu_nguyen_du_hanh_gia' || this.selectedOrigin === 'hoi_quy_gia' || this.selectedOrigin === 'chuyen_sinh_gia') {
+                    startLocId = 'thoi_khong_bi_canh';
+                    startWorldId = 'linh_gioi';
+                }
+            } else { // HUMAN
+                if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
+                    startLocId = 'thien_van_thanh';
+                } else if (this.selectedOrigin === 'tong_mon') {
+                    startLocId = 'hoang_phong_coc';
+                } else if (this.selectedOrigin === 'ma_dao') {
+                    startLocId = 'huyen_am_coc';
+                } else if (this.selectedOrigin === 'vo_gia_cu' || this.selectedOrigin === 'no_nan') {
+                    startLocId = 'thanh_van_tran';
+                } else if (this.selectedOrigin === 'thu_nguyen_du_hanh_gia' || this.selectedOrigin === 'hoi_quy_gia' || this.selectedOrigin === 'chuyen_sinh_gia') {
+                    startLocId = 'thoi_khong_bi_canh';
+                    startWorldId = 'linh_gioi';
+                }
+            }
+
+            // 3. Adjust based on Physique / Status / Identity (Thân phận)
+            // High-level physiques spawn in supreme spots!
+            const premiumPhysiques = ['hon_don_the', 'tien_thien_thanh_the_dao_thai', 'vinh_hang_tien_the', 'hong_mong_dao_the', 'than_vuong_the', 'thuong_thien_phach_the', 'luan_hoi_the', 'van_menh_hu_vo'];
+            if (premiumPhysiques.includes(this.selectedPhysique)) {
+                if (this.selectedRace === 'DEMON') {
+                    startLocId = 'thien_ma_thanh'; // Chaos/Supreme demon body starts in capital
+                } else {
+                    startLocId = 'thoi_khong_bi_canh';
+                    startWorldId = 'linh_gioi'; // Grand human body starts in Spirit Realm secret boundary
+                }
+            } else if (this.selectedPhysique === 'thien_ma_the' || this.selectedPhysique === 'tu_la_huyet_the') {
+                // Demon-bodied characters start in high danger demon zones
+                if (this.selectedRace === 'DEMON') {
+                    startLocId = 'sat_luc_ma_thanh';
+                } else {
+                    startLocId = 'huyen_am_coc'; // Human demon body starts in Dark Valley
+                }
+            }
         }
 
-        // 2. Adjust based on Origin (Xuất thân)
-        if (this.selectedRace === 'DEMON') {
-            if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
-                startLocId = 'huyen_am_ma_thanh';
-            } else if (this.selectedOrigin === 'tong_mon') {
-                startLocId = 'thiet_huyen_ma_tran';
-            } else if (this.selectedOrigin === 'ma_dao') {
-                startLocId = 'u_minh_ma_thanh';
-            } else if (this.selectedOrigin === 'vo_gia_cu' || this.selectedOrigin === 'no_nan') {
-                startLocId = 'vong_hon_ma_thon';
-            } else if (this.selectedOrigin === 'thu_nguyen_du_hanh_gia' || this.selectedOrigin === 'hoi_quy_gia' || this.selectedOrigin === 'chuyen_sinh_gia') {
-                startLocId = 'thien_ma_thanh'; // Capital city
-            }
-        } else if (this.selectedRace === 'YAO') {
-            if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
-                startLocId = 'thien_van_thanh';
-            } else if (this.selectedOrigin === 'tong_mon') {
-                startLocId = 'hoang_phong_coc';
-            } else if (this.selectedOrigin === 'ma_dao') {
-                startLocId = 'huyen_am_coc';
-            } else if (this.selectedOrigin === 'vo_gia_cu' || this.selectedOrigin === 'no_nan') {
-                startLocId = 'thap_van_dai_son';
-            } else if (this.selectedOrigin === 'thu_nguyen_du_hanh_gia' || this.selectedOrigin === 'hoi_quy_gia' || this.selectedOrigin === 'chuyen_sinh_gia') {
-                startLocId = 'thoi_khong_bi_canh';
-                startWorldId = 'linh_gioi';
-            }
-        } else { // HUMAN
-            if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
-                startLocId = 'thien_van_thanh';
-            } else if (this.selectedOrigin === 'tong_mon') {
-                startLocId = 'hoang_phong_coc';
-            } else if (this.selectedOrigin === 'ma_dao') {
-                startLocId = 'huyen_am_coc';
-            } else if (this.selectedOrigin === 'vo_gia_cu' || this.selectedOrigin === 'no_nan') {
-                startLocId = 'thanh_van_tran';
-            } else if (this.selectedOrigin === 'thu_nguyen_du_hanh_gia' || this.selectedOrigin === 'hoi_quy_gia' || this.selectedOrigin === 'chuyen_sinh_gia') {
-                startLocId = 'thoi_khong_bi_canh';
-                startWorldId = 'linh_gioi';
-            }
+        if (this.selectedStartingLocation !== 'auto') {
+            startWorldId = this.getStartingWorldId(startLocId) || startWorldId;
         }
 
-        // 3. Adjust based on Physique / Status / Identity (Thân phận)
-        // High-level physiques spawn in supreme spots!
-        const premiumPhysiques = ['hon_don_the', 'tien_thien_thanh_the_dao_thai', 'vinh_hang_tien_the', 'hong_mong_dao_the', 'than_vuong_the', 'thuong_thien_phach_the', 'luan_hoi_the', 'van_menh_hu_vo'];
-        if (premiumPhysiques.includes(this.selectedPhysique)) {
-            if (this.selectedRace === 'DEMON') {
-                startLocId = 'thien_ma_thanh'; // Chaos/Supreme demon body starts in capital
-            } else {
-                startLocId = 'thoi_khong_bi_canh';
-                startWorldId = 'linh_gioi'; // Grand human body starts in Spirit Realm secret boundary
-            }
-        } else if (this.selectedPhysique === 'thien_ma_the' || this.selectedPhysique === 'tu_la_huyet_the') {
-            // Demon-bodied characters start in high danger demon zones
-            if (this.selectedRace === 'DEMON') {
-                startLocId = 'sat_luc_ma_thanh';
-            } else {
-                startLocId = 'huyen_am_coc'; // Human demon body starts in Dark Valley
-            }
-        }
-        
         player.currentWorldId = startWorldId;
         player.currentLocId = startLocId;
         player.explorationProgress = 0;
@@ -734,6 +753,15 @@ export class CreationSystem {
         if (points >= 30) return "Tiên mệnh";
         if (points >= 10) return "Linh mệnh";
         return "Phàm mệnh";
+    }
+
+    getStartingWorldId(locId) {
+        for (const [worldId, world] of Object.entries(WORLDS)) {
+            if (world.locations && world.locations.some(l => l.id === locId)) {
+                return worldId;
+            }
+        }
+        return null;
     }
 
     getRootColor(rootId) {
