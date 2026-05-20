@@ -1295,7 +1295,7 @@ export class SystemsScreen {
                     let scripturesHTML = '';
                     items.forEach(item => {
                         const isTech = item.isTech;
-                        const hasLearned = isTech && (state.player.learnedTechniques.includes(item.id) || state.player.learnedSecretTechniques.includes(item.id));
+                        const hasLearned = isTech && (state.player.learnedTechniques.some(t => t.id === item.id) || state.player.learnedSecretTechniques.some(t => t.id === item.id));
                         const isLocked = currentRankScore < item.minRankScore;
                         const reqName = rankNames[item.minRankScore] || 'Cấp Cao';
                         

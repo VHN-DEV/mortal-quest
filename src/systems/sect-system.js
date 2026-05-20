@@ -3,6 +3,7 @@ import { getRealmById } from '../configs/realm-data.js';
 import { EnemyGenerator } from '../core/enemy.js';
 import { getItemById } from '../configs/item-data.js';
 import { NPCAI } from './npc-ai.js';
+import { getTechniqueById, getSecretTechniqueById } from '../configs/technique-data.js';
 
 export class SectSystem {
     constructor(player, ui) {
@@ -446,10 +447,20 @@ export class SectSystem {
                 this.ui.toast("Ngươi đã học qua công pháp này rồi!", "warning");
                 return;
             }
-            this.player.sectContribution -= price;
-            // Use the standard player method to learn technique, which pushes correct object
-            this.player.learnSecretTechnique(itemId);
-            this.ui.toast(`Lĩnh ngộ thành công bí kíp: ${itemName}!`, "success");
+            
+            // Check if it's a main technique or secret technique
+            const isMainTech = !!getTechniqueById(itemId);
+            if (isMainTech) {
+                this.player.sectContribution -= price;
+                this.player.learnTechnique(itemId);
+                this.ui.toast(`Lĩnh ngộ thành công công pháp: ${itemName}!`, "success");
+            } else if (getSecretTechniqueById(itemId)) {
+                this.player.sectContribution -= price;
+                this.player.learnSecretTechnique(itemId);
+                this.ui.toast(`Lĩnh ngộ thành công bí thuật: ${itemName}!`, "success");
+            } else {
+                this.ui.toast("Bí tịch này thất truyền hoặc không thể tu luyện!", "error");
+            }
         } else {
             this.player.sectContribution -= price;
             this.player.inventory.addItem(itemId, 1);
