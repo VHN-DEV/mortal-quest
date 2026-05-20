@@ -71,6 +71,7 @@ export class MapScreen {
         this.viewWorlds = document.getElementById('map-world-view');
         this.viewLocations = document.getElementById('map-location-view');
         this.viewExplore = document.getElementById('map-explore-view');
+        this.elExploreContentScroll = document.getElementById('explore-content-scroll');
 
         // Lists & Containers
         this.elWorldList = document.getElementById('world-list');
@@ -677,7 +678,11 @@ export class MapScreen {
         }
 
         this.renderSpecialActions(loc);
-        this.viewExplore.scrollTop = 0;
+        if (this.elExploreContentScroll) {
+            this.elExploreContentScroll.scrollTop = 0;
+        } else {
+            this.viewExplore.scrollTop = 0;
+        }
         this.renderExplore();
         this.renderNPCs();
         this.updateDashboardStats(loc);
