@@ -906,16 +906,16 @@ export class SystemsScreen {
 
             // Otherwise, render the main beautiful Sect dashboard and its 10 Zones!
             const zones = [
-                { id: 'son_mon', name: 'Sơn Môn', icon: '⛩️', desc: 'Hộ tông đại trận, đệ tử canh phòng.' },
-                { id: 'quang_truong', name: 'Quảng Trường Tông Môn', icon: '🏟️', desc: 'Nhiệm vụ, luận đạo học hỏi.' },
-                { id: 'dai_dien', name: 'Đại Điện / Chủ Điện', icon: '🏛️', desc: 'Bái kiến Tông chủ & hội nghị trưởng lão.' },
-                { id: 'tang_kinh_cac', name: 'Tàng Kinh Các', icon: '📚', desc: 'Nhiơi học công pháp & bí tịch truyền thừa.' },
-                { id: 'luyen_dan', name: 'Luyện Đan Phòng', icon: '🧪', desc: 'Địa hỏa linh thất đan dược (+10% thành công).' },
-                { id: 'luyen_khi', name: 'Luyện Khí Các', icon: '⚒️', desc: 'Đúc đập thần binh pháp bảo.' },
-                { id: 'linh_thu', name: 'Linh Thú Viên', icon: '🦁', desc: 'Thuần thú ngự trùng dưỡng kỳ lân.' },
-                { id: 'duoc_vien', name: 'Dược Viên / Linh Điền', icon: '🌿', desc: 'Tiên dược quý hiếm trồng trọt.' },
-                { id: 'dong_phu', name: 'Động Phủ Đệ Tử', icon: '🛕', desc: 'Động phủ tu luyện cá nhân tĩnh cơ.' },
-                { id: 'bi_canh', name: 'Bí Cảnh Thí Luyện', icon: '🗼', desc: 'Thí Luyện Tháp, vượt ải ảo ảnh.' }
+                { id: 'son_mon', name: 'Sơn Môn', icon: '⛩️', desc: 'Hộ tông đại trận, đệ tử canh phòng.', badge: 'Định Tông' },
+                { id: 'quang_truong', name: 'Quảng Trường Tông Môn', icon: '🏟️', desc: 'Nhiệm vụ, luận đạo học hỏi.', badge: 'Nhiệm Vụ', badgeColor: 'bg-cultivation-gold/20 text-cultivation-gold border-cultivation-gold/30 shadow-[0_0_8px_rgba(212,175,55,0.15)] animate-pulse' },
+                { id: 'dai_dien', name: 'Đại Điện / Chủ Điện', icon: '🏛️', desc: 'Bái kiến Tông chủ & hội nghị trưởng lão.', badge: 'Bổng Lộc', badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30' },
+                { id: 'tang_kinh_cac', name: 'Tàng Kinh Các', icon: '📚', desc: 'Nhiơi học công pháp & bí tịch truyền thừa.', badge: 'Công Pháp', badgeColor: 'bg-qi-blue/20 text-qi-blue border-qi-blue/30' },
+                { id: 'luyen_dan', name: 'Luyện Đan Phòng', icon: '🧪', desc: 'Địa hỏa linh thất đan dược (+10% thành công).', badge: 'Luyện Đan', badgeColor: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
+                { id: 'luyen_khi', name: 'Luyện Khí Các', icon: '⚒️', desc: 'Đúc đập thần binh pháp bảo.', badge: 'Rèn Luyện', badgeColor: 'bg-qi-blue/20 text-qi-blue border-qi-blue/30' },
+                { id: 'linh_thu', name: 'Linh Thú Viên', icon: '🦁', desc: 'Thuần thú ngự trùng dưỡng kỳ lân.', badge: 'Ngự Thú' },
+                { id: 'duoc_vien', name: 'Dược Viên / Linh Điền', icon: '🌿', desc: 'Tiên dược quý hiếm trồng trọt.', badge: 'Linh Điền', badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30' },
+                { id: 'dong_phu', name: 'Động Phủ Đệ Tử', icon: '🛕', desc: 'Động phủ tu luyện cá nhân tĩnh cơ.', badge: 'Tu Luyện', badgeColor: 'bg-qi-purple/20 text-qi-purple border-qi-purple/30' },
+                { id: 'bi_canh', name: 'Bí Cảnh Thí Luyện', icon: '🗼', desc: 'Thí Luyện Tháp, vượt ải ảo ảnh.', badge: 'Đại Tỷ / PvP', badgeColor: 'bg-red-500/20 text-red-400 border-red-500/30' }
             ];
 
             const rank = window.game?.systems?.sect?.getRank() || { name: 'Ngoại Môn Đệ Tử', rankScore: 0 };
@@ -1001,13 +1001,14 @@ export class SystemsScreen {
                 
                 <div class="grid grid-cols-2 gap-3 pb-8">
                     ${zones.map(z => `
-                        <div class="p-3 bg-black/40 hover:bg-black/60 rounded-xl border border-white/5 hover:border-qi-blue/30 cursor-pointer flex flex-col justify-between space-y-2 transition-all animate-fade-in" 
+                        <div class="p-3 bg-black/40 hover:bg-black/60 rounded-xl border border-white/5 hover:border-qi-blue/30 cursor-pointer flex flex-col justify-between space-y-2 transition-all animate-fade-in relative overflow-hidden" 
                              onclick="window.game.screens.systems.activeSectZone = '${z.id}'; window.game.screens.systems.renderSects();">
+                            ${z.badge ? `<span class="absolute top-2 right-2 px-1.5 py-0.5 rounded border text-[7px] font-bold uppercase tracking-wider ${z.badgeColor || 'bg-white/5 text-gray-400 border-white/10'}">${z.badge}</span>` : ''}
                             <div class="flex items-center space-x-2">
                                 <span class="text-2xl">${z.icon}</span>
-                                <div class="font-bold text-xs text-white">${z.name}</div>
+                                <div class="font-bold text-[11px] text-white max-w-[65%] truncate">${z.name}</div>
                             </div>
-                            <div class="text-[9px] text-gray-400 leading-tight">${z.desc}</div>
+                            <div class="text-[9px] text-gray-400 leading-tight pr-4">${z.desc}</div>
                             <div class="text-[8px] text-qi-blue font-bold flex items-center justify-end uppercase tracking-wider">
                                 Đi tới <i class="ph ph-caret-right ml-0.5"></i>
                             </div>
