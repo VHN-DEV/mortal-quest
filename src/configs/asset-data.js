@@ -149,24 +149,25 @@ export const ASSETS = {
 
     // Yêu Thú (Linh Thú, Dị Thú...)
     beasts: createAssetProxy({
-        thanh_van_ly: getAssetUrl('beasts/thanh-van-ly-thu'),
-        dia_long: getAssetUrl('beasts/huyen-giap-dia-long'),
-        mong_diep: getAssetUrl('beasts/u-minh-mong-diep'),
-        
-        // Insect Vector SVGs
-        bang_tam: getAssetUrl('aberrations/bang-tam.svg'),
-        huyet_ngoc_tri_chu: getAssetUrl('aberrations/huyet-ngoc-tri-chu.svg'),
-        phe_kim_trung: getAssetUrl('aberrations/phe-kim-trung.svg'),
-        
-        // Spiritual Beasts fallback mapping to location themes
-        phe_linh_trung: getAssetUrl('aberrations/luc-duc-suong-cong.svg'),
-        kim_tam: getAssetUrl('aberrations/kim-giap-hac.svg'),
-        thanh_van_hac: getAssetUrl('locations/theme_linh_ngoai'),
-        xich_diem_lang: getAssetUrl('locations/theme_ma_uyen'),
-        loi_duc_su: getAssetUrl('locations/theme_chien_truong'),
-        cuu_vi_thien_ho: getAssetUrl('locations/theme_van_yeu'),
-        thanh_long: getAssetUrl('locations/theme_hai_toc'),
-    }, 'beasts', 'thanh_van_ly'),
+        // All beasts now have dedicated images
+        cuu_vi_thien_ho: getAssetUrl('beasts/cuu_vi_thien_ho'),
+        thanh_van_hac: getAssetUrl('beasts/thanh_van_hac'),
+        xich_diem_lang: getAssetUrl('beasts/xich_diem_lang'),
+        loi_duc_su: getAssetUrl('beasts/loi_duc_su'),
+        thanh_long: getAssetUrl('beasts/thanh_long'),
+        phe_kim_trung: getAssetUrl('beasts/phe_kim_trung'),
+        bang_tam: getAssetUrl('beasts/bang_tam'),
+        huyet_ngoc_tri_chu: getAssetUrl('beasts/huyet_ngoc_tri_chu'),
+        phe_linh_trung: getAssetUrl('beasts/phe_linh_trung'),
+        kim_tam: getAssetUrl('beasts/kim_tam'),
+        thanh_van_ly: getAssetUrl('beasts/thanh_van_ly'),
+        huyen_giap_dia_long: getAssetUrl('beasts/huyen_giap_dia_long'),
+        u_minh_mong_diep: getAssetUrl('beasts/u_minh_mong_diep'),
+        // Aberrations (keeping SVG fallbacks)
+        bang_tam_svg: getAssetUrl('aberrations/bang-tam.svg'),
+        huyet_ngoc_tri_chu_svg: getAssetUrl('aberrations/huyet-ngoc-tri-chu.svg'),
+        phe_kim_trung_svg: getAssetUrl('aberrations/phe-kim-trung.svg'),
+    }, 'beasts', 'cuu_vi_thien_ho'),
 
     // Khôi lỗi & Thi hài
     puppets: createAssetProxy({
