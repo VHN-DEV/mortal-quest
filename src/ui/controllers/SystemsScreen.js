@@ -1039,12 +1039,25 @@ export class SystemsScreen {
                     `;
                 } else {
                     btnHTML = `
-                        <div class="p-3 bg-white/5 border border-white/10 rounded-xl text-center space-y-1">
-                            <span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider">CHIÊU MỘ CHƯA MỞ</span>
-                            <span class="text-[9px] text-gray-500">Mở lại: Tháng 1-2 năm chẵn</span>
-                            <button disabled class="w-full mt-2 py-2 bg-gray-500/10 border border-gray-500/20 text-gray-500 text-[9px] font-bold rounded-lg uppercase tracking-wider flex items-center justify-center space-x-1">
-                                <i class="ph ph-clock"></i><span>KHÔNG PHẢI MÙA TUYỂN</span>
+                        <div class="p-3 bg-white/5 border border-white/10 rounded-xl text-center space-y-2">
+                            <div class="flex items-center justify-center space-x-2 text-gray-500">
+                                <i class="ph ph-clock text-sm"></i>
+                                <span class="text-[9px] uppercase tracking-wider font-bold">Chưa đến kỳ đại tuyển</span>
+                            </div>
+                            <p class="text-[9px] text-gray-600 italic">Kỳ chiêu mộ chính thức: Tháng 1-2 năm chẵn (miễn phí + bonus cống hiến)</p>
+                        </div>
+                        <div class="mt-2 p-3 bg-cultivation-gold/5 border border-cultivation-gold/20 rounded-xl space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <i class="ph ph-hand-waving text-cultivation-gold text-sm"></i>
+                                <span class="text-[9px] text-cultivation-gold font-bold uppercase tracking-wider">Bái Phỏng Đặc Cách</span>
+                            </div>
+                            <p class="text-[9px] text-gray-400 italic leading-relaxed">Ngoài mùa tuyển, người có thiên tư xuất chúng hoặc chịu dâng lễ vật công đức vẫn có thể cầu xin nhập môn đặc cách.</p>
+                            <button class="w-full py-2.5 bg-cultivation-gold/15 hover:bg-cultivation-gold/25 border border-cultivation-gold/30 text-cultivation-gold text-[10px] font-bold rounded-xl uppercase tracking-widest flex items-center justify-center space-x-2 transition-all active:scale-95 ${canJoin ? '' : 'hidden'}" 
+                                onclick="window.game.joinSect('${currentSect.id}')">
+                                <i class="ph ph-door-open"></i>
+                                <span>BÁI PHỎNG CẦU NHẬP MÔN</span>
                             </button>
+                            ${!canJoin ? `<p class="text-[9px] text-red-500 text-center font-bold">Cảnh giới chưa đủ để vượt kết giới sơn môn</p>` : ''}
                         </div>
                     `;
                 }
