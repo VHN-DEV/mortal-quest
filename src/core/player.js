@@ -97,6 +97,9 @@ export class Player {
         // Sect info
         this.sectId = null;
         this.sectContribution = 0;
+        this.sectRank = 'ngoai_mon';
+        this.activeSectMissions = [];
+        this.sectTournamentYear = -1;
 
         // Destiny properties
         this.age = 18;
@@ -2521,6 +2524,9 @@ export class Player {
             // Social & Organization
             sectId: this.sectId,
             sectContribution: this.sectContribution,
+            sectRank: this.sectRank,
+            activeSectMissions: [...this.activeSectMissions],
+            sectTournamentYear: this.sectTournamentYear,
             knownNPCs: { ...this.knownNPCs },
             party: [...this.party],
             
@@ -2692,6 +2698,9 @@ export class Player {
         // Organization
         this.sectId = data.sectId || null;
         this.sectContribution = data.sectContribution || 0;
+        this.sectRank = data.sectRank || (this.sectId ? 'ngoai_mon' : 'ngoai_mon');
+        this.activeSectMissions = data.activeSectMissions || [];
+        this.sectTournamentYear = data.sectTournamentYear || -1;
         this.knownNPCs = data.knownNPCs || {};
         this.party = data.party || [];
         

@@ -1,5 +1,14 @@
 import { ASSETS } from './asset-data.js';
 
+export const SECT_RANKS = {
+    'ngoai_mon': { id: 'ngoai_mon', name: 'Ngoại Môn Đệ Tử', minRealm: 1, minContribution: 0, salary: 50, rankScore: 0 },
+    'noi_mon': { id: 'noi_mon', name: 'Nội Môn Đệ Tử', minRealm: 5, minContribution: 500, salary: 200, rankScore: 1 },
+    'chan_truyen': { id: 'chan_truyen', name: 'Chân Truyền Đệ Tử', minRealm: 14, minContribution: 2000, salary: 500, rankScore: 2 },
+    'truong_lao': { id: 'truong_lao', name: 'Trưởng Lão', minRealm: 20, minContribution: 5000, salary: 1500, rankScore: 3 },
+    'dai_truong_lao': { id: 'dai_truong_lao', name: 'Đại Trưởng Lão', minRealm: 30, minContribution: 10000, salary: 3000, rankScore: 4 },
+    'tong_chu': { id: 'tong_chu', name: 'Tông Chủ', minRealm: 40, minContribution: 25000, salary: 5000, rankScore: 5 }
+};
+
 export const SECTS = {
     // --- Original 3 Sects ---
     'thien_kiem_tong': {

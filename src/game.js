@@ -41,6 +41,7 @@ import { SocialSystem } from './systems/social-system.js';
 import { FateSystem } from './systems/fate-system.js';
 import { MiningSystem } from './systems/mining-system.js';
 import { TravelSystem } from './systems/travel-system.js';
+import { SectSystem } from './systems/sect-system.js';
 
 import { MissionSystem } from './systems/MissionSystem.js';
 import { MissionScreen } from './ui/controllers/MissionScreen.js';
@@ -668,6 +669,7 @@ export class Game {
             fate: new FateSystem(player, state.ui),
             mining: new MiningSystem(player, state.ui),
             travel: new TravelSystem(player, state.ui),
+            sect: new SectSystem(player, state.ui),
             mission: new MissionSystem(),
             cheat: new CheatSystem(player, state.ui)
         });
