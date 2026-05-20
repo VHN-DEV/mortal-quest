@@ -3,3 +3,4 @@ android/.gradle/
 android/build/
 build/
 .gradle/
+dist/
