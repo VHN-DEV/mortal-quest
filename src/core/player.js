@@ -779,12 +779,17 @@ export class Player {
         return this.stability;
     }
 
-    breakthrough(type = 'tuvi', isForced = false) {
+    breakthrough(type = 'tuvi', isForced = false, rateBonus = 0) {
         const check = this.canBreakthrough(type);
         if (check.can) {
             // Check for Qi Deviation risk
             let stability = this.getStability();
             if (isForced) stability *= 0.5; // Double risk for forced breakthrough
+            
+            if (rateBonus) {
+                stability += rateBonus * 100;
+            }
+            stability = Math.min(100, stability);
             
             // Apply Karma Penalty: Accumulated sins weigh down the soul
             const fatePenalty = window.game?.systems?.fate?.getBreakthroughPenalty() || 1.0;

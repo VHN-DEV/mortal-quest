@@ -544,6 +544,36 @@ export const ITEMS = {
         price: 5000,
         stats: { breakthroughRate: 0.3 }
     },
+    'ket_dan_dan': {
+        id: 'ket_dan_dan',
+        name: 'Kết Đan Đan',
+        type: 'consumable',
+        quality: 'Linh Bảo',
+        icon: '💊',
+        price: 15000,
+        description: 'Đan dược quý hiếm giúp tu sĩ ngưng tụ Kim Đan chí thuần, tăng 20% tỷ lệ đột phá Kết Đan.',
+        stats: { breakthroughRate: 0.20 }
+    },
+    'nguyen_anh_dan': {
+        id: 'nguyen_anh_dan',
+        name: 'Nguyên Anh Đan',
+        type: 'consumable',
+        quality: 'Thông Thiên Linh Bảo',
+        icon: '💊',
+        price: 50000,
+        description: 'Đan dược chứa đựng linh lực khổng lồ, hỗ trợ ngưng kết Nguyên Anh tôn giả, tăng 15% tỷ lệ đột phá Nguyên Anh.',
+        stats: { breakthroughRate: 0.15 }
+    },
+    'hoa_than_dan': {
+        id: 'hoa_than_dan',
+        name: 'Hóa Thần Đan',
+        type: 'consumable',
+        quality: 'Tiên Khí',
+        icon: '💊',
+        price: 150000,
+        description: 'Chí tôn đan dược hỗ trợ thần thức thăng hoa, câu thông thiên địa đột phá Hóa Thần cảnh, tăng 10% tỷ lệ đột phá Hóa Thần.',
+        stats: { breakthroughRate: 0.10 }
+    },
     'bo_nguyen_dan': {
         id: 'bo_nguyen_dan',
         name: 'Bổ Nguyên Đan',

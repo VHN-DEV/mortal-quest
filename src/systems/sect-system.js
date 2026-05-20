@@ -277,14 +277,14 @@ export class SectSystem {
         }
         // Default fallback list
         return [
-            { id: 'item_truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
-            { id: 'item_ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
+            { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
+            { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'tech_kiem_quyet', name: 'Kiếm Quyết Cơ Bản', price: 500, type: 'contribution', minRankScore: 0, isTech: true },
-            { id: 'item_ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
+            { id: 'ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
             { id: 'tech_thuong_thien_kiem', name: 'Thượng Thiên Kiếm Khí', price: 2000, type: 'contribution', minRankScore: 1, isTech: true },
-            { id: 'item_nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
+            { id: 'nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
             { id: 'tech_van_kiem_quyet', name: 'Vạn Kiếm Quy Tông', price: 10000, type: 'contribution', minRankScore: 2, isTech: true },
-            { id: 'item_hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 },
+            { id: 'hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 },
             { id: 'tech_thien_dao_phap', name: 'Thiên Đạo Vô Vị Pháp', price: 30000, type: 'contribution', minRankScore: 3, isTech: true },
         ];
     }
@@ -439,13 +439,16 @@ export class SectSystem {
         }
 
         if (isTech) {
-            if (this.player.learnedTechniques.includes(itemId) || this.player.learnedSecretTechniques.includes(itemId)) {
+            // Check if already learned correctly by scanning object array
+            const hasLearnedNormal = this.player.learnedTechniques.some(t => t.id === itemId);
+            const hasLearnedSecret = this.player.learnedSecretTechniques.some(t => t.id === itemId);
+            if (hasLearnedNormal || hasLearnedSecret) {
                 this.ui.toast("Ngươi đã học qua công pháp này rồi!", "warning");
                 return;
             }
             this.player.sectContribution -= price;
-            // Add as a learned technique - we simulate basic learning
-            this.player.learnedSecretTechniques.push(itemId);
+            // Use the standard player method to learn technique, which pushes correct object
+            this.player.learnSecretTechnique(itemId);
             this.ui.toast(`Lĩnh ngộ thành công bí kíp: ${itemName}!`, "success");
         } else {
             this.player.sectContribution -= price;

@@ -23,7 +23,7 @@ export const SECT_RULES = [
 export const GRANDMASTER_REWARDS = [
     { id: 'gm_tuvi', weight: 40, desc: 'Thái Thượng truyền thụ khẩu quyết vận khí', effect: (p) => { p.tuVi += 5000; return '+5,000 Tu Vi'; } },
     { id: 'gm_buff', weight: 30, desc: 'Thái Thượng hộ đạo gia trì 3 ngày tu luyện gấp đôi', effect: (p) => { p.addBuff({ id: 'gm_blessing', stat: 'tuViSpeed', value: 2.0, duration: 3 * 86400000 }); return 'Buff tu luyện x2 trong 3 ngày'; } },
-    { id: 'gm_item', weight: 20, desc: 'Thái Thượng ban thưởng Ngưng Khí Đan', effect: (p) => { p.inventory.addItem('item_ngung_khi_dan', 3); return '+3 Ngưng Khí Đan'; } },
+    { id: 'gm_item', weight: 20, desc: 'Thái Thượng ban thưởng Ngưng Khí Đan', effect: (p) => { p.inventory.addItem('ngung_khi_dan', 3); return '+3 Ngưng Khí Đan'; } },
     { id: 'gm_insight', weight: 10, desc: 'Thái Thượng chỉ điểm đạo lý, Ngộ tính đột phá', effect: (p) => { p.comprehension = Math.min(100, (p.comprehension || 10) + 5); return '+5 Ngộ Tính'; } },
 ];
 
@@ -42,12 +42,15 @@ export const SECTS = {
         ],
         enemySects: ['cu_kiem_mon', 'hoa_dao_o'],
         libraryItems: [
-            { id: 'item_truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
+            { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
+            { id: 'huyen_thiet', price: 100, type: 'contribution', minRankScore: 0 },
+            { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
             { id: 'tech_kiem_quyet', name: 'Kiếm Quyết Cơ Bản', price: 500, type: 'contribution', minRankScore: 0, isTech: true },
-            { id: 'item_ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
+            { id: 'tinh_kim', price: 400, type: 'contribution', minRankScore: 1 },
+            { id: 'ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
             { id: 'tech_thuong_thien_kiem', name: 'Thượng Thiên Kiếm Khí', price: 2000, type: 'contribution', minRankScore: 1, isTech: true },
             { id: 'tech_van_kiem_quyet', name: 'Vạn Kiếm Quy Tông', price: 10000, type: 'contribution', minRankScore: 2, isTech: true },
-            { id: 'item_hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 },
+            { id: 'hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 },
             { id: 'tech_thien_dao_phap', name: 'Thiên Kiếm Nhất Khí Quyết', price: 30000, type: 'contribution', minRankScore: 3, isTech: true },
         ]
     },
@@ -64,12 +67,13 @@ export const SECTS = {
         ],
         enemySects: ['huyen_am_coc', 'quy_linh_mon'],
         libraryItems: [
-            { id: 'item_ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
-            { id: 'item_truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
+            { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
+            { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
             { id: 'tech_kiem_quyet', name: 'Ngũ Hành Thuật Pháp Cơ Yếu', price: 600, type: 'contribution', minRankScore: 0, isTech: true },
-            { id: 'item_ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
+            { id: 'pv_kim_cuong_phu', price: 300, type: 'contribution', minRankScore: 0 },
+            { id: 'ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
             { id: 'tech_thuong_thien_kiem', name: 'Hoàng Phong Ngũ Hành Quyết', price: 2200, type: 'contribution', minRankScore: 1, isTech: true },
-            { id: 'item_nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
+            { id: 'nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
             { id: 'tech_thien_dao_phap', name: 'Thiên Địa Ngũ Hành Đại Pháp', price: 30000, type: 'contribution', minRankScore: 3, isTech: true },
         ]
     },
@@ -86,13 +90,18 @@ export const SECTS = {
         ],
         enemySects: ['thien_kiem_tong', 'lac_van_tong'],
         libraryItems: [
-            { id: 'item_truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
+            { id: 'ma_thach', price: 100, type: 'contribution', minRankScore: 0 },
+            { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
+            { id: 'bp_thi_binh', price: 400, type: 'contribution', minRankScore: 0 },
             { id: 'tech_kiem_quyet', name: 'Huyền Âm Chỉ Pháp', price: 500, type: 'contribution', minRankScore: 0, isTech: true },
-            { id: 'item_ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
+            { id: 'u_minh_hoa', price: 300, type: 'contribution', minRankScore: 1 },
+            { id: 'ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
+            { id: 'bp_thi_tuong', price: 1800, type: 'contribution', minRankScore: 1 },
             { id: 'tech_thuong_thien_kiem', name: 'U Minh Âm Sát Kinh', price: 2500, type: 'contribution', minRankScore: 1, isTech: true },
-            { id: 'item_nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
+            { id: 'nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
+            { id: 'bp_dong_giap_thi', price: 4500, type: 'contribution', minRankScore: 2 },
             { id: 'tech_van_kiem_quyet', name: 'Huyền Âm Ma Công Đại Thành', price: 10000, type: 'contribution', minRankScore: 2, isTech: true },
-            { id: 'item_hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 },
+            { id: 'hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 },
         ]
     },
 
@@ -119,6 +128,20 @@ export const SECTS = {
         missions: [
             { id: 'lv_1', name: 'Hái Lạc Vân Thảo', desc: 'Thu hái các ngọn cỏ lạc vân quý giá trên sườn Bách Nhạc Phong.', reward: { contribution: 15, lingShi: 50 }, stamina: 20 },
             { id: 'lv_2', name: 'Tĩnh tọa luyện đan', desc: 'Ngồi thiền thanh lọc khí dược bên động phủ cổ kính của tổ sư.', reward: { contribution: 30, tuVi: 800 }, stamina: 45 }
+        ],
+        libraryItems: [
+            { id: 'ngung_khi_dan', price: 30, type: 'contribution', minRankScore: 0 },
+            { id: 'dp_tich_coc_dan', price: 100, type: 'contribution', minRankScore: 0 },
+            { id: 'dp_ngung_khi_dan', price: 200, type: 'contribution', minRankScore: 0 },
+            { id: 'truc_co_dan', price: 150, type: 'contribution', minRankScore: 0 },
+            { id: 'dp_than_tam_dan', price: 350, type: 'contribution', minRankScore: 0 },
+            { id: 'thanh_tam_dan', price: 100, type: 'contribution', minRankScore: 0 },
+            { id: 'dp_truc_co_dan', price: 1000, type: 'contribution', minRankScore: 1 },
+            { id: 'ket_dan_dan', price: 1200, type: 'contribution', minRankScore: 1 },
+            { id: 'dp_bo_nguyen_dan', price: 500, type: 'contribution', minRankScore: 1 },
+            { id: 'dp_ngung_anh_dan', price: 6000, type: 'contribution', minRankScore: 2 },
+            { id: 'nguyen_anh_dan', price: 6500, type: 'contribution', minRankScore: 2 },
+            { id: 'hoa_than_dan', price: 20000, type: 'contribution', minRankScore: 3 }
         ]
     },
     'thien_tinh_tong': {
@@ -131,6 +154,18 @@ export const SECTS = {
         missions: [
             { id: 'tt_1', name: 'Duy Tu Cấm Chế', desc: 'Khắc họa cấm chế trận pháp bảo vệ sơn môn khỏi tà tu sâm lấn.', reward: { contribution: 12, lingShi: 45 }, stamina: 25 },
             { id: 'tt_2', name: 'Diễn Luyện Trận Pháp', desc: 'Thí nghiệm diễn luyện biến hóa của Cửu Cung Trận pháp.', reward: { contribution: 25, tuVi: 550 }, stamina: 40 }
+        ],
+        libraryItems: [
+            { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
+            { id: 'tran_ban_so', price: 300, type: 'contribution', minRankScore: 0 },
+            { id: 'td_tu_linh_tran', price: 500, type: 'contribution', minRankScore: 0 },
+            { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
+            { id: 'td_ao_anh_tran', price: 800, type: 'contribution', minRankScore: 1 },
+            { id: 'ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
+            { id: 'td_sat_kiem_tran', price: 3500, type: 'contribution', minRankScore: 2 },
+            { id: 'nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
+            { id: 'td_ho_tong_dai_tran', price: 15000, type: 'contribution', minRankScore: 3 },
+            { id: 'hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 }
         ]
     },
     'linh_thu_son': {
@@ -143,6 +178,14 @@ export const SECTS = {
         missions: [
             { id: 'lt_1', name: 'Chăm sóc yêu thú', desc: 'Cho ăn và tắm rửa các đầu ấu thú yếu ớt tại thú viên.', reward: { contribution: 10, lingShi: 35 }, stamina: 20 },
             { id: 'lt_2', name: 'Săn bắt hoang thú', desc: 'Đi rừng sâu dùng ngự thú linh phù bắt giữ một đầu yêu thú sơ cấp.', reward: { contribution: 20, tuVi: 500 }, stamina: 35 }
+        ],
+        libraryItems: [
+            { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
+            { id: 'ngu_thu_quyet', price: 400, type: 'contribution', minRankScore: 0 },
+            { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
+            { id: 'ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
+            { id: 'nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
+            { id: 'hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 }
         ]
     },
     'thanh_hu_mon': {

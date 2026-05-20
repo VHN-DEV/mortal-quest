@@ -858,10 +858,85 @@ export class Game {
         this.refreshUI();
     }
 
-    async breakthrough() {
+    async breakthrough(customFocus = null) {
         if (!state.player) return;
-        const focus = state.player.cultivationFocus || 'tuvi';
-        const result = state.player.breakthrough(focus);
+        const focus = customFocus || state.player.cultivationFocus || 'tuvi';
+        
+        // First check if they can breakthrough at all
+        const canCheck = state.player.canBreakthrough(focus);
+        if (!canCheck.can) {
+            state.ui.toast(canCheck.reason || "Chưa đủ điều kiện đột phá!", "error");
+            return;
+        }
+
+        let pillId = null;
+        let pillName = '';
+        let targetRealmName = '';
+        let rateBonus = 0;
+
+        if (focus === 'tuvi') {
+            const currentRealmId = state.player.realmId;
+            if (currentRealmId === 13) { pillId = 'truc_co_dan'; pillName = 'Trúc Cơ Đan'; targetRealmName = 'Trúc Cơ Kỳ'; rateBonus = 0.3; }
+            else if (currentRealmId === 17) { pillId = 'ket_dan_dan'; pillName = 'Kết Đan Đan'; targetRealmName = 'Kết Đan Kỳ'; rateBonus = 0.2; }
+            else if (currentRealmId === 21) { pillId = 'nguyen_anh_dan'; pillName = 'Nguyên Anh Đan'; targetRealmName = 'Nguyên Anh Kỳ'; rateBonus = 0.15; }
+            else if (currentRealmId === 25) { pillId = 'hoa_than_dan'; pillName = 'Hóa Thần Đan'; targetRealmName = 'Hóa Thần Kỳ'; rateBonus = 0.1; }
+        }
+
+        let isForced = false;
+        let finalRateBonus = 0;
+
+        if (pillId) {
+            const hasPill = state.player.inventory.hasItem(pillId);
+            const baseStability = state.player.getStability();
+            const fatePenalty = state.systems.fate?.getBreakthroughPenalty() || 1.0;
+            const finalBaseRate = Math.min(100, baseStability * fatePenalty);
+
+            if (hasPill) {
+                const finalPillRate = Math.min(100, (baseStability + rateBonus * 100) * fatePenalty);
+                const options = [
+                    { id: 'use_pill', name: `💊 Sử dụng ${pillName} (Tăng +${rateBonus * 100}% tỷ lệ, còn lại ${state.player.inventory.getItemQuantity(pillId)} viên)`, desc: `Đảm bảo an toàn, nâng tỷ lệ thành công lên ${finalPillRate.toFixed(1)}%.` },
+                    { id: 'force', name: '⚡ Cưỡng ép đột phá (Không dùng đan dược)', desc: `Đột phá tay không với tỷ lệ thành công cơ bản ${finalBaseRate.toFixed(1)}%. Rủi ro tẩu hỏa nhập ma nhân đôi!` },
+                    { id: 'cancel', name: '❌ Hủy bỏ', desc: 'Chuẩn bị thêm linh lực trước khi hành sự.' }
+                ];
+
+                const choice = await state.ui.promptOptions(
+                    `Đại Cảnh Giới Đột Phá: ${targetRealmName}`,
+                    options,
+                    `Ngươi đang đứng trước ngưỡng cửa đột phá lên ${targetRealmName}. Ngươi có muốn sử dụng đan dược hỗ trợ trong túi đồ để gia tăng tỷ lệ thành công không?`
+                );
+
+                if (choice === 'cancel' || !choice) {
+                    state.ui.toast("Đột phá đã bị hủy bỏ.", "info");
+                    return;
+                }
+                if (choice === 'use_pill') {
+                    state.player.inventory.removeItem(pillId, 1);
+                    finalRateBonus = rateBonus;
+                } else if (choice === 'force') {
+                    isForced = true;
+                }
+            } else {
+                // Warning no pill
+                const options = [
+                    { id: 'force', name: '⚡ Cưỡng ép đột phá', desc: `Chấp nhận rủi ro cực cao, tỷ lệ thành công chỉ ${finalBaseRate.toFixed(1)}%.` },
+                    { id: 'cancel', name: '❌ Hủy bỏ', desc: 'Trở lại tìm kiếm hoặc chế tạo đan dược.' }
+                ];
+
+                const choice = await state.ui.promptOptions(
+                    `Đại Cảnh Giới Đột Phá: Không Có Đan Dược!`,
+                    options,
+                    `Ngươi đang cố gắng đột phá lên ${targetRealmName} nhưng trong rương không có ${pillName} hỗ trợ! Việc cưỡng ép đột phá tay không cực kỳ nguy hiểm, nguy cơ tẩu hỏa nhập ma nhân đôi. Ngươi vẫn muốn tiếp tục chứ?`
+                );
+
+                if (choice === 'cancel' || !choice) {
+                    state.ui.toast("Đột phá đã bị hủy bỏ.", "info");
+                    return;
+                }
+                isForced = true;
+            }
+        }
+
+        const result = state.player.breakthrough(focus, isForced, finalRateBonus);
         if (result && result.msg) state.ui.toast(result.msg, result.success ? 'success' : 'error');
         if (result && result.success) {
             if (state.systems.cheat) {
