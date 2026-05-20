@@ -8,7 +8,7 @@ import { SEEDS, SOILS, FIELD_GRADES, FIELD_ATTRIBUTES, HERB_AGE_MILESTONES } fro
 import { ALCHEMY_CERTIFICATIONS, GUILD_MISSIONS, ALCHEMY_ROOMS } from '../../configs/guild-data.js';
 import { TOWER_LEVELS } from '../../configs/tower-data.js';
 import { MOUNTAIN_LAYERS, MOUNTAIN_TIERS } from '../../configs/mountain-data.js';
-import { SECTS, getSectById } from '../../configs/sect-data.js';
+import { SECTS, getSectById, getSectRules } from '../../configs/sect-data.js';
 import { getRealmById } from '../../configs/realm-data.js';
 import { CORPSE_TYPES, getCorpseLevelInfo } from '../../configs/corpse-data.js';
 import { SHOPS } from '../../configs/shop-data.js';
@@ -917,20 +917,83 @@ export class SystemsScreen {
                 { id: 'bi_canh', name: 'Bí Cảnh Thí Luyện', icon: '🗼', desc: 'Thí Luyện Tháp, vượt ải ảo ảnh.' }
             ];
 
+            const rank = window.game?.systems?.sect?.getRank() || { name: 'Ngoại Môn Đệ Tử', rankScore: 0 };
+            const nextReq = window.game?.systems?.sect?.getNextRankRequirements();
+            const currentDay = state.systems?.time?.totalDays || 0;
+            const isWanted = state.player.sectWanted && state.player.sectWanted.expiresDay > currentDay;
+            const inWar = state.player.sectWarStatus && (state.player.sectWarExpiresDay || 0) > currentDay;
+            const warDaysLeft = inWar ? (state.player.sectWarExpiresDay - currentDay) : 0;
+            const gmSeclusion = state.player.grandmasterSeclusion || { isSecluded: true, releaseDay: 30 };
+            const gmRelease = currentDay >= gmSeclusion.releaseDay;
+            const gmDaysLeft = Math.max(0, gmSeclusion.releaseDay - currentDay);
+
+            // Build bonus text
+            const bonusText = Object.entries(sect.bonus || {}).map(([k, v]) => {
+                const labels = { atk: 'Công', def: 'Thủ', spd: 'Tốc', maxHp: 'Máu' };
+                return `+${v} ${labels[k] || k}`;
+            }).join(' · ');
+
             elSects.innerHTML = `
-                <div class="bg-white/5 rounded-2xl border border-qi-blue/30 overflow-hidden mb-4 animate-fade-in">
+                <!-- Wanted Banner -->
+                ${isWanted ? `
+                <div class="mb-3 p-3 bg-red-900/40 border border-red-500/50 rounded-xl flex items-center space-x-2 animate-pulse">
+                    <span class="text-lg">🚨</span>
+                    <div class="text-[10px]">
+                        <div class="text-red-400 font-bold uppercase tracking-wider">Lệnh Truy Sát Đang Hoạt Động</div>
+                        <div class="text-red-300/70">Từ ${state.player.sectWanted.sectName} — Còn ${state.player.sectWanted.expiresDay - currentDay} ngày</div>
+                    </div>
+                </div>` : ''}
+
+                <!-- Main Dashboard Card -->
+                <div class="bg-white/5 rounded-2xl border ${inWar ? 'border-red-500/50' : 'border-qi-blue/30'} overflow-hidden mb-4 animate-fade-in">
                     <div class="h-32 relative">
                         <img src="${sect.portrait || ASSETS.backgrounds.sect}" class="w-full h-full object-cover opacity-40">
                         <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                         <div class="absolute bottom-4 left-4">
                             <h3 class="text-2xl font-ancient text-white">${sect.name}</h3>
-                            <p class="text-[10px] text-qi-blue uppercase font-bold tracking-widest">${state.player.realmId >= 30 ? 'Trưởng lão tông môn' : state.player.realmId >= 15 ? 'Đệ tử Nội môn' : 'Đệ tử Ngoại môn'}</p>
+                            <p class="text-[10px] text-qi-blue uppercase font-bold tracking-widest">${rank.name}</p>
+                        </div>
+                        ${inWar ? `<div class="absolute top-3 right-3 px-2 py-1 bg-red-500/30 border border-red-500/50 rounded-lg text-[9px] text-red-400 font-bold animate-pulse">⚔️ THỜI CHIẾN (${warDaysLeft}n)</div>` : ''}
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="px-4 py-2 grid grid-cols-3 gap-2 border-b border-white/5 text-center">
+                        <div>
+                            <div class="text-[8px] text-gray-500 uppercase">Cống Hiến</div>
+                            <div class="text-sm text-cultivation-gold font-bold font-mono">${(state.player.sectContribution || 0).toLocaleString()}</div>
+                        </div>
+                        <div>
+                            <div class="text-[8px] text-gray-500 uppercase">Bonus</div>
+                            <div class="text-[9px] text-green-400 font-bold">${bonusText || 'Không có'}</div>
+                        </div>
+                        <div>
+                            <div class="text-[8px] text-gray-500 uppercase">Thái Thượng</div>
+                            <div class="text-[9px] ${gmRelease ? 'text-yellow-400' : 'text-gray-500'} font-bold">${gmRelease ? '🔓 Ra Quan' : `🔒 ${gmDaysLeft}n`}</div>
                         </div>
                     </div>
-                    <div class="p-4 flex justify-between items-center text-xs">
-                        <span class="text-gray-400">Điểm cống hiến:</span>
-                        <span class="text-cultivation-gold font-mono font-bold text-sm">${state.player.sectContribution || 0}</span>
-                    </div>
+
+                    <!-- Progress Bar to next rank -->
+                    ${nextReq ? `
+                    <div class="px-4 py-3">
+                        <div class="flex justify-between text-[8px] text-gray-500 mb-1">
+                            <span>→ ${nextReq.rank.name}</span>
+                            <span>${nextReq.realmMet && nextReq.conMet ? '✅ Đủ Điều Kiện' : 'Chưa Đủ'}</span>
+                        </div>
+                        <div class="flex items-center space-x-2 mb-1">
+                            <span class="text-[7px] text-gray-600 w-10">Cảnh Giới</span>
+                            <div class="flex-1 h-1.5 bg-black/40 rounded-full overflow-hidden">
+                                <div class="h-full ${nextReq.realmMet ? 'bg-green-500' : 'bg-qi-blue'} rounded-full transition-all" style="width:${(nextReq.realmProgress * 100).toFixed(0)}%"></div>
+                            </div>
+                            <span class="text-[7px] ${nextReq.realmMet ? 'text-green-400' : 'text-gray-500'}">${nextReq.realmMet ? '✓' : (nextReq.realmProgress * 100).toFixed(0) + '%'}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-[7px] text-gray-600 w-10">Cống Hiến</span>
+                            <div class="flex-1 h-1.5 bg-black/40 rounded-full overflow-hidden">
+                                <div class="h-full ${nextReq.conMet ? 'bg-green-500' : 'bg-cultivation-gold'} rounded-full transition-all" style="width:${(nextReq.conProgress * 100).toFixed(0)}%"></div>
+                            </div>
+                            <span class="text-[7px] ${nextReq.conMet ? 'text-green-400' : 'text-gray-500'}">${nextReq.conMet ? '✓' : (nextReq.conProgress * 100).toFixed(0) + '%'}</span>
+                        </div>
+                    </div>` : `<div class="px-4 py-2 text-[9px] text-cultivation-gold text-center font-ancient">👑 Đã đạt Cấp Bậc Tối Cao</div>`}
                 </div>
 
                 <h4 class="text-xs font-ancient text-gray-300 uppercase tracking-widest border-b border-white/10 pb-2 mb-3">Khu Vực Tông Môn</h4>
@@ -1020,141 +1083,192 @@ export class SystemsScreen {
         
         switch (zoneId) {
             case 'son_mon':
-                contentHTML = `
-                    <div class="space-y-4">
-                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div class="text-sm font-bold text-white mb-2">🛡️ Hộ Sơn Đại Trận</div>
-                            <p class="text-[10px] text-gray-400 mb-3">Trận pháp bảo vệ cổng sơn môn hùng vĩ. Khi linh khí đầy đủ, đệ tử ngoại môn cùng ngự quân bất khả xâm phạm.</p>
-                            <div class="flex justify-between text-xs mb-2">
-                                <span class="text-gray-500">Trạng thái đại trận:</span>
-                                <span class="text-green-400 font-bold">Hoạt động ổn định (100%)</span>
+                {
+                    const rules = getSectRules() || [];
+                    const rulesHTML = rules.map(r => `
+                        <div class="p-3 bg-black/30 rounded-xl border border-white/5 flex items-start space-x-3">
+                            <span class="text-xl flex-shrink-0 mt-0.5">${r.icon}</span>
+                            <div class="flex-1">
+                                <div class="text-[10px] font-bold text-white">${r.title}</div>
+                                <div class="text-[9px] text-gray-400 mt-0.5">${r.desc}</div>
                             </div>
-                            <button class="w-full py-2 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-lg transition-all"
-                                    onclick="window.game.screens.systems.handleSectZoneAction('son_mon', 'reinforce_array')">
-                                <i class="ph ph-lightning mr-1"></i> Truyền Linh Khí Gia Cố (-50 Linh Lực)
-                            </button>
                         </div>
+                    `).join('');
 
-                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div class="text-sm font-bold text-white mb-2">📜 Bia Đá Tông Quy</div>
-                            <p class="text-[10px] text-gray-400 mb-3">Nơi ghi khắc 10 điều luật sắt của tông môn. Đọc và khắc ghi quy tắc củng cố tinh thần tu sĩ đạo tâm.</p>
-                            <button class="w-full py-2 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/20 text-xs font-bold rounded-lg transition-all"
-                                    onclick="window.game.screens.systems.handleSectZoneAction('son_mon', 'vow_rules')">
-                                <i class="ph ph-scroll mr-1"></i> Tuyên Thệ Tuân Thủ Tông Quy (Hàng Ngày)
-                            </button>
-                        </div>
+                    contentHTML = `
+                        <div class="space-y-4">
+                            <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                                <div class="text-sm font-bold text-white mb-2">🛡️ Hộ Sơn Đại Trận</div>
+                                <p class="text-[10px] text-gray-400 mb-3">Trận pháp bảo vệ cổng sơn môn hùng vĩ. Khi linh khí đầy đủ, đệ tử ngoại môn cùng ngự quân bất khả xâm phạm.</p>
+                                <button class="w-full py-2 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-lg transition-all"
+                                        onclick="window.game.screens.systems.handleSectZoneAction('son_mon', 'reinforce_array')">
+                                    <i class="ph ph-lightning mr-1"></i> Truyền Linh Khí Gia Cố (-50 Linh Lực)
+                                </button>
+                            </div>
 
-                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div class="text-sm font-bold text-white mb-2">💂 Sentinel Guard</div>
-                            <p class="text-[10px] text-gray-400 mb-3">Thủ môn đệ tử chăm chỉ tuần tra an ninh tông môn.</p>
-                            <button class="w-full py-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 text-xs font-bold rounded-lg transition-all"
-                                    onclick="window.game.screens.systems.handleSectZoneAction('son_mon', 'talk_guard')">
-                                <i class="ph ph-chat-centered-text mr-1"></i> Trò Chuyện Tuần Tra
-                            </button>
+                            <div class="p-4 bg-black/40 rounded-xl border border-cultivation-gold/20">
+                                <div class="text-sm font-bold text-cultivation-gold mb-3">📜 Bia Đá Tông Quy — 6 Điều Luật Sắt</div>
+                                <div class="space-y-2">
+                                    ${rulesHTML || '<div class="text-[9px] text-gray-500">Không có dữ liệu tông quy.</div>'}
+                                </div>
+                                <button class="w-full mt-3 py-2 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/20 text-xs font-bold rounded-lg transition-all"
+                                        onclick="window.game.screens.systems.handleSectZoneAction('son_mon', 'vow_rules')">
+                                    <i class="ph ph-scroll mr-1"></i> Tuyên Thệ Tuân Thủ Tông Quy (Hàng Ngày +15 Tu Vi)
+                                </button>
+                            </div>
+
+                            <div class="p-4 bg-black/40 rounded-xl border border-red-500/10">
+                                <div class="text-sm font-bold text-red-400 mb-2">🚪 Xuất Môn</div>
+                                <p class="text-[10px] text-gray-400 mb-3">Tự rời bỏ tông môn. Cảnh báo: Sẽ bị ghi vào sổ Phản Đồ và nhận Lệnh Truy Sát 30 ngày!</p>
+                                <button class="w-full py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-bold rounded-lg transition-all"
+                                        onclick="if(confirm('Rời bỏ Tông Môn? Ngươi sẽ bị truy sát 30 ngày!')) { window.game.systems.sect.leaveSect(); window.game.screens.systems.renderSects(); }">
+                                    <i class="ph ph-sign-out mr-1"></i> Phản Tông Xuất Môn
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
                 break;
 
-            case 'quang_truong':
-                contentHTML = `
-                    <div class="space-y-4">
-                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div class="text-sm font-bold text-white mb-2">💬 Luận Đạo Hội</div>
-                            <p class="text-[10px] text-gray-400 mb-3">Tham gia đối chất linh thức luận đạo cùng đồng môn, so kè ngộ tính để đốn ngộ chân pháp.</p>
-                            <button class="w-full py-2 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-lg transition-all"
-                                    onclick="window.game.screens.systems.handleSectZoneAction('quang_truong', 'debate_dao')">
-                                <i class="ph ph-brain mr-1"></i> Bắt Đầu Luận Đạo (-20 Linh Lực)
-                            </button>
-                        </div>
 
-                        <!-- SECT MISSIONS (INLINE MISSION BOARD) -->
-                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div class="text-sm font-bold text-white mb-2">📋 Bảng Ủy Thác Nhiệm Vụ</div>
-                            <p class="text-[10px] text-gray-400 mb-3">Nhận nhiệm vụ hàng ngày để tích lũy Cống hiến.</p>
-                            
-                            <!-- Nhiệm vụ đang nhận -->
-                            ${state.player.activeSectMissions && state.player.activeSectMissions.length > 0 ? `
-                                <div class="text-[10px] font-bold text-qi-blue mb-2 uppercase tracking-wider">Đang Thực Hiện (${state.player.activeSectMissions.length}/3)</div>
-                                <div class="space-y-2 mb-4">
-                                    ${state.player.activeSectMissions.map(m => `
-                                        <div class="p-2 bg-black/40 rounded-lg border border-qi-blue/30 flex justify-between items-center">
+            case 'quang_truong':
+                {
+                    const currentSect = window.game?.systems?.sect?.getSect();
+                    const enemySects = (currentSect?.enemySects || []).map(id => {
+                        const s = window.SECTS ? window.SECTS[id] : null;
+                        return s ? s.name : id;
+                    });
+                    const inWar = state.player.sectWarStatus && (state.player.sectWarExpiresDay || 0) > (state.systems?.time?.totalDays || 0);
+
+                    contentHTML = `
+                        <div class="space-y-4">
+                            <!-- Chiến Báo -->
+                            <div class="p-4 bg-black/40 rounded-xl border ${inWar ? 'border-red-500/40' : 'border-white/5'}">
+                                <div class="text-sm font-bold ${inWar ? 'text-red-400' : 'text-white'} mb-2">⚔️ Chiến Báo Tông Môn</div>
+                                ${inWar ? `
+                                <div class="p-2 bg-red-900/30 rounded-lg border border-red-500/30 mb-3">
+                                    <div class="text-[9px] text-red-400 font-bold">🔴 ĐANG TRONG THỜI CHIẾN</div>
+                                    <div class="text-[8px] text-red-300/70">Nhiệm vụ Kill thưởng x2 · Bổng lộc +50%</div>
+                                </div>` : `
+                                <div class="p-2 bg-green-900/20 rounded-lg border border-green-500/20 mb-3">
+                                    <div class="text-[9px] text-green-400 font-bold">🕊️ Thời Bình</div>
+                                    <div class="text-[8px] text-gray-400">${enemySects.length > 0 ? 'Kẻ địch tiềm tàng: ' + enemySects.join(', ') : 'Không có chiến sự.'}</div>
+                                </div>`}
+                                <button class="w-full py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-bold rounded-lg transition-all"
+                                        onclick="window.game.systems.sect.joinSectWar()">
+                                    <i class="ph ph-sword mr-1"></i> Xuất Chinh Tông Môn Chiến
+                                </button>
+                            </div>
+
+                            <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                                <div class="text-sm font-bold text-white mb-2">💬 Luận Đạo Hội</div>
+                                <p class="text-[10px] text-gray-400 mb-3">Tham gia đối chất linh thức luận đạo cùng đồng môn, so kè ngộ tính để đốn ngộ chân pháp.</p>
+                                <button class="w-full py-2 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-lg transition-all"
+                                        onclick="window.game.screens.systems.handleSectZoneAction('quang_truong', 'debate_dao')">
+                                    <i class="ph ph-brain mr-1"></i> Bắt Đầu Luận Đạo (-20 Linh Lực)
+                                </button>
+                            </div>
+
+                            <!-- SECT MISSIONS -->
+                            <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                                <div class="text-sm font-bold text-white mb-2">📋 Bảng Ủy Thác Nhiệm Vụ</div>
+                                <p class="text-[10px] text-gray-400 mb-3">Nhận nhiệm vụ hàng ngày để tích lũy Cống hiến. ${inWar ? '<span class="text-red-400 font-bold">(Thời Chiến: Kill x2 thưởng)</span>' : ''}</p>
+                                ${state.player.activeSectMissions && state.player.activeSectMissions.length > 0 ? `
+                                    <div class="text-[10px] font-bold text-qi-blue mb-2 uppercase tracking-wider">Đang Thực Hiện (${state.player.activeSectMissions.length}/3)</div>
+                                    <div class="space-y-2 mb-4">
+                                        ${state.player.activeSectMissions.map(m => `
+                                            <div class="p-2 bg-black/40 rounded-lg border border-qi-blue/30 flex justify-between items-center">
+                                                <div>
+                                                    <div class="text-[10px] font-bold text-white">${m.desc}</div>
+                                                    <div class="text-[8px] ${m.current >= m.required ? 'text-green-400' : 'text-gray-500'}">Tiến độ: ${m.type === 'collect' ? state.player.inventory.getItemQuantity(m.target) : m.current}/${m.required}</div>
+                                                </div>
+                                                <div class="flex flex-col space-y-1">
+                                                    <button class="px-2 py-1 bg-green-500/10 text-green-400 text-[8px] font-bold rounded border border-green-500/20" onclick="window.game.systems.sect.completeMission('${m.id}'); window.game.screens.systems.renderSects();">TRẢ</button>
+                                                    <button class="px-2 py-1 bg-red-500/10 text-red-400 text-[8px] font-bold rounded border border-red-500/20" onclick="window.game.systems.sect.abandonMission('${m.id}'); window.game.screens.systems.renderSects();">HỦY</button>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                                <div class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Nhiệm Vụ Có Sẵn</div>
+                                <div class="space-y-2">
+                                    ${window.game?.systems?.sect?.generateMissions().map(m => {
+                                        const isAccepted = state.player.activeSectMissions?.some(active => active.id === m.id);
+                                        return `
+                                        <div class="p-2 bg-black/40 rounded-lg border border-white/5 flex justify-between items-center ${isAccepted ? 'opacity-50' : ''}">
                                             <div>
                                                 <div class="text-[10px] font-bold text-white">${m.desc}</div>
-                                                <div class="text-[8px] ${m.current >= m.required ? 'text-green-400' : 'text-gray-500'}">Tiến độ: ${m.type === 'collect' ? state.player.inventory.getItemQuantity(m.target) : m.current}/${m.required}</div>
+                                                <div class="text-[8px] text-cultivation-gold mt-0.5">Thưởng: ${m.reward.contribution ? '+' + m.reward.contribution + ' CH' : ''} ${m.reward.lingShi ? '+' + m.reward.lingShi + ' LT' : ''} ${m.reward.tuVi ? '+' + m.reward.tuVi + ' TV' : ''}</div>
                                             </div>
-                                            <div class="flex flex-col space-y-1">
-                                                <button class="px-2 py-1 bg-green-500/10 text-green-400 text-[8px] font-bold rounded border border-green-500/20" onclick="window.game.systems.sect.completeMission('${m.id}'); window.game.screens.systems.renderSects();">TRẢ</button>
-                                                <button class="px-2 py-1 bg-red-500/10 text-red-400 text-[8px] font-bold rounded border border-red-500/20" onclick="window.game.systems.sect.abandonMission('${m.id}'); window.game.screens.systems.renderSects();">HỦY</button>
-                                            </div>
+                                            <button class="px-2 py-1 bg-qi-purple/10 text-qi-purple text-[8px] font-bold rounded border border-qi-purple/20 ${isAccepted ? 'hidden' : ''}" onclick="window.game.systems.sect.acceptMission(${JSON.stringify(m).replace(/"/g, '&quot;')}); window.game.screens.systems.renderSects();">
+                                                NHẬN
+                                            </button>
                                         </div>
-                                    `).join('')}
+                                        `;
+                                    }).join('') || '<div class="text-[9px] text-gray-500">Không có nhiệm vụ nào.</div>'}
                                 </div>
-                            ` : ''}
-
-                            <!-- Nhiệm vụ có sẵn -->
-                            <div class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Nhiệm Vụ Có Sẵn Hôm Nay</div>
-                            <div class="space-y-2">
-                                ${window.game?.systems?.sect?.generateMissions().map(m => {
-                                    const isAccepted = state.player.activeSectMissions?.some(active => active.id === m.id);
-                                    return `
-                                    <div class="p-2 bg-black/40 rounded-lg border border-white/5 flex justify-between items-center ${isAccepted ? 'opacity-50' : ''}">
-                                        <div>
-                                            <div class="text-[10px] font-bold text-white">${m.desc}</div>
-                                            <div class="text-[8px] text-cultivation-gold mt-0.5">Thưởng: ${m.reward.contribution ? '+' + m.reward.contribution + ' CH' : ''} ${m.reward.lingShi ? '+' + m.reward.lingShi + ' LT' : ''} ${m.reward.tuVi ? '+' + m.reward.tuVi + ' TV' : ''}</div>
-                                        </div>
-                                        <button class="px-2 py-1 bg-qi-purple/10 text-qi-purple text-[8px] font-bold rounded border border-qi-purple/20 ${isAccepted ? 'hidden' : ''}" onclick="window.game.systems.sect.acceptMission(${JSON.stringify(m).replace(/"/g, '&quot;')}); window.game.screens.systems.renderSects();">
-                                            NHẬN
-                                        </button>
-                                    </div>
-                                `}).join('') || '<div class="text-[9px] text-gray-500">Không có nhiệm vụ nào.</div>'}
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
                 break;
 
             case 'dai_dien':
-                contentHTML = `
-                    <div class="space-y-4">
-                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div class="text-sm font-bold text-white mb-2">🙇 Thỉnh An Tông Chủ</div>
-                            <p class="text-[10px] text-gray-400 mb-3">Cúi chào kính cẩn Tông Chủ tối cao, dâng cống hiến lòng trung thành nhận ân huệ hàng ngày.</p>
-                            <button class="w-full py-2 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/20 text-xs font-bold rounded-lg transition-all"
-                                    onclick="window.game.screens.systems.handleSectZoneAction('dai_dien', 'bow_master')">
-                                <i class="ph ph-crown mr-1"></i> Cúi chào Tông Chủ (Hàng Ngày)
-                            </button>
-                        </div>
+                {
+                    const gm = state.player.grandmasterSeclusion || { isSecluded: true, releaseDay: 30 };
+                    const curDay = state.systems?.time?.totalDays || 0;
+                    const gmOut = curDay >= gm.releaseDay;
+                    const gmLeft = Math.max(0, gm.releaseDay - curDay);
+                    const rank = window.game?.systems?.sect?.getRank();
+                    const inWar = state.player.sectWarStatus && (state.player.sectWarExpiresDay || 0) > curDay;
 
-                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div class="text-sm font-bold text-white mb-2">💰 Bổng Lộc Tông Môn</div>
-                            <p class="text-[10px] text-gray-400 mb-3">Nhận bổng lộc Linh Thạch hàng ngày theo cấp bậc Tông Môn của ngươi.</p>
-                            <button class="w-full py-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 text-xs font-bold rounded-lg transition-all"
-                                    onclick="window.game.systems.sect.claimSalary()">
-                                <i class="ph ph-coins mr-1"></i> Lãnh Bổng Lộc (Hàng Ngày)
-                            </button>
-                        </div>
+                    contentHTML = `
+                        <div class="space-y-4">
+                            <!-- Thái Thượng Bế Quan Card -->
+                            <div class="p-4 bg-black/40 rounded-xl border ${gmOut ? 'border-yellow-500/40' : 'border-gray-700/40'} relative overflow-hidden">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="text-sm font-bold ${gmOut ? 'text-yellow-400' : 'text-gray-400'}">👑 Thái Thượng Trưởng Lão</div>
+                                    <span class="text-[8px] px-2 py-0.5 rounded-full border font-bold ${gmOut ? 'text-yellow-400 border-yellow-500/40 bg-yellow-900/20' : 'text-gray-500 border-gray-600/30 bg-gray-900/20'} uppercase">${gmOut ? '🔓 Đang Ra Quan' : '🔒 Bế Quan'}</span>
+                                </div>
+                                <p class="text-[10px] text-gray-400 mb-3">${gmOut ? 'Thái Thượng ra quan dưỡng pháp — đây là thời cơ hiếm hoi để yết kiến miễn phí!' : `Thái Thượng đang bế quan tu luyện. Ra quan sau <strong class="text-white">${gmLeft} ngày</strong>. Tốn 500 Cống Hiến để quấy nhiễu yết kiến.`}</p>
+                                <button class="w-full py-2 ${gmOut ? 'bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 border-yellow-500/20' : 'bg-gray-800/50 hover:bg-gray-700/50 text-gray-400 border-gray-600/20'} border text-xs font-bold rounded-lg transition-all"
+                                        onclick="window.game.systems.sect.audienceGrandmaster(); window.game.screens.systems.renderSects();">
+                                    <i class="ph ph-crown mr-1"></i> ${gmOut ? 'Yết Kiến Thái Thượng (Miễn Phí)' : 'Yết Kiến Thái Thượng (500 Cống Hiến)'}
+                                </button>
+                            </div>
 
-                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div class="text-sm font-bold text-white mb-2">🧘 Giảng Kinh Phục Pháp</div>
-                            <p class="text-[10px] text-gray-400 mb-3">Nghe giảng pháp giải đáp từ Truyền công Trưởng lão. Chi phí: 100 Linh Thạch dâng trà.</p>
-                            <button class="w-full py-2 bg-qi-purple/10 hover:bg-qi-purple/20 text-qi-purple border border-qi-purple/20 text-xs font-bold rounded-lg transition-all"
-                                    onclick="window.game.screens.systems.handleSectZoneAction('dai_dien', 'listen_lecture')">
-                                <i class="ph ph-student mr-1"></i> Bái nghe Thuyết Pháp (-100 Linh Thạch)
-                            </button>
-                        </div>
+                            <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                                <div class="text-sm font-bold text-white mb-2">💰 Bổng Lộc Tông Môn</div>
+                                <p class="text-[10px] text-gray-400 mb-3">Nhận bổng lộc hàng ngày theo cấp bậc. ${inWar ? '<span class="text-red-400">(Thời Chiến: +50% bổng lộc)</span>' : ''}</p>
+                                <p class="text-[9px] text-cultivation-gold mb-2">Mức hiện tại (${rank?.name}): ${rank?.salary || 0} Linh Thạch/ngày ${inWar ? '→ ' + Math.floor((rank?.salary || 0) * 1.5) : ''}</p>
+                                <button class="w-full py-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 text-xs font-bold rounded-lg transition-all"
+                                        onclick="window.game.systems.sect.claimSalary()">
+                                    <i class="ph ph-coins mr-1"></i> Lãnh Bổng Lộc (Hàng Ngày)
+                                </button>
+                            </div>
 
-                        <div class="p-4 bg-black/40 rounded-xl border border-white/5">
-                            <div class="text-sm font-bold text-white mb-2">🏅 Khảo Hạch Thăng Cấp</div>
-                            <p class="text-[10px] text-gray-400 mb-3">Yêu cầu Chấp Sự Trưởng Lão kiểm tra Cảnh Giới và Cống Hiến để thăng cấp chức vụ trong Tông Môn.</p>
-                            <button class="w-full py-2 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-lg transition-all"
-                                    onclick="window.game.systems.sect.checkPromotion(); window.game.screens.systems.renderSects();">
-                                <i class="ph ph-medal mr-1"></i> Xin Thăng Cấp
-                            </button>
+                            <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                                <div class="text-sm font-bold text-white mb-2">🧘 Giảng Kinh Phục Pháp</div>
+                                <p class="text-[10px] text-gray-400 mb-3">Nghe giảng pháp từ Truyền công Trưởng lão. Chi phí: 100 Linh Thạch.</p>
+                                <button class="w-full py-2 bg-qi-purple/10 hover:bg-qi-purple/20 text-qi-purple border border-qi-purple/20 text-xs font-bold rounded-lg transition-all"
+                                        onclick="window.game.screens.systems.handleSectZoneAction('dai_dien', 'listen_lecture')">
+                                    <i class="ph ph-student mr-1"></i> Bái nghe Thuyết Pháp (-100 Linh Thạch)
+                                </button>
+                            </div>
+
+                            <div class="p-4 bg-black/40 rounded-xl border border-white/5">
+                                <div class="text-sm font-bold text-white mb-2">🏅 Khảo Hạch Thăng Cấp</div>
+                                <p class="text-[10px] text-gray-400 mb-3">Yêu cầu Chấp Sự kiểm tra Cảnh Giới và Cống Hiến để thăng cấp chức vụ trong Tông Môn.</p>
+                                <button class="w-full py-2 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue border border-qi-blue/20 text-xs font-bold rounded-lg transition-all"
+                                        onclick="window.game.systems.sect.checkPromotion(); window.game.screens.systems.renderSects();">
+                                    <i class="ph ph-medal mr-1"></i> Xin Thăng Cấp
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
                 break;
+
 
             case 'tang_kinh_cac':
                 {

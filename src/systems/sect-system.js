@@ -1,4 +1,4 @@
-import { SECTS, SECT_RANKS } from '../configs/sect-data.js';
+import { SECTS, SECT_RANKS, GRANDMASTER_REWARDS } from '../configs/sect-data.js';
 import { getRealmById } from '../configs/realm-data.js';
 import { EnemyGenerator } from '../core/enemy.js';
 import { getItemById } from '../configs/item-data.js';
@@ -35,11 +35,28 @@ export class SectSystem {
 
     leaveSect() {
         if (!this.player.sectId) return;
+        const sect = this.getSect();
+        const currentDay = window.game?.systems?.time?.totalDays || 0;
+
+        // Ghi Lệnh Truy Sát 30 ngày
+        this.player.sectWanted = {
+            sectId: this.player.sectId,
+            sectName: sect ? sect.name : 'Tông Môn Cũ',
+            expiresDay: currentDay + 30
+        };
+
         this.player.sectId = null;
         this.player.sectRank = 'ngoai_mon';
         this.player.sectContribution = 0;
         this.player.activeSectMissions = [];
-        if (this.ui) this.ui.toast(`Đã rời khỏi Tông Môn. Trở thành tán tu!`, "warning");
+        this.player.sectWarStatus = false;
+
+        if (this.ui) {
+            this.ui.toast(`Phản Tông Xuất Môn! Lệnh Truy Sát được ban bố — các tu sĩ tông môn cũ sẽ truy sát ngươi trong 30 ngày!`, 'error');
+            if (window.game?.systems?.npc) {
+                window.game.systems.npc.addNews(`[Tông Môn] ${this.player.name} phản tông xuất môn khỏi ${sect?.name}! Lệnh truy sát được tuyên bố!`);
+            }
+        }
     }
 
     checkPromotion() {
@@ -253,21 +270,164 @@ export class SectSystem {
     }
 
     getLibraryItems() {
-        // Tàng Kinh Các items mapped to minRankScore
+        // Ưu tiên libraryItems riêng của sect, fallback về list chung
+        const sect = this.getSect();
+        if (sect && sect.libraryItems && sect.libraryItems.length > 0) {
+            return sect.libraryItems;
+        }
+        // Default fallback list
         return [
             { id: 'item_truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
             { id: 'item_ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'tech_kiem_quyet', name: 'Kiếm Quyết Cơ Bản', price: 500, type: 'contribution', minRankScore: 0, isTech: true },
-            
             { id: 'item_ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
             { id: 'tech_thuong_thien_kiem', name: 'Thượng Thiên Kiếm Khí', price: 2000, type: 'contribution', minRankScore: 1, isTech: true },
-            
             { id: 'item_nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
             { id: 'tech_van_kiem_quyet', name: 'Vạn Kiếm Quy Tông', price: 10000, type: 'contribution', minRankScore: 2, isTech: true },
-            
             { id: 'item_hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 },
             { id: 'tech_thien_dao_phap', name: 'Thiên Đạo Vô Vị Pháp', price: 30000, type: 'contribution', minRankScore: 3, isTech: true },
         ];
+    }
+
+    getNextRankRequirements() {
+        const rankKeys = Object.keys(SECT_RANKS);
+        const currentIdx = rankKeys.indexOf(this.player.sectRank || 'ngoai_mon');
+        if (currentIdx === -1 || currentIdx >= rankKeys.length - 1) return null;
+        const nextRank = SECT_RANKS[rankKeys[currentIdx + 1]];
+        const realmProgress = Math.min(1, this.player.realmId / nextRank.minRealm);
+        const conProgress = Math.min(1, (this.player.sectContribution || 0) / nextRank.minContribution);
+        return {
+            rank: nextRank,
+            realmProgress,
+            conProgress,
+            realmMet: this.player.realmId >= nextRank.minRealm,
+            conMet: (this.player.sectContribution || 0) >= nextRank.minContribution,
+        };
+    }
+
+    joinSectWar() {
+        if (!this.player.sectId) {
+            if (this.ui) this.ui.toast('Cần gia nhập Tông Môn trước!', 'error');
+            return;
+        }
+        const sect = this.getSect();
+        const enemies = sect.enemySects || [];
+        if (enemies.length === 0) {
+            if (this.ui) this.ui.toast('Tông Môn hiện đang trong thời bình, không có chiến sự.', 'info');
+            return;
+        }
+        const enemySectId = enemies[Math.floor(Math.random() * enemies.length)];
+        const enemySect = SECTS[enemySectId];
+        const enemySectName = enemySect ? enemySect.name : 'Tông Môn Địch';
+
+        if (this.ui) {
+            this.ui.confirm(
+                `Ngươi muốn xuất chinh chiến đấu chống lại ${enemySectName}? Đây là trận chiến sinh tử vì danh dự tông môn!`,
+                'Tông Môn Chiến'
+            ).then(confirmed => {
+                if (!confirmed) return;
+                const currentDay = window.game?.systems?.time?.totalDays || 0;
+                this.player.sectWarStatus = true;
+                this.player.sectWarExpiresDay = currentDay + 14;
+
+                const enemyRealm = Math.max(1, this.player.realmId + 1);
+                const enemy = EnemyGenerator.generate(enemyRealm);
+                enemy.name = `Chiến Binh ${enemySectName}`;
+                enemy.inventory = [];
+
+                this.ui.toast(`Lao vào trận chiến với ${enemySectName}!`, 'info');
+                setTimeout(() => {
+                    window.game.startBattle(enemy, null, (isWin) => {
+                        if (isWin) {
+                            const reward = 300 * (this.getRank().rankScore + 1);
+                            this.player.sectContribution += reward;
+                            this.ui.toast(`Đại thắng! Tông Môn thưởng +${reward} Cống Hiến và Chiến Công Hiệu!`, 'success');
+                            if (window.game?.systems?.npc) {
+                                window.game.systems.npc.addNews(`[Chiến Sự] ${this.player.name} đại thắng chiến binh ${enemySectName}, giành vinh quang cho ${sect.name}!`);
+                            }
+                        } else {
+                            this.ui.toast('Bại trận! Rút lui về tông môn dưỡng thương.', 'error');
+                        }
+                        setTimeout(() => {
+                            if (window.game?.screens?.systems) window.game.screens.systems.renderSects();
+                        }, 1200);
+                    });
+                }, 800);
+            });
+        }
+    }
+
+    audienceGrandmaster() {
+        if (!this.player.sectId) return;
+        const COST = 500; // Cống Hiến để yết kiến
+        const currentDay = window.game?.systems?.time?.totalDays || 0;
+        const gm = this.player.grandmasterSeclusion;
+
+        // Tính trạng thái bế quan
+        if (!gm) {
+            this.player.grandmasterSeclusion = { isSecluded: false, releaseDay: currentDay + 30 };
+        }
+
+        // Cập nhật trạng thái bế quan theo ngày
+        if (currentDay >= this.player.grandmasterSeclusion.releaseDay) {
+            this.player.grandmasterSeclusion.isSecluded = false;
+        }
+
+        if (this.player.grandmasterSeclusion.isSecluded) {
+            const daysLeft = this.player.grandmasterSeclusion.releaseDay - currentDay;
+            // Trả phí để vẫn yết kiến trong khi bế quan
+            if ((this.player.sectContribution || 0) < COST) {
+                if (this.ui) this.ui.toast(`Thái Thượng đang Bế Quan — cần ${COST} Cống Hiến để quấy nhiễu, nhưng ngươi không đủ! (Còn ${daysLeft} ngày mới ra quan)`, 'error');
+                return;
+            }
+            if (this.ui) {
+                this.ui.confirm(
+                    `Thái Thượng đang Bế Quan (còn ${daysLeft} ngày). Tốn ${COST} Cống Hiến để quấy nhiễu yết kiến?`,
+                    'Yết Kiến Thái Thượng'
+                ).then(ok => { if (ok) this._grantGrandmasterReward(COST); });
+            }
+        } else {
+            // Đang ra quan — yết kiến miễn phí
+            if (this.ui) {
+                this.ui.confirm(
+                    `Thái Thượng đang ra quan luyện tập. Đây là cơ hội hiếm hoi để yết kiến tầm đạo!`,
+                    'Yết Kiến Thái Thượng'
+                ).then(ok => {
+                    if (ok) {
+                        this._grantGrandmasterReward(0);
+                        // Sau khi yết kiến, Thái Thượng bế quan 60 ngày nữa
+                        this.player.grandmasterSeclusion.isSecluded = true;
+                        this.player.grandmasterSeclusion.releaseDay = currentDay + 60;
+                    }
+                });
+            }
+        }
+    }
+
+    _grantGrandmasterReward(cost) {
+        if (cost > 0) this.player.sectContribution -= cost;
+        // Weighted random reward
+        const rewards = GRANDMASTER_REWARDS;
+        const totalWeight = rewards.reduce((s, r) => s + r.weight, 0);
+        let roll = Math.random() * totalWeight;
+        let chosen = rewards[0];
+        for (const r of rewards) {
+            roll -= r.weight;
+            if (roll <= 0) { chosen = r; break; }
+        }
+        const resultText = chosen.effect(this.player);
+        if (this.ui) {
+            this.ui.alert(
+                `${chosen.desc}.\n\n✨ Kết quả: ${resultText}`,
+                'Ân Huệ Thái Thượng'
+            );
+        }
+        if (window.game?.systems?.npc) {
+            window.game.systems.npc.addNews(`[Tông Môn] ${this.player.name} được Thái Thượng yết kiến ban thưởng đặc ân!`);
+        }
+        this.player.grandmasterSeclusion.isSecluded = true;
+        const currentDay = window.game?.systems?.time?.totalDays || 0;
+        this.player.grandmasterSeclusion.releaseDay = currentDay + 60;
     }
 
     buyLibraryItem(itemId, price, isTech, itemName) {

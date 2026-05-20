@@ -9,6 +9,24 @@ export const SECT_RANKS = {
     'tong_chu': { id: 'tong_chu', name: 'Tông Chủ', minRealm: 40, minContribution: 25000, salary: 5000, rankScore: 5 }
 };
 
+// Môn Quy — Luật lệ tông môn (hiển thị và có hiệu lực thực)
+export const SECT_RULES = [
+    { id: 'rule_1', icon: '⚔️', title: 'Cấm Đồ Sát Đồng Môn', desc: 'Giết đồng môn bị trục xuất và dính Lệnh Truy Sát 60 ngày.', penalty: 'expel' },
+    { id: 'rule_2', icon: '📚', title: 'Cấm Đánh Cắp Tàng Kinh Các', desc: 'Ăn trộm bí tịch bị phế tu vi và tịch thu toàn bộ Cống Hiến.', penalty: 'purge_contribution' },
+    { id: 'rule_3', icon: '🏃', title: 'Phản Tông Xuất Môn', desc: 'Tự rời môn phái bị ghi vào sổ Phản Đồ, dính Lệnh Truy Sát 30 ngày.', penalty: 'wanted_30' },
+    { id: 'rule_4', icon: '💰', title: 'Nộp Cống Định Kỳ', desc: 'Không nộp Cống Hiến quá 90 ngày bị hạ xuống Ngoại Môn.', penalty: 'demote' },
+    { id: 'rule_5', icon: '🤐', title: 'Bảo Mật Tông Bí', desc: 'Tiết lộ tông bí cho ngoại nhân bị phế toàn bộ cấp bậc và trục xuất.', penalty: 'expel' },
+    { id: 'rule_6', icon: '🙇', title: 'Tôn Trọng Thứ Bậc', desc: 'Thái Thượng Bế Quan không được quấy nhiễu — chỉ được yết kiến khi ra quan hoặc tốn Cống Hiến.', penalty: 'warning' },
+];
+
+// Phần thưởng yết kiến Thái Thượng
+export const GRANDMASTER_REWARDS = [
+    { id: 'gm_tuvi', weight: 40, desc: 'Thái Thượng truyền thụ khẩu quyết vận khí', effect: (p) => { p.tuVi += 5000; return '+5,000 Tu Vi'; } },
+    { id: 'gm_buff', weight: 30, desc: 'Thái Thượng hộ đạo gia trì 3 ngày tu luyện gấp đôi', effect: (p) => { p.addBuff({ id: 'gm_blessing', stat: 'tuViSpeed', value: 2.0, duration: 3 * 86400000 }); return 'Buff tu luyện x2 trong 3 ngày'; } },
+    { id: 'gm_item', weight: 20, desc: 'Thái Thượng ban thưởng Ngưng Khí Đan', effect: (p) => { p.inventory.addItem('item_ngung_khi_dan', 3); return '+3 Ngưng Khí Đan'; } },
+    { id: 'gm_insight', weight: 10, desc: 'Thái Thượng chỉ điểm đạo lý, Ngộ tính đột phá', effect: (p) => { p.comprehension = Math.min(100, (p.comprehension || 10) + 5); return '+5 Ngộ Tính'; } },
+];
+
 export const SECTS = {
     // --- Original 3 Sects ---
     'thien_kiem_tong': {
@@ -21,6 +39,16 @@ export const SECTS = {
         missions: [
             { id: 'tk_1', name: 'Tuần tra ngoại môn', desc: 'Đuổi khéo bọn yêu thú quấy phá ruộng linh thảo.', reward: { contribution: 10, lingShi: 50 }, stamina: 20 },
             { id: 'tk_2', name: 'Rèn luyện kiếm ý', desc: 'Đứng dưới thác nước luyện kiếm 4 canh giờ.', reward: { contribution: 20, tuVi: 500 }, stamina: 40 }
+        ],
+        enemySects: ['cu_kiem_mon', 'hoa_dao_o'],
+        libraryItems: [
+            { id: 'item_truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
+            { id: 'tech_kiem_quyet', name: 'Kiếm Quyết Cơ Bản', price: 500, type: 'contribution', minRankScore: 0, isTech: true },
+            { id: 'item_ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
+            { id: 'tech_thuong_thien_kiem', name: 'Thượng Thiên Kiếm Khí', price: 2000, type: 'contribution', minRankScore: 1, isTech: true },
+            { id: 'tech_van_kiem_quyet', name: 'Vạn Kiếm Quy Tông', price: 10000, type: 'contribution', minRankScore: 2, isTech: true },
+            { id: 'item_hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 },
+            { id: 'tech_thien_dao_phap', name: 'Thiên Kiếm Nhất Khí Quyết', price: 30000, type: 'contribution', minRankScore: 3, isTech: true },
         ]
     },
     'hoang_phong_coc': {
@@ -33,6 +61,16 @@ export const SECTS = {
         missions: [
             { id: 'hp_1', name: 'Trồng Linh Dược', desc: 'Chăm sóc và thu hoạch linh dược tại dược viên.', reward: { contribution: 10, lingShi: 30 }, stamina: 20 },
             { id: 'hp_2', name: 'Tuần tra cốc khẩu', desc: 'Canh gác lối vào tông môn, phòng ngừa tán tu quấy phá.', reward: { contribution: 15, tuVi: 300 }, stamina: 30 }
+        ],
+        enemySects: ['huyen_am_coc', 'quy_linh_mon'],
+        libraryItems: [
+            { id: 'item_ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
+            { id: 'item_truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
+            { id: 'tech_kiem_quyet', name: 'Ngũ Hành Thuật Pháp Cơ Yếu', price: 600, type: 'contribution', minRankScore: 0, isTech: true },
+            { id: 'item_ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
+            { id: 'tech_thuong_thien_kiem', name: 'Hoàng Phong Ngũ Hành Quyết', price: 2200, type: 'contribution', minRankScore: 1, isTech: true },
+            { id: 'item_nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
+            { id: 'tech_thien_dao_phap', name: 'Thiên Địa Ngũ Hành Đại Pháp', price: 30000, type: 'contribution', minRankScore: 3, isTech: true },
         ]
     },
     'huyen_am_coc': {
@@ -45,6 +83,16 @@ export const SECTS = {
         missions: [
             { id: 'ha_1', name: 'Thu thập âm khí', desc: 'Vào sâu trong cốc thu thập u minh chi khí.', reward: { contribution: 15, lingShi: 70 }, stamina: 25 },
             { id: 'ha_2', name: 'Luyện chế thi khôi', desc: 'Hỗ trợ trưởng lão luyện chế khôi lỗi.', reward: { contribution: 25, tuVi: 600 }, stamina: 45 }
+        ],
+        enemySects: ['thien_kiem_tong', 'lac_van_tong'],
+        libraryItems: [
+            { id: 'item_truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
+            { id: 'tech_kiem_quyet', name: 'Huyền Âm Chỉ Pháp', price: 500, type: 'contribution', minRankScore: 0, isTech: true },
+            { id: 'item_ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
+            { id: 'tech_thuong_thien_kiem', name: 'U Minh Âm Sát Kinh', price: 2500, type: 'contribution', minRankScore: 1, isTech: true },
+            { id: 'item_nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
+            { id: 'tech_van_kiem_quyet', name: 'Huyền Âm Ma Công Đại Thành', price: 10000, type: 'contribution', minRankScore: 2, isTech: true },
+            { id: 'item_hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 },
         ]
     },
 
@@ -228,3 +276,5 @@ export const SECTS = {
 };
 
 export const getSectById = (id) => SECTS[id];
+export const getSectRules = () => SECT_RULES;
+export const getGrandmasterRewards = () => GRANDMASTER_REWARDS;

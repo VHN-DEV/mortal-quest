@@ -100,6 +100,13 @@ export class Player {
         this.sectRank = 'ngoai_mon';
         this.activeSectMissions = [];
         this.sectTournamentYear = -1;
+        this.sectWanted = null;       // { sectId, sectName, expiresDay } — Lệnh Truy Sát
+        this.sectWarStatus = false;   // Đang trong tình trạng Tông Môn Chiến
+        this.sectWarExpiresDay = -1;  // Ngày kết thúc trạng thái chiến
+        this.grandmasterSeclusion = { // Thái Thượng Bế Quan state
+            isSecluded: true,
+            releaseDay: 30            // Ngày Thái Thượng ra quan lần đầu
+        };
 
         // Destiny properties
         this.age = 18;
