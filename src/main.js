@@ -1085,12 +1085,13 @@ window.renderCreationScreen = () => {
                 const color = ELEMENT_COLORS[elName];
                 return `
                                 <button onclick="window.game.selectCreationMutatedElement('${elName}')" 
-                                    class="p-3 rounded-xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer select-none
+                                    class="p-3 rounded-xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer select-none relative group
                                     ${elActive ? 'bg-qi-purple/10 border-qi-purple text-white shadow-lg' : 'bg-black/30 border-white/5 text-gray-400 hover:border-white/10 hover:text-white'}"
                                     style="${elActive ? `border-color: ${color} !important; box-shadow: 0 0 8px ${color}40 !important;` : ''}">
                                     <span class="text-xl filter drop-shadow" style="${elActive ? `text-shadow: 0 0 10px ${color}` : ''}">${el.icon}</span>
                                     <span class="text-[9px] font-ancient font-bold" style="color: ${elActive ? color : ''}">${elName}</span>
                                     <span class="text-[7px] text-gray-500 leading-none">${el.orientation}</span>
+                                    ${el.origin ? `<div class="absolute -bottom-8 left-1/2 -translate-x-1/2 w-max max-w-[120px] bg-black/90 text-white text-[7px] px-2 py-1 rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 break-words">${el.origin}</div>` : ''}
                                 </button>
                             `;
             }).join('')}

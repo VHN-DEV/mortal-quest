@@ -815,7 +815,6 @@ export class Player {
             energies = loc.energies;
         }
 
-        // Get player root proportions (standardize to sum to 1.0)
         let proportions = {};
         if (this.spiritualRoot) {
             if (this.spiritualRoot.proportions) {
@@ -834,6 +833,18 @@ export class Player {
             // Default Phàm Nhân or no root (balanced elements)
             proportions = { 'Kim': 0.2, 'Mộc': 0.2, 'Thủy': 0.2, 'Hỏa': 0.2, 'Thổ': 0.2 };
         }
+
+        // Check if we need SPECIAL_ELEMENTS from creation-data.js
+        // We will assume window.SPECIAL_ELEMENTS or we can just redefine the base mapping here if needed.
+        // Let's define the mutated base mapping locally to avoid import issues if not already imported.
+        const mutatedBases = {
+            'Lôi': ['Kim', 'Thủy'],
+            'Băng': ['Thủy'],
+            'Phong': ['Mộc', 'Thổ'],
+            'Độc': ['Mộc'],
+            'Quang': ['Kim', 'Hỏa'],
+            'Ám': ['Thủy', 'Thổ']
+        };
 
         // Get location specific elementQi or default balanced
         const defaultQi = {
@@ -860,7 +871,22 @@ export class Player {
         
         // Sum up Qi absorption for each of player's root elements
         Object.entries(proportions).forEach(([elName, elPct]) => {
-            const pct = elementQi[elName] || 0;
+            let pct = elementQi[elName] || 0;
+            
+            // If it's a mutated element and the direct element is low, try absorbing from base elements at reduced efficiency
+            if (mutatedBases[elName]) {
+                let basePctSum = 0;
+                mutatedBases[elName].forEach(baseEl => {
+                    basePctSum += elementQi[baseEl] || 0;
+                });
+                // Base elements convert to mutated Qi at 40% efficiency
+                const convertedPct = basePctSum * 0.4;
+                // Take whichever is higher: direct mutated Qi or converted base Qi
+                if (convertedPct > pct) {
+                    pct = convertedPct;
+                }
+            }
+
             // Get elemental Qi from composition grid
             let elQi = areaConcentration * (pct / 20);
             

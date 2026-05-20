@@ -170,31 +170,43 @@ export const SPECIAL_ELEMENTS = {
     'Lôi': {
         id: 'Lôi', name: 'Lôi', color: '#fbbf24', icon: '⚡',
         orientation: 'Tốc độ, Bạo phát',
+        origin: 'Dung hợp Kim & Thủy',
+        baseElements: ['Kim', 'Thủy'],
         bonus: { spd: 50, critRate: 0.1, thunderDmg: 2.5 }
     },
     'Băng': {
         id: 'Băng', name: 'Băng', color: '#60a5fa', icon: '❄️',
         orientation: 'Đóng băng, Khống chế',
+        origin: 'Dị biến từ Thủy',
+        baseElements: ['Thủy'],
         bonus: { def: 60, waterDmg: 2.0, iceControl: 0.2 }
     },
     'Phong': {
         id: 'Phong', name: 'Phong', color: '#94a3b8', icon: '🌪️',
         orientation: 'Né tránh, Ám sát',
+        origin: 'Dung hợp Mộc & Thổ',
+        baseElements: ['Mộc', 'Thổ'],
         bonus: { avoidRate: 0.15, spd: 80, critDmg: 0.3 }
     },
     'Độc': {
         id: 'Độc', name: 'Độc', color: '#c084fc', icon: '☠️',
         orientation: 'Nguyền rủa, Hấp thụ',
+        origin: 'Dị biến từ Mộc',
+        baseElements: ['Mộc'],
         bonus: { poisonDmg: 2.0, lifesteal: 0.1, dotDmg: 0.2 }
     },
     'Quang': {
         id: 'Quang', name: 'Quang', color: '#fffbeb', icon: '☀️',
         orientation: 'Trị liệu, Tịnh hóa',
+        origin: 'Dị biến cực hiếm',
+        baseElements: ['Kim', 'Hỏa'],
         bonus: { maxHp: 500, avoidRate: 0.1, allRes: 0.15 }
     },
     'Ám': {
         id: 'Ám', name: 'Ám', color: '#a855f7', icon: '🌙',
         orientation: 'Thôn phệ, Nguyền rủa',
+        origin: 'Dị biến cực hiếm',
+        baseElements: ['Thủy', 'Thổ'],
         bonus: { lifesteal: 0.2, critRate: 0.1, critDmg: 0.2 }
     }
 };
