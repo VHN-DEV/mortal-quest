@@ -303,4 +303,15 @@
             </div>
         </div>
     </div>
+
+    <!-- Avatar Preview Full Modal -->
+    <div id="creation-avatar-full-modal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[2000] hidden flex-col items-center justify-center p-4 animate-fade-in pointer-events-auto" onclick="window.game.closeAvatarPreview()">
+        <button onclick="window.game.closeAvatarPreview(); event.stopPropagation();" class="absolute top-6 right-6 w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-gray-400 hover:text-white flex items-center justify-center transition-all z-[2001]">
+            <i class="ph ph-x text-lg"></i>
+        </button>
+        <div class="relative max-w-full max-h-[85vh] flex items-center justify-center" onclick="event.stopPropagation()">
+            <img id="creation-avatar-full-img" src="" class="max-w-full max-h-[85vh] object-contain rounded-2xl border-2 border-cultivation-gold/30 shadow-[0_0_50px_rgba(212,175,55,0.15)]">
+        </div>
+        <div id="creation-avatar-full-name" class="mt-6 text-cultivation-gold font-ancient text-2xl uppercase tracking-[0.2em] font-bold drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]"></div>
+    </div>
 </div>

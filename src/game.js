@@ -2377,4 +2377,25 @@ export class Game {
         const res = state.systems.mining.abandonNode(nodeId);
         if (res.success && this.screens.mining) this.screens.mining.render();
     }
+
+    previewAvatar(url, name) {
+        const modal = document.getElementById('creation-avatar-full-modal');
+        const img = document.getElementById('creation-avatar-full-img');
+        const nameEl = document.getElementById('creation-avatar-full-name');
+        
+        if (modal && img && nameEl) {
+            img.src = url;
+            nameEl.textContent = name;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    }
+
+    closeAvatarPreview() {
+        const modal = document.getElementById('creation-avatar-full-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    }
 }

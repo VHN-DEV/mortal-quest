@@ -947,6 +947,10 @@ window.renderCreationScreen = () => {
                                     <i class="ph ph-check text-[10px] text-qi-ink font-bold"></i>
                                 </div>
                             ` : ''}
+                            <button onclick="event.stopPropagation(); window.game.previewAvatar('${url}', '${p.name}')" 
+                                class="absolute bottom-1 right-1 w-6 h-6 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-qi-blue/80 z-10 text-white shadow-lg border border-white/20">
+                                <i class="ph ph-magnifying-glass-plus text-xs"></i>
+                            </button>
                         </div>
                         <span class="text-[7.5px] text-gray-400 group-hover:text-white font-ancient font-semibold uppercase tracking-wider truncate w-full text-center transition-colors">
                             ${p.name}
