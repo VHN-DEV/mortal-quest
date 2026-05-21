@@ -2123,6 +2123,11 @@ export class Game {
                 const tuvi = combat.enemy.realmId * 50;
                 state.player.addTuVi(tuvi);
                 state.ui.toast(`Chiến thắng! Nhận được ${tuvi} Tu Vi.`, 'success');
+
+                // Update Sect Mission progress
+                if (state.player.sectId && window.game.systems?.sect) {
+                    window.game.systems.sect.updateMissionProgress('kill', combat.enemy.name || '', 1);
+                }
             }
         } else if (result === 'lose') {
             window.game.handleDeath();

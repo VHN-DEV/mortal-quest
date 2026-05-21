@@ -4,6 +4,121 @@ import { EnemyGenerator } from '../core/enemy.js';
 import { getItemById } from '../configs/item-data.js';
 import { NPCAI } from './npc-ai.js';
 import { getTechniqueById, getSecretTechniqueById } from '../configs/technique-data.js';
+import { findLocationName, findWorldIdByLocId, getLocationById } from '../configs/map-data.js';
+
+const MISSION_TIERS = {
+    0: {
+        levelName: 'Phàm Giai',
+        collectTargets: [
+            { id: 'linh_thao_thap', name: 'Linh Thảo Thấp Phẩm', quantityRange: [5, 10] },
+            { id: 'seed_linh_thao', name: 'Linh Chủng Linh Thảo', quantityRange: [3, 8] }
+        ],
+        killLocations: [
+            { id: 'thanh_nguu_tran', name: 'Thanh Ngưu Trấn' },
+            { id: 'that_huyen_mon', name: 'Thất Huyền Môn' },
+            { id: null, name: 'Tự tìm' }
+        ],
+        killQuantityRange: [5, 10],
+        rewards: {
+            contributionRange: [20, 40],
+            lingShiRange: [100, 200],
+            tuViRange: [200, 400],
+            items: ['ngung_khi_dan', 'tich_coc_dan', 'hoi_huyet_dan'],
+            techniques: ['truong_xuan_nap_khi_quyet']
+        }
+    },
+    1: {
+        levelName: 'Linh Giai',
+        collectTargets: [
+            { id: 'linh_thao_trung', name: 'Linh Thảo Trung Phẩm', quantityRange: [4, 8] },
+            { id: 'linh_thao_10y', name: 'Linh Thảo 10 năm', quantityRange: [3, 6] }
+        ],
+        killLocations: [
+            { id: 'thai_nhac_son_mach', name: 'Thái Nhạc Sơn Mạch' },
+            { id: 'gia_nguyen_thanh', name: 'Gia Nguyên Thành' },
+            { id: null, name: 'Tự tìm' }
+        ],
+        killQuantityRange: [8, 15],
+        rewards: {
+            contributionRange: [50, 90],
+            lingShiRange: [300, 600],
+            tuViRange: [600, 1000],
+            items: ['truc_co_dan', 'thanh_tam_dan'],
+            techniques: ['liet_duong_cong', 'han_thuy_quyet']
+        }
+    },
+    2: {
+        levelName: 'Huyền Giai',
+        collectTargets: [
+            { id: 'linh_thao_100y', name: 'Linh Thảo 100 năm', quantityRange: [3, 5] },
+            { id: 'hoa_diem_thao', name: 'Hỏa Diễm Thảo', quantityRange: [2, 4] }
+        ],
+        killLocations: [
+            { id: 'thai_nam_coc', name: 'Thái Nam Cốc' },
+            { id: 'thien_tinh_tong', name: 'Thiên Tinh Tông' },
+            { id: null, name: 'Tự tìm' }
+        ],
+        killQuantityRange: [12, 18],
+        bossTargets: [
+            { name: 'Ma Tu Tà Ác', realmId: 15, hp: 15000, atk: 800, def: 400, spd: 40, locations: ['thai_nam_coc', 'thien_tinh_tong'] }
+        ],
+        rewards: {
+            contributionRange: [120, 200],
+            lingShiRange: [800, 1500],
+            tuViRange: [1500, 2500],
+            items: ['ket_dan_dan', 'song_tu_dieu_dan'],
+            techniques: ['tech_kiem_quyet', 'tech_thuong_thien_kiem']
+        }
+    },
+    3: {
+        levelName: 'Địa Giai',
+        collectTargets: [
+            { id: 'linh_thao_1000y', name: 'Linh Thảo 1000 năm', quantityRange: [2, 4] },
+            { id: 'u_minh_hoa', name: 'U Minh Hoa', quantityRange: [2, 3] }
+        ],
+        killLocations: [
+            { id: 'huyet_sac_cam_dia', name: 'Huyết Sắc Cấm Địa' },
+            { id: 'lac_van_tong', name: 'Lạc Vân Tông' },
+            { id: null, name: 'Tự tìm' }
+        ],
+        killQuantityRange: [15, 22],
+        bossTargets: [
+            { name: 'Yêu Thú Thủ Lĩnh', realmId: 25, hp: 45000, atk: 2500, def: 1200, spd: 70, locations: ['huyet_sac_cam_dia', 'lac_van_tong'] },
+            { name: 'Ma Tu Trưởng Lão', realmId: 28, hp: 55000, atk: 3200, def: 1500, spd: 80, locations: ['quy_linh_mon', 'ma_diem_mon'] }
+        ],
+        rewards: {
+            contributionRange: [300, 500],
+            lingShiRange: [2500, 4500],
+            tuViRange: [5000, 8000],
+            items: ['nguyen_anh_dan', 'hoa_nguyen_dan'],
+            techniques: ['tech_van_kiem_quyet']
+        }
+    },
+    4: {
+        levelName: 'Thiên Giai',
+        collectTargets: [
+            { id: 'linh_thao_van_nam', name: 'Linh Thảo Vạn Năm', quantityRange: [1, 2] },
+            { id: 'tien_tinh', name: 'Tiên Tinh', quantityRange: [2, 4] }
+        ],
+        killLocations: [
+            { id: 'mo_lan_thao_nguyen', name: 'Mộ Lan Thảo Nguyên' },
+            { id: 'thien_la_quoc', name: 'Thiên La Quốc' },
+            { id: null, name: 'Tự tìm' }
+        ],
+        killQuantityRange: [20, 30],
+        bossTargets: [
+            { name: 'Yêu Vương Thượng Cổ', realmId: 35, hp: 120000, atk: 7500, def: 3500, spd: 110, locations: ['mo_lan_thao_nguyen', 'dot_ngot_thanh_dien'] },
+            { name: 'Cổ Ma Đầu Vô Tự', realmId: 40, hp: 180000, atk: 11000, def: 5000, spd: 130, locations: ['thien_la_quoc', 'thien_sat_tong'] }
+        ],
+        rewards: {
+            contributionRange: [800, 1500],
+            lingShiRange: [8000, 15000],
+            tuViRange: [15000, 30000],
+            items: ['hoa_than_dan', 'tien_ngoc'],
+            techniques: ['tech_thien_dao_phap']
+        }
+    }
+};
 
 export class SectSystem {
     constructor(player, ui) {
@@ -108,67 +223,138 @@ export class SectSystem {
         const sect = this.getSect();
         if (!sect) return [];
         const rank = this.getRank();
+        const rankScore = Math.min(4, rank.rankScore || 0);
 
-        // 3 types: collect, kill, interact
         const missions = [];
-        
-        // Use time to make sure they refresh daily
         const currentDay = window.game && window.game.systems && window.game.systems.time ? window.game.systems.time.totalDays : 0;
         
-        // Seeded random for consistent daily missions
-        const seed = currentDay * 100 + rank.rankScore;
+        let seed = currentDay * 100 + rankScore;
         const random = () => {
             let x = Math.sin(seed++) * 10000;
             return x - Math.floor(x);
         };
 
-        const generateCollectMission = () => {
-            const items = ['linh_thao', 'huyen_thi_thao', 'bang_linh_qua', 'linh_thach_trung', 'tinh_thiet'];
-            const item = items[Math.floor(random() * items.length)];
-            const itemData = getItemById('item_' + item) || { name: item };
-            const req = 5 + Math.floor(random() * 10) * (rank.rankScore + 1);
+        const tier = MISSION_TIERS[rankScore] || MISSION_TIERS[0];
+
+        const generateCollect = (levelOffset = 0) => {
+            const activeRankScore = Math.max(0, rankScore + levelOffset);
+            const activeTier = MISSION_TIERS[activeRankScore] || MISSION_TIERS[0];
+            const target = activeTier.collectTargets[Math.floor(random() * activeTier.collectTargets.length)];
+            const qty = target.quantityRange[0] + Math.floor(random() * (target.quantityRange[1] - target.quantityRange[0] + 1));
+            
+            const contribution = activeTier.rewards.contributionRange[0] + Math.floor(random() * (activeTier.rewards.contributionRange[1] - activeTier.rewards.contributionRange[0] + 1));
+            const lingShi = activeTier.rewards.lingShiRange[0] + Math.floor(random() * (activeTier.rewards.lingShiRange[1] - activeTier.rewards.lingShiRange[0] + 1));
+            const tuVi = activeTier.rewards.tuViRange[0] + Math.floor(random() * (activeTier.rewards.tuViRange[1] - activeTier.rewards.tuViRange[0] + 1));
+            
+            const extraReward = {};
+            const rewardRoll = random();
+            if (rewardRoll < 0.15) {
+                const itemId = activeTier.rewards.items[Math.floor(random() * activeTier.rewards.items.length)];
+                extraReward.items = [{ id: itemId, quantity: 1 }];
+            } else if (rewardRoll < 0.25) {
+                const techId = activeTier.rewards.techniques[Math.floor(random() * activeTier.rewards.techniques.length)];
+                extraReward.techniques = [techId];
+            }
             
             return {
-                id: 'm_col_' + seed,
+                id: `m_col_${activeRankScore}_${currentDay}_${Math.floor(random()*100)}`,
                 type: 'collect',
-                target: 'item_' + item,
-                targetName: itemData.name,
-                required: req,
-                desc: `Thu thập ${req} ${itemData.name} nộp cho Chấp Sự Đường.`,
-                reward: { contribution: 10 + req * 2, lingShi: 50 + req * 5 },
-                difficulty: 'Dễ'
+                level: activeTier.levelName,
+                target: target.id,
+                targetName: target.name,
+                required: qty,
+                desc: `[Nhiệm Vụ ${activeTier.levelName}] Thu thập ${qty} ${target.name} giao cho Chấp Sự Đường.`,
+                reward: { contribution, lingShi, tuVi, ...extraReward }
             };
         };
 
-        const generateKillMission = () => {
-            const req = 10 + Math.floor(random() * 20);
+        const generateKill = (levelOffset = 0) => {
+            const activeRankScore = Math.max(0, rankScore + levelOffset);
+            const activeTier = MISSION_TIERS[activeRankScore] || MISSION_TIERS[0];
+            const loc = activeTier.killLocations[Math.floor(random() * activeTier.killLocations.length)];
+            const qty = activeTier.killQuantityRange[0] + Math.floor(random() * (activeTier.killQuantityRange[1] - activeTier.killQuantityRange[0] + 1));
+            
+            const contribution = activeTier.rewards.contributionRange[0] + Math.floor(random() * (activeTier.rewards.contributionRange[1] - activeTier.rewards.contributionRange[0] + 1));
+            const lingShi = activeTier.rewards.lingShiRange[0] + Math.floor(random() * (activeTier.rewards.lingShiRange[1] - activeTier.rewards.lingShiRange[0] + 1));
+            const tuVi = activeTier.rewards.tuViRange[0] + Math.floor(random() * (activeTier.rewards.tuViRange[1] - activeTier.rewards.tuViRange[0] + 1));
+            
+            const extraReward = {};
+            const rewardRoll = random();
+            if (rewardRoll < 0.15) {
+                const itemId = activeTier.rewards.items[Math.floor(random() * activeTier.rewards.items.length)];
+                extraReward.items = [{ id: itemId, quantity: 1 }];
+            } else if (rewardRoll < 0.25) {
+                const techId = activeTier.rewards.techniques[Math.floor(random() * activeTier.rewards.techniques.length)];
+                extraReward.techniques = [techId];
+            }
+            
+            const locDesc = loc.id ? `tại ${loc.name}` : `ở nơi bất kỳ (Tự tìm)`;
+            
             return {
-                id: 'm_kill_' + seed,
+                id: `m_kill_${activeRankScore}_${currentDay}_${Math.floor(random()*100)}`,
                 type: 'kill',
+                level: activeTier.levelName,
                 target: 'yêu thú',
-                required: req,
-                desc: `Tiêu diệt ${req} yêu thú quanh khu vực Tông Môn để bảo vệ linh mạch.`,
-                reward: { contribution: 20 + req * 3, tuVi: 100 + req * 20 },
-                difficulty: 'Trung bình'
-            };
-        };
-        
-        const generateBossMission = () => {
-            return {
-                id: 'm_boss_' + seed,
-                type: 'boss',
-                target: 'Ma Tu Tà Ác',
-                required: 1,
-                desc: `Truy sát một tên tà tu phản trắc đang lẩn trốn.`,
-                reward: { contribution: 100 * (rank.rankScore + 1), lingShi: 500 * (rank.rankScore + 1) },
-                difficulty: 'Khó'
+                required: qty,
+                locationId: loc.id,
+                locationName: loc.name,
+                desc: `[Nhiệm Vụ ${activeTier.levelName}] Tiêu diệt ${qty} yêu thú ${locDesc} để giữ vững cương thổ.`,
+                reward: { contribution, lingShi, tuVi, ...extraReward }
             };
         };
 
-        missions.push(generateCollectMission());
-        missions.push(generateKillMission());
-        if (rank.rankScore >= 1) missions.push(generateCollectMission()); // Extra for Noi Mon+
-        if (rank.rankScore >= 2) missions.push(generateBossMission()); // Boss for Chan Truyen+
+        const generateBoss = () => {
+            const activeTier = MISSION_TIERS[rankScore] || MISSION_TIERS[2];
+            if (!activeTier.bossTargets) return null;
+            
+            const boss = activeTier.bossTargets[Math.floor(random() * activeTier.bossTargets.length)];
+            const locId = boss.locations[Math.floor(random() * boss.locations.length)];
+            const locName = findLocationName(locId) || locId;
+            
+            const contribution = Math.floor(activeTier.rewards.contributionRange[1] * 1.5);
+            const lingShi = Math.floor(activeTier.rewards.lingShiRange[1] * 1.5);
+            const tuVi = Math.floor(activeTier.rewards.tuViRange[1] * 1.5);
+            
+            const extraReward = {};
+            if (random() < 0.5) {
+                const itemId = activeTier.rewards.items[Math.floor(random() * activeTier.rewards.items.length)];
+                extraReward.items = [{ id: itemId, quantity: 1 }];
+            } else {
+                const techId = activeTier.rewards.techniques[Math.floor(random() * activeTier.rewards.techniques.length)];
+                extraReward.techniques = [techId];
+            }
+            
+            return {
+                id: `m_boss_${rankScore}_${currentDay}_${Math.floor(random()*100)}`,
+                type: 'boss',
+                level: activeTier.levelName,
+                target: boss.name,
+                targetName: boss.name,
+                required: 1,
+                locationId: locId,
+                locationName: locName,
+                bossRealmId: boss.realmId,
+                bossStats: { hp: boss.hp, atk: boss.atk, def: boss.def, spd: boss.spd },
+                desc: `[Nhiệm Vụ ${activeTier.levelName} - SĂN ĐUỔI] Tìm và tiêu diệt tà đầu ${boss.name} tại ${locName}.`,
+                reward: { contribution, lingShi, tuVi, ...extraReward }
+            };
+        };
+
+        missions.push(generateCollect(0));
+        missions.push(generateKill(0));
+        
+        if (rankScore >= 1) {
+            if (random() < 0.5) {
+                missions.push(generateCollect(-1));
+            } else {
+                missions.push(generateKill(-1));
+            }
+        }
+        
+        if (rankScore >= 2) {
+            const bossMission = generateBoss();
+            if (bossMission) missions.push(bossMission);
+        }
 
         return missions;
     }
@@ -198,16 +384,22 @@ export class SectSystem {
         if (!this.player.sectId || this.player.activeSectMissions.length === 0) return;
         
         let updated = false;
+        const currentLocId = window.state?.currentLocId || '';
+
         this.player.activeSectMissions.forEach(m => {
+            // Check location constraint if specified
+            if (m.locationId && m.locationId !== currentLocId) {
+                return;
+            }
+
             if (m.type === type) {
                 if (type === 'kill') {
-                    m.current += amount;
+                    m.current = Math.min(m.required, m.current + amount);
                     updated = true;
-                } else if (type === 'boss' && m.target === target) {
-                    m.current += amount;
+                } else if (type === 'boss' && (m.target === target || target.includes(m.target))) {
+                    m.current = Math.min(m.required, m.current + amount);
                     updated = true;
                 }
-                // collect is evaluated at complete time
             }
         });
         
@@ -251,7 +443,115 @@ export class SectSystem {
             this.ui.toast(`+${mission.reward.tuVi} Tu Vi`, "success");
         }
 
+        // Give extra items
+        if (mission.reward.items && mission.reward.items.length > 0) {
+            mission.reward.items.forEach(itm => {
+                this.player.inventory.addItem(itm.id, itm.quantity || 1);
+                const itemData = getItemById(itm.id);
+                this.ui.toast(`Nhận được: ${itemData?.name || itm.id} x${itm.quantity || 1}`, "success");
+            });
+        }
+
+        // Give techniques
+        if (mission.reward.techniques && mission.reward.techniques.length > 0) {
+            mission.reward.techniques.forEach(techId => {
+                const hasLearnedNormal = this.player.learnedTechniques.some(t => t.id === techId);
+                const hasLearnedSecret = this.player.learnedSecretTechniques.some(t => t.id === techId);
+                if (hasLearnedNormal || hasLearnedSecret) {
+                    // Fallback reward since already learned: give a nice pill instead
+                    this.player.inventory.addItem('ngung_khi_dan', 2);
+                    this.ui.toast(`Nhận được: 2 Ngưng Khí Đan (thay thế Công Pháp đã biết)`, "success");
+                    return;
+                }
+
+                const isMainTech = !!getTechniqueById(techId);
+                if (isMainTech) {
+                    this.player.learnTechnique(techId);
+                    const techData = getTechniqueById(techId);
+                    this.ui.toast(`Đốn ngộ công pháp: ${techData?.name || techId}!`, "success");
+                } else if (getSecretTechniqueById(techId)) {
+                    this.player.learnSecretTechnique(techId);
+                    const techData = getSecretTechniqueById(techId);
+                    this.ui.toast(`Đốn ngộ bí thuật: ${techData?.name || techId}!`, "success");
+                }
+            });
+        }
+
         this.player.activeSectMissions.splice(missionIdx, 1);
+    }
+
+    huntMissionTarget(missionId) {
+        const mission = this.player.activeSectMissions.find(m => m.id === missionId);
+        if (!mission) return;
+        
+        if (mission.locationId) {
+            const currentLocId = window.state?.currentLocId || '';
+            if (currentLocId !== mission.locationId) {
+                const locName = mission.locationName || mission.locationId;
+                this.ui.toast(`Ngươi cần phải đến ${locName} mới có thể săn bắt!`, "warning");
+                return;
+            }
+        }
+        
+        if (window.game) {
+            const worldId = findWorldIdByLocId(window.state.currentLocId);
+            const loc = getLocationById(worldId, window.state.currentLocId);
+            const enemy = EnemyGenerator.generate(loc?.dangerLevel || 1);
+            enemy.race = 'SPIRIT_BEAST';
+            enemy.name = `Yêu Thú Chỉ Định (${enemy.realmName})`;
+            
+            this.ui.toast(`Ngươi phát hiện một con ${enemy.name}!`, "info");
+            window.game.startBattle(enemy, null, (win) => {
+                if (win) {
+                    this.updateMissionProgress('kill', enemy.name, 1);
+                    this.ui.toast(`Tiêu diệt yêu thú thành công!`, "success");
+                }
+            });
+        }
+    }
+
+    challengeMissionBoss(missionId) {
+        const mission = this.player.activeSectMissions.find(m => m.id === missionId);
+        if (!mission) return;
+        
+        if (mission.locationId) {
+            const currentLocId = window.state?.currentLocId || '';
+            if (currentLocId !== mission.locationId) {
+                const locName = mission.locationName || mission.locationId;
+                this.ui.toast(`Ngươi cần phải đến ${locName} mới có thể truy sát!`, "warning");
+                return;
+            }
+        }
+        
+        if (window.game) {
+            const enemy = {
+                id: 'sect_mission_boss_' + mission.id,
+                name: mission.targetName || mission.target,
+                realmId: mission.bossRealmId || Math.max(1, this.player.realmId + 1),
+                hp: mission.bossStats?.hp || (1000 * (mission.bossRealmId || this.player.realmId || 1)),
+                maxHp: mission.bossStats?.hp || (1000 * (mission.bossRealmId || this.player.realmId || 1)),
+                atk: mission.bossStats?.atk || (80 * (mission.bossRealmId || this.player.realmId || 1)),
+                def: mission.bossStats?.def || (40 * (mission.bossRealmId || this.player.realmId || 1)),
+                spd: mission.bossStats?.spd || (15 + (mission.bossRealmId || this.player.realmId || 1)),
+                skills: [
+                    { name: 'Sát Chiêu Môn Quy', damage: 1.5, type: 'phys' },
+                    { name: 'Ma Khí Cuồng Bạo', damage: 1.8, type: 'dark' }
+                ],
+                isBoss: true,
+                inventory: []
+            };
+            
+            this.ui.toast(`Bắt đầu chiến đấu với ${enemy.name}!`, "info");
+            
+            window.game.startBattle(enemy, null, (win) => {
+                if (win) {
+                    this.updateMissionProgress('boss', enemy.name, 1);
+                    this.ui.toast(`Chiến thắng! Hãy báo cáo Chấp Sự Đường để hoàn thành nhiệm vụ.`, "success");
+                } else {
+                    this.ui.toast(`Ngươi đã thất bại trước ${enemy.name}!`, "error");
+                }
+            });
+        }
     }
     
     claimSalary() {
