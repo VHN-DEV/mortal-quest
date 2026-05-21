@@ -134,6 +134,7 @@ export const ASSETS = {
         han_vien: getAssetUrl('portraits/han_vien'),
         lan_anh: getAssetUrl('portraits/lan_anh'),
         minh_nguyet: getAssetUrl('portraits/minh_nguyet'),
+        bach_thanh_anh: getAssetUrl('portraits/bach_thanh_anh'),
     }, 'portraits', 'player'),
 
     // Kẻ địch
@@ -163,6 +164,9 @@ export const ASSETS = {
         thanh_van_ly: getAssetUrl('beasts/thanh_van_ly'),
         huyen_giap_dia_long: getAssetUrl('beasts/huyen_giap_dia_long'),
         u_minh_mong_diep: getAssetUrl('beasts/u_minh_mong_diep'),
+        giao_long: getAssetUrl('beasts/giao_long'),
+        hac_xa: getAssetUrl('beasts/hac_xa'),
+        hoa_viem: getAssetUrl('beasts/hoa_viem'),
         // Aberrations (keeping SVG fallbacks)
         bang_tam_svg: getAssetUrl('aberrations/bang-tam.svg'),
         huyet_ngoc_tri_chu_svg: getAssetUrl('aberrations/huyet-ngoc-tri-chu.svg'),

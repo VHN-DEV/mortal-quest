@@ -2804,7 +2804,8 @@ export const ITEMS = {
     'egg_phe_kim_trung': {
         id: 'egg_phe_kim_trung',
         name: 'Trứng Phệ Kim Trùng',
-        type: 'consumable',
+        type: 'beast_egg',
+        beastId: 'phe_kim_trung',
         image: 'artifacts/phe-kim-trung.svg',
         quality: 'Linh Khí',
         price: 5000,
@@ -2813,7 +2814,8 @@ export const ITEMS = {
     'egg_bang_tam': {
         id: 'egg_bang_tam',
         name: 'Trứng Băng Tằm',
-        type: 'consumable',
+        type: 'beast_egg',
+        beastId: 'bang_tam',
         image: 'artifacts/bang-tam.svg',
         quality: 'Pháp Khí',
         price: 1500,
@@ -2822,7 +2824,8 @@ export const ITEMS = {
     'egg_huyet_ngoc_tri_chu': {
         id: 'egg_huyet_ngoc_tri_chu',
         name: 'Trứng Huyết Ngọc Tri Chu',
-        type: 'consumable',
+        type: 'beast_egg',
+        beastId: 'huyet_ngoc_tri_chu',
         image: 'artifacts/huyet-ngoc-tri-chu.svg',
         quality: 'Pháp Khí',
         price: 2000,
@@ -2831,7 +2834,8 @@ export const ITEMS = {
     'egg_kim_giap_hac': {
         id: 'egg_kim_giap_hac',
         name: 'Trứng Kim Giáp Hạc',
-        type: 'consumable',
+        type: 'beast_egg',
+        beastId: 'kim_giap_hac',
         image: 'artifacts/kim-giap-hac.svg',
         quality: 'Pháp Khí',
         price: 3000,
@@ -2840,7 +2844,8 @@ export const ITEMS = {
     'egg_huyen_diem_nga': {
         id: 'egg_huyen_diem_nga',
         name: 'Trứng Huyền Diệm Nga',
-        type: 'consumable',
+        type: 'beast_egg',
+        beastId: 'huyen_diem_nga',
         image: 'artifacts/huyen-diem-nga.svg',
         quality: 'Pháp Khí',
         price: 1500,
@@ -2849,7 +2854,8 @@ export const ITEMS = {
     'egg_loi_bang': {
         id: 'egg_loi_bang',
         name: 'Trứng Lôi Bằng',
-        type: 'consumable',
+        type: 'beast_egg',
+        beastId: 'loi_bang',
         icon: '🦅',
         quality: 'Linh Khí',
         price: 8000,
@@ -2858,7 +2864,8 @@ export const ITEMS = {
     'egg_thien_phong_ngan_uynh': {
         id: 'egg_thien_phong_ngan_uynh',
         name: 'Trứng Thiên Phong Ngân Uynh',
-        type: 'consumable',
+        type: 'beast_egg',
+        beastId: 'thien_phong_ngan_uynh',
         icon: '🦗',
         quality: 'Pháp Bảo',
         price: 25000,
@@ -3205,8 +3212,151 @@ export const ITEMS = {
         price: 15000,
         secretId: 'khoi_am_tong_bi_tich',
         description: 'Tuyệt kỹ sai sử khôi lỗi tự bộc sát thương cực đoan xé tan giáp cốt địch thủ và gây choáng.'
+    },
+
+    // --- PHÁP BẢO MỚI ---
+    'ban_long_bang_ngoc_nghien': {
+        id: 'ban_long_bang_ngoc_nghien',
+        name: 'Bàn Long Băng Ngọc Nghiễn',
+        type: 'soulArtifact',
+        image: 'artifacts/ban_long_bang_ngoc_nghien.webp',
+        quality: 'Linh Bảo',
+        price: 80000,
+        description: 'Nghiễn mực cổ được chạm khắc hình rồng cuộn, bên trong ngưng tụ băng ngọc vạn năm. Khi mài mực, hàn khí tỏa ra có thể đóng băng thần thức kẻ địch.',
+        stats: { spirit: 800, def: 200, maxMana: 500 },
+        poem: ['Bàn Long Ngọc Nghiễn Hàn Sương Mặc', 'Nhất Bút Phong Ba Định Càn Khôn']
+    },
+    'giac_tien_bich_ngoc_cam': {
+        id: 'giac_tien_bich_ngoc_cam',
+        name: 'Giác Tiên Bích Ngọc Cầm',
+        type: 'supportArtifact',
+        image: 'artifacts/giac_tien_bich_ngoc_cam.webp',
+        quality: 'Linh Bảo',
+        price: 120000,
+        description: 'Cây đàn cổ bằng bích ngọc, tương truyền do tiên nhân để lại. Âm thanh phát ra có thể an định tâm thần, tăng tốc tu luyện và mê hoặc yêu thú.',
+        stats: { spirit: 600, tuViSpeed: 0.15, qiAbsorb: 200 },
+        poem: ['Bích Ngọc Cầm Thanh Nhập Cửu Tiêu', 'Giác Tiên Nhất Khúc Vạn Ma Tiêu']
+    },
+    'huyen_kim_long_tu_kiem': {
+        id: 'huyen_kim_long_tu_kiem',
+        name: 'Huyền Kim Long Tử Kiếm',
+        type: 'attackArtifact',
+        image: 'artifacts/huyen_kim_long_tu_kiem.webp',
+        quality: 'Thông Thiên Linh Bảo',
+        price: 200000,
+        description: 'Kiếm cổ được rèn từ huyền kim, thân kiếm khắc long văn phát sáng tử quang. Một khi rút kiếm, long khí cuồn cuộn, kiếm khí xuyên phá vạn pháp.',
+        stats: { atk: 5000, spd: 300, critChance: 0.15, critDamage: 0.5 },
+        poem: ['Huyền Kim Tử Khí Xung Tiêu Hán', 'Long Tử Nhất Kiếm Phá Thiên Hà']
+    },
+    'kim_o_ly_hoa_phien': {
+        id: 'kim_o_ly_hoa_phien',
+        name: 'Kim Ô Ly Hỏa Phiến',
+        type: 'attackArtifact',
+        image: 'artifacts/kim_o_ly_hoa_phien.webp',
+        quality: 'Cổ Bảo',
+        price: 90000,
+        description: 'Quạt phiến cổ được đúc từ lông vũ Kim Ô (quạ vàng thần thoại). Phất một cái có thể triệu hồi ly hỏa thiêu đốt vạn vật trong phạm vi rộng.',
+        stats: { atk: 3500, maxMana: 300 },
+        poem: ['Kim Ô Phiến Động Ly Hỏa Sinh', 'Thiên Địa Hồng Lô Luyện Quần Ma']
+    },
+    'ly_ho_hieu_tien_lenh': {
+        id: 'ly_ho_hieu_tien_lenh',
+        name: 'Ly Hồ Hiệu Tiên Lệnh',
+        type: 'formationArtifact',
+        image: 'artifacts/ly_ho_hieu_tien_lenh.webp',
+        quality: 'Linh Bảo',
+        price: 100000,
+        description: 'Lệnh bài cổ có hình ly hồ (cáo lửa), có thể triệu hoán ảo ảnh ly hồ hỗ trợ tác chiến và bày binh bố trận cực kỳ linh hoạt.',
+        stats: { spirit: 500, atk: 1500, spd: 200 },
+        poem: ['Ly Hồ Hiệu Lệnh Triệu Ảo Binh', 'Tiên Đạo Trận Pháp Trấn Quần Yêu']
+    },
+    'moc_long_phap_bao': {
+        id: 'moc_long_phap_bao',
+        name: 'Mộc Long',
+        type: 'defenseArtifact',
+        image: 'artifacts/moc_long.webp',
+        quality: 'Cổ Bảo',
+        price: 85000,
+        description: 'Tượng mộc long cổ xưa, được chạm khắc từ thân cây thần mộc vạn năm. Có thể triệu hoán mộc long hộ thể, tăng cường phòng ngự và hồi phục sinh lực.',
+        stats: { def: 2000, maxHp: 3000, lifespan: 100 },
+        poem: ['Thần Mộc Hóa Long Trấn Bát Phương', 'Vạn Niên Cổ Thụ Hộ Thương Sinh']
+    },
+    'ngoc_long_tuyen': {
+        id: 'ngoc_long_tuyen',
+        name: 'Ngọc Long Tuyền',
+        type: 'spaceArtifact',
+        image: 'artifacts/ngoc_long_tuyen.webp',
+        quality: 'Linh Bảo',
+        price: 150000,
+        description: 'Suối rồng ngọc thu nhỏ trong không gian riêng, có thể mở ra một tiểu thế giới chứa đầy linh khí thuần khiết, hỗ trợ tu luyện và bảo quản linh vật.',
+        stats: { qiAbsorb: 500, tuViSpeed: 0.2, slots: 30 },
+        poem: ['Ngọc Long Tuyền Dũng Linh Khí Sinh', 'Nhất Phương Tiểu Thế Giới Tàng Thiên']
+    },
+    'thien_dao_bi': {
+        id: 'thien_dao_bi',
+        name: 'Thiên Đạo Bi',
+        type: 'soulArtifact',
+        image: 'artifacts/thien_dao_bi.webp',
+        quality: 'Thông Thiên Linh Bảo',
+        price: 250000,
+        description: 'Bia đá cổ khắc thiên đạo chân lý, chứa đựng ngộ tính của tiền bối đại năng. Ai đọc được sẽ ngộ ra thiên đạo, thần thức tăng vọt.',
+        stats: { spirit: 2000, breakthroughRate: 0.1, tuViSpeed: 0.25 },
+        poem: ['Thiên Đạo Bi Văn Hàm Chân Lý', 'Đại Đạo Vô Hình Khả Ngộ Tâm']
+    },
+    'tinh_hoa_nguyet_dai': {
+        id: 'tinh_hoa_nguyet_dai',
+        name: 'Tinh Hoa Nguyệt Đài',
+        type: 'flightArtifact',
+        image: 'artifacts/tinh_hoa_nguyet_dai.webp',
+        quality: 'Cổ Bảo',
+        price: 95000,
+        description: 'Đài nguyệt cổ ngưng tụ tinh hoa nhật nguyệt, có thể bay lượn tự do trên không trung. Ánh sáng tinh hoa bao phủ giúp tăng tốc phi hành.',
+        stats: { spd: 500, def: 500, luck: 50 },
+        poem: ['Tinh Hoa Nguyệt Đài Phiêu Diêu Du', 'Nhật Nguyệt Tinh Quang Chiếu Cửu Châu']
+    },
+    'van_thuy_luu_ly_binh': {
+        id: 'van_thuy_luu_ly_binh',
+        name: 'Vạn Thủy Lưu Ly Bình',
+        type: 'defenseArtifact',
+        image: 'artifacts/van_thuy_luu_ly_binh.webp',
+        quality: 'Linh Bảo',
+        price: 130000,
+        description: 'Bình lưu ly chứa vạn thủy, có thể hấp thu mọi công kích thủy hệ và phản hồi lại kẻ địch. Nước trong bình có tác dụng tịnh hóa tà khí.',
+        stats: { def: 3000, maxHp: 2000, maxMana: 800 },
+        poem: ['Vạn Thủy Lưu Ly Tịnh Thiên Địa', 'Nhất Bình Thu Tận Vạn Hà Triều']
+    },
+
+    // --- TRỨNG LINH THÚ MỚI ---
+    'egg_giao_long': {
+        id: 'egg_giao_long',
+        name: 'Trứng Giao Long',
+        type: 'beast_egg',
+        beastId: 'giao_long',
+        icon: '🥚',
+        quality: 'Thông Thiên Linh Bảo',
+        price: 50000,
+        description: 'Trứng của Giao Long thượng cổ, vỏ trứng phủ vảy rồng phát ra thủy khí cuồn cuộn, vô cùng quý hiếm.'
+    },
+    'egg_hac_xa': {
+        id: 'egg_hac_xa',
+        name: 'Trứng Hắc Xà',
+        type: 'beast_egg',
+        beastId: 'hac_xa',
+        icon: '🥚',
+        quality: 'Linh Khí',
+        price: 15000,
+        description: 'Trứng của Hắc Xà vạn năm, vỏ trứng đen bóng như hắc ngọc, tỏa ra kịch độc nhẹ.'
+    },
+    'egg_hoa_viem': {
+        id: 'egg_hoa_viem',
+        name: 'Trứng Hỏa Viêm Thú',
+        type: 'beast_egg',
+        beastId: 'hoa_viem',
+        icon: '🔥',
+        quality: 'Linh Khí',
+        price: 12000,
+        description: 'Trứng của Hỏa Viêm Thú, ấm nóng như hòn than, liên tục tỏa ra hỏa diễm nhỏ.'
     }
 };
 
 export const getItemById = (id) => ITEMS[id];
-

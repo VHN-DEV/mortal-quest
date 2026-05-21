@@ -156,6 +156,83 @@ export const BEASTS = {
         description: 'Bướm mộng đến từ u minh, có khả năng gây ra ảo giác cho kẻ địch.',
         baseStats: { hp: 300, atk: 40, def: 15, spd: 70 },
         abilities: ['Mộng Cảnh', 'U Minh Phấn'],
+    },
+    'giao_long': {
+        id: 'giao_long',
+        name: 'Giao Long',
+        type: BEAST_TYPES.DI_THU,
+        bloodline: 'THIEN',
+        icon: '🐲',
+        image: 'beasts/giao_long.webp',
+        description: 'Giao Long thượng cổ, mang huyết mạch chân long, có khả năng hô phong hoán vũ, khi nộ có thể dấy sóng lật trời.',
+        baseStats: { hp: 2000, atk: 300, def: 200, spd: 100 },
+        abilities: ['Long Quyển Phong Ba', 'Thủy Trào Thiên Phạt']
+    },
+    'hac_xa': {
+        id: 'hac_xa',
+        name: 'Hắc Xà',
+        type: BEAST_TYPES.LINH_THU,
+        bloodline: 'DIA',
+        icon: '🐍',
+        image: 'beasts/hac_xa.webp',
+        description: 'Hắc Xà vạn năm, toàn thân phủ vảy đen bóng, kịch độc vô song, một khi cắn trúng thì thần tiên cũng khó cứu.',
+        baseStats: { hp: 800, atk: 180, def: 80, spd: 90 },
+        abilities: ['Kịch Độc Nha', 'Hắc Vụ Triền Thân']
+    },
+    'hoa_viem': {
+        id: 'hoa_viem',
+        name: 'Hỏa Viêm Thú',
+        type: BEAST_TYPES.LINH_THU,
+        bloodline: 'DIA',
+        icon: '🔥',
+        image: 'beasts/hoa_viem.webp',
+        description: 'Linh thú hỏa hệ mạnh mẽ, lông mao đỏ rực như ngọn lửa, có thể phun ra hỏa diễm thiêu đốt vạn vật.',
+        baseStats: { hp: 600, atk: 200, def: 50, spd: 70 },
+        abilities: ['Liệt Diễm Phún Xạ', 'Hỏa Viêm Hộ Thể']
+    },
+    'kim_giap_hac': {
+        id: 'kim_giap_hac',
+        name: 'Kim Giáp Hạc',
+        type: BEAST_TYPES.LINH_THU,
+        bloodline: 'DIA',
+        icon: '🦢',
+        image: 'beasts/kim_giap_hac.webp',
+        description: 'Linh hạc có lớp lông cứng như kim loại, tốc độ bay cực nhanh và rất trung thành với chủ nhân.',
+        baseStats: { hp: 500, atk: 60, def: 100, spd: 120 },
+        abilities: ['Kim Dực Trảm', 'Thiên Phong Ngự']
+    },
+    'huyen_diem_nga': {
+        id: 'huyen_diem_nga',
+        name: 'Huyền Diệm Nga',
+        type: BEAST_TYPES.KY_TRUNG,
+        bloodline: 'LINH',
+        icon: '🦋',
+        image: 'beasts/huyen_diem_nga.webp',
+        description: 'Bướm đêm mang hỏa tính, cánh phủ lân phấn huyền ảo, có khả năng phun ra hỏa độc gây ảo giác.',
+        baseStats: { hp: 350, atk: 100, def: 30, spd: 85 },
+        abilities: ['Hỏa Độc Lân Phấn', 'Huyền Diệm Vũ']
+    },
+    'loi_bang': {
+        id: 'loi_bang',
+        name: 'Lôi Bằng',
+        type: BEAST_TYPES.DI_THU,
+        bloodline: 'THIEN',
+        icon: '🦅',
+        image: 'beasts/loi_bang.webp',
+        description: 'Chim khổng lồ mang sức mạnh lôi đình, sải cánh che kín cả bầu trời, khi trưởng thành có thể bay vạn dặm.',
+        baseStats: { hp: 3000, atk: 400, def: 150, spd: 180 },
+        abilities: ['Lôi Đình Vạn Kích', 'Cuồng Phong Dực']
+    },
+    'thien_phong_ngan_uynh': {
+        id: 'thien_phong_ngan_uynh',
+        name: 'Thiên Phong Ngân Uynh',
+        type: BEAST_TYPES.KY_TRUNG,
+        bloodline: 'THANH',
+        icon: '🦗',
+        image: 'beasts/thien_phong_ngan_uynh.webp',
+        description: 'Kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.',
+        baseStats: { hp: 1000, atk: 500, def: 50, spd: 250 },
+        abilities: ['Không Gian Xuyên Thấu', 'Ngân Quang Trảm']
     }
 };
 

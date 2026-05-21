@@ -490,6 +490,24 @@ export const SPECIAL_NPCS = {
             'romance': ['Trong ảo cảnh đẹp đẽ nhất của thiếp thân, người nắm tay thiếp chính là chàng.'],
             'special_move': ['Yểm Nguyệt Ảo Vũ Thuật!']
         }
+    },
+    'bach_thanh_anh': {
+        id: 'bach_thanh_anh',
+        name: 'Bạch Thanh Ảnh',
+        gender: 'Nữ',
+        title: 'Hàn Nguyệt Tiên Tử',
+        portrait: ASSETS.portraits.bach_thanh_anh,
+        personality: 'lanh_lung',
+        goal: 'thanh_tien',
+        role: 'Băng Hệ Tu Sĩ',
+        isRomanceable: true,
+        desc: 'Nữ tu sĩ tài sắc vẹn toàn đến từ Hàn Nguyệt Cung, tinh thông băng hệ công pháp, tính tình lạnh lùng nhưng nội tâm ấm áp.',
+        dialogues: {
+            'meet': ['Ngươi là ai? Đừng lại gần, hàn khí quanh ta có thể đông cứng linh lực.', 'Băng thiên tuyết địa là nơi ta tu luyện, phàm nhân chớ quấy nhiễu.'],
+            'friendly': ['Ngươi... là người đầu tiên không sợ hàn khí của ta.'],
+            'romance': ['Băng tâm ngàn năm, chỉ vì ngươi mà tan chảy. Từ nay thiên hạ phong tuyết, ta nguyện cùng ngươi đối mặt.'],
+            'special_move': ['Vạn Lý Băng Phong!']
+        }
     }
 };
 

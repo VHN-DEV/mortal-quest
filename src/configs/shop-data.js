@@ -48,7 +48,17 @@ export const SHOPS = {
                 { id: 'tu_tuong_bo_de_kiem', stock: 1, minVip: 5 },
                 { id: 'quan_han_linh_ngoc_bat', stock: 1, minVip: 5 },
                 { id: 'that_tinh_ban_nguyet_thinh', stock: 1, minVip: 5 },
-                { id: 'to_nga_suong_nguyet_luan', stock: 1, minVip: 5 }
+                { id: 'to_nga_suong_nguyet_luan', stock: 1, minVip: 5 },
+                { id: 'ban_long_bang_ngoc_nghien', stock: 1, minVip: 4 },
+                { id: 'giac_tien_bich_ngoc_cam', stock: 1, minVip: 4 },
+                { id: 'huyen_kim_long_tu_kiem', stock: 1, minVip: 5 },
+                { id: 'kim_o_ly_hoa_phien', stock: 1, minVip: 3 },
+                { id: 'ly_ho_hieu_tien_lenh', stock: 1, minVip: 4 },
+                { id: 'moc_long_phap_bao', stock: 1, minVip: 3 },
+                { id: 'ngoc_long_tuyen', stock: 1, minVip: 5 },
+                { id: 'thien_dao_bi', stock: 1, minVip: 5 },
+                { id: 'tinh_hoa_nguyet_dai', stock: 1, minVip: 3 },
+                { id: 'van_thuy_luu_ly_binh', stock: 1, minVip: 4 }
             ],
             'nguyen_lieu': [
                 { id: 'tich_coc_thao', stock: 500 },
@@ -147,7 +157,10 @@ export const SHOPS = {
             'linh_thu': [
                 { id: 'linh_thu_dai_so', stock: 5 },
                 { id: 'linh_thu_dai_trung', stock: 2, minVip: 1 },
-                { id: 'linh_thu_dai_cao', stock: 1, minVip: 3 }
+                { id: 'linh_thu_dai_cao', stock: 1, minVip: 3 },
+                { id: 'egg_giao_long', stock: 1, minVip: 4 },
+                { id: 'egg_hac_xa', stock: 2, minVip: 2 },
+                { id: 'egg_hoa_viem', stock: 3, minVip: 1 }
             ],
             'tui_tru_vat': [
                 { id: 'tui_tru_vat_so', stock: 5 },
@@ -169,6 +182,9 @@ export const SHOPS = {
                 { id: 'bat_quai_kinh', stock: 5 },
                 { id: 'huyen_lu_item', stock: 5 },
                 { id: 'tao_hoa_tien_dinh', stock: 1, minVip: 5 },
+                { id: 'huyen_kim_long_tu_kiem', stock: 1, minVip: 5 },
+                { id: 'thien_dao_bi', stock: 1, minVip: 5 },
+                { id: 'van_thuy_luu_ly_binh', stock: 1, minVip: 4 },
                 { id: 'ngu_phong_phi_chu', stock: 3 },
                 { id: 'truyen_tong_lenh', stock: 2 }
             ],
@@ -203,7 +219,10 @@ export const SHOPS = {
             ],
             'linh_thu': [
                 { id: 'linh_thu_dai_so', stock: 10 },
-                { id: 'linh_thu_dai_trung', stock: 5 }
+                { id: 'linh_thu_dai_trung', stock: 5 },
+                { id: 'egg_giao_long', stock: 1, minVip: 3 },
+                { id: 'egg_hac_xa', stock: 3, minVip: 1 },
+                { id: 'egg_hoa_viem', stock: 5 }
             ],
             'tui_tru_vat': [
                 { id: 'tui_tru_vat_so', stock: 10 },
