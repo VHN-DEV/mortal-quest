@@ -114,8 +114,9 @@ export class ChungTocLucScreen {
         return ['allRes'].includes(stat);
     }
 
-    renderList() {
-        this.listView.innerHTML = '';
+    buildCachedList() {
+        if (this.cachedElements) return;
+        this.cachedElements = [];
         
         Object.values(CREATION_RACES).forEach(race => {
             const el = document.createElement('div');
@@ -136,7 +137,13 @@ export class ChungTocLucScreen {
             `;
             
             el.onclick = () => this.showDetail(race);
-            this.listView.appendChild(el);
+            this.cachedElements.push(el);
         });
+    }
+
+    renderList() {
+        this.listView.innerHTML = '';
+        this.buildCachedList();
+        this.cachedElements.forEach(el => this.listView.appendChild(el));
     }
 }

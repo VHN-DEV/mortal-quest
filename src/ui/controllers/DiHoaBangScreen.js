@@ -90,8 +90,9 @@ export class DiHoaBangScreen {
         this.elDetailIcon.style.filter = `drop-shadow(0 0 15px ${foundColor}80)`;
     }
 
-    renderList() {
-        this.listView.innerHTML = '';
+    buildCachedList() {
+        if (this.cachedElements) return;
+        this.cachedElements = [];
 
         DI_HOA_DATA.forEach(item => {
             const el = document.createElement('div');
@@ -115,8 +116,14 @@ export class DiHoaBangScreen {
             `;
 
             el.onclick = () => this.showDetail(item);
-            this.listView.appendChild(el);
+            this.cachedElements.push(el);
         });
+    }
+
+    renderList() {
+        this.listView.innerHTML = '';
+        this.buildCachedList();
+        this.cachedElements.forEach(el => this.listView.appendChild(el));
     }
 
     getRarityClass(rarity) {

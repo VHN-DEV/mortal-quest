@@ -78,8 +78,9 @@ export class LinhTheLucScreen {
         this.elDetailIcon.style.filter = `drop-shadow(0 0 15px ${color}80)`;
     }
 
-    renderList() {
-        this.listView.innerHTML = '';
+    buildCachedList() {
+        if (this.cachedElements) return;
+        this.cachedElements = [];
         
         LINH_THE_DATA.forEach(item => {
             const el = document.createElement('div');
@@ -102,8 +103,14 @@ export class LinhTheLucScreen {
             `;
             
             el.onclick = () => this.showDetail(item);
-            this.listView.appendChild(el);
+            this.cachedElements.push(el);
         });
+    }
+
+    renderList() {
+        this.listView.innerHTML = '';
+        this.buildCachedList();
+        this.cachedElements.forEach(el => this.listView.appendChild(el));
     }
 
     getRarityClass(rarity) {

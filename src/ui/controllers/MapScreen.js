@@ -777,7 +777,7 @@ export class MapScreen {
                 state.player.addLingShi(droppedShi);
                 setTimeout(() => {
                     this.updateEventDisplay(resultMsg + ` (+${droppedShi} LT)`, '🎁');
-                    if (window.game) window.game.saveGame();
+                    if (window.game && typeof window.game.saveGame === 'function') window.game.saveGame();
                 }, 1000);
             } else if (event.type === 'npc') {
                 setTimeout(() => {
@@ -809,7 +809,7 @@ export class MapScreen {
                             }
                         }
                     }
-                    if (window.game) window.game.saveGame();
+                    if (window.game && typeof window.game.saveGame === 'function') window.game.saveGame();
                 }, 1000);
             }
         } else {
@@ -1690,7 +1690,7 @@ export class MapScreen {
                         } else {
                             this.updateEventDisplay("Chỉ là tàn thư phong hóa lâu năm, ghi chép đã phai mờ.");
                         }
-                        if (window.game) window.game.saveGame();
+                        if (window.game && typeof window.game.saveGame === 'function') window.game.saveGame();
                         this.renderGridMap();
                     }, 1000);
                     break;

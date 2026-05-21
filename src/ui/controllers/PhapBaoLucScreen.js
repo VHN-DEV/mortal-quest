@@ -183,9 +183,10 @@ export class PhapBaoLucScreen {
         return colors[quality] || '#ffffff';
     }
 
-    renderList() {
-        this.listView.innerHTML = '';
-        
+    buildCachedList() {
+        if (this.cachedElements) return;
+        this.cachedElements = [];
+
         const equipment = Object.values(ITEMS).filter(item => this.typeNames[item.type]);
         const grouped = {};
         equipment.forEach(item => {
@@ -199,7 +200,7 @@ export class PhapBaoLucScreen {
             const typeHeader = document.createElement('div');
             typeHeader.className = 'text-[10px] font-ancient text-gray-500 uppercase tracking-[0.3em] mt-6 mb-2 border-l-2 border-gray-700 pl-3';
             typeHeader.textContent = this.typeNames[type];
-            this.listView.appendChild(typeHeader);
+            this.cachedElements.push(typeHeader);
 
             const items = grouped[type];
             items.sort((a, b) => {
@@ -231,8 +232,14 @@ export class PhapBaoLucScreen {
                 `;
                 
                 el.onclick = () => this.showDetail(item);
-                this.listView.appendChild(el);
+                this.cachedElements.push(el);
             });
         });
+    }
+
+    renderList() {
+        this.listView.innerHTML = '';
+        this.buildCachedList();
+        this.cachedElements.forEach(el => this.listView.appendChild(el));
     }
 }

@@ -69,9 +69,6 @@ export class Player {
         this.tuViPerSecond = 0;
         this.bodyExpPerSecond = 0;
         this.soulExpPerSecond = 0;
-        this.mainTechniqueId = null;
-        this.mainBodyTechniqueId = null;
-        this.mainSoulTechniqueId = null;
         
         // Equipment slots (Expanded for Artifact System)
         this.equipment = {
@@ -193,8 +190,6 @@ export class Player {
         this.knownSmithingRecipes = [];
         this.ownedSmithingTools = [];
         this.lifeBoundTreasureId = null;
-        this.age = 18;
-        this.maxAge = 100; // Base human lifespan
         this.permanentLifespanBonus = 0;
 
         // Persistence of location
@@ -227,13 +222,7 @@ export class Player {
         this.unlockedProfessions = []; // Start with empty to follow the doc.
 
         // Technique System
-        this.mainTechniqueId = null;
-        this.learnedTechniques = []; // Array of { id, stage, mastery }
-        this.learnedSecretTechniqueIds = [];
-        this.equippedSecretTechniqueIds = []; // up to 3 slots
-        this.techniquePoints = 0;
         this.knownNPCs = {};
-        this.pendingEvents = []; // To communicate forced events to UI
 
         // --- Energy (Qi) System ---
         this.qiAccumulated = {}; // { [qiId]: { amount: 0, purity: 'TINH_THUAN' } }
@@ -280,7 +269,6 @@ export class Player {
 
         // --- New Enhanced Stats ---
         this.comprehension = 10; // Ngộ tính: Ảnh hưởng tốc độ lĩnh ngộ và tu luyện
-        this.stability = 100;    // Độ ổn định: 0-100%
         this.heartDemon = 0;     // Tâm ma: 0-100%
         this.daoTam = 50;        // Đạo tâm: Chống tâm ma, ổn định linh lực
         this.divineSense = 50;   // Thần thức: Khống chế pháp bảo
@@ -386,12 +374,6 @@ export class Player {
         this.tuVi += amount;
     }
 
-    crushStone(itemId, count = 1) {
-        if (state.systems.spiritStone) {
-            return state.systems.spiritStone.crushStone(itemId, count);
-        }
-        return { success: false, msg: "Hệ thống Linh Thạch chưa khởi tạo." };
-    }
 
     refineSpiritStone(itemId) {
         if (!this.inventory.hasItem(itemId, 1)) return { success: false, msg: "Không có linh thạch này." };
@@ -2274,39 +2256,6 @@ export class Player {
         return { leveledUp: false };
     }
 
-    setMainTechnique(techId, force = false) {
-        const techEntry = this.learnedTechniques.find(t => t.id === techId);
-        const techData = getTechniqueById(techId) || (this.customTechniques || []).find(t => t.id === techId);
-        if (techEntry && techData) {
-            if (techData.type === 'Linh Lực') {
-                if (this.mainTechniqueId && this.mainTechniqueId !== techId && !force) {
-                    return {
-                        success: false,
-                        requireConfirmation: true,
-                        msg: "Việc phế bỏ công pháp chủ tu cũ để chuyển sang công pháp mới sẽ gây phản phệ kinh mạch dữ dội! Ngươi sẽ tổn thất 50% HP hiện tại, 20% Tu Vi tích lũy và bị Tẩu Hỏa Nhập Ma giảm 50% chỉ số trong 60 giây. Ngươi có chắc muốn tiếp tục?"
-                    };
-                }
-                if (this.mainTechniqueId && this.mainTechniqueId !== techId && force) {
-                    // Suffer backlash
-                    this.hp = Math.max(1, Math.floor(this.hp * 0.5));
-                    const tvLoss = Math.floor(this.tuVi * 0.2);
-                    this.tuVi = Math.max(0, this.tuVi - tvLoss);
-                    this.deviationTime = 60; // 60 seconds
-                    this.pendingEvents.push({
-                        type: 'backlash',
-                        msg: `Phế bỏ công pháp chủ tu cũ để chuyển sang ${techData.name} gây phản phệ kinh mạch cực kỳ dữ dội! Ngươi tổn hao 50% HP, 20% Tu Vi (${tvLoss} điểm) và rơi vào trạng thái Tẩu Hỏa Nhập Ma trong 60 giây!`
-                    });
-                }
-                this.mainTechniqueId = techId;
-            }
-            else if (techData.type === 'Luyện Thể') this.mainBodyTechniqueId = techId;
-            else if (techData.type === 'Thần Thức') this.mainSoulTechniqueId = techId;
-            
-            if (typeof this.calculateStats === 'function') this.calculateStats();
-            return { success: true };
-        }
-        return { success: false, msg: "Không tìm thấy công pháp." };
-    }
 
     unlockProfession(id) {
         if (!this.unlockedProfessions.includes(id)) {

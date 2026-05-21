@@ -111,9 +111,9 @@ export class KyTrungBangScreen {
         }
     }
 
-    renderList() {
-        if (!this.listView) return;
-        this.listView.innerHTML = '';
+    buildCachedList() {
+        if (this.cachedElements) return;
+        this.cachedElements = [];
         
         KY_TRUNG_DATA.forEach(item => {
             const el = document.createElement('div');
@@ -150,8 +150,15 @@ export class KyTrungBangScreen {
             `;
             
             el.onclick = () => this.showDetail(item);
-            this.listView.appendChild(el);
+            this.cachedElements.push(el);
         });
+    }
+
+    renderList() {
+        if (!this.listView) return;
+        this.listView.innerHTML = '';
+        this.buildCachedList();
+        this.cachedElements.forEach(el => this.listView.appendChild(el));
     }
 
     getRarityClass(rarity) {
