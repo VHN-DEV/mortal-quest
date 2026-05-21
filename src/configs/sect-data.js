@@ -44,6 +44,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Kiếm Quan Sơn Môn', desc: 'Trận pháp phong duệ như kiếm bảo vệ lối vào.' },
             'tang_kinh_cac': { name: 'Kiếm Các', icon: '📖', badge: 'Kiếm Pháp' },
+            'tang_bao_cac': { name: 'Kiếm Bảo Khố', icon: '💎', desc: 'Nơi cất giữ phi kiếm vạn năm và tài nguyên trân quý.' },
             'noi_mon_vien': { name: 'Kiếm Tu Điện', desc: 'Điện xá đệ tử nội môn, nơi thường xuyên diễn ra luận kiếm.' },
             'luyen_khi': { name: 'Đúc Kiếm Cốc', desc: 'Lò rèn địa hỏa chuyên đúc kiếm phôi và tế luyện phi kiếm.' },
             'bi_canh': { name: 'Kiếm Mộ Bí Cảnh', desc: 'Khám phá kiếm mộ viễn cổ, thu thập kiếm ý tiền nhân.' },
@@ -78,6 +79,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Hoàng Phong Trận', desc: 'Bão cát mịt mù quanh năm bảo vệ sơn môn.' },
             'tang_kinh_cac': { name: 'Ngũ Hành Điện', badge: 'Pháp Thuật' },
+            'tang_bao_cac': { name: 'Hoàng Sa Bảo Các', desc: 'Lưu trữ ngũ hành dị bảo và bùa chú trân quý.' },
             'duoc_vien': { name: 'Bách Thảo Dược Viên', desc: 'Nơi có linh khí ngũ hành ôn hòa, thích hợp trồng linh dược.' }
         },
         libraryItems: [
@@ -107,6 +109,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'U Âm Quan', desc: 'Cổng vào âm u, tử khí lượn lờ cấm người sống lại gần.' },
             'tang_kinh_cac': { name: 'Vạn Hồn Điện', icon: '💀', badge: 'Ma Kinh' },
+            'tang_bao_cac': { name: 'U Âm Bảo Khố', desc: 'Tích trữ ma thạch, xương cốt và tà vật hắc ám.' },
             'luyen_dan': { name: 'Huyết Đan Thất', desc: 'Nơi luyện đan tỏa ra mùi máu tanh tưởi, luyện chế thi đan.' },
             'bi_canh': { name: 'U Âm Động', desc: 'Động huyệt chứa đầy lệ quỷ, nơi rèn luyện của ma tu.' },
             'dong_phu': { name: 'Hàn Đàm', icon: '🧊', desc: 'Băng đàm lạnh lẽo thấu xương, tu luyện ma công tiến triển cực nhanh.' }
@@ -141,7 +144,8 @@ export const SECTS = {
         ],
         zoneOverrides: {
             'son_mon': { name: 'Mị Hương Quan', desc: 'Sương mù mờ ảo, hương thơm quyến rũ người lạc lối.' },
-            'tang_kinh_cac': { name: 'Mị Thuật Lâu', badge: 'Mị Thuật' },
+            'tang_kinh_cac': { name: 'Nguyệt Ảnh Các', badge: 'Mị Thuật' },
+            'tang_bao_cac': { name: 'Ảo Nguyệt Bảo Các', desc: 'Lưu giữ mị dược, trân bảo và các vật phẩm tế luyện.' },
             'luyen_dan': { name: 'Mị Dược Phòng', desc: 'Bào chế các loại hương phấn và đan dược đặc thù.' },
             'dong_phu': { name: 'Ảo Mộng Cốc', desc: 'Thung lũng ảo cảnh tuyệt mỹ để tu luyện song tu.' }
         },
@@ -171,6 +175,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Lạc Vân Linh Cổng', desc: 'Cổng mây vờn quanh, đan hương phiêu tán khắp nơi.' },
             'tang_kinh_cac': { name: 'Đan Kinh Lâu', icon: '📜', badge: 'Đan Đạo' },
+            'tang_bao_cac': { name: 'Đan Dược Bảo Khố', desc: 'Kho báu tràn ngập linh đan tuyệt phẩm và kỳ hoa dị thảo.' },
             'luyen_dan': { name: 'Vạn Dược Đan Lô', desc: 'Đại sảnh luyện đan khổng lồ với ngàn hỏa nhãn lấy từ địa mạch.' },
             'noi_mon_vien': { name: 'Linh Đan Viện', desc: 'Viện tu luyện của nội môn, nồng nặc linh khí dược thảo.' },
             'duoc_vien': { name: 'Bách Thảo Bí Cảnh', desc: 'Không gian riêng để bồi dưỡng kỳ hoa dị thảo vạn năm.' }
@@ -207,6 +212,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Tinh Trận Quan', desc: 'Hàng ngàn ánh tinh quang lưu chuyển, cấm chế đan xen vô số.' },
             'tang_kinh_cac': { name: 'Trận Pháp Điện', badge: 'Trận Đạo' },
+            'tang_bao_cac': { name: 'Tinh Thần Bảo Khố', desc: 'Lưu giữ trận bàn viễn cổ và tài nguyên tinh thạch quý giá.' },
             'noi_mon_vien': { name: 'Tinh Tú Viện', desc: 'Nơi đệ tử nội môn ngộ đạo theo sự vận hành của tinh tú.' },
             'luyen_khi': { name: 'Thiên Công Trận Đài', desc: 'Khu vực chuyên khắc họa trận bàn và luyện chế trận kỳ.' },
             'bi_canh': { name: 'Cửu Cung Thử Trận', desc: 'Mê cung trận pháp ảo ảnh để rèn luyện ý chí và trận đạo.' },
@@ -241,6 +247,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Vạn Thú Sơn Quan', desc: 'Sơn môn khổng lồ có vạn thú thủ vệ, tiếng gầm thét vang dội.' },
             'tang_kinh_cac': { name: 'Thú Hồn Điện', icon: '🐾', badge: 'Ngự Thú' },
+            'tang_bao_cac': { name: 'Vạn Thú Bảo Khố', desc: 'Bảo các tàng trữ vô số yêu đan và trứng yêu thú hiếm.' },
             'linh_thu': { name: 'Hóa Long Trì', desc: 'Ao linh tuyền thần bí giúp linh thú tiến hóa và lột xác.' },
             'noi_mon_vien': { name: 'Linh Thú Viên Nội Các', desc: 'Khu vực bồi dưỡng linh thú cao cấp của đệ tử nội môn.' },
             'bi_canh': { name: 'Yêu Hồn Tháp', desc: 'Tòa tháp nhốt vô số yêu hồn tàn bạo để đệ tử vào thu phục.' }
@@ -273,6 +280,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Thanh Hư Sơn Môn', desc: 'Sơn môn phủ sương khói thanh khiết, đạo giáo uy nghiêm.' },
             'tang_kinh_cac': { name: 'Đạo Nguyên Điện', icon: '☯️', badge: 'Đạo Pháp' },
+            'tang_bao_cac': { name: 'Đạo Tạng Bảo Các', desc: 'Bảo khố thanh tịnh, lưu giữ linh vật Đạo gia.' },
             'luyen_dan': { name: 'Thanh Hư Đan Thất', desc: 'Đan thất ngập tràn mùi tiên dược, an tĩnh luyện đan.' },
             'duoc_vien': { name: 'Linh Lộ Dược Sơn', desc: 'Nuôi trồng linh dược bằng linh lộ tinh khiết nhất.' },
             'noi_mon_vien': { name: 'Dưỡng Khí Các', desc: 'Khu vực tu luyện hấp thụ thiên địa linh khí của nội môn.' },
@@ -306,6 +314,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Thiết Sơn Quan', desc: 'Cổng môn được rèn từ hắc thiết ngàn năm, vững chãi vô địch.' },
             'tang_kinh_cac': { name: 'Thiết Điển Đường', badge: 'Lực Đạo' },
+            'tang_bao_cac': { name: 'Trọng Thiết Bảo Khố', desc: 'Kho tàng khổng lồ chứa khoáng thạch vạn năm và trọng giáp.' },
             'noi_mon_vien': { name: 'Trọng Lực Điện', desc: 'Không gian nhân đôi trọng lực để luyện nhục thân cường hãn.' },
             'luyen_khi': { name: 'Thiết Luyện Cốc', desc: 'Khe núi chuyên dùng để quai búa rèn linh khí và trọng kiếm.' },
             'bi_canh': { name: 'Thiết Sơn Thử Luyện', desc: 'Khám phá quặng mỏ viễn cổ, vượt ải bằng nhục thân.' },
@@ -338,6 +347,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Đao Phong Quan', desc: 'Cổng môn sắc lẹm, ngập tràn sát khí đao phong bức người.' },
             'tang_kinh_cac': { name: 'Đao Kinh Lâu', icon: '🗡️', badge: 'Đao Pháp' },
+            'tang_bao_cac': { name: 'Đao Phong Bảo Các', desc: 'Nơi cất giữ tuyệt thế đao khí và đao phôi.' },
             'noi_mon_vien': { name: 'Đao Ý Đường', desc: 'Nơi diễn ra các trận quyết đấu sống còn của đệ tử nội môn.' },
             'luyen_khi': { name: 'Mài Đao Đường', desc: 'Khu vực chế tác và mài giũa đao khí sắc bén hơn bao giờ hết.' },
             'bi_canh': { name: 'Đao Kình Thử Trường', desc: 'Bí cảnh thử thách đao ý, đi qua ngàn đao trảm.' },
@@ -368,6 +378,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Thạch Môn Kiên Cố', desc: 'Bức tường thành đá vạn trượng không thể phá vỡ.' },
             'tang_kinh_cac': { name: 'Phòng Ngự Các', badge: 'Hộ Thể' },
+            'tang_bao_cac': { name: 'Kim Cang Bảo Khố', desc: 'Bảo các kiên cố lưu giữ thuẫn giáp và kim luyện thạch.' },
             'luyen_khi': { name: 'Giáp Luyện Thất', desc: 'Chuyên rèn luyện các loại thuẫn giáp và kim cương bảo y.' }
         },
         libraryItems: [
@@ -400,6 +411,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Vạn Hồn Quan', desc: 'Trận đồ vạn oan hồn gào thét ngăn cản mọi sinh linh.' },
             'tang_kinh_cac': { name: 'Quỷ Kinh Điện', icon: '👻', badge: 'Quỷ Đạo' },
+            'tang_bao_cac': { name: 'Huyết Cốt Bảo Khố', desc: 'Kho tàng tà ác chứa huyết ngọc, cốt tủy và dị bảo.' },
             'luyen_dan': { name: 'Độc Đan Lô', desc: 'Hỏa diễm đen ngòm chuyên luyện chế thi đan và độc dược.' },
             'bi_canh': { name: 'Huyết Hải Thử Địa', desc: 'Bể máu sôi sục là nơi đệ tử rèn luyện ý chí sinh tồn.' },
             'dong_phu': { name: 'Vạn Hồn Phiên', desc: 'Bế quan trong không gian của cự đại quỷ phiên, thu thập lệ khí.' }
@@ -433,6 +445,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Mị Hương Quan', desc: 'Sương mù phấn hồng bao phủ, người thường ngửi thấy liền điên loạn.' },
             'tang_kinh_cac': { name: 'Mị Thuật Lâu', badge: 'Mị Thuật' },
+            'tang_bao_cac': { name: 'Hoan Lạc Bảo Các', desc: 'Bảo khố hoa lệ tàng trữ kỳ trân dị bảo và âm dương mị dược.' },
             'luyen_dan': { name: 'Mị Dược Phòng', desc: 'Chuyên chế tác xuân dược, độc dược khống chế tâm trí.' },
             'bi_canh': { name: 'Ảo Cảnh Trận', desc: 'Trận pháp mị hoặc tối cao, kiểm tra đạo tâm đệ tử.' },
             'dong_phu': { name: 'Ảo Mộng Cốc', desc: 'Nơi mây mưa hoan lạc hoặc tàn sát vô hình trong mộng cảnh.' }
@@ -464,6 +477,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Viêm Hỏa Quan', desc: 'Cổng môn được luyện từ hắc diệm vô tận nóng rực.' },
             'tang_kinh_cac': { name: 'Hỏa Kinh Đường', badge: 'Ma Hỏa' },
+            'tang_bao_cac': { name: 'Hỏa Diễm Bảo Khố', desc: 'Kho tàng nóng rực chứa hỏa tinh thạch và ma khí.' },
             'luyen_dan': { name: 'Ma Hỏa Đan Lò', desc: 'Dùng ma hỏa Thanh Dương luyện chế các loại bạo đan tà ác.' },
             'bi_canh': { name: 'Viêm Sơn Thử Địa', desc: 'Núi lửa phun trào liên tục, rèn luyện thân thể với ma hỏa.' },
             'dong_phu': { name: 'Địa Hỏa Trì', desc: 'Ngâm mình trong nham thạch rực lửa để dung hợp hỏa linh lực.' }
@@ -495,6 +509,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Sát Khí Quan', desc: 'Oán khí ngập trời, sát khí ngưng tụ thành thực thể cảnh cáo kẻ lạ.' },
             'tang_kinh_cac': { name: 'Sát Điển Đường', badge: 'Sát Đạo' },
+            'tang_bao_cac': { name: 'Sát Khí Bảo Các', desc: 'Bảo khố tăm tối cất giữ hung khí đẫm máu.' },
             'luyen_dan': { name: 'Huyết Sát Đường', desc: 'Luyện đan bằng tinh huyết và oán niệm để cưỡng ép thăng cấp.' },
             'bi_canh': { name: 'Huyết Chiến Trường', desc: 'Đấu trường sinh tử đẫm máu để mài giũa sát khí.' },
             'dong_phu': { name: 'Sát Tâm Quan', desc: 'Bế quan trong oán khí ngập trời, tìm sự tĩnh lặng trong cuồng bạo.' }
@@ -526,6 +541,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Trùng Cốc Quan', desc: 'Trùng vụ bao phủ lối vào, chỉ cần hít một ngụm là bạo tễ.' },
             'tang_kinh_cac': { name: 'Vạn Trùng Điển', badge: 'Ngự Trùng' },
+            'tang_bao_cac': { name: 'Vạn Trùng Bảo Khố', desc: 'Nơi tối tăm ẩm thấp, lưu trữ linh trùng hiếm và cổ vật.' },
             'linh_thu': { name: 'Kỳ Trùng Noãn Trì', desc: 'Ao ấp trứng các loài kỳ trùng dị thú tà ác bậc nhất.' },
             'noi_mon_vien': { name: 'Trùng Cốc Nội Phủ', desc: 'Nơi đệ tử nội môn sống chung cùng độc trùng.' },
             'bi_canh': { name: 'U Trùng Bí Địa', desc: 'Rừng độc trùng nguyên sinh, săn bắt cổ trùng hiếm.' }
@@ -557,6 +573,7 @@ export const SECTS = {
         zoneOverrides: {
             'son_mon': { name: 'Thi Cốc Quan', desc: 'Hàng ngàn thi khôi lỗi đứng bất động gác cổng vô hồn.' },
             'tang_kinh_cac': { name: 'U Minh Điển', badge: 'Khôi Thuật' },
+            'tang_bao_cac': { name: 'Khôi Lỗi Bảo Các', desc: 'Bảo khố lạnh lẽo tàng trữ linh thạch và thiết giáp thi binh.' },
             'luyen_dan': { name: 'U Linh Luyện Thất', desc: 'Bào chế linh dịch ngâm xác chết để chế tạo khôi lỗi.' },
             'bi_canh': { name: 'Thi Cốc Bí Địa', desc: 'Thung lũng nhốt khôi lỗi mất kiểm soát để đệ tử vào thu dọn.' },
             'dong_phu': { name: 'U Minh Động Phủ', desc: 'Bế quan cùng khôi lỗi trong không gian tối tăm lạnh lẽo.' }
