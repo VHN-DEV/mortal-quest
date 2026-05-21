@@ -2942,7 +2942,8 @@ export const ITEMS = {
         name: 'Trứng Phệ Kim Trùng',
         type: 'beast_egg',
         beastId: 'phe_kim_trung',
-        image: 'artifacts/phe-kim-trung.svg',
+        image: 'aberrations/phe-kim-trung.svg',
+        icon: '🥚',
         quality: 'Linh Khí',
         price: 5000,
         description: 'Trứng của Phệ Kim Trùng, một loại kỳ trùng nổi tiếng với khả năng thôn phệ vạn vật, ngay cả pháp bảo cũng khó thoát khỏi hàm răng của chúng.'
@@ -2952,7 +2953,8 @@ export const ITEMS = {
         name: 'Trứng Băng Tằm',
         type: 'beast_egg',
         beastId: 'bang_tam',
-        image: 'artifacts/bang-tam.svg',
+        image: 'aberrations/bang-tam.svg',
+        icon: '🥚',
         quality: 'Pháp Khí',
         price: 1500,
         description: 'Trứng của Băng Tằm, sinh vật sống ở vùng cực hàn. Tơ của chúng là nguyên liệu quý để dệt nên các loại pháp y phòng ngự cực cao.'
@@ -2962,7 +2964,8 @@ export const ITEMS = {
         name: 'Trứng Huyết Ngọc Tri Chu',
         type: 'beast_egg',
         beastId: 'huyet_ngoc_tri_chu',
-        image: 'artifacts/huyet-ngoc-tri-chu.svg',
+        image: 'aberrations/huyet-ngoc-tri-chu.svg',
+        icon: '🥚',
         quality: 'Pháp Khí',
         price: 2000,
         description: 'Trứng của Huyết Ngọc Tri Chu, loại nhện mang huyết mạch cổ xưa, nọc độc vô cùng bạo liệt và tơ nhện dẻo dai khó đứt.'
@@ -2972,7 +2975,8 @@ export const ITEMS = {
         name: 'Trứng Kim Giáp Hạc',
         type: 'beast_egg',
         beastId: 'kim_giap_hac',
-        image: 'artifacts/kim-giap-hac.svg',
+        image: 'aberrations/kim-giap-hac.svg',
+        icon: '🥚',
         quality: 'Pháp Khí',
         price: 3000,
         description: 'Trứng của Kim Giáp Hạc, loài linh hạc có lớp lông cứng như kim loại, tốc độ bay cực nhanh và rất trung thành.'
@@ -2982,7 +2986,8 @@ export const ITEMS = {
         name: 'Trứng Huyền Diệm Nga',
         type: 'beast_egg',
         beastId: 'huyen_diem_nga',
-        image: 'artifacts/huyen-diem-nga.svg',
+        image: 'aberrations/huyen-diem-nga.svg',
+        icon: '🥚',
         quality: 'Pháp Khí',
         price: 1500,
         description: 'Trứng của Huyền Diệm Nga, loài bướm đêm mang hỏa tính, có khả năng phun ra hỏa độc gây ảo giác.'
@@ -2992,7 +2997,8 @@ export const ITEMS = {
         name: 'Trứng Lôi Bằng',
         type: 'beast_egg',
         beastId: 'loi_bang',
-        icon: '🦅',
+        image: 'aberrations/loi-bang.svg',
+        icon: '🥚',
         quality: 'Linh Khí',
         price: 8000,
         description: 'Trứng của Lôi Bằng, loài chim khổng lồ mang theo sức mạnh lôi đình, khi trưởng thành có thể sải cánh vạn dặm.'
@@ -3002,7 +3008,7 @@ export const ITEMS = {
         name: 'Trứng Thiên Phong Ngân Uynh',
         type: 'beast_egg',
         beastId: 'thien_phong_ngan_uynh',
-        icon: '🦗',
+        icon: '🥚',
         quality: 'Pháp Bảo',
         price: 25000,
         description: 'Trứng của Thiên Phong Ngân Uynh, loại kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.'
