@@ -602,6 +602,181 @@ export const ITEMS = {
         price: 350,
         description: 'Đá chứa ma khí loãng, dùng cho các loại đan dược đặc thù.'
     },
+
+    // =====================================================================
+    // --- VẬT PHẨM ĐẶC TRƯNG TÔNG MÔN ---
+    // =====================================================================
+
+    // --- Nguyên liệu kim loại (Thiên Kiếm Tông / Cự Kiếm Môn) ---
+    'huyen_thiet': {
+        id: 'huyen_thiet',
+        name: 'Huyền Thiết',
+        type: 'material',
+        icon: '🪨',
+        quality: 'Linh Khí',
+        price: 200,
+        description: 'Loại sắt đen hấp thu linh khí thiên nhiên, cứng chắc hơn sắt thường nhiều lần. Nguyên liệu cơ bản để rèn đúc pháp khí kiếm đạo.'
+    },
+    'tinh_kim': {
+        id: 'tinh_kim',
+        name: 'Tinh Kim',
+        type: 'material',
+        icon: '✨',
+        quality: 'Pháp Bảo',
+        price: 800,
+        description: 'Kim loại quý hiếm tinh luyện từ thiên thạch rơi xuống, chứa đựng thiên địa linh khí cực kỳ dồi dào. Nguyên liệu bậc cao để rèn kiếm pháp bảo hạng nhất.'
+    },
+
+    // --- Thiên Kiếm Tông: kiếm tinh thạch + bản vẽ phi kiếm ---
+    'thanh_kiem_linh_tinh': {
+        id: 'thanh_kiem_linh_tinh',
+        name: 'Thanh Kiếm Linh Tinh',
+        type: 'consumable',
+        icon: '⚔️',
+        quality: 'Linh Khí',
+        price: 500,
+        description: 'Viên tinh thạch được Thiên Kiếm Tông kết tinh từ kiếm ý thuần khiết. Sử dụng để tăng ngay 1000 Tu Vi và giúp lĩnh ngộ kiếm đạo thêm sâu sắc.',
+        effect: { type: 'tu_vi', value: 1000 }
+    },
+    'phi_kiem_tinh_ha': {
+        id: 'phi_kiem_tinh_ha',
+        name: 'Tinh Hà Phi Kiếm',
+        type: 'attackArtifact',
+        quality: 'Pháp Bảo',
+        icon: '⚔️',
+        description: 'Phi kiếm rèn từ Tinh Kim thuần chính, tỏa ra ánh sáng huy hoàng như dải ngân hà, phù hợp với tu sĩ kiếm đạo cấp cao.',
+        price: 8000,
+        stats: { atk: 150, spd: 20, pierce: 0.1 }
+    },
+    'bv_phi_kiem_tinh_ha': {
+        id: 'bv_phi_kiem_tinh_ha',
+        name: 'Bản Vẽ: Tinh Hà Phi Kiếm',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Linh Khí',
+        price: 1500,
+        description: 'Bản vẽ rèn đúc [[phi_kiem_tinh_ha|Tinh Hà Phi Kiếm]] từ [[tinh_kim|Tinh Kim]] và [[huyen_thiet|Huyền Thiết]].',
+        effect: { type: 'learn_smithing_recipe', value: 'phi_kiem_tinh_ha' }
+    },
+
+    // --- Hoàng Phong Cốc: thần sa đặc trưng ---
+    'hoang_phong_sa_tui': {
+        id: 'hoang_phong_sa_tui',
+        name: 'Hoàng Phong Thần Sa Túi',
+        type: 'consumable',
+        icon: '💛',
+        quality: 'Linh Khí',
+        price: 400,
+        description: 'Túi thần sa đặc chế của Hoàng Phong Cốc, chứa đựng phong hệ linh khí cực đậm đặc. Sử dụng trước trận để tạo lớp phòng ngự cát, giảm 20% sát thương nhận vào trong 1 trận.',
+        effect: { type: 'buff', stat: 'def_pct', value: 0.2, duration: 999 }
+    },
+
+    // --- Cự Kiếm Môn: giáp trọng cương kiện ---
+    'cu_kiem_trong_giap': {
+        id: 'cu_kiem_trong_giap',
+        name: 'Cự Kiếm Trọng Giáp',
+        type: 'defenseArtifact',
+        quality: 'Linh Khí',
+        icon: '🛡️',
+        description: 'Bộ giáp nặng rèn từ Huyền Thiết, dày dặn như tường thành, đặc trưng của đệ tử Cự Kiếm Môn. Tốc độ giảm nhưng phòng ngự cực kỳ vững chắc.',
+        price: 3500,
+        stats: { def: 120, maxHp: 200, spd: -10 }
+    },
+
+    // --- Thiên Khuyết Bảo: đá luyện cương giáp ---
+    'kim_luyen_thach': {
+        id: 'kim_luyen_thach',
+        name: 'Kim Luyện Thạch',
+        type: 'material',
+        icon: '🪨',
+        quality: 'Pháp Khí',
+        price: 350,
+        description: 'Đá khoáng cứng như sắt thép, hấp thụ kim hệ linh khí dày đặc. Thiên Khuyết Bảo dùng để gia cố và luyện chế hộ thể cương giáp bậc cao.'
+    },
+
+    // --- Hóa Đao Ổ: linh sa mài đao ---
+    'hoa_dao_linh_sa': {
+        id: 'hoa_dao_linh_sa',
+        name: 'Hóa Đao Linh Sa',
+        type: 'consumable',
+        icon: '🔪',
+        quality: 'Linh Khí',
+        price: 450,
+        description: 'Linh sa đặc chế của Hóa Đao Ổ, chứa đựng đao kình ngưng tụ nhiều năm. Mài lên vũ khí trước trận chiến, tăng 20% ATK trong toàn bộ 1 trận.',
+        effect: { type: 'buff', stat: 'atk_pct', value: 0.2, duration: 999 }
+    },
+
+    // --- Thanh Hư Môn: ngọc lộ dưỡng khí ---
+    'thanh_hu_linh_no': {
+        id: 'thanh_hu_linh_no',
+        name: 'Thanh Hư Ngọc Lộ',
+        type: 'consumable',
+        icon: '💧',
+        quality: 'Linh Khí',
+        price: 600,
+        description: 'Giọt ngọc lộ tinh khiết thu hoạch từ đỉnh núi Thanh Hư vào lúc bình minh, thanh lọc linh mạch. Hồi phục 30% HP và 30% Mana ngay lập tức.',
+        effect: { type: 'restore', hp: 0.3, mana: 0.3 }
+    },
+
+    // --- Yểm Nguyệt Tông: đan dược song tu ---
+    'song_tu_dieu_dan': {
+        id: 'song_tu_dieu_dan',
+        name: 'Song Tu Diệu Đan',
+        type: 'consumable',
+        icon: '💞',
+        quality: 'Pháp Bảo',
+        price: 2000,
+        description: 'Đan dược bí truyền của Yểm Nguyệt Tông, điều hòa âm dương linh khí trong kinh mạch. Sử dụng tăng tốc độ tu luyện x1.5 trong 6 giờ và giảm 30% rủi ro tẩu hỏa.',
+        effect: { type: 'buff', stat: 'tuViSpeed', value: 1.5, duration: 21600000 }
+    },
+
+    // --- Hợp Hoan Tông: mị hương ---
+    'mi_duoc_thi_huong': {
+        id: 'mi_duoc_thi_huong',
+        name: 'Mị Dược Thi Hương',
+        type: 'consumable',
+        icon: '🌸',
+        quality: 'Linh Khí',
+        price: 800,
+        description: 'Mị hương dạng lỏng tuyệt mật của Hợp Hoan Tông, tỏa ra ảo khí làm rối loạn tinh thần địch. Dùng trong trận giảm 35% tốc độ tấn công của địch trong 2 lượt.',
+        effect: { type: 'debuff', stat: 'enemy_spd', value: 0.35, duration: 2 }
+    },
+
+    // --- Ma Diễm Môn: đá chứa ma hỏa ---
+    'hoa_diem_thach': {
+        id: 'hoa_diem_thach',
+        name: 'Hỏa Diễm Thạch',
+        type: 'material',
+        icon: '🔥',
+        quality: 'Linh Khí',
+        price: 500,
+        description: 'Đá khoáng hình thành ở vùng nham thạch sôi sục, chứa đựng ma hỏa tinh chất cực kỳ nóng cháy. Ma Diễm Môn dùng làm nguyên liệu luyện đan ma đạo và nâng cấp pháp bảo hỏa hệ.'
+    },
+
+    // --- Thiên Sát Tông: linh phiên sát khí ---
+    'sat_khi_linh_phien': {
+        id: 'sat_khi_linh_phien',
+        name: 'Sát Khí Linh Phiên',
+        type: 'consumable',
+        icon: '🩸',
+        quality: 'Linh Khí',
+        price: 700,
+        description: 'Thẻ phiên khắc bằng xương người, ngâm trong sát khí ngàn chiến nhiều năm — đặc sản Thiên Sát Tông. Kích hoạt trước trận chiến tăng 25% ATK và 10% Crit Rate trong toàn trận.',
+        effect: { type: 'buff', stat: 'atk_pct', value: 0.25, duration: 999 }
+    },
+
+    // --- Linh Thú Sơn: ấn linh thú ---
+    'linh_thu_ung_hieu': {
+        id: 'linh_thu_ung_hieu',
+        name: 'Linh Thú Ứng Hiệu Ấn',
+        type: 'consumable',
+        icon: '🐾',
+        quality: 'Linh Khí',
+        price: 1200,
+        description: 'Ấn tín linh thú bí truyền của Linh Thú Sơn, chứa đựng thú ý khiến mọi linh thú bản năng thần phục. Sử dụng tăng 30% tỷ lệ thành công khi thu phục linh thú trong 24 giờ.',
+        effect: { type: 'buff', stat: 'beastSuccess', value: 0.3, duration: 86400000 }
+    },
+
     'thanh_hong_kiem': {
         id: 'thanh_hong_kiem',
         name: 'Thanh Hồng Kiếm',
