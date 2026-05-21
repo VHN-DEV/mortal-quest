@@ -223,7 +223,7 @@ export class PhapBaoLucScreen {
                         ${contentIcon}
                     </div>
                     <div class="flex-grow">
-                        <h4 class="text-sm font-bold text-white group-hover:text-qi-blue transition-colors">${item.name}</h4>
+                        <h4 class="text-sm font-charm text-white group-hover:text-qi-blue transition-colors">${item.name}</h4>
                         <div class="flex items-center space-x-2 mt-0.5">
                             <span class="text-[9px] font-bold" style="color: ${qualityColor}">${item.quality}</span>
                         </div>

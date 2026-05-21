@@ -369,7 +369,7 @@ export class MapScreen {
                     <img src="${previewImg}" class="location-card-image">
                     <div class="relative z-10 space-y-1">
                         <div class="flex justify-between items-center">
-                            <h4 class="text-xl font-bold text-white group-hover:text-qi-blue transition-colors">
+                            <h4 class="text-xl font-charm text-white group-hover:text-qi-blue transition-colors">
                                 ${regionName} ${isLocked ? '🔒' : ''}
                             </h4>
                             ${isLocked ? '<i class="ph ph-lock text-red-500 text-lg"></i>' : '<i class="ph ph-caret-right text-qi-blue text-xl"></i>'}
@@ -423,7 +423,7 @@ export class MapScreen {
                     <img src="${previewImg}" class="location-card-image">
                     <div class="relative z-10 space-y-1">
                         <div class="flex justify-between items-center">
-                            <h4 class="text-xl font-bold text-white group-hover:text-qi-blue transition-colors">${subName}</h4>
+                            <h4 class="text-xl font-charm text-white group-hover:text-qi-blue transition-colors">${subName}</h4>
                             <i class="ph ph-caret-right text-qi-blue text-xl"></i>
                         </div>
                         <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">Thế lực trấn thủ, thành trì giao thương tại ${subName}</p>
@@ -487,7 +487,7 @@ export class MapScreen {
                     <img src="${loc.image || ASSETS.backgrounds.cultivation}" class="location-card-image">
                     <div class="relative z-10 space-y-1">
                         <div class="flex justify-between items-center">
-                            <h4 class="text-xl font-bold text-white group-hover:text-qi-blue transition-colors">${loc.name}</h4>
+                            <h4 class="text-xl font-charm text-white group-hover:text-qi-blue transition-colors">${loc.name}</h4>
                             ${locked ? '<i class="ph ph-lock text-red-500"></i>' : ''}
                         </div>
                         <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">${loc.description}</p>

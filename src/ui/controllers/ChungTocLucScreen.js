@@ -130,7 +130,7 @@ export class ChungTocLucScreen {
                     ${raceIcon}
                 </div>
                 <div class="flex-grow">
-                    <h4 class="text-sm font-bold text-white group-hover:text-qi-blue transition-colors">${race.name}</h4>
+                    <h4 class="text-sm font-charm text-white group-hover:text-qi-blue transition-colors">${race.name}</h4>
                     <p class="text-[9px] text-gray-500 line-clamp-1">${race.desc}</p>
                 </div>
                 <i class="ph ph-caret-right text-gray-600 group-hover:text-white"></i>

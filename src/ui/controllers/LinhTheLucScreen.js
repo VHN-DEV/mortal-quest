@@ -93,7 +93,7 @@ export class LinhTheLucScreen {
                     ${item.rank}
                 </div>
                 <div class="flex-grow">
-                    <h4 class="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">${item.name}</h4>
+                    <h4 class="text-sm font-charm text-white group-hover:text-purple-300 transition-colors">${item.name}</h4>
                     <div class="flex items-center space-x-2 mt-0.5">
                         <span class="text-[8px] text-gray-500 italic">"${item.title}"</span>
                         <span class="text-[8px] font-bold ${rarityClass}">${item.rarity}</span>

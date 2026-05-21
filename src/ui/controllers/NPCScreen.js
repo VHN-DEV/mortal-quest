@@ -21,7 +21,7 @@ export class NPCScreen {
                 <div class="flex-none px-5 pt-5 pb-3" style="background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);">
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h2 class="text-2xl font-charm text-white tracking-wide">Nhân Thế Lục</h2>
+                            <h2 class="text-3xl font-charm text-cultivation-gold">Nhân Thế Lục</h2>
                             <p class="text-[9px] text-gray-500 uppercase tracking-[0.3em] mt-0.5">Giao Tế · Vận Mệnh · Nhân Quả</p>
                         </div>
                         ${this.activeTab === 'npcs' ? `
@@ -36,20 +36,20 @@ export class NPCScreen {
                     <div class="flex gap-2">
                         <button onclick="window.npcScreen.setTab('npcs')"
                             class="flex-1 py-2.5 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all ${this.activeTab === 'npcs'
-                                ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/40 shadow-[0_0_12px_rgba(79,158,255,0.15)]'
-                                : 'bg-white/5 text-gray-500 border border-white/10 hover:text-gray-300'}">
+                ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/40 shadow-[0_0_12px_rgba(79,158,255,0.15)]'
+                : 'bg-white/5 text-gray-500 border border-white/10 hover:text-gray-300'}">
                             <i class="ph ph-users mr-1"></i>Đạo Hữu
                         </button>
                         <button onclick="window.npcScreen.setTab('fate')"
                             class="flex-1 py-2.5 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all ${this.activeTab === 'fate'
-                                ? 'bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/40 shadow-[0_0_12px_rgba(212,175,55,0.15)]'
-                                : 'bg-white/5 text-gray-500 border border-white/10 hover:text-gray-300'}">
+                ? 'bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/40 shadow-[0_0_12px_rgba(212,175,55,0.15)]'
+                : 'bg-white/5 text-gray-500 border border-white/10 hover:text-gray-300'}">
                             <i class="ph ph-star mr-1"></i>Nhân Quả
                         </button>
                         <button onclick="window.npcScreen.setTab('news')"
                             class="flex-1 py-2.5 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all ${this.activeTab === 'news'
-                                ? 'bg-qi-purple/20 text-qi-purple border border-qi-purple/40 shadow-[0_0_12px_rgba(168,85,247,0.15)]'
-                                : 'bg-white/5 text-gray-500 border border-white/10 hover:text-gray-300'}">
+                ? 'bg-qi-purple/20 text-qi-purple border border-qi-purple/40 shadow-[0_0_12px_rgba(168,85,247,0.15)]'
+                : 'bg-white/5 text-gray-500 border border-white/10 hover:text-gray-300'}">
                             <i class="ph ph-scroll mr-1"></i>Tin Tức
                         </button>
                     </div>
@@ -229,7 +229,7 @@ export class NPCScreen {
 
     renderNewsView() {
         const news = state.systems.npc.worldNews || [];
-        
+
         if (news.length === 0) {
             return `
                 <div class="flex flex-col items-center justify-center h-full space-y-4 p-8 text-center">
@@ -247,29 +247,29 @@ export class NPCScreen {
         return `
             <div class="h-full overflow-y-auto custom-scroll p-5 space-y-3">
                 ${news.map(item => {
-                    let icon = 'ph-scroll';
-                    let colorClass = 'text-gray-400';
-                    let bgClass = 'bg-white/5 border-white/10';
-                    
-                    if (item.msg.includes('[Huyết Chiến]') || item.msg.includes('[Vẫn Lạc]') || item.msg.includes('[Sát Trận]') || item.msg.includes('[Tự Phù]')) {
-                        icon = 'ph-skull';
-                        colorClass = 'text-red-400';
-                        bgClass = 'bg-red-500/10 border-red-500/20';
-                    } else if (item.msg.includes('[Đột Phá]')) {
-                        icon = 'ph-lightning';
-                        colorClass = 'text-cultivation-gold';
-                        bgClass = 'bg-cultivation-gold/10 border-cultivation-gold/20';
-                    } else if (item.msg.includes('[Luận Bàn]') || item.msg.includes('[Giao Lưu]')) {
-                        icon = 'ph-handshake';
-                        colorClass = 'text-qi-blue';
-                        bgClass = 'bg-qi-blue/10 border-qi-blue/20';
-                    } else if (item.msg.includes('[Thất Bại]')) {
-                        icon = 'ph-warning-circle';
-                        colorClass = 'text-orange-400';
-                        bgClass = 'bg-orange-500/10 border-orange-500/20';
-                    }
+            let icon = 'ph-scroll';
+            let colorClass = 'text-gray-400';
+            let bgClass = 'bg-white/5 border-white/10';
 
-                    return `
+            if (item.msg.includes('[Huyết Chiến]') || item.msg.includes('[Vẫn Lạc]') || item.msg.includes('[Sát Trận]') || item.msg.includes('[Tự Phù]')) {
+                icon = 'ph-skull';
+                colorClass = 'text-red-400';
+                bgClass = 'bg-red-500/10 border-red-500/20';
+            } else if (item.msg.includes('[Đột Phá]')) {
+                icon = 'ph-lightning';
+                colorClass = 'text-cultivation-gold';
+                bgClass = 'bg-cultivation-gold/10 border-cultivation-gold/20';
+            } else if (item.msg.includes('[Luận Bàn]') || item.msg.includes('[Giao Lưu]')) {
+                icon = 'ph-handshake';
+                colorClass = 'text-qi-blue';
+                bgClass = 'bg-qi-blue/10 border-qi-blue/20';
+            } else if (item.msg.includes('[Thất Bại]')) {
+                icon = 'ph-warning-circle';
+                colorClass = 'text-orange-400';
+                bgClass = 'bg-orange-500/10 border-orange-500/20';
+            }
+
+            return `
                         <div class="p-4 rounded-2xl border ${bgClass} flex gap-3 transition-all hover:bg-white/10">
                             <div class="flex-none mt-1">
                                 <i class="ph ${icon} ${colorClass} text-xl"></i>
@@ -280,7 +280,7 @@ export class NPCScreen {
                             </div>
                         </div>
                     `;
-                }).join('')}
+        }).join('')}
             </div>
         `;
     }
@@ -399,13 +399,13 @@ export class NPCScreen {
                 <!-- Stats Grid -->
                 <div class="grid grid-cols-2 gap-2">
                     ${[
-                        { label: 'Căn Cốt', value: root, icon: 'ph-lightning' },
-                        { label: 'Thể Chất', value: physique, icon: 'ph-person' },
-                        { label: 'Tính Cách', value: personality || 'Bí ẩn', icon: 'ph-mask-happy' },
-                        { label: 'Mục Tiêu', value: goal, icon: 'ph-target' },
-                        { label: 'Địa Điểm', value: npc.location, icon: 'ph-map-pin' },
-                        { label: 'Hành Động', value: npc.activity, icon: 'ph-activity' },
-                    ].map(item => `
+                { label: 'Căn Cốt', value: root, icon: 'ph-lightning' },
+                { label: 'Thể Chất', value: physique, icon: 'ph-person' },
+                { label: 'Tính Cách', value: personality || 'Bí ẩn', icon: 'ph-mask-happy' },
+                { label: 'Mục Tiêu', value: goal, icon: 'ph-target' },
+                { label: 'Địa Điểm', value: npc.location, icon: 'ph-map-pin' },
+                { label: 'Hành Động', value: npc.activity, icon: 'ph-activity' },
+            ].map(item => `
                         <div class="p-3 rounded-xl border border-white/6" style="background: rgba(255,255,255,0.02);">
                             <div class="flex items-center gap-1.5 mb-1">
                                 <i class="ph ${item.icon} text-xs text-gray-600"></i>

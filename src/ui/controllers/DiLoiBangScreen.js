@@ -103,7 +103,7 @@ export class DiLoiBangScreen {
                     ${item.rank}
                 </div>
                 <div class="flex-grow">
-                    <h4 class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">${item.name}</h4>
+                    <h4 class="text-sm font-charm text-white group-hover:text-blue-400 transition-colors">${item.name}</h4>
                     <div class="flex items-center space-x-2 mt-0.5">
                         <span class="text-[8px] px-1.5 py-0.5 rounded bg-white/5 text-gray-500 uppercase">${item.color}</span>
                         <span class="text-[8px] font-bold ${rarityClass}">${item.rarity}</span>
