@@ -2043,7 +2043,7 @@ export class SystemsScreen {
                 break;
         }
 
-        window.game.saveState();
+        if (window.game && window.game.saveGame) window.game.saveGame();
         window.game.refreshUI();
         this.renderSects();
     }
