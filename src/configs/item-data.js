@@ -786,6 +786,133 @@ export const ITEMS = {
         effect: { type: 'buff', stat: 'beastSuccess', value: 0.3, duration: 86400000 }
     },
 
+    // --- Huyền Âm Cốc: hàn khí & pháp bảo oan hồn ---
+    'huyen_am_han_tuy': {
+        id: 'huyen_am_han_tuy',
+        name: 'Huyền Âm Hàn Tủy',
+        type: 'consumable',
+        icon: '🧊',
+        quality: 'Linh Khí',
+        price: 800,
+        description: 'Tinh hoa hàn khí thấu xương từ sâu đáy Huyền Âm Cốc, ngưng kết thành giọt băng tinh khiết. Sử dụng giúp tăng 1.5x Tốc độ tu luyện thần thức trong 12 giờ, nhưng người dùng sẽ chịu hàn khí xâm thực (Giảm tạm thời 10% HP tối đa).',
+        effect: { type: 'buff', stat: 'soulPs', value: 1.5, duration: 43200000, sideEffect: { stat: 'maxHp_pct', value: -0.1 } }
+    },
+    'am_hon_phien': {
+        id: 'am_hon_phien',
+        name: 'Âm Hồn Phiên',
+        type: 'attackArtifact',
+        quality: 'Linh Khí',
+        icon: '🏴',
+        description: 'Pháp bảo ma đạo Huyền Âm Cốc, bên trong giam cầm vô số oan hồn tàn ác. Công kích cuồng bạo nhưng ma khí từ oan hồn ăn mòn cơ thể người dùng.',
+        price: 3000,
+        stats: { atk: 180, maxHp: -100, spd: 15 }
+    },
+
+    // --- Lạc Vân Tông: dược thảo & tiên đan bí truyền ---
+    'lac_van_thao': {
+        id: 'lac_van_thao',
+        name: 'Lạc Vân Thảo',
+        type: 'material',
+        icon: '🌱',
+        quality: 'Linh Khí',
+        price: 350,
+        description: 'Linh thảo đặc thù chỉ mọc ở sườn núi Lạc Vân quanh năm mây phủ, ngậm sương trời tinh khiết. Là nguyên liệu không thể thiếu trong các loại đan dược thượng phẩm của Lạc Vân Tông.'
+    },
+    'lac_van_tien_dan': {
+        id: 'lac_van_tien_dan',
+        name: 'Lạc Vân Tiên Đan',
+        type: 'consumable',
+        icon: '💮',
+        quality: 'Pháp Bảo',
+        price: 5000,
+        description: 'Đan dược bí truyền danh tiếng của Lạc Vân Tông, kết hợp từ vạn loại linh thảo thượng phẩm. Khi dùng lập tức hồi phục 100% HP và Mana, đồng thời tăng 10% Tỷ lệ đột phá cảnh giới trong 24 giờ.',
+        effect: { type: 'restore', hp: 1.0, mana: 1.0, breakthroughBuff: 0.1, duration: 86400000 }
+    },
+
+    // --- Thiên Tinh Tông: tinh thạch & trận bàn tinh tú ---
+    'tinh_than_thach': {
+        id: 'tinh_than_thach',
+        name: 'Tinh Thần Thạch',
+        type: 'material',
+        icon: '☄️',
+        quality: 'Linh Khí',
+        price: 450,
+        description: 'Khoáng thạch đặc biệt hấp thụ linh quang của ngàn vì tinh tú, tỏa ra ánh sáng lấp lánh lạnh lẽo. Nguyên liệu cốt lõi để Thiên Tinh Tông khắc họa trận bàn tinh tú thượng phẩm.'
+    },
+    'tinh_quang_tran_ban': {
+        id: 'tinh_quang_tran_ban',
+        name: 'Tinh Quang Trận Bàn',
+        type: 'consumable',
+        icon: '🥏',
+        quality: 'Linh Khí',
+        price: 1500,
+        description: 'Trận bàn chế tác sẵn mang đặc trưng tinh tú của Thiên Tinh Tông. Kích hoạt trước trận đấu để triển khai một trận pháp tinh quang, tăng 25% Né tránh và 15% Thủ trong toàn bộ trận đấu.',
+        effect: { type: 'buff', stats: { dodge: 0.25, def_pct: 0.15 }, duration: 999 }
+    },
+
+    // --- Quỷ Linh Môn: cốt liệu & độc đan bá đạo ---
+    'van_hon_cot': {
+        id: 'van_hon_cot',
+        name: 'Vạn Hồn Cốt',
+        type: 'material',
+        icon: '🦴',
+        quality: 'Linh Khí',
+        price: 400,
+        description: 'Xương cốt của tà tu đã trải qua vạn oán hồn quán chú, mang theo quỷ khí đậm đặc thấu tủy. Nguyên liệu ma đạo cốt lõi để Quỷ Linh Môn luyện chế độc đan và quỷ khí trấn môn.'
+    },
+    'tuyet_huyet_hac_dan': {
+        id: 'tuyet_huyet_hac_dan',
+        name: 'Tuyệt Huyết Hắc Đan',
+        type: 'consumable',
+        icon: '⚫',
+        quality: 'Pháp Khí',
+        price: 1000,
+        description: 'Độc đan bá đạo của Quỷ Linh Môn, luyện từ Vạn Hồn Cốt và huyết khí cực âm. Sử dụng trong trận đấu bộc phát 40% ATK tức thì, nhưng độc tính khiến người dùng tự mất 5% HP mỗi lượt.',
+        effect: { type: 'buff', stat: 'atk_pct', value: 0.4, sideEffect: { type: 'dot', stat: 'hp_pct', value: -0.05 }, duration: 999 }
+    },
+
+    // --- Ngự Linh Tông: trùng noãn & hấp huyết trùng ---
+    'ngoc_cai_trung_noan': {
+        id: 'ngoc_cai_trung_noan',
+        name: 'Ngọc Cái Trùng Noãn',
+        type: 'material',
+        icon: '🥚',
+        quality: 'Linh Khí',
+        price: 600,
+        description: 'Trứng của một loài kỳ trùng thượng cổ cực hiếm. Lớp vỏ lấp lánh như ngọc bảo, bên trong ẩn chứa kịch độc và linh khí ngự thú dồi dào.'
+    },
+    'tui_hap_huyet_trung': {
+        id: 'tui_hap_huyet_trung',
+        name: 'Túi Hấp Huyết Trùng',
+        type: 'consumable',
+        icon: '🪲',
+        quality: 'Linh Khí',
+        price: 850,
+        description: 'Túi da bí truyền Ngự Linh Tông tàng trữ hàng ngàn con Hấp Huyết Trùng hung hãn. Ném vào đối thủ để chúng cắn xé liên tục, mỗi lượt hút 10% HP của địch hồi cho bản thân trong 3 lượt.',
+        effect: { type: 'debuff', stat: 'lifesteal_dot', value: 0.1, duration: 3 }
+    },
+
+    // --- Khôi Âm Tông: u thiết mộc & cốt ấn cường hóa ---
+    'u_thiet_linh_moc': {
+        id: 'u_thiet_linh_moc',
+        name: 'U Thiết Linh Mộc',
+        type: 'material',
+        icon: '🪵',
+        quality: 'Linh Khí',
+        price: 450,
+        description: 'Gỗ cổ thụ vạn năm ngâm trong U Minh tuyền thủy tối tăm, cứng hơn cả sắt thép nhưng lại nhẹ tựa lông hồng. Nguyên liệu hoàn hảo để chế tạo thân vỏ khôi lỗi cấp cao.'
+    },
+    'khoi_loi_cot_an': {
+        id: 'khoi_loi_cot_an',
+        name: 'Khôi Lỗi Cốt Ấn',
+        type: 'consumable',
+        icon: '🔰',
+        quality: 'Linh Khí',
+        price: 900,
+        description: 'Bùa ấn Khôi Âm Tông luyện từ xác chết của cường giả, khắc vào huyệt đạo trước trận đấu để cường hóa thân thể tựa khôi lỗi. Giảm 30% sát thương vật lý nhận vào nhưng giảm 20% Tốc độ đánh.',
+        effect: { type: 'buff', stats: { physRes: 0.3, spd_pct: -0.2 }, duration: 999 }
+    },
+
     'thanh_hong_kiem': {
         id: 'thanh_hong_kiem',
         name: 'Thanh Hồng Kiếm',
