@@ -41,6 +41,14 @@ export const SECTS = {
             { id: 'tk_2', name: 'Rèn luyện kiếm ý', desc: 'Đứng dưới thác nước luyện kiếm 4 canh giờ.', reward: { contribution: 20, tuVi: 500 }, stamina: 40 }
         ],
         enemySects: ['cu_kiem_mon', 'hoa_dao_o'],
+        zoneOverrides: {
+            'son_mon': { name: 'Kiếm Quan Sơn Môn', desc: 'Trận pháp phong duệ như kiếm bảo vệ lối vào.' },
+            'tang_kinh_cac': { name: 'Kiếm Các', icon: '📖', badge: 'Kiếm Pháp' },
+            'noi_mon_vien': { name: 'Kiếm Tu Điện', desc: 'Điện xá đệ tử nội môn, nơi thường xuyên diễn ra luận kiếm.' },
+            'luyen_khi': { name: 'Đúc Kiếm Cốc', desc: 'Lò rèn địa hỏa chuyên đúc kiếm phôi và tế luyện phi kiếm.' },
+            'bi_canh': { name: 'Kiếm Mộ Bí Cảnh', desc: 'Khám phá kiếm mộ viễn cổ, thu thập kiếm ý tiền nhân.' },
+            'dong_phu': { name: 'Kiếm Tâm Nhai', desc: 'Bờ vực tĩnh tâm, ngồi ngộ kiếm đạo và đột phá cảnh giới.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'huyen_thiet', price: 100, type: 'contribution', minRankScore: 0 },
@@ -67,6 +75,11 @@ export const SECTS = {
             { id: 'hp_2', name: 'Tuần tra cốc khẩu', desc: 'Canh gác lối vào tông môn, phòng ngừa tán tu quấy phá.', reward: { contribution: 15, tuVi: 300 }, stamina: 30 }
         ],
         enemySects: ['huyen_am_coc', 'quy_linh_mon'],
+        zoneOverrides: {
+            'son_mon': { name: 'Hoàng Phong Trận', desc: 'Bão cát mịt mù quanh năm bảo vệ sơn môn.' },
+            'tang_kinh_cac': { name: 'Ngũ Hành Điện', badge: 'Pháp Thuật' },
+            'duoc_vien': { name: 'Bách Thảo Dược Viên', desc: 'Nơi có linh khí ngũ hành ôn hòa, thích hợp trồng linh dược.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'hoang_phong_sa_tui', price: 250, type: 'contribution', minRankScore: 0 },
@@ -91,6 +104,13 @@ export const SECTS = {
             { id: 'ha_2', name: 'Luyện chế thi khôi', desc: 'Hỗ trợ trưởng lão luyện chế khôi lỗi.', reward: { contribution: 25, tuVi: 600 }, stamina: 45 }
         ],
         enemySects: ['thien_kiem_tong', 'lac_van_tong'],
+        zoneOverrides: {
+            'son_mon': { name: 'U Âm Quan', desc: 'Cổng vào âm u, tử khí lượn lờ cấm người sống lại gần.' },
+            'tang_kinh_cac': { name: 'Vạn Hồn Điện', icon: '💀', badge: 'Ma Kinh' },
+            'luyen_dan': { name: 'Huyết Đan Thất', desc: 'Nơi luyện đan tỏa ra mùi máu tanh tưởi, luyện chế thi đan.' },
+            'bi_canh': { name: 'U Âm Động', desc: 'Động huyệt chứa đầy lệ quỷ, nơi rèn luyện của ma tu.' },
+            'dong_phu': { name: 'Hàn Đàm', icon: '🧊', desc: 'Băng đàm lạnh lẽo thấu xương, tu luyện ma công tiến triển cực nhanh.' }
+        },
         libraryItems: [
             { id: 'ma_thach', price: 100, type: 'contribution', minRankScore: 0 },
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
@@ -119,6 +139,12 @@ export const SECTS = {
             { id: 'yn_1', name: 'Hộ Pháp Dược Viên', desc: 'Canh gác động phủ dược viên của các sư tỷ ngoại môn.', reward: { contribution: 10, lingShi: 40 }, stamina: 20 },
             { id: 'yn_2', name: 'Luyện Song Tu Quyết', desc: 'Cùng đồng môn cảm ngộ âm dương giao hòa chi đạo.', reward: { contribution: 25, tuVi: 600 }, stamina: 40 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Mị Hương Quan', desc: 'Sương mù mờ ảo, hương thơm quyến rũ người lạc lối.' },
+            'tang_kinh_cac': { name: 'Mị Thuật Lâu', badge: 'Mị Thuật' },
+            'luyen_dan': { name: 'Mị Dược Phòng', desc: 'Bào chế các loại hương phấn và đan dược đặc thù.' },
+            'dong_phu': { name: 'Ảo Mộng Cốc', desc: 'Thung lũng ảo cảnh tuyệt mỹ để tu luyện song tu.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'thanh_tam_dan', price: 100, type: 'contribution', minRankScore: 0 },
@@ -142,6 +168,13 @@ export const SECTS = {
             { id: 'lv_1', name: 'Hái Lạc Vân Thảo', desc: 'Thu hái các ngọn cỏ lạc vân quý giá trên sườn Bách Nhạc Phong.', reward: { contribution: 15, lingShi: 50 }, stamina: 20 },
             { id: 'lv_2', name: 'Tĩnh tọa luyện đan', desc: 'Ngồi thiền thanh lọc khí dược bên động phủ cổ kính của tổ sư.', reward: { contribution: 30, tuVi: 800 }, stamina: 45 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Lạc Vân Linh Cổng', desc: 'Cổng mây vờn quanh, đan hương phiêu tán khắp nơi.' },
+            'tang_kinh_cac': { name: 'Đan Kinh Lâu', icon: '📜', badge: 'Đan Đạo' },
+            'luyen_dan': { name: 'Vạn Dược Đan Lô', desc: 'Đại sảnh luyện đan khổng lồ với ngàn hỏa nhãn lấy từ địa mạch.' },
+            'noi_mon_vien': { name: 'Linh Đan Viện', desc: 'Viện tu luyện của nội môn, nồng nặc linh khí dược thảo.' },
+            'duoc_vien': { name: 'Bách Thảo Bí Cảnh', desc: 'Không gian riêng để bồi dưỡng kỳ hoa dị thảo vạn năm.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 30, type: 'contribution', minRankScore: 0 },
             { id: 'dp_tich_coc_dan', price: 100, type: 'contribution', minRankScore: 0 },
@@ -171,6 +204,14 @@ export const SECTS = {
             { id: 'tt_1', name: 'Duy Tu Cấm Chế', desc: 'Khắc họa cấm chế trận pháp bảo vệ sơn môn khỏi tà tu sâm lấn.', reward: { contribution: 12, lingShi: 45 }, stamina: 25 },
             { id: 'tt_2', name: 'Diễn Luyện Trận Pháp', desc: 'Thí nghiệm diễn luyện biến hóa của Cửu Cung Trận pháp.', reward: { contribution: 25, tuVi: 550 }, stamina: 40 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Tinh Trận Quan', desc: 'Hàng ngàn ánh tinh quang lưu chuyển, cấm chế đan xen vô số.' },
+            'tang_kinh_cac': { name: 'Trận Pháp Điện', badge: 'Trận Đạo' },
+            'noi_mon_vien': { name: 'Tinh Tú Viện', desc: 'Nơi đệ tử nội môn ngộ đạo theo sự vận hành của tinh tú.' },
+            'luyen_khi': { name: 'Thiên Công Trận Đài', desc: 'Khu vực chuyên khắc họa trận bàn và luyện chế trận kỳ.' },
+            'bi_canh': { name: 'Cửu Cung Thử Trận', desc: 'Mê cung trận pháp ảo ảnh để rèn luyện ý chí và trận đạo.' },
+            'dong_phu': { name: 'Tinh Đồ Bế Quan', desc: 'Bế quan trong tinh đồ hư ảo, dẫn tinh lực thối thể.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'tran_ban_so', price: 300, type: 'contribution', minRankScore: 0 },
@@ -197,6 +238,13 @@ export const SECTS = {
             { id: 'lt_1', name: 'Chăm sóc yêu thú', desc: 'Cho ăn và tắm rửa các đầu ấu thú yếu ớt tại thú viên.', reward: { contribution: 10, lingShi: 35 }, stamina: 20 },
             { id: 'lt_2', name: 'Săn bắt hoang thú', desc: 'Đi rừng sâu dùng ngự thú linh phù bắt giữ một đầu yêu thú sơ cấp.', reward: { contribution: 20, tuVi: 500 }, stamina: 35 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Vạn Thú Sơn Quan', desc: 'Sơn môn khổng lồ có vạn thú thủ vệ, tiếng gầm thét vang dội.' },
+            'tang_kinh_cac': { name: 'Thú Hồn Điện', icon: '🐾', badge: 'Ngự Thú' },
+            'linh_thu': { name: 'Hóa Long Trì', desc: 'Ao linh tuyền thần bí giúp linh thú tiến hóa và lột xác.' },
+            'noi_mon_vien': { name: 'Linh Thú Viên Nội Các', desc: 'Khu vực bồi dưỡng linh thú cao cấp của đệ tử nội môn.' },
+            'bi_canh': { name: 'Yêu Hồn Tháp', desc: 'Tòa tháp nhốt vô số yêu hồn tàn bạo để đệ tử vào thu phục.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'ngu_thu_quyet', price: 400, type: 'contribution', minRankScore: 0 },
@@ -222,6 +270,14 @@ export const SECTS = {
             { id: 'th_1', name: 'Luyện Chế Khí Đan', desc: 'Tiếp linh hỏa trợ giúp nhóm trưởng lão ngoại môn thối luyện dược trấp.', reward: { contribution: 12, lingShi: 40 }, stamina: 20 },
             { id: 'th_2', name: 'Phân Loại Đan Phương', desc: 'Chỉnh lý cổ tự đan thư bị hư hao theo thời gian.', reward: { contribution: 20, tuVi: 550 }, stamina: 40 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Thanh Hư Sơn Môn', desc: 'Sơn môn phủ sương khói thanh khiết, đạo giáo uy nghiêm.' },
+            'tang_kinh_cac': { name: 'Đạo Nguyên Điện', icon: '☯️', badge: 'Đạo Pháp' },
+            'luyen_dan': { name: 'Thanh Hư Đan Thất', desc: 'Đan thất ngập tràn mùi tiên dược, an tĩnh luyện đan.' },
+            'duoc_vien': { name: 'Linh Lộ Dược Sơn', desc: 'Nuôi trồng linh dược bằng linh lộ tinh khiết nhất.' },
+            'noi_mon_vien': { name: 'Dưỡng Khí Các', desc: 'Khu vực tu luyện hấp thụ thiên địa linh khí của nội môn.' },
+            'bi_canh': { name: 'Thanh Hư Tĩnh Địa', desc: 'Bí cảnh đạo môn dùng để vượt ải tâm ma.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 40, type: 'contribution', minRankScore: 0 },
             { id: 'thanh_hu_linh_no', price: 350, type: 'contribution', minRankScore: 0 },
@@ -247,6 +303,14 @@ export const SECTS = {
             { id: 'ck_1', name: 'Rèn Đúc Trọng Thiết', desc: 'Dùng cự búa rèn cốt phôi kiếm khổng lồ nặng ngàn cân.', reward: { contribution: 10, lingShi: 50 }, stamina: 25 },
             { id: 'ck_2', name: 'Vung Kiếm Khổ Luyện', desc: 'Đứng vững vung đại trọng kiếm vạn lần để rèn tráng nhục thân.', reward: { contribution: 25, tuVi: 600 }, stamina: 45 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Thiết Sơn Quan', desc: 'Cổng môn được rèn từ hắc thiết ngàn năm, vững chãi vô địch.' },
+            'tang_kinh_cac': { name: 'Thiết Điển Đường', badge: 'Lực Đạo' },
+            'noi_mon_vien': { name: 'Trọng Lực Điện', desc: 'Không gian nhân đôi trọng lực để luyện nhục thân cường hãn.' },
+            'luyen_khi': { name: 'Thiết Luyện Cốc', desc: 'Khe núi chuyên dùng để quai búa rèn linh khí và trọng kiếm.' },
+            'bi_canh': { name: 'Thiết Sơn Thử Luyện', desc: 'Khám phá quặng mỏ viễn cổ, vượt ải bằng nhục thân.' },
+            'dong_phu': { name: 'Kim Cương Trì', desc: 'Ngâm mình trong linh trì đặc quánh linh khí để rèn thể.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'huyen_thiet', price: 80, type: 'contribution', minRankScore: 0 },
@@ -271,6 +335,14 @@ export const SECTS = {
             { id: 'hd_1', name: 'Mài Giũa Đao Kình', desc: 'Ngồi xếp bằng trước đao phong bia đá cảm thụ đao kình.', reward: { contribution: 12, lingShi: 40 }, stamina: 20 },
             { id: 'hd_2', name: 'Luyện Đao Tự Vệ', desc: 'Thực hành các thế đao dũng mãnh để chém yêu thú xâm nhập.', reward: { contribution: 20, tuVi: 500 }, stamina: 35 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Đao Phong Quan', desc: 'Cổng môn sắc lẹm, ngập tràn sát khí đao phong bức người.' },
+            'tang_kinh_cac': { name: 'Đao Kinh Lâu', icon: '🗡️', badge: 'Đao Pháp' },
+            'noi_mon_vien': { name: 'Đao Ý Đường', desc: 'Nơi diễn ra các trận quyết đấu sống còn của đệ tử nội môn.' },
+            'luyen_khi': { name: 'Mài Đao Đường', desc: 'Khu vực chế tác và mài giũa đao khí sắc bén hơn bao giờ hết.' },
+            'bi_canh': { name: 'Đao Kình Thử Trường', desc: 'Bí cảnh thử thách đao ý, đi qua ngàn đao trảm.' },
+            'dong_phu': { name: 'Đao Ý Động', desc: 'Động phủ đầy vết đao của tiền nhân, ngồi thiền ngộ đao kình.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'hoa_dao_linh_sa', price: 280, type: 'contribution', minRankScore: 0 },
@@ -293,6 +365,11 @@ export const SECTS = {
             { id: 'kb_1', name: 'Rèn Luyện Cương Khí', desc: 'Gánh chịu oanh kích gió độc ngoại sơn để gia cố thuẫn khí.', reward: { contribution: 10, lingShi: 45 }, stamina: 20 },
             { id: 'kb_2', name: 'Vận Linh Hộ Thành', desc: 'Đổ đầy linh thạch nạp năng lượng vào kết giới thạch thành.', reward: { contribution: 22, tuVi: 500 }, stamina: 40 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Thạch Môn Kiên Cố', desc: 'Bức tường thành đá vạn trượng không thể phá vỡ.' },
+            'tang_kinh_cac': { name: 'Phòng Ngự Các', badge: 'Hộ Thể' },
+            'luyen_khi': { name: 'Giáp Luyện Thất', desc: 'Chuyên rèn luyện các loại thuẫn giáp và kim cương bảo y.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'pv_kim_cuong_phu', price: 300, type: 'contribution', minRankScore: 0 },
@@ -320,6 +397,13 @@ export const SECTS = {
             { id: 'ql_1', name: 'Luyện Hồn Linh Kỳ', desc: 'Hút tàn linh để tế luyện vạn hồn phách ma kỳ.', reward: { contribution: 15, lingShi: 60 }, stamina: 25 },
             { id: 'ql_2', name: 'Tế Luyện Huyết Cốt', desc: 'Nghiền nát linh thảo độc cùng cốt quỷ luyện đan thăng vi.', reward: { contribution: 25, tuVi: 700 }, stamina: 45 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Vạn Hồn Quan', desc: 'Trận đồ vạn oan hồn gào thét ngăn cản mọi sinh linh.' },
+            'tang_kinh_cac': { name: 'Quỷ Kinh Điện', icon: '👻', badge: 'Quỷ Đạo' },
+            'luyen_dan': { name: 'Độc Đan Lô', desc: 'Hỏa diễm đen ngòm chuyên luyện chế thi đan và độc dược.' },
+            'bi_canh': { name: 'Huyết Hải Thử Địa', desc: 'Bể máu sôi sục là nơi đệ tử rèn luyện ý chí sinh tồn.' },
+            'dong_phu': { name: 'Vạn Hồn Phiên', desc: 'Bế quan trong không gian của cự đại quỷ phiên, thu thập lệ khí.' }
+        },
         libraryItems: [
             { id: 'ma_thach', price: 80, type: 'contribution', minRankScore: 0 },
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
@@ -346,6 +430,13 @@ export const SECTS = {
             { id: 'hh_1', name: 'Dựng Mị Ảo Trận', desc: 'Bố trí mị hương ảo cảnh dụ địch nhân lạc lối ở ngoại biên.', reward: { contribution: 20, lingShi: 80 }, stamina: 30 },
             { id: 'hh_2', name: 'Luyện Tâm Ma Kiếp', desc: 'Vào u âm điện đối mặt tàn ảnh ảo thức vượt qua tâm ma oanh kích.', reward: { contribution: 35, tuVi: 900 }, stamina: 45 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Mị Hương Quan', desc: 'Sương mù phấn hồng bao phủ, người thường ngửi thấy liền điên loạn.' },
+            'tang_kinh_cac': { name: 'Mị Thuật Lâu', badge: 'Mị Thuật' },
+            'luyen_dan': { name: 'Mị Dược Phòng', desc: 'Chuyên chế tác xuân dược, độc dược khống chế tâm trí.' },
+            'bi_canh': { name: 'Ảo Cảnh Trận', desc: 'Trận pháp mị hoặc tối cao, kiểm tra đạo tâm đệ tử.' },
+            'dong_phu': { name: 'Ảo Mộng Cốc', desc: 'Nơi mây mưa hoan lạc hoặc tàn sát vô hình trong mộng cảnh.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'thanh_tam_dan', price: 120, type: 'contribution', minRankScore: 0 },
@@ -370,6 +461,13 @@ export const SECTS = {
             { id: 'md_1', name: 'Đoạt Hỏa Ma Thạch', desc: 'Vượt nham thạch nóng cháy khai quặng ma hỏa độc thạch tinh.', reward: { contribution: 15, lingShi: 50 }, stamina: 25 },
             { id: 'md_2', name: 'Thanh Dương Hỏa Thể', desc: 'Thắp hỏa diễm thâm nhập kinh mạch tăng tính cực đoan công lực.', reward: { contribution: 25, tuVi: 650 }, stamina: 45 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Viêm Hỏa Quan', desc: 'Cổng môn được luyện từ hắc diệm vô tận nóng rực.' },
+            'tang_kinh_cac': { name: 'Hỏa Kinh Đường', badge: 'Ma Hỏa' },
+            'luyen_dan': { name: 'Ma Hỏa Đan Lò', desc: 'Dùng ma hỏa Thanh Dương luyện chế các loại bạo đan tà ác.' },
+            'bi_canh': { name: 'Viêm Sơn Thử Địa', desc: 'Núi lửa phun trào liên tục, rèn luyện thân thể với ma hỏa.' },
+            'dong_phu': { name: 'Địa Hỏa Trì', desc: 'Ngâm mình trong nham thạch rực lửa để dung hợp hỏa linh lực.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'seed_hoa_diem_thao', price: 120, type: 'contribution', minRankScore: 0 },
@@ -394,6 +492,13 @@ export const SECTS = {
             { id: 'ts_1', name: 'Luyện Ma Sát Cốt', desc: 'Chịu oai hạch sát oai trên đài gió quạt rèn luyện ma sát gân cốt.', reward: { contribution: 15, lingShi: 55 }, stamina: 25 },
             { id: 'ts_2', name: 'Thôn Phệ Sát Khí', desc: 'Gom sát ý tử vong cổ trận luyện pháp bảo u phong.', reward: { contribution: 25, tuVi: 700 }, stamina: 40 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Sát Khí Quan', desc: 'Oán khí ngập trời, sát khí ngưng tụ thành thực thể cảnh cáo kẻ lạ.' },
+            'tang_kinh_cac': { name: 'Sát Điển Đường', badge: 'Sát Đạo' },
+            'luyen_dan': { name: 'Huyết Sát Đường', desc: 'Luyện đan bằng tinh huyết và oán niệm để cưỡng ép thăng cấp.' },
+            'bi_canh': { name: 'Huyết Chiến Trường', desc: 'Đấu trường sinh tử đẫm máu để mài giũa sát khí.' },
+            'dong_phu': { name: 'Sát Tâm Quan', desc: 'Bế quan trong oán khí ngập trời, tìm sự tĩnh lặng trong cuồng bạo.' }
+        },
         libraryItems: [
             { id: 'ma_thach', price: 100, type: 'contribution', minRankScore: 0 },
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
@@ -418,6 +523,13 @@ export const SECTS = {
             { id: 'nl_1', name: 'Chăn Nuôi Kỳ Trùng', desc: 'Cho Hấp Huyết Trùng ăn huyết linh dịch thối mục.', reward: { contribution: 15, lingShi: 45 }, stamina: 20 },
             { id: 'nl_2', name: 'Bắt Kỳ Trùng Noãn', desc: 'Vào đầm lầy săn kiếm và thuần phục ngọc côn trùng noãn khí.', reward: { contribution: 25, tuVi: 650 }, stamina: 40 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Trùng Cốc Quan', desc: 'Trùng vụ bao phủ lối vào, chỉ cần hít một ngụm là bạo tễ.' },
+            'tang_kinh_cac': { name: 'Vạn Trùng Điển', badge: 'Ngự Trùng' },
+            'linh_thu': { name: 'Kỳ Trùng Noãn Trì', desc: 'Ao ấp trứng các loài kỳ trùng dị thú tà ác bậc nhất.' },
+            'noi_mon_vien': { name: 'Trùng Cốc Nội Phủ', desc: 'Nơi đệ tử nội môn sống chung cùng độc trùng.' },
+            'bi_canh': { name: 'U Trùng Bí Địa', desc: 'Rừng độc trùng nguyên sinh, săn bắt cổ trùng hiếm.' }
+        },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'ngu_thu_quyet', price: 400, type: 'contribution', minRankScore: 0 },
@@ -442,6 +554,13 @@ export const SECTS = {
             { id: 'ka_1', name: 'Khôi Lỗi Nhiếp Hồn', desc: 'Gom hồn thể yếu ớt để rót tu linh thức cho thiết khôi lỗi.', reward: { contribution: 15, lingShi: 50 }, stamina: 25 },
             { id: 'ka_2', name: 'Ngâm Thi Trì Luyện', desc: 'Ngâm thiết xác thi vào U Âm sát tuyền để khôi lỗi đồng sắt tráng vĩnh viễn.', reward: { contribution: 25, tuVi: 650 }, stamina: 45 }
         ],
+        zoneOverrides: {
+            'son_mon': { name: 'Thi Cốc Quan', desc: 'Hàng ngàn thi khôi lỗi đứng bất động gác cổng vô hồn.' },
+            'tang_kinh_cac': { name: 'U Minh Điển', badge: 'Khôi Thuật' },
+            'luyen_dan': { name: 'U Linh Luyện Thất', desc: 'Bào chế linh dịch ngâm xác chết để chế tạo khôi lỗi.' },
+            'bi_canh': { name: 'Thi Cốc Bí Địa', desc: 'Thung lũng nhốt khôi lỗi mất kiểm soát để đệ tử vào thu dọn.' },
+            'dong_phu': { name: 'U Minh Động Phủ', desc: 'Bế quan cùng khôi lỗi trong không gian tối tăm lạnh lẽo.' }
+        },
         libraryItems: [
             { id: 'ma_thach', price: 100, type: 'contribution', minRankScore: 0 },
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },

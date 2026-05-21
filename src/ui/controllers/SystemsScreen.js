@@ -904,8 +904,8 @@ export class SystemsScreen {
                 return;
             }
 
-            // Otherwise, render the main beautiful Sect dashboard and its 10 Zones!
-            const zones = [
+            // Otherwise, render the main beautiful Sect dashboard and its Zones!
+            const defaultZones = [
                 { id: 'son_mon', name: 'Sơn Môn (Hộ Sơn Trận)', icon: '⛩️', desc: 'Canh gác sơn môn, duy trì Hộ Sơn Đại Trận phòng thủ.', badge: 'Hộ Sơn' },
                 { id: 'ngoai_mon_vien', name: 'Ngoại Môn Viện', icon: '🏡', desc: 'Nơi cư ngụ của đệ tử ngoại môn, làm tạp vụ và tu luyện cơ bản.', badge: 'Ngoại Môn', badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30' },
                 { id: 'noi_mon_vien', name: 'Nội Môn Viện', icon: '🏰', desc: 'Điện xá đệ tử nội môn, luận võ đài kiếm chiêu.', badge: 'Nội Môn', badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30', minRank: 1, minRankName: 'Nội Môn' },
@@ -921,6 +921,14 @@ export class SystemsScreen {
                 { id: 'bi_canh', name: 'Thí Luyện Bí Cảnh', icon: '🗼', desc: 'Khám phá bí cảnh viễn cổ, khiêu chiến Trấn Yêu Tháp.', badge: 'Thí Luyện', badgeColor: 'bg-red-500/20 text-red-400 border-red-500/30' },
                 { id: 'thai_thuong_dien', name: 'Thái Thượng Điện / Cấm Địa', icon: '☯️', desc: 'Bế quan động và truyền thừa của Thái Thượng Trưởng Lão tối cao.', badge: 'Thái Thượng', badgeColor: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30 shadow-[0_0_8px_rgba(255,215,0,0.15)] animate-pulse', minRank: 2, minRankName: 'Chân Truyền' }
             ];
+
+            const zones = defaultZones.map(z => {
+                if (sect.zoneOverrides && sect.zoneOverrides[z.id]) {
+                    return { ...z, ...sect.zoneOverrides[z.id] };
+                }
+                return z;
+            });
+
 
             const rank = window.game?.systems?.sect?.getRank() || { name: 'Ngoại Môn Đệ Tử', rankScore: 0 };
             const nextReq = window.game?.systems?.sect?.getNextRankRequirements();
