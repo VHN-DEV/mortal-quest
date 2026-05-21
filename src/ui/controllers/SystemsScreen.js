@@ -1116,6 +1116,14 @@ export class SystemsScreen {
         if (!elSects) return;
         elSects.scrollTop = 0;
 
+        // Helper lấy tên zone đã override theo môn phái
+        const getZoneName = (id, fallback) => {
+            if (sect.zoneOverrides && sect.zoneOverrides[id] && sect.zoneOverrides[id].name) {
+                return sect.zoneOverrides[id].name;
+            }
+            return fallback;
+        };
+
         let contentHTML = '';
         
         switch (zoneId) {
@@ -1413,7 +1421,7 @@ export class SystemsScreen {
                         <div class="space-y-4">
                             <p class="text-[10px] text-gray-400">Các công pháp và bí thuật thượng thừa của tông môn phân chia theo cấp bậc. Đệ tử tích lũy Cống Hiến để học võ học.</p>
                             <div class="grid grid-cols-1 gap-3">
-                                ${scripturesHTML || '<div class="text-xs text-center text-gray-500 py-4">Tàng Kinh Các tạm thời chưa có bí kíp.</div>'}
+                                ${scripturesHTML || `<div class="text-xs text-center text-gray-500 py-4">${getZoneName('tang_kinh_cac', 'Tàng Kinh Các')} tạm thời chưa có bí kíp.</div>`}
                             </div>
                         </div>
                     `;
@@ -1461,9 +1469,9 @@ export class SystemsScreen {
 
                     contentHTML = `
                         <div class="space-y-4">
-                            <p class="text-[10px] text-gray-400">Các đan dược quý, trứng linh thú, nguyên liệu phụ trợ rèn đúc giáp kiếm trong Tàng Bảo Các.</p>
+                            <p class="text-[10px] text-gray-400">Các đan dược quý, trứng linh thú, nguyên liệu phụ trợ rèn đúc giáp kiếm trong ${getZoneName('tang_bao_cac', 'Tàng Bảo Các')}.</p>
                             <div class="grid grid-cols-1 gap-3">
-                                ${treasuresHTML || '<div class="text-xs text-center text-gray-500 py-4">Tàng Bảo Các tạm thời chưa mở khóa kỳ trân.</div>'}
+                                ${treasuresHTML || `<div class="text-xs text-center text-gray-500 py-4">${getZoneName('tang_bao_cac', 'Tàng Bảo Các')} tạm thời chưa mở khóa kỳ trân.</div>`}
                             </div>
                         </div>
                     `;
@@ -1660,7 +1668,7 @@ export class SystemsScreen {
                 break;
         }
 
-        const zone = [
+        let zone = [
             { id: 'son_mon', name: 'Sơn Môn (Hộ Sơn Trận)', icon: '⛩️' },
             { id: 'ngoai_mon_vien', name: 'Ngoại Môn Viện', icon: '🏡' },
             { id: 'noi_mon_vien', name: 'Nội Môn Viện', icon: '🏰' },
@@ -1676,6 +1684,11 @@ export class SystemsScreen {
             { id: 'bi_canh', name: 'Thí Luyện Bí Cảnh', icon: '🗼' },
             { id: 'thai_thuong_dien', name: 'Thái Thượng Điện / Cấm Địa', icon: '☯️' }
         ].find(z => z.id === zoneId);
+
+        // Áp dụng zoneOverrides từ sect-data để hiển thị tên riêng của từng môn phái
+        if (zone && sect.zoneOverrides && sect.zoneOverrides[zone.id]) {
+            zone = { ...zone, ...sect.zoneOverrides[zone.id] };
+        }
 
         elSects.innerHTML = `
             <button class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg flex items-center text-xs font-bold transition-all mb-4" 
