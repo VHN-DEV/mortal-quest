@@ -4015,7 +4015,7 @@ export const WORLDS = {
                 name: "Khổ Cực Chi Địa",
                 minRealm: 38,
                 danger: "cuc_ky_nguy_hiem",
-                image: getLocImg("default"),
+                image: getLocImg("kho_cuc_chi_dia"),
                 description: "Vùng đất hoang vu cằn cỗi khắc nghiệt cùng cực chốn biên ải Ma Giới, giam cầm thượng cổ tà thần.",
                 resources: ["Ma Sát Tinh", "Khổ Cực Chi Thủy"],
                 energies: [{ "type": "ma_khi", "concentration": 110, "purity": "CUC_PHAM" }, { "type": "tu_khi", "concentration": 80, "purity": "CUC_PHAM" }],
