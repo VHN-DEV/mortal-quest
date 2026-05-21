@@ -581,6 +581,30 @@ export const TECHNIQUES = {
         stageLabel: 'Tầng',
         stats: { def: 150, maxHp: 400 },
         effects: { tvps: 2.0, corpseExpBonus: 0.25, corpseSuccess: 0.2 }
+    },
+    'thai_at_kiem_quyet': {
+        id: 'thai_at_kiem_quyet',
+        name: 'Thái Ất Kiếm Quyết',
+        type: 'Linh Lực',
+        element: 'Kim',
+        quality: 'Thiên Giai',
+        description: 'Kiếm pháp chí cao do Thái Ất Chân Nhân truyền lại, chiêu thức uyển chuyển nhưng ẩn chứa uy năng kinh thiên động địa.',
+        maxStage: 12,
+        stageLabel: 'Tầng',
+        stats: { atk: 450, spd: 80, mana: 300 },
+        effects: { tvps: 3.5, swordDmg: 1.5, critChance: 0.15, ignoreDef: 0.2 }
+    },
+    'cuu_u_ma_dien': {
+        id: 'cuu_u_ma_dien',
+        name: 'Cửu U Ma Điển',
+        type: 'Linh Lực',
+        element: 'Âm',
+        quality: 'Thiên Giai',
+        description: 'Bảo điển của Cửu U Ma Tôn, tu luyện tà khí tới tột cùng, chuyển hóa sinh cơ vạn vật thành ma lực.',
+        maxStage: 12,
+        stageLabel: 'Tầng',
+        stats: { hp: 800, atk: 350, mana: 500 },
+        effects: { tvps: 3.5, lifeSteal: 0.25, allRes: 0.15, poisonDmg: 1.4 }
     }
 };
 
