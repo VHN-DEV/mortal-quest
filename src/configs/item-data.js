@@ -1449,7 +1449,7 @@ export const ITEMS = {
         type: 'flightArtifact',
         quality: 'Cổ Bảo',
         tier: 'CO_BAO',
-        image: 'artifacts/phong_loi_si.webp',
+        image: 'artifacts/phong-loi-si.svg',
         description: 'Quạt lông vũ mang theo sức mạnh phong lôi, tăng mạnh tốc độ độn tẩu.',
         price: 400000,
         stats: { spd: 150, atk: 200 }
