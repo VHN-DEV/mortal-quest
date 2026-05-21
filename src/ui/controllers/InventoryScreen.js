@@ -210,7 +210,7 @@ export class InventoryScreen {
         const item = state.player.inventory.allItems.find(i => i.id === state.selectedItemId);
         if (item && this.elQtyMaxText) {
             this.elQtyMaxText.textContent = `Tối đa: ${item.quantity}`;
-            
+
             // Ensure input doesn't exceed current quantity
             const currentVal = parseInt(this.elQtyInput.value) || 1;
             if (currentVal > item.quantity) {
@@ -391,7 +391,7 @@ export class InventoryScreen {
         }
         if (this.elDetailName) {
             this.elDetailName.textContent = itemData.name;
-            this.elDetailName.className = `text-xl font-bold text-white font-ancient mb-1 quality-${qClass}`;
+            this.elDetailName.className = `text-xl font-bold text-white font-charm mb-1 quality-${qClass}`;
         }
 
         const typeNames = {

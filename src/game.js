@@ -120,7 +120,7 @@ export class Game {
         state.systems.creation = new CreationSystem();
 
         const lastSlot = await SaveSystem.getLastSlot();
-        
+
         if (lastSlot) {
             const savedData = await SaveSystem.load(lastSlot);
             if (savedData) {
@@ -357,7 +357,7 @@ export class Game {
                 const now = Date.now();
                 const delta = (now - state.player.lastUpdate) / 1000;
                 this.update(delta);
-                
+
                 // Throttle visual rendering to 10 FPS (every 100ms) to dramatically reduce CPU & battery overhead
                 if (now - lastRenderTime >= 100) {
                     this.render();
@@ -371,12 +371,12 @@ export class Game {
 
     update(delta) {
         state.player.update(delta, 1.0);
-        
+
         // Handle Pending Events
         if (state.player.pendingEvents && state.player.pendingEvents.length > 0) {
             const events = [...state.player.pendingEvents];
             state.player.pendingEvents = [];
-            
+
             events.forEach(ev => {
                 if (ev.type === 'seclusion_event') {
                     state.ui.toast(ev.msg, ev.eventType === 'insight' ? 'success' : 'warning');
@@ -535,7 +535,7 @@ export class Game {
 
         // Ensure we don't restore to a start/creation screen after loading
         const { value: currentStoredScreen } = await Preferences.get({ key: 'mortal_quest_current_screen' });
-        
+
         // Fix: If we are in a boot state or no screen saved, default to main
         if (!currentStoredScreen || ['screen-start', 'screen-creation', 'screen-save'].includes(currentStoredScreen)) {
             await Preferences.set({ key: 'mortal_quest_current_screen', value: 'screen-main' });
@@ -603,13 +603,13 @@ export class Game {
         }
 
         const confirmed1 = await state.ui.confirm(
-            "Ngươi có chắc chắn muốn XÓA BỎ TOÀN BỘ đạo quả và dữ liệu của tất cả các ô lưu trữ? Hành động này sẽ diệt môn, xóa sổ hoàn toàn mọi tiến trình và KHÔNG thể hoàn tác!", 
+            "Ngươi có chắc chắn muốn XÓA BỎ TOÀN BỘ đạo quả và dữ liệu của tất cả các ô lưu trữ? Hành động này sẽ diệt môn, xóa sổ hoàn toàn mọi tiến trình và KHÔNG thể hoàn tác!",
             "Cảnh Báo Diệt Môn Tối Cao"
         );
         if (!confirmed1) return;
 
         const confirmed2 = await state.ui.confirm(
-            "Nhắc nhở cuối cùng: Toàn bộ công sức tu luyện của đạo hữu trên mọi ô lưu sẽ biến mất vĩnh viễn. Ngươi thực sự quyết định hủy diệt thế giới này chứ?", 
+            "Nhắc nhở cuối cùng: Toàn bộ công sức tu luyện của đạo hữu trên mọi ô lưu sẽ biến mất vĩnh viễn. Ngươi thực sự quyết định hủy diệt thế giới này chứ?",
             "Diệt Thế Chi Tai"
         );
         if (!confirmed2) return;
@@ -728,7 +728,7 @@ export class Game {
 
             // Scatter Ma Binh and Ma Dân across all demon areas
             const demonAreas = [
-                'hac_tuyen_ma_thon', 'vong_hon_ma_thon', 
+                'hac_tuyen_ma_thon', 'vong_hon_ma_thon',
                 'thiet_huyen_ma_tran', 'huyen_quyet_ma_tran',
                 'huyen_am_ma_thanh', 'cuu_u_ma_thanh', 'thien_ma_thanh', 'huyet_hai_ma_thanh',
                 'vo_han_ma_thanh', 'tich_diet_ma_thanh', 'phan_thien_ma_thanh', 'sat_luc_ma_thanh',
@@ -779,7 +779,7 @@ export class Game {
             Object.entries(specialNpcSpawns).forEach(([id, config]) => {
                 state.systems.npc.generate(id, config.realm, config.location);
             });
-            
+
             // --- Initialize Web of Relationships ---
             const hanLap = state.systems.npc.npcs.find(n => n.templateId === 'han_lap');
             const tuLinh = state.systems.npc.npcs.find(n => n.templateId === 'tu_linh');
@@ -839,7 +839,7 @@ export class Game {
             const btn = document.getElementById('cultivate-btn');
             if (btn) {
                 state.ui.showStatUpEffect(btn, `+${Math.floor(result.gain)} ${result.type === 'tuvi' ? 'Tu Vi' : (result.type === 'body' ? 'Khí Huyết' : 'Thần Niệm')}`);
-                
+
                 // Spawn particles from center of portrait to outward
                 const portrait = document.getElementById('aura-border');
                 if (portrait) {
@@ -847,10 +847,10 @@ export class Game {
                     const appRect = document.getElementById('app').getBoundingClientRect();
                     const centerX = rect.left - appRect.left + rect.width / 2;
                     const centerY = rect.top - appRect.top + rect.height / 2;
-                    
+
                     const count = state.player.isSecluded ? 5 : 15;
                     const particleColor = result.type === 'tuvi' ? '#4FD1C5' : (result.type === 'body' ? '#F87171' : '#A78BFA');
-                    
+
                     state.ui.spawnQiParticles(centerX, centerY, count, particleColor);
                 }
             }
@@ -863,7 +863,7 @@ export class Game {
     async breakthrough(customFocus = null) {
         if (!state.player) return;
         const focus = customFocus || state.player.cultivationFocus || 'tuvi';
-        
+
         // First check if they can breakthrough at all
         const canCheck = state.player.canBreakthrough(focus);
         if (!canCheck.can) {
@@ -1010,12 +1010,12 @@ export class Game {
 
         // Calculate total minutes: 12 months * 30 days * 12 hours = 4320 mins/year
         const totalMinutes = durationYears * 4320;
-        
+
         // Calculate expected tuvi gain
         // Seclusion gives 5x multiplier. delta is not available here, so we simulate 1s intervals
         // Player.js: tuViGain = tuViPerSecond * focusMult * finalMultiplier * delta
         // finalMultiplier = multiplier * stabilityMult * compMult * seclusionMult(5.0)
-        
+
         // Simplified calculation for summary:
         const focus = state.player.cultivationFocus || 'tuvi';
         const rate = focus === 'tuvi' ? state.player.tuViPerSecond : (focus === 'body' ? state.player.bodyExpPerSecond : state.player.soulExpPerSecond);
@@ -1048,7 +1048,7 @@ export class Game {
         }
 
         state.ui.showLoading(true, "Đang thâm tầng định cảnh...");
-        
+
         // Advance time
         if (state.systems.time) {
             state.systems.time.skipTime(totalMinutes);
@@ -1111,7 +1111,7 @@ export class Game {
             // Rebirth logic
             state.player.hp = Math.max(1, Math.floor(state.player.maxHp * 0.2));
             state.player.mana = Math.floor(state.player.maxMana * 0.1);
-            
+
             // If it was age death, give some bonus years
             if (state.player.age >= state.player.maxAge) {
                 state.player.age = Math.max(0, state.player.maxAge - 10); // Extend 10 years
@@ -1133,26 +1133,26 @@ export class Game {
             "Hồng trần cuồn cuộn, mệnh số đã tận."
         ];
         const quote = reason || quotes[Math.floor(Math.random() * quotes.length)];
-        
+
         await state.ui.showDeathScreen(quote);
-        
+
         await SaveSystem.deleteSave(SaveSystem.currentSlot);
         state.player = null;
         state.currentCombat = null;
         state.currentLocId = null;
         state.explorationProgress = 0;
-        
+
         // Return to start screen instead of reload
         await Preferences.remove({ key: 'mortal_quest_current_screen' });
         await SaveSystem.setLastSlot(null);
-        
+
         // Reset App state
         const elementsToHide = ['header', '#time-hud', 'nav', '.overlay-full', '.screen'];
         elementsToHide.forEach(s => {
             const els = document.querySelectorAll(s);
             els.forEach(el => el.classList.add('hidden'));
         });
-        
+
         await this.showStartScreen();
         audioManager.playBgm('start');
     }
@@ -1233,7 +1233,7 @@ export class Game {
             state.ui.toast(`Cống hiến tông môn không đủ! Cần thêm ${cost - (state.player.sectContribution || 0)} điểm.`, "error");
             return;
         }
-        
+
         // Receive item.
         const received = await this.receiveItem(itemId, 1);
         if (received) {
@@ -1304,14 +1304,14 @@ export class Game {
                 state.player.sectId = sectId;
                 state.player.sectContribution = 50; // Starter contribution
                 state.player.addReputation(20);
-                
+
                 await state.ui.alert(
                     `Trưởng Lão khảo hạch trợn tròn hai mắt, mừng rỡ nắm lấy tay ngươi:<br><br>
                     "Trời ơi! Thần thể căn cốt cực thịnh, linh căn tinh thuần tuyệt diệu bực này, quả thực là thiên tài vạn năm khó gặp! Không cần đợi đến mùa tuyển, tông môn ta lập tức đặc cách thu nhận ngươi!"<br><br>
                     <span class="text-green-400 font-bold">Bái nhập thành công! Nhận được Lệnh bài Ngoại môn và 50 cống hiến!</span>`,
                     "Đặc Cách Thu Nhận!"
                 );
-                
+
                 state.player.calculateStats();
                 this.refreshUI();
                 this.openSect();
@@ -1332,14 +1332,14 @@ export class Game {
             state.player.sectId = sectId;
             state.player.sectContribution = 100; // Starter points
             state.player.addReputation(-10); // Slight negative for hối lộ/bribe
-            
+
             await state.ui.alert(
                 `Ngươi dâng lên túi càn khôn chứa đầy 1000 Linh Thạch sáng lấp lánh.<br><br>
                 Trưởng Lão nhanh như chớp cất vào tay áo, nét mặt lập tức hòa ái, tươi cười vuốt râu: "Hảo! Đạo tâm kiên định hướng phái thế này quả thực hiếm thấy! Đan dược, công pháp tu hành luôn cần tài lực ủng hộ. Bản phái phá lệ thu nhận ngươi làm đệ tử!"<br><br>
                 <span class="text-green-400 font-bold">Bái nhập thành công! Nhận được Lệnh bài Ngoại môn và 100 cống hiến!</span>`,
                 "Bái Nhập Nhờ Công Đức"
             );
-            
+
             state.player.calculateStats();
             this.refreshUI();
             this.openSect();
@@ -1485,7 +1485,7 @@ export class Game {
         if (!passesRootCheck) {
             const canBribe = state.player.lingShi >= 500;
             const briberyText = canBribe ? `<br><br><span class="text-yellow-400 font-bold">Lựa chọn bí mật:</span> Ngươi có muốn lén lút "biếu" Trưởng Lão 500 Linh Thạch để ngài du di thông qua không?` : '';
-            
+
             const bribeOptions = [
                 { label: "Bái tạ rời đi, lần sau quay lại", value: "leave", icon: "ph-door-open" }
             ];
@@ -1494,7 +1494,7 @@ export class Game {
             }
 
             const bribeChoice = await state.ui.promptOptions("Kết Quả Khảo Hạch", bribeOptions, `Trưởng Lão lạnh lùng phất tay: "Tư chất quá kém, linh căn không hợp quy cách, không thể bái nhập tông môn ta! Hãy trở về đi!"${briberyText}`);
-            
+
             if (bribeChoice === "bribe") {
                 state.player.spendLingShi(500);
                 state.player.addReputation(-20);
@@ -1562,11 +1562,11 @@ export class Game {
 
             // Add starter items or money
             state.player.addLingShi(200);
-            
+
             let giftMsg = "Được ban tặng: Lệnh Bài Ngoại Môn, 200 Linh Thạch và 100 Điểm Cống Hiến!";
-            
+
             state.ui.alert(
-                `🎉 <span class="text-green-400 font-bold font-ancient">CHÚC MỪNG GIA NHẬP!</span> 🎉<br><br>
+                `🎉 <span class="text-green-400 font-bold font-charm">CHÚC MỪNG GIA NHẬP!</span> 🎉<br><br>
                 Trưởng Lão mỉm cười đưa ra một chiếc Lệnh Bài Tông Môn: "Kể từ hôm nay, ngươi chính là đệ tử chính thức của <span class="text-cultivation-gold font-bold font-ancient">${sect.name}</span>! Hãy nỗ lực tu hành, cống hiến vì tông môn!"<br><br>
                 <span class="text-qi-blue font-bold">${giftMsg}</span>`,
                 "Bái Nhập Thành Công!"
@@ -1623,7 +1623,7 @@ export class Game {
 
         // Play success effects
         state.ui.toast(`Ủy thác thành công: ${mission.name}! (${rewardMsg.join(', ')})`, "success");
-        
+
         if (state.systems.cheat) {
             state.systems.cheat.onAction('do_mission', 1);
         }
@@ -2132,11 +2132,11 @@ export class Game {
         } else if (result === 'lose') {
             window.game.handleDeath();
         }
-        
+
         if (this.screens.battle) {
             this.screens.battle.close();
         }
-        
+
         state.currentCombat = null;
         state.ui.switchScreen('screen-adventure', null);
         this.refreshUI();
@@ -2264,7 +2264,7 @@ export class Game {
         if (icon) {
             icon.className = muted ? 'ph ph-speaker-slash' : 'ph ph-speaker-high';
         }
-        
+
         const startIcon = document.getElementById('btn-start-settings');
         if (startIcon) {
             startIcon.className = (muted ? 'ph ph-speaker-slash' : 'ph ph-speaker-high') + ' hover:text-cultivation-gold cursor-pointer transition-all hover:scale-125 drop-shadow-md';
@@ -2480,7 +2480,7 @@ export class Game {
      */
     async receiveItem(itemId, quantity = 1, metadata = {}, customMessage = null) {
         if (!state.player) return false;
-        
+
         const itemData = getItemById(itemId);
         if (!itemData) return false;
 
@@ -2498,7 +2498,7 @@ export class Game {
 
             const quality = (metadata && metadata.quality) || itemData.quality || 'Phàm Khí';
             const flashyQualities = ['Pháp Bảo', 'Cổ Bảo', 'Linh Bảo', 'Thông Thiên Linh Bảo', 'Tiên Khí', 'Danh Khí'];
-            
+
             // Check for legendary appearance trigger (items with poem)
             if (itemData.poem) {
                 await state.ui.showArtifactAppearance(itemData);
@@ -2546,7 +2546,7 @@ export class Game {
         const modal = document.getElementById('creation-avatar-full-modal');
         const img = document.getElementById('creation-avatar-full-img');
         const nameEl = document.getElementById('creation-avatar-full-name');
-        
+
         if (modal && img && nameEl) {
             img.src = url;
             nameEl.textContent = name;
