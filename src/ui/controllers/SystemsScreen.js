@@ -1746,6 +1746,7 @@ export class SystemsScreen {
             { id: 'noi_mon_vien', name: 'Nội Môn Viện', icon: '🏰' },
             { id: 'chan_truyen_phong', name: 'Chân Truyền Phong', icon: '🏔️' },
             { id: 'dai_dien', name: 'Nghị Sự Chủ Điện', icon: '🏛️' },
+            { id: 'chap_su_duong', name: 'Chấp Sự Đường', icon: '📜' },
             { id: 'tang_kinh_cac', name: 'Tàng Kinh Các', icon: '📚' },
             { id: 'tang_bao_cac', name: 'Tàng Bảo Các', icon: '💎' },
             { id: 'luyen_dan', name: 'Luyện Đan Điện', icon: '🧪' },

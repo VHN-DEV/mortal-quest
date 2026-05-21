@@ -80,6 +80,11 @@ export class Inventory {
         return item && item.quantity >= quantity;
     }
 
+    getItemQuantity(itemId) {
+        const item = this.allItems.find(i => i.id === itemId);
+        return item ? item.quantity : 0;
+    }
+
     useItem(itemId, quantity = 1) {
         const itemData = getItemById(itemId);
         if (!itemData) return false;
