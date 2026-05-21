@@ -51,6 +51,8 @@ import { CheatSystemScreen } from './ui/controllers/CheatSystemScreen.js';
 export class Game {
     constructor() {
         window.game = this;
+        this.state = state;
+        this.systems = state.systems;
         this.handleDeath = this.handleDeath.bind(this);
         this.handleCombatEnd = this.handleCombatEnd.bind(this);
         this.startChase = this.startChase.bind(this);
