@@ -66,7 +66,9 @@ export class SystemsScreen {
         this.elTechDetailView = document.getElementById('tech-detail-view');
         this.elTechDetailContent = document.getElementById('tech-detail-content');
         this.elTechPoints = document.getElementById('tech-points');
-        this.btnTechTabCultivation = document.getElementById('tech-tab-cultivation');
+        this.btnTechTabLinhLuc = document.getElementById('tech-tab-linh-luc');
+        this.btnTechTabLuyenThe = document.getElementById('tech-tab-luyen-the');
+        this.btnTechTabThanThuc = document.getElementById('tech-tab-than-thuc');
         this.btnTechTabSecret = document.getElementById('tech-tab-secret');
         this.btnTechTabCustom = document.getElementById('tech-tab-custom');
         this.btnTechBack = document.getElementById('tech-back-btn');
@@ -116,7 +118,9 @@ export class SystemsScreen {
             };
         }
         // Technique Tabs
-        if (this.btnTechTabCultivation) this.btnTechTabCultivation.onclick = () => this.renderTechniques('cultivation');
+        if (this.btnTechTabLinhLuc) this.btnTechTabLinhLuc.onclick = () => this.renderTechniques('linh_luc');
+        if (this.btnTechTabLuyenThe) this.btnTechTabLuyenThe.onclick = () => this.renderTechniques('luyen_the');
+        if (this.btnTechTabThanThuc) this.btnTechTabThanThuc.onclick = () => this.renderTechniques('than_thuc');
         if (this.btnTechTabSecret) this.btnTechTabSecret.onclick = () => this.renderTechniques('secret');
         if (this.btnTechTabCustom) this.btnTechTabCustom.onclick = () => this.renderTechniques('custom');
         if (this.btnTechBack) this.btnTechBack.onclick = () => {
@@ -2728,23 +2732,31 @@ export class SystemsScreen {
         }
     }
 
-    renderTechniques(tab = 'cultivation') {
+    renderTechniques(tab = 'linh_luc') {
         if (!state.player) return;
 
         state.activeTechTab = tab;
 
         // Update tab styles
-        if (this.btnTechTabCultivation && this.btnTechTabSecret && this.btnTechTabCustom) {
-            this.btnTechTabCultivation.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
-            this.btnTechTabSecret.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
-            this.btnTechTabCustom.className = 'flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+        if (this.btnTechTabLinhLuc && this.btnTechTabLuyenThe && this.btnTechTabThanThuc && this.btnTechTabSecret && this.btnTechTabCustom) {
+            const defaultClass = 'whitespace-nowrap px-4 py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
             
-            if (tab === 'cultivation') {
-                this.btnTechTabCultivation.className = 'flex-grow py-2 bg-qi-blue/20 text-qi-blue border border-qi-blue/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            this.btnTechTabLinhLuc.className = defaultClass;
+            this.btnTechTabLuyenThe.className = defaultClass;
+            this.btnTechTabThanThuc.className = defaultClass;
+            this.btnTechTabSecret.className = defaultClass;
+            this.btnTechTabCustom.className = defaultClass;
+            
+            if (tab === 'linh_luc') {
+                this.btnTechTabLinhLuc.className = 'whitespace-nowrap px-4 py-2 bg-qi-blue/20 text-qi-blue border border-qi-blue/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            } else if (tab === 'luyen_the') {
+                this.btnTechTabLuyenThe.className = 'whitespace-nowrap px-4 py-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            } else if (tab === 'than_thuc') {
+                this.btnTechTabThanThuc.className = 'whitespace-nowrap px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
             } else if (tab === 'secret') {
-                this.btnTechTabSecret.className = 'flex-grow py-2 bg-qi-purple/20 text-qi-purple border border-qi-purple/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+                this.btnTechTabSecret.className = 'whitespace-nowrap px-4 py-2 bg-qi-purple/20 text-qi-purple border border-qi-purple/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
             } else if (tab === 'custom') {
-                this.btnTechTabCustom.className = 'flex-grow py-2 bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+                this.btnTechTabCustom.className = 'whitespace-nowrap px-4 py-2 bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
             }
         }
 
@@ -2863,7 +2875,19 @@ export class SystemsScreen {
 
             const isSecretTab = tab === 'secret';
             const compList = (state.player.comprehendingTechniques || []).filter(c => c.isSecret === isSecretTab);
-            const list = isSecretTab ? state.player.learnedSecretTechniques : state.player.learnedTechniques;
+            let list = isSecretTab ? state.player.learnedSecretTechniques : state.player.learnedTechniques;
+
+            // Filter standard techniques by category
+            if (!isSecretTab) {
+                list = list.filter(entry => {
+                    const data = getTechniqueById(entry.id) || (state.player.customTechniques || []).find(t => t.id === entry.id);
+                    if (!data) return false;
+                    if (tab === 'linh_luc') return data.type === 'Linh Lực';
+                    if (tab === 'luyen_the') return data.type === 'Luyện Thể';
+                    if (tab === 'than_thuc') return data.type === 'Thần Thức';
+                    return false;
+                });
+            }
             
             // 1. Render active/waiting comprehension progress bars
             if (compList.length > 0) {
@@ -3000,7 +3024,12 @@ export class SystemsScreen {
             // 2. Render learned techniques list below
             if (list.length === 0) {
                 if (compList.length === 0) {
-                    this.elTechListView.innerHTML = `<div class="text-center py-20 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ ${tab === 'cultivation' ? 'công pháp' : 'bí pháp'} nào...</div>`;
+                    let typeName = 'công pháp';
+                    if (tab === 'linh_luc') typeName = 'công pháp linh lực';
+                    else if (tab === 'luyen_the') typeName = 'công pháp luyện thể';
+                    else if (tab === 'than_thuc') typeName = 'thần thức chi pháp';
+                    else if (tab === 'secret') typeName = 'bí pháp';
+                    this.elTechListView.innerHTML = `<div class="text-center py-20 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ ${typeName} nào...</div>`;
                 }
             } else {
                 if (compList.length > 0) {
@@ -3016,7 +3045,7 @@ export class SystemsScreen {
                 }
 
                 list.forEach(entry => {
-                    const data = tab === 'cultivation' 
+                    const data = !isSecretTab
                         ? (getTechniqueById(entry.id) || (state.player.customTechniques || []).find(t => t.id === entry.id))
                         : getSecretTechniqueById(entry.id);
                     if (!data) return;
@@ -3025,11 +3054,16 @@ export class SystemsScreen {
                     const stageLabel = data.stageLabel || 'Tầng';
                     const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
 
+                    let borderColor = 'border-qi-blue/10 bg-qi-blue/5';
+                    if (tab === 'luyen_the') borderColor = 'border-orange-500/10 bg-orange-500/5';
+                    else if (tab === 'than_thuc') borderColor = 'border-cyan-500/10 bg-cyan-500/5';
+                    else if (tab === 'secret') borderColor = 'border-qi-purple/10 bg-qi-purple/5';
+
                     const el = document.createElement('div');
-                    el.className = `p-4 border ${tab === 'cultivation' ? 'border-qi-blue/10 bg-qi-blue/5' : 'border-qi-purple/10 bg-qi-purple/5'} rounded-2xl flex items-center justify-between hover:bg-white/5 cursor-pointer transition-all mb-3`;
+                    el.className = `p-4 border ${borderColor} rounded-2xl flex items-center justify-between hover:bg-white/5 cursor-pointer transition-all mb-3`;
                     el.innerHTML = `
                         <div class="flex items-center space-x-4">
-                            <div class="text-2xl">${data.icon || (tab === 'cultivation' ? '📜' : '✨')}</div>
+                            <div class="text-2xl">${data.icon || (isSecretTab ? '✨' : '📜')}</div>
                             <div>
                                 <h4 class="text-sm font-bold text-white">${data.name}</h4>
                                 <div class="flex items-center space-x-2 mt-1">
@@ -3070,11 +3104,12 @@ export class SystemsScreen {
 
         const canBreakthrough = entry.masteryLevel >= 4 && (entry.stage < (data.maxStage || 10));
 
-        const isMain = !isSecret && (
-            state.player.mainTechniqueId === id ||
-            state.player.mainBodyTechniqueId === id ||
-            state.player.mainSoulTechniqueId === id
-        );
+        let isMain = false;
+        if (!isSecret) {
+            if (data.type === 'Linh Lực') isMain = state.player.mainTechniqueId === id;
+            else if (data.type === 'Luyện Thể') isMain = state.player.mainBodyTechniqueId === id;
+            else if (data.type === 'Thần Thức') isMain = state.player.mainSoulTechniqueId === id;
+        }
 
         let equipBtnHTML = '';
         if (!isSecret) {

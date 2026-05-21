@@ -188,6 +188,15 @@ export const ITEMS = {
         price: 200,
         description: 'Đan dược giúp hóa giải các loại độc tố cơ bản và chướng khí.'
     },
+    'hoa_nguyen_dan': {
+        id: 'hoa_nguyen_dan',
+        name: 'Hóa Nguyên Đan',
+        type: 'consumable',
+        icon: '💠',
+        quality: 'Pháp Bảo',
+        price: 8000,
+        description: 'Thần đan trân quý có khả năng trung hòa pháp lực xung đột khi thay đổi công pháp chủ tu, bảo toàn toàn bộ tu vi và đạo cơ. Cực kỳ hiếm thấy, chỉ các Luyện Dược Đại Sư mới có thể chế tác.',
+    },
     'bp_tran_phap': {
         id: 'bp_tran_phap',
         name: 'Trận Pháp Bí Tịch',

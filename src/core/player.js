@@ -2412,6 +2412,121 @@ export class Player {
     }
 
     /**
+     * Chuyển đổi công pháp chủ tu
+     * @param {string} id - ID công pháp
+     * @param {string} method - Phương thức đổi (null, 'tan_cong', 'hoa_nguyen_dan', 'chuyen_hoa', 'equip_secret')
+     */
+    setMainTechnique(id, method = null) {
+        // Fetch technique data
+        let techData = null;
+        let isSecret = false;
+        
+        // 1. Check if it's a learned cultivation technique
+        const learnedTech = this.learnedTechniques.find(t => t.id === id);
+        if (learnedTech) {
+            techData = typeof getTechniqueById === 'function' ? getTechniqueById(id) : null;
+            if (!techData && this.customTechniques) {
+                techData = this.customTechniques.find(t => t.id === id);
+            }
+        }
+        
+        // 2. Check if it's a learned secret technique
+        if (!techData) {
+            const learnedSecret = this.learnedSecretTechniques.find(s => s.id === id);
+            if (learnedSecret) {
+                techData = typeof getSecretTechniqueById === 'function' ? getSecretTechniqueById(id) : null;
+                isSecret = true;
+            }
+        }
+
+        if (!techData) {
+            return { success: false, msg: "Không tìm thấy dữ liệu công pháp hoặc bí pháp." };
+        }
+
+        if (isSecret) {
+            // Secret techniques equip logic (giới hạn 3 bí pháp)
+            if (this.equippedSecretTechniqueIds && this.equippedSecretTechniqueIds.includes(id)) {
+                 return { success: false, msg: "Bí pháp này đã được trang bị rồi." };
+            }
+            if (!this.equippedSecretTechniqueIds) this.equippedSecretTechniqueIds = [];
+            if (this.equippedSecretTechniqueIds.length >= 3) {
+                 if (method !== 'equip_secret') {
+                     return { requireConfirmation: true, type: 'secret', msg: "Ngươi đã trang bị tối đa 3 bí pháp. Muốn thay thế bí pháp cũ nhất không?" };
+                 } else {
+                     this.equippedSecretTechniqueIds.shift();
+                 }
+            }
+            this.equippedSecretTechniqueIds.push(id);
+            if (typeof this.calculateStats === 'function') this.calculateStats();
+            return { success: true, msg: `Đã trang bị bí pháp: ${techData.name}` };
+        }
+
+        const type = techData.type;
+        let currentMainId = null;
+
+        if (type === 'Linh Lực') {
+            currentMainId = this.mainTechniqueId;
+        } else if (type === 'Luyện Thể') {
+            currentMainId = this.mainBodyTechniqueId;
+        } else if (type === 'Thần Thức') {
+            currentMainId = this.mainSoulTechniqueId;
+        } else {
+            return { success: false, msg: "Loại công pháp không hợp lệ để làm chủ tu." };
+        }
+
+        if (currentMainId === id) {
+            return { success: false, msg: "Công pháp này đang là chủ tu rồi." };
+        }
+
+        if (currentMainId && !method) {
+            return { 
+                requireConfirmation: true, 
+                type: 'cultivation',
+                msg: `Thay đổi công pháp chủ tu rất nguy hiểm do pháp lực xung đột. Đạo hữu muốn chọn cách thức nào để đổi công pháp?` 
+            };
+        }
+
+        if (currentMainId && method) {
+            if (method === 'tan_cong') {
+                this.tuVi = Math.floor(this.tuVi * 0.5); // Mất 50% tu vi
+                this.stability = (this.stability || 100) - 20;
+                if (this.stability < 0) {
+                    this.stability = 0;
+                    this.heartDemon = (this.heartDemon || 0) + 10;
+                }
+            } else if (method === 'hoa_nguyen_dan') {
+                if (this.inventory.hasItem('hoa_nguyen_dan', 1)) {
+                    this.inventory.removeItem('hoa_nguyen_dan', 1);
+                } else {
+                    return { success: false, msg: "Ngươi không có Hóa Nguyên Đan! Hãy mua tại Vạn Bảo Các hoặc cửa hàng tông môn." };
+                }
+            } else if (method === 'chuyen_hoa') {
+                const perception = this.advancedStats?.perception || 0;
+                if (perception < 50 && this.realmId < 10) { // Ví dụ: Cần Kim Đan (10) hoặc Thần thức > 50
+                    return { success: false, msg: "Thần thức hoặc cảnh giới chưa đủ để chuyển hóa pháp lực an toàn (Yêu cầu Thần Thức > 50 hoặc đạt tới Kim Đan kỳ)." };
+                }
+                // Thêm buff suy nhược 10 phút
+                const now = Date.now();
+                this.buffs.push({ id: 'suy_nhuoc_atk_' + now, name: 'Suy Nhược', desc: 'Suy nhược do chuyển hóa pháp lực', type: 'debuff', stat: 'atk', value: 0.5, duration: 600, startTime: now });
+                this.buffs.push({ id: 'suy_nhuoc_def_' + now, name: 'Suy Nhược', desc: 'Suy nhược do chuyển hóa pháp lực', type: 'debuff', stat: 'def', value: 0.5, duration: 600, startTime: now });
+                this.buffs.push({ id: 'suy_nhuoc_spd_' + now, name: 'Suy Nhược', desc: 'Suy nhược do chuyển hóa pháp lực', type: 'debuff', stat: 'spd', value: 0.5, duration: 600, startTime: now });
+            }
+        }
+
+        if (type === 'Linh Lực') {
+            this.mainTechniqueId = id;
+        } else if (type === 'Luyện Thể') {
+            this.mainBodyTechniqueId = id;
+        } else if (type === 'Thần Thức') {
+            this.mainSoulTechniqueId = id;
+        }
+
+        if (typeof this.calculateStats === 'function') this.calculateStats();
+
+        return { success: true, msg: "Đã thiết lập công pháp chủ tu thành công." };
+    }
+
+    /**
      * Chuyển đổi đối tượng Player thành dữ liệu JSON để lưu trữ
      */
     save() {

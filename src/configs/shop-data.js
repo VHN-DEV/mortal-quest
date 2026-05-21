@@ -7,7 +7,8 @@ export const SHOPS = {
                 { id: 'tich_coc_dan', stock: 100 },
                 { id: 'hoi_huyet_dan', stock: 100 },
                 { id: 'thanh_tam_dan', stock: 10 },
-                { id: 'truc_co_dan', stock: 2, minVip: 1 }
+                { id: 'truc_co_dan', stock: 2, minVip: 1 },
+                { id: 'hoa_nguyen_dan', stock: 1, minVip: 2 }
             ],
             'phap_bao': [
                 { id: 'pham_lu_item', stock: 10 },
@@ -175,7 +176,8 @@ export const SHOPS = {
             'dan_duoc': [
                 { id: 'ngung_khi_dan', stock: 100 },
                 { id: 'hoi_huyet_dan', stock: 200 },
-                { id: 'truc_co_dan', stock: 5 }
+                { id: 'truc_co_dan', stock: 5 },
+                { id: 'hoa_nguyen_dan', stock: 2, minVip: 1 }
             ],
             'phap_bao': [
                 { id: 'phi_kiem_thanh_tuyen', stock: 10 },

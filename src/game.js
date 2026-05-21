@@ -1957,31 +1957,80 @@ export class Game {
         }
     }
 
-    setMainTechnique(id, force = false) {
-        if (state.player) {
-            const result = state.player.setMainTechnique(id, force);
-            if (result && result.requireConfirmation) {
+    async setMainTechnique(id, method = null) {
+        if (!state.player) return;
+
+        const result = state.player.setMainTechnique(id, method);
+
+        if (result && result.requireConfirmation) {
+            if (result.type === 'secret') {
+                // Bí pháp: hỏi đơn giản
                 state.ui.showModal({
-                    title: "CẢNH BÁO PHẢN PHỆ",
+                    title: "TRANG BỊ BÍ PHÁP",
                     message: result.msg,
-                    confirmText: "QUYẾT TÂM ĐỔI",
+                    confirmText: "ĐỒNG Ý",
                     cancelText: "HỦY BỎ",
                     icon: "ph-warning",
                     showCancel: true,
                     onConfirm: () => {
-                        this.setMainTechnique(id, true);
+                        this.setMainTechnique(id, 'equip_secret');
                     }
                 });
-            } else if (result && result.success) {
-                state.ui.toast("Đã thiết lập làm Công Pháp Chủ Tu!", "success");
-                if (this.screens.systems) {
-                    this.screens.systems.renderTechniqueDetail(id, false);
-                }
             } else {
-                state.ui.toast(result.msg || "Không thể thiết lập Công Pháp này!", "error");
+                // Công pháp: hiển thị 3 lựa chọn
+                const hasPill = state.player.inventory.hasItem('hoa_nguyen_dan', 1);
+                const perception = state.player.advancedStats?.perception || 0;
+                const canTransform = perception >= 50 || state.player.realmId >= 10;
+
+                const options = [
+                    {
+                        label: '⚡ Tán Công Trùng Tu — Mất 50% Tu Vi, giảm Đạo Tâm',
+                        value: 'tan_cong',
+                        icon: 'ph-lightning'
+                    },
+                    {
+                        label: `💠 Dùng Hóa Nguyên Đan — An toàn ${hasPill ? '(Có sẵn ×1)' : '(Chưa có!)'}`,
+                        value: 'hoa_nguyen_dan',
+                        icon: 'ph-pill'
+                    },
+                    {
+                        label: `🔄 Chuyển Hóa Pháp Lực — Suy nhược 10 phút ${canTransform ? '(Đủ điều kiện)' : '(Chưa đủ cảnh giới!)'}`,
+                        value: 'chuyen_hoa',
+                        icon: 'ph-arrows-clockwise'
+                    }
+                ];
+
+                const chosen = await state.ui.promptOptions(
+                    '⚠️ CẢNH BÁO PHẢN PHỆ',
+                    options,
+                    `<b>Thay đổi công pháp chủ tu rất nguy hiểm!</b><br><br>` +
+                    `Mỗi công pháp có đường vận hành, cấu trúc pháp lực và thuộc tính khác nhau. ` +
+                    `Đổi giữa chừng sẽ gây pháp lực xung đột, kinh mạch tổn thương, thậm chí tử vong.<br><br>` +
+                    `Hãy chọn phương thức chuyển đổi:`
+                );
+
+                if (chosen) {
+                    this.setMainTechnique(id, chosen);
+                }
             }
-            this.refreshUI();
+        } else if (result && result.success) {
+            let successMsg = "Đã thiết lập làm Công Pháp Chủ Tu!";
+            if (method === 'tan_cong') {
+                successMsg = "⚡ Tán công trùng tu thành công! Kinh mạch chấn động, tu vi tổn hao 50%...";
+                state.ui.screenShake('high');
+            } else if (method === 'hoa_nguyen_dan') {
+                successMsg = "💠 Hóa Nguyên Đan phát tác, pháp lực chuyển hóa viên mãn! Tu vi bảo toàn.";
+            } else if (method === 'chuyen_hoa') {
+                successMsg = "🔄 Chuyển hóa pháp lực thành công! Nhưng thân thể suy nhược tạm thời...";
+            }
+            state.ui.toast(successMsg, "success");
+            if (this.screens.systems) {
+                this.screens.systems.renderTechniqueDetail(id, false);
+            }
+        } else {
+            state.ui.toast(result?.msg || "Không thể thiết lập Công Pháp này!", "error");
         }
+        this.refreshUI();
     }
 
     createCustomTechnique(name, element, chosenStats, chosenEffects) {
