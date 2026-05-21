@@ -86,10 +86,10 @@ export class TreasureScreen {
         const item = getItemById(itemId);
         const meta = state.player.equipmentMetadata[this.currentSlot] || { level: 1, spirit: 0, durability: 100 };
 
-        if (item.image) {
+        if (item.image && getAssetUrl(item.image)) {
             this.elIcon.innerHTML = `<img src="${getAssetUrl(item.image)}" class="w-16 h-16 object-contain mx-auto">`;
         } else {
-            this.elIcon.textContent = item.icon || '';
+            this.elIcon.innerHTML = `<span class="text-4xl">${item.icon || ''}</span>`;
         }
         this.elName.textContent = item.name;
         this.elTier.textContent = `${item.tier || 'PHAM_KHI'} | ${item.quality || 'Thường'}`;

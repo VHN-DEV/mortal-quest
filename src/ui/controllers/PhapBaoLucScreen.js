@@ -88,7 +88,7 @@ export class PhapBaoLucScreen {
         const color = this.getQualityColor(item.quality);
 
         // Render Icon or Image
-        if (item.image) {
+        if (item.image && getAssetUrl(item.image)) {
             this.elDetailIcon.innerHTML = `<img src="${getAssetUrl(item.image)}" class="w-20 h-20 object-contain mx-auto filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">`;
             this.elDetailIcon.style.color = '';
             this.elDetailIcon.style.filter = '';
@@ -213,7 +213,7 @@ export class PhapBaoLucScreen {
                 el.className = 'group relative bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 rounded-2xl p-4 flex items-center space-x-4 cursor-pointer transition-all active:scale-95';
                 
                 const qualityColor = this.getQualityColor(item.quality);
-                const contentIcon = item.image 
+                const contentIcon = (item.image && getAssetUrl(item.image)) 
                     ? `<img src="${getAssetUrl(item.image)}" class="w-8 h-8 object-contain">`
                     : `<span style="color: ${qualityColor}">${item.icon || '⚔️'}</span>`;
 

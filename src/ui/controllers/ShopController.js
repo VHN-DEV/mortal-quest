@@ -318,7 +318,7 @@ export class ShopController {
             const info = document.createElement('div');
             info.className = 'flex items-center space-x-3';
             info.innerHTML = `
-                <div class="text-2xl bg-black/60 p-2 rounded-lg border border-${qClass}/30">${itemData.image ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
+                <div class="text-2xl bg-black/60 p-2 rounded-lg border border-${qClass}/30">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
                 <div>
                     <div class="text-sm font-bold text-white">${itemData.name}</div>
                     <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality}${(itemData.quality.toLowerCase().includes('khí') || itemData.quality.toLowerCase().includes('bảo') || itemData.quality.toLowerCase().includes('phẩm') || itemData.quality.toLowerCase().includes('giai') || itemData.quality.toLowerCase().includes('hỏa') || itemData.quality.toLowerCase().includes('lôi') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(itemData.quality)) ? '' : ' phẩm'} | Kho: ${item.stock}</div>
@@ -465,7 +465,7 @@ export class ShopController {
             const el = document.createElement('div');
             el.className = `p-2 border border-gray-800 rounded-lg bg-black/20 flex flex-col items-center cursor-pointer hover:border-${qClass} transition-colors duration-200 active:scale-95`;
             el.innerHTML = `
-                <div class="text-2xl mb-1">${itemData.image ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
+                <div class="text-2xl mb-1">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
                 <div class="text-[9px] text-gray-400">x${item.quantity}</div>
                 <div class="text-[8px] text-cultivation-gold mt-1">${Math.floor(itemData.price * sellMult)} LT</div>
             `;

@@ -108,7 +108,7 @@ export class AlchemyController {
             el.innerHTML = `
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
-                        <span class="text-xl mr-2">${resultItem.image ? `<img src="${getAssetUrl(resultItem.image)}" class="w-6 h-6 object-contain inline-block">` : (resultItem.icon || '')}</span>
+                        <span class="text-xl mr-2">${(resultItem.image && getAssetUrl(resultItem.image)) ? `<img src="${getAssetUrl(resultItem.image)}" class="w-6 h-6 object-contain inline-block">` : (resultItem.icon || '')}</span>
                         <span class="font-bold quality-${qClass} font-ancient">${resultItem.name}</span>
                     </div>
                     ${locked ?

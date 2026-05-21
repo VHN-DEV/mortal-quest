@@ -74,7 +74,7 @@ export class CraftingController {
             el.innerHTML = `
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
-                        <span class="text-xl mr-2">${item.image ? `<img src="${getAssetUrl(item.image)}" class="w-6 h-6 object-contain inline-block">` : (item.icon || '')}</span>
+                        <span class="text-xl mr-2">${(item.image && getAssetUrl(item.image)) ? `<img src="${getAssetUrl(item.image)}" class="w-6 h-6 object-contain inline-block">` : (item.icon || '')}</span>
                         <span class="font-bold quality-${qClass} font-ancient">${item.name}</span>
                     </div>
                     ${locked ?

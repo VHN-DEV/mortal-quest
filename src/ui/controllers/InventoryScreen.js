@@ -298,7 +298,7 @@ export class InventoryScreen {
             const el = document.createElement('div');
             el.className = `p-2 border rounded-lg bg-black/20 flex flex-col items-center cursor-pointer transition-all border-${qClass}/30 ${state.selectedItemId === item.id ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'}`;
             el.innerHTML = `
-                <div class="text-2xl mb-1">${itemData.image ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
+                <div class="text-2xl mb-1">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
                 <div class="text-[10px] text-gray-400">x${item.quantity}</div>
             `;
             el.onclick = () => this.selectItem(item.id);
@@ -340,7 +340,7 @@ export class InventoryScreen {
                     const qClass = this.getQualityClass(item.quality);
                     slot.classList.remove('border-white/20');
                     slot.classList.add(`border-${qClass}/50`);
-                    slot.innerHTML = item.image ? `<img src="${getAssetUrl(item.image)}" class="w-6 h-6 object-contain">` : `<span class="text-xl">${item.icon || ''}</span>`;
+                    slot.innerHTML = (item.image && getAssetUrl(item.image)) ? `<img src="${getAssetUrl(item.image)}" class="w-6 h-6 object-contain">` : `<span class="text-xl">${item.icon || ''}</span>`;
                     slot.onclick = (e) => {
                         e.stopPropagation();
                         const isArtifact = type.includes('Artifact');
@@ -383,10 +383,10 @@ export class InventoryScreen {
         const qClass = this.getQualityClass(displayQuality);
 
         if (this.elDetailIcon) {
-            if (itemData.image) {
+            if (itemData.image && getAssetUrl(itemData.image)) {
                 this.elDetailIcon.innerHTML = `<img src="${getAssetUrl(itemData.image)}" class="w-16 h-16 object-contain mx-auto">`;
             } else {
-                this.elDetailIcon.textContent = itemData.icon || '';
+                this.elDetailIcon.innerHTML = `<span class="text-4xl">${itemData.icon || ''}</span>`;
             }
         }
         if (this.elDetailName) {
@@ -603,7 +603,7 @@ export class InventoryScreen {
                 btn.className = `flex items-center space-x-2 p-1.5 bg-white/5 border border-white/10 rounded-xl hover:bg-qi-blue/10 transition-all active:scale-95 group border-b-2 border-b-${qClass}/30`;
 
                 const name = connItem ? connItem.name : (conn.name || conn.info);
-                const iconHtml = connItem ? (connItem.image ? `<img src="${getAssetUrl(connItem.image)}" class="w-4 h-4 object-contain">` : (connItem.icon || conn.icon)) : conn.icon;
+                const iconHtml = connItem ? (((connItem.image && getAssetUrl(connItem.image))) ? `<img src="${getAssetUrl(connItem.image)}" class="w-4 h-4 object-contain">` : (connItem.icon || conn.icon)) : conn.icon;
 
                 btn.innerHTML = `
                     <div class="text-sm">${iconHtml}</div>
