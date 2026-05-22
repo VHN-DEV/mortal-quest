@@ -12,26 +12,65 @@ function parseMapData() {
     const lines = mapDataStr.split('\n');
     let currentLoc = {};
     const locs = [];
+    let currentWorldId = null;
 
     for (const line of lines) {
+        const worldMatch = line.match(/^\s*'([^']+)':\s*\{/);
+        if (worldMatch) {
+            currentWorldId = worldMatch[1];
+        }
+
         const idMatch = line.match(/id:\s*['"]([^'"]+)['"]/);
         if (idMatch) {
             if (currentLoc.slug) locs.push(currentLoc);
-            currentLoc = { slug: idMatch[1] }; // id is fallback slug
+            currentLoc = { slug: idMatch[1], worldId: currentWorldId };
         }
-        
+
         const nameMatch = line.match(/name:\s*['"]([^'"]+)['"]/);
         if (nameMatch) currentLoc.name = nameMatch[1];
-        
+
         const descMatch = line.match(/description:\s*['"]([^'"]+)['"]/);
         if (descMatch) currentLoc.description = descMatch[1];
 
         const slugMatch = line.match(/slug:\s*['"]([^'"]+)['"]/);
         if (slugMatch) currentLoc.slug = slugMatch[1];
-        
+
+        const minRealmMatch = line.match(/minRealm:\s*(\d+)/);
+        if (minRealmMatch) currentLoc.minRealm = parseInt(minRealmMatch[1], 10);
+
+        const dangerMatch = line.match(/danger:\s*['"]([^'"]+)['"]/);
+        if (dangerMatch) currentLoc.danger = dangerMatch[1];
+
+        const regionIdMatch = line.match(/regionId:\s*['"]([^'"]+)['"]/);
+        if (regionIdMatch) currentLoc.regionId = regionIdMatch[1];
+
+        const regionNameMatch = line.match(/regionName:\s*['"]([^'"]+)['"]/);
+        if (regionNameMatch) currentLoc.regionName = regionNameMatch[1];
+
+        const subRegionIdMatch = line.match(/subRegionId:\s*['"]([^'"]+)['"]/);
+        if (subRegionIdMatch) currentLoc.subRegionId = subRegionIdMatch[1];
+
+        const subRegionNameMatch = line.match(/subRegionName:\s*['"]([^'"]+)['"]/);
+        if (subRegionNameMatch) currentLoc.subRegionName = subRegionNameMatch[1];
+
+        const resourcesMatch = line.match(/resources:\s*(\[[^\]]*\])/);
+        if (resourcesMatch) {
+            try { currentLoc.resources = JSON.parse(resourcesMatch[1].replace(/'/g, '"')); } catch (e) { }
+        }
+
+        const energiesMatch = line.match(/energies:\s*(\[.*?\])/);
+        if (energiesMatch) {
+            try { currentLoc.energies = JSON.parse(energiesMatch[1].replace(/'/g, '"')); } catch (e) { }
+        }
+
+        const eventProbsMatch = line.match(/eventProbs:\s*(\{.*?\})/);
+        if (eventProbsMatch) {
+            try { currentLoc.eventProbs = JSON.parse(eventProbsMatch[1].replace(/'/g, '"')); } catch (e) { }
+        }
+
         const qiMatch = line.match(/elementQi:\s*({[^}]+})/);
         if (qiMatch) {
-            try { currentLoc.elementQi = JSON.parse(qiMatch[1]); } catch(e) {}
+            try { currentLoc.elementQi = JSON.parse(qiMatch[1]); } catch (e) { }
         }
     }
     if (currentLoc.slug) locs.push(currentLoc);
@@ -59,17 +98,36 @@ const server = http.createServer((req, res) => {
     if (req.url === '/api/data' && req.method === 'GET') {
         const locations = parseMapData();
         const files = fs.readdirSync(imagesDir).filter(f => f.match(/\.(webp|png|jpg)$/));
-        
-        // Match locations with their current image if exists
+
+        const hierarchy = {
+            'nhan_gioi': { name: 'Nhân Giới', regions: {} },
+            'linh_gioi': { name: 'Linh Giới', regions: {} },
+            'tien_gioi': { name: 'Tiên Giới', regions: {} },
+            'ma_gioi': { name: 'Ma Giới', regions: {} },
+            'khong_gian_khe_nut': { name: 'Không Gian Khe Nứt', regions: {} }
+        };
+        for (const loc of locations) {
+            const w = loc.worldId;
+            if (!w || !hierarchy[w]) continue;
+            if (loc.regionId) {
+                if (!hierarchy[w].regions[loc.regionId]) {
+                    hierarchy[w].regions[loc.regionId] = { name: loc.regionName || loc.regionId, subRegions: {} };
+                }
+                if (loc.subRegionId) {
+                    hierarchy[w].regions[loc.regionId].subRegions[loc.subRegionId] = loc.subRegionName || loc.subRegionId;
+                }
+            }
+        }
+
         const enrichedLocations = locations.map(loc => {
             let currentImage = null;
-            if (files.includes(`${loc.slug}.webp`)) currentImage = `${loc.slug}.webp`;
-            else if (files.includes(`${loc.slug}.png`)) currentImage = `${loc.slug}.png`;
+            if (loc.slug && files.includes(`${loc.slug}.webp`)) currentImage = `${loc.slug}.webp`;
+            else if (loc.slug && files.includes(`${loc.slug}.png`)) currentImage = `${loc.slug}.png`;
             return { ...loc, currentImage };
         });
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ locations: enrichedLocations, allImages: files }));
+        res.end(JSON.stringify({ locations: enrichedLocations, allImages: files, hierarchy: hierarchy }));
         return;
     }
 
@@ -96,11 +154,11 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             try {
                 const changes = JSON.parse(body); // Array of { locationSlug, newImageFilename }
-                
+
                 // For safety, let's do a swap using temporary names
                 // If a user assigns image A to location B, we rename A to B.webp
                 // If B.webp already existed, it becomes unused and should be renamed to locations_extra_X.webp
-                
+
                 const allFiles = fs.readdirSync(imagesDir);
                 let extraCounter = 1;
                 function getFreeExtraName() {
@@ -131,7 +189,7 @@ const server = http.createServer((req, res) => {
                                 fs.renameSync(targetPath, path.join(imagesDir, safeName));
                             }
                         }
-                        
+
                         renameMap.push({ src: sourcePath, target: targetPath });
                     }
                 });
@@ -166,7 +224,7 @@ const server = http.createServer((req, res) => {
             try {
                 const payload = JSON.parse(body);
                 if (!payload.files || !Array.isArray(payload.files)) throw new Error('Invalid payload');
-                
+
                 // Build a map of existing hashes
                 const existingFiles = fs.readdirSync(imagesDir).filter(f => f.match(/\.(webp|png|jpg)$/));
                 const existingHashes = {};
@@ -196,16 +254,16 @@ const server = http.createServer((req, res) => {
                     }
                     let ext = '.' + match[1];
                     if (ext === '.jpeg') ext = '.jpg';
-                    
+
                     const base64Data = match[2];
                     const buffer = Buffer.from(base64Data, 'base64');
                     const hash = crypto.createHash('sha256').update(buffer).digest('hex');
-                    
+
                     if (existingHashes[hash]) {
                         duplicates.push(`⚠️ Ảnh "${f.name}" bị trùng lặp nội dung với ảnh đang có sẵn: "${existingHashes[hash]}"`);
                         return;
                     }
-                    
+
                     const newName = getFreeExtraName(ext);
                     fs.writeFileSync(path.join(imagesDir, newName), buffer);
                     existingHashes[hash] = newName;
@@ -253,11 +311,45 @@ const server = http.createServer((req, res) => {
             try {
                 const payloadArray = JSON.parse(body);
                 if (!Array.isArray(payloadArray)) throw new Error('Invalid payload');
-                
+
                 const lines = fs.readFileSync(mapDataPath, 'utf8').split('\n');
-                
+
                 for (const payload of payloadArray) {
-                    const { slug, newSlug, name, description, elementQi } = payload;
+                    const { slug, newSlug, name, description, isNew, worldId, minRealm, danger, regionId, regionName, subRegionId, subRegionName, resources, energies, eventProbs, elementQi } = payload;
+
+                    const finalId = newSlug || slug;
+
+                    if (isNew) {
+                        const objStr = `            {
+                id: "${finalId}",
+                name: "${name}",
+                minRealm: ${minRealm || 0},
+                danger: "${danger || 'an_toan'}",
+                image: getLocImg("${finalId}"),
+                description: "${description || ''}",
+                resources: ${JSON.stringify(resources || [])},
+                energies: ${JSON.stringify(energies || []).replace(/"([^"]+)":/g, '$1:')},
+                elementQi: ${JSON.stringify(elementQi || {}).replace(/,/g, ', ').replace(/:/g, ': ').replace(/{/, '{ ').replace(/}/, ' }')},
+                eventProbs: ${JSON.stringify(eventProbs || { combat: 0, loot: 0, npc: 0, empty: 0 }).replace(/"([^"]+)":/g, '$1:')},
+                regionId: "${regionId || ''}",
+                regionName: "${regionName || ''}",
+                subRegionId: "${subRegionId || ''}",
+                subRegionName: "${subRegionName || ''}"
+            },`;
+
+                        let inWorldBlock = false;
+                        for (let i = 0; i < lines.length; i++) {
+                            if (lines[i].match(new RegExp(`^\\s*'${worldId}':\\s*\\{`))) {
+                                inWorldBlock = true;
+                            }
+                            if (inWorldBlock && lines[i].match(/locations:\s*\[/)) {
+                                lines.splice(i + 1, 0, objStr);
+                                break;
+                            }
+                        }
+                        continue;
+                    }
+
                     let inTargetBlock = false;
                     for (let i = 0; i < lines.length; i++) {
                         const line = lines[i];
@@ -272,11 +364,23 @@ const server = http.createServer((req, res) => {
                             if (newSlug && newSlug !== slug && line.match(/image:\s*getLocImg\(['"]/)) {
                                 lines[i] = line.replace(/getLocImg\(['"][^'"]+['"]\)/, `getLocImg("${newSlug}")`);
                             }
-                            if (line.match(/name:\s*['"]/)) {
-                                lines[i] = line.replace(/name:\s*(['"])[^'"]*\\1/, `name: "${name}"`);
+                            if (line.match(/name:\s*['"]/)) lines[i] = line.replace(/name:\s*(['"])[^'"]*\\1/, `name: "${name}"`);
+                            if (line.match(/description:\s*['"]/)) lines[i] = line.replace(/description:\s*(['"])[^'"]*\\1/, `description: "${description}"`);
+                            if (line.match(/minRealm:\s*\d+/)) lines[i] = line.replace(/minRealm:\s*\d+/, `minRealm: ${minRealm}`);
+                            if (line.match(/danger:\s*['"]/)) lines[i] = line.replace(/danger:\s*(['"])[^'"]*\\1/, `danger: "${danger}"`);
+                            if (line.match(/regionId:\s*['"]/)) lines[i] = line.replace(/regionId:\s*(['"])[^'"]*\\1/, `regionId: "${regionId}"`);
+                            if (line.match(/regionName:\s*['"]/)) lines[i] = line.replace(/regionName:\s*(['"])[^'"]*\\1/, `regionName: "${regionName}"`);
+                            if (line.match(/subRegionId:\s*['"]/)) lines[i] = line.replace(/subRegionId:\s*(['"])[^'"]*\\1/, `subRegionId: "${subRegionId}"`);
+                            if (line.match(/subRegionName:\s*['"]/)) lines[i] = line.replace(/subRegionName:\s*(['"])[^'"]*\\1/, `subRegionName: "${subRegionName}"`);
+
+                            if (resources && line.match(/resources:\s*\[/)) {
+                                lines[i] = line.replace(/resources:\s*\[[^\]]*\]/, `resources: ${JSON.stringify(resources)}`);
                             }
-                            if (line.match(/description:\s*['"]/)) {
-                                lines[i] = line.replace(/description:\s*(['"])[^'"]*\\1/, `description: "${description}"`);
+                            if (energies && line.match(/energies:\s*\[/)) {
+                                lines[i] = line.replace(/energies:\s*\[.*?\]/, `energies: ${JSON.stringify(energies).replace(/"([^"]+)":/g, '$1:')}`);
+                            }
+                            if (eventProbs && line.match(/eventProbs:\s*\{/)) {
+                                lines[i] = line.replace(/eventProbs:\s*\{.*?\}/, `eventProbs: ${JSON.stringify(eventProbs).replace(/"([^"]+)":/g, '$1:')}`);
                             }
                             if (elementQi && line.match(/elementQi:\s*{/)) {
                                 const formattedQi = JSON.stringify(elementQi).replace(/,/g, ', ').replace(/:/g, ': ').replace(/{/, '{ ').replace(/}/, ' }');
@@ -287,18 +391,18 @@ const server = http.createServer((req, res) => {
                             }
                         }
                     }
-                    
+
                     if (newSlug && newSlug !== slug) {
                         const oldPathWebp = path.join(imagesDir, `${slug}.webp`);
                         const newPathWebp = path.join(imagesDir, `${newSlug}.webp`);
                         if (fs.existsSync(oldPathWebp)) fs.renameSync(oldPathWebp, newPathWebp);
-                        
+
                         const oldPathPng = path.join(imagesDir, `${slug}.png`);
                         const newPathPng = path.join(imagesDir, `${newSlug}.png`);
                         if (fs.existsSync(oldPathPng)) fs.renameSync(oldPathPng, newPathPng);
                     }
                 }
-                
+
                 fs.writeFileSync(mapDataPath, lines.join('\n'), 'utf8');
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
@@ -317,31 +421,35 @@ const server = http.createServer((req, res) => {
             try {
                 const { slug } = JSON.parse(body);
                 if (!slug) throw new Error('Missing slug');
-                
-                let fileContent = fs.readFileSync(mapDataPath, 'utf8');
-                const idIndex = fileContent.indexOf(`id: "${slug}"`);
-                if (idIndex === -1) throw new Error('Location not found in source file');
-                
-                const blockStartIndex = fileContent.lastIndexOf('{', idIndex);
+
+                const fileContent = fs.readFileSync(mapDataPath, 'utf8');
+                const idIdx = fileContent.indexOf(`id: "${slug}"`);
+                if (idIdx === -1) throw new Error('Location not found in source file');
+
+                const blockStart = fileContent.lastIndexOf('{', idIdx);
+                if (blockStart === -1) throw new Error('Block start not found');
+
                 let brackets = 0;
-                let blockEndIndex = -1;
-                for (let i = blockStartIndex; i < fileContent.length; i++) {
+                let blockEnd = -1;
+                for (let i = blockStart; i < fileContent.length; i++) {
                     if (fileContent[i] === '{') brackets++;
-                    if (fileContent[i] === '}') brackets--;
+                    else if (fileContent[i] === '}') brackets--;
                     if (brackets === 0) {
-                        blockEndIndex = i;
+                        blockEnd = i;
                         break;
                     }
                 }
-                
-                if (blockEndIndex !== -1) {
-                    let nextCharIdx = blockEndIndex + 1;
-                    while(fileContent[nextCharIdx] === ' ' || fileContent[nextCharIdx] === '\\r' || fileContent[nextCharIdx] === '\\n') nextCharIdx++;
-                    if (fileContent[nextCharIdx] === ',') nextCharIdx++;
-                    
-                    fileContent = fileContent.substring(0, blockStartIndex) + fileContent.substring(nextCharIdx);
-                    fs.writeFileSync(mapDataPath, fileContent, 'utf8');
-                }
+                if (blockEnd === -1) throw new Error('Block end not found');
+
+                // Determine removal range, also swallow following comma and whitespace
+                let removeStart = blockStart;
+                let removeEnd = blockEnd + 1;
+                while (/[\s\r\n]/.test(fileContent[removeEnd])) removeEnd++;
+                if (fileContent[removeEnd] === ',') removeEnd++;
+
+                const newContent = fileContent.slice(0, removeStart) + fileContent.slice(removeEnd);
+                fs.writeFileSync(mapDataPath, newContent, 'utf8');
+
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
             } catch (err) {
@@ -352,6 +460,8 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+
+
     if (req.url === '/api/locations/add' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk.toString(); });
@@ -359,13 +469,13 @@ const server = http.createServer((req, res) => {
             try {
                 const { slug, name, description, worldId } = JSON.parse(body);
                 if (!slug || !name || !worldId) throw new Error('Missing required fields');
-                
+
                 let fileContent = fs.readFileSync(mapDataPath, 'utf8');
                 const worldIndex = fileContent.indexOf(`'${worldId}':`);
                 if (worldIndex === -1) throw new Error('World ID not found');
                 const locArrIndex = fileContent.indexOf('locations: [', worldIndex);
                 if (locArrIndex === -1) throw new Error('Locations array not found in world');
-                
+
                 const insertPos = locArrIndex + 'locations: ['.length;
                 const newBlock = `
             {
@@ -382,7 +492,7 @@ const server = http.createServer((req, res) => {
             },`;
                 fileContent = fileContent.substring(0, insertPos) + newBlock + fileContent.substring(insertPos);
                 fs.writeFileSync(mapDataPath, fileContent, 'utf8');
-                
+
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
             } catch (err) {
@@ -479,15 +589,6 @@ const htmlUI = `
             </div>
             
             <div class="gallery-panel">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0;">Thư viện ảnh <span id="gallery-count" style="font-size: 14px; color: #888; font-weight: normal;"></span></h2>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="search-img" placeholder="Tìm tên file ảnh..." style="width: 250px; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; box-sizing: border-box;" oninput="renderGallery()">
-                        <button class="btn" style="padding: 8px;" onclick="toggleImgSort()" title="Sắp xếp A-Z">A-Z</button>
-                    </div>
-                </div>
-                <p style="color: #aaa; margin-bottom: 20px;">1. Chọn một địa điểm ở cột trái.<br>2. Click vào bức ảnh bên dưới để gán cho địa điểm đó.</p>
-                
                 <div style="background: #333; padding: 15px; border-radius: 6px; margin-bottom: 20px; position: sticky; top: -20px; z-index: 5; display: flex; gap: 20px; align-items: flex-start;">
                     <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;" id="location-editor-panel">
                         <div style="display: flex; justify-content: space-between;">
@@ -499,14 +600,63 @@ const htmlUI = `
                             <input type="text" id="edit-loc-name" placeholder="Tên địa điểm" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff;" oninput="autoGenerateSlug()">
                             <input type="text" id="edit-loc-new-slug" placeholder="Slug (id)" style="width: 150px; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #aaa;" oninput="markInfoDirty()" title="Bạn có thể sửa slug tự động">
                         </div>
-                        <textarea id="edit-loc-desc" placeholder="Mô tả địa điểm..." rows="3" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff; resize: vertical; box-sizing: border-box;" oninput="markInfoDirty()"></textarea>
+                        <div style="display: flex; gap: 10px;">
+                            <select id="edit-loc-world" style="padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff;" onchange="updateRegionSelects()">
+                                <option value="nhan_gioi">Nhân Giới</option>
+                                <option value="linh_gioi">Linh Giới</option>
+                                <option value="tien_gioi">Tiên Giới</option>
+                                <option value="ma_gioi">Ma Giới</option>
+                                <option value="khong_gian_khe_nut">Không Gian Khe Nứt</option>
+                            </select>
+                            <input type="number" id="edit-loc-min-realm" placeholder="Cảnh giới tối thiểu" style="width: 150px; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff;" oninput="markInfoDirty()">
+                            <select id="edit-loc-danger" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff;" onchange="markInfoDirty()">
+                                <option value="an_toan">An Toàn</option>
+                                <option value="ha_cap">Hạ Cấp</option>
+                                <option value="trung_cap">Trung Cấp</option>
+                                <option value="cao_cap">Cao Cấp</option>
+                                <option value="nguy_hiem">Nguy Hiểm</option>
+                                <option value="cuc_ky_nguy_hiem">Cực Kỳ Nguy Hiểm</option>
+                                <option value="tu_dia">Tử Địa</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <select id="edit-loc-region-select" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff;" onchange="onRegionChange()">
+                            </select>
+                            <input type="text" id="edit-loc-region-custom-name" placeholder="Tên Châu Lục mới" style="display:none; flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff;" oninput="onCustomRegionInput()">
+                            <input type="text" id="edit-loc-region-custom-id" placeholder="ID (slug) mới" style="display:none; flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #aaa;" oninput="markInfoDirty()">
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <select id="edit-loc-subregion-select" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff;" onchange="onSubRegionChange()">
+                            </select>
+                            <input type="text" id="edit-loc-subregion-custom-name" placeholder="Tên Quốc Gia mới" style="display:none; flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff;" oninput="onCustomSubRegionInput()">
+                            <input type="text" id="edit-loc-subregion-custom-id" placeholder="ID (slug) mới" style="display:none; flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #aaa;" oninput="markInfoDirty()">
+                        </div>
+                        <textarea id="edit-loc-desc" placeholder="Mô tả địa điểm..." rows="2" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff; resize: vertical; box-sizing: border-box;" oninput="markInfoDirty()"></textarea>
+                        <input type="text" id="edit-loc-resources" placeholder="Tài nguyên (cách nhau dấu phẩy. VD: Linh Thảo, Quặng Sắt)" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff; box-sizing: border-box;" oninput="markInfoDirty()">
+                        <textarea id="edit-loc-energies" placeholder='Năng lượng (JSON). VD: [{"type":"linh_khi","concentration":5,"purity":"TAP"}]' rows="2" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff; resize: vertical; box-sizing: border-box; font-family: monospace;" oninput="markInfoDirty()"></textarea>
                         
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span style="color:#aaa; font-size:13px; width: 60px;">Event %:</span>
+                            <input type="number" id="prob-combat" placeholder="Combat" step="0.01" min="0" max="1" style="flex:1; background:#222; border:1px solid #555; color:#fff; padding:4px;" oninput="markInfoDirty()" title="Tỷ lệ Combat (0-1)">
+                            <input type="number" id="prob-loot" placeholder="Loot" step="0.01" min="0" max="1" style="flex:1; background:#222; border:1px solid #555; color:#fff; padding:4px;" oninput="markInfoDirty()" title="Tỷ lệ Loot (0-1)">
+                            <input type="number" id="prob-npc" placeholder="NPC" step="0.01" min="0" max="1" style="flex:1; background:#222; border:1px solid #555; color:#fff; padding:4px;" oninput="markInfoDirty()" title="Tỷ lệ NPC (0-1)">
+                            <input type="number" id="prob-empty" placeholder="Empty" step="0.01" min="0" max="1" style="flex:1; background:#222; border:1px solid #555; color:#fff; padding:4px;" oninput="markInfoDirty()" title="Tỷ lệ Trống (0-1)">
+                        </div>
+
                         <div style="font-size: 13px; color: #aaa; margin-top: 5px;">Tỉ lệ linh khí (0-100%):</div>
                         <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px;" id="qi-inputs">
                             <span style="color:#555; font-size:13px;">Chọn địa điểm để xem</span>
                         </div>
                     </div>
                     <img id="large-preview" style="width: 500px; height: 320px; object-fit: cover; border-radius: 6px; border: 2px solid #555; background: #000; display: none;" />
+                </div>
+                    
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: sticky; top: -20px; z-index: 5; background: #333;">
+                    <h2 style="margin: 0;">Thư viện ảnh <span id="gallery-count" style="font-size: 14px; color: #888; font-weight: normal;"></span></h2>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="search-img" placeholder="Tìm tên file ảnh..." style="width: 250px; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; box-sizing: border-box;" oninput="renderGallery()">
+                        <button class="btn" style="padding: 8px;" onclick="toggleImgSort()" title="Sắp xếp A-Z">A-Z</button>
+                    </div>
                 </div>
 
                 <div class="gallery-grid" id="gallery-list">
@@ -519,7 +669,7 @@ const htmlUI = `
     <div class="toast" id="toast">Cập nhật thành công!</div>
 
     <script>
-        let appData = { locations: [], allImages: [] };
+        let appData = { locations: [], allImages: [], hierarchy: {} };
         let activeLocationSlug = null;
         let changes = {}; // slug -> newImageFilename
         let infoChanges = {}; // slug -> info
@@ -599,7 +749,6 @@ const htmlUI = `
                 largePreview.style.display = 'none';
             }
 
-            // Find which images are currently assigned to what
             const assignedImages = {};
             appData.locations.forEach(l => {
                 if (changes[l.slug]) {
@@ -626,10 +775,7 @@ const htmlUI = `
                 if (searchTerm && !img.toLowerCase().includes(searchTerm)) return;
 
                 const div = document.createElement('div');
-                
-                // Is it the selected image for the active location?
                 const isSelectedForActive = currentImgForActive === img;
-                
                 const assignedTo = assignedImages[img];
                 
                 div.className = \`gallery-item \${isSelectedForActive ? 'selected' : ''} \${assignedTo && !isSelectedForActive ? 'assigned' : ''}\`;
@@ -645,6 +791,90 @@ const htmlUI = `
             });
         }
 
+        function autoGenerateSlug() {
+            const name = document.getElementById('edit-loc-name').value;
+            const newSlug = name.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9 ]/g, "").trim().replace(/\\s+/g, "_");
+            document.getElementById('edit-loc-new-slug').value = newSlug;
+            markInfoDirty();
+        }
+
+        function updateRegionSelects() {
+            const worldId = document.getElementById('edit-loc-world').value;
+            const regionSelect = document.getElementById('edit-loc-region-select');
+            
+            regionSelect.innerHTML = '<option value="">-- Không có Châu Lục --</option>';
+            
+            const worldData = appData.hierarchy && appData.hierarchy[worldId];
+            if (worldData && worldData.regions) {
+                for (const [rId, rData] of Object.entries(worldData.regions)) {
+                    regionSelect.innerHTML += \`<option value="\${rId}">\${rData.name}</option>\`;
+                }
+            }
+            regionSelect.innerHTML += '<option value="__custom__">+ Thêm Châu Lục Mới</option>';
+            
+            onRegionChange();
+        }
+
+        function onRegionChange() {
+            const worldId = document.getElementById('edit-loc-world').value;
+            const regionId = document.getElementById('edit-loc-region-select').value;
+            
+            const customName = document.getElementById('edit-loc-region-custom-name');
+            const customId = document.getElementById('edit-loc-region-custom-id');
+            
+            if (regionId === '__custom__') {
+                customName.style.display = 'block';
+                customId.style.display = 'block';
+            } else {
+                customName.style.display = 'none';
+                customId.style.display = 'none';
+            }
+            
+            const subSelect = document.getElementById('edit-loc-subregion-select');
+            subSelect.innerHTML = '<option value="">-- Không có Quốc Gia --</option>';
+            
+            if (regionId && regionId !== '__custom__') {
+                const rData = appData.hierarchy[worldId]?.regions[regionId];
+                if (rData && rData.subRegions) {
+                    for (const [srId, srName] of Object.entries(rData.subRegions)) {
+                        subSelect.innerHTML += \`<option value="\${srId}">\${srName}</option>\`;
+                    }
+                }
+            }
+            subSelect.innerHTML += '<option value="__custom__">+ Thêm Quốc Gia Mới</option>';
+            
+            onSubRegionChange();
+        }
+
+        function onSubRegionChange() {
+            const srId = document.getElementById('edit-loc-subregion-select').value;
+            const customName = document.getElementById('edit-loc-subregion-custom-name');
+            const customId = document.getElementById('edit-loc-subregion-custom-id');
+            
+            if (srId === '__custom__') {
+                customName.style.display = 'block';
+                customId.style.display = 'block';
+            } else {
+                customName.style.display = 'none';
+                customId.style.display = 'none';
+            }
+            markInfoDirty();
+        }
+
+        function onCustomRegionInput() {
+            const name = document.getElementById('edit-loc-region-custom-name').value;
+            const slug = name.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9 ]/g, "").trim().replace(/\\s+/g, "_");
+            document.getElementById('edit-loc-region-custom-id').value = slug;
+            markInfoDirty();
+        }
+
+        function onCustomSubRegionInput() {
+            const name = document.getElementById('edit-loc-subregion-custom-name').value;
+            const slug = name.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9 ]/g, "").trim().replace(/\\s+/g, "_");
+            document.getElementById('edit-loc-subregion-custom-id').value = slug;
+            markInfoDirty();
+        }
+
         function selectLocation(slug) {
             activeLocationSlug = slug;
             const loc = appData.locations.find(l => l.slug === slug);
@@ -654,13 +884,58 @@ const htmlUI = `
             document.getElementById('edit-loc-slug').value = loc.slug;
             document.getElementById('edit-loc-new-slug').value = pendingInfo && pendingInfo.newSlug ? pendingInfo.newSlug : loc.slug;
             document.getElementById('edit-loc-name').value = pendingInfo ? pendingInfo.name : loc.name;
-            document.getElementById('edit-loc-desc').value = pendingInfo ? pendingInfo.description : (loc.description || '');
+            
+            const p = pendingInfo || {};
+            const worldId = p.worldId || loc.worldId || 'nhan_gioi';
+            document.getElementById('edit-loc-world').value = worldId;
+            updateRegionSelects();
+            
+            const rId = p.regionId || loc.regionId || '';
+            const rSelect = document.getElementById('edit-loc-region-select');
+            if (rId && !Array.from(rSelect.options).some(o => o.value === rId)) {
+                rSelect.value = '__custom__';
+                onRegionChange();
+                document.getElementById('edit-loc-region-custom-name').value = p.regionName || loc.regionName || '';
+                document.getElementById('edit-loc-region-custom-id').value = rId;
+            } else {
+                rSelect.value = rId;
+                onRegionChange();
+            }
+
+            const srId = p.subRegionId || loc.subRegionId || '';
+            const srSelect = document.getElementById('edit-loc-subregion-select');
+            if (srId && !Array.from(srSelect.options).some(o => o.value === srId)) {
+                srSelect.value = '__custom__';
+                onSubRegionChange();
+                document.getElementById('edit-loc-subregion-custom-name').value = p.subRegionName || loc.subRegionName || '';
+                document.getElementById('edit-loc-subregion-custom-id').value = srId;
+            } else {
+                srSelect.value = srId;
+                onSubRegionChange();
+            }
+
+            document.getElementById('edit-loc-min-realm').value = p.minRealm !== undefined ? p.minRealm : (loc.minRealm || 0);
+            document.getElementById('edit-loc-danger').value = p.danger || loc.danger || 'an_toan';
+            document.getElementById('edit-loc-desc').value = p.description !== undefined ? p.description : (loc.description || '');
+            
+            const resArr = p.resources !== undefined ? p.resources : (loc.resources || []);
+            document.getElementById('edit-loc-resources').value = resArr.join(', ');
+            
+            const eneArr = p.energies !== undefined ? p.energies : (loc.energies || []);
+            document.getElementById('edit-loc-energies').value = JSON.stringify(eneArr);
+            
+            const ep = p.eventProbs || loc.eventProbs || { combat:0, loot:0, npc:0, empty:0 };
+            document.getElementById('prob-combat').value = ep.combat || 0;
+            document.getElementById('prob-loot').value = ep.loot || 0;
+            document.getElementById('prob-npc').value = ep.npc || 0;
+            document.getElementById('prob-empty').value = ep.empty || 0;
+
             document.getElementById('btn-delete-loc').style.display = 'block';
             
             const qiContainer = document.getElementById('qi-inputs');
             qiContainer.innerHTML = '';
             
-            const qiData = pendingInfo ? pendingInfo.elementQi : loc.elementQi;
+            const qiData = p.elementQi || loc.elementQi;
             
             if (qiData) {
                 for (const key of Object.keys(qiData)) {
@@ -700,10 +975,56 @@ const htmlUI = `
                 });
             }
 
+            const resStr = document.getElementById('edit-loc-resources').value;
+            const resources = resStr ? resStr.split(',').map(s => s.trim()).filter(s => s) : [];
+            
+            let energies = [];
+            try { energies = JSON.parse(document.getElementById('edit-loc-energies').value || '[]'); } catch(e) {}
+            
+            const eventProbs = {
+                combat: parseFloat(document.getElementById('prob-combat').value) || 0,
+                loot: parseFloat(document.getElementById('prob-loot').value) || 0,
+                npc: parseFloat(document.getElementById('prob-npc').value) || 0,
+                empty: parseFloat(document.getElementById('prob-empty').value) || 0
+            };
+
+            const isNewLoc = appData.locations.find(l => l.slug === activeLocationSlug)?.isNew;
+            
+            let regionId = document.getElementById('edit-loc-region-select').value;
+            let regionName = '';
+            if (regionId && regionId !== '__custom__') {
+                const sel = document.getElementById('edit-loc-region-select');
+                regionName = sel.options[sel.selectedIndex].text;
+            } else if (regionId === '__custom__') {
+                regionName = document.getElementById('edit-loc-region-custom-name').value;
+                regionId = document.getElementById('edit-loc-region-custom-id').value;
+            }
+
+            let subRegionId = document.getElementById('edit-loc-subregion-select').value;
+            let subRegionName = '';
+            if (subRegionId && subRegionId !== '__custom__') {
+                const sel = document.getElementById('edit-loc-subregion-select');
+                subRegionName = sel.options[sel.selectedIndex].text;
+            } else if (subRegionId === '__custom__') {
+                subRegionName = document.getElementById('edit-loc-subregion-custom-name').value;
+                subRegionId = document.getElementById('edit-loc-subregion-custom-id').value;
+            }
+
             infoChanges[activeLocationSlug] = {
+                isNew: isNewLoc,
                 name: document.getElementById('edit-loc-name').value,
                 newSlug: document.getElementById('edit-loc-new-slug').value,
                 description: document.getElementById('edit-loc-desc').value,
+                worldId: document.getElementById('edit-loc-world').value,
+                minRealm: parseInt(document.getElementById('edit-loc-min-realm').value) || 0,
+                danger: document.getElementById('edit-loc-danger').value,
+                regionName: regionName,
+                regionId: regionId,
+                subRegionName: subRegionName,
+                subRegionId: subRegionId,
+                resources: resources,
+                energies: energies,
+                eventProbs: eventProbs,
                 elementQi: elementQi
             };
 
@@ -892,45 +1213,24 @@ const htmlUI = `
         }
 
         function openAddLocationModal() {
-            const name = prompt('Nhập tên địa điểm mới:');
-            if (!name) return;
-            
-            const slug = name.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9 ]/g, "").trim().replace(/\\s+/g, "_");
-            
-            const desc = prompt('Nhập mô tả (có thể để trống):');
-            
-            // Hardcode or ask for world
-            const worldMap = {
-                '1': 'nhan_gioi',
-                '2': 'linh_gioi',
-                '3': 'tien_gioi',
-                '4': 'ma_gioi',
-                '5': 'khong_gian_khe_nut'
+            const newSlug = 'new_location_' + Date.now();
+            const loc = {
+                slug: newSlug,
+                id: newSlug,
+                name: 'Địa điểm mới',
+                isNew: true,
+                worldId: 'nhan_gioi',
+                minRealm: 0,
+                danger: 'an_toan',
+                elementQi: { "Kim": 0, "Mộc": 0, "Thủy": 0, "Hỏa": 0, "Thổ": 0, "Phong": 0, "Lôi": 0, "Băng": 0, "Quang": 0, "Ám": 0 },
+                eventProbs: { combat:0, loot:0, npc:0, empty:0 },
+                resources: [],
+                energies: []
             };
-            const w = prompt('Chọn Thế giới (nhập số):\\n1. Nhân Giới\\n2. Linh Giới\\n3. Tiên Giới\\n4. Ma Giới\\n5. Giới diện song song', '1');
-            const worldId = worldMap[w];
-            
-            if (!worldId) { alert('Chọn thế giới không hợp lệ'); return; }
-            
-            addLocation(slug, name, desc || '', worldId);
-        }
-
-        async function addLocation(slug, name, description, worldId) {
-            try {
-                const res = await fetch('/api/locations/add', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ slug, name, description, worldId })
-                });
-                if (res.ok) {
-                    showToast('Đã thêm địa điểm thành công!');
-                    await init(); // reload data
-                    selectLocation(slug); // automatically select the new location
-                } else {
-                    const data = await res.json();
-                    alert('Lỗi thêm địa điểm: ' + data.message);
-                }
-            } catch (e) { alert('Lỗi kết nối: ' + e.message); }
+            appData.locations.unshift(loc);
+            renderLocations();
+            selectLocation(newSlug);
+            markInfoDirty();
         }
 
         init();
