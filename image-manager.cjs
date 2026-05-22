@@ -28,6 +28,11 @@ function parseMapData() {
 
         const slugMatch = line.match(/slug:\s*['"]([^'"]+)['"]/);
         if (slugMatch) currentLoc.slug = slugMatch[1];
+        
+        const qiMatch = line.match(/elementQi:\s*({[^}]+})/);
+        if (qiMatch) {
+            try { currentLoc.elementQi = JSON.parse(qiMatch[1]); } catch(e) {}
+        }
     }
     if (currentLoc.slug) locs.push(currentLoc);
     return locs;
@@ -241,6 +246,153 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    if (req.url === '/api/locations/update-batch' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            try {
+                const payloadArray = JSON.parse(body);
+                if (!Array.isArray(payloadArray)) throw new Error('Invalid payload');
+                
+                const lines = fs.readFileSync(mapDataPath, 'utf8').split('\n');
+                
+                for (const payload of payloadArray) {
+                    const { slug, newSlug, name, description, elementQi } = payload;
+                    let inTargetBlock = false;
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i];
+                        if (line.match(new RegExp(`id:\\s*['"]${slug}['"]`))) {
+                            inTargetBlock = true;
+                            if (newSlug && newSlug !== slug) {
+                                lines[i] = line.replace(/id:\s*(['"])[^'"]*\\1/, `id: "${newSlug}"`);
+                            }
+                            continue;
+                        }
+                        if (inTargetBlock) {
+                            if (newSlug && newSlug !== slug && line.match(/image:\s*getLocImg\(['"]/)) {
+                                lines[i] = line.replace(/getLocImg\(['"][^'"]+['"]\)/, `getLocImg("${newSlug}")`);
+                            }
+                            if (line.match(/name:\s*['"]/)) {
+                                lines[i] = line.replace(/name:\s*(['"])[^'"]*\\1/, `name: "${name}"`);
+                            }
+                            if (line.match(/description:\s*['"]/)) {
+                                lines[i] = line.replace(/description:\s*(['"])[^'"]*\\1/, `description: "${description}"`);
+                            }
+                            if (elementQi && line.match(/elementQi:\s*{/)) {
+                                const formattedQi = JSON.stringify(elementQi).replace(/,/g, ', ').replace(/:/g, ': ').replace(/{/, '{ ').replace(/}/, ' }');
+                                lines[i] = line.replace(/elementQi:\s*{[^}]+}/, `elementQi: ${formattedQi}`);
+                            }
+                            if (line.match(/^\\s*id:\\s*['"]/) || line.match(/^\\s*},?\\s*$/)) {
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (newSlug && newSlug !== slug) {
+                        const oldPathWebp = path.join(imagesDir, `${slug}.webp`);
+                        const newPathWebp = path.join(imagesDir, `${newSlug}.webp`);
+                        if (fs.existsSync(oldPathWebp)) fs.renameSync(oldPathWebp, newPathWebp);
+                        
+                        const oldPathPng = path.join(imagesDir, `${slug}.png`);
+                        const newPathPng = path.join(imagesDir, `${newSlug}.png`);
+                        if (fs.existsSync(oldPathPng)) fs.renameSync(oldPathPng, newPathPng);
+                    }
+                }
+                
+                fs.writeFileSync(mapDataPath, lines.join('\n'), 'utf8');
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true }));
+            } catch (err) {
+                res.writeHead(500);
+                res.end(JSON.stringify({ success: false, message: err.message }));
+            }
+        });
+        return;
+    }
+
+    if (req.url === '/api/locations/delete' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            try {
+                const { slug } = JSON.parse(body);
+                if (!slug) throw new Error('Missing slug');
+                
+                let fileContent = fs.readFileSync(mapDataPath, 'utf8');
+                const idIndex = fileContent.indexOf(`id: "${slug}"`);
+                if (idIndex === -1) throw new Error('Location not found in source file');
+                
+                const blockStartIndex = fileContent.lastIndexOf('{', idIndex);
+                let brackets = 0;
+                let blockEndIndex = -1;
+                for (let i = blockStartIndex; i < fileContent.length; i++) {
+                    if (fileContent[i] === '{') brackets++;
+                    if (fileContent[i] === '}') brackets--;
+                    if (brackets === 0) {
+                        blockEndIndex = i;
+                        break;
+                    }
+                }
+                
+                if (blockEndIndex !== -1) {
+                    let nextCharIdx = blockEndIndex + 1;
+                    while(fileContent[nextCharIdx] === ' ' || fileContent[nextCharIdx] === '\\r' || fileContent[nextCharIdx] === '\\n') nextCharIdx++;
+                    if (fileContent[nextCharIdx] === ',') nextCharIdx++;
+                    
+                    fileContent = fileContent.substring(0, blockStartIndex) + fileContent.substring(nextCharIdx);
+                    fs.writeFileSync(mapDataPath, fileContent, 'utf8');
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true }));
+            } catch (err) {
+                res.writeHead(500);
+                res.end(JSON.stringify({ success: false, message: err.message }));
+            }
+        });
+        return;
+    }
+
+    if (req.url === '/api/locations/add' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            try {
+                const { slug, name, description, worldId } = JSON.parse(body);
+                if (!slug || !name || !worldId) throw new Error('Missing required fields');
+                
+                let fileContent = fs.readFileSync(mapDataPath, 'utf8');
+                const worldIndex = fileContent.indexOf(`'${worldId}':`);
+                if (worldIndex === -1) throw new Error('World ID not found');
+                const locArrIndex = fileContent.indexOf('locations: [', worldIndex);
+                if (locArrIndex === -1) throw new Error('Locations array not found in world');
+                
+                const insertPos = locArrIndex + 'locations: ['.length;
+                const newBlock = `
+            {
+                id: "${slug}",
+                name: "${name}",
+                minRealm: 0,
+                danger: "an_toan",
+                image: getLocImg("${slug}"),
+                description: "${description}",
+                resources: [],
+                energies: [],
+                elementQi: { "Kim": 20, "Mộc": 20, "Thủy": 20, "Hỏa": 20, "Thổ": 20, "Phong": 0, "Lôi": 0, "Băng": 0, "Quang": 0, "Ám": 0 },
+                eventProbs: { "combat": 0.05, "loot": 0.25, "npc": 0.1, "empty": 0.6 }
+            },`;
+                fileContent = fileContent.substring(0, insertPos) + newBlock + fileContent.substring(insertPos);
+                fs.writeFileSync(mapDataPath, fileContent, 'utf8');
+                
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true }));
+            } catch (err) {
+                res.writeHead(500);
+                res.end(JSON.stringify({ success: false, message: err.message }));
+            }
+        });
+        return;
+    }
+
     res.writeHead(404);
     res.end('Not found');
 });
@@ -318,6 +470,7 @@ const htmlUI = `
                 <div style="padding-bottom: 15px; position: sticky; top: -10px; background: #1a1a1a; z-index: 10; display: flex; gap: 5px;">
                     <input type="text" id="search-loc" placeholder="Tìm địa điểm..." style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; box-sizing: border-box;" oninput="renderLocations()">
                     <button class="btn" style="padding: 8px;" onclick="toggleLocSort()" title="Sắp xếp A-Z">A-Z</button>
+                    <button class="btn btn-success" style="padding: 8px;" onclick="openAddLocationModal()" title="Thêm địa điểm mới">+</button>
                 </div>
                 <div id="loc-list">
                     <!-- Locations loaded here -->
@@ -336,11 +489,22 @@ const htmlUI = `
                 <p style="color: #aaa; margin-bottom: 20px;">1. Chọn một địa điểm ở cột trái.<br>2. Click vào bức ảnh bên dưới để gán cho địa điểm đó.</p>
                 
                 <div style="background: #333; padding: 15px; border-radius: 6px; margin-bottom: 20px; position: sticky; top: -20px; z-index: 5; display: flex; gap: 20px; align-items: flex-start;">
-                    <div style="flex: 1;">
-                        <h3 style="color: #fff; margin: 0 0 10px 0;">
-                            Đang chọn ảnh cho: <span id="selected-loc-name" style="color: #4db8ff;">Vui lòng chọn địa điểm</span>
-                        </h3>
-                        <p id="selected-loc-desc" style="color: #aaa; font-size: 14px; margin: 0; line-height: 1.4;"></p>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;" id="location-editor-panel">
+                        <div style="display: flex; justify-content: space-between;">
+                            <h3 style="color: #fff; margin: 0;">Đang chọn ảnh cho: <span id="selected-loc-name" style="color: #4db8ff;">Vui lòng chọn địa điểm</span></h3>
+                            <button class="btn" style="padding: 4px 8px; font-size: 12px; background: #dc3545; display: none;" id="btn-delete-loc" onclick="deleteActiveLocation()">Xóa Địa Điểm</button>
+                        </div>
+                        <input type="hidden" id="edit-loc-slug">
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="edit-loc-name" placeholder="Tên địa điểm" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff;" oninput="autoGenerateSlug()">
+                            <input type="text" id="edit-loc-new-slug" placeholder="Slug (id)" style="width: 150px; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #aaa;" oninput="markInfoDirty()" title="Bạn có thể sửa slug tự động">
+                        </div>
+                        <textarea id="edit-loc-desc" placeholder="Mô tả địa điểm..." rows="3" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff; resize: vertical; box-sizing: border-box;" oninput="markInfoDirty()"></textarea>
+                        
+                        <div style="font-size: 13px; color: #aaa; margin-top: 5px;">Tỉ lệ linh khí (0-100%):</div>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px;" id="qi-inputs">
+                            <span style="color:#555; font-size:13px;">Chọn địa điểm để xem</span>
+                        </div>
                     </div>
                     <img id="large-preview" style="width: 500px; height: 320px; object-fit: cover; border-radius: 6px; border: 2px solid #555; background: #000; display: none;" />
                 </div>
@@ -358,6 +522,7 @@ const htmlUI = `
         let appData = { locations: [], allImages: [] };
         let activeLocationSlug = null;
         let changes = {}; // slug -> newImageFilename
+        let infoChanges = {}; // slug -> info
         let cacheBuster = Date.now();
         let sortLocAlpha = false;
         let sortImgAlpha = false;
@@ -394,19 +559,23 @@ const htmlUI = `
             sortedLocs.forEach(loc => {
                 if (searchTerm && !loc.name.toLowerCase().includes(searchTerm) && !loc.slug.toLowerCase().includes(searchTerm)) return;
 
-                const isModified = changes[loc.slug] !== undefined;
-                const currentImgFile = isModified ? changes[loc.slug] : loc.currentImage;
+                const isModifiedImg = changes[loc.slug] !== undefined;
+                const isModifiedInfo = infoChanges[loc.slug] !== undefined;
+                const currentImgFile = isModifiedImg ? changes[loc.slug] : loc.currentImage;
                 const imgSrc = currentImgFile ? \`/api/images/\${encodeURIComponent(currentImgFile)}?t=\${cacheBuster}\` : '';
                 
                 const div = document.createElement('div');
                 div.className = \`location-item \${activeLocationSlug === loc.slug ? 'active' : ''}\`;
                 div.onclick = () => selectLocation(loc.slug);
                 
+                const dispName = isModifiedInfo ? infoChanges[loc.slug].name : loc.name;
+                const dispDesc = isModifiedInfo ? infoChanges[loc.slug].description : (loc.description || 'Chưa có mô tả');
+                
                 div.innerHTML = \`
                     <img src="\${imgSrc}" class="loc-img-preview" onerror="this.style.opacity=0.3">
                     <div class="loc-info">
-                        <h3>\${loc.name} \${isModified ? '<span style="color:#ff9900;font-size:12px;">(Đã sửa)</span>' : ''}</h3>
-                        <p>\${loc.description || 'Chưa có mô tả'}</p>
+                        <h3>\${dispName} \${(isModifiedImg || isModifiedInfo) ? '<span style="color:#ff9900;font-size:12px;">(Đã sửa)</span>' : ''}</h3>
+                        <p>\${dispDesc}</p>
                         <span class="loc-slug">\${loc.slug}</span>
                     </div>
                 \`;
@@ -479,10 +648,67 @@ const htmlUI = `
         function selectLocation(slug) {
             activeLocationSlug = slug;
             const loc = appData.locations.find(l => l.slug === slug);
-            document.getElementById('selected-loc-name').innerText = loc.name;
-            document.getElementById('selected-loc-desc').innerText = loc.description || 'Chưa có mô tả';
+            const pendingInfo = infoChanges[slug];
+            
+            document.getElementById('selected-loc-name').innerText = pendingInfo ? pendingInfo.name : loc.name;
+            document.getElementById('edit-loc-slug').value = loc.slug;
+            document.getElementById('edit-loc-new-slug').value = pendingInfo && pendingInfo.newSlug ? pendingInfo.newSlug : loc.slug;
+            document.getElementById('edit-loc-name').value = pendingInfo ? pendingInfo.name : loc.name;
+            document.getElementById('edit-loc-desc').value = pendingInfo ? pendingInfo.description : (loc.description || '');
+            document.getElementById('btn-delete-loc').style.display = 'block';
+            
+            const qiContainer = document.getElementById('qi-inputs');
+            qiContainer.innerHTML = '';
+            
+            const qiData = pendingInfo ? pendingInfo.elementQi : loc.elementQi;
+            
+            if (qiData) {
+                for (const key of Object.keys(qiData)) {
+                    qiContainer.innerHTML += \`
+                        <div style="display: flex; align-items: center; gap: 5px; background: #222; padding: 2px 5px; border-radius: 3px; border: 1px solid #444;">
+                            <span style="color:#ccc; width:40px; font-size:12px;">\${key}</span>
+                            <input type="number" min="0" max="100" id="qi-\${key}" value="\${qiData[key]}" style="width: 100%; background: transparent; border: none; color: #fff; outline: none; text-align: right; font-size:12px;" onchange="markInfoDirty()" oninput="markInfoDirty()">
+                        </div>
+                    \`;
+                }
+            } else {
+                qiContainer.innerHTML = '<span style="color:#555; font-size:13px;">Địa điểm này không có thuộc tính linh khí.</span>';
+            }
+
             renderLocations();
             renderGallery();
+        }
+
+        function autoGenerateSlug() {
+            const name = document.getElementById('edit-loc-name').value;
+            const newSlug = name.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9 ]/g, "").trim().replace(/\\s+/g, "_");
+            document.getElementById('edit-loc-new-slug').value = newSlug;
+            markInfoDirty();
+        }
+
+        function markInfoDirty() {
+            if (!activeLocationSlug) return;
+            
+            let elementQi = null;
+            const qiContainer = document.getElementById('qi-inputs');
+            if (!qiContainer.innerHTML.includes('không có thuộc tính')) {
+                elementQi = {};
+                const inputs = qiContainer.querySelectorAll('input[type="number"]');
+                inputs.forEach(inp => {
+                    const key = inp.id.replace('qi-', '');
+                    elementQi[key] = parseInt(inp.value) || 0;
+                });
+            }
+
+            infoChanges[activeLocationSlug] = {
+                name: document.getElementById('edit-loc-name').value,
+                newSlug: document.getElementById('edit-loc-new-slug').value,
+                description: document.getElementById('edit-loc-desc').value,
+                elementQi: elementQi
+            };
+
+            document.getElementById('unsaved-warning').style.display = 'block';
+            document.getElementById('selected-loc-name').innerText = infoChanges[activeLocationSlug].name;
         }
 
         function assignImage(imgFilename) {
@@ -506,36 +732,53 @@ const htmlUI = `
         }
 
         async function saveChanges() {
-            const payload = Object.keys(changes).map(slug => ({
-                locationSlug: slug,
-                newImageFilename: changes[slug]
+            const imgPayload = Object.keys(changes).map(slug => {
+                const pendingInfo = infoChanges[slug];
+                const finalSlug = pendingInfo && pendingInfo.newSlug ? pendingInfo.newSlug : slug;
+                return {
+                    locationSlug: finalSlug,
+                    newImageFilename: changes[slug]
+                };
+            });
+            
+            const infoPayload = Object.keys(infoChanges).map(slug => ({
+                slug: slug,
+                ...infoChanges[slug]
             }));
 
-            if (payload.length === 0) return;
+            if (imgPayload.length === 0 && infoPayload.length === 0) return;
 
             const saveBtn = document.getElementById('save-btn');
             saveBtn.disabled = true;
             saveBtn.innerText = 'Đang lưu...';
 
             try {
-                const res = await fetch('/api/save', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                if (res.ok) {
-                    changes = {}; // Reset changes
-                    document.getElementById('unsaved-warning').style.display = 'none';
-                    showToast();
-                    cacheBuster = Date.now(); // Force browser to bypass cache for new images
-                    await init(); // Reload data
-                } else {
-                    const data = await res.json();
-                    alert('Lỗi: ' + data.message);
+                if (infoPayload.length > 0) {
+                    const resInfo = await fetch('/api/locations/update-batch', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(infoPayload)
+                    });
+                    if (!resInfo.ok) throw new Error('Lỗi lưu text địa điểm');
                 }
-            } catch (e) {
-                alert('Lỗi kết nối: ' + e.message);
+
+                if (imgPayload.length > 0) {
+                    const resImg = await fetch('/api/save', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(imgPayload)
+                    });
+                    if (!resImg.ok) throw new Error('Lỗi lưu ảnh');
+                }
+
+                showToast('Lưu thành công!');
+                changes = {};
+                infoChanges = {};
+                document.getElementById('unsaved-warning').style.display = 'none';
+                cacheBuster = Date.now();
+                await init();
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.innerText = 'Lưu Thay Đổi';
@@ -619,6 +862,75 @@ const htmlUI = `
             } catch (e) {
                 alert('Lỗi kết nối: ' + e.message);
             }
+        }
+
+
+
+        async function deleteActiveLocation() {
+            const slug = document.getElementById('edit-loc-slug').value;
+            const name = document.getElementById('edit-loc-name').value;
+            if (!slug) return;
+            
+            if (!confirm('Bạn có CỰC KỲ CHẮC CHẮN muốn xóa vĩnh viễn địa điểm "' + name + '" khỏi hệ thống không? Toàn bộ dữ liệu của nó sẽ bị xóa khỏi map-data.js!')) return;
+            
+            try {
+                const res = await fetch('/api/locations/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ slug })
+                });
+                if (res.ok) {
+                    showToast('Đã xóa địa điểm thành công!');
+                    activeLocationSlug = null;
+                    document.getElementById('location-editor-panel').style.display = 'none';
+                    await init(); // reload data
+                } else {
+                    const data = await res.json();
+                    alert('Lỗi xóa địa điểm: ' + data.message);
+                }
+            } catch (e) { alert('Lỗi kết nối: ' + e.message); }
+        }
+
+        function openAddLocationModal() {
+            const name = prompt('Nhập tên địa điểm mới:');
+            if (!name) return;
+            
+            const slug = name.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9 ]/g, "").trim().replace(/\\s+/g, "_");
+            
+            const desc = prompt('Nhập mô tả (có thể để trống):');
+            
+            // Hardcode or ask for world
+            const worldMap = {
+                '1': 'nhan_gioi',
+                '2': 'linh_gioi',
+                '3': 'tien_gioi',
+                '4': 'ma_gioi',
+                '5': 'khong_gian_khe_nut'
+            };
+            const w = prompt('Chọn Thế giới (nhập số):\\n1. Nhân Giới\\n2. Linh Giới\\n3. Tiên Giới\\n4. Ma Giới\\n5. Giới diện song song', '1');
+            const worldId = worldMap[w];
+            
+            if (!worldId) { alert('Chọn thế giới không hợp lệ'); return; }
+            
+            addLocation(slug, name, desc || '', worldId);
+        }
+
+        async function addLocation(slug, name, description, worldId) {
+            try {
+                const res = await fetch('/api/locations/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ slug, name, description, worldId })
+                });
+                if (res.ok) {
+                    showToast('Đã thêm địa điểm thành công!');
+                    await init(); // reload data
+                    selectLocation(slug); // automatically select the new location
+                } else {
+                    const data = await res.json();
+                    alert('Lỗi thêm địa điểm: ' + data.message);
+                }
+            } catch (e) { alert('Lỗi kết nối: ' + e.message); }
         }
 
         init();
