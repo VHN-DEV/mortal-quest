@@ -1,4 +1,5 @@
 const http = require('http');
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
@@ -161,6 +162,15 @@ const server = http.createServer((req, res) => {
                 const payload = JSON.parse(body);
                 if (!payload.files || !Array.isArray(payload.files)) throw new Error('Invalid payload');
                 
+                // Build a map of existing hashes
+                const existingFiles = fs.readdirSync(imagesDir).filter(f => f.match(/\.(webp|png|jpg)$/));
+                const existingHashes = {};
+                existingFiles.forEach(file => {
+                    const buffer = fs.readFileSync(path.join(imagesDir, file));
+                    const hash = crypto.createHash('sha256').update(buffer).digest('hex');
+                    if (!existingHashes[hash]) existingHashes[hash] = file;
+                });
+
                 let extraCounter = 1;
                 function getFreeExtraName(ext) {
                     while (true) {
@@ -170,19 +180,56 @@ const server = http.createServer((req, res) => {
                     }
                 }
 
+                const uploaded = [];
+                const duplicates = [];
+
                 payload.files.forEach(f => {
                     const match = f.data.match(/^data:image\/([a-zA-Z0-9]+);base64,(.+)$/);
-                    if (!match) return;
+                    if (!match) {
+                        duplicates.push(`❌ Tệp "${f.name}" không phải là định dạng ảnh hợp lệ.`);
+                        return;
+                    }
                     let ext = '.' + match[1];
                     if (ext === '.jpeg') ext = '.jpg';
                     
                     const base64Data = match[2];
                     const buffer = Buffer.from(base64Data, 'base64');
+                    const hash = crypto.createHash('sha256').update(buffer).digest('hex');
+                    
+                    if (existingHashes[hash]) {
+                        duplicates.push(`⚠️ Ảnh "${f.name}" bị trùng lặp nội dung với ảnh đang có sẵn: "${existingHashes[hash]}"`);
+                        return;
+                    }
                     
                     const newName = getFreeExtraName(ext);
                     fs.writeFileSync(path.join(imagesDir, newName), buffer);
+                    existingHashes[hash] = newName;
+                    uploaded.push(f.name);
                 });
 
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true, uploaded, duplicates }));
+            } catch (err) {
+                console.error(err);
+                res.writeHead(500);
+                res.end(JSON.stringify({ success: false, message: err.message }));
+            }
+        });
+        return;
+    }
+
+    if (req.url === '/api/delete' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body);
+                if (!payload.filename) throw new Error('Missing filename');
+                const safeFilename = path.basename(payload.filename);
+                const filePath = path.join(imagesDir, safeFilename);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
             } catch (err) {
@@ -244,6 +291,9 @@ const htmlUI = `
         .gallery-item img { width: 100%; height: 130px; object-fit: cover; display: block; }
         .gallery-item .filename { padding: 8px; font-size: 11px; font-family: monospace; text-align: center; color: #ccc; word-break: break-all; }
         .gallery-item .assigned-badge { position: absolute; top: 5px; right: 5px; background: #0078d4; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; }
+        .gallery-item .delete-btn { position: absolute; top: 5px; left: 5px; background: rgba(220, 53, 69, 0.8); color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; justify-content: center; align-items: center; font-size: 12px; z-index: 2; opacity: 0; transition: opacity 0.2s; }
+        .gallery-item:hover .delete-btn { opacity: 1; }
+        .gallery-item .delete-btn:hover { background: #dc3545; transform: scale(1.1); }
 
         .toast { position: fixed; bottom: 20px; right: 20px; background: #107c10; color: white; padding: 12px 20px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s; pointer-events: none; }
         .toast.show { opacity: 1; }
@@ -264,13 +314,25 @@ const htmlUI = `
         </header>
         
         <div class="container">
-            <div class="locations-panel" id="loc-list">
-                <!-- Locations loaded here -->
-                <div style="text-align: center; padding: 20px; color: #888;">Đang tải dữ liệu...</div>
+            <div class="locations-panel">
+                <div style="padding-bottom: 15px; position: sticky; top: -10px; background: #1a1a1a; z-index: 10; display: flex; gap: 5px;">
+                    <input type="text" id="search-loc" placeholder="Tìm địa điểm..." style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; box-sizing: border-box;" oninput="renderLocations()">
+                    <button class="btn" style="padding: 8px;" onclick="toggleLocSort()" title="Sắp xếp A-Z">A-Z</button>
+                </div>
+                <div id="loc-list">
+                    <!-- Locations loaded here -->
+                    <div style="text-align: center; padding: 20px; color: #888;">Đang tải dữ liệu...</div>
+                </div>
             </div>
             
             <div class="gallery-panel">
-                <h2 style="margin-top: 0;">Thư viện ảnh <span id="gallery-count" style="font-size: 14px; color: #888; font-weight: normal;"></span></h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">Thư viện ảnh <span id="gallery-count" style="font-size: 14px; color: #888; font-weight: normal;"></span></h2>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="search-img" placeholder="Tìm tên file ảnh..." style="width: 250px; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; box-sizing: border-box;" oninput="renderGallery()">
+                        <button class="btn" style="padding: 8px;" onclick="toggleImgSort()" title="Sắp xếp A-Z">A-Z</button>
+                    </div>
+                </div>
                 <p style="color: #aaa; margin-bottom: 20px;">1. Chọn một địa điểm ở cột trái.<br>2. Click vào bức ảnh bên dưới để gán cho địa điểm đó.</p>
                 
                 <div style="background: #333; padding: 15px; border-radius: 6px; margin-bottom: 20px; position: sticky; top: -20px; z-index: 5; display: flex; gap: 20px; align-items: flex-start;">
@@ -297,6 +359,20 @@ const htmlUI = `
         let activeLocationSlug = null;
         let changes = {}; // slug -> newImageFilename
         let cacheBuster = Date.now();
+        let sortLocAlpha = false;
+        let sortImgAlpha = false;
+
+        function toggleLocSort() {
+            sortLocAlpha = !sortLocAlpha;
+            document.getElementById('search-loc').nextElementSibling.style.background = sortLocAlpha ? '#107c10' : '#0078d4';
+            renderLocations();
+        }
+
+        function toggleImgSort() {
+            sortImgAlpha = !sortImgAlpha;
+            document.getElementById('search-img').nextElementSibling.style.background = sortImgAlpha ? '#107c10' : '#0078d4';
+            renderGallery();
+        }
 
         async function init() {
             const res = await fetch('/api/data');
@@ -307,9 +383,17 @@ const htmlUI = `
 
         function renderLocations() {
             const container = document.getElementById('loc-list');
+            if (!container) return;
             container.innerHTML = '';
             
-            appData.locations.forEach(loc => {
+            const searchTerm = (document.getElementById('search-loc')?.value || '').toLowerCase();
+            const sortedLocs = sortLocAlpha 
+                ? [...appData.locations].sort((a, b) => a.name.localeCompare(b.name))
+                : [...appData.locations];
+            
+            sortedLocs.forEach(loc => {
+                if (searchTerm && !loc.name.toLowerCase().includes(searchTerm) && !loc.slug.toLowerCase().includes(searchTerm)) return;
+
                 const isModified = changes[loc.slug] !== undefined;
                 const currentImgFile = isModified ? changes[loc.slug] : loc.currentImage;
                 const imgSrc = currentImgFile ? \`/api/images/\${encodeURIComponent(currentImgFile)}?t=\${cacheBuster}\` : '';
@@ -356,16 +440,22 @@ const htmlUI = `
                 }
             });
 
-            // Sort so unassigned/extra images are first? Or just alphabetically.
+            const searchTerm = (document.getElementById('search-img')?.value || '').toLowerCase();
             const sortedImages = [...appData.allImages].sort((a, b) => {
-                const aIsExtra = a.includes('locations_extra_');
-                const bIsExtra = b.includes('locations_extra_');
-                if (aIsExtra && !bIsExtra) return -1;
-                if (!aIsExtra && bIsExtra) return 1;
-                return a.localeCompare(b);
+                if (sortImgAlpha) {
+                    return a.localeCompare(b);
+                } else {
+                    const aIsExtra = a.includes('locations_extra_');
+                    const bIsExtra = b.includes('locations_extra_');
+                    if (aIsExtra && !bIsExtra) return -1;
+                    if (!aIsExtra && bIsExtra) return 1;
+                    return a.localeCompare(b);
+                }
             });
 
             sortedImages.forEach(img => {
+                if (searchTerm && !img.toLowerCase().includes(searchTerm)) return;
+
                 const div = document.createElement('div');
                 
                 // Is it the selected image for the active location?
@@ -378,6 +468,7 @@ const htmlUI = `
                 
                 div.innerHTML = \`
                     \${assignedTo ? \`<div class="assigned-badge">\${assignedTo}</div>\` : ''}
+                    \${!assignedTo ? \`<div class="delete-btn" onclick="event.stopPropagation(); deleteImage('\${img}')" title="Xóa ảnh này">🗑️</div>\` : ''}
                     <img src="/api/images/\${encodeURIComponent(img)}?t=\${cacheBuster}" loading="lazy">
                     <div class="filename">\${img}</div>
                 \`;
@@ -482,12 +573,48 @@ const htmlUI = `
                     body: JSON.stringify({ files: fileData })
                 });
                 if (res.ok) {
-                    showToast('Đã tải ảnh lên thành công!');
+                    const data = await res.json();
+                    let msg = '';
+                    if (data.uploaded && data.uploaded.length > 0) {
+                        msg += '✅ Đã tải lên thành công ' + data.uploaded.length + ' ảnh mới.\\n\\n';
+                    }
+                    if (data.duplicates && data.duplicates.length > 0) {
+                        msg += 'Từ chối tải lên:\\n' + data.duplicates.join('\\n');
+                    }
+                    
+                    if (data.duplicates && data.duplicates.length > 0) {
+                        alert(msg);
+                    } else if (data.uploaded && data.uploaded.length > 0) {
+                        showToast('Đã tải ảnh lên thành công!');
+                    }
+                    
                     cacheBuster = Date.now();
                     await init(); // reload gallery
                 } else {
                     const data = await res.json();
                     alert('Lỗi tải lên: ' + data.message);
+                }
+            } catch (e) {
+                alert('Lỗi kết nối: ' + e.message);
+            }
+        }
+
+        async function deleteImage(imgFilename) {
+            if (!confirm('Bạn có chắc chắn muốn xóa vĩnh viễn ảnh "' + imgFilename + '" không? Hành động này không thể hoàn tác.')) return;
+            
+            try {
+                const res = await fetch('/api/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: imgFilename })
+                });
+                if (res.ok) {
+                    showToast('Đã xóa ảnh thành công!');
+                    cacheBuster = Date.now();
+                    await init(); // reload gallery
+                } else {
+                    const data = await res.json();
+                    alert('Lỗi khi xóa: ' + data.message);
                 }
             } catch (e) {
                 alert('Lỗi kết nối: ' + e.message);
