@@ -153,6 +153,47 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    if (req.url === '/api/upload' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body);
+                if (!payload.files || !Array.isArray(payload.files)) throw new Error('Invalid payload');
+                
+                let extraCounter = 1;
+                function getFreeExtraName(ext) {
+                    while (true) {
+                        const name = `locations_extra_${extraCounter}${ext}`;
+                        if (!fs.existsSync(path.join(imagesDir, name))) return name;
+                        extraCounter++;
+                    }
+                }
+
+                payload.files.forEach(f => {
+                    const match = f.data.match(/^data:image\/([a-zA-Z0-9]+);base64,(.+)$/);
+                    if (!match) return;
+                    let ext = '.' + match[1];
+                    if (ext === '.jpeg') ext = '.jpg';
+                    
+                    const base64Data = match[2];
+                    const buffer = Buffer.from(base64Data, 'base64');
+                    
+                    const newName = getFreeExtraName(ext);
+                    fs.writeFileSync(path.join(imagesDir, newName), buffer);
+                });
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true }));
+            } catch (err) {
+                console.error(err);
+                res.writeHead(500);
+                res.end(JSON.stringify({ success: false, message: err.message }));
+            }
+        });
+        return;
+    }
+
     res.writeHead(404);
     res.end('Not found');
 });
@@ -214,6 +255,10 @@ const htmlUI = `
             <h1>Mortal Quest - Location Image Mapper</h1>
             <div style="display: flex; gap: 10px; align-items: center;">
                 <span id="unsaved-warning" style="color: #ff9900; font-size: 13px; display: none;">⚠️ Có thay đổi chưa lưu!</span>
+                <label class="btn" style="background:#5c2d91; cursor:pointer;">
+                    Tải Ảnh Lên
+                    <input type="file" multiple accept="image/*" style="display:none" onchange="uploadFiles(event)">
+                </label>
                 <button class="btn btn-success" id="save-btn" onclick="saveChanges()">Lưu Thay Đổi</button>
             </div>
         </header>
@@ -406,10 +451,47 @@ const htmlUI = `
             }
         }
 
-        function showToast() {
+        function showToast(msg = 'Cập nhật thành công!') {
             const toast = document.getElementById('toast');
+            toast.innerText = msg;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        async function uploadFiles(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+            
+            const fileData = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                const base64 = await new Promise(resolve => {
+                    reader.onload = e => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+                fileData.push({ name: file.name, data: base64 });
+            }
+
+            event.target.value = ''; // Reset input
+            
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ files: fileData })
+                });
+                if (res.ok) {
+                    showToast('Đã tải ảnh lên thành công!');
+                    cacheBuster = Date.now();
+                    await init(); // reload gallery
+                } else {
+                    const data = await res.json();
+                    alert('Lỗi tải lên: ' + data.message);
+                }
+            } catch (e) {
+                alert('Lỗi kết nối: ' + e.message);
+            }
         }
 
         init();
