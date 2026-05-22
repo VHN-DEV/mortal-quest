@@ -176,8 +176,8 @@ const htmlUI = `
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121212; color: #e0e0e0; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         header { background: #1e1e1e; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; z-index: 10; }
         .container { display: flex; flex: 1; height: calc(100vh - 60px); }
-        .locations-panel { width: 40%; border-right: 1px solid #333; overflow-y: auto; background: #1a1a1a; padding: 10px; }
-        .gallery-panel { width: 60%; overflow-y: auto; padding: 20px; background: #121212; }
+        .locations-panel { width: 25%; border-right: 1px solid #333; overflow-y: auto; background: #1a1a1a; padding: 10px; }
+        .gallery-panel { width: 75%; overflow-y: auto; padding: 20px; background: #121212; }
         
         h1 { margin: 0; font-size: 20px; color: #4db8ff; }
         .btn { background: #0078d4; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; }
@@ -202,7 +202,6 @@ const htmlUI = `
         .gallery-item .filename { padding: 8px; font-size: 11px; font-family: monospace; text-align: center; color: #ccc; word-break: break-all; }
         .gallery-item .assigned-badge { position: absolute; top: 5px; right: 5px; background: #0078d4; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; }
 
-        #selected-loc-name { color: #4db8ff; }
         .toast { position: fixed; bottom: 20px; right: 20px; background: #107c10; color: white; padding: 12px 20px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s; pointer-events: none; }
         .toast.show { opacity: 1; }
     </style>
@@ -227,9 +226,15 @@ const htmlUI = `
                 <h2 style="margin-top: 0;">Thư viện ảnh <span id="gallery-count" style="font-size: 14px; color: #888; font-weight: normal;"></span></h2>
                 <p style="color: #aaa; margin-bottom: 20px;">1. Chọn một địa điểm ở cột trái.<br>2. Click vào bức ảnh bên dưới để gán cho địa điểm đó.</p>
                 
-                <h3 style="color: #fff; background: #333; padding: 10px; border-radius: 4px; margin-bottom: 15px; position: sticky; top: -20px; z-index: 5;">
-                    Đang chọn ảnh cho: <span id="selected-loc-name">Vui lòng chọn địa điểm</span>
-                </h3>
+                <div style="background: #333; padding: 15px; border-radius: 6px; margin-bottom: 20px; position: sticky; top: -20px; z-index: 5; display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <h3 style="color: #fff; margin: 0 0 10px 0;">
+                            Đang chọn ảnh cho: <span id="selected-loc-name" style="color: #4db8ff;">Vui lòng chọn địa điểm</span>
+                        </h3>
+                        <p id="selected-loc-desc" style="color: #aaa; font-size: 14px; margin: 0; line-height: 1.4;"></p>
+                    </div>
+                    <img id="large-preview" style="width: 500px; height: 320px; object-fit: cover; border-radius: 6px; border: 2px solid #555; background: #000; display: none;" />
+                </div>
 
                 <div class="gallery-grid" id="gallery-list">
                     <!-- Gallery loaded here -->
@@ -282,6 +287,17 @@ const htmlUI = `
             document.getElementById('gallery-count').innerText = \`(\${appData.allImages.length} ảnh)\`;
             container.innerHTML = '';
 
+            const activeLoc = appData.locations.find(l => l.slug === activeLocationSlug);
+            const currentImgForActive = activeLoc ? (changes[activeLoc.slug] || activeLoc.currentImage) : null;
+
+            const largePreview = document.getElementById('large-preview');
+            if (currentImgForActive) {
+                largePreview.src = \`/api/images/\${encodeURIComponent(currentImgForActive)}\`;
+                largePreview.style.display = 'block';
+            } else {
+                largePreview.style.display = 'none';
+            }
+
             // Find which images are currently assigned to what
             const assignedImages = {};
             appData.locations.forEach(l => {
@@ -305,8 +321,6 @@ const htmlUI = `
                 const div = document.createElement('div');
                 
                 // Is it the selected image for the active location?
-                const activeLoc = appData.locations.find(l => l.slug === activeLocationSlug);
-                const currentImgForActive = activeLoc ? (changes[activeLoc.slug] || activeLoc.currentImage) : null;
                 const isSelectedForActive = currentImgForActive === img;
                 
                 const assignedTo = assignedImages[img];
@@ -327,6 +341,7 @@ const htmlUI = `
             activeLocationSlug = slug;
             const loc = appData.locations.find(l => l.slug === slug);
             document.getElementById('selected-loc-name').innerText = loc.name;
+            document.getElementById('selected-loc-desc').innerText = loc.description || 'Chưa có mô tả';
             renderLocations();
             renderGallery();
         }
