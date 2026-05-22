@@ -68,7 +68,9 @@ const server = http.createServer((req, res) => {
     }
 
     if (req.url.startsWith('/api/images/') && req.method === 'GET') {
-        const filename = decodeURIComponent(req.url.replace('/api/images/', ''));
+        let filename = req.url.replace('/api/images/', '');
+        if (filename.includes('?')) filename = filename.split('?')[0];
+        filename = decodeURIComponent(filename);
         const filePath = path.join(imagesDir, filename);
         if (fs.existsSync(filePath)) {
             const ext = path.extname(filename).toLowerCase();
@@ -249,6 +251,7 @@ const htmlUI = `
         let appData = { locations: [], allImages: [] };
         let activeLocationSlug = null;
         let changes = {}; // slug -> newImageFilename
+        let cacheBuster = Date.now();
 
         async function init() {
             const res = await fetch('/api/data');
@@ -264,14 +267,14 @@ const htmlUI = `
             appData.locations.forEach(loc => {
                 const isModified = changes[loc.slug] !== undefined;
                 const currentImgFile = isModified ? changes[loc.slug] : loc.currentImage;
-                const imgSrc = currentImgFile ? \`/api/images/\${encodeURIComponent(currentImgFile)}\` : '';
+                const imgSrc = currentImgFile ? \`/api/images/\${encodeURIComponent(currentImgFile)}?t=\${cacheBuster}\` : '';
                 
                 const div = document.createElement('div');
                 div.className = \`location-item \${activeLocationSlug === loc.slug ? 'active' : ''}\`;
                 div.onclick = () => selectLocation(loc.slug);
                 
                 div.innerHTML = \`
-                    <img src="\${imgSrc}" class="loc-img-preview" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' fill=\\'none\\' stroke=\\'%23555\\' viewBox=\\'0 0 24 24\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'2\\' d=\\'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\\'/></svg>'">
+                    <img src="\${imgSrc}" class="loc-img-preview" onerror="this.style.opacity=0.3">
                     <div class="loc-info">
                         <h3>\${loc.name} \${isModified ? '<span style="color:#ff9900;font-size:12px;">(Đã sửa)</span>' : ''}</h3>
                         <p>\${loc.description || 'Chưa có mô tả'}</p>
@@ -292,7 +295,7 @@ const htmlUI = `
 
             const largePreview = document.getElementById('large-preview');
             if (currentImgForActive) {
-                largePreview.src = \`/api/images/\${encodeURIComponent(currentImgForActive)}\`;
+                largePreview.src = \`/api/images/\${encodeURIComponent(currentImgForActive)}?t=\${cacheBuster}\`;
                 largePreview.style.display = 'block';
             } else {
                 largePreview.style.display = 'none';
@@ -330,7 +333,7 @@ const htmlUI = `
                 
                 div.innerHTML = \`
                     \${assignedTo ? \`<div class="assigned-badge">\${assignedTo}</div>\` : ''}
-                    <img src="/api/images/\${encodeURIComponent(img)}" loading="lazy">
+                    <img src="/api/images/\${encodeURIComponent(img)}?t=\${cacheBuster}" loading="lazy">
                     <div class="filename">\${img}</div>
                 \`;
                 container.appendChild(div);
@@ -389,6 +392,7 @@ const htmlUI = `
                     changes = {}; // Reset changes
                     document.getElementById('unsaved-warning').style.display = 'none';
                     showToast();
+                    cacheBuster = Date.now(); // Force browser to bypass cache for new images
                     await init(); // Reload data
                 } else {
                     const data = await res.json();
