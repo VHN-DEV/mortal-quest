@@ -135,7 +135,7 @@ export const ASSETS = {
         lan_anh: getAssetUrl('portraits/lan_anh'),
         minh_nguyet: getAssetUrl('portraits/minh_nguyet'),
         bach_thanh_anh: getAssetUrl('portraits/bach_thanh_anh'),
-        
+
         // Nameless NPCs replaced with proper names
         lac_ly: getAssetUrl('portraits/lac_ly'),
         thanh_huyen_nguyet: getAssetUrl('portraits/thanh_huyen_nguyet'),
@@ -162,7 +162,7 @@ export const ASSETS = {
         ngoc_dieu_nhan: getAssetUrl('portraits/ngoc_dieu_nhan'),
         thanh_nhi_nguyet: getAssetUrl('portraits/thanh_nhi_nguyet'),
         bach_tuyet_lien: getAssetUrl('portraits/bach_tuyet_lien'),
-        so_ngoc_tran: getAssetUrl('portraits/so_ngoc_tran'),
+        my_do_toa: getAssetUrl('portraits/my_do_toa'),
         phong_linh_nhi: getAssetUrl('portraits/phong_linh_nhi'),
         hong_lien: getAssetUrl('portraits/hong_lien'),
         tu_nhuoc_tinh: getAssetUrl('portraits/tu_nhuoc_tinh'),

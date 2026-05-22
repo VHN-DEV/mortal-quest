@@ -6,23 +6,28 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Path relative to this script in /scripts directory
 const ASSETS_DIR = path.resolve(__dirname, '../assets/images');
+const TRASH_DIR = path.resolve(__dirname, '../assets/old_images');
+
+if (!fs.existsSync(TRASH_DIR)) {
+    fs.mkdirSync(TRASH_DIR, { recursive: true });
+}
 
 async function convertDir(dir) {
     if (!fs.existsSync(dir)) return;
-    
+
     const files = fs.readdirSync(dir);
-    
+
     for (const file of files) {
         const fullPath = path.join(dir, file);
         const stat = fs.statSync(fullPath);
-        
+
         if (stat.isDirectory()) {
             await convertDir(fullPath);
-        } else if (/\.(png|jpg|jpeg)$/i.test(file)) {
+        } else if (/\.(png|jpg|jpeg|jfif)$/i.test(file)) {
             const ext = path.extname(file);
             const baseName = path.basename(file, ext);
             const targetPath = path.join(dir, `${baseName}.webp`);
-            
+
             try {
                 // Only convert if webp doesn't exist or is older than original
                 if (!fs.existsSync(targetPath) || fs.statSync(fullPath).mtime > fs.statSync(targetPath).mtime) {
@@ -32,10 +37,16 @@ async function convertDir(dir) {
                         .toFile(targetPath);
                     console.log(`✓ Converted: ${file}`);
                 }
-                
-                // Remove original file after successful conversion
-                fs.unlinkSync(fullPath); 
-                console.log(`✓ Converted and removed original: ${file}`);
+
+                // Move original file to old_images after successful conversion
+                let finalTrashPath = path.join(TRASH_DIR, file);
+                let counter = 1;
+                while (fs.existsSync(finalTrashPath)) {
+                    finalTrashPath = path.join(TRASH_DIR, `${baseName}_${counter}${ext}`);
+                    counter++;
+                }
+                fs.renameSync(fullPath, finalTrashPath);
+                console.log(`✓ Moved original to old_images: ${file}`);
             } catch (err) {
                 console.error(`✗ Failed to convert ${file}:`, err.message);
             }
