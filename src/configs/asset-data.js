@@ -121,7 +121,7 @@ export const ASSETS = {
         sect_elder: getAssetUrl('portraits/sect_elder'),
         merchant: getAssetUrl('portraits/merchant'),
         demon: getAssetUrl('portraits/demon'),
-        
+
         // Special NPCs mapped directly to their unique high-fidelity illustrations
         han_lap: getAssetUrl('portraits/han_lap'),
         tu_linh: getAssetUrl('portraits/tu_linh'),
@@ -150,7 +150,6 @@ export const ASSETS = {
 
     // Yêu Thú (Linh Thú, Dị Thú...)
     beasts: createAssetProxy({
-        // All beasts now have dedicated images
         cuu_vi_thien_ho: getAssetUrl('beasts/cuu_vi_thien_ho'),
         thanh_van_hac: getAssetUrl('beasts/thanh_van_hac'),
         xich_diem_lang: getAssetUrl('beasts/xich_diem_lang'),
@@ -167,7 +166,20 @@ export const ASSETS = {
         giao_long: getAssetUrl('beasts/giao_long'),
         hac_xa: getAssetUrl('beasts/hac_xa'),
         hoa_viem: getAssetUrl('beasts/hoa_viem'),
-        // Aberrations (keeping SVG fallbacks)
+        ac_long: getAssetUrl('beasts/ac_long'),
+        bang_hung: getAssetUrl('beasts/bang_hung'),
+        chu_tuoc: getAssetUrl('beasts/chu_tuoc'),
+        con_bang: getAssetUrl('beasts/con_bang'),
+        cuu_dau: getAssetUrl('beasts/cuu_dau'),
+        hoa_long: getAssetUrl('beasts/hoa_long'),
+        linh_huu: getAssetUrl('beasts/linh_huu'),
+        ngoc_long: getAssetUrl('beasts/ngoc_long'),
+        phuong_hoang: getAssetUrl('beasts/phuong_hoang'),
+        thanh_van_ly_thu: getAssetUrl('beasts/thanh-van-ly-thu'),
+        thanh_nguu: getAssetUrl('beasts/thanh_nguu'),
+        that_thai_thien_long: getAssetUrl('beasts/that_thai_thien_long'),
+        tu_tuoc: getAssetUrl('beasts/tu_tuoc'),
+        tu_van_hac: getAssetUrl('beasts/tu_van_hac'),
         bang_tam_svg: getAssetUrl('aberrations/bang-tam.svg'),
         huyet_ngoc_tri_chu_svg: getAssetUrl('aberrations/huyet-ngoc-tri-chu.svg'),
         phe_kim_trung_svg: getAssetUrl('aberrations/phe-kim-trung.svg'),

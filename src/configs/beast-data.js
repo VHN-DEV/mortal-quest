@@ -233,6 +233,160 @@ export const BEASTS = {
         description: 'Kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.',
         baseStats: { hp: 1000, atk: 500, def: 50, spd: 250 },
         abilities: ['Không Gian Xuyên Thấu', 'Ngân Quang Trảm']
+    },
+    'ac_long': {
+        id: 'ac_long',
+        name: 'Ác Long',
+        type: BEAST_TYPES.DI_THU,
+        bloodline: 'THIEN',
+        icon: '🐉',
+        image: 'beasts/ac_long.webp',
+        description: 'Loài rồng hung ác, mang sức mạnh tà ác cổ xưa.',
+        baseStats: { hp: 2500, atk: 350, def: 180, spd: 110 },
+        abilities: ['Tà Long Nộ', 'Hắc Hỏa Phún Xạ']
+    },
+    'bang_hung': {
+        id: 'bang_hung',
+        name: 'Băng Hùng',
+        type: BEAST_TYPES.LINH_THU,
+        bloodline: 'DIA',
+        icon: '🐻',
+        image: 'beasts/bang_hung.webp',
+        description: 'Gấu băng khổng lồ sống ở cực bắc, lực phòng ngự kinh nhân.',
+        baseStats: { hp: 1800, atk: 120, def: 250, spd: 40 },
+        abilities: ['Băng Thuẫn', 'Hàn Băng Chưởng']
+    },
+    'chu_tuoc': {
+        id: 'chu_tuoc',
+        name: 'Chu Tước',
+        type: BEAST_TYPES.THAN_THU,
+        bloodline: 'THAN',
+        icon: '🦚',
+        image: 'beasts/chu_tuoc.webp',
+        description: 'Thần thú trấn giữ phương Nam, cai quản Nam Minh Ly Hỏa.',
+        baseStats: { hp: 15000, atk: 3000, def: 1200, spd: 250 },
+        abilities: ['Nam Minh Ly Hỏa', 'Phượng Hoàng Niết Bàn']
+    },
+    'con_bang': {
+        id: 'con_bang',
+        name: 'Côn Bằng',
+        type: BEAST_TYPES.THAN_THU,
+        bloodline: 'THAN',
+        icon: '🐋',
+        image: 'beasts/con_bang.webp',
+        description: 'Dưới nước là Côn, trên trời là Bằng, kích thước bao trùm vạn dặm.',
+        baseStats: { hp: 30000, atk: 2000, def: 2500, spd: 300 },
+        abilities: ['Thôn Phệ Vạn Vật', 'Không Gian Cự Sí']
+    },
+    'cuu_dau': {
+        id: 'cuu_dau',
+        name: 'Cửu Đầu Xà',
+        type: BEAST_TYPES.DI_THU,
+        bloodline: 'THIEN',
+        icon: '🐍',
+        image: 'beasts/cuu_dau.webp',
+        description: 'Rắn chín đầu độc ác thượng cổ, cực kì nguy hiểm.',
+        baseStats: { hp: 2800, atk: 400, def: 200, spd: 90 },
+        abilities: ['Cửu Độc Phún Xạ', 'Hồi Sinh Yêu Nhai']
+    },
+    'hoa_long': {
+        id: 'hoa_long',
+        name: 'Hỏa Long',
+        type: BEAST_TYPES.DI_THU,
+        bloodline: 'THIEN',
+        icon: '🐉',
+        image: 'beasts/hoa_long.webp',
+        description: 'Rồng phun lửa, mang sức mạnh hỏa hệ hủy diệt.',
+        baseStats: { hp: 2200, atk: 320, def: 190, spd: 130 },
+        abilities: ['Liệt Hỏa Phần Thiên', 'Hỏa Long Gầm']
+    },
+    'linh_huu': {
+        id: 'linh_huu',
+        name: 'Linh Hươu',
+        type: BEAST_TYPES.LINH_THU,
+        bloodline: 'LINH',
+        icon: '🦌',
+        image: 'beasts/linh_huu.webp',
+        description: 'Hươu sao linh tính, khả năng trị liệu tuyệt vời.',
+        baseStats: { hp: 600, atk: 30, def: 60, spd: 80 },
+        abilities: ['Sinh Mệnh Khôi Phục', 'Linh Cước Nhanh Nhẹn']
+    },
+    'ngoc_long': {
+        id: 'ngoc_long',
+        name: 'Ngọc Long',
+        type: BEAST_TYPES.THAN_THU,
+        bloodline: 'TIEN',
+        icon: '🐉',
+        image: 'beasts/ngoc_long.webp',
+        description: 'Rồng ngọc bích quý hiếm, toát ra hàn khí tĩnh tâm tu luyện.',
+        baseStats: { hp: 8000, atk: 1200, def: 1000, spd: 150 },
+        abilities: ['Ngọc Cốt Băng Cơ', 'Thanh Linh Khí']
+    },
+    'phuong_hoang': {
+        id: 'phuong_hoang',
+        name: 'Phượng Hoàng',
+        type: BEAST_TYPES.THAN_THU,
+        bloodline: 'TIEN',
+        icon: '🦚',
+        image: 'beasts/phuong_hoang.webp',
+        description: 'Bách điểu chi vương, mang trong mình niết bàn chi hỏa.',
+        baseStats: { hp: 9000, atk: 1500, def: 800, spd: 220 },
+        abilities: ['Hỏa Vũ Cửu Thiên', 'Niết Bàn Trọng Sinh']
+    },
+    'thanh_nguu': {
+        id: 'thanh_nguu',
+        name: 'Thanh Ngưu',
+        type: BEAST_TYPES.LINH_THU,
+        bloodline: 'DIA',
+        icon: '🐂',
+        image: 'beasts/thanh_nguu.webp',
+        description: 'Trâu xanh mang thần lực, sức mạnh dời non lấp biển.',
+        baseStats: { hp: 2000, atk: 180, def: 300, spd: 25 },
+        abilities: ['Man Ngưu Trùng Kích', 'Kiên Cố Hộ Thể']
+    },
+    'thanh_van_ly_thu': {
+        id: 'thanh_van_ly_thu',
+        name: 'Thanh Vân Ly Thú (Dị)',
+        type: BEAST_TYPES.DI_THU,
+        bloodline: 'THIEN',
+        icon: '🦊',
+        image: 'beasts/thanh-van-ly-thu.webp',
+        description: 'Biến dị của Thanh Vân Ly, với bộ lông chuyển màu theo thời tiết và sức mạnh phi phàm.',
+        baseStats: { hp: 1200, atk: 250, def: 100, spd: 160 },
+        abilities: ['Huyễn Ảnh Vân Độn', 'Thiên Lôi Cảo']
+    },
+    'that_thai_thien_long': {
+        id: 'that_thai_thien_long',
+        name: 'Thất Thái Thiên Long',
+        type: BEAST_TYPES.THAN_THU,
+        bloodline: 'TIEN',
+        icon: '🐉',
+        image: 'beasts/that_thai_thien_long.webp',
+        description: 'Thiên long mang sức mạnh bảy nguyên tố, thần thông quảng đại vô song.',
+        baseStats: { hp: 12000, atk: 1800, def: 1400, spd: 190 },
+        abilities: ['Thất Cực Thần Quang', 'Đại Đạo Cộng Minh']
+    },
+    'tu_tuoc': {
+        id: 'tu_tuoc',
+        name: 'Tử Tước',
+        type: BEAST_TYPES.LINH_THU,
+        bloodline: 'DIA',
+        icon: '🦅',
+        image: 'beasts/tu_tuoc.webp',
+        description: 'Chim chóc tím lịm, tiếng hót có thể gây mê muội tâm trí.',
+        baseStats: { hp: 700, atk: 140, def: 60, spd: 150 },
+        abilities: ['Ma Âm Xuyên Não', 'Tử Vũ Phi Tiêu']
+    },
+    'tu_van_hac': {
+        id: 'tu_van_hac',
+        name: 'Tử Vân Hạc',
+        type: BEAST_TYPES.LINH_THU,
+        bloodline: 'DIA',
+        icon: '🦢',
+        image: 'beasts/tu_van_hac.webp',
+        description: 'Hạc bay trong mây tím, tốc độ phi hành cực nhanh và mang theo kịch độc sương mù.',
+        baseStats: { hp: 900, atk: 160, def: 80, spd: 180 },
+        abilities: ['Tử Vân Vụ Khí', 'Cực Tốc Phi Kích']
     }
 };
 
