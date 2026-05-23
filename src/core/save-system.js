@@ -1,14 +1,20 @@
-import { Preferences } from '@capacitor/preferences';
+import localforage from 'localforage';
 import { logger } from '../utils/logger.js';
+
+// Configure localforage instance for Mortal Quest saves
+localforage.config({
+    name: 'MortalQuest',
+    storeName: 'saves',
+    description: 'Bản lưu game Phàm Nhân Vấn Đạo'
+});
 
 const SAVE_PREFIX = 'mortal_quest_save_';
 const METADATA_KEY = 'mortal_quest_metadata';
 const LAST_SLOT_KEY = 'mortal_quest_last_slot';
 
 /**
- * Hệ thống quản lý lưu trữ (Save System)
- * Hỗ trợ nhiều slot, metadata và tự động sao lưu.
- * Đã nâng cấp để sử dụng Capacitor Preferences trên thiết bị di động.
+ * Hệ thống quản lý lưu trữ (Save System) sử dụng IndexedDB qua LocalForage
+ * Hỗ trợ nhiều slot, lưu metadata và hiệu năng cao.
  */
 export const SaveSystem = {
     currentSlot: 1,
@@ -18,10 +24,7 @@ export const SaveSystem = {
      */
     setLastSlot: async (slot) => {
         try {
-            await Preferences.set({
-                key: LAST_SLOT_KEY,
-                value: slot === null ? 'null' : String(slot)
-            });
+            await localforage.setItem(LAST_SLOT_KEY, slot === null ? 'null' : String(slot));
         } catch (e) {
             console.error('Lỗi khi lưu last slot:', e);
         }
@@ -32,7 +35,7 @@ export const SaveSystem = {
      */
     getLastSlot: async () => {
         try {
-            const { value } = await Preferences.get({ key: LAST_SLOT_KEY });
+            const value = await localforage.getItem(LAST_SLOT_KEY);
             if (!value || value === 'null') return null;
             return parseInt(value, 10);
         } catch (e) {
@@ -47,12 +50,8 @@ export const SaveSystem = {
     save: async (slot, data, metadata = null) => {
         try {
             const key = `${SAVE_PREFIX}${slot}`;
-            const value = JSON.stringify(data);
-            
-            await Preferences.set({
-                key: key,
-                value: value
-            });
+            // localforage tự động serialize đối tượng JSON phức tạp
+            await localforage.setItem(key, data);
 
             if (metadata) {
                 const allMeta = await SaveSystem.getAllMetadata();
@@ -61,10 +60,7 @@ export const SaveSystem = {
                     updatedAt: Date.now(),
                     slot: slot
                 };
-                await Preferences.set({
-                    key: METADATA_KEY,
-                    value: JSON.stringify(allMeta)
-                });
+                await localforage.setItem(METADATA_KEY, allMeta);
             }
             return true;
         } catch (e) {
@@ -79,9 +75,11 @@ export const SaveSystem = {
     load: async (slot) => {
         try {
             const key = `${SAVE_PREFIX}${slot}`;
-            const { value } = await Preferences.get({ key: key });
+            const value = await localforage.getItem(key);
             if (!value) return null;
-            return JSON.parse(value);
+            
+            // localforage tự động deserialize đối tượng JSON
+            return typeof value === 'string' ? JSON.parse(value) : value;
         } catch (e) {
             console.error(`Lỗi khi tải dữ liệu slot ${slot}:`, e);
             return null;
@@ -93,8 +91,9 @@ export const SaveSystem = {
      */
     getAllMetadata: async () => {
         try {
-            const { value } = await Preferences.get({ key: METADATA_KEY });
-            return value ? JSON.parse(value) : {};
+            const value = await localforage.getItem(METADATA_KEY);
+            if (!value) return {};
+            return typeof value === 'string' ? JSON.parse(value) : value;
         } catch (e) {
             console.error('Lỗi khi lấy metadata:', e);
             return {};
@@ -105,46 +104,43 @@ export const SaveSystem = {
      * Xóa một slot save
      */
     deleteSave: async (slot) => {
-        await Preferences.remove({ key: `${SAVE_PREFIX}${slot}` });
-        const allMeta = await SaveSystem.getAllMetadata();
-        delete allMeta[slot];
-        await Preferences.set({
-            key: METADATA_KEY,
-            value: JSON.stringify(allMeta)
-        });
+        try {
+            await localforage.removeItem(`${SAVE_PREFIX}${slot}`);
+            const allMeta = await SaveSystem.getAllMetadata();
+            delete allMeta[slot];
+            await localforage.setItem(METADATA_KEY, allMeta);
+        } catch (e) {
+            console.error(`Lỗi khi xóa slot ${slot}:`, e);
+        }
     },
 
     /**
      * Đổi tên nhân vật trong metadata (hiển thị)
      */
     renameSave: async (slot, newName) => {
-        const allMeta = await SaveSystem.getAllMetadata();
-        if (allMeta[slot]) {
-            allMeta[slot].name = newName;
-            await Preferences.set({
-                key: METADATA_KEY,
-                value: JSON.stringify(allMeta)
-            });
-            return true;
+        try {
+            const allMeta = await SaveSystem.getAllMetadata();
+            if (allMeta[slot]) {
+                allMeta[slot].name = newName;
+                await localforage.setItem(METADATA_KEY, allMeta);
+                return true;
+            }
+            return false;
+        } catch (e) {
+            console.error(`Lỗi khi đổi tên slot ${slot}:`, e);
+            return false;
         }
-        return false;
     },
-
 
     /**
      * Xóa sạch toàn bộ dữ liệu (Reset hoàn toàn)
      */
     clearAll: async () => {
-        for (let slot of [1, 2, 3, 4, 5]) {
-            await Preferences.remove({ key: `${SAVE_PREFIX}${slot}` });
+        try {
+            await localforage.clear();
+            localStorage.clear();
+        } catch (e) {
+            console.error('Lỗi khi xóa sạch dữ liệu:', e);
         }
-        await Preferences.remove({ key: METADATA_KEY });
-        await Preferences.remove({ key: LAST_SLOT_KEY });
-        await Preferences.remove({ key: 'mortal_quest_current_screen' });
-        await Preferences.remove({ key: 'mortal_quest_map_view' });
-        
-        // Clear local storage too for safety
-        localStorage.clear();
     }
 };
-
