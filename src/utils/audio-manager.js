@@ -62,9 +62,46 @@ export class AudioManager {
         this.bgm.volume = 0;
         
         if (!this.isMuted) {
-            this.bgm.play().catch(e => console.warn('BGM play failed:', e));
-            this.fadeIn();
+            this.bgm.play()
+                .then(() => {
+                    this.fadeIn();
+                })
+                .catch(e => {
+                    console.warn('BGM play failed, will retry on user interaction:', e);
+                    this.pendingBgmKey = key;
+                    this.setupInteractionListener();
+                });
         }
+    }
+
+    setupInteractionListener() {
+        if (this.hasSetupListener) return;
+        this.hasSetupListener = true;
+
+        const startBgmOnInteraction = () => {
+            if (this.pendingBgmKey && !this.isMuted) {
+                const key = this.pendingBgmKey;
+                this.pendingBgmKey = null;
+                const source = this.playlists[key];
+                if (this.bgm && this.currentBgmSource === source) {
+                    this.bgm.play()
+                        .then(() => {
+                            this.fadeIn();
+                        })
+                        .catch(err => console.warn('BGM retry on interaction failed:', err));
+                } else {
+                    this.playBgm(key);
+                }
+            }
+            document.removeEventListener('click', startBgmOnInteraction, true);
+            document.removeEventListener('touchstart', startBgmOnInteraction, true);
+            document.removeEventListener('keydown', startBgmOnInteraction, true);
+            this.hasSetupListener = false;
+        };
+
+        document.addEventListener('click', startBgmOnInteraction, true);
+        document.addEventListener('touchstart', startBgmOnInteraction, true);
+        document.addEventListener('keydown', startBgmOnInteraction, true);
     }
 
     playSfx(key) {

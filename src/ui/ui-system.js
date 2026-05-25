@@ -35,6 +35,9 @@ export class UISystem {
         
         // Track current screen in-memory for render performance optimization
         this.currentScreenId = 'screen-main';
+
+        // Initialize smooth horizontal drag-scroll roll behavior
+        this.initHorizontalScrollRoll();
     }
 
     updateTimeUI(time) {
@@ -1307,5 +1310,35 @@ export class UISystem {
         if (defaultBtn) {
             defaultBtn.click();
         }
+     }
+
+    initHorizontalScrollRoll() {
+        const containers = document.querySelectorAll('.overflow-x-auto');
+        containers.forEach(el => {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            el.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - el.offsetLeft;
+                scrollLeft = el.scrollLeft;
+                el.style.scrollBehavior = 'auto';
+            });
+            el.addEventListener('mouseleave', () => {
+                isDown = false;
+            });
+            el.addEventListener('mouseup', () => {
+                isDown = false;
+                el.style.scrollBehavior = 'smooth';
+            });
+            el.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - el.offsetLeft;
+                const walk = (x - startX) * 1.5; // Drag sensitivity multiplier
+                el.scrollLeft = scrollLeft - walk;
+            });
+        });
     }
 }

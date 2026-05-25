@@ -150,6 +150,32 @@ export class CombatEngine {
         if (this.turn === 1) {
             this.enemyTurn();
         } else {
+            // [SONG TU BENEFIT & BACKLASH]
+            if (this.player.mainDualId) {
+                // Yin-Yang balance mana recovery: +5% max mana
+                const dualManaRegen = Math.floor(this.player.maxMana * 0.05);
+                if (dualManaRegen > 0) {
+                    this.player.mana = Math.min(this.player.maxMana, this.player.mana + dualManaRegen);
+                    this.addLog(`☯️ [Song Tu] Huyết mạch âm dương hòa hợp, hồi phục +${dualManaRegen} linh lực!`);
+                }
+                
+                // Low-stability backlash check (< 30%)
+                if (this.player.stability < 30) {
+                    if (Math.random() < 0.02) { // 2% chance per player turn start
+                        const backlashDmg = Math.floor(this.player.maxHp * 0.10);
+                        this.player.hp = Math.max(1, this.player.hp - backlashDmg);
+                        this.status.player.instability = Math.max(this.status.player.instability || 0, 3); // 3 turns of stat reductions
+                        this.addLog(`🔴 <span class="text-red-500 font-bold">TẨU HỎA NHẬP MA!</span> Linh lực song tu phản phệ khiến đạo tâm điên đảo, chịu ${backlashDmg} sát thương và giảm 30% chiến lực trong 3 lượt!`);
+                        this.onUpdate('damage', { target: 'player', value: backlashDmg, crit: true });
+                        if (this.player.hp <= 1 && this.player.hp > 0) {
+                            this.player.hp = 0;
+                            this.lose();
+                            return;
+                        }
+                    }
+                }
+            }
+
             // Check for Chanting
             if (this.playerChanting) {
                 this.playerChanting.turns--;
@@ -267,7 +293,10 @@ export class CombatEngine {
 
         if (damage > 0) {
             const dr = this.player.advancedStats.damageReduction || 0;
-            const allRes = this.player.advancedStats.allRes || 0;
+            let allRes = this.player.advancedStats.allRes || 0;
+            if (this.player.mainDualId) {
+                allRes += 0.10; // Song Tu Yin-Yang balance boost
+            }
             const finalDmg = Math.max(1, Math.floor((damage - Math.floor(this.player.def / 2)) * (1 - dr) * (1 - allRes)));
             this.player.hp -= finalDmg;
             this.addLog(msg + ` Gây ${finalDmg} sát thương.`);
@@ -361,6 +390,15 @@ export class CombatEngine {
             if (this.enemy.hp <= 0) {
                 this.enemy.hp = 0;
                 this.win();
+                return;
+            }
+        }
+
+        // Tick down player instability (backlash or secret side-effects)
+        if (this.status.player.instability > 0) {
+            this.status.player.instability--;
+            if (this.status.player.instability === 0) {
+                this.addLog(`✨ Linh khí bình ổn, trạng thái chấn thương tẩu hỏa đã tiêu tán.`);
             }
         }
     }
@@ -455,6 +493,11 @@ export class CombatEngine {
         const eDr = this.enemy.advancedStats?.damageReduction || 0;
         const eAllRes = this.enemy.advancedStats?.allRes || 0;
         let damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression * racialBonus * envBonus * elementalMult * (1 - eDr) * (1 - eAllRes)));
+
+        // Instability debuff reduces physical attack damage by 30%
+        if (this.status.player.instability > 0) {
+            damage = Math.floor(damage * 0.7);
+        }
 
         // Divine Sense (Perception) Accuracy/Crit
         const pSense = this.player.advancedStats?.perception || 10;
@@ -563,7 +606,31 @@ export class CombatEngine {
         const playerSpd = this.player.spd;
         const enemySpd = this.enemy.spd;
 
-        // Check for escape secret techniques
+        // --- Check Độn Thuật slot (new system) ---
+        let escapeChanceBonus = 0;
+        let donThuatName = null;
+        let donThuatFlavor = null;
+
+        const escapeTechId = this.player.mainEscapeId;
+        if (escapeTechId) {
+            const escapeTechData = typeof getTechniqueById === 'function' ? getTechniqueById(escapeTechId) : null;
+            const learnedEscape = this.player.learnedTechniques?.find(t => t.id === escapeTechId);
+            if (escapeTechData && learnedEscape) {
+                const masteryBonus = escapeTechData.masteryBonuses?.[learnedEscape.masteryLevel || 1] || {};
+                escapeChanceBonus = masteryBonus.escapeChanceBonus ?? escapeTechData.effects?.escapeChanceBonus ?? 0;
+                donThuatName = escapeTechData.name;
+
+                if (escapeTechId === 'loi_don_thuat') {
+                    donThuatFlavor = `<span class='text-yellow-300'>⚡ Ngươi hóa thân thành một đạo lôi quang, chớp mắt đã biến mất khỏi tầm mắt đối thủ!</span>`;
+                } else if (escapeTechId === 'la_yen_bo') {
+                    donThuatFlavor = `<span class='text-cyan-300'>🌫️ Thân pháp La Yên Bộ kích hoạt, người ngươi tan hòa vào làn khói mờ ảo!</span>`;
+                } else {
+                    donThuatFlavor = `<span class='text-qi-blue'>🏃 Ngươi vận <b>${donThuatName}</b> toàn lực, thoát ly vòng vây!</span>`;
+                }
+            }
+        }
+
+        // --- Check old escape secret techniques ---
         const equippedSecrets = (this.player.equippedSecretTechniqueIds || []).filter(Boolean);
         const hasEscapeSecret = equippedSecrets.some(id => {
             const data = getSecretTechniqueById(id);
@@ -573,13 +640,29 @@ export class CombatEngine {
             return (data?.effects?.type === 'escape' || data?.type === 'escape') && isOffCooldown;
         });
 
-        if (playerSpd > enemySpd || hasEscapeSecret) {
-            this.addLog("<span class='text-qi-blue'>Ngươi vận dụng thân pháp cực hạn, thành công thoát khỏi chiến trường!</span>");
+        // --- Escape calculation ---
+        // Base: player spd vs enemy spd. Độn Thuật adds flat escape bonus (0–1.0).
+        const spdRatio = playerSpd / Math.max(1, enemySpd);
+        const baseChance = Math.min(0.9, spdRatio * 0.5); // caps at 90% from speed
+        const finalEscapeChance = Math.min(1.0, baseChance + escapeChanceBonus);
+
+        const roll = Math.random();
+        const escapeSuccess = roll <= finalEscapeChance || hasEscapeSecret;
+
+        if (escapeSuccess) {
+            if (donThuatFlavor) {
+                this.addLog(donThuatFlavor);
+            } else {
+                this.addLog("<span class='text-qi-blue'>Ngươi vận dụng thân pháp cực hạn, thành công thoát khỏi chiến trường!</span>");
+            }
             this.isActive = false;
             this.onUpdate('end');
             setTimeout(() => this.onEnd('escape'), 1500);
         } else {
-            this.addLog("<span class='text-red-400'>Thoát thân thất bại! Đối phương tốc độ quá nhanh, khóa chặt mọi đường lui!</span>");
+            const failMsg = donThuatName
+                ? `<span class='text-red-400'>Thoát thân thất bại! Dù đã vận <b>${donThuatName}</b>, đối phương vẫn truy kịp ngươi!</span>`
+                : `<span class='text-red-400'>Thoát thân thất bại! Đối phương tốc độ quá nhanh, khóa chặt mọi đường lui!</span>`;
+            this.addLog(failMsg);
             this.onUpdate('escape-fail');
             this.endPlayerTurn();
         }
@@ -810,6 +893,14 @@ export class CombatEngine {
         const secretData = getSecretTechniqueById(secretId);
         if (!secretData) return;
 
+        // Verify cultivation realm requirement for Thần Thông (requires Trúc Cơ - realmId >= 4)
+        if (secretData.category === 'Thần Thông' && secretData.requiredRealmId) {
+            if (this.player.realmId < secretData.requiredRealmId) {
+                this.addLog(`<span class="text-red-400 font-bold">Cảnh giới bất túc!</span> Ngươi cần đạt tới ít nhất Trúc Cơ Kỳ mới có thể cưỡng ép thi triển Thần Thông <span class="text-cultivation-gold">${secretData.name}</span>.`);
+                return;
+            }
+        }
+
         // Check for preparation turns
         const prepTurns = secretData.preparationTurns || 0;
         if (prepTurns > 0 && !skipChant) {
@@ -860,6 +951,25 @@ export class CombatEngine {
 
         this.player.secretTechniqueCooldowns[secretId] = now;
 
+        // [CATEGORY SPECIFIC BONUS] Pháp Thuật: 30% chance to refund 30% mana
+        if (secretData.category === 'Pháp Thuật' && costMana > 0) {
+            if (Math.random() < 0.3) {
+                const refund = Math.floor(costMana * 0.3);
+                if (refund > 0) {
+                    this.player.mana = Math.min(this.player.maxMana, this.player.mana + refund);
+                    this.addLog(`⚡ [Pháp Thuật] Pháp lực ngưng tụ cực nhanh, hoàn trả +${refund} linh lực!`);
+                }
+            }
+        }
+
+        // [CATEGORY SPECIFIC BONUS] Bí Thuật: 10% chance of temporary defense reduction (instability debuff for 1 turn)
+        if (secretData.category === 'Bí Thuật') {
+            if (Math.random() < 0.1) {
+                this.status.player.instability = (this.status.player.instability || 0) + 1;
+                this.addLog(`⚠️ [Bí Thuật] Động chạm cấm kỵ dẫn đến chấn động kinh mạch, giảm 30% phòng thủ trong 1 lượt!`);
+            }
+        }
+
         if (secretData.effects?.type === 'escape' || secretData.type === 'escape') {
             this.addLog(`Ngươi thi triển ${secretData.name} và thoát khỏi trận chiến!`);
             setTimeout(() => this.onEnd('escape'), 1000);
@@ -869,20 +979,44 @@ export class CombatEngine {
 
         const suppression = this.calculateRealmSuppression(this.player, this.enemy);
         const damageMult = masteryBonus?.damageMult || secretData.effects?.damageMult || 1.0;
-        const critChance = masteryBonus?.critChance || secretData.effects?.critChance || 0;
+        let critChance = masteryBonus?.critChance || secretData.effects?.critChance || 0;
 
-        let effectiveEnemyDef = this.enemy.def;
+        // [CATEGORY SPECIFIC BONUS] Bí Thuật: +10% crit chance bonus
+        if (secretData.category === 'Bí Thuật') {
+            critChance += 0.10;
+        }
+
+        let ignoreDefPct = secretData.effects?.ignoreDef || 0;
         if (secretId === 'thanh_nguyen_kiem_mang' || secretId === 'bp_thanh_nguyen_kiem_mang') {
-            effectiveEnemyDef = Math.floor(this.enemy.def * 0.1); // Ignore 90% armor!
+            ignoreDefPct = 0.9;
         } else if (secretId.includes('thien_kiem_tong_bi_tich')) {
-            effectiveEnemyDef = Math.floor(this.enemy.def * 0.5); // Ignore 50% armor!
+            ignoreDefPct = 0.5;
             this.addLog(`⚔️ [Vạn Kiếm Quy Tông] Kiếm quang tụ hội, phá vỡ 50% hộ thân linh giáp!`);
         } else if (secretId.includes('lac_van_tong_bi_tich')) {
-            effectiveEnemyDef = 0; // Ignore 100% armor!
+            ignoreDefPct = 1.0;
             this.addLog(`🔮 [Tử Cực Thần Quang] Tử quang oanh kích diệu kỳ, phá hủy hoàn toàn 100% phòng ngự đối thủ!`);
         }
 
+        // [CATEGORY SPECIFIC BONUS] Thần Thông: Ignore extra enemy defense scaling with stage + root match bonus
+        if (secretData.category === 'Thần Thông') {
+            // Ignored defense scales with stage (+3% per stage)
+            ignoreDefPct = Math.max(ignoreDefPct, 0.10 + (playerSecret?.stage || 1) * 0.03);
+            // Spiritual root compatibility boost (+15% defense ignore for matching or Thiên Linh Căn)
+            const pRootType = this.player.spiritualRoot?.type || '';
+            if (pRootType === 'Thiên Linh Căn' || (secretData.element && pRootType.includes(secretData.element))) {
+                ignoreDefPct = Math.min(1.0, ignoreDefPct + 0.15);
+                this.addLog(`✨ Linh căn tương hợp kích phát Thần Thông dị động, gia tăng xuyên thấu hộ giáp đối địch!`);
+            }
+        }
+
+        let effectiveEnemyDef = Math.floor(this.enemy.def * (1 - ignoreDefPct));
         let damage = Math.max(1, Math.floor((this.player.atk * damageMult - Math.floor(effectiveEnemyDef / 2)) * suppression));
+
+        // Player deviation instability debuff reduces player damage by 30%
+        if (this.status.player.instability > 0) {
+            damage = Math.floor(damage * 0.7);
+        }
+
         if (Math.random() < critChance) {
             damage = Math.floor(damage * 2.0);
             this.addLog(`⚡ Bí pháp bạo kích!`);
@@ -1019,12 +1153,14 @@ export class CombatEngine {
         const pSense = this.player.advancedStats?.perception || 10;
         const eSense = this.enemy.perception || 10;
 
-        // Hit chance affected by dodge and perception
-        let hitChance = 0.85 + (eSense - pSense) * 0.005;
+        // [PASSIVE ESCAPE SLOT EFFECT] Hit chance reduced by player's passive dodge rate from Độn Thuật
+        const pDodge = this.player.advancedStats?.dodge || 0;
+        let hitChance = 0.85 + (eSense - pSense) * 0.005 - pDodge;
         if (this.playerDodging) {
             hitChance *= 0.4; // 60% reduction in hit chance
             this.playerDodging = false; // Consume dodge
         }
+        hitChance = Math.max(0.1, Math.min(0.95, hitChance));
 
         if (Math.random() > hitChance) {
             this.addLog(`${this.enemy.name} tấn công nhưng ngươi đã né tránh thành công!`);
@@ -1036,7 +1172,10 @@ export class CombatEngine {
 
         // Apply Enemy Armor Penetration (pierce)
         const ePierce = this.enemy.advancedStats?.pierce || 0;
-        const effectivePlayerDef = Math.floor(this.player.def * (1 - ePierce));
+        
+        // [INSTABILITY DEFENSE PENALTY] Instability status reduces player's defense by 30%
+        const instabilityMult = this.status.player.instability > 0 ? 0.7 : 1.0;
+        const effectivePlayerDef = Math.floor(this.player.def * (1 - ePierce) * instabilityMult);
 
         // Get elements and apply countered multiplier
         let playerElement = 'Neutral';
@@ -1050,7 +1189,13 @@ export class CombatEngine {
         const elementalMult = this.getElementalMultiplier(enemyElement, playerElement);
 
         const dr = this.player.advancedStats.damageReduction || 0;
-        const allRes = this.player.advancedStats.allRes || 0;
+        
+        // [SONG TU PASSIVE RESIST] Song Tu slot adds +10% all elemental resistances in combat
+        let allRes = this.player.advancedStats.allRes || 0;
+        if (this.player.mainDualId) {
+            allRes += 0.10;
+        }
+        
         let damage = Math.max(1, (this.enemy.atk - Math.floor(effectivePlayerDef / 2)) * suppression * elementalMult * (1 - dr) * (1 - allRes));
 
         // Calculate Enemy Critical Strike

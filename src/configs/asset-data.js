@@ -177,7 +177,9 @@ export const ASSETS = {
         giao_lang: getAssetUrl('portraits/giao_lang'),
         quynh_dao: getAssetUrl('portraits/quynh_dao'),
         tieu_vien: getAssetUrl('portraits/tieu_vien'),
-        diep_pham: getAssetUrl('portraits/diep_pham'),
+        diep_pham: getAssetUrl('portraits/diep_phàm'),
+        cultivator_male: getAssetUrl('players/player_male'),
+        cultivator_female: getAssetUrl('players/player_female'),
     }, 'portraits', 'player'),
 
     // Kẻ địch
@@ -193,19 +195,19 @@ export const ASSETS = {
 
     // Yêu Thú (Linh Thú, Dị Thú...)
     beasts: createAssetProxy({
-        cuu_vi_thien_ho: getAssetUrl('beasts/cuu_vi_thien_ho'),
+        cuu_vi_thien_ho: getAssetUrl('beasts/tu_tuoc'),
         thanh_van_hac: getAssetUrl('beasts/thanh_van_hac'),
-        xich_diem_lang: getAssetUrl('beasts/xich_diem_lang'),
-        loi_duc_su: getAssetUrl('beasts/loi_duc_su'),
+        xich_diem_lang: getAssetUrl('beasts/ac_long'),
+        loi_duc_su: getAssetUrl('beasts/cuu_dau'),
         thanh_long: getAssetUrl('beasts/thanh_long'),
-        phe_kim_trung: getAssetUrl('beasts/phe_kim_trung'),
+        phe_kim_trung: getAssetUrl('aberrations/phe-kim-trung.svg'),
         bang_tam: getAssetUrl('beasts/bang_tam'),
-        huyet_ngoc_tri_chu: getAssetUrl('beasts/huyet_ngoc_tri_chu'),
-        phe_linh_trung: getAssetUrl('beasts/phe_linh_trung'),
-        kim_tam: getAssetUrl('beasts/kim_tam'),
+        huyet_ngoc_tri_chu: getAssetUrl('aberrations/huyet-ngoc-tri-chu.svg'),
+        phe_linh_trung: getAssetUrl('beasts/thanh_van_ly'),
+        kim_tam: getAssetUrl('beasts/thanh_nguu'),
         thanh_van_ly: getAssetUrl('beasts/thanh_van_ly'),
-        huyen_giap_dia_long: getAssetUrl('beasts/huyen_giap_dia_long'),
-        u_minh_mong_diep: getAssetUrl('beasts/u_minh_mong_diep'),
+        huyen_giap_dia_long: getAssetUrl('beasts/huyen-giap-dia-long'),
+        u_minh_mong_diep: getAssetUrl('beasts/u-minh-mong-diep'),
         giao_long: getAssetUrl('beasts/giao_long'),
         hac_xa: getAssetUrl('beasts/hac_xa'),
         hoa_viem: getAssetUrl('beasts/hoa_viem'),
@@ -264,10 +266,10 @@ export const ASSETS = {
     items: createAssetProxy({
         spirit_stone: getAssetUrl('items/spirit_stone'),
         healing_pill: getAssetUrl('items/healing_pill'),
-        cuc_pham_linh_thach: getAssetUrl('items/cuc_pham_linh_thach'),
+        cuc_pham_linh_thach: getAssetUrl('items/cuc-pham-linh-thach'),
         ha_pham_linh_thach: getAssetUrl('items/ha_pham_linh_thach'),
-        trung_pham_linh_thach: getAssetUrl('items/trung_pham_linh_thach'),
-        thuong_pham_linh_thach: getAssetUrl('items/thuong_pham_linh_thach'),
+        trung_pham_linh_thach: getAssetUrl('items/trung-pham-linh-thach'),
+        thuong_pham_linh_thach: getAssetUrl('items/thuong-pham-linh-thach'),
     }, 'items', 'spirit_stone'),
 
     // Công pháp bí tịch

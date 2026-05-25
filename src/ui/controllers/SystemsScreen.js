@@ -60,6 +60,7 @@ export class SystemsScreen {
         this.btnTechTabLinhLuc = document.getElementById('tech-tab-linh-luc');
         this.btnTechTabLuyenThe = document.getElementById('tech-tab-luyen-the');
         this.btnTechTabThanThuc = document.getElementById('tech-tab-than-thuc');
+        this.btnTechTabPhuTro = document.getElementById('tech-tab-phu-tro');
         this.btnTechTabSecret = document.getElementById('tech-tab-secret');
         this.btnTechTabCustom = document.getElementById('tech-tab-custom');
         this.btnTechBack = document.getElementById('tech-back-btn');
@@ -112,6 +113,7 @@ export class SystemsScreen {
         if (this.btnTechTabLinhLuc) this.btnTechTabLinhLuc.onclick = () => this.renderTechniques('linh_luc');
         if (this.btnTechTabLuyenThe) this.btnTechTabLuyenThe.onclick = () => this.renderTechniques('luyen_the');
         if (this.btnTechTabThanThuc) this.btnTechTabThanThuc.onclick = () => this.renderTechniques('than_thuc');
+        if (this.btnTechTabPhuTro) this.btnTechTabPhuTro.onclick = () => this.renderTechniques('phu_tro');
         if (this.btnTechTabSecret) this.btnTechTabSecret.onclick = () => this.renderTechniques('secret');
         if (this.btnTechTabCustom) this.btnTechTabCustom.onclick = () => this.renderTechniques('custom');
         if (this.btnTechBack) this.btnTechBack.onclick = () => {

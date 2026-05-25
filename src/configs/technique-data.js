@@ -605,10 +605,177 @@ export const TECHNIQUES = {
         stageLabel: 'Tầng',
         stats: { hp: 800, atk: 350, mana: 500 },
         effects: { tvps: 3.5, lifeSteal: 0.25, allRes: 0.15, poisonDmg: 1.4 }
+    },
+    'la_yen_bo': {
+        id: 'la_yen_bo',
+        name: 'La Yên Bộ',
+        type: 'Độn Thuật',
+        element: 'Neutral',
+        quality: 'Hoàng Giai',
+        description: 'Thân pháp ảo diệu do Hàn Lập tu luyện ở phàm giới, giúp di chuyển nhẹ nhàng như khói, cực kỳ hữu dụng để né tránh và chạy trốn.',
+        comprehendDifficulty: { baseTime: 80, difficultyName: 'Thân Pháp Nhập Môn' },
+        maxStage: 5,
+        stageLabel: 'Trọng',
+        stats: { spd: 20 },
+        effects: { bodyPs: 1.1, escapeChanceBonus: 0.25, dodge: 0.05 },
+        masteryBonuses: {
+            1: { spd: 20 },
+            2: { spd: 35, dodge: 0.08 },
+            3: { spd: 55, dodge: 0.12, escapeChanceBonus: 0.35 },
+            4: { spd: 80, dodge: 0.18, escapeChanceBonus: 0.50 }
+        }
+    },
+    'loi_don_thuat': {
+        id: 'loi_don_thuat',
+        name: 'Lôi Độn Thuật',
+        type: 'Độn Thuật',
+        element: 'Lôi',
+        quality: 'Địa Giai',
+        description: 'Độn thuật cao cấp mượn uy lực của thiên lôi, hóa thân thành một đạo sét chớp lóe phi thăng, không ai có thể truy đuổi kịp.',
+        comprehendDifficulty: { baseTime: 1800, difficultyName: 'Thần Thông Lôi Độn' },
+        maxStage: 7,
+        stageLabel: 'Tầng',
+        stats: { spd: 120 },
+        effects: { tvps: 1.2, escapeChanceBonus: 0.60, dodge: 0.15 },
+        masteryBonuses: {
+            1: { spd: 120 },
+            2: { spd: 180, dodge: 0.2 },
+            3: { spd: 260, dodge: 0.25, escapeChanceBonus: 0.8 },
+            4: { spd: 380, dodge: 0.35, escapeChanceBonus: 1.0 }
+        }
+    },
+    'am_yang_dieu_hoa_quyet': {
+        id: 'am_yang_dieu_hoa_quyet',
+        name: 'Âm Dương Điều Hòa Quyết',
+        type: 'Song Tu',
+        element: 'Neutral',
+        quality: 'Hoàng Giai',
+        description: 'Môn công pháp điều hòa âm dương sơ cấp, bổ khuyết linh lực lưỡng tính, giúp đẩy nhanh tốc độ hấp thu linh khí.',
+        comprehendDifficulty: { baseTime: 100, difficultyName: 'Dễ Lĩnh Hội' },
+        maxStage: 5,
+        stageLabel: 'Trọng',
+        stats: { hp: 50, mana: 50 },
+        effects: { tvps: 1.20 },
+        masteryBonuses: {
+            1: { tvps: 1.20 },
+            2: { tvps: 1.35, manaRegen: 1.1 },
+            3: { tvps: 1.55, manaRegen: 1.2 },
+            4: { tvps: 1.80, manaRegen: 1.35 }
+        }
+    },
+    'to_nu_luan_hoi_cong': {
+        id: 'to_nu_luan_hoi_cong',
+        name: 'Tố Nữ Luân Hồi Công',
+        type: 'Song Tu',
+        element: 'Neutral',
+        quality: 'Huyền Giai',
+        description: 'Bí thuật song tu huyền môn đỉnh cấp, âm dương phản bổ luân hồi, bạo phát tu vi cực nhanh nhưng đi kèm rủi ro tâm ma quấy nhiễu.',
+        comprehendDifficulty: { baseTime: 800, difficultyName: 'Trí Huệ Huyền Môn' },
+        maxStage: 7,
+        stageLabel: 'Chu Kỳ',
+        stats: { hp: 150, mana: 150, def: 50 },
+        effects: { tvps: 1.40 },
+        masteryBonuses: {
+            1: { tvps: 1.40 },
+            2: { tvps: 1.70, allRes: 0.05 },
+            3: { tvps: 2.10, allRes: 0.1 },
+            4: { tvps: 2.70, allRes: 0.15 }
+        }
+    },
+    'liem_khi_quyet': {
+        id: 'liem_khi_quyet',
+        name: 'Liễm Khí Quyết',
+        type: 'Phụ Trợ',
+        element: 'Neutral',
+        quality: 'Hoàng Giai',
+        description: 'Môn pháp thuật cơ bản giúp ẩn giấu tu vi, thu liễm linh khí bộc phát bên ngoài, giúp tâm cảnh bất động thanh tịnh.',
+        comprehendDifficulty: { baseTime: 60, difficultyName: 'Cực Kỳ Dễ Học' },
+        maxStage: 3,
+        stageLabel: 'Trọng',
+        stats: { def: 10 },
+        effects: { tvps: 1.1, perception: 5 },
+        masteryBonuses: {
+            1: { tvps: 1.1 },
+            2: { tvps: 1.25, perception: 10 },
+            3: { tvps: 1.4, perception: 20 }
+        }
+    },
+    'quy_nguyen_thu_tuc_cong': {
+        id: 'quy_nguyen_thu_tuc_cong',
+        name: 'Quy Nguyên Thu Tức Công',
+        type: 'Phụ Trợ',
+        element: 'Neutral',
+        quality: 'Huyền Giai',
+        description: 'Công pháp phụ trợ giúp ngưng thần tịnh khí, dung hợp linh khí vào sâu trong huyết nhục, giảm đáng kể hao tổn pháp lực.',
+        comprehendDifficulty: { baseTime: 600, difficultyName: 'Khó Vừa Phải' },
+        maxStage: 6,
+        stageLabel: 'Tầng',
+        stats: { mana: 100, hp: 100 },
+        effects: { tvps: 1.25, stability: 10 },
+        masteryBonuses: {
+            1: { tvps: 1.25 },
+            2: { tvps: 1.45, stability: 15 },
+            3: { tvps: 1.75, stability: 25 },
+            4: { tvps: 2.15, stability: 40 }
+        }
     }
 };
 
 export const SECRET_TECHNIQUES = {
+    'hoa_cau_thuat': {
+        id: 'hoa_cau_thuat',
+        name: 'Hỏa Cầu Thuật',
+        type: 'attack',
+        category: 'Pháp Thuật',
+        quality: 'Phàm Giai',
+        icon: '🔥',
+        description: 'Pháp thuật cơ bản hệ Hỏa, ngưng tụ linh khí thành hỏa cầu thiêu đốt kẻ địch. Tiêu hao cực ít pháp lực.',
+        costs: { mana: 10 },
+        cooldown: 2,
+        effects: { damageMult: 1.3 },
+        masteryBonuses: {
+            1: { damageMult: 1.3 },
+            2: { damageMult: 1.6 },
+            3: { damageMult: 2.0 },
+            4: { damageMult: 2.5 }
+        }
+    },
+    'thuy_tien_thuat': {
+        id: 'thuy_tien_thuat',
+        name: 'Thủy Tiễn Thuật',
+        type: 'attack',
+        category: 'Pháp Thuật',
+        quality: 'Phàm Giai',
+        icon: '💧',
+        description: 'Pháp thuật cơ bản hệ Thủy, ngưng tụ hơi nước thành những mũi tiễn bén nhọn oanh tạc mục tiêu.',
+        costs: { mana: 10 },
+        cooldown: 2,
+        effects: { damageMult: 1.3 },
+        masteryBonuses: {
+            1: { damageMult: 1.3 },
+            2: { damageMult: 1.6 },
+            3: { damageMult: 2.0 },
+            4: { damageMult: 2.5 }
+        }
+    },
+    'phong_nhan_thuat': {
+        id: 'phong_nhan_thuat',
+        name: 'Phong Nhận Thuật',
+        type: 'attack',
+        category: 'Pháp Thuật',
+        quality: 'Phàm Giai',
+        icon: '💨',
+        description: 'Pháp thuật cơ bản hệ Phong, ngưng khí hóa nhận chém rách phòng ngự kẻ địch.',
+        costs: { mana: 12 },
+        cooldown: 2,
+        effects: { damageMult: 1.2, pierce: 0.1 },
+        masteryBonuses: {
+            1: { damageMult: 1.2 },
+            2: { damageMult: 1.5, pierce: 0.15 },
+            3: { damageMult: 1.9, pierce: 0.2 },
+            4: { damageMult: 2.4, pierce: 0.3 }
+        }
+    },
     'huyet_don_thuat': {
         id: 'huyet_don_thuat',
         name: 'Huyết Độn Thuật',
@@ -1040,5 +1207,32 @@ export const SECRET_TECHNIQUES = {
 };
 
 export const getTechniqueById = (id) => TECHNIQUES[id];
-export const getSecretTechniqueById = (id) => SECRET_TECHNIQUES[id];
+
+export const getSecretTechniqueById = (id) => {
+    const tech = SECRET_TECHNIQUES[id];
+    if (!tech) return null;
+    
+    // Assign category dynamically if not defined
+    if (!tech.category) {
+        const thanThongIds = [
+            'thanh_nguyen_kiem_mang', 'ho_the_kiem_don', 'bach_nhap_kiem_tran', 
+            'minh_vuong_kim_than', 'dai_dien_than_niem', 'van_ma_phuc_the', 
+            'van_doc_kiem_khi', 'thien_doc_phat_quan', 'tran_phap_ap_che', 
+            'bat_quai_ho_than', 'thien_kiem_tong_bi_tich', 'lac_van_tong_bi_tich', 
+            'thien_tinh_tong_bi_tich', 'cu_kiem_mon_bi_tich', 'hoa_dao_o_bi_tich'
+        ];
+        if (thanThongIds.includes(id) || id.includes('kiem_mang') || id.includes('kiem_tran') || id.includes('bi_tich')) {
+            tech.category = 'Thần Thông';
+        } else {
+            tech.category = 'Bí Thuật';
+        }
+    }
+
+    // Enforce required realm for Thần Thông (requires Trúc Cơ - realmId >= 4)
+    if (tech.category === 'Thần Thông') {
+        tech.requiredRealmId = tech.requiredRealmId || 4;
+    }
+    
+    return tech;
+};
 

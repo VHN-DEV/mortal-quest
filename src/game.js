@@ -356,7 +356,12 @@ export class Game {
             if (state.player) {
                 const now = Date.now();
                 const delta = (now - state.player.lastUpdate) / 1000;
-                this.update(delta);
+                
+                if (delta > 5.0) {
+                    this.processOfflineProgress(delta);
+                } else {
+                    this.update(delta);
+                }
 
                 // Throttle visual rendering to 10 FPS (every 100ms) to dramatically reduce CPU & battery overhead
                 if (now - lastRenderTime >= 100) {
@@ -367,6 +372,71 @@ export class Game {
             requestAnimationFrame(loop);
         };
         requestAnimationFrame(loop);
+    }
+
+    processOfflineProgress(delta) {
+        if (!state.player) return;
+
+        // Skip if the offline time is less than 5 seconds to avoid noise during transitions
+        if (delta < 5.0) {
+            state.player.lastUpdate = Date.now();
+            return;
+        }
+
+        const player = state.player;
+        const focus = player.cultivationFocus || 'tuvi';
+        const hasTuviTech = !!player.mainTechniqueId;
+        const hasBodyTech = !!player.mainBodyTechniqueId;
+        const hasSoulTech = !!player.mainSoulTechniqueId;
+
+        // Calculate stability and multipliers
+        player.calculateStability();
+        let stabilityMult = 1.0;
+        if (player.stability > 90) stabilityMult = 1.2;
+        else if (player.stability < 40) stabilityMult = 0.8;
+
+        const compMult = 1 + (player.comprehension / 100);
+        let finalMultiplier = stabilityMult * compMult;
+        if (player.isSecluded) finalMultiplier *= 5.0;
+
+        // Calculate O(1) gains
+        const tuViGain = hasTuviTech ? player.tuViPerSecond * (focus === 'tuvi' ? 1.0 : 0.2) * finalMultiplier * delta : 0;
+        const bodyGain = hasBodyTech ? player.bodyExpPerSecond * (focus === 'body' ? 1.0 : 0.2) * finalMultiplier * delta : 0;
+        const soulGain = hasSoulTech ? player.soulExpPerSecond * (focus === 'soul' ? 1.0 : 0.2) * finalMultiplier * delta : 0;
+
+        player.tuVi += tuViGain;
+        player.bodyExp += bodyGain;
+        player.soulExp += soulGain;
+
+        // Stamina, Mana, HP regen
+        let regenMult = player.stability < 20 ? 0.2 : 1.0;
+        player.stamina = Math.min(player.maxStamina, player.stamina + 0.1 * delta * regenMult);
+        player.mana = Math.min(player.maxMana, player.mana + 0.05 * delta * regenMult);
+        player.hp = Math.min(player.maxHp, player.hp + 0.01 * player.maxHp * delta * regenMult);
+
+        // Advance time in O(1)
+        if (state.systems.time) {
+            state.systems.time.totalMinutes += Math.floor(delta / 60);
+        }
+
+        // Set player lastUpdate to now to reset tick timing
+        player.lastUpdate = Date.now();
+
+        // Display beautiful notification to the user
+        const mins = Math.floor(delta / 60);
+        const hours = (delta / 3600).toFixed(1);
+        const timeStr = mins >= 60 ? `${hours} giờ` : `${mins} phút`;
+
+        if (Math.floor(tuViGain) > 0 || Math.floor(bodyGain) > 0 || Math.floor(soulGain) > 0) {
+            let msg = `🧘‍♂️ **Bế Quan Tự Động (${timeStr})**:\n`;
+            if (Math.floor(tuViGain) > 0) msg += `  · Tu Vi: +${Math.floor(tuViGain).toLocaleString()}\n`;
+            if (Math.floor(bodyGain) > 0) msg += `  · Nhục Thân: +${Math.floor(bodyGain).toLocaleString()}\n`;
+            if (Math.floor(soulGain) > 0) msg += `  · Thần Thức: +${Math.floor(soulGain).toLocaleString()}\n`;
+
+            setTimeout(() => {
+                state.ui.toast(msg, 'success');
+            }, 1000);
+        }
     }
 
     update(delta) {

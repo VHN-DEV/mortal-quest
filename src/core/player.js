@@ -129,6 +129,9 @@ export class Player {
         this.mainTechniqueId = null;
         this.mainBodyTechniqueId = null;
         this.mainSoulTechniqueId = null;
+        this.mainEscapeId = null;
+        this.mainDualId = null;
+        this.equippedAuxiliaryIds = [];
         this.learnedTechniques = []; // Array of { id, stage, mastery, masteryLevel, quality }
         this.learnedSecretTechniques = []; // Array of { id, mastery, masteryLevel }
         this.equippedSecretTechniqueIds = [];
@@ -545,9 +548,25 @@ export class Player {
 
         // Heart Demon growth if stability is low
         if (this.stability < 30) {
-            this.heartDemon += 0.01;
+            this.heartDemon += this.mainDualId ? 0.025 : 0.01;
         } else {
-            this.heartDemon = Math.max(0, this.heartDemon - 0.005);
+            this.heartDemon = Math.max(0, this.heartDemon - (this.mainDualId ? 0.002 : 0.005));
+        }
+
+        // Song Tu (Dual Cultivation) risks and benefits
+        if (this.mainDualId) {
+            // If stability is low, high risk of tẩu hỏa nhập ma
+            if (this.stability < 30 && this.deviationTime <= 0) {
+                if (Math.random() < 0.005) { // 0.5% chance per second tick
+                    this.deviationTime = 300; // 5 minutes (300 seconds)
+                    this.hp = Math.max(1, this.hp - this.maxHp * 0.2);
+                    this.pendingEvents.push({
+                        type: 'deviation_start',
+                        msg: "🔴 Tâm Cảnh suy sụp! Song Tu Linh Lực phản phệ, đạo tâm của ngươi bị tà khí xâm lấn, rơi vào trạng thái Tẩu Hỏa Nhập Ma!"
+                    });
+                    this.calculateStats();
+                }
+            }
         }
     }
 
@@ -1163,6 +1182,13 @@ export class Player {
         this.applyTechniqueToStats('tuvi', this.mainTechniqueId);
         this.applyTechniqueToStats('body', this.mainBodyTechniqueId);
         this.applyTechniqueToStats('soul', this.mainSoulTechniqueId);
+        this.applyTechniqueToStats('escape', this.mainEscapeId);
+        this.applyTechniqueToStats('dual', this.mainDualId);
+        if (Array.isArray(this.equippedAuxiliaryIds)) {
+            this.equippedAuxiliaryIds.forEach(auxId => {
+                this.applyTechniqueToStats('auxiliary', auxId);
+            });
+        }
 
         // Apply secret technique bonuses
         this.applySecretTechniqueBonuses();
@@ -1471,6 +1497,12 @@ export class Player {
         } else if (path === 'soul') {
             const baseSoulPs = masteryBonus?.soulPs || techData.effects?.soulPs || 0;
             this.soulExpPerSecond = baseSoulPs * finalMult;
+        } else if (path === 'dual') {
+            const baseTvps = masteryBonus?.tvps || techData.effects?.tvps || 0;
+            this.tuViPerSecond += baseTvps * finalMult;
+        } else if (path === 'auxiliary') {
+            const baseTvps = masteryBonus?.tvps || techData.effects?.tvps || 0;
+            this.tuViPerSecond += baseTvps * finalMult;
         }
         
         // Apply stat bonuses from technique
@@ -2419,8 +2451,27 @@ export class Player {
             currentMainId = this.mainBodyTechniqueId;
         } else if (type === 'Thần Thức') {
             currentMainId = this.mainSoulTechniqueId;
+        } else if (type === 'Độn Thuật') {
+            this.mainEscapeId = id;
+            if (typeof this.calculateStats === 'function') this.calculateStats();
+            return { success: true, msg: `Đã trang bị độn thuật: ${techData.name}` };
+        } else if (type === 'Song Tu') {
+            this.mainDualId = id;
+            if (typeof this.calculateStats === 'function') this.calculateStats();
+            return { success: true, msg: `Đã trang bị công pháp song tu: ${techData.name}` };
+        } else if (type === 'Phụ Trợ') {
+            if (!this.equippedAuxiliaryIds) this.equippedAuxiliaryIds = [];
+            if (this.equippedAuxiliaryIds.includes(id)) {
+                return { success: false, msg: "Công pháp phụ trợ này đã được trang bị rồi." };
+            }
+            if (this.equippedAuxiliaryIds.length >= 3) {
+                this.equippedAuxiliaryIds.shift(); // Remove the oldest equipped auxiliary technique
+            }
+            this.equippedAuxiliaryIds.push(id);
+            if (typeof this.calculateStats === 'function') this.calculateStats();
+            return { success: true, msg: `Đã trang bị công pháp phụ trợ: ${techData.name}` };
         } else {
-            return { success: false, msg: "Loại công pháp không hợp lệ để làm chủ tu." };
+            return { success: false, msg: "Loại công pháp không hợp lệ để trang bị." };
         }
 
         if (currentMainId === id) {
@@ -2473,6 +2524,26 @@ export class Player {
         if (typeof this.calculateStats === 'function') this.calculateStats();
 
         return { success: true, msg: "Đã thiết lập công pháp chủ tu thành công." };
+    }
+
+    unequipTechnique(type, id = null) {
+        if (type === 'Độn Thuật') {
+            this.mainEscapeId = null;
+        } else if (type === 'Song Tu') {
+            this.mainDualId = null;
+        } else if (type === 'Phụ Trợ') {
+            if (id) {
+                this.equippedAuxiliaryIds = (this.equippedAuxiliaryIds || []).filter(x => x !== id);
+            } else {
+                this.equippedAuxiliaryIds = [];
+            }
+        } else if (type === 'Bí Pháp' || type === 'secret') {
+            if (id) {
+                this.equippedSecretTechniqueIds = (this.equippedSecretTechniqueIds || []).filter(x => x !== id);
+            }
+        }
+        if (typeof this.calculateStats === 'function') this.calculateStats();
+        return { success: true, msg: "Đã tháo gỡ thành công." };
     }
 
     /**
@@ -2537,6 +2608,9 @@ export class Player {
             mainTechniqueId: this.mainTechniqueId,
             mainBodyTechniqueId: this.mainBodyTechniqueId,
             mainSoulTechniqueId: this.mainSoulTechniqueId,
+            mainEscapeId: this.mainEscapeId,
+            mainDualId: this.mainDualId,
+            equippedAuxiliaryIds: [...(this.equippedAuxiliaryIds || [])],
             learnedTechniques: [...this.learnedTechniques],
             learnedSecretTechniques: [...this.learnedSecretTechniques],
             equippedSecretTechniqueIds: [...this.equippedSecretTechniqueIds],
@@ -2698,6 +2772,9 @@ export class Player {
         this.mainTechniqueId = data.mainTechniqueId || null;
         this.mainBodyTechniqueId = data.mainBodyTechniqueId || null;
         this.mainSoulTechniqueId = data.mainSoulTechniqueId || null;
+        this.mainEscapeId = data.mainEscapeId || null;
+        this.mainDualId = data.mainDualId || null;
+        this.equippedAuxiliaryIds = data.equippedAuxiliaryIds || [];
         this.learnedTechniques = data.learnedTechniques || [];
         this.learnedSecretTechniques = data.learnedSecretTechniques || [];
         this.equippedSecretTechniqueIds = data.equippedSecretTechniqueIds || [];

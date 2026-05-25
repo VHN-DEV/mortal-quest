@@ -9,8 +9,8 @@ export class TechniqueController {
     get btnTechTabLinhLuc() { return this.parentScreen.btnTechTabLinhLuc; }
     get btnTechTabLuyenThe() { return this.parentScreen.btnTechTabLuyenThe; }
     get btnTechTabThanThuc() { return this.parentScreen.btnTechTabThanThuc; }
+    get btnTechTabPhuTro() { return this.parentScreen.btnTechTabPhuTro; }
     get btnTechTabSecret() { return this.parentScreen.btnTechTabSecret; }
-    get btnTechTabCustom() { return this.parentScreen.btnTechTabCustom; }
     get elTechListView() { return this.parentScreen.elTechListView; }
     get elTechDetailView() { return this.parentScreen.elTechDetailView; }
     get elTechDetailContent() { return this.parentScreen.elTechDetailContent; }
@@ -22,25 +22,21 @@ export class TechniqueController {
         state.activeTechTab = tab;
 
         // Update tab styles
-        if (this.btnTechTabLinhLuc && this.btnTechTabLuyenThe && this.btnTechTabThanThuc && this.btnTechTabSecret && this.btnTechTabCustom) {
+        const allTabBtns = [this.btnTechTabLinhLuc, this.btnTechTabLuyenThe, this.btnTechTabThanThuc, this.btnTechTabPhuTro, this.btnTechTabSecret].filter(Boolean);
+        if (allTabBtns.length) {
             const defaultClass = 'whitespace-nowrap px-4 py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
-            
-            this.btnTechTabLinhLuc.className = defaultClass;
-            this.btnTechTabLuyenThe.className = defaultClass;
-            this.btnTechTabThanThuc.className = defaultClass;
-            this.btnTechTabSecret.className = defaultClass;
-            this.btnTechTabCustom.className = defaultClass;
-            
-            if (tab === 'linh_luc') {
-                this.btnTechTabLinhLuc.className = 'whitespace-nowrap px-4 py-2 bg-qi-blue/20 text-qi-blue border border-qi-blue/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
-            } else if (tab === 'luyen_the') {
-                this.btnTechTabLuyenThe.className = 'whitespace-nowrap px-4 py-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
-            } else if (tab === 'than_thuc') {
-                this.btnTechTabThanThuc.className = 'whitespace-nowrap px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
-            } else if (tab === 'secret') {
-                this.btnTechTabSecret.className = 'whitespace-nowrap px-4 py-2 bg-qi-purple/20 text-qi-purple border border-qi-purple/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
-            } else if (tab === 'custom') {
-                this.btnTechTabCustom.className = 'whitespace-nowrap px-4 py-2 bg-cultivation-gold/20 text-cultivation-gold border border-cultivation-gold/30 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            allTabBtns.forEach(btn => btn.className = defaultClass);
+
+            const activeMap = {
+                'linh_luc':  { btn: this.btnTechTabLinhLuc,  cls: 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' },
+                'luyen_the': { btn: this.btnTechTabLuyenThe, cls: 'bg-orange-500/20 text-orange-400 border border-orange-500/30' },
+                'than_thuc': { btn: this.btnTechTabThanThuc, cls: 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' },
+                'phu_tro':   { btn: this.btnTechTabPhuTro,  cls: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' },
+                'secret':    { btn: this.btnTechTabSecret,  cls: 'bg-qi-purple/20 text-qi-purple border border-qi-purple/30' },
+            };
+            const active = activeMap[tab];
+            if (active && active.btn) {
+                active.btn.className = `whitespace-nowrap px-4 py-2 ${active.cls} rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all`;
             }
         }
 
@@ -49,113 +45,13 @@ export class TechniqueController {
             this.elTechListView.classList.remove('hidden');
             if (this.elTechDetailView) this.elTechDetailView.classList.add('hidden');
 
-            if (tab === 'custom') {
-                this.elTechListView.innerHTML = `
-                    <div class="bg-black/40 p-5 rounded-3xl border border-white/5 space-y-6">
-                        <div>
-                            <h3 class="font-ancient text-cultivation-gold text-lg">Khai Tông Sáng Lập</h3>
-                            <p class="text-[9px] text-gray-500 mt-1 uppercase tracking-widest">Tự Sáng Tạo Công Pháp Chí Cao</p>
-                        </div>
-
-                        <!-- Cost Alert -->
-                        <div class="bg-white/[0.02] p-4 rounded-2xl border border-white/5 flex justify-between items-center text-xs">
-                            <div class="space-y-1 w-full">
-                                <div class="text-[9px] text-gray-500 uppercase tracking-wider mb-2">Tiêu hao sáng lập:</div>
-                                <div class="flex justify-between items-center">
-                                    <span class="font-mono ${state.player.tuVi >= 50000 ? 'text-qi-jade' : 'text-red-500'}">50,000 Tu Vi (${Math.floor(state.player.tuVi).toLocaleString()})</span>
-                                    <span class="font-mono ${state.player.techniquePoints >= 100 ? 'text-qi-jade' : 'text-red-500'}">100 Điểm Công Pháp (${state.player.techniquePoints})</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Name Input -->
-                        <div class="space-y-2">
-                            <label class="text-[9px] text-gray-500 uppercase tracking-widest">Tên Công Pháp</label>
-                            <input id="custom-tech-name" type="text" placeholder="Ví dụ: Cửu Thiên Đạo Quyết" 
-                                class="w-full bg-black/50 border border-white/10 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-cultivation-gold transition-colors">
-                        </div>
-
-                        <!-- Element Select -->
-                        <div class="space-y-2">
-                            <label class="text-[9px] text-gray-500 uppercase tracking-widest">Thuộc Tính Ngũ Hành</label>
-                            <select id="custom-tech-element" 
-                                class="w-full bg-black/50 border border-white/10 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-cultivation-gold transition-colors">
-                                <option value="Neutral">Hỗn Độn (Vô thuộc tính)</option>
-                                <option value="Kim">Kim (Canh Kim Kiếm Khí)</option>
-                                <option value="Mộc">Mộc (Trường Xuân Trường Sinh)</option>
-                                <option value="Thủy">Thủy (Huyền Âm Chân Thủy)</option>
-                                <option value="Hỏa">Hỏa (Tam Muội Chân Hỏa)</option>
-                                <option value="Thổ">Thổ (Hậu Thổ Minh Vương)</option>
-                                <option value="Phong">Phong (Cực Tốc Thần Phong)</option>
-                                <option value="Lôi">Lôi (Ngũ Lôi Oanh Đỉnh)</option>
-                                <option value="Băng">Băng (Cực Hàn Băng Sương)</option>
-                                <option value="Âm">Âm (U Minh Ma Đạo)</option>
-                                <option value="Dương">Dương (Thuần Dương Đạo Pháp)</option>
-                            </select>
-                        </div>
-
-                        <!-- Stat Boost -->
-                        <div class="space-y-2">
-                            <label class="text-[9px] text-gray-500 uppercase tracking-widest">Thiên Hướng Cộng Thuộc Tính</label>
-                            <select id="custom-tech-stat" 
-                                class="w-full bg-black/50 border border-white/10 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-cultivation-gold transition-colors">
-                                <option value="atk">Tăng Cường Công Kích (+180 Công Kích)</option>
-                                <option value="hp">Hồi Linh Khí Huyết (+600 Sinh Mệnh)</option>
-                                <option value="spd">Phi Thăng Tốc Độ (+15 Thân Pháp)</option>
-                            </select>
-                        </div>
-
-                        <!-- Special Effect -->
-                        <div class="space-y-2">
-                            <label class="text-[9px] text-gray-500 uppercase tracking-widest">Hiệu Ứng Bẩm Sinh</label>
-                            <select id="custom-tech-effect" 
-                                class="w-full bg-black/50 border border-white/10 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-cultivation-gold transition-colors">
-                                <option value="swordDmg">Kiếm Ý Thông Thiên (+15% Sát thương Kiếm)</option>
-                                <option value="tvps">Linh Lực Tinh Thuần (+3.0 Tu Vi/s)</option>
-                                <option value="lifeSteal">Huyết Ma Nghịch Thiên (+12% Hút Máu)</option>
-                            </select>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button id="custom-tech-submit"
-                            class="w-full py-4 bg-cultivation-gold text-black text-xs font-bold rounded-2xl hover:brightness-110 active:scale-[0.98] transition-all">
-                            ⚡ KHAI TÔNG LẬP PHÁP
-                        </button>
-                    </div>
-                `;
-
-                // Wire Submit
-                const btnSubmit = document.getElementById('custom-tech-submit');
-                if (btnSubmit) {
-                    btnSubmit.onclick = () => {
-                        const name = document.getElementById('custom-tech-name').value;
-                        const element = document.getElementById('custom-tech-element').value;
-                        const statVal = document.getElementById('custom-tech-stat').value;
-                        const effectVal = document.getElementById('custom-tech-effect').value;
-
-                        if (!name || name.trim() === '') {
-                            state.ui.toast("Tên công pháp không được để trống!", "error");
-                            return;
-                        }
-
-                        // Map choice into stats/effects payload
-                        const chosenStats = {};
-                        if (statVal === 'atk') chosenStats.atk = 180;
-                        else if (statVal === 'hp') chosenStats.hp = 600;
-                        else if (statVal === 'spd') chosenStats.spd = 15;
-
-                        const chosenEffects = {};
-                        if (effectVal === 'swordDmg') chosenEffects.swordDmg = 1.15;
-                        else if (effectVal === 'tvps') chosenEffects.tvps = 3.0;
-                        else if (effectVal === 'lifeSteal') chosenEffects.lifeSteal = 0.12;
-
-                        window.game.createCustomTechnique(name, element, chosenStats, chosenEffects);
-                    };
-                }
-                
+            if (tab === 'phu_tro') {
+                this._renderPhuTroTab();
                 if (this.elTechPoints) this.elTechPoints.textContent = state.player.techniquePoints || 0;
                 return;
             }
+
+
 
             const isSecretTab = tab === 'secret';
             const compList = (state.player.comprehendingTechniques || []).filter(c => c.isSecret === isSecretTab);
@@ -316,51 +212,148 @@ export class TechniqueController {
                     this.elTechListView.innerHTML = `<div class="text-center py-20 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ ${typeName} nào...</div>`;
                 }
             } else {
-                if (compList.length > 0) {
-                    const separator = document.createElement('div');
-                    separator.className = 'mb-4 border-b border-white/5 pb-2 mt-6';
-                    separator.innerHTML = `
-                        <h3 class="text-[10px] font-ancient text-gray-500 uppercase tracking-[0.2em] flex items-center">
-                            <i class="ph ph-scroll mr-1.5 text-xs"></i>
-                            Công Pháp Đã Lĩnh Ngộ
-                        </h3>
-                    `;
-                    this.elTechListView.appendChild(separator);
-                }
+                if (isSecretTab) {
+                    // Group the list by category
+                    const groups = {
+                        'Pháp Thuật': [],
+                        'Bí Thuật': [],
+                        'Thần Thông': []
+                    };
+                    list.forEach(entry => {
+                        const data = getSecretTechniqueById(entry.id);
+                        if (data) {
+                            const cat = data.category || 'Bí Thuật';
+                            if (!groups[cat]) groups[cat] = [];
+                            groups[cat].push({ entry, data });
+                        }
+                    });
 
-                list.forEach(entry => {
-                    const data = !isSecretTab
-                        ? (getTechniqueById(entry.id) || (state.player.customTechniques || []).find(t => t.id === entry.id))
-                        : getSecretTechniqueById(entry.id);
-                    if (!data) return;
+                    // Add a nice header
+                    if (compList.length > 0) {
+                        const separator = document.createElement('div');
+                        separator.className = 'mb-4 border-b border-white/5 pb-2 mt-6';
+                        separator.innerHTML = `
+                            <h3 class="text-[10px] font-ancient text-gray-500 uppercase tracking-[0.2em] flex items-center">
+                                <i class="ph ph-scroll mr-1.5 text-xs"></i>
+                                Bí Pháp Đã Lĩnh Ngộ
+                            </h3>
+                        `;
+                        this.elTechListView.appendChild(separator);
+                    }
 
-                    const mastery = MASTERY_LEVELS.find(m => m.id === (entry.masteryLevel || 1));
-                    const stageLabel = data.stageLabel || 'Tầng';
-                    const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
+                    // Render each group
+                    const categories = ['Pháp Thuật', 'Bí Thuật', 'Thần Thông'];
+                    const groupStyles = {
+                        'Pháp Thuật': {
+                            title: 'Spells • Pháp Thuật',
+                            color: 'text-teal-400',
+                            bg: 'bg-teal-500/5 border-teal-500/10 hover:bg-teal-500/10 hover:border-teal-500/30',
+                            badge: 'bg-teal-500/15 text-teal-300 border-teal-500/30 shadow-[0_0_8px_rgba(20,184,166,0.2)]'
+                        },
+                        'Bí Thuật': {
+                            title: 'Secrets • Bí Thuật',
+                            color: 'text-red-400',
+                            bg: 'bg-red-500/5 border-red-500/10 hover:bg-red-500/10 hover:border-red-500/30',
+                            badge: 'bg-red-500/15 text-red-400 border-red-500/30 shadow-[0_0_8px_rgba(239,68,68,0.2)]'
+                        },
+                        'Thần Thông': {
+                            title: 'Divine Abilities • Thần Thông',
+                            color: 'text-yellow-400 font-ancient tracking-wider',
+                            bg: 'bg-yellow-500/5 border-yellow-500/10 hover:bg-yellow-500/10 hover:border-yellow-500/30 shadow-[inset_0_0_12px_rgba(234,179,8,0.05)]',
+                            badge: 'bg-yellow-500/15 text-yellow-300 border-yellow-500/30 shadow-[0_0_12px_rgba(234,179,8,0.3)] animate-pulse'
+                        }
+                    };
 
-                    let borderColor = 'border-qi-blue/10 bg-qi-blue/5';
-                    if (tab === 'luyen_the') borderColor = 'border-orange-500/10 bg-orange-500/5';
-                    else if (tab === 'than_thuc') borderColor = 'border-cyan-500/10 bg-cyan-500/5';
-                    else if (tab === 'secret') borderColor = 'border-qi-purple/10 bg-qi-purple/5';
+                    categories.forEach(cat => {
+                        const items = groups[cat] || [];
+                        if (items.length === 0) return;
 
-                    const el = document.createElement('div');
-                    el.className = `p-4 border ${borderColor} rounded-2xl flex items-center justify-between hover:bg-white/5 cursor-pointer transition-all mb-3`;
-                    el.innerHTML = `
-                        <div class="flex items-center space-x-4">
-                            <div class="text-2xl">${data.icon || (isSecretTab ? '✨' : '📜')}</div>
-                            <div>
-                                <h4 class="text-sm font-bold text-white">${data.name}</h4>
-                                <div class="flex items-center space-x-2 mt-1">
-                                    <span class="text-[8px] px-1.5 py-0.5 bg-black/40 rounded border border-white/5 text-gray-400 font-mono">${stageName}</span>
-                                    <span class="text-[8px] text-cultivation-gold font-bold">${mastery?.name || 'Nhập Môn'}</span>
+                        const catHeader = document.createElement('div');
+                        catHeader.className = 'mt-5 mb-3 flex items-center justify-between';
+                        catHeader.innerHTML = `
+                            <h4 class="text-[10px] font-ancient uppercase tracking-[0.25em] ${groupStyles[cat].color} flex items-center">
+                                <span class="inline-block w-1.5 h-1.5 rounded-full bg-current mr-2"></span>
+                                ${groupStyles[cat].title} (${items.length})
+                            </h4>
+                        `;
+                        this.elTechListView.appendChild(catHeader);
+
+                        items.forEach(({ entry, data }) => {
+                            const mastery = MASTERY_LEVELS.find(m => m.id === (entry.masteryLevel || 1));
+                            const stageLabel = data.stageLabel || 'Tầng';
+                            const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
+
+                            const el = document.createElement('div');
+                            el.className = `p-4 border ${groupStyles[cat].bg} rounded-2xl flex items-center justify-between cursor-pointer transition-all duration-300 hover:-translate-y-0.5 mb-3`;
+                            
+                            // Realm requirement check lock indicator
+                            let realmLockedText = '';
+                            if (cat === 'Thần Thông' && data.requiredRealmId && state.player.realmId < data.requiredRealmId) {
+                                realmLockedText = `<span class="text-[7px] ml-1.5 px-1 py-0.5 bg-red-500/20 border border-red-500/40 rounded text-red-300 font-bold uppercase">Yêu cầu Trúc Cơ Kỳ</span>`;
+                            }
+
+                            el.innerHTML = `
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-2xl">${data.icon || '✨'}</div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-white flex items-center">${data.name} ${realmLockedText}</h4>
+                                        <div class="flex items-center space-x-2 mt-1">
+                                            <span class="text-[8px] px-1.5 py-0.5 bg-black/40 rounded border border-white/5 text-gray-400 font-mono">${stageName}</span>
+                                            <span class="text-[8px] text-cultivation-gold font-bold">${mastery?.name || 'Nhập Môn'}</span>
+                                            <span class="text-[7px] px-1.5 py-0.5 rounded border ${groupStyles[cat].badge} font-bold uppercase tracking-wider">${cat}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="ph ph-caret-right text-gray-600"></i>
+                            `;
+                            el.onclick = () => this.renderTechniqueDetail(entry.id, true);
+                            this.elTechListView.appendChild(el);
+                        });
+                    });
+                } else {
+                    if (compList.length > 0) {
+                        const separator = document.createElement('div');
+                        separator.className = 'mb-4 border-b border-white/5 pb-2 mt-6';
+                        separator.innerHTML = `
+                            <h3 class="text-[10px] font-ancient text-gray-500 uppercase tracking-[0.2em] flex items-center">
+                                <i class="ph ph-scroll mr-1.5 text-xs"></i>
+                                Công Pháp Đã Lĩnh Ngộ
+                            </h3>
+                        `;
+                        this.elTechListView.appendChild(separator);
+                    }
+
+                    list.forEach(entry => {
+                        const data = getTechniqueById(entry.id) || (state.player.customTechniques || []).find(t => t.id === entry.id);
+                        if (!data) return;
+
+                        const mastery = MASTERY_LEVELS.find(m => m.id === (entry.masteryLevel || 1));
+                        const stageLabel = data.stageLabel || 'Tầng';
+                        const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
+
+                        let borderColor = 'border-qi-blue/10 bg-qi-blue/5';
+                        if (tab === 'luyen_the') borderColor = 'border-orange-500/10 bg-orange-500/5';
+                        else if (tab === 'than_thuc') borderColor = 'border-cyan-500/10 bg-cyan-500/5';
+
+                        const el = document.createElement('div');
+                        el.className = `p-4 border ${borderColor} rounded-2xl flex items-center justify-between hover:bg-white/5 cursor-pointer transition-all mb-3`;
+                        el.innerHTML = `
+                            <div class="flex items-center space-x-4">
+                                <div class="text-2xl">${data.icon || '📜'}</div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-white">${data.name}</h4>
+                                    <div class="flex items-center space-x-2 mt-1">
+                                        <span class="text-[8px] px-1.5 py-0.5 bg-black/40 rounded border border-white/5 text-gray-400 font-mono">${stageName}</span>
+                                        <span class="text-[8px] text-cultivation-gold font-bold">${mastery?.name || 'Nhập Môn'}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <i class="ph ph-caret-right text-gray-600"></i>
-                    `;
-                    el.onclick = () => this.renderTechniqueDetail(entry.id, tab === 'secret');
-                    this.elTechListView.appendChild(el);
-                });
+                            <i class="ph ph-caret-right text-gray-600"></i>
+                        `;
+                        el.onclick = () => this.renderTechniqueDetail(entry.id, false);
+                        this.elTechListView.appendChild(el);
+                    });
+                }
             }
         }
 
@@ -389,10 +382,38 @@ export class TechniqueController {
         const canBreakthrough = entry.masteryLevel >= 4 && (entry.stage < (data.maxStage || 10));
 
         let isMain = false;
+        let equipLabel = 'THIẾT LẬP CHỦ TU';
+        let equippedLabel = 'ĐANG CHỦ TU';
+        let unequipBtnHTML = '';
+
         if (!isSecret) {
-            if (data.type === 'Linh Lực') isMain = state.player.mainTechniqueId === id;
-            else if (data.type === 'Luyện Thể') isMain = state.player.mainBodyTechniqueId === id;
-            else if (data.type === 'Thần Thức') isMain = state.player.mainSoulTechniqueId === id;
+            if (data.type === 'Linh Lực') { isMain = state.player.mainTechniqueId === id; }
+            else if (data.type === 'Luyện Thể') { isMain = state.player.mainBodyTechniqueId === id; }
+            else if (data.type === 'Thần Thức') { isMain = state.player.mainSoulTechniqueId === id; }
+            else if (data.type === 'Độn Thuật') {
+                isMain = state.player.mainEscapeId === id;
+                equipLabel = 'TRANG BỊ ĐỘN THUẬT';
+                equippedLabel = '⚡ ĐANG TRANG BỊ';
+                if (isMain) {
+                    unequipBtnHTML = `<button class="w-full py-3 bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-bold rounded-2xl mt-2 active:scale-95 transition-all" onclick="window.game.player.unequipTechnique('Độn Thuật'); window.game.ui.renderTechniques('phu_tro');">🗑️ THÁO GỠ ĐỘN THUẬT</button>`;
+                }
+            }
+            else if (data.type === 'Song Tu') {
+                isMain = state.player.mainDualId === id;
+                equipLabel = 'TRANG BỊ SONG TU';
+                equippedLabel = '☯️ ĐANG SONG TU';
+                if (isMain) {
+                    unequipBtnHTML = `<button class="w-full py-3 bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-bold rounded-2xl mt-2 active:scale-95 transition-all" onclick="window.game.player.unequipTechnique('Song Tu'); window.game.ui.renderTechniques('phu_tro');">🗑️ THÁO GỠ SONG TU</button>`;
+                }
+            }
+            else if (data.type === 'Phụ Trợ') {
+                isMain = (state.player.equippedAuxiliaryIds || []).includes(id);
+                equipLabel = 'TRANG BỊ PHỤ TRỢ';
+                equippedLabel = '🌀 ĐANG PHỤ TU';
+                if (isMain) {
+                    unequipBtnHTML = `<button class="w-full py-3 bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-bold rounded-2xl mt-2 active:scale-95 transition-all" onclick="window.game.player.unequipTechnique('Phụ Trợ', '${id}'); window.game.ui.renderTechniques('phu_tro');">🗑️ THÁO GỠ PHỤ TRỢ</button>`;
+                }
+            }
         }
 
         let equipBtnHTML = '';
@@ -400,13 +421,14 @@ export class TechniqueController {
             if (isMain) {
                 equipBtnHTML = `
                     <button class="w-full py-4 bg-cultivation-gold/15 text-cultivation-gold border border-cultivation-gold/20 text-xs font-bold rounded-2xl cursor-default opacity-80" disabled>
-                        <i class="ph ph-check-circle mr-1"></i> ĐANG CHỦ TU
+                        <i class="ph ph-check-circle mr-1"></i> ${equippedLabel}
                     </button>
+                    ${unequipBtnHTML}
                 `;
             } else {
                 equipBtnHTML = `
                     <button class="w-full py-4 bg-cultivation-gold text-black text-xs font-bold rounded-2xl active:scale-95 transition-all" onclick="window.game.setMainTechnique('${id}')">
-                        <i class="ph ph-shield-star mr-1"></i> THIẾT LẬP CHỦ TU
+                        <i class="ph ph-shield-star mr-1"></i> ${equipLabel}
                     </button>
                 `;
             }
@@ -443,6 +465,138 @@ export class TechniqueController {
                 <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-xs text-gray-400 leading-relaxed">
                     ${data.description || 'Không có mô tả.'}
                 </div>
+            </div>
+        `;
+    }
+
+    _renderPhuTroTab() {
+        if (!this.elTechListView) return;
+        const p = state.player;
+
+        const _getTech = (id) => id ? getTechniqueById(id) : null;
+        const _getLearned = (id) => id ? p.learnedTechniques.find(t => t.id === id) : null;
+
+        const _slotCard = (label, color, icon, tech, learnedEntry, emptyMsg, type, extraIndex = null) => {
+            if (tech && learnedEntry) {
+                const mastery = MASTERY_LEVELS.find(m => m.id === (learnedEntry.masteryLevel || 1));
+                const stageName = tech.stageNames?.[learnedEntry.stage - 1] || `${tech.stageLabel || 'Tầng'} ${learnedEntry.stage || 1}`;
+                return `
+                    <div class="p-4 rounded-2xl border ${color} bg-black/40 shadow-lg relative group transition-all duration-300 hover:border-white/20">
+                        <div class="text-[8px] text-gray-500 uppercase tracking-widest mb-2 font-bold">${label}</div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">${icon}</span>
+                                <div>
+                                    <p class="text-xs font-bold text-white font-ancient">${tech.name}</p>
+                                    <div class="flex items-center space-x-2 mt-0.5">
+                                        <span class="text-[8px] text-gray-400 font-mono">${stageName}</span>
+                                        <span class="text-[8px] text-cultivation-gold font-bold">${mastery?.name || 'Nhập Môn'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="text-[8px] px-2 py-1 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl active:scale-95 transition-all hover:bg-red-500/25 hover:text-red-300"
+                                onclick="window.game.player.unequipTechnique('${type}', '${learnedEntry.id}'); window.game.ui.renderTechniques('phu_tro');">Tháo</button>
+                        </div>
+                    </div>
+                `;
+            }
+            // Empty slot style
+            return `
+                <div class="p-4 rounded-2xl border border-white/5 bg-white/[0.01] flex flex-col justify-center items-center text-center py-6 opacity-60 border-dashed hover:opacity-90 hover:border-white/10 hover:bg-white/[0.02] transition-all duration-300">
+                    <span class="text-2xl mb-1">${icon}</span>
+                    <p class="text-[8px] text-gray-500 uppercase tracking-widest font-bold">${label}</p>
+                    <p class="text-[10px] text-gray-600 italic mt-0.5">${emptyMsg}</p>
+                </div>
+            `;
+        };
+
+        // Auxiliary slots (up to 3)
+        const auxIds = p.equippedAuxiliaryIds || [];
+        let auxSlots = '';
+        for (let i = 0; i < 3; i++) {
+            const auxId = auxIds[i] || null;
+            const auxTech = _getTech(auxId);
+            const auxLearned = _getLearned(auxId);
+            auxSlots += _slotCard(`Khe Phụ Tu ${i + 1}`, 'border-emerald-500/20 bg-emerald-500/[0.03]', '🌀', auxTech, auxLearned, 'Chưa trang bị', 'Phụ Trợ', auxId);
+        }
+
+        // Escape slot
+        const escapeTech = _getTech(p.mainEscapeId);
+        const escapeLearned = _getLearned(p.mainEscapeId);
+        const escapeSlot = _slotCard('⚡ Độn Thuật', 'border-yellow-500/20 bg-yellow-500/[0.03] shadow-[0_0_15px_rgba(234,179,8,0.03)]', '⚡', escapeTech, escapeLearned, 'Chưa trang bị', 'Độn Thuật');
+
+        // Dual cultivation slot
+        const dualTech = _getTech(p.mainDualId);
+        const dualLearned = _getLearned(p.mainDualId);
+        const dualSlot = _slotCard('☯️ Song Tu', 'border-pink-500/20 bg-pink-500/[0.03] shadow-[0_0_15px_rgba(236,72,153,0.03)]', '☯️', dualTech, dualLearned, 'Chưa trang bị', 'Song Tu');
+
+        // Learned but unequipped techniques of these types
+        const learnableTabs = ['Độn Thuật', 'Song Tu', 'Phụ Trợ'];
+        const unequipped = p.learnedTechniques.filter(t => {
+            const d = getTechniqueById(t.id);
+            if (!d || !learnableTabs.includes(d.type)) return false;
+            if (d.type === 'Độn Thuật') return p.mainEscapeId !== t.id;
+            if (d.type === 'Song Tu') return p.mainDualId !== t.id;
+            if (d.type === 'Phụ Trợ') return !(p.equippedAuxiliaryIds || []).includes(t.id);
+            return false;
+        });
+
+        let unequippedHtml = '';
+        if (unequipped.length > 0) {
+            unequippedHtml = `
+                <div class="mt-8 border-t border-white/5 pt-6">
+                    <h3 class="text-[9px] font-ancient text-gray-500 uppercase tracking-[0.2em] mb-4 flex items-center">
+                        <i class="ph ph-books mr-1.5 text-xs text-cultivation-gold"></i>
+                        Danh Sách Pháp Điển Dự Phòng
+                    </h3>
+                    <div class="grid grid-cols-1 gap-2">
+                        ${unequipped.map(t => {
+                            const d = getTechniqueById(t.id);
+                            if (!d) return '';
+                            const catColor = {
+                                'Độn Thuật': 'text-yellow-300 border-yellow-500/20 bg-yellow-500/5',
+                                'Song Tu': 'text-pink-300 border-pink-500/20 bg-pink-500/5',
+                                'Phụ Trợ': 'text-emerald-300 border-emerald-500/20 bg-emerald-500/5'
+                            }[d.type] || 'text-gray-400 border-white/5';
+                            return `
+                                <div class="p-3 border border-white/5 rounded-2xl flex items-center justify-between hover:bg-white/5 hover:border-white/10 cursor-pointer transition-all duration-300"
+                                    onclick="window.game.ui.renderTechniqueDetail('${t.id}', false)">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="text-xl">${d.icon || '📜'}</span>
+                                        <div>
+                                            <p class="text-xs font-bold text-white">${d.name}</p>
+                                            <span class="text-[7px] px-1.5 py-0.5 rounded border ${catColor} font-bold uppercase tracking-wider">${d.type}</span>
+                                        </div>
+                                    </div>
+                                    <button class="text-[8px] px-2 py-1 bg-cultivation-gold text-black font-bold rounded-xl active:scale-95 transition-all hover:bg-white"
+                                        onclick="event.stopPropagation(); window.game.setMainTechnique('${t.id}'); window.game.ui.renderTechniques('phu_tro');">Trang Bị</button>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        this.elTechListView.innerHTML = `
+            <div class="space-y-4">
+                <div class="mb-4">
+                    <h3 class="font-ancient text-emerald-400 text-lg">Tu Luyện Pháp Trận</h3>
+                    <p class="text-[8px] text-gray-500 uppercase tracking-widest mt-1">Trang bị để kích hoạt thần thông bị động, gia trì thân pháp và hộ vệ đạo tâm</p>
+                </div>
+                
+                <!-- Celestial Core Array Layout -->
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    ${escapeSlot}
+                    ${dualSlot}
+                </div>
+                
+                <!-- Auxiliary Slots Layout -->
+                <div class="grid grid-cols-3 gap-2">
+                    ${auxSlots}
+                </div>
+
+                ${unequippedHtml}
             </div>
         `;
     }

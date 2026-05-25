@@ -39,14 +39,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         // Bắt đầu preload tài nguyên
+        let lastPercent = -1;
         await preloadAssets((percent, text) => {
-            // Sử dụng GSAP để làm mượt chuyển động của thanh progress
+            if (percent === lastPercent) return;
+            lastPercent = percent;
+
             if (elBar) {
-                gsap.to(elBar, {
-                    width: `${percent}%`,
-                    duration: 0.5,
-                    ease: "power1.out"
-                });
+                elBar.style.width = `${percent}%`;
             }
             if (elPercent) elPercent.textContent = `${percent}%`;
             if (elText) elText.textContent = text;
@@ -110,7 +109,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Subtle entrance animation for the main app
             gsap.from("#app", {
                 opacity: 0,
-                y: 10,
                 duration: 1,
                 delay: 0.5,
                 ease: "power2.out"

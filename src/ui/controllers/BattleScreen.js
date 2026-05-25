@@ -425,19 +425,70 @@ export class BattleScreen {
             this.hideSecretList();
             return;
         }
+        
         const now = Date.now();
-        this.secretList.innerHTML = secrets.map((id) => {
+        const categorized = {
+            'Pháp Thuật': [],
+            'Bí Thuật': [],
+            'Thần Thông': []
+        };
+        
+        secrets.forEach(id => {
             const cd = state.player.secretTechniqueCooldowns?.[id] || 0;
             const item = getSecretTechniqueById(id);
-            const name = item?.name || id;
-            const remainMs = (item?.cooldown || 0) * 1000 - (now - cd);
+            if (!item) return;
+            const cat = item.category || 'Bí Thuật';
+            const remainMs = (item.cooldown || 0) * 1000 - (now - cd);
             const remain = Math.max(0, Math.ceil(remainMs / 1000));
             const disabled = remain > 0;
-            return `<button data-secret-id="${id}" ${disabled ? 'disabled' : ''} class="w-full text-left px-3 py-2 rounded border border-white/5 ${disabled ? 'opacity-50' : 'hover:bg-white/5'} text-[10px] font-ancient flex justify-between items-center">
-                <span>${name}</span>
-                ${disabled ? `<span class="text-gray-500 italic">${remain}s</span>` : ''}
-            </button>`;
-        }).join('');
+            categorized[cat].push({ id, item, remain, disabled });
+        });
+
+        const categories = ['Pháp Thuật', 'Bí Thuật', 'Thần Thông'];
+        const catColors = {
+            'Pháp Thuật': 'text-teal-400 border-teal-500/20 bg-teal-500/5',
+            'Bí Thuật': 'text-red-400 border-red-500/20 bg-red-500/5',
+            'Thần Thông': 'text-yellow-400 border-yellow-500/20 bg-yellow-500/5 shimmer-gold'
+        };
+
+        let html = '';
+        categories.forEach(cat => {
+            const list = categorized[cat];
+            if (list.length === 0) return;
+            
+            html += `
+                <div class="mb-2">
+                    <div class="text-[7px] uppercase tracking-[0.2em] font-ancient px-2 py-1 ${catColors[cat]} rounded-xl font-bold mb-1.5 flex justify-between items-center">
+                        <span>${cat}</span>
+                    </div>
+                    <div class="space-y-1">
+                        ${list.map(({ id, item, remain, disabled }) => {
+                            // Realm lock verification on click check
+                            let isLocked = false;
+                            if (cat === 'Thần Thông' && item.requiredRealmId && state.player.realmId < item.requiredRealmId) {
+                                isLocked = true;
+                            }
+                            const displayDisabled = disabled || isLocked;
+                            
+                            return `
+                                <button data-secret-id="${id}" ${displayDisabled ? 'disabled' : ''} 
+                                    class="w-full text-left px-3 py-2 rounded-xl border border-white/5 ${displayDisabled ? 'opacity-40 cursor-not-allowed bg-black/20' : 'hover:bg-white/5 active:scale-98'} text-[10px] font-ancient flex justify-between items-center transition-all duration-200">
+                                    <span class="flex items-center space-x-1">
+                                        <span>${item.icon || '✨'}</span>
+                                        <span class="font-bold text-white">${item.name}</span>
+                                        ${isLocked ? `<span class="text-[6px] px-1 bg-red-500/20 text-red-300 rounded border border-red-500/30 uppercase">Yêu cầu Trúc Cơ</span>` : ''}
+                                    </span>
+                                    ${remain > 0 ? `<span class="text-gray-500 font-mono italic">${remain}s</span>` : ''}
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        });
+
+        this.secretList.innerHTML = html;
+        
         this.secretList.querySelectorAll('button[data-secret-id]').forEach(btn => {
             btn.onclick = () => {
                 const id = btn.dataset.secretId;
