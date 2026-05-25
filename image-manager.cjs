@@ -1,3 +1,4 @@
+// node ./image-manager.cjs
 const http = require('http');
 const crypto = require('crypto');
 const fs = require('fs');
