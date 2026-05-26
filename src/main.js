@@ -424,6 +424,24 @@ window.renderMainStats = () => {
 
     const progress = (player.tuVi / realm.expRequired) * 100;
 
+    // Detect passive cultivation tuVi gain and spawn auto absorbing bubble
+    if (state.ui) {
+        if (state.ui.lastTuVi === undefined) {
+            state.ui.lastTuVi = player.tuVi;
+            state.ui.lastBubbleAbsorbTime = 0;
+        }
+
+        const tuViDiff = player.tuVi - state.ui.lastTuVi;
+        if (tuViDiff > 0 && player.cultivationFocus === 'tuvi') {
+            const now = Date.now();
+            if (now - state.ui.lastBubbleAbsorbTime > 2000) { // Limit frequency to every 2 seconds
+                state.ui.lastBubbleAbsorbTime = now;
+                state.ui.spawnAndPopAutoQiBubble();
+            }
+        }
+        state.ui.lastTuVi = player.tuVi;
+    }
+
     const elProgress = document.getElementById('tu-vi-progress');
     const elTuViText = document.getElementById('tu-vi-text');
     const elPerSec = document.getElementById('tu-vi-per-sec');

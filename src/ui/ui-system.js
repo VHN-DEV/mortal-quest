@@ -1426,7 +1426,23 @@ export class UISystem {
         const allowedElements = elements.filter(el => (elementQi[el] || 0) > 0);
         if (allowedElements.length === 0) return;
         
-        const randomElName = allowedElements[Math.floor(Math.random() * allowedElements.length)];
+        // Weighted random selection based on elementQi proportions
+        let totalWeight = 0;
+        allowedElements.forEach(el => {
+            totalWeight += (elementQi[el] || 0);
+        });
+
+        let randomElName = allowedElements[0];
+        if (totalWeight > 0) {
+            let randomWeight = Math.random() * totalWeight;
+            for (const el of allowedElements) {
+                randomWeight -= (elementQi[el] || 0);
+                if (randomWeight <= 0) {
+                    randomElName = el;
+                    break;
+                }
+            }
+        }
         const ELEMENT_CONFIGS = {
             'Kim': { color: '#fcd34d', name: 'Kim' },
             'Mộc': { color: '#4ade80', name: 'Mộc' },
@@ -1479,13 +1495,13 @@ export class UISystem {
         container.appendChild(bubble);
     }
  
-    popBubble(bubble, cfg) {
+    popBubble(bubble, cfg, isAuto = false) {
         if (bubble.dataset.popped) return;
         bubble.dataset.popped = 'true';
         
         // Check suitability with player's root elements
         const playerElements = state.player?.spiritualRoot?.elements || [];
-        const isCompatible = playerElements.includes(cfg.rawName);
+        const isCompatible = isAuto || playerElements.includes(cfg.rawName);
         
         const containerRect = document.getElementById('screen-main').getBoundingClientRect();
         const rect = bubble.getBoundingClientRect();
@@ -1522,7 +1538,7 @@ export class UISystem {
             return;
         }
         
-        if (window.audioManager && typeof window.audioManager.playSfx === 'function') {
+        if (!isAuto && window.audioManager && typeof window.audioManager.playSfx === 'function') {
             window.audioManager.playSfx('click');
         }
         
@@ -1543,26 +1559,51 @@ export class UISystem {
             onComplete: () => bubble.remove()
         });
         
-        // Trigger controller absorb action with type and size multiplier
-        if (window.game && typeof window.game.absorbBubble === 'function') {
-            const result = window.game.absorbBubble(cfg.rawName, cfg.type, cfg.sizeMult);
-            if (result && result.success) {
-                // Spawn beautiful floating +Exp text
-                const gainText = document.createElement('div');
-                gainText.className = 'absolute z-40 font-bold font-mono text-[9px] text-qi-blue pointer-events-none select-none filter drop-shadow-[0_0_4px_rgba(79,209,197,0.8)]';
-                gainText.textContent = `+${Math.floor(result.gain)} Tu Vi`;
-                gainText.style.left = `${x}px`;
-                gainText.style.top = `${y}px`;
-                gainText.style.transform = 'translate(-50%, -50%)';
-                document.getElementById('screen-main').appendChild(gainText);
-                
-                gsap.to(gainText, {
-                    y: -65,
-                    opacity: 0,
-                    duration: 1.4,
-                    ease: 'power2.out',
-                    onComplete: () => gainText.remove()
-                });
+        if (isAuto) {
+            // Show gain text for auto absorb
+            let tvps = state.player?.tuViPerSecond || 1;
+            if (state.systems.time) {
+                const season = state.systems.time.getSeason();
+                if (season.bonus && season.bonus.tvps) tvps *= season.bonus.tvps;
+            }
+            const gainVal = Math.max(1, Math.floor(tvps * 2));
+            const gainText = document.createElement('div');
+            gainText.className = 'absolute z-40 font-bold font-mono text-[9px] text-qi-blue pointer-events-none select-none filter drop-shadow-[0_0_4px_rgba(79,209,197,0.8)]';
+            gainText.textContent = `+${gainVal} Tu Vi (Hấp Thu)`;
+            gainText.style.left = `${x}px`;
+            gainText.style.top = `${y}px`;
+            gainText.style.transform = 'translate(-50%, -50%)';
+            document.getElementById('screen-main').appendChild(gainText);
+            
+            gsap.to(gainText, {
+                y: -65,
+                opacity: 0,
+                duration: 1.4,
+                ease: 'power2.out',
+                onComplete: () => gainText.remove()
+            });
+        } else {
+            // Trigger controller absorb action with type and size multiplier
+            if (window.game && typeof window.game.absorbBubble === 'function') {
+                const result = window.game.absorbBubble(cfg.rawName, cfg.type, cfg.sizeMult);
+                if (result && result.success) {
+                    // Spawn beautiful floating +Exp text
+                    const gainText = document.createElement('div');
+                    gainText.className = 'absolute z-40 font-bold font-mono text-[9px] text-qi-blue pointer-events-none select-none filter drop-shadow-[0_0_4px_rgba(79,209,197,0.8)]';
+                    gainText.textContent = `+${Math.floor(result.gain)} Tu Vi`;
+                    gainText.style.left = `${x}px`;
+                    gainText.style.top = `${y}px`;
+                    gainText.style.transform = 'translate(-50%, -50%)';
+                    document.getElementById('screen-main').appendChild(gainText);
+                    
+                    gsap.to(gainText, {
+                        y: -65,
+                        opacity: 0,
+                        duration: 1.4,
+                        ease: 'power2.out',
+                        onComplete: () => gainText.remove()
+                    });
+                }
             }
         }
         
@@ -1602,6 +1643,101 @@ export class UISystem {
                 });
             }
         }
+    }
+
+    spawnAndPopAutoQiBubble() {
+        const container = document.getElementById('qi-bubbles-container');
+        if (!container || this.currentScreenId !== 'screen-main') return;
+
+        const playerElements = state.player?.spiritualRoot?.elements || ['Mộc'];
+        if (playerElements.length === 0) return;
+
+        // Get location element qi ratios
+        const loc = getLocationById(state.currentWorldId, state.currentLocId);
+        const defaultQi = {
+            'Kim': 15, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 15,
+            'Phong': 5, 'Lôi': 5, 'Băng': 5, 'Quang': 5, 'Ám': 5
+        };
+        const elementQi = loc?.elementQi || defaultQi;
+
+        // Intersection of player root elements and local positive qi elements
+        const activePlayerElements = playerElements.filter(el => (elementQi[el] || 0) > 0);
+
+        let randomElName = playerElements[0];
+        if (activePlayerElements.length > 0) {
+            let totalWeight = 0;
+            activePlayerElements.forEach(el => {
+                totalWeight += (elementQi[el] || 0);
+            });
+
+            if (totalWeight > 0) {
+                let randomWeight = Math.random() * totalWeight;
+                for (const el of activePlayerElements) {
+                    randomWeight -= (elementQi[el] || 0);
+                    if (randomWeight <= 0) {
+                        randomElName = el;
+                        break;
+                    }
+                }
+            } else {
+                randomElName = activePlayerElements[Math.floor(Math.random() * activePlayerElements.length)];
+            }
+        } else {
+            // Fallback: pick any player root element equally
+            randomElName = playerElements[Math.floor(Math.random() * playerElements.length)];
+        }
+        const ELEMENT_CONFIGS = {
+            'Kim': { color: '#fcd34d', name: 'Kim' },
+            'Mộc': { color: '#4ade80', name: 'Mộc' },
+            'Thủy': { color: '#3b82f6', name: 'Thủy' },
+            'Hỏa': { color: '#ef4444', name: 'Hỏa' },
+            'Thổ': { color: '#d97706', name: 'Thổ' },
+            'Phong': { color: '#94a3b8', name: 'Phong' },
+            'Lôi': { color: '#fbbf24', name: 'Lôi' },
+            'Băng': { color: '#60a5fa', name: 'Băng' },
+            'Quang': { color: '#fffbeb', name: 'Quang' },
+            'Ám': { color: '#a855f7', name: 'Ám' }
+        };
+        const cfg = {
+            ...ELEMENT_CONFIGS[randomElName] || ELEMENT_CONFIGS['Mộc'],
+            rawName: randomElName,
+            type: 'tuvi',
+            sizeMult: 0.65 + Math.random() * 0.35
+        };
+
+        const bubble = document.createElement('div');
+        bubble.className = 'qi-bubble';
+        bubble.style.setProperty('--element-color', cfg.color);
+        bubble.style.animation = 'none';
+        bubble.style.opacity = '0';
+        bubble.style.transform = 'scale(0.5)';
+        
+        const startX = 25 + Math.random() * 50; // 25% to 75%
+        const startY = 35 + Math.random() * 20; // 35% to 55%
+        bubble.style.left = `${startX}%`;
+        bubble.style.bottom = `${startY}%`;
+        bubble.style.width = `${Math.round(52 * cfg.sizeMult)}px`;
+        bubble.style.height = `${Math.round(52 * cfg.sizeMult)}px`;
+
+        bubble.innerHTML = `
+            <div class="qi-bubble-core" style="--element-color: ${cfg.color}"></div>
+            <span class="text-[7.5px] text-white/95 font-bold uppercase tracking-[0.2em] mt-1 select-none font-ancient text-center leading-none">${cfg.name}</span>
+        `;
+
+        container.appendChild(bubble);
+
+        const floatDuration = 0.8 + Math.random() * 0.4;
+        gsap.to(bubble, {
+            opacity: 1,
+            scale: 1,
+            y: -50 - Math.random() * 30,
+            x: (Math.random() - 0.5) * 40,
+            duration: floatDuration,
+            ease: 'power1.out',
+            onComplete: () => {
+                this.popBubble(bubble, cfg, true);
+            }
+        });
     }
 
     handleCultivationSuccess(result) {
