@@ -10,6 +10,7 @@ import { TITLES } from '../configs/fate-data.js';
 import { getLocationById, WORLDS } from '../configs/map-data.js';
 import { getSectById } from '../configs/sect-data.js';
 import { CULTIVATION_PATHS } from '../configs/cultivation-paths.js';
+import { getTechniqueTypeSlug } from '../configs/display-mappers.js';
 
 export class Player {
     constructor() {
@@ -2941,17 +2942,18 @@ export class Player {
     }
 
     unequipTechnique(type, id = null) {
-        if (type === 'Độn Thuật') {
+        const slug = getTechniqueTypeSlug(type);
+        if (slug === 'don_thuat') {
             this.mainEscapeId = null;
-        } else if (type === 'Song Tu') {
+        } else if (slug === 'song_tu') {
             this.mainDualId = null;
-        } else if (type === 'Phụ Trợ') {
+        } else if (slug === 'phu_tro') {
             if (id) {
                 this.equippedAuxiliaryIds = (this.equippedAuxiliaryIds || []).filter(x => x !== id);
             } else {
                 this.equippedAuxiliaryIds = [];
             }
-        } else if (type === 'Bí Pháp' || type === 'secret') {
+        } else if (slug === 'bi_phap' || slug === 'secret') {
             if (id) {
                 this.equippedSecretTechniqueIds = (this.equippedSecretTechniqueIds || []).filter(x => x !== id);
             }

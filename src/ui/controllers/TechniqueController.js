@@ -656,8 +656,8 @@ export class TechniqueController {
                     // Active stat bonuses comparison display
                     const activeStats = this.getTechniqueActiveStats(entry, data);
                     const statsParts = [];
-                    if (activeStats.hp) statsParts.push(`Máu +${Math.round(activeStats.hp)}`);
-                    if (activeStats.mana) statsParts.push(`Mana +${Math.round(activeStats.mana)}`);
+                    if (activeStats.hp) statsParts.push(`Khí huyết +${Math.round(activeStats.hp)}`);
+                    if (activeStats.mana) statsParts.push(`Pháp lực +${Math.round(activeStats.mana)}`);
                     if (activeStats.atk) statsParts.push(`Công +${Math.round(activeStats.atk)}`);
                     if (activeStats.def) statsParts.push(`Thủ +${Math.round(activeStats.def)}`);
                     if (activeStats.spd) statsParts.push(`Thân pháp +${Math.round(activeStats.spd)}`);
@@ -739,15 +739,15 @@ export class TechniqueController {
 
         if (isSecret) {
             isEquipped = (state.player.equippedSecretTechniqueIds || []).includes(id);
-            unequipType = 'Bí Pháp';
+            unequipType = 'bi_phap';
         } else {
             const dType = getTechniqueTypeSlug(data.type);
             if (dType === 'linh_luc') { isEquipped = state.player.mainTechniqueId === id; }
             else if (dType === 'luyen_the') { isEquipped = state.player.mainBodyTechniqueId === id; }
             else if (dType === 'than_thuc') { isEquipped = state.player.mainSoulTechniqueId === id; }
-            else if (dType === 'don_thuat') { isEquipped = state.player.mainEscapeId === id; unequipType = 'Độn Thuật'; }
-            else if (dType === 'song_tu') { isEquipped = state.player.mainDualId === id; unequipType = 'Song Tu'; }
-            else if (dType === 'phu_tro') { isEquipped = (state.player.equippedAuxiliaryIds || []).includes(id); unequipType = 'Phụ Trợ'; }
+            else if (dType === 'don_thuat') { isEquipped = state.player.mainEscapeId === id; unequipType = 'don_thuat'; }
+            else if (dType === 'song_tu') { isEquipped = state.player.mainDualId === id; unequipType = 'song_tu'; }
+            else if (dType === 'phu_tro') { isEquipped = (state.player.equippedAuxiliaryIds || []).includes(id); unequipType = 'phu_tro'; }
         }
 
         // Calculate passive rate text and stat bonuses
@@ -762,8 +762,8 @@ export class TechniqueController {
 
             const activeStats = this.getTechniqueActiveStats(entry, data);
             const statsParts = [];
-            if (activeStats.hp) statsParts.push(`Máu +${Math.round(activeStats.hp)}`);
-            if (activeStats.mana) statsParts.push(`Mana +${Math.round(activeStats.mana)}`);
+            if (activeStats.hp) statsParts.push(`Khí huyết +${Math.round(activeStats.hp)}`);
+            if (activeStats.mana) statsParts.push(`Pháp lực +${Math.round(activeStats.mana)}`);
             if (activeStats.atk) statsParts.push(`Công +${Math.round(activeStats.atk)}`);
             if (activeStats.def) statsParts.push(`Thủ +${Math.round(activeStats.def)}`);
             if (activeStats.spd) statsParts.push(`Thân pháp +${Math.round(activeStats.spd)}`);
@@ -900,18 +900,18 @@ export class TechniqueController {
             const auxId = auxIds[i] || null;
             const auxTech = _getTech(auxId);
             const auxLearned = _getLearned(auxId);
-            auxSlots += _slotCard(`Khe Phụ Tu ${i + 1}`, 'border-emerald-500/20 bg-emerald-500/[0.03]', '🌀', auxTech, auxLearned, 'Chưa trang bị', 'Phụ Trợ', auxId);
+            auxSlots += _slotCard(`Khe Phụ Tu ${i + 1}`, 'border-emerald-500/20 bg-emerald-500/[0.03]', '🌀', auxTech, auxLearned, 'Chưa trang bị', 'phu_tro', auxId);
         }
 
         // Escape slot
         const escapeTech = _getTech(p.mainEscapeId);
         const escapeLearned = _getLearned(p.mainEscapeId);
-        const escapeSlot = _slotCard('⚡ Độn Thuật', 'border-yellow-500/20 bg-yellow-500/[0.03] shadow-[0_0_15px_rgba(234,179,8,0.03)]', '⚡', escapeTech, escapeLearned, 'Chưa trang bị', 'Độn Thuật');
+        const escapeSlot = _slotCard('⚡ Độn Thuật', 'border-yellow-500/20 bg-yellow-500/[0.03] shadow-[0_0_15px_rgba(234,179,8,0.03)]', '⚡', escapeTech, escapeLearned, 'Chưa trang bị', 'don_thuat');
 
         // Dual cultivation slot
         const dualTech = _getTech(p.mainDualId);
         const dualLearned = _getLearned(p.mainDualId);
-        const dualSlot = _slotCard('☯️ Song Tu', 'border-pink-500/20 bg-pink-500/[0.03] shadow-[0_0_15px_rgba(236,72,153,0.03)]', '☯️', dualTech, dualLearned, 'Chưa trang bị', 'Song Tu');
+        const dualSlot = _slotCard('☯️ Song Tu', 'border-pink-500/20 bg-pink-500/[0.03] shadow-[0_0_15px_rgba(236,72,153,0.03)]', '☯️', dualTech, dualLearned, 'Chưa trang bị', 'song_tu');
 
         // Learned but unequipped techniques of these types
         const learnableSlugs = ['don_thuat', 'song_tu', 'phu_tro'];
@@ -953,8 +953,8 @@ export class TechniqueController {
 
                 const activeStats = this.getTechniqueActiveStats(t, d);
                 const statsParts = [];
-                if (activeStats.hp) statsParts.push(`Máu +${Math.round(activeStats.hp)}`);
-                if (activeStats.mana) statsParts.push(`Mana +${Math.round(activeStats.mana)}`);
+                if (activeStats.hp) statsParts.push(`Khí huyết +${Math.round(activeStats.hp)}`);
+                if (activeStats.mana) statsParts.push(`Pháp lực +${Math.round(activeStats.mana)}`);
                 if (activeStats.atk) statsParts.push(`Công +${Math.round(activeStats.atk)}`);
                 if (activeStats.def) statsParts.push(`Thủ +${Math.round(activeStats.def)}`);
                 if (activeStats.spd) statsParts.push(`Thân pháp +${Math.round(activeStats.spd)}`);

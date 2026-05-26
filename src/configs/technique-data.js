@@ -1100,7 +1100,7 @@ export const SECRET_TECHNIQUES = {
         type: 'heal',
         quality: 'Huyền Giai',
         icon: '💧',
-        description: 'Chiết linh tịnh khí hồi phục sinh cơ cực đại, bổ sung 25% tối đa HP lẫn Mana.',
+        description: 'Chiết linh tịnh khí hồi phục sinh cơ cực đại, bổ sung 25% tối đa Khí Huyết lẫn Pháp Lực.',
         costs: { mana: 40 },
         cooldown: 8,
         effects: { healPct: 0.25, manaHealPct: 0.25 }

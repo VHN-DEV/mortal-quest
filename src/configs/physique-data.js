@@ -118,7 +118,7 @@ export const PHYSIQUES = {
         name: 'Hoang Cổ Thánh Thể',
         category: 'THANH',
         grade: 'THANH',
-        desc: 'Thân thể mạnh nhất từ cổ chí kim, HP và Phòng thủ cực cao.',
+        desc: 'Thân thể mạnh nhất từ cổ chí kim, Khí Huyết và Phòng thủ cực cao.',
         bonus: { maxHp: 2000, def: 200, atk: 100, qiAbsorb: 2.0 },
         phenomenon: 'Kim Thân Bất Diệt'
     },

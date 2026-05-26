@@ -15,7 +15,9 @@ export const TECHNIQUE_TYPE_MAP = {
     'than_thuc': 'Thần Thức',
     'don_thuat': 'Độn Thuật',
     'song_tu': 'Song Tu',
-    'phu_tro': 'Phụ Trợ'
+    'phu_tro': 'Phụ Trợ',
+    'bi_phap': 'Bí Pháp',
+    'secret': 'Bí Pháp'
 };
 
 export function getGenderLabel(gender) {

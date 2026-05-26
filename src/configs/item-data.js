@@ -743,7 +743,7 @@ export const ITEMS = {
         icon: '💧',
         quality: 'Linh Khí',
         price: 600,
-        description: 'Giọt ngọc lộ tinh khiết thu hoạch từ đỉnh núi Thanh Hư vào lúc bình minh, thanh lọc linh mạch. Hồi phục 30% HP và 30% Mana ngay lập tức.',
+        description: 'Giọt ngọc lộ tinh khiết thu hoạch từ đỉnh núi Thanh Hư vào lúc bình minh, thanh lọc linh mạch. Hồi phục 30% Khí Huyết và 30% Pháp Lực ngay lập tức.',
         effect: { type: 'restore', hp: 0.3, mana: 0.3 }
     },
 
@@ -814,7 +814,7 @@ export const ITEMS = {
         icon: '🧊',
         quality: 'Linh Khí',
         price: 800,
-        description: 'Tinh hoa hàn khí thấu xương từ sâu đáy Huyền Âm Cốc, ngưng kết thành giọt băng tinh khiết. Sử dụng giúp tăng 1.5x Tốc độ tu luyện thần thức trong 12 giờ, nhưng người dùng sẽ chịu hàn khí xâm thực (Giảm tạm thời 10% HP tối đa).',
+        description: 'Tinh hoa hàn khí thấu xương từ sâu đáy Huyền Âm Cốc, ngưng kết thành giọt băng tinh khiết. Sử dụng giúp tăng 1.5x Tốc độ tu luyện thần thức trong 12 giờ, nhưng người dùng sẽ chịu hàn khí xâm thực (Giảm tạm thời 10% Khí Huyết tối đa).',
         effect: { type: 'buff', stat: 'soulPs', value: 1.5, duration: 43200000, sideEffect: { stat: 'maxHp_pct', value: -0.1 } }
     },
     'am_hon_phien': {
@@ -845,7 +845,7 @@ export const ITEMS = {
         icon: '💮',
         quality: 'Pháp Bảo',
         price: 5000,
-        description: 'Đan dược bí truyền danh tiếng của Lạc Vân Tông, kết hợp từ vạn loại linh thảo thượng phẩm. Khi dùng lập tức hồi phục 100% HP và Mana, đồng thời tăng 10% Tỷ lệ đột phá cảnh giới trong 24 giờ.',
+        description: 'Đan dược bí truyền danh tiếng của Lạc Vân Tông, kết hợp từ vạn loại linh thảo thượng phẩm. Khi dùng lập tức hồi phục 100% Khí Huyết và Pháp Lực, đồng thời tăng 10% Tỷ lệ đột phá cảnh giới trong 24 giờ.',
         effect: { type: 'restore', hp: 1.0, mana: 1.0, breakthroughBuff: 0.1, duration: 86400000 }
     },
 
@@ -887,7 +887,7 @@ export const ITEMS = {
         icon: '⚫',
         quality: 'Pháp Khí',
         price: 1000,
-        description: 'Độc đan bá đạo của Quỷ Linh Môn, luyện từ Vạn Hồn Cốt và huyết khí cực âm. Sử dụng trong trận đấu bộc phát 40% ATK tức thì, nhưng độc tính khiến người dùng tự mất 5% HP mỗi lượt.',
+        description: 'Độc đan bá đạo của Quỷ Linh Môn, luyện từ Vạn Hồn Cốt và huyết khí cực âm. Sử dụng trong trận đấu bộc phát 40% Công Kích tức thì, nhưng độc tính khiến người dùng tự mất 5% Khí Huyết mỗi lượt.',
         effect: { type: 'buff', stat: 'atk_pct', value: 0.4, sideEffect: { type: 'dot', stat: 'hp_pct', value: -0.05 }, duration: 999 }
     },
 
@@ -908,7 +908,7 @@ export const ITEMS = {
         icon: '🪲',
         quality: 'Linh Khí',
         price: 850,
-        description: 'Túi da bí truyền Ngự Linh Tông tàng trữ hàng ngàn con Hấp Huyết Trùng hung hãn. Ném vào đối thủ để chúng cắn xé liên tục, mỗi lượt hút 10% HP của địch hồi cho bản thân trong 3 lượt.',
+        description: 'Túi da bí truyền Ngự Linh Tông tàng trữ hàng ngàn con Hấp Huyết Trùng hung hãn. Ném vào đối thủ để chúng cắn xé liên tục, mỗi lượt hút 10% Khí Huyết của địch hồi cho bản thân trong 3 lượt.',
         effect: { type: 'debuff', stat: 'lifesteal_dot', value: 0.1, duration: 3 }
     },
 
@@ -951,7 +951,7 @@ export const ITEMS = {
         icon: '🧊',
         quality: 'Linh Khí',
         price: 200,
-        description: 'Hồi phục 50% HP ngay lập tức. Luyện chế từ Linh Thảo (10 năm) và Chu Sa Linh Mực.',
+        description: 'Hồi phục 50% Khí Huyết ngay lập tức. Luyện chế từ Linh Thảo (10 năm) và Chu Sa Linh Mực.',
         effect: { type: 'heal', value: 0.5 }
     },
 
@@ -1154,7 +1154,7 @@ export const ITEMS = {
         icon: '🧪',
         quality: 'Phàm Khí',
         price: 50,
-        description: 'Thuốc cầm máu cơ bản, hồi phục 20% HP.',
+        description: 'Thuốc cầm máu cơ bản, hồi phục 20% Khí Huyết.',
         effect: { type: 'heal', value: 0.2 }
     },
 
@@ -3093,7 +3093,7 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'huyen_am_coc_bi_tich',
-        description: 'Bí kíp âm sát quỷ trảo truyền kỳ của Huyền Âm Cốc, hấp thụ huyết tinh sinh mệnh kẻ địch để hồi phục HP.'
+        description: 'Bí kíp âm sát quỷ trảo truyền kỳ của Huyền Âm Cốc, hấp thụ huyết tinh sinh mệnh kẻ địch để hồi phục Khí Huyết.'
     },
     'item_yem_nguyet_tong_t': {
         id: 'item_yem_nguyet_tong_t',
