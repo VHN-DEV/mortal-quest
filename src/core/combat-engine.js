@@ -962,11 +962,19 @@ export class CombatEngine {
             }
         }
 
-        // [CATEGORY SPECIFIC BONUS] Bí Thuật: 10% chance of temporary defense reduction (instability debuff for 1 turn)
-        if (secretData.category === 'Bí Thuật') {
-            if (Math.random() < 0.1) {
+        // [CATEGORY SPECIFIC BONUS] Bí Pháp: 15% chance of temporary defense reduction (instability debuff for 1 turn)
+        if (secretData.category === 'Bí Pháp') {
+            if (Math.random() < 0.15) {
                 this.status.player.instability = (this.status.player.instability || 0) + 1;
-                this.addLog(`⚠️ [Bí Thuật] Động chạm cấm kỵ dẫn đến chấn động kinh mạch, giảm 30% phòng thủ trong 1 lượt!`);
+                this.addLog(`⚠️ [Bí Pháp] Thi triển nghịch thiên cấm thuật gây phản phệ chấn động kinh mạch, giảm 30% phòng thủ trong 1 lượt!`);
+            }
+        }
+
+        // [CATEGORY SPECIFIC BONUS] Thần Hồn Thuật: 20% chance to stun the enemy for 1 turn
+        if (secretData.category === 'Thần Hồn Thuật') {
+            if (Math.random() < 0.20) {
+                this.status.enemy.stun = Math.max(this.status.enemy.stun || 0, 1);
+                this.addLog(`🌀 [Thần Hồn Thuật] Thần thức chấn kích thức hải, khiến đối thủ tinh thần hoảng hốt, CHOÁNG 1 lượt!`);
             }
         }
 
@@ -981,9 +989,9 @@ export class CombatEngine {
         const damageMult = masteryBonus?.damageMult || secretData.effects?.damageMult || 1.0;
         let critChance = masteryBonus?.critChance || secretData.effects?.critChance || 0;
 
-        // [CATEGORY SPECIFIC BONUS] Bí Thuật: +10% crit chance bonus
-        if (secretData.category === 'Bí Thuật') {
-            critChance += 0.10;
+        // [CATEGORY SPECIFIC BONUS] Bí Pháp: +15% crit chance bonus due to unstable burst power
+        if (secretData.category === 'Bí Pháp') {
+            critChance += 0.15;
         }
 
         let ignoreDefPct = secretData.effects?.ignoreDef || 0;

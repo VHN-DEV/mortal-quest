@@ -429,26 +429,30 @@ export class BattleScreen {
         const now = Date.now();
         const categorized = {
             'Pháp Thuật': [],
-            'Bí Thuật': [],
-            'Thần Thông': []
+            'Thần Thông': [],
+            'Thần Hồn Thuật': [],
+            'Bí Pháp': []
         };
         
         secrets.forEach(id => {
             const cd = state.player.secretTechniqueCooldowns?.[id] || 0;
             const item = getSecretTechniqueById(id);
             if (!item) return;
-            const cat = item.category || 'Bí Thuật';
+            const cat = item.category || 'Bí Pháp';
             const remainMs = (item.cooldown || 0) * 1000 - (now - cd);
             const remain = Math.max(0, Math.ceil(remainMs / 1000));
             const disabled = remain > 0;
-            categorized[cat].push({ id, item, remain, disabled });
+            if (categorized[cat]) {
+                categorized[cat].push({ id, item, remain, disabled });
+            }
         });
 
-        const categories = ['Pháp Thuật', 'Bí Thuật', 'Thần Thông'];
+        const categories = ['Pháp Thuật', 'Thần Thông', 'Thần Hồn Thuật', 'Bí Pháp'];
         const catColors = {
             'Pháp Thuật': 'text-teal-400 border-teal-500/20 bg-teal-500/5',
-            'Bí Thuật': 'text-red-400 border-red-500/20 bg-red-500/5',
-            'Thần Thông': 'text-yellow-400 border-yellow-500/20 bg-yellow-500/5 shimmer-gold'
+            'Thần Thông': 'text-yellow-400 border-yellow-500/20 bg-yellow-500/5 shimmer-gold',
+            'Thần Hồn Thuật': 'text-indigo-400 border-indigo-500/20 bg-indigo-500/5',
+            'Bí Pháp': 'text-red-400 border-red-500/20 bg-red-500/5'
         };
 
         let html = '';

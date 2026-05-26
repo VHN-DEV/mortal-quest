@@ -4,13 +4,33 @@ import { getTechniqueById, getSecretTechniqueById, MASTERY_LEVELS, TECHNIQUE_LEV
 export class TechniqueController {
     constructor(parentScreen) {
         this.parentScreen = parentScreen;
+        window.game = window.game || {};
+        window.game.ui = window.game.ui || {};
+        window.game.ui.setTechniqueSubcategory = (subCat) => {
+            state.activeSubCategory = subCat;
+            this.renderTechniques(state.activeTechTab);
+        };
+        window.game.ui.renderTechniqueDetail = (id, isSecret) => {
+            this.renderTechniqueDetail(id, isSecret);
+        };
+        window.game.ui.equipTechnique = async (id, isSecret) => {
+            await window.game.setMainTechnique(id);
+            this.renderTechniqueDetail(id, isSecret);
+        };
+        window.game.ui.unequipTechnique = (type, id, isSecret) => {
+            state.player.unequipTechnique(type, id);
+            this.renderTechniqueDetail(id, isSecret);
+        };
     }
 
     get btnTechTabLinhLuc() { return this.parentScreen.btnTechTabLinhLuc; }
     get btnTechTabLuyenThe() { return this.parentScreen.btnTechTabLuyenThe; }
     get btnTechTabThanThuc() { return this.parentScreen.btnTechTabThanThuc; }
-    get btnTechTabPhuTro() { return this.parentScreen.btnTechTabPhuTro; }
-    get btnTechTabSecret() { return this.parentScreen.btnTechTabSecret; }
+    get btnTechTabPhapThuat() { return this.parentScreen.btnTechTabPhapThuat; }
+    get btnTechTabThanThong() { return this.parentScreen.btnTechTabThanThong; }
+    get btnTechTabThanHon() { return this.parentScreen.btnTechTabThanHon; }
+    get btnTechTabBiPhap() { return this.parentScreen.btnTechTabBiPhap; }
+    get elTechSubcategoryContainer() { return this.parentScreen.elTechSubcategoryContainer; }
     get elTechListView() { return this.parentScreen.elTechListView; }
     get elTechDetailView() { return this.parentScreen.elTechDetailView; }
     get elTechDetailContent() { return this.parentScreen.elTechDetailContent; }
@@ -18,7 +38,7 @@ export class TechniqueController {
 
     getTechniquePassiveRate(entry, data) {
         if (!state.player || !data) return 0;
-        
+
         const type = data.type;
         if (type !== 'Linh Lực' && type !== 'Luyện Thể' && type !== 'Thần Thức' && type !== 'Song Tu' && type !== 'Phụ Trợ') return 0;
 
@@ -28,7 +48,7 @@ export class TechniqueController {
 
         const masteryBonus = data.masteryBonuses ? data.masteryBonuses[masteryLevel] : null;
         const masteryMult = MASTERY_LEVELS.find(m => m.id === masteryLevel)?.multiplier || 1.0;
-        
+
         let attributeMult = 1.0;
         if (state.player.spiritualRoot) {
             if (data.compatibility) {
@@ -41,7 +61,7 @@ export class TechniqueController {
                     attributeMult = 1.5;
                 }
             } else if (data.element) {
-                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' || 
+                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' ||
                     state.player.spiritualRoot.type.includes(data.element)) {
                     attributeMult = 1.5;
                 }
@@ -54,10 +74,10 @@ export class TechniqueController {
         if (type === 'Linh Lực' || type === 'Song Tu' || type === 'Phụ Trợ') {
             const baseTvps = masteryBonus?.tvps || data.effects?.tvps || 0;
             let finalTvps = baseTvps * finalMult;
-            
+
             // Apply environmental Qi
             finalTvps *= state.player.getEnvironmentalQiMultiplier();
-            
+
             // Apply active formations
             state.player.activeFormations.forEach(f => {
                 if (f.id === 'tu_linh_tran') finalTvps *= 1.2;
@@ -71,14 +91,14 @@ export class TechniqueController {
                     finalTvps *= 1.1;
                 }
             }
-            
+
             // Apply buffs
             if (state.player.buffs) {
                 state.player.buffs.forEach(b => {
                     if (b.stat === 'tu_vi_speed') finalTvps *= b.value;
                 });
             }
-            
+
             return finalTvps;
         } else if (type === 'Luyện Thể') {
             const baseBodyPs = masteryBonus?.bodyPs || data.effects?.bodyPs || 0;
@@ -99,7 +119,7 @@ export class TechniqueController {
             }
             return finalSoulPs;
         }
-        
+
         return 0;
     }
 
@@ -111,7 +131,7 @@ export class TechniqueController {
         const qualityMult = qualityLevel ? qualityLevel.multiplier : 1.0;
 
         const masteryMult = MASTERY_LEVELS.find(m => m.id === masteryLevel)?.multiplier || 1.0;
-        
+
         let attributeMult = 1.0;
         if (state.player.spiritualRoot) {
             if (data.compatibility) {
@@ -124,7 +144,7 @@ export class TechniqueController {
                     attributeMult = 1.5;
                 }
             } else if (data.element) {
-                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' || 
+                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' ||
                     state.player.spiritualRoot.type.includes(data.element)) {
                     attributeMult = 1.5;
                 }
@@ -145,6 +165,121 @@ export class TechniqueController {
         return results;
     }
 
+    _renderEquippedArray() {
+        if (!state.player) return '';
+        const p = state.player;
+        const _getTech = (id) => getTechniqueById(id) || getSecretTechniqueById(id) || (state.player.customTechniques || []).find(t => t.id === id);
+        
+        const activeIds = p.equippedSecretTechniqueIds || [];
+        const auxIds = p.equippedAuxiliaryIds || [];
+        
+        const escapeTech = _getTech(p.mainEscapeId);
+        const dualTech = _getTech(p.mainDualId);
+
+        const renderSlot = (title, icon, tech, isSecretTech, emptyLabel = 'Trống') => {
+            if (tech) {
+                return `
+                    <div class="p-2 rounded-xl border border-white/10 bg-white/[0.02] flex items-center space-x-2 cursor-pointer hover:bg-white/5 hover:border-white/20 transition-all duration-300"
+                        onclick="window.game.ui.renderTechniqueDetail('${tech.id}', ${isSecretTech})">
+                        <span class="text-lg">${tech.icon || icon}</span>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-[7px] text-gray-500 uppercase tracking-widest font-bold truncate">${title}</p>
+                            <p class="text-[9px] font-bold text-white truncate">${tech.name}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            return `
+                <div class="p-2 rounded-xl border border-white/5 bg-white/[0.005] opacity-50 border-dashed flex items-center space-x-2">
+                    <span class="text-lg grayscale">${icon}</span>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[7px] text-gray-600 uppercase tracking-widest font-bold truncate">${title}</p>
+                        <p class="text-[9px] text-gray-600 italic truncate">${emptyLabel}</p>
+                    </div>
+                </div>
+            `;
+        };
+
+        // 3 active slots
+        let activeSlotsHtml = '';
+        for (let i = 0; i < 3; i++) {
+            const activeId = activeIds[i] || null;
+            const activeTech = _getTech(activeId);
+            activeSlotsHtml += renderSlot(`Kỹ Năng ${i + 1}`, '✨', activeTech, true, 'Chưa Trang Bị');
+        }
+
+        // Độn Thuật
+        const escapeHtml = renderSlot('⚡ Độn Thuật', '⚡', escapeTech, false, 'Chưa Trang Bị');
+        // Song Tu
+        const dualHtml = renderSlot('☯ Song Tu', '☯', dualTech, false, 'Chưa Trang Bị');
+
+        // 3 auxiliary slots
+        let auxSlotsHtml = '';
+        for (let i = 0; i < 3; i++) {
+            const auxId = auxIds[i] || null;
+            const auxTech = _getTech(auxId);
+            auxSlotsHtml += renderSlot(`Phụ Trợ ${i + 1}`, '🌀', auxTech, false, 'Chưa Trang Bị');
+        }
+
+        return `
+            <div class="mb-5 p-3.5 rounded-2xl border border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
+                <h3 class="text-[8px] font-ancient text-cultivation-gold uppercase tracking-[0.2em] mb-2.5 flex items-center">
+                    <i class="ph ph-shield-chevron mr-1.5 text-xs text-cultivation-gold"></i>
+                    Trang Bị Khí Hải (Pháp Trận)
+                </h3>
+                <!-- Grid for slots -->
+                <div class="grid grid-cols-2 gap-2 mb-2">
+                    ${escapeHtml}
+                    ${dualHtml}
+                </div>
+                <div class="grid grid-cols-3 gap-2 mb-2">
+                    ${activeSlotsHtml}
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    ${auxSlotsHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    renderSubCategoryFilters(tab) {
+        if (!this.elTechSubcategoryContainer) return;
+        
+        const subCatsMap = {
+            'phap_thuat': ['Tất Cả', 'Công Kích', 'Phòng Ngự', 'Khống Chế', 'Độn Thuật', 'Phụ Trợ'],
+            'than_thong': ['Tất Cả', 'Bản Mệnh', 'Huyết Mạch', 'Nguyên Anh', 'Pháp Tắc', 'Đại Thần Thông'],
+            'than_hon':   ['Tất Cả', 'Thần Thức Công Kích', 'Huyễn Thuật', 'Sưu Hồn', 'Hồn Ấn', 'Đoạt Xá'],
+            'bi_phap':    ['Tất Cả', 'Bộc Phát', 'Cấm Thuật', 'Hiến Tế', 'Tổn Mệnh', 'Phụ Trợ']
+        };
+
+        const subCats = subCatsMap[tab] || [];
+        if (subCats.length === 0) {
+            this.elTechSubcategoryContainer.classList.add('hidden');
+            return;
+        }
+
+        this.elTechSubcategoryContainer.classList.remove('hidden');
+        state.activeSubCategory = state.activeSubCategory || 'Tất Cả';
+
+        // Check if current activeSubCategory is in the current subCats, if not, reset to 'Tất Cả'
+        if (!subCats.includes(state.activeSubCategory)) {
+            state.activeSubCategory = 'Tất Cả';
+        }
+
+        this.elTechSubcategoryContainer.innerHTML = subCats.map(subCat => {
+            const isActive = state.activeSubCategory === subCat;
+            const activeClass = isActive
+                ? 'bg-cultivation-gold/15 text-cultivation-gold border-cultivation-gold/30 font-bold'
+                : 'text-gray-500 border-white/5 hover:text-gray-300 hover:bg-white/[0.02]';
+            return `
+                <button class="whitespace-nowrap px-3 py-1.5 border rounded-xl text-[8px] font-ancient uppercase tracking-wider transition-all ${activeClass}"
+                    onclick="window.game.ui.setTechniqueSubcategory('${subCat}')">
+                    ${subCat}
+                </button>
+            `;
+        }).join('');
+    }
+
     renderTechniques(tab = 'linh_luc') {
         if (!state.player) return;
 
@@ -152,23 +287,57 @@ export class TechniqueController {
         this.activeDetailIsSecret = null;
         state.activeTechTab = tab;
 
-        // Update tab styles
-        const allTabBtns = [this.btnTechTabLinhLuc, this.btnTechTabLuyenThe, this.btnTechTabThanThuc, this.btnTechTabPhuTro, this.btnTechTabSecret].filter(Boolean);
+        // Reset subcategory if tab type changes
+        const isMainSecretTab = ['phap_thuat', 'than_thong', 'than_hon', 'bi_phap'].includes(tab);
+        
+        // Sync main tab toggle state just in case
+        if (isMainSecretTab) {
+            state.activeMainTab = 'ky_nang';
+            if (this.parentScreen.btnTechMainTabCongPhap) this.parentScreen.btnTechMainTabCongPhap.className = 'flex-1 text-center py-2.5 rounded-xl text-xs font-ancient uppercase tracking-widest transition-all font-bold text-gray-500 hover:text-gray-300';
+            if (this.parentScreen.btnTechMainTabKyNang) this.parentScreen.btnTechMainTabKyNang.className = 'flex-1 text-center py-2.5 rounded-xl text-xs font-ancient uppercase tracking-widest transition-all font-bold bg-qi-blue/15 text-qi-blue border border-qi-blue/20';
+            
+            if (this.parentScreen.elTechSubTabsCongPhap) this.parentScreen.elTechSubTabsCongPhap.classList.add('hidden');
+            if (this.parentScreen.elTechSubTabsKyNang) this.parentScreen.elTechSubTabsKyNang.classList.remove('hidden');
+            if (this.parentScreen.elTechSubcategoryContainer) this.parentScreen.elTechSubcategoryContainer.classList.remove('hidden');
+        } else {
+            state.activeMainTab = 'cong_phap';
+            if (this.parentScreen.btnTechMainTabCongPhap) this.parentScreen.btnTechMainTabCongPhap.className = 'flex-1 text-center py-2.5 rounded-xl text-xs font-ancient uppercase tracking-widest transition-all font-bold bg-qi-blue/15 text-qi-blue border border-qi-blue/20';
+            if (this.parentScreen.btnTechMainTabKyNang) this.parentScreen.btnTechMainTabKyNang.className = 'flex-1 text-center py-2.5 rounded-xl text-xs font-ancient uppercase tracking-widest transition-all font-bold text-gray-500 hover:text-gray-300';
+            
+            if (this.parentScreen.elTechSubTabsCongPhap) this.parentScreen.elTechSubTabsCongPhap.classList.remove('hidden');
+            if (this.parentScreen.elTechSubTabsKyNang) this.parentScreen.elTechSubTabsKyNang.classList.add('hidden');
+            if (this.parentScreen.elTechSubcategoryContainer) this.parentScreen.elTechSubcategoryContainer.classList.add('hidden');
+        }
+
+        // Update tab styling highlighting
+        const allTabBtns = [
+            this.btnTechTabLinhLuc, this.btnTechTabLuyenThe, this.btnTechTabThanThuc, 
+            this.btnTechTabPhapThuat, this.btnTechTabThanThong, this.btnTechTabThanHon, 
+            this.btnTechTabBiPhap
+        ].filter(Boolean);
+        
         if (allTabBtns.length) {
-            const defaultClass = 'whitespace-nowrap px-4 py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all';
+            const defaultClass = 'flex-1 text-center whitespace-nowrap px-4 py-2 text-gray-500 rounded-lg text-[9px] font-ancient uppercase tracking-widest transition-all';
             allTabBtns.forEach(btn => btn.className = defaultClass);
 
             const activeMap = {
-                'linh_luc':  { btn: this.btnTechTabLinhLuc,  cls: 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' },
-                'luyen_the': { btn: this.btnTechTabLuyenThe, cls: 'bg-orange-500/20 text-orange-400 border border-orange-500/30' },
-                'than_thuc': { btn: this.btnTechTabThanThuc, cls: 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' },
-                'phu_tro':   { btn: this.btnTechTabPhuTro,  cls: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' },
-                'secret':    { btn: this.btnTechTabSecret,  cls: 'bg-qi-purple/20 text-qi-purple border border-qi-purple/30' },
+                'linh_luc':   { btn: this.btnTechTabLinhLuc,   cls: 'bg-qi-blue/15 text-qi-blue border border-qi-blue/20' },
+                'luyen_the':  { btn: this.btnTechTabLuyenThe,  cls: 'bg-orange-500/15 text-orange-400 border border-orange-500/20' },
+                'than_thuc':  { btn: this.btnTechTabThanThuc,  cls: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/20' },
+                'phap_thuat': { btn: this.btnTechTabPhapThuat, cls: 'bg-teal-500/15 text-teal-400 border border-teal-500/20' },
+                'than_thong': { btn: this.btnTechTabThanThong, cls: 'bg-yellow-500/15 text-yellow-400 border border-yellow-500/20' },
+                'than_hon':   { btn: this.btnTechTabThanHon,   cls: 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/20' },
+                'bi_phap':    { btn: this.btnTechTabBiPhap,    cls: 'bg-red-500/15 text-red-400 border border-red-500/20' }
             };
             const active = activeMap[tab];
             if (active && active.btn) {
-                active.btn.className = `whitespace-nowrap px-4 py-2 ${active.cls} rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all`;
+                active.btn.className = `flex-1 text-center whitespace-nowrap px-4 py-2 ${active.cls} rounded-lg text-[9px] font-ancient uppercase tracking-widest transition-all font-bold`;
             }
+        }
+
+        // Render subcategory headers if Kỹ Năng
+        if (isMainSecretTab) {
+            this.renderSubCategoryFilters(tab);
         }
 
         if (this.elTechListView) {
@@ -176,55 +345,79 @@ export class TechniqueController {
             this.elTechListView.classList.remove('hidden');
             if (this.elTechDetailView) this.elTechDetailView.classList.add('hidden');
 
-            if (tab === 'phu_tro') {
-                this._renderPhuTroTab();
-                if (this.elTechPoints) this.elTechPoints.textContent = state.player.techniquePoints || 0;
-                return;
+            // Draw premium Khí Hải slot view at the top of Kỹ Năng screen
+            if (isMainSecretTab) {
+                const arrayDiv = document.createElement('div');
+                arrayDiv.innerHTML = this._renderEquippedArray();
+                this.elTechListView.appendChild(arrayDiv);
             }
 
+            // Filter comprehension list
+            const compList = (state.player.comprehendingTechniques || []).filter(c => {
+                if (isMainSecretTab) {
+                    let cat = '';
+                    let subCat = '';
+                    if (c.isSecret) {
+                        const d = getSecretTechniqueById(c.id);
+                        if (!d) return false;
+                        cat = d.category;
+                        subCat = d.subCategory;
+                    } else {
+                        const d = getTechniqueById(c.id) || (state.player.customTechniques || []).find(t => t.id === c.id);
+                        if (!d) return false;
+                        if (d.type === 'Độn Thuật') { cat = 'Pháp Thuật'; subCat = 'Độn Thuật'; }
+                        else if (d.type === 'Phụ Trợ') { cat = 'Pháp Thuật'; subCat = 'Phụ Trợ'; }
+                        else if (d.type === 'Song Tu') { cat = 'Bí Pháp'; subCat = 'Phụ Trợ'; }
+                        else return false;
+                    }
 
+                    let matchMain = false;
+                    if (tab === 'phap_thuat') matchMain = cat === 'Pháp Thuật';
+                    else if (tab === 'than_thong') matchMain = cat === 'Thần Thông';
+                    else if (tab === 'than_hon') matchMain = cat === 'Thần Hồn Thuật';
+                    else if (tab === 'bi_phap') matchMain = cat === 'Bí Pháp';
 
-            const isSecretTab = tab === 'secret';
-            const compList = (state.player.comprehendingTechniques || []).filter(c => c.isSecret === isSecretTab);
-            let list = isSecretTab ? state.player.learnedSecretTechniques : state.player.learnedTechniques;
-
-            // Filter standard techniques by category
-            if (!isSecretTab) {
-                list = list.filter(entry => {
-                    const data = getTechniqueById(entry.id) || (state.player.customTechniques || []).find(t => t.id === entry.id);
-                    if (!data) return false;
-                    if (tab === 'linh_luc') return data.type === 'Linh Lực';
-                    if (tab === 'luyen_the') return data.type === 'Luyện Thể';
-                    if (tab === 'than_thuc') return data.type === 'Thần Thức';
+                    if (!matchMain) return false;
+                    if (state.activeSubCategory && state.activeSubCategory !== 'Tất Cả') {
+                        return subCat === state.activeSubCategory;
+                    }
+                    return true;
+                } else {
+                    if (c.isSecret) return false;
+                    const d = getTechniqueById(c.id) || (state.player.customTechniques || []).find(t => t.id === c.id);
+                    if (!d) return false;
+                    if (tab === 'linh_luc') return d.type === 'Linh Lực';
+                    if (tab === 'luyen_the') return d.type === 'Luyện Thể';
+                    if (tab === 'than_thuc') return d.type === 'Thần Thức';
                     return false;
-                });
-            }
-            
-            // 1. Render active/waiting comprehension progress bars
+                }
+            });
+
+            // Draw comprehension progress bars
             if (compList.length > 0) {
                 const header = document.createElement('div');
                 header.className = 'mb-4 border-b border-white/5 pb-2 mt-2';
                 header.innerHTML = `
                     <div class="flex justify-between items-center">
-                        <h3 class="text-[10px] font-ancient text-cultivation-gold uppercase tracking-[0.2em] flex items-center">
+                        <h3 class="text-[9px] font-ancient text-cultivation-gold uppercase tracking-[0.2em] flex items-center">
                             <i class="ph ph-brain mr-1.5 animate-pulse text-xs"></i>
-                            Đang Tham Ngộ Bí Tịch
+                            Đang Tham Ngộ Bí Điển
                         </h3>
-                        <span class="text-[8px] bg-cultivation-gold/10 text-cultivation-gold px-1.5 py-0.5 rounded border border-cultivation-gold/20 font-bold uppercase">${compList.length} Đang Đọc</span>
+                        <span class="text-[7px] bg-cultivation-gold/10 text-cultivation-gold px-1.5 py-0.5 rounded border border-cultivation-gold/20 font-bold uppercase">${compList.length} Đang Đọc</span>
                     </div>
                 `;
                 this.elTechListView.appendChild(header);
 
                 compList.forEach((current, idx) => {
-                    const techData = current.isSecret 
-                        ? getSecretTechniqueById(current.id) 
+                    const techData = current.isSecret
+                        ? getSecretTechniqueById(current.id)
                         : (getTechniqueById(current.id) || (state.player.customTechniques || []).find(t => t.id === current.id));
-                    
+
                     if (!techData) return;
 
                     const info = state.player.getTechniqueComprehensionInfo(current.id);
                     const timeRemaining = Math.max(0, current.durationLeft);
-                    
+
                     let timeStr = '';
                     if (timeRemaining > 3600) {
                         const h = Math.floor(timeRemaining / 3600);
@@ -239,8 +432,8 @@ export class TechniqueController {
                     }
 
                     const isActive = idx === 0;
-                    const barColorClass = isSecretTab ? 'bg-qi-purple' : 'bg-qi-blue';
-                    const activePill = isActive 
+                    const barColorClass = current.isSecret ? 'bg-qi-purple' : 'bg-qi-blue';
+                    const activePill = isActive
                         ? `<span class="text-[7px] px-1.5 py-0.5 bg-green-500/10 text-green-400 border border-green-500/25 rounded font-bold uppercase tracking-wider animate-pulse whitespace-nowrap">Đang Đọc</span>`
                         : `<span class="text-[7px] px-1.5 py-0.5 bg-gray-500/10 text-gray-400 border border-gray-500/25 rounded font-bold uppercase tracking-wider whitespace-nowrap">Đang Đợi</span>`;
 
@@ -298,7 +491,7 @@ export class TechniqueController {
 
                     const el = document.createElement('div');
                     el.className = `p-4 border ${isActive ? 'border-cultivation-gold/30 bg-cultivation-gold/[0.02]' : 'border-white/5 bg-white/[0.01] opacity-70'} rounded-2xl mb-4 space-y-3 relative overflow-hidden`;
-                    
+
                     if (isActive) {
                         el.classList.add('shadow-[0_0_15px_rgba(217,119,6,0.05)]');
                     }
@@ -306,7 +499,7 @@ export class TechniqueController {
                     el.innerHTML = `
                         <div class="flex justify-between items-start">
                             <div class="flex items-center space-x-3">
-                                <div class="text-2xl">${techData.icon || (isSecretTab ? '✨' : '📜')}</div>
+                                <div class="text-2xl">${techData.icon || (current.isSecret ? '✨' : '📜')}</div>
                                 <div>
                                     <h4 class="text-sm font-bold text-white font-ancient flex items-center">
                                         ${techData.name}
@@ -332,197 +525,169 @@ export class TechniqueController {
                 });
             }
 
-            // 2. Render learned techniques list below
+            // Unified filter for learned lists based on current selected tab
+            let list = [];
+            if (isMainSecretTab) {
+                // Add matching standard auxiliary techniques
+                state.player.learnedTechniques.forEach(entry => {
+                    const data = getTechniqueById(entry.id) || (state.player.customTechniques || []).find(t => t.id === entry.id);
+                    if (!data) return;
+                    
+                    let cat = '';
+                    let subCat = '';
+                    if (data.type === 'Độn Thuật') { cat = 'Pháp Thuật'; subCat = 'Độn Thuật'; }
+                    else if (data.type === 'Phụ Trợ') { cat = 'Pháp Thuật'; subCat = 'Phụ Trợ'; }
+                    else if (data.type === 'Song Tu') { cat = 'Bí Pháp'; subCat = 'Phụ Trợ'; }
+                    else return;
+
+                    let matchMain = false;
+                    if (tab === 'phap_thuat') matchMain = cat === 'Pháp Thuật';
+                    else if (tab === 'than_thong') matchMain = cat === 'Thần Thông';
+                    else if (tab === 'than_hon') matchMain = cat === 'Thần Hồn Thuật';
+                    else if (tab === 'bi_phap') matchMain = cat === 'Bí Pháp';
+
+                    if (!matchMain) return;
+                    if (state.activeSubCategory && state.activeSubCategory !== 'Tất Cả') {
+                        if (subCat !== state.activeSubCategory) return;
+                    }
+
+                    list.push({ entry, data, isSecret: false, subCat });
+                });
+
+                // Add matching active secret techniques
+                state.player.learnedSecretTechniques.forEach(entry => {
+                    const data = getSecretTechniqueById(entry.id);
+                    if (!data) return;
+
+                    const cat = data.category;
+                    const subCat = data.subCategory;
+
+                    let matchMain = false;
+                    if (tab === 'phap_thuat') matchMain = cat === 'Pháp Thuật';
+                    else if (tab === 'than_thong') matchMain = cat === 'Thần Thông';
+                    else if (tab === 'than_hon') matchMain = cat === 'Thần Hồn Thuật';
+                    else if (tab === 'bi_phap') matchMain = cat === 'Bí Pháp';
+
+                    if (!matchMain) return;
+                    if (state.activeSubCategory && state.activeSubCategory !== 'Tất Cả') {
+                        if (subCat !== state.activeSubCategory) return;
+                    }
+
+                    list.push({ entry, data, isSecret: true, subCat });
+                });
+            } else {
+                // Công Pháp list
+                state.player.learnedTechniques.forEach(entry => {
+                    const data = getTechniqueById(entry.id) || (state.player.customTechniques || []).find(t => t.id === entry.id);
+                    if (!data) return;
+                    if (tab === 'linh_luc' && data.type !== 'Linh Lực') return;
+                    if (tab === 'luyen_the' && data.type !== 'Luyện Thể') return;
+                    if (tab === 'than_thuc' && data.type !== 'Thần Thức') return;
+
+                    list.push({ entry, data, isSecret: false, subCat: data.type });
+                });
+            }
+
+            // Draw techniques list
             if (list.length === 0) {
                 if (compList.length === 0) {
-                    let typeName = 'công pháp';
+                    let typeName = 'kỹ năng';
                     if (tab === 'linh_luc') typeName = 'công pháp linh lực';
                     else if (tab === 'luyen_the') typeName = 'công pháp luyện thể';
-                    else if (tab === 'than_thuc') typeName = 'thần thức chi pháp';
-                    else if (tab === 'secret') typeName = 'bí pháp';
-                    this.elTechListView.innerHTML = `<div class="text-center py-20 text-gray-600 italic text-xs">Ngươi chưa lĩnh ngộ ${typeName} nào...</div>`;
+                    else if (tab === 'than_thuc') typeName = 'công pháp luyện hồn';
+                    else if (tab === 'phap_thuat') typeName = 'pháp thuật';
+                    else if (tab === 'than_thong') typeName = 'thần thông';
+                    else if (tab === 'than_hon') typeName = 'thần hồn thuật';
+                    else if (tab === 'bi_phap') typeName = 'bí pháp';
+                    this.elTechListView.appendChild(Object.assign(document.createElement('div'), {
+                        className: 'text-center py-20 text-gray-600 italic text-xs',
+                        textContent: `Ngươi chưa lĩnh ngộ ${typeName} nào phù hợp...`
+                    }));
                 }
             } else {
-                if (isSecretTab) {
-                    // Group the list by category
-                    const groups = {
-                        'Pháp Thuật': [],
-                        'Bí Thuật': [],
-                        'Thần Thông': []
-                    };
-                    list.forEach(entry => {
-                        const data = getSecretTechniqueById(entry.id);
-                        if (data) {
-                            const cat = data.category || 'Bí Thuật';
-                            if (!groups[cat]) groups[cat] = [];
-                            groups[cat].push({ entry, data });
-                        }
-                    });
+                const listHeader = document.createElement('div');
+                listHeader.className = 'mb-4 border-b border-white/5 pb-2 mt-6';
+                listHeader.innerHTML = `
+                    <h3 class="text-[9px] font-ancient text-gray-500 uppercase tracking-[0.2em] flex items-center">
+                        <i class="ph ph-scroll mr-1.5 text-xs text-cultivation-gold"></i>
+                        ${isMainSecretTab ? 'Kỹ Năng Kích Hoạt Đã Ngộ' : 'Bản Thể Công Pháp Đã Lập'}
+                    </h3>
+                `;
+                this.elTechListView.appendChild(listHeader);
 
-                    // Add a nice header
-                    if (compList.length > 0) {
-                        const separator = document.createElement('div');
-                        separator.className = 'mb-4 border-b border-white/5 pb-2 mt-6';
-                        separator.innerHTML = `
-                            <h3 class="text-[10px] font-ancient text-gray-500 uppercase tracking-[0.2em] flex items-center">
-                                <i class="ph ph-scroll mr-1.5 text-xs"></i>
-                                Bí Pháp Đã Lĩnh Ngộ
-                            </h3>
-                        `;
-                        this.elTechListView.appendChild(separator);
-                    }
+                list.forEach(({ entry, data, isSecret, subCat }) => {
+                    const mastery = MASTERY_LEVELS.find(m => m.id === (entry.masteryLevel || 1));
+                    const stageLabel = data.stageLabel || 'Tầng';
+                    const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
 
-                    // Render each group
-                    const categories = ['Pháp Thuật', 'Bí Thuật', 'Thần Thông'];
-                    const groupStyles = {
-                        'Pháp Thuật': {
-                            title: 'Spells • Pháp Thuật',
-                            color: 'text-teal-400',
-                            bg: 'bg-teal-500/5 border-teal-500/10 hover:bg-teal-500/10 hover:border-teal-500/30',
-                            badge: 'bg-teal-500/15 text-teal-300 border-teal-500/30 shadow-[0_0_8px_rgba(20,184,166,0.2)]'
-                        },
-                        'Bí Thuật': {
-                            title: 'Secrets • Bí Thuật',
-                            color: 'text-red-400',
-                            bg: 'bg-red-500/5 border-red-500/10 hover:bg-red-500/10 hover:border-red-500/30',
-                            badge: 'bg-red-500/15 text-red-400 border-red-500/30 shadow-[0_0_8px_rgba(239,68,68,0.2)]'
-                        },
-                        'Thần Thông': {
-                            title: 'Divine Abilities • Thần Thông',
-                            color: 'text-yellow-400 font-ancient tracking-wider',
-                            bg: 'bg-yellow-500/5 border-yellow-500/10 hover:bg-yellow-500/10 hover:border-yellow-500/30 shadow-[inset_0_0_12px_rgba(234,179,8,0.05)]',
-                            badge: 'bg-yellow-500/15 text-yellow-300 border-yellow-500/30 shadow-[0_0_12px_rgba(234,179,8,0.3)] animate-pulse'
-                        }
-                    };
-
-                    categories.forEach(cat => {
-                        const items = groups[cat] || [];
-                        if (items.length === 0) return;
-
-                        const catHeader = document.createElement('div');
-                        catHeader.className = 'mt-5 mb-3 flex items-center justify-between';
-                        catHeader.innerHTML = `
-                            <h4 class="text-[10px] font-ancient uppercase tracking-[0.25em] ${groupStyles[cat].color} flex items-center">
-                                <span class="inline-block w-1.5 h-1.5 rounded-full bg-current mr-2"></span>
-                                ${groupStyles[cat].title} (${items.length})
-                            </h4>
-                        `;
-                        this.elTechListView.appendChild(catHeader);
-
-                        items.forEach(({ entry, data }) => {
-                            const mastery = MASTERY_LEVELS.find(m => m.id === (entry.masteryLevel || 1));
-                            const stageLabel = data.stageLabel || 'Tầng';
-                            const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
-
-                            const el = document.createElement('div');
-                            el.className = `p-4 border ${groupStyles[cat].bg} rounded-2xl flex items-center justify-between cursor-pointer transition-all duration-300 hover:-translate-y-0.5 mb-3`;
-                            
-                            // Realm requirement check lock indicator
-                            let realmLockedText = '';
-                            if (cat === 'Thần Thông' && data.requiredRealmId && state.player.realmId < data.requiredRealmId) {
-                                realmLockedText = `<span class="text-[7px] ml-1.5 px-1 py-0.5 bg-red-500/20 border border-red-500/40 rounded text-red-300 font-bold uppercase">Yêu cầu Trúc Cơ Kỳ</span>`;
-                            }
-
-                            el.innerHTML = `
-                                <div class="flex items-center space-x-4">
-                                    <div class="text-2xl">${data.icon || '✨'}</div>
-                                    <div>
-                                        <h4 class="text-sm font-bold text-white flex items-center">${data.name} ${realmLockedText}</h4>
-                                        <div class="flex items-center space-x-2 mt-1">
-                                            <span class="text-[8px] px-1.5 py-0.5 bg-black/40 rounded border border-white/5 text-gray-400 font-mono">${stageName}</span>
-                                            <span class="text-[8px] text-cultivation-gold font-bold">${mastery?.name || 'Nhập Môn'}</span>
-                                            <span class="text-[7px] px-1.5 py-0.5 rounded border ${groupStyles[cat].badge} font-bold uppercase tracking-wider">${cat}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <i class="ph ph-caret-right text-gray-600"></i>
-                            `;
-                            el.onclick = () => this.renderTechniqueDetail(entry.id, true);
-                            this.elTechListView.appendChild(el);
-                        });
-                    });
-                } else {
-                    if (compList.length > 0) {
-                        const separator = document.createElement('div');
-                        separator.className = 'mb-4 border-b border-white/5 pb-2 mt-6';
-                        separator.innerHTML = `
-                            <h3 class="text-[10px] font-ancient text-gray-500 uppercase tracking-[0.2em] flex items-center">
-                                <i class="ph ph-scroll mr-1.5 text-xs"></i>
-                                Công Pháp Đã Lĩnh Ngộ
-                            </h3>
-                        `;
-                        this.elTechListView.appendChild(separator);
-                    }
-
-                    list.forEach(entry => {
-                        const data = getTechniqueById(entry.id) || (state.player.customTechniques || []).find(t => t.id === entry.id);
-                        if (!data) return;
-
-                        const mastery = MASTERY_LEVELS.find(m => m.id === (entry.masteryLevel || 1));
-                        const stageLabel = data.stageLabel || 'Tầng';
-                        const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
-
-                        // Check equipped state
-                        let isEquipped = false;
+                    // Check equipped state
+                    let isEquipped = false;
+                    if (isSecret) {
+                        isEquipped = (state.player.equippedSecretTechniqueIds || []).includes(entry.id);
+                    } else {
                         if (data.type === 'Linh Lực') isEquipped = state.player.mainTechniqueId === entry.id;
                         else if (data.type === 'Luyện Thể') isEquipped = state.player.mainBodyTechniqueId === entry.id;
                         else if (data.type === 'Thần Thức') isEquipped = state.player.mainSoulTechniqueId === entry.id;
+                        else if (data.type === 'Độn Thuật') isEquipped = state.player.mainEscapeId === entry.id;
+                        else if (data.type === 'Song Tu') isEquipped = state.player.mainDualId === entry.id;
+                        else if (data.type === 'Phụ Trợ') isEquipped = (state.player.equippedAuxiliaryIds || []).includes(entry.id);
+                    }
 
-                        // Calculate passive rate text
+                    // Passive rate display
+                    let rateText = '';
+                    if (!isSecret) {
                         const rate = this.getTechniquePassiveRate(entry, data);
-                        let rateText = '';
-                        if (data.type === 'Linh Lực') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
+                        if (data.type === 'Linh Lực' || data.type === 'Song Tu' || data.type === 'Phụ Trợ') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
                         else if (data.type === 'Luyện Thể') rateText = `+${rate.toFixed(1)} Thể Exp/s`;
                         else if (data.type === 'Thần Thức') rateText = `+${rate.toFixed(1)} Thần Exp/s`;
+                    }
 
-                        // Calculate stat bonuses when active/equipped
-                        const activeStats = this.getTechniqueActiveStats(entry, data);
-                        const statsParts = [];
-                        if (activeStats.hp) statsParts.push(`Máu +${Math.round(activeStats.hp)}`);
-                        if (activeStats.mana) statsParts.push(`Mana +${Math.round(activeStats.mana)}`);
-                        if (activeStats.atk) statsParts.push(`Công +${Math.round(activeStats.atk)}`);
-                        if (activeStats.def) statsParts.push(`Thủ +${Math.round(activeStats.def)}`);
-                        if (activeStats.spd) statsParts.push(`Thân pháp +${Math.round(activeStats.spd)}`);
-                        const statsText = statsParts.length > 0 ? `| ${statsParts.join(' | ')}` : '';
+                    // Active stat bonuses comparison display
+                    const activeStats = this.getTechniqueActiveStats(entry, data);
+                    const statsParts = [];
+                    if (activeStats.hp) statsParts.push(`Máu +${Math.round(activeStats.hp)}`);
+                    if (activeStats.mana) statsParts.push(`Mana +${Math.round(activeStats.mana)}`);
+                    if (activeStats.atk) statsParts.push(`Công +${Math.round(activeStats.atk)}`);
+                    if (activeStats.def) statsParts.push(`Thủ +${Math.round(activeStats.def)}`);
+                    if (activeStats.spd) statsParts.push(`Thân pháp +${Math.round(activeStats.spd)}`);
+                    const statsText = statsParts.length > 0 ? `| ${statsParts.join(' | ')}` : '';
 
-                        let borderColor = 'border-qi-blue/10 bg-qi-blue/5';
-                        if (isEquipped) {
-                            if (tab === 'linh_luc') {
-                                borderColor = 'border-qi-blue/30 bg-qi-blue/[0.03] shadow-[0_0_15px_rgba(59,130,246,0.05)]';
-                            } else if (tab === 'luyen_the') {
-                                borderColor = 'border-orange-500/30 bg-orange-500/[0.03] shadow-[0_0_15px_rgba(249,115,22,0.05)]';
-                            } else if (tab === 'than_thuc') {
-                                borderColor = 'border-cyan-500/30 bg-cyan-500/[0.03] shadow-[0_0_15px_rgba(6,182,212,0.05)]';
-                            }
-                        } else {
-                            if (tab === 'luyen_the') borderColor = 'border-orange-500/10 bg-orange-500/5';
-                            else if (tab === 'than_thuc') borderColor = 'border-cyan-500/10 bg-cyan-500/5';
-                        }
+                    let borderColor = 'border-white/5 bg-white/[0.01]';
+                    let badgeClass = 'bg-gray-500/10 text-gray-400 border-white/5';
+                    if (isEquipped) {
+                        borderColor = 'border-cultivation-gold/30 bg-cultivation-gold/[0.03] shadow-[0_0_15px_rgba(217,119,6,0.03)]';
+                        badgeClass = 'bg-cultivation-gold/20 text-cultivation-gold border-cultivation-gold/30 font-bold';
+                    }
 
-                        const el = document.createElement('div');
-                        el.className = `p-4 border ${borderColor} rounded-2xl flex items-center justify-between hover:bg-white/5 cursor-pointer transition-all mb-3`;
-                        el.innerHTML = `
-                            <div class="flex items-center space-x-4">
-                                <div class="text-2xl">${data.icon || '📜'}</div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-white flex items-center flex-wrap gap-1.5">
-                                        ${data.name}
-                                        ${isEquipped ? `<span class="text-[7px] px-1.5 py-0.5 bg-green-500/20 text-green-300 border border-green-500/30 rounded font-bold uppercase tracking-wider animate-pulse flex items-center gap-0.5">☯ ĐANG CHỦ TU</span>` : ''}
-                                    </h4>
-                                    <div class="flex items-center flex-wrap gap-x-2 gap-y-1 mt-1 text-[8px] text-gray-500">
-                                        <span class="text-[8px] px-1.5 py-0.5 bg-black/40 rounded border border-white/5 text-gray-400 font-mono">${stageName}</span>
-                                        <span class="text-[8px] text-cultivation-gold font-bold">${mastery?.name || 'Nhập Môn'}</span>
-                                        <span class="text-[8px] text-qi-blue font-semibold">${rateText}</span>
-                                        <span class="text-[8px] text-gray-400 font-mono">${statsText}</span>
-                                    </div>
+                    let realmLockedText = '';
+                    if (isSecret && data.category === 'Thần Thông' && data.requiredRealmId && state.player.realmId < data.requiredRealmId) {
+                        realmLockedText = `<span class="text-[7px] ml-1.5 px-1 py-0.5 bg-red-500/20 border border-red-500/40 rounded text-red-300 font-bold uppercase">Yêu cầu Trúc Cơ Kỳ</span>`;
+                    }
+
+                    const el = document.createElement('div');
+                    el.className = `p-4 border ${borderColor} rounded-2xl flex items-center justify-between hover:bg-white/5 cursor-pointer transition-all mb-3`;
+                    el.innerHTML = `
+                        <div class="flex items-center space-x-4">
+                            <div class="text-2xl">${data.icon || (isSecret ? '✨' : '📜')}</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white flex items-center flex-wrap gap-1.5">
+                                    ${data.name} ${realmLockedText}
+                                    ${isEquipped ? `<span class="text-[7px] px-1.5 py-0.5 bg-green-500/20 text-green-300 border border-green-500/30 rounded font-bold uppercase tracking-wider animate-pulse flex items-center gap-0.5">☯ ĐANG TRANG BỊ</span>` : ''}
+                                </h4>
+                                <div class="flex items-center flex-wrap gap-x-2 gap-y-1 mt-1 text-[8px] text-gray-500">
+                                    <span class="text-[8px] px-1.5 py-0.5 bg-black/40 rounded border border-white/5 text-gray-400 font-mono">${stageName}</span>
+                                    <span class="text-[8px] text-cultivation-gold font-bold">${mastery?.name || 'Nhập Môn'}</span>
+                                    ${isMainSecretTab ? `<span class="text-[8px] px-1.5 py-0.5 rounded border ${badgeClass} uppercase tracking-wider font-bold">${subCat}</span>` : ''}
+                                    ${rateText ? `<span class="text-[8px] text-qi-blue font-semibold">${rateText}</span>` : ''}
+                                    <span class="text-[8px] text-gray-400 font-mono">${statsText}</span>
                                 </div>
                             </div>
-                            <i class="ph ph-caret-right text-gray-600"></i>
-                        `;
-                        el.onclick = () => this.renderTechniqueDetail(entry.id, false);
-                        this.elTechListView.appendChild(el);
-                    });
-                }
+                        </div>
+                        <i class="ph ph-caret-right text-gray-600"></i>
+                    `;
+                    el.onclick = () => this.renderTechniqueDetail(entry.id, isSecret);
+                    this.elTechListView.appendChild(el);
+                });
             }
         }
 
@@ -536,8 +701,8 @@ export class TechniqueController {
         this.activeDetailIsSecret = isSecret;
 
         const entry = isSecret ? state.player.learnedSecretTechniques.find(s => s.id === id) : state.player.learnedTechniques.find(t => t.id === id);
-        const data = isSecret 
-            ? getSecretTechniqueById(id) 
+        const data = isSecret
+            ? getSecretTechniqueById(id)
             : (getTechniqueById(id) || (state.player.customTechniques || []).find(t => t.id === id));
         if (!entry || !data) return;
 
@@ -551,54 +716,33 @@ export class TechniqueController {
         const stageLabel = data.stageLabel || 'Tầng';
         const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
 
-        const isFullyMastered = isSecret 
-            ? (entry.masteryLevel >= 5) 
+        const isFullyMastered = isSecret
+            ? (entry.masteryLevel >= 5)
             : (entry.stage >= (data.maxStage || 10) && entry.masteryLevel >= 5);
 
-        let isMain = false;
-        let equipLabel = 'THIẾT LẬP CHỦ TU';
-        let equippedLabel = 'ĐANG CHỦ TU';
-        let unequipBtnHTML = '';
+        let isEquipped = false;
+        let unequipType = '';
 
-        if (!isSecret) {
-            if (data.type === 'Linh Lực') { isMain = state.player.mainTechniqueId === id; }
-            else if (data.type === 'Luyện Thể') { isMain = state.player.mainBodyTechniqueId === id; }
-            else if (data.type === 'Thần Thức') { isMain = state.player.mainSoulTechniqueId === id; }
-            else if (data.type === 'Độn Thuật') {
-                isMain = state.player.mainEscapeId === id;
-                equipLabel = 'TRANG BỊ ĐỘN THUẬT';
-                equippedLabel = '⚡ ĐANG TRANG BỊ';
-                if (isMain) {
-                    unequipBtnHTML = `<button class="w-full py-3 bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-bold rounded-2xl mt-2 active:scale-95 transition-all" onclick="window.game.player.unequipTechnique('Độn Thuật'); window.game.ui.renderTechniques('phu_tro');">🗑️ THÁO GỠ ĐỘN THUẬT</button>`;
-                }
-            }
-            else if (data.type === 'Song Tu') {
-                isMain = state.player.mainDualId === id;
-                equipLabel = 'TRANG BỊ SONG TU';
-                equippedLabel = '☯️ ĐANG SONG TU';
-                if (isMain) {
-                    unequipBtnHTML = `<button class="w-full py-3 bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-bold rounded-2xl mt-2 active:scale-95 transition-all" onclick="window.game.player.unequipTechnique('Song Tu'); window.game.ui.renderTechniques('phu_tro');">🗑️ THÁO GỠ SONG TU</button>`;
-                }
-            }
-            else if (data.type === 'Phụ Trợ') {
-                isMain = (state.player.equippedAuxiliaryIds || []).includes(id);
-                equipLabel = 'TRANG BỊ PHỤ TRỢ';
-                equippedLabel = '🌀 ĐANG PHỤ TU';
-                if (isMain) {
-                    unequipBtnHTML = `<button class="w-full py-3 bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-bold rounded-2xl mt-2 active:scale-95 transition-all" onclick="window.game.player.unequipTechnique('Phụ Trợ', '${id}'); window.game.ui.renderTechniques('phu_tro');">🗑️ THÁO GỠ PHỤ TRỢ</button>`;
-                }
-            }
+        if (isSecret) {
+            isEquipped = (state.player.equippedSecretTechniqueIds || []).includes(id);
+            unequipType = 'Bí Pháp';
+        } else {
+            if (data.type === 'Linh Lực') { isEquipped = state.player.mainTechniqueId === id; }
+            else if (data.type === 'Luyện Thể') { isEquipped = state.player.mainBodyTechniqueId === id; }
+            else if (data.type === 'Thần Thức') { isEquipped = state.player.mainSoulTechniqueId === id; }
+            else if (data.type === 'Độn Thuật') { isEquipped = state.player.mainEscapeId === id; unequipType = 'Độn Thuật'; }
+            else if (data.type === 'Song Tu') { isEquipped = state.player.mainDualId === id; unequipType = 'Song Tu'; }
+            else if (data.type === 'Phụ Trợ') { isEquipped = (state.player.equippedAuxiliaryIds || []).includes(id); unequipType = 'Phụ Trợ'; }
         }
 
-        // Calculate active rates and stats parameters
+        // Calculate passive rate text and stat bonuses
         let rateText = '';
         let statsText = '';
         if (!isSecret) {
             const rate = this.getTechniquePassiveRate(entry, data);
-            if (data.type === 'Linh Lực') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
+            if (data.type === 'Linh Lực' || data.type === 'Song Tu' || data.type === 'Phụ Trợ') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
             else if (data.type === 'Luyện Thể') rateText = `+${rate.toFixed(1)} Thể Exp/s`;
             else if (data.type === 'Thần Thức') rateText = `+${rate.toFixed(1)} Thần Exp/s`;
-            else if (data.type === 'Song Tu' || data.type === 'Phụ Trợ') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
 
             const activeStats = this.getTechniqueActiveStats(entry, data);
             const statsParts = [];
@@ -610,80 +754,72 @@ export class TechniqueController {
             statsText = statsParts.join(' | ');
         }
 
-        // Create elegant compact horizontal button row
+        // Elegant side-by-side grouped button row
         let buttonsHtml = '';
-        if (!isSecret) {
-            let leftBtn = '';
-            if (isFullyMastered) {
-                leftBtn = `<button class="flex-1 py-3 bg-gray-800 text-gray-500 opacity-50 cursor-not-allowed text-[10px] font-bold rounded-xl">ĐÃ VIÊN MÃN</button>`;
-            } else {
-                leftBtn = `<button class="flex-1 py-3 ${(state.player.techniquePoints || 0) >= 1 ? 'bg-qi-blue text-black active:scale-95' : 'bg-gray-800 text-gray-500 opacity-50 cursor-not-allowed'} text-[10px] font-bold rounded-xl transition-all" 
-                    ${(state.player.techniquePoints || 0) >= 1 ? `onclick="window.game.cultivateTechnique('${id}', ${isSecret})"` : ''}>THAM NGỘ</button>`;
-            }
-
-            let rightBtn = '';
-            if (isMain) {
-                rightBtn = `
-                    <button class="flex-1 py-3 bg-cultivation-gold/15 text-cultivation-gold border border-cultivation-gold/20 text-[10px] font-bold rounded-xl cursor-default opacity-80" disabled>
-                        <i class="ph ph-check-circle mr-0.5"></i> ${equippedLabel}
-                    </button>
-                `;
-            } else {
-                rightBtn = `
-                    <button class="flex-1 py-3 bg-cultivation-gold text-black text-[10px] font-bold rounded-xl active:scale-95 transition-all" onclick="window.game.setMainTechnique('${id}')">
-                        <i class="ph ph-shield-star mr-0.5"></i> ${equipLabel.replace('TRANG BỊ ', '')}
-                    </button>
-                `;
-            }
-
-            buttonsHtml = `
-                <div class="flex space-x-2 mt-4">
-                    ${leftBtn}
-                    ${rightBtn}
-                </div>
-                ${isMain && unequipBtnHTML ? `
-                    <div class="mt-2">
-                        <button class="w-full py-2.5 bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-bold rounded-xl active:scale-95 transition-all hover:bg-red-500/25"
-                            onclick="window.game.player.unequipTechnique('${data.type === 'Phụ Trợ' ? 'Phụ Trợ' : data.type}', '${id}'); window.game.ui.renderTechniques('phu_tro');">
-                            🗑️ THÁO GỠ
-                        </button>
-                    </div>
-                ` : ''}
-            `;
+        let leftBtn = '';
+        if (isFullyMastered) {
+            leftBtn = `<button class="flex-grow py-3 bg-gray-800 text-gray-500 opacity-50 cursor-not-allowed text-[10px] font-bold rounded-xl font-ancient uppercase tracking-wider">ĐÃ VIÊN MÃN</button>`;
         } else {
-            if (isFullyMastered) {
-                buttonsHtml = `<div class="mt-4"><button class="w-full py-3 bg-gray-800 text-gray-500 opacity-50 cursor-not-allowed text-[10px] font-bold rounded-xl">ĐÃ VIÊN MÃN</button></div>`;
+            leftBtn = `<button class="flex-grow py-3 ${(state.player.techniquePoints || 0) >= 1 ? 'bg-qi-blue text-black active:scale-95' : 'bg-gray-800 text-gray-500 opacity-50 cursor-not-allowed'} text-[10px] font-bold rounded-xl transition-all font-ancient uppercase tracking-wider" 
+                ${(state.player.techniquePoints || 0) >= 1 ? `onclick="window.game.cultivateTechnique('${id}', ${isSecret})"` : ''}>THAM NGỘ</button>`;
+        }
+
+        let rightBtn = '';
+        if (isEquipped) {
+            if (unequipType) {
+                // Working unequip button for auxiliary or secret skills
+                rightBtn = `
+                    <button class="flex-grow py-3 bg-red-500/20 text-red-400 border border-red-500/30 text-[10px] font-bold rounded-xl active:scale-95 transition-all font-ancient uppercase tracking-wider"
+                        onclick="window.game.ui.unequipTechnique('${unequipType}', '${id}', ${isSecret})">
+                        <i class="ph ph-trash-simple mr-0.5"></i> THÁO GỠ
+                    </button>
+                `;
             } else {
-                buttonsHtml = `
-                    <div class="mt-4">
-                        <button class="w-full py-3 ${(state.player.techniquePoints || 0) >= 1 ? 'bg-qi-blue text-black active:scale-95' : 'bg-gray-800 text-gray-500 opacity-50 cursor-not-allowed'} text-[10px] font-bold rounded-xl transition-all" 
-                            ${(state.player.techniquePoints || 0) >= 1 ? `onclick="window.game.cultivateTechnique('${id}', ${isSecret})"` : ''}>THAM NGỘ BÍ PHÁP</button>
-                    </div>
+                // Core cultivation method can't be unequipped
+                rightBtn = `
+                    <button class="flex-grow py-3 bg-cultivation-gold/15 text-cultivation-gold border border-cultivation-gold/20 text-[10px] font-bold rounded-xl cursor-default opacity-85 font-ancient uppercase tracking-wider" disabled>
+                        <i class="ph ph-check-circle mr-0.5"></i> ĐANG TRANG BỊ
+                    </button>
                 `;
             }
+        } else {
+            // Equip button
+            rightBtn = `
+                <button class="flex-grow py-3 bg-cultivation-gold text-black text-[10px] font-bold rounded-xl active:scale-95 transition-all font-ancient uppercase tracking-wider"
+                    onclick="window.game.ui.equipTechnique('${id}', ${isSecret})">
+                    <i class="ph ph-shield-star mr-0.5"></i> TRANG BỊ
+                </button>
+            `;
         }
+
+        buttonsHtml = `
+            <div class="flex space-x-2.5 mt-2">
+                ${leftBtn}
+                ${rightBtn}
+            </div>
+        `;
 
         this.elTechDetailContent.innerHTML = `
             <div class="flex flex-col items-center text-center space-y-4">
-                <div class="text-6xl p-6 bg-white/5 rounded-full border border-white/10">${data.icon || '📜'}</div>
+                <div class="text-6xl p-6 bg-white/5 rounded-full border border-white/10">${data.icon || (isSecret ? '✨' : '📜')}</div>
                 <div>
                     <h3 class="text-2xl font-ancient text-white">${data.name}</h3>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${data.quality || 'Phàm Khí'}${((data.quality || 'Phàm Khí').toLowerCase().includes('khí') || (data.quality || 'Phàm Khí').toLowerCase().includes('bảo') || (data.quality || 'Phàm Khí').toLowerCase().includes('phẩm') || (data.quality || 'Phàm Khí').toLowerCase().includes('giai') || (data.quality || 'Phàm Khí').toLowerCase().includes('hỏa') || (data.quality || 'Phàm Khí').toLowerCase().includes('lôi') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(data.quality || 'Phàm Khí')) ? '' : ' Phẩm'} | ${stageName}</p>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">${data.quality || 'Phàm Khí'} | ${stageName}</p>
                 </div>
             </div>
 
             <div class="bg-black/40 p-5 rounded-3xl border border-white/5 space-y-4">
                 <div class="flex justify-between items-end mb-1">
-                    <span class="text-[9px] text-gray-500 uppercase tracking-widest">Độ Thuần Thục: ${mastery?.name || 'Nhập Môn'}</span>
+                    <span class="text-[9px] text-gray-500 uppercase tracking-widest font-ancient">Độ Thuần Thục: ${mastery?.name || 'Nhập Môn'}</span>
                     <span class="text-[10px] font-mono text-white">${Number(entry.mastery.toFixed(2))} / ${nextMastery?.threshold || 'MAX'}</span>
                 </div>
                 <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div class="h-full bg-cultivation-gold" style="width: ${entry.masteryLevel >= 4 ? 100 : (entry.mastery / (nextMastery?.threshold || 1)) * 100}%"></div>
+                    <div class="h-full bg-cultivation-gold" style="width: ${entry.masteryLevel >= 5 ? 100 : (entry.mastery / (nextMastery?.threshold || 1)) * 100}%"></div>
                 </div>
                 
                 ${rateText || statsText ? `
                     <div class="pt-3 border-t border-white/5 flex flex-col space-y-1.5 text-center">
-                        ${rateText ? `<p class="text-[10px] text-qi-blue font-bold flex items-center justify-center gap-1"><i class="ph ph-lightning"></i> Tốc độ hấp thu: ${rateText}</p>` : ''}
+                        ${rateText ? `<p class="text-[10px] text-qi-blue font-bold flex items-center justify-center gap-1 font-ancient uppercase tracking-wider"><i class="ph ph-lightning"></i> Tốc độ hấp thu: ${rateText}</p>` : ''}
                         ${statsText ? `<p class="text-[9px] text-gray-400 font-mono flex items-center justify-center gap-1"><i class="ph ph-shield"></i> Thuộc tính: ${statsText}</p>` : ''}
                     </div>
                 ` : ''}
@@ -782,27 +918,27 @@ export class TechniqueController {
                     </h3>
                     <div class="grid grid-cols-1 gap-2">
                         ${unequipped.map(t => {
-                            const d = getTechniqueById(t.id);
-                            if (!d) return '';
-                            const catColor = {
-                                'Độn Thuật': 'text-yellow-300 border-yellow-500/20 bg-yellow-500/5',
-                                'Song Tu': 'text-pink-300 border-pink-500/20 bg-pink-500/5',
-                                'Phụ Trợ': 'text-emerald-300 border-emerald-500/20 bg-emerald-500/5'
-                            }[d.type] || 'text-gray-400 border-white/5';
-                            
-                            const rate = this.getTechniquePassiveRate(t, d);
-                            const rateText = rate > 0 ? `<span class="text-[7px] px-1.5 py-0.5 bg-black/40 border border-white/5 rounded text-gray-400 font-mono">+${rate.toFixed(1)} Tu Vi/s</span>` : '';
+                const d = getTechniqueById(t.id);
+                if (!d) return '';
+                const catColor = {
+                    'Độn Thuật': 'text-yellow-300 border-yellow-500/20 bg-yellow-500/5',
+                    'Song Tu': 'text-pink-300 border-pink-500/20 bg-pink-500/5',
+                    'Phụ Trợ': 'text-emerald-300 border-emerald-500/20 bg-emerald-500/5'
+                }[d.type] || 'text-gray-400 border-white/5';
 
-                            const activeStats = this.getTechniqueActiveStats(t, d);
-                            const statsParts = [];
-                            if (activeStats.hp) statsParts.push(`Máu +${Math.round(activeStats.hp)}`);
-                            if (activeStats.mana) statsParts.push(`Mana +${Math.round(activeStats.mana)}`);
-                            if (activeStats.atk) statsParts.push(`Công +${Math.round(activeStats.atk)}`);
-                            if (activeStats.def) statsParts.push(`Thủ +${Math.round(activeStats.def)}`);
-                            if (activeStats.spd) statsParts.push(`Thân pháp +${Math.round(activeStats.spd)}`);
-                            const statsText = statsParts.length > 0 ? `<span class="text-[7px] text-gray-500 font-mono">(${statsParts.join(', ')})</span>` : '';
+                const rate = this.getTechniquePassiveRate(t, d);
+                const rateText = rate > 0 ? `<span class="text-[7px] px-1.5 py-0.5 bg-black/40 border border-white/5 rounded text-gray-400 font-mono">+${rate.toFixed(1)} Tu Vi/s</span>` : '';
 
-                            return `
+                const activeStats = this.getTechniqueActiveStats(t, d);
+                const statsParts = [];
+                if (activeStats.hp) statsParts.push(`Máu +${Math.round(activeStats.hp)}`);
+                if (activeStats.mana) statsParts.push(`Mana +${Math.round(activeStats.mana)}`);
+                if (activeStats.atk) statsParts.push(`Công +${Math.round(activeStats.atk)}`);
+                if (activeStats.def) statsParts.push(`Thủ +${Math.round(activeStats.def)}`);
+                if (activeStats.spd) statsParts.push(`Thân pháp +${Math.round(activeStats.spd)}`);
+                const statsText = statsParts.length > 0 ? `<span class="text-[7px] text-gray-500 font-mono">(${statsParts.join(', ')})</span>` : '';
+
+                return `
                                 <div class="p-3 border border-white/5 rounded-2xl flex items-center justify-between hover:bg-white/5 hover:border-white/10 cursor-pointer transition-all duration-300"
                                     onclick="window.game.ui.renderTechniqueDetail('${t.id}', false)">
                                     <div class="flex items-center space-x-3">
@@ -820,7 +956,7 @@ export class TechniqueController {
                                         onclick="event.stopPropagation(); window.game.setMainTechnique('${t.id}'); window.game.ui.renderTechniques('phu_tro');">Trang Bị</button>
                                 </div>
                             `;
-                        }).join('')}
+            }).join('')}
                     </div>
                 </div>
             `;

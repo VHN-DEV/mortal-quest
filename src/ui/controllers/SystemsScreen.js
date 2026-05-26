@@ -57,12 +57,18 @@ export class SystemsScreen {
         this.elTechDetailView = document.getElementById('tech-detail-view');
         this.elTechDetailContent = document.getElementById('tech-detail-content');
         this.elTechPoints = document.getElementById('tech-points');
+        this.btnTechMainTabCongPhap = document.getElementById('tech-main-tab-cong-phap');
+        this.btnTechMainTabKyNang = document.getElementById('tech-main-tab-ky-nang');
         this.btnTechTabLinhLuc = document.getElementById('tech-tab-linh-luc');
         this.btnTechTabLuyenThe = document.getElementById('tech-tab-luyen-the');
         this.btnTechTabThanThuc = document.getElementById('tech-tab-than-thuc');
-        this.btnTechTabPhuTro = document.getElementById('tech-tab-phu-tro');
-        this.btnTechTabSecret = document.getElementById('tech-tab-secret');
-        this.btnTechTabCustom = document.getElementById('tech-tab-custom');
+        this.btnTechTabPhapThuat = document.getElementById('tech-tab-phap-thuat');
+        this.btnTechTabThanThong = document.getElementById('tech-tab-than-thong');
+        this.btnTechTabThanHon = document.getElementById('tech-tab-than-hon');
+        this.btnTechTabBiPhap = document.getElementById('tech-tab-bi-phap');
+        this.elTechSubTabsCongPhap = document.getElementById('tech-sub-tabs-cong-phap');
+        this.elTechSubTabsKyNang = document.getElementById('tech-sub-tabs-ky-nang');
+        this.elTechSubcategoryContainer = document.getElementById('tech-subcategory-container');
         this.btnTechBack = document.getElementById('tech-back-btn');
         this.elGuildMissions = document.getElementById('guild-mission-list');
         this.elGuildRooms = document.getElementById('guild-room-list');
@@ -109,19 +115,52 @@ export class SystemsScreen {
                 this.renderShop();
             };
         }
-        // Technique Tabs
+        
+        // Technique Main Tabs Switching
+        if (this.btnTechMainTabCongPhap) {
+            this.btnTechMainTabCongPhap.onclick = () => {
+                state.activeMainTab = 'cong_phap';
+                if (this.btnTechMainTabCongPhap) this.btnTechMainTabCongPhap.className = 'flex-1 text-center py-2.5 rounded-xl text-xs font-ancient uppercase tracking-widest transition-all font-bold bg-qi-blue/15 text-qi-blue border border-qi-blue/20';
+                if (this.btnTechMainTabKyNang) this.btnTechMainTabKyNang.className = 'flex-1 text-center py-2.5 rounded-xl text-xs font-ancient uppercase tracking-widest transition-all font-bold text-gray-500 hover:text-gray-300';
+                
+                if (this.elTechSubTabsCongPhap) this.elTechSubTabsCongPhap.classList.remove('hidden');
+                if (this.elTechSubTabsKyNang) this.elTechSubTabsKyNang.classList.add('hidden');
+                if (this.elTechSubcategoryContainer) this.elTechSubcategoryContainer.classList.add('hidden');
+                
+                this.renderTechniques('linh_luc');
+            };
+        }
+
+        if (this.btnTechMainTabKyNang) {
+            this.btnTechMainTabKyNang.onclick = () => {
+                state.activeMainTab = 'ky_nang';
+                if (this.btnTechMainTabCongPhap) this.btnTechMainTabCongPhap.className = 'flex-1 text-center py-2.5 rounded-xl text-xs font-ancient uppercase tracking-widest transition-all font-bold text-gray-500 hover:text-gray-300';
+                if (this.btnTechMainTabKyNang) this.btnTechMainTabKyNang.className = 'flex-1 text-center py-2.5 rounded-xl text-xs font-ancient uppercase tracking-widest transition-all font-bold bg-qi-blue/15 text-qi-blue border border-qi-blue/20';
+                
+                if (this.elTechSubTabsCongPhap) this.elTechSubTabsCongPhap.classList.add('hidden');
+                if (this.elTechSubTabsKyNang) this.elTechSubTabsKyNang.classList.remove('hidden');
+                if (this.elTechSubcategoryContainer) this.elTechSubcategoryContainer.classList.remove('hidden');
+                
+                this.renderTechniques('phap_thuat');
+            };
+        }
+
+        // Technique Sub Tabs
         if (this.btnTechTabLinhLuc) this.btnTechTabLinhLuc.onclick = () => this.renderTechniques('linh_luc');
         if (this.btnTechTabLuyenThe) this.btnTechTabLuyenThe.onclick = () => this.renderTechniques('luyen_the');
         if (this.btnTechTabThanThuc) this.btnTechTabThanThuc.onclick = () => this.renderTechniques('than_thuc');
-        if (this.btnTechTabPhuTro) this.btnTechTabPhuTro.onclick = () => this.renderTechniques('phu_tro');
-        if (this.btnTechTabSecret) this.btnTechTabSecret.onclick = () => this.renderTechniques('secret');
-        if (this.btnTechTabCustom) this.btnTechTabCustom.onclick = () => this.renderTechniques('custom');
+        if (this.btnTechTabPhapThuat) this.btnTechTabPhapThuat.onclick = () => this.renderTechniques('phap_thuat');
+        if (this.btnTechTabThanThong) this.btnTechTabThanThong.onclick = () => this.renderTechniques('than_thong');
+        if (this.btnTechTabThanHon) this.btnTechTabThanHon.onclick = () => this.renderTechniques('than_hon');
+        if (this.btnTechTabBiPhap) this.btnTechTabBiPhap.onclick = () => this.renderTechniques('bi_phap');
+        
         if (this.btnTechBack) this.btnTechBack.onclick = () => {
             this.elTechListView.classList.remove('hidden');
             this.elTechDetailView.classList.add('hidden');
             if (this.techniqueController) {
                 this.techniqueController.activeDetailId = null;
                 this.techniqueController.activeDetailIsSecret = null;
+                this.techniqueController.renderTechniques(state.activeTechTab);
             }
         };
     }

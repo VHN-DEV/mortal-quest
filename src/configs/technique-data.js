@@ -1208,12 +1208,62 @@ export const SECRET_TECHNIQUES = {
 
 export const getTechniqueById = (id) => TECHNIQUES[id];
 
+export const SKILL_MAP = {
+    // === PHÁP THUẬT ===
+    'hoa_cau_thuat': { category: 'Pháp Thuật', subCategory: 'Công Kích' },
+    'thuy_tien_thuat': { category: 'Pháp Thuật', subCategory: 'Công Kích' },
+    'phong_nhan_thuat': { category: 'Pháp Thuật', subCategory: 'Công Kích' },
+    'thien_loi_kich': { category: 'Pháp Thuật', subCategory: 'Khống Chế' },
+    'huyet_don_thuat': { category: 'Pháp Thuật', subCategory: 'Độn Thuật' },
+    'bp_luyen_dan': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'bp_luyen_khi': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'bp_phu_luc': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+
+    // === THẦN THÔNG ===
+    'thanh_nguyen_kiem_mang': { category: 'Thần Thông', subCategory: 'Bản Mệnh' },
+    'bp_thanh_nguyen_kiem_mang': { category: 'Thần Thông', subCategory: 'Bản Mệnh' },
+    'ho_the_kiem_don': { category: 'Thần Thông', subCategory: 'Bản Mệnh' },
+    'bach_nhap_kiem_tran': { category: 'Thần Thông', subCategory: 'Đại Thần Thông' },
+    'minh_vuong_kim_than': { category: 'Thần Thông', subCategory: 'Huyết Mạch' },
+    'van_ma_phuc_the': { category: 'Thần Thông', subCategory: 'Nguyên Anh' },
+    'van_doc_kiem_khi': { category: 'Thần Thông', subCategory: 'Pháp Tắc' },
+    'thien_doc_phat_quan': { category: 'Thần Thông', subCategory: 'Đại Thần Thông' },
+    'tran_phap_ap_che': { category: 'Thần Thông', subCategory: 'Đại Thần Thông' },
+    'bat_quai_ho_than': { category: 'Thần Thông', subCategory: 'Đại Thần Thông' },
+    'thien_kiem_tong_bi_tich': { category: 'Thần Thông', subCategory: 'Đại Thần Thông' },
+    'hoang_phong_coc_bi_tich': { category: 'Thần Thông', subCategory: 'Nguyên Anh' },
+    'huyen_am_coc_bi_tich': { category: 'Thần Thông', subCategory: 'Huyết Mạch' },
+    'yem_nguyet_tong_bi_tich': { category: 'Thần Thông', subCategory: 'Nguyên Anh' },
+    'lac_van_tong_bi_tich': { category: 'Thần Thông', subCategory: 'Pháp Tắc' },
+    'thien_tinh_tong_bi_tich': { category: 'Thần Thông', subCategory: 'Đại Thần Thông' },
+    'linh_thu_son_bi_tich': { category: 'Thần Thông', subCategory: 'Huyết Mạch' },
+    'thanh_hu_mon_bi_tich': { category: 'Thần Thông', subCategory: 'Nguyên Anh' },
+    'cu_kiem_mon_bi_tich': { category: 'Thần Thông', subCategory: 'Đại Thần Thông' },
+    'hoa_dao_o_bi_tich': { category: 'Thần Thông', subCategory: 'Bản Mệnh' },
+    'thien_khuyet_bao_bi_tich': { category: 'Thần Thông', subCategory: 'Nguyên Anh' },
+    'quy_linh_mon_bi_tich': { category: 'Thần Thông', subCategory: 'Nguyên Anh' },
+    'hop_hoan_tong_bi_tich': { category: 'Thần Thông', subCategory: 'Huyết Mạch' },
+    'ma_diem_mon_bi_tich': { category: 'Thần Thông', subCategory: 'Nguyên Anh' },
+    'thien_sat_tong_bi_tich': { category: 'Thần Thông', subCategory: 'Pháp Tắc' },
+    'ngu_linh_tong_bi_tich': { category: 'Thần Thông', subCategory: 'Huyết Mạch' },
+    'khoi_am_tong_bi_tich': { category: 'Thần Thông', subCategory: 'Nguyên Anh' },
+
+    // === THẦN HỒN THUẬT ===
+    'dai_dien_than_niem': { category: 'Thần Hồn Thuật', subCategory: 'Thần Thức Công Kích' },
+
+    // === BÍ PHÁP ===
+    'am_sat_thu_phap': { category: 'Bí Pháp', subCategory: 'Bộc Phát' }
+};
+
 export const getSecretTechniqueById = (id) => {
     const tech = SECRET_TECHNIQUES[id];
     if (!tech) return null;
     
-    // Assign category dynamically if not defined
-    if (!tech.category) {
+    // Assign category and subCategory based on SKILL_MAP or dynamic fallback
+    if (SKILL_MAP[id]) {
+        tech.category = SKILL_MAP[id].category;
+        tech.subCategory = SKILL_MAP[id].subCategory;
+    } else {
         const thanThongIds = [
             'thanh_nguyen_kiem_mang', 'ho_the_kiem_don', 'bach_nhap_kiem_tran', 
             'minh_vuong_kim_than', 'dai_dien_than_niem', 'van_ma_phuc_the', 
@@ -1221,10 +1271,22 @@ export const getSecretTechniqueById = (id) => {
             'bat_quai_ho_than', 'thien_kiem_tong_bi_tich', 'lac_van_tong_bi_tich', 
             'thien_tinh_tong_bi_tich', 'cu_kiem_mon_bi_tich', 'hoa_dao_o_bi_tich'
         ];
-        if (thanThongIds.includes(id) || id.includes('kiem_mang') || id.includes('kiem_tran') || id.includes('bi_tich')) {
+
+        if (id.startsWith('bp_') || id.includes('luyen_dan') || id.includes('luyen_khi') || id.includes('phu_luc')) {
+            tech.category = 'Pháp Thuật';
+            tech.subCategory = 'Phụ Trợ';
+        } else if (id.includes('thuat') || id === 'hoa_cau_thuat' || id === 'thuy_tien_thuat' || id === 'phong_nhan_thuat') {
+            tech.category = 'Pháp Thuật';
+            tech.subCategory = 'Công Kích';
+        } else if (thanThongIds.includes(id) || id.includes('kiem_mang') || id.includes('kiem_tran') || id.includes('bi_tich')) {
             tech.category = 'Thần Thông';
+            tech.subCategory = 'Đại Thần Thông';
+        } else if (id.includes('than_niem') || id.includes('soul') || id.includes('hon')) {
+            tech.category = 'Thần Hồn Thuật';
+            tech.subCategory = 'Thần Thức Công Kích';
         } else {
-            tech.category = 'Bí Thuật';
+            tech.category = 'Bí Pháp';
+            tech.subCategory = 'Bộc Phát';
         }
     }
 
