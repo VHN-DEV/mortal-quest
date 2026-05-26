@@ -1,4 +1,4 @@
-import { getRealmById, RACE_DATA, HUMAN_REALMS, BODY_REALMS, SOUL_REALMS, SWORD_PATH_REALMS, SOUL_PATH_REALMS } from '../configs/realm-data.js';
+import { getRealmById, RACE_DATA, HUMAN_REALMS, BODY_REALMS, SOUL_REALMS, SWORD_PATH_REALMS, SOUL_PATH_REALMS, getSubRealmsOfCurrent } from '../configs/realm-data.js';
 import { Inventory } from './inventory.js';
 import { state } from '../state.js';
 import { getItemById } from '../configs/item-data.js';
@@ -69,6 +69,13 @@ export class Player {
         this.tuViPerSecond = 0;
         this.bodyExpPerSecond = 0;
         this.soulExpPerSecond = 0;
+        
+        // Meridian cycles progress for Tu Vi, Luyện Thể, and Thần Thức
+        this.meridianCycles = {
+            tuvi: { step: 0, count: 0 },
+            body: { step: 0, count: 0 },
+            soul: { step: 0, count: 0 }
+        };
         
         // Equipment slots (Expanded for Artifact System)
         this.equipment = {
@@ -721,9 +728,182 @@ export class Player {
                 gain = this.soulExpPerSecond * 12 * totalMult;
                 this.soulExp += gain;
             }
-            return { success: true, msg: "Tu luyện thành công.", gain, type: focus };
+
+            // Increment meridian cycle step
+            if (!this.meridianCycles) {
+                this.meridianCycles = {
+                    tuvi: { step: 0, count: 0 },
+                    body: { step: 0, count: 0 },
+                    soul: { step: 0, count: 0 }
+                };
+            }
+            const cycle = this.meridianCycles[focus] || { step: 0, count: 0 };
+            const currentRealmId = focus === 'tuvi' ? this.realmId : (focus === 'body' ? this.bodyRealmId : this.soulRealmId);
+            const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, this.race);
+            const maxSteps = subRealms.length > 1 ? subRealms.length : 10;
+            cycle.step = (cycle.step + 1) % maxSteps;
+            
+            let cycleCompleted = false;
+            let cycleBonus = 0;
+            if (cycle.step === 0) {
+                cycle.count++;
+                cycleCompleted = true;
+                
+                // Award cycle completion bonus: equivalent to 10 seconds of passive gains
+                const baseRates = {
+                    tuvi: this.tuViPerSecond,
+                    body: this.bodyExpPerSecond,
+                    soul: this.soulExpPerSecond
+                };
+                const baseRate = baseRates[focus] || 1;
+                cycleBonus = baseRate * 12 * totalMult;
+                
+                if (focus === 'tuvi') {
+                    this.tuVi += cycleBonus;
+                } else if (focus === 'body') {
+                    this.bodyExp += cycleBonus;
+                } else if (focus === 'soul') {
+                    this.soulExp += cycleBonus;
+                }
+            }
+            this.meridianCycles[focus] = cycle;
+
+            let msg = '';
+            if (focus === 'tuvi') {
+                msg = cycleCompleted 
+                    ? `Chu thiên đại tuần hoàn hoàn tất! Lĩnh ngộ đại đạo (+${Math.floor(cycleBonus).toLocaleString()} Exp)` 
+                    : "Tu luyện thành công.";
+            } else if (focus === 'body') {
+                msg = cycleCompleted 
+                    ? `Tôi cốt viên mãn! Tôi Thể Hoàn Tất (+${Math.floor(cycleBonus).toLocaleString()} Exp)` 
+                    : "Tôi cốt thành công.";
+            } else if (focus === 'soul') {
+                msg = cycleCompleted 
+                    ? `Tụ hồn ngưng tụ! Thần Niệm Thông Đạt (+${Math.floor(cycleBonus).toLocaleString()} Exp)` 
+                    : "Định thần thành công.";
+            }
+
+            return { 
+                success: true, 
+                msg, 
+                gain, 
+                type: focus,
+                cycleCompleted,
+                cycleBonus,
+                step: cycle.step,
+                count: cycle.count
+            };
         }
         return { success: false, reason: `Không đủ tiêu hao để tu luyện (${cost.stamina} thể lực, ${cost.mana} linh lực).` };
+    }
+
+    absorbBubble(rawName, type = 'tuvi', sizeMult = 1.0) {
+        const focus = type;
+        
+        // Influence of Spiritual Root (1.0 to 3.0x)
+        const rootMult = (this.spiritualRoot && this.spiritualRoot.multiplier) ? this.spiritualRoot.multiplier : 1.0;
+        const luckBonus = ((this.luck || 50) / 100) * 0.2; // Max 20% bonus from luck
+        const totalMult = rootMult * (1 + luckBonus);
+        
+        let elementMult = 1.0;
+        
+        // Different multipliers and logic per focus type
+        if (focus === 'tuvi') {
+            // Traditional element matching
+            if (this.spiritualRoot && this.spiritualRoot.name && this.spiritualRoot.name.includes(rawName)) {
+                elementMult = 1.5;
+            }
+        } else if (focus === 'body') {
+            // Body refiner has a bonus based on special physique
+            if (this.physique && this.physique.name) {
+                elementMult = 1.3;
+            }
+        } else if (focus === 'soul') {
+            // Soul refiner has a bonus based on active Titles / Soul Talents
+            if (this.fate && this.fate.titles && this.fate.titles.length > 0) {
+                elementMult = 1.3;
+            }
+        }
+        
+        // Exp gain (free from stamina/mana cost)
+        let baseExp = 0;
+        if (focus === 'tuvi') {
+            baseExp = this.tuViPerSecond * 3 * totalMult * elementMult * sizeMult;
+            this.tuVi += baseExp;
+        } else if (focus === 'body') {
+            baseExp = this.bodyExpPerSecond * 12 * totalMult * elementMult;
+            this.bodyExp += baseExp;
+        } else if (focus === 'soul') {
+            baseExp = this.soulExpPerSecond * 12 * totalMult * elementMult;
+            this.soulExp += baseExp;
+        }
+        
+        // Increment cultivation steps
+        if (!this.meridianCycles) {
+            this.meridianCycles = {
+                tuvi: { step: 0, count: 0 },
+                body: { step: 0, count: 0 },
+                soul: { step: 0, count: 0 }
+            };
+        }
+        const cycle = this.meridianCycles[focus] || { step: 0, count: 0 };
+        const currentRealmId = focus === 'tuvi' ? this.realmId : (focus === 'body' ? this.bodyRealmId : this.soulRealmId);
+        const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, this.race);
+        const maxSteps = subRealms.length > 1 ? subRealms.length : 10;
+        cycle.step = (cycle.step + 1) % maxSteps;
+        
+        let cycleCompleted = false;
+        let cycleBonus = 0;
+        if (cycle.step === 0) {
+            cycle.count++;
+            cycleCompleted = true;
+            
+            // Award cycle completion bonus
+            const baseRates = {
+                tuvi: this.tuViPerSecond,
+                body: this.bodyExpPerSecond,
+                soul: this.soulExpPerSecond
+            };
+            const baseRate = baseRates[focus] || 1;
+            cycleBonus = baseRate * 12 * totalMult * elementMult;
+            
+            if (focus === 'tuvi') {
+                this.tuVi += cycleBonus;
+            } else if (focus === 'body') {
+                this.bodyExp += cycleBonus;
+            } else if (focus === 'soul') {
+                this.soulExp += cycleBonus;
+            }
+        }
+        this.meridianCycles[focus] = cycle;
+        
+        // Formulate custom lore-friendly success messages
+        let msg = '';
+        if (focus === 'tuvi') {
+            msg = cycleCompleted
+                ? `Hấp thu ${rawName} Linh Khí! Đại chu thiên hoàn tất (+${Math.floor(cycleBonus).toLocaleString()} Exp)`
+                : `Hấp thu ${rawName} Linh Khí (+${Math.floor(baseExp).toLocaleString()} Exp)`;
+        } else if (focus === 'body') {
+            msg = cycleCompleted
+                ? `Dẫn nhập ${rawName}! Tôi Thể Hoàn Tất (+${Math.floor(cycleBonus).toLocaleString()} Exp)`
+                : `Hấp thu ${rawName} tôi cốt (+${Math.floor(baseExp).toLocaleString()} Exp)`;
+        } else if (focus === 'soul') {
+            msg = cycleCompleted
+                ? `Định thần ${rawName}! Thần Niệm Thông Đạt (+${Math.floor(cycleBonus).toLocaleString()} Exp)`
+                : `Tụ hợp ${rawName} hồn quang (+${Math.floor(baseExp).toLocaleString()} Exp)`;
+        }
+        
+        return {
+            success: true,
+            gain: baseExp,
+            type: focus,
+            cycleCompleted,
+            cycleBonus,
+            step: cycle.step,
+            count: cycle.count,
+            elementMatched: elementMult > 1.0,
+            msg
+        };
     }
 
     canBreakthrough(type = 'tuvi') {
@@ -2583,6 +2763,11 @@ export class Player {
             soulExp: this.soulExp,
             specializedPaths: JSON.parse(JSON.stringify(this.specializedPaths)),
             cultivationFocus: this.cultivationFocus,
+            meridianCycles: JSON.parse(JSON.stringify(this.meridianCycles || {
+                tuvi: { step: 0, count: 0 },
+                body: { step: 0, count: 0 },
+                soul: { step: 0, count: 0 }
+            })),
             
             // Background & Destiny
             spiritualRoot: this.spiritualRoot,
@@ -2742,6 +2927,11 @@ export class Player {
         this.soulExp = data.soulExp || 0;
         if (data.specializedPaths) this.specializedPaths = { ...this.specializedPaths, ...data.specializedPaths };
         this.cultivationFocus = data.cultivationFocus || 'tuvi';
+        this.meridianCycles = data.meridianCycles || {
+            tuvi: { step: 0, count: 0 },
+            body: { step: 0, count: 0 },
+            soul: { step: 0, count: 0 }
+        };
 
         // Background
         this.spiritualRoot = data.spiritualRoot;

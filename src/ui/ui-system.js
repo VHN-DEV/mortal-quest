@@ -35,7 +35,8 @@ export class UISystem {
         
         // Track current screen in-memory for render performance optimization
         this.currentScreenId = 'screen-main';
-
+        this.qiBubbleInterval = null;
+ 
         // Initialize smooth horizontal drag-scroll roll behavior
         this.initHorizontalScrollRoll();
     }
@@ -834,6 +835,12 @@ export class UISystem {
             value: screenId
         });
 
+        if (screenId === 'screen-main') {
+            this.startQiBubbleSystem();
+        } else {
+            this.stopQiBubbleSystem();
+        }
+
         // Specific screen refresh logic
         if (screenId === 'screen-main') {
             if (typeof window.renderMainStats === 'function') window.renderMainStats();
@@ -1340,5 +1347,352 @@ export class UISystem {
                 el.scrollLeft = scrollLeft - walk;
             });
         });
+    }
+
+    startQiBubbleSystem() {
+        this.updateQiBubbleSystemState();
+    }
+
+    updateQiBubbleSystemState() {
+        const focus = state.player?.cultivationFocus || 'tuvi';
+        const hasTech = !!state.player?.mainTechniqueId;
+        const shouldRun = this.currentScreenId === 'screen-main' && focus === 'tuvi' && hasTech;
+        
+        if (shouldRun) {
+            if (!this.qiBubbleInterval) {
+                // Initial spawn of 2 bubbles immediately
+                setTimeout(() => this.spawnQiBubble(), 800);
+                setTimeout(() => this.spawnQiBubble(), 2000);
+                
+                this.qiBubbleInterval = setInterval(() => {
+                    if (this.currentScreenId === 'screen-main') {
+                        this.spawnQiBubble();
+                    }
+                }, 4000 + Math.random() * 2000);
+            }
+        } else {
+            if (this.qiBubbleInterval) {
+                this.stopQiBubbleSystem();
+            }
+        }
+    }
+    
+    stopQiBubbleSystem() {
+        if (this.qiBubbleInterval) {
+            clearInterval(this.qiBubbleInterval);
+            this.qiBubbleInterval = null;
+        }
+        const container = document.getElementById('qi-bubbles-container');
+        if (container) {
+            container.innerHTML = '';
+        }
+    }
+
+    spawnQiBubble() {
+        const container = document.getElementById('qi-bubbles-container');
+        if (!container || this.currentScreenId !== 'screen-main') return;
+        
+        const focus = state.player?.cultivationFocus || 'tuvi';
+        const hasTech = !!state.player?.mainTechniqueId;
+        if (focus !== 'tuvi' || !hasTech) return;
+        
+        let allowedBubbles = [];
+        
+        // Traditional location-based elemental Qi
+        const loc = getLocationById(state.currentWorldId, state.currentLocId);
+        const defaultQi = {
+            'Kim': 15, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 15,
+            'Phong': 5, 'Lôi': 5, 'Băng': 5, 'Quang': 5, 'Ám': 5
+        };
+        const elementQi = loc?.elementQi || defaultQi;
+        
+        const elements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ', 'Phong', 'Lôi', 'Băng', 'Quang', 'Ám'];
+        const allowedElements = elements.filter(el => (elementQi[el] || 0) > 0);
+        if (allowedElements.length === 0) return;
+        
+        const randomElName = allowedElements[Math.floor(Math.random() * allowedElements.length)];
+        const ELEMENT_CONFIGS = {
+            'Kim': { color: '#fcd34d', name: 'Kim' },
+            'Mộc': { color: '#4ade80', name: 'Mộc' },
+            'Thủy': { color: '#3b82f6', name: 'Thủy' },
+            'Hỏa': { color: '#ef4444', name: 'Hỏa' },
+            'Thổ': { color: '#d97706', name: 'Thổ' },
+            'Phong': { color: '#94a3b8', name: 'Phong' },
+            'Lôi': { color: '#fbbf24', name: 'Lôi' },
+            'Băng': { color: '#60a5fa', name: 'Băng' },
+            'Quang': { color: '#fffbeb', name: 'Quang' },
+            'Ám': { color: '#a855f7', name: 'Ám' }
+        };
+        const sizeMult = 0.7 + Math.random() * 0.7; // 0.7 to 1.4
+        allowedBubbles.push({ ...ELEMENT_CONFIGS[randomElName], rawName: randomElName, type: 'tuvi', sizeMult });
+        
+        const cfg = allowedBubbles[0];
+        if (!cfg) return;
+        
+        const bubble = document.createElement('div');
+        bubble.className = 'qi-bubble';
+        bubble.style.setProperty('--element-color', cfg.color);
+        
+        // Random horizontal start pos (allow full screen width)
+        const startX = 5 + Math.random() * 90;
+        bubble.style.left = `${startX}%`;
+        bubble.style.bottom = `-60px`;
+        
+        // Dynamic visual bubble size
+        bubble.style.width = `${Math.round(52 * sizeMult)}px`;
+        bubble.style.height = `${Math.round(52 * sizeMult)}px`;
+        
+        // Drift and duration
+        const driftX = Math.random() * 120 - 60;
+        bubble.style.setProperty('--float-x', `${driftX}px`);
+        
+        const duration = 12 + Math.random() * 8;
+        bubble.style.animationDuration = `${duration}s`;
+        
+        bubble.innerHTML = `
+            <div class="qi-bubble-core" style="--element-color: ${cfg.color}"></div>
+            <span class="text-[7.5px] text-white/95 font-bold uppercase tracking-[0.2em] mt-1 select-none font-ancient text-center leading-none">${cfg.name}</span>
+        `;
+        
+        bubble.onclick = (e) => {
+            e.stopPropagation();
+            this.popBubble(bubble, cfg);
+        };
+        
+        bubble.addEventListener('animationend', () => bubble.remove());
+        container.appendChild(bubble);
+    }
+ 
+    popBubble(bubble, cfg) {
+        if (bubble.dataset.popped) return;
+        bubble.dataset.popped = 'true';
+        
+        // Check suitability with player's root elements
+        const playerElements = state.player?.spiritualRoot?.elements || [];
+        const isCompatible = playerElements.includes(cfg.rawName);
+        
+        const containerRect = document.getElementById('screen-main').getBoundingClientRect();
+        const rect = bubble.getBoundingClientRect();
+        const x = rect.left - containerRect.left + rect.width / 2;
+        const y = rect.top - containerRect.top + rect.height / 2;
+        
+        if (!isCompatible) {
+            // Incompatible root: show warning and cancel pop
+            if (window.audioManager && typeof window.audioManager.playSfx === 'function') {
+                try {
+                    window.audioManager.playSfx('deny');
+                } catch (err) {
+                    window.audioManager.playSfx('click');
+                }
+            }
+            
+            const warnText = document.createElement('div');
+            warnText.className = 'absolute z-40 font-bold font-ancient text-[8px] text-red-500 pointer-events-none select-none filter drop-shadow-[0_0_3px_rgba(0,0,0,0.9)]';
+            warnText.textContent = `Linh căn bất hợp (${cfg.name})`;
+            warnText.style.left = `${x}px`;
+            warnText.style.top = `${y}px`;
+            warnText.style.transform = 'translate(-50%, -50%)';
+            document.getElementById('screen-main').appendChild(warnText);
+            
+            gsap.to(warnText, {
+                y: -45,
+                opacity: 0,
+                duration: 1.2,
+                ease: 'power1.out',
+                onComplete: () => warnText.remove()
+            });
+            
+            bubble.removeAttribute('data-popped');
+            return;
+        }
+        
+        if (window.audioManager && typeof window.audioManager.playSfx === 'function') {
+            window.audioManager.playSfx('click');
+        }
+        
+        // Spawn expanding pop ring
+        const popRing = document.createElement('div');
+        popRing.className = 'pop-ring';
+        popRing.style.setProperty('--element-color', cfg.color);
+        popRing.style.left = `${x}px`;
+        popRing.style.top = `${y}px`;
+        document.getElementById('screen-main').appendChild(popRing);
+        setTimeout(() => popRing.remove(), 500);
+        
+        // Remove bubble element smoothly
+        gsap.to(bubble, {
+            scale: 0,
+            opacity: 0,
+            duration: 0.15,
+            onComplete: () => bubble.remove()
+        });
+        
+        // Trigger controller absorb action with type and size multiplier
+        if (window.game && typeof window.game.absorbBubble === 'function') {
+            const result = window.game.absorbBubble(cfg.rawName, cfg.type, cfg.sizeMult);
+            if (result && result.success) {
+                // Spawn beautiful floating +Exp text
+                const gainText = document.createElement('div');
+                gainText.className = 'absolute z-40 font-bold font-mono text-[9px] text-qi-blue pointer-events-none select-none filter drop-shadow-[0_0_4px_rgba(79,209,197,0.8)]';
+                gainText.textContent = `+${Math.floor(result.gain)} Tu Vi`;
+                gainText.style.left = `${x}px`;
+                gainText.style.top = `${y}px`;
+                gainText.style.transform = 'translate(-50%, -50%)';
+                document.getElementById('screen-main').appendChild(gainText);
+                
+                gsap.to(gainText, {
+                    y: -65,
+                    opacity: 0,
+                    duration: 1.4,
+                    ease: 'power2.out',
+                    onComplete: () => gainText.remove()
+                });
+            }
+        }
+        
+        // Spawn flying trail particles to portrait
+        const portrait = document.getElementById('aura-border');
+        if (portrait) {
+            const portRect = portrait.getBoundingClientRect();
+            const destX = portRect.left - containerRect.left + portRect.width / 2;
+            const destY = portRect.top - containerRect.top + portRect.height / 2;
+            
+            for (let i = 0; i < 4; i++) {
+                const p = document.createElement('div');
+                p.className = 'qi-trail-particle';
+                p.style.setProperty('--element-color', cfg.color);
+                p.style.left = `${x}px`;
+                p.style.top = `${y}px`;
+                document.getElementById('screen-main').appendChild(p);
+                
+                const ctrlX = x + (Math.random() * 200 - 100);
+                const ctrlY = y - (50 + Math.random() * 100);
+                
+                const tl = gsap.timeline({
+                    onComplete: () => p.remove()
+                });
+                
+                tl.to(p, {
+                    x: ctrlX - x,
+                    y: ctrlY - y,
+                    duration: 0.35,
+                    ease: "power1.out"
+                }).to(p, {
+                    x: destX - x,
+                    y: destY - y,
+                    scale: 0.3,
+                    duration: 0.45,
+                    ease: "power2.in"
+                });
+            }
+        }
+    }
+
+    handleCultivationSuccess(result) {
+        if (!result || !result.success) return;
+        
+        const focus = result.type;
+        const cycles = state.player.meridianCycles || {
+            tuvi: { step: 0, count: 0 },
+            body: { step: 0, count: 0 },
+            soul: { step: 0, count: 0 }
+        };
+        const currentStep = cycles[focus].step;
+
+        // Custom visual response depending on the refinement focus type
+        if (focus === 'tuvi') {
+            // Pulse the aura border with cyan glow
+            const auraBorder = document.getElementById('aura-border');
+            if (auraBorder) {
+                gsap.killTweensOf(auraBorder);
+                gsap.fromTo(auraBorder, 
+                    { boxShadow: '0 0 10px rgba(79, 209, 197, 0.25)', borderColor: 'rgba(79, 209, 197, 0.4)' },
+                    { boxShadow: '0 0 50px rgba(79, 209, 197, 0.95)', borderColor: 'rgba(79, 209, 197, 0.9)', duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out" }
+                );
+            }
+        } else if (focus === 'body') {
+            // Pulse the aura border with red glow
+            const auraBorder = document.getElementById('aura-border');
+            if (auraBorder) {
+                gsap.killTweensOf(auraBorder);
+                gsap.fromTo(auraBorder, 
+                    { boxShadow: '0 0 10px rgba(239, 68, 68, 0.25)', borderColor: 'rgba(239, 68, 68, 0.4)' },
+                    { boxShadow: '0 0 50px rgba(239, 68, 68, 0.95)', borderColor: 'rgba(239, 68, 68, 0.9)', duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out" }
+                );
+            }
+        } else if (focus === 'soul') {
+            // Pulse the aura border with purple glow
+            const auraBorder = document.getElementById('aura-border');
+            if (auraBorder) {
+                gsap.killTweensOf(auraBorder);
+                gsap.fromTo(auraBorder, 
+                    { boxShadow: '0 0 10px rgba(168, 85, 247, 0.25)', borderColor: 'rgba(168, 85, 247, 0.4)' },
+                    { boxShadow: '0 0 50px rgba(168, 85, 247, 0.95)', borderColor: 'rgba(168, 85, 247, 0.9)', duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out" }
+                );
+            }
+        }
+        
+        // Handle cycle completion rewards and cinematic effects
+        if (result.cycleCompleted) {
+            // Play cinematic sound
+            if (focus === 'tuvi') audioManager.playSfx('levelup');
+            else if (focus === 'body') audioManager.playSfx('combat_crit');
+            else if (focus === 'soul') audioManager.playSfx('breakthrough');
+            
+            // Spawn shockwave from portrait center
+            const portrait = document.getElementById('aura-border');
+            if (portrait) {
+                const containerRect = document.getElementById('screen-main').getBoundingClientRect();
+                const rect = portrait.getBoundingClientRect();
+                const x = rect.left - containerRect.left + rect.width / 2;
+                const y = rect.top - containerRect.top + rect.height / 2;
+                
+                const shockwave = document.createElement('div');
+                shockwave.className = 'meridian-shockwave';
+                shockwave.style.setProperty('--focus-color', focus === 'tuvi' ? '#4fd1c5' : (focus === 'body' ? '#ef4444' : '#a855f7'));
+                shockwave.style.left = `${x}px`;
+                shockwave.style.top = `${y}px`;
+                document.getElementById('screen-main').appendChild(shockwave);
+                
+                setTimeout(() => shockwave.remove(), 800);
+                
+                // Screen shake
+                const screenMain = document.getElementById('screen-main');
+                if (screenMain) {
+                    screenMain.classList.add('screen-shake-effect');
+                    setTimeout(() => screenMain.classList.remove('screen-shake-effect'), 400);
+                }
+                
+                // Float cycle bonus popup
+                const bonusPopup = document.createElement('div');
+                bonusPopup.className = 'cycle-bonus-popup';
+                
+                let title = 'Đại Chu Thiên';
+                let label = 'Exp';
+                let textColor = 'text-qi-blue';
+                
+                if (focus === 'body') {
+                    title = 'Tôi Thể Hoàn Tất';
+                    textColor = 'text-red-400';
+                } else if (focus === 'soul') {
+                    title = 'Thần Niệm Thông Đạt';
+                    textColor = 'text-purple-400';
+                }
+
+                bonusPopup.innerHTML = `
+                    <div class="flex flex-col items-center justify-center filter drop-shadow-[0_0_8px_rgba(0,0,0,0.9)]">
+                        <span class="text-[7.5px] text-cultivation-gold uppercase tracking-[0.25em] font-ancient">${title}</span>
+                        <span class="${textColor} text-[11px] font-black tracking-wider mt-0.5 font-ancient">
+                            +${Math.floor(result.cycleBonus).toLocaleString()} ${label}
+                        </span>
+                    </div>
+                `;
+                // Position above portrait
+                bonusPopup.style.left = `${rect.left + rect.width / 2}px`;
+                bonusPopup.style.top = `${rect.top}px`;
+                document.getElementById('app').appendChild(bonusPopup);
+                setTimeout(() => bonusPopup.remove(), 1600);
+            }
+        }
     }
 }

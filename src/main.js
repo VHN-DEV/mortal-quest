@@ -8,8 +8,8 @@ import { EnemyGenerator, Enemy } from './core/enemy.js';
 import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
 import { getWorlds, getLocationById, findLocationName, DANGER_LEVELS, WORLDS } from './configs/map-data.js';
-import { ASSETS, preloadAssets } from './configs/asset-data.js';
-import { getRealmById, HUMAN_REALMS } from './configs/realm-data.js';
+import { ASSETS, preloadAssets, getAssetUrl } from './configs/asset-data.js';
+import { getRealmById, HUMAN_REALMS, getSubRealmsOfCurrent } from './configs/realm-data.js';
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
 import { SEEDS } from './configs/garden-data.js';
 import { SECTS, getSectById } from './configs/sect-data.js';
@@ -329,67 +329,96 @@ window.renderMainStats = () => {
             elLocName.textContent = locName;
         }
 
-        if (elMainScreen && lastRenderedLocId !== state.currentLocId) {
-            lastRenderedLocId = state.currentLocId;
-            const loc = getLocationById(state.currentWorldId, state.currentLocId);
-            const defaultBg = ASSETS.backgrounds.cultivation;
-            const bgUrl = loc?.image || defaultBg;
+        const loc = getLocationById(state.currentWorldId, state.currentLocId);
+
+        const focus = player.cultivationFocus || 'tuvi';
+        const bgKey = `${state.currentLocId}`;
+        if (elMainScreen && elMainScreen.dataset.bgKey !== bgKey) {
+            elMainScreen.dataset.bgKey = bgKey;
+            
+            const bgUrl = loc?.image || ASSETS.backgrounds.cultivation;
 
             // Set linear-gradient overlay for excellent readability and atmosphere
-            elMainScreen.style.backgroundImage = `linear-gradient(to bottom, rgba(10, 10, 12, 0.85), rgba(10, 10, 12, 0.95)), url('${bgUrl}')`;
+            elMainScreen.style.backgroundImage = `linear-gradient(to bottom, rgba(10, 10, 12, 0.55), rgba(10, 10, 12, 0.85)), url('${bgUrl}')`;
             elMainScreen.style.backgroundSize = 'cover';
             elMainScreen.style.backgroundPosition = 'center';
-            elMainScreen.style.transition = 'background-image 1.5s ease-in-out';
+            elMainScreen.style.transition = 'background-image 1.2s ease-in-out';
+        }
 
-            // Render 10-element local Qi distribution grid on the main cultivation screen
-            const elMainQiGrid = document.getElementById('main-element-qi-grid');
-            const elMainPurityTag = document.getElementById('main-purity-tag');
-            if (elMainQiGrid && loc) {
-                const ELEMENT_COLORS = {
-                    'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
-                    'Phong': '#94a3b8', 'Lôi': '#fbbf24', 'Băng': '#60a5fa', 'Quang': '#fffbeb', 'Ám': '#a855f7'
-                };
-                const ELEMENT_ICONS = {
-                    'Kim': '⚔️', 'Mộc': '🌿', 'Thủy': '💧', 'Hỏa': '🔥', 'Thổ': '⛰️',
-                    'Phong': '🌪️', 'Lôi': '⚡', 'Băng': '❄️', 'Quang': '☀️', 'Ám': '🌙'
-                };
+        // Set cultivation-specific portrait for the center avatar frame
+        const mainPortrait = document.getElementById('main-player-portrait');
+        if (mainPortrait) {
+            let focusPortraitUrl = '';
+            if (focus === 'tuvi') focusPortraitUrl = getAssetUrl('cultivation/tu_vi.webp');
+            else if (focus === 'body') focusPortraitUrl = getAssetUrl('cultivation/luyen_the.webp');
+            else if (focus === 'soul') focusPortraitUrl = getAssetUrl('cultivation/than_thuc.webp');
 
-                // Get location specific elementQi or default balanced
-                const defaultQi = {
-                    'Kim': 15, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 15,
-                    'Phong': 5, 'Lôi': 5, 'Băng': 5, 'Quang': 5, 'Ám': 5
-                };
-                const elementQi = loc.elementQi || defaultQi;
-
-                if (elMainPurityTag && loc.energies && loc.energies.length > 0) {
-                    const mainEnergy = loc.energies[0];
-                    const purityMap = {
-                        'TINH_THUAN': 'Tinh Thuần',
-                        'CUC_PHAM': 'Cực Phẩm',
-                        'TAP': 'Tạp Chất',
-                        'DAO': 'Đạo Vận'
-                    };
-                    elMainPurityTag.textContent = `${mainEnergy.type.replace(/_/g, ' ').toUpperCase()} - ${purityMap[mainEnergy.purity] || 'Thường'}`;
-                }
-
-                const elements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ', 'Phong', 'Lôi', 'Băng', 'Quang', 'Ám'];
-                elMainQiGrid.innerHTML = elements.map(el => {
-                    const pct = elementQi[el] || 0;
-                    const color = ELEMENT_COLORS[el];
-                    const icon = ELEMENT_ICONS[el];
-                    const active = pct > 0;
-
-                    return `
-                        <div class="flex flex-col items-center justify-center p-1.5 rounded-lg border transition-all select-none
-                            ${active ? 'bg-white/[0.02] border-white/10' : 'bg-black/10 border-white/[0.02] opacity-30'}"
-                            style="${active ? `border-color: ${color}20 !important; box-shadow: inset 0 0 4px ${color}10 !important;` : ''}">
-                            <span class="text-xs filter drop-shadow-[0_0_2px_${color}]" style="color: ${color}">${icon}</span>
-                            <span class="text-[7px] font-ancient font-semibold text-gray-400 mt-0.5">${el}</span>
-                            <span class="text-[8px] font-mono font-bold mt-0.5" style="color: ${active ? color : '#6b7280'}">${pct}%</span>
-                        </div>
-                    `;
-                }).join('');
+            if (mainPortrait.getAttribute('src') !== focusPortraitUrl) {
+                mainPortrait.setAttribute('src', focusPortraitUrl);
             }
+        }
+
+        // Dynamic glow border for the central circle
+        const focusColors = {
+            tuvi: { border: 'rgba(79, 209, 197, 0.4)', shadow: 'rgba(79, 209, 197, 0.25)' }, // Qi Blue
+            body: { border: 'rgba(239, 68, 68, 0.4)', shadow: 'rgba(239, 68, 68, 0.25)' }, // Red
+            soul: { border: 'rgba(168, 85, 247, 0.4)', shadow: 'rgba(168, 85, 247, 0.25)' } // Purple
+        };
+        const borderCfg = focusColors[focus] || focusColors.tuvi;
+        const auraBorder = document.getElementById('aura-border');
+        if (auraBorder) {
+            auraBorder.style.borderColor = borderCfg.border;
+            auraBorder.style.boxShadow = `0 0 50px ${borderCfg.shadow}`;
+        }
+
+        // Render 10-element local Qi distribution grid on the main cultivation screen
+        const elMainQiGrid = document.getElementById('main-element-qi-grid');
+        const elMainPurityTag = document.getElementById('main-purity-tag');
+        if (elMainQiGrid && loc) {
+            const ELEMENT_COLORS = {
+                'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
+                'Phong': '#94a3b8', 'Lôi': '#fbbf24', 'Băng': '#60a5fa', 'Quang': '#fffbeb', 'Ám': '#a855f7'
+            };
+            const ELEMENT_ICONS = {
+                'Kim': '⚔️', 'Mộc': '🌿', 'Thủy': '💧', 'Hỏa': '🔥', 'Thổ': '⛰️',
+                'Phong': '🌪️', 'Lôi': '⚡', 'Băng': '❄️', 'Quang': '☀️', 'Ám': '🌙'
+            };
+
+            // Get location specific elementQi or default balanced
+            const defaultQi = {
+                'Kim': 15, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 15,
+                'Phong': 5, 'Lôi': 5, 'Băng': 5, 'Quang': 5, 'Ám': 5
+            };
+            const elementQi = loc.elementQi || defaultQi;
+
+            if (elMainPurityTag && loc.energies && loc.energies.length > 0) {
+                const mainEnergy = loc.energies[0];
+                const purityMap = {
+                    'TINH_THUAN': 'Tinh Thuần',
+                    'CUC_PHAM': 'Cực Phẩm',
+                    'TAP': 'Tạp Chất',
+                    'DAO': 'Đạo Vận'
+                };
+                elMainPurityTag.textContent = `${mainEnergy.type.replace(/_/g, ' ').toUpperCase()} - ${purityMap[mainEnergy.purity] || 'Thường'}`;
+            }
+
+            const elements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ', 'Phong', 'Lôi', 'Băng', 'Quang', 'Ám'];
+            elMainQiGrid.innerHTML = elements.map(el => {
+                const pct = elementQi[el] || 0;
+                const color = ELEMENT_COLORS[el];
+                const icon = ELEMENT_ICONS[el];
+                const active = pct > 0;
+
+                return `
+                    <div class="flex flex-col items-center justify-center p-1.5 rounded-lg border transition-all select-none
+                        ${active ? 'bg-white/[0.02] border-white/10' : 'bg-black/10 border-white/[0.02] opacity-30'}"
+                        style="${active ? `border-color: ${color}20 !important; box-shadow: inset 0 0 4px ${color}10 !important;` : ''}">
+                        <span class="text-xs filter drop-shadow-[0_0_2px_${color}]" style="color: ${color}">${icon}</span>
+                        <span class="text-[7px] font-ancient font-semibold text-gray-400 mt-0.5">${el}</span>
+                        <span class="text-[8px] font-mono font-bold mt-0.5" style="color: ${active ? color : '#6b7280'}">${pct}%</span>
+                    </div>
+                `;
+            }).join('');
         }
     }
 
@@ -471,12 +500,90 @@ window.renderMainStats = () => {
     });
     if (elBtnCultivateText) {
         const cfg = focusMap[focus];
-        elBtnCultivateText.innerHTML = `<i class="ph ${cfg.icon} mr-2"></i>${cfg.label}`;
+        const cycle = player.meridianCycles?.[focus] || { step: 0, count: 0 };
+        const currentRealmId = focus === 'tuvi' ? player.realmId : (focus === 'body' ? player.bodyRealmId : player.soulRealmId);
+        const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, player.race);
+        const maxSteps = subRealms.length > 1 ? subRealms.length : 10;
+        
+        elBtnCultivateText.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-0.5 select-none">
+                ${focus === 'tuvi' ? `
+                <span class="text-[7.5px] text-cultivation-gold/90 font-mono tracking-[0.2em] font-black uppercase mb-0.5">
+                    Chu Thiên: ${cycle.step} / ${maxSteps} (Lũy kế: ${cycle.count})
+                </span>
+                ` : ''}
+                <span class="text-xs font-bold tracking-[0.25em] flex items-center justify-center">
+                    <i class="ph ${cfg.icon} mr-2 text-glow"></i>${cfg.label}
+                </span>
+            </div>
+        `;
     }
     if (elBtnBreakthrough) {
         const check = player.canBreakthrough(focus);
         elBtnBreakthrough.disabled = !check.can;
         elBtnBreakthrough.title = check.can ? '' : (check.reason || 'Chưa đủ điều kiện');
+    }
+
+    const meridianContainer = document.getElementById('meridian-circle-container');
+    const cycles = player.meridianCycles || {
+        tuvi: { step: 0, count: 0 },
+        body: { step: 0, count: 0 },
+        soul: { step: 0, count: 0 }
+    };
+    
+    if (meridianContainer) {
+        if (focus !== 'tuvi') {
+            meridianContainer.style.display = 'none';
+        } else {
+            meridianContainer.style.display = 'block';
+            const currentRealmId = focus === 'tuvi' ? player.realmId : (focus === 'body' ? player.bodyRealmId : player.soulRealmId);
+            const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, player.race);
+            const numNodes = subRealms.length > 1 ? subRealms.length : 10;
+            
+            // Rebuild nodes if they don't match the current focus or count
+            const currentCount = meridianContainer.querySelectorAll('.meridian-node').length;
+            if (currentCount !== numNodes || meridianContainer.dataset.arrangedFocus !== focus) {
+                meridianContainer.innerHTML = '';
+                meridianContainer.dataset.arrangedFocus = focus;
+                
+                for (let i = 0; i < numNodes; i++) {
+                    const node = document.createElement('div');
+                    node.className = 'meridian-node';
+                    node.dataset.index = i;
+                    meridianContainer.appendChild(node);
+                }
+                
+                // Position them in a ring
+                const nodes = meridianContainer.querySelectorAll('.meridian-node');
+                const parentWidth = meridianContainer.offsetWidth || 288;
+                const radius = parentWidth * 0.44;
+                nodes.forEach((node, i) => {
+                    const angle = (i * (360 / numNodes) - 90) * Math.PI / 180;
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    node.style.left = `calc(50% + ${x}px)`;
+                    node.style.top = `calc(50% + ${y}px)`;
+                    node.style.transform = 'translate(-50%, -50%)';
+                });
+            }
+            
+            const currentRealmIdx = subRealms.findIndex(r => r.id === currentRealmId);
+            
+            const tvNodes = meridianContainer.querySelectorAll('.meridian-node');
+            tvNodes.forEach((node, idx) => {
+                const isCompleted = currentRealmIdx !== -1 && idx < currentRealmIdx;
+                const isCurrentRealm = currentRealmIdx !== -1 && idx === currentRealmIdx;
+                
+                node.classList.toggle('completed', isCompleted);
+                node.classList.toggle('current-realm', isCurrentRealm);
+                node.classList.remove('active');
+                
+                const rInfo = subRealms[idx];
+                if (rInfo) {
+                    node.title = rInfo.name;
+                }
+            });
+        }
     }
 };
 

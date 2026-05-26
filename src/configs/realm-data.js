@@ -393,3 +393,45 @@ export const getRealmById = (id, type = 'tuvi', race = 'HUMAN') => {
 
     return list[0];
 };
+
+export const getSubRealmsOfCurrent = (id, type = 'tuvi', race = 'HUMAN') => {
+    let list = HUMAN_REALMS;
+    if (type === 'body') list = BODY_REALMS;
+    else if (type === 'soul') list = SOUL_REALMS;
+    else if (type === 'sword') list = SWORD_PATH_REALMS;
+    else if (type === 'soul_path') list = SOUL_PATH_REALMS;
+    else {
+        list = RACE_DATA[race]?.realms || HUMAN_REALMS;
+    }
+    
+    const currentRealm = list.find(r => r.id === id) || list[0];
+    const currentName = currentRealm.name;
+    
+    const words = currentName.split(' ');
+    let prefix = words[0];
+    if (words[1] && !words[1].startsWith('Sơ') && !words[1].startsWith('Trung') && !words[1].startsWith('Hậu') && !words[1].startsWith('Đại') && !words[1].startsWith('Viên') && !words[1].startsWith('Trảm') && !words[1].startsWith('Giai') && !words[1].startsWith('tầng') && !words[1].startsWith('Tầng') && !words[1].startsWith('yếu')) {
+        prefix = words[0] + ' ' + words[1];
+    }
+    
+    if (currentName.startsWith("Luyện Khí")) prefix = "Luyện Khí";
+    if (currentName.startsWith("Trúc Cơ")) prefix = "Trúc Cơ";
+    if (currentName.startsWith("Kết Đan")) prefix = "Kết Đan";
+    if (currentName.startsWith("Nguyên Anh")) prefix = "Nguyên Anh";
+    if (currentName.startsWith("Hóa Thần")) prefix = "Hóa Thần";
+    if (currentName.startsWith("Luyện Hư")) prefix = "Luyện Hư";
+    if (currentName.startsWith("Hợp Thể")) prefix = "Hợp Thể";
+    if (currentName.startsWith("Đại Thừa")) prefix = "Đại Thừa";
+    if (currentName.startsWith("Chân Tiên")) prefix = "Chân Tiên";
+    if (currentName.startsWith("Kim Tiên")) prefix = "Kim Tiên";
+    if (currentName.startsWith("Thái Ất")) prefix = "Thái Ất";
+    if (currentName.startsWith("Đại La")) prefix = "Đại La";
+    if (currentName.startsWith("Đạo Tổ")) prefix = "Đạo Tổ";
+
+    const subRealms = list.filter(r => r.name.startsWith(prefix));
+    
+    if (subRealms.length === 0) {
+        return [currentRealm];
+    }
+    
+    return subRealms;
+};

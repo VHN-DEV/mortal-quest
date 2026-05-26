@@ -2642,6 +2642,242 @@ select option:checked {
     z-index: 5;
 }
 
+/* --- Cultivation Overhaul Styles --- */
+
+/* Meridian nodes surrounding portrait */
+.meridian-node {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(20, 20, 25, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.6);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 25;
+}
+
+.meridian-node.active {
+    background: var(--focus-color, #4fd1c5);
+    border-color: #fff;
+    box-shadow: 0 0 14px var(--focus-color, #4fd1c5), 0 0 25px var(--focus-color, #4fd1c5), inset 0 0 3px rgba(255,255,255,0.8);
+    transform: translate(-50%, -50%) scale(1.35) !important;
+}
+
+.meridian-node.completed {
+    background: rgba(79, 209, 197, 0.55);
+    border-color: rgba(79, 209, 197, 0.7);
+    box-shadow: 0 0 10px rgba(79, 209, 197, 0.45);
+}
+
+.meridian-node.current-realm {
+    background: #fbbf24;
+    border-color: #fff;
+    box-shadow: 0 0 12px #fbbf24, 0 0 22px rgba(251, 191, 36, 0.6);
+    transform: translate(-50%, -50%) scale(1.15) !important;
+    animation: current-realm-pulse 2s infinite ease-in-out;
+}
+
+@keyframes current-realm-pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 10px #fbbf24, 0 0 15px rgba(251,191,36,0.5); }
+    50% { transform: translate(-50%, -50%) scale(1.35); box-shadow: 0 0 20px #fbbf24, 0 0 32px #fbbf24; }
+}
+
+
+/* Bone Acupoints and Soul Mind Stars */
+.bone-node, .soul-node {
+    fill: rgba(255, 255, 255, 0.08);
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 0.5;
+    transition: all 0.3s ease;
+}
+
+.bone-node.active {
+    fill: #ef4444 !important;
+    stroke: #ffffff !important;
+    stroke-width: 1;
+    filter: drop-shadow(0 0 5px #ef4444);
+    r: 3.5px !important;
+}
+
+.soul-node.active {
+    fill: #c084fc !important;
+    stroke: #ffffff !important;
+    stroke-width: 1;
+    filter: drop-shadow(0 0 5px #a855f7);
+    r: 3.5px !important;
+}
+
+/* Floating Qi Bubbles styles */
+.qi-bubble {
+    position: absolute;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.02) 70%);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.08), 0 6px 15px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    cursor: pointer;
+    z-index: 35;
+    user-select: none;
+    pointer-events: auto;
+    animation: float-bubble 10s linear forwards;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.qi-bubble:hover {
+    transform: scale(1.12);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.2), 0 0 20px var(--element-color, rgba(255, 255, 255, 0.25));
+}
+
+.qi-bubble-core {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--element-color, #fff);
+    box-shadow: 0 0 10px var(--element-color, #fff), 0 0 20px var(--element-color, #fff);
+    animation: core-pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes core-pulse {
+    0% { transform: scale(0.85); filter: brightness(0.9); }
+    100% { transform: scale(1.15); filter: brightness(1.2); }
+}
+
+@keyframes float-bubble {
+    0% {
+        transform: translate3d(0, 0, 0) scale(0.9);
+        bottom: -60px;
+        opacity: 0;
+    }
+    5% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate3d(var(--float-x, 25px), 0, 0) scale(0.9);
+        bottom: calc(100% + 60px);
+        opacity: 0;
+    }
+}
+
+/* Flying Qi Trails */
+.qi-trail-particle {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: var(--element-color, #4fd1c5);
+    box-shadow: 0 0 10px var(--element-color, #4fd1c5), 0 0 20px var(--element-color, #4fd1c5);
+    z-index: 50;
+}
+
+/* Exploding pop rings */
+.pop-ring {
+    position: absolute;
+    border: 1.5px solid var(--element-color, #4fd1c5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 40;
+    animation: pop-expand 0.45s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes pop-expand {
+    0% {
+        width: 12px;
+        height: 12px;
+        opacity: 1;
+        border-width: 2px;
+    }
+    100% {
+        width: 90px;
+        height: 90px;
+        opacity: 0;
+        border-width: 0.5px;
+    }
+}
+
+/* Meridian Cycle Breakthrough Shockwaves */
+.meridian-shockwave {
+    position: absolute;
+    border: 2px solid var(--focus-color, #fbbf24);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 22;
+    animation: shockwave-expand 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes shockwave-expand {
+    0% {
+        width: 180px;
+        height: 180px;
+        opacity: 1;
+        border-width: 4px;
+        box-shadow: 0 0 15px var(--focus-color, #fbbf24);
+    }
+    100% {
+        width: 650px;
+        height: 650px;
+        opacity: 0;
+        border-width: 0.2px;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0);
+    }
+}
+
+/* Screen shake */
+.screen-shake-effect {
+    animation: screen-shake-anim 0.35s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes screen-shake-anim {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+/* Floating cycle bonus popup */
+.cycle-bonus-popup {
+    position: fixed;
+    z-index: 1050;
+    font-weight: bold;
+    font-family: 'ancient', serif;
+    font-size: 14px;
+    pointer-events: none;
+    animation: bonus-float-up 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes bonus-float-up {
+    0% {
+        transform: translate(-50%, 0) scale(0.7);
+        opacity: 0;
+    }
+    15% {
+        transform: translate(-50%, -25px) scale(1.1);
+        opacity: 1;
+    }
+    30% {
+        transform: translate(-50%, -35px) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -120px) scale(0.9);
+        opacity: 0;
+    }
+}
+
+
 
 
 

@@ -512,6 +512,9 @@ export class Game {
     refreshUI() {
         if (!state.player) return;
         if (typeof window.renderMainStats === 'function') window.renderMainStats();
+        if (state.ui && typeof state.ui.updateQiBubbleSystemState === 'function') {
+            state.ui.updateQiBubbleSystemState();
+        }
         this.screens.map.renderWorldList();
         this.screens.inventory.render();
         this.screens.character.render();
@@ -872,9 +875,6 @@ export class Game {
         const elPortrait = document.getElementById('header-portrait');
         if (elPortrait) elPortrait.src = portraitUrl;
 
-        const mainPortrait = document.getElementById('main-player-portrait');
-        if (mainPortrait) mainPortrait.src = portraitUrl;
-
         const charPortrait = document.querySelector('#screen-character img');
         if (charPortrait) charPortrait.src = portraitUrl;
 
@@ -906,6 +906,12 @@ export class Game {
             if (state.systems.cheat) {
                 state.systems.cheat.onAction('cultivate', 1);
             }
+
+            // Delegate animation handling to UI system
+            if (state.ui && typeof state.ui.handleCultivationSuccess === 'function') {
+                state.ui.handleCultivationSuccess(result);
+            }
+
             const btn = document.getElementById('cultivate-btn');
             if (btn) {
                 state.ui.showStatUpEffect(btn, `+${Math.floor(result.gain)} ${result.type === 'tuvi' ? 'Tu Vi' : (result.type === 'body' ? 'Khí Huyết' : 'Thần Niệm')}`);
@@ -928,6 +934,19 @@ export class Game {
 
         if (typeof window.renderMainStats === 'function') window.renderMainStats();
         this.refreshUI();
+    }
+
+    absorbBubble(rawName, type = 'tuvi', sizeMult = 1.0) {
+        if (!state.player) return null;
+        const result = state.player.absorbBubble(rawName, type, sizeMult);
+        if (result.success) {
+            if (state.ui && typeof state.ui.handleCultivationSuccess === 'function') {
+                state.ui.handleCultivationSuccess(result);
+            }
+            if (typeof window.renderMainStats === 'function') window.renderMainStats();
+            this.refreshUI();
+        }
+        return result;
     }
 
     async breakthrough(customFocus = null) {
@@ -1024,6 +1043,9 @@ export class Game {
         if (!state.player || !['tuvi', 'body', 'soul'].includes(focus)) return;
         state.player.cultivationFocus = focus;
         this.refreshUI();
+        if (state.ui && typeof state.ui.startQiBubbleSystem === 'function') {
+            state.ui.startQiBubbleSystem();
+        }
     }
 
     toggleAutoCultivate(enabled) {

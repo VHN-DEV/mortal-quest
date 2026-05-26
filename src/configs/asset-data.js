@@ -260,6 +260,9 @@ export const ASSETS = {
         cave: getAssetUrl('backgrounds/cultivation_cave'),
         sect: getAssetUrl('backgrounds/sect_gate'),
         cultivation: getAssetUrl('backgrounds/cultivation_cave'),
+        tu_vi: getAssetUrl('cultivation/tu_vi'),
+        luyen_the: getAssetUrl('cultivation/luyen_the'),
+        than_thuc: getAssetUrl('cultivation/than_thuc'),
     }, 'backgrounds', 'cultivation'),
 
     // Vật phẩm

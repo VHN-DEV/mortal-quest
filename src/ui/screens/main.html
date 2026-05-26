@@ -1,6 +1,9 @@
 <!-- Tab 1: Tu Luyện (Main Screen) -->
 <div id="screen-main"
-    class="screen hidden flex flex-col h-full overflow-y-auto custom-scroll animate-fade-in">
+    class="screen hidden flex flex-col h-full overflow-y-auto custom-scroll animate-fade-in relative">
+
+    <!-- Floating Qi Bubbles Container -->
+    <div id="qi-bubbles-container" class="absolute inset-0 pointer-events-none z-30 overflow-hidden"></div>
 
     <div class="flex-grow flex flex-col items-center justify-start min-h-full">
         <!-- Location Badge Pill -->
@@ -46,6 +49,20 @@
                     </svg>
                 </div>
 
+                <!-- Meridian Chu Thien Circle Nodes -->
+                <div id="meridian-circle-container" class="absolute w-full h-full pointer-events-none z-20">
+                    <div class="meridian-node" data-index="0"></div>
+                    <div class="meridian-node" data-index="1"></div>
+                    <div class="meridian-node" data-index="2"></div>
+                    <div class="meridian-node" data-index="3"></div>
+                    <div class="meridian-node" data-index="4"></div>
+                    <div class="meridian-node" data-index="5"></div>
+                    <div class="meridian-node" data-index="6"></div>
+                    <div class="meridian-node" data-index="7"></div>
+                    <div class="meridian-node" data-index="8"></div>
+                    <div class="meridian-node" data-index="9"></div>
+                </div>
+
                 <div id="aura-border"
                     class="relative w-56 h-56 rounded-full overflow-hidden border border-cultivation-gold/30 shadow-[0_0_60px_rgba(212,175,55,0.15)] group aura-border">
                     <img id="main-player-portrait" src="./src/assets/images/players/player_male.webp"
@@ -53,6 +70,9 @@
                     <div
                         class="absolute inset-0 bg-gradient-to-t from-qi-ink via-transparent to-transparent">
                     </div>
+                    
+
+
                     <!-- Inner Glow -->
                     <div class="absolute inset-0 shadow-[inset_0_0_40px_rgba(79,209,197,0.2)]"></div>
                 </div>
