@@ -835,6 +835,22 @@ export class UISystem {
             value: screenId
         });
 
+        // Hide map overlays when switching away from adventure tab
+        if (screenId !== 'screen-adventure') {
+            const locView = document.getElementById('map-location-view');
+            const expView = document.getElementById('map-explore-view');
+            if (locView) {
+                locView.classList.add('hidden');
+                locView.classList.remove('flex');
+                locView.style.opacity = '0';
+            }
+            if (expView) {
+                expView.classList.add('hidden');
+                expView.classList.remove('flex');
+                expView.style.opacity = '0';
+            }
+        }
+
         if (screenId === 'screen-main') {
             this.startQiBubbleSystem();
         } else {

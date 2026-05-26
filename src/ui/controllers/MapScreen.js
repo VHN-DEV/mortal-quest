@@ -118,6 +118,7 @@ export class MapScreen {
                 state.ui.toggleOverlay(this.viewExplore, false);
                 state.ui.toggleOverlay(this.viewLocations, true);
                 await Preferences.set({ key: 'mortal_quest_map_view', value: 'locations' });
+                await this.saveNavState();
                 if (state.systems.time) state.systems.time.timeMultiplier = 1.0;
             };
         }
@@ -127,16 +128,19 @@ export class MapScreen {
                 if (this.mapNavLevel === 'locations') {
                     this.mapNavLevel = 'subregions';
                     this.selectedSubRegionId = null;
+                    await this.saveNavState();
                     this.renderLocationList();
                 } else if (this.mapNavLevel === 'subregions') {
                     this.mapNavLevel = 'regions';
                     this.selectedRegionId = null;
+                    await this.saveNavState();
                     this.renderLocationList();
                 } else {
                     // level is 'regions', go back to world list screen
                     state.ui.toggleOverlay(this.viewLocations, false);
                     state.ui.toggleOverlay(this.viewWorlds, true);
                     await Preferences.set({ key: 'mortal_quest_map_view', value: 'worlds' });
+                    await this.saveNavState();
                 }
             };
         }
@@ -146,6 +150,7 @@ export class MapScreen {
                 state.ui.toggleOverlay(this.viewExplore, false);
                 state.ui.toggleOverlay(this.viewLocations, true);
                 await Preferences.set({ key: 'mortal_quest_map_view', value: 'locations' });
+                await this.saveNavState();
                 if (state.systems.time) state.systems.time.timeMultiplier = 1.0;
             };
         }
@@ -193,6 +198,16 @@ export class MapScreen {
     }
 
     /**
+     * Lưu trạng thái điều hướng bản đồ
+     */
+    async saveNavState() {
+        await Preferences.set({ key: 'mortal_quest_map_nav_level', value: this.mapNavLevel || 'regions' });
+        await Preferences.set({ key: 'mortal_quest_map_region_id', value: this.selectedRegionId || '' });
+        await Preferences.set({ key: 'mortal_quest_map_subregion_id', value: this.selectedSubRegionId || '' });
+        await Preferences.set({ key: 'mortal_quest_map_viewed_world_id', value: this.viewedWorldId || state.currentWorldId || '' });
+    }
+
+    /**
      * Khôi phục chế độ xem từ trạng thái đã lưu
      */
     async restoreView() {
@@ -202,11 +217,19 @@ export class MapScreen {
         }
 
         const { value: savedView } = await Preferences.get({ key: 'mortal_quest_map_view' });
-        if (savedView === 'locations' && state.currentWorldId) {
-            this.mapNavLevel = 'regions';
-            this.selectedRegionId = null;
-            this.selectedSubRegionId = null;
-            await this.selectWorld(state.currentWorldId);
+        if (savedView === 'locations') {
+            const { value: savedWorldId } = await Preferences.get({ key: 'mortal_quest_map_viewed_world_id' });
+            const worldId = savedWorldId || state.currentWorldId || 'nhan_gioi';
+
+            const { value: savedNavLevel } = await Preferences.get({ key: 'mortal_quest_map_nav_level' });
+            const { value: savedRegionId } = await Preferences.get({ key: 'mortal_quest_map_region_id' });
+            const { value: savedSubRegionId } = await Preferences.get({ key: 'mortal_quest_map_subregion_id' });
+
+            this.mapNavLevel = savedNavLevel || 'regions';
+            this.selectedRegionId = savedRegionId || null;
+            this.selectedSubRegionId = savedSubRegionId || null;
+
+            await this.selectWorld(worldId, true);
         } else if (savedView === 'explore' && state.currentWorldId && state.currentLocId) {
             // Restore location info and show explore view
             this.viewedWorldId = state.currentWorldId;
@@ -276,7 +299,7 @@ export class MapScreen {
         });
     }
 
-    async selectWorld(id) {
+    async selectWorld(id, keepState = false) {
         if (!id) return;
         
         const w = getWorlds()[id];
@@ -287,14 +310,17 @@ export class MapScreen {
 
         this.viewedWorldId = id;
 
-        this.mapNavLevel = 'regions';
-        this.selectedRegionId = null;
-        this.selectedSubRegionId = null;
+        if (!keepState) {
+            this.mapNavLevel = 'regions';
+            this.selectedRegionId = null;
+            this.selectedSubRegionId = null;
+        }
 
         this.elCurrentWorldName.textContent = w.name;
         state.ui.toggleOverlay(this.viewWorlds, false);
         state.ui.toggleOverlay(this.viewLocations, true);
         await Preferences.set({ key: 'mortal_quest_map_view', value: 'locations' });
+        await this.saveNavState();
         this.renderLocationList();
         if (state.systems.time) state.systems.time.timeMultiplier = 1.0;
     }
@@ -380,13 +406,14 @@ export class MapScreen {
                     </div>
                 `;
 
-                el.onclick = () => {
+                el.onclick = async () => {
                     if (isLocked) {
                         state.ui.toast("Để đến Loạn Tinh Hải, đạo hữu cần ở Thượng Cổ Truyền Tống Trận, hoặc có Phi Chu (Linh Thuyền, Phi Chu), hoặc có Truyền Tống Phù (Thuấn Di Phù, Phá Không Phù).", "warning");
                         return;
                     }
                     this.selectedRegionId = regionId;
                     this.mapNavLevel = 'subregions';
+                    await this.saveNavState();
                     this.renderLocationList();
                 };
 
@@ -430,9 +457,10 @@ export class MapScreen {
                     </div>
                 `;
 
-                el.onclick = () => {
+                el.onclick = async () => {
                     this.selectedSubRegionId = subId;
                     this.mapNavLevel = 'locations';
+                    await this.saveNavState();
                     this.renderLocationList();
                 };
 
