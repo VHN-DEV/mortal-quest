@@ -456,7 +456,7 @@ export const ITEMS = {
         type: 'consumable',
         icon: '💊',
         quality: 'Phàm Khí',
-        price: 30,
+        price: 1,
         description: 'Đan dược giúp tu sĩ không cần ăn uống, duy trì sinh mệnh khi bế quan (mỗi ngày bế quan tiêu hao 1 viên). Sử dụng riêng lẻ giúp tăng nhẹ tốc độ tu luyện trong 1 giờ.',
         effect: { type: 'buff', stat: 'tu_vi_speed', value: 1.1, duration: 3600 }
     },
