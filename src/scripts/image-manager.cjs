@@ -1,10 +1,10 @@
-// node ./image-manager.cjs
+// node src/scripts/image-manager.cjs
 const http = require('http');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-const projectRoot = __dirname;
+const projectRoot = path.join(__dirname, '..', '..');
 const imagesDir = path.join(projectRoot, 'src', 'assets', 'images', 'locations');
 const mapDataPath = path.join(projectRoot, 'src', 'configs', 'map-data.js');
 
@@ -460,8 +460,6 @@ const server = http.createServer((req, res) => {
         });
         return;
     }
-
-
 
     if (req.url === '/api/locations/add' && req.method === 'POST') {
         let body = '';
@@ -955,13 +953,6 @@ const htmlUI = `
             renderGallery();
         }
 
-        function autoGenerateSlug() {
-            const name = document.getElementById('edit-loc-name').value;
-            const newSlug = name.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9 ]/g, "").trim().replace(/\\s+/g, "_");
-            document.getElementById('edit-loc-new-slug').value = newSlug;
-            markInfoDirty();
-        }
-
         function markInfoDirty() {
             if (!activeLocationSlug) return;
             
@@ -1185,8 +1176,6 @@ const htmlUI = `
                 alert('Lỗi kết nối: ' + e.message);
             }
         }
-
-
 
         async function deleteActiveLocation() {
             const slug = document.getElementById('edit-loc-slug').value;
