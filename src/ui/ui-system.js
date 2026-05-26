@@ -21,7 +21,7 @@ export class UISystem {
         this.modalInputContainer = document.getElementById('modal-input-container');
         this.modalInput = document.getElementById('modal-input');
         this.loadingOverlay = document.getElementById('loading-overlay');
-        
+
         // Time Display Elements
         this.elTimeEra = document.getElementById('time-era');
         this.elTimeYearMonth = document.getElementById('time-date');
@@ -32,20 +32,20 @@ export class UISystem {
 
         // Tooltip
         this.elTooltip = document.getElementById('global-tooltip');
-        
+
         // Track current screen in-memory for render performance optimization
         this.currentScreenId = 'screen-main';
         this.qiBubbleInterval = null;
- 
+
         // Initialize smooth horizontal drag-scroll roll behavior
         this.initHorizontalScrollRoll();
     }
 
     updateTimeUI(time) {
         if (!this.elTimeYearMonth) return;
-        
+
         this.elTimeYearMonth.textContent = `Ngày ${time.day} Tháng ${time.month} Năm ${time.year}`;
-        
+
         if (this.elTimeHour) {
             this.elTimeHour.textContent = time.hourName;
         }
@@ -53,7 +53,7 @@ export class UISystem {
         if (this.elTimePeriod) {
             this.elTimePeriod.textContent = `(${time.period === 'Day' ? 'Ban Ngày' : 'Ban Đêm'})`;
         }
-        
+
         if (this.elTimeSeason) {
             this.elTimeSeason.textContent = time.seasonName;
             this.elTimeSeason.style.color = time.seasonColor;
@@ -252,7 +252,7 @@ export class UISystem {
             const optionsContainer = document.createElement('div');
             optionsContainer.className = 'flex flex-col space-y-2 w-full mt-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar';
 
-             options.forEach(opt => {
+            options.forEach(opt => {
                 const label = opt.label !== undefined ? opt.label : (opt.text !== undefined ? opt.text : '');
                 const value = opt.value !== undefined ? opt.value : opt.id;
                 const btn = document.createElement('button');
@@ -348,16 +348,20 @@ export class UISystem {
             if (el.id === 'guide-overlay' || el.id === 'modal-overlay') {
                 gsap.fromTo(el,
                     { opacity: 0, scale: 0.9, backdropFilter: "blur(0px)" },
-                    { opacity: 1, scale: 1, backdropFilter: "blur(8px)", duration: 0.4, ease: "power2.out", onComplete: () => {
-                        if (onComplete) onComplete();
-                    } }
+                    {
+                        opacity: 1, scale: 1, backdropFilter: "blur(8px)", duration: 0.4, ease: "power2.out", onComplete: () => {
+                            if (onComplete) onComplete();
+                        }
+                    }
                 );
             } else {
                 gsap.fromTo(el,
                     { opacity: 0 },
-                    { opacity: 1, duration: 0.3, ease: "power1.out", onComplete: () => {
-                        if (onComplete) onComplete();
-                    } }
+                    {
+                        opacity: 1, duration: 0.3, ease: "power1.out", onComplete: () => {
+                            if (onComplete) onComplete();
+                        }
+                    }
                 );
             }
 
@@ -434,12 +438,12 @@ export class UISystem {
     screenShake(intensity = 'medium') {
         const app = document.getElementById('app');
         if (!app) return;
-        
+
         app.classList.remove('animate-screen-shake');
         // Force reflow
         void app.offsetWidth;
         app.classList.add('animate-screen-shake');
-        
+
         if (intensity === 'high') {
             audioManager.playSfx('thunder'); // Optional thunder sound for heavy shake
         }
@@ -546,7 +550,7 @@ export class UISystem {
      */
     showBreakthroughEffect(realmName) {
         this.screenShake('high');
-        
+
         const effect = document.createElement('div');
         effect.className = 'absolute inset-0 z-[300] flex flex-col items-center justify-center pointer-events-none';
         effect.innerHTML = `
@@ -576,7 +580,7 @@ export class UISystem {
         // Spawn a lot of particles
         const rect = app.getBoundingClientRect();
         this.spawnQiParticles(rect.width / 2, rect.height / 2, 40, '#D4AF37');
-        
+
         audioManager.playSfx('breakthrough');
     }
 
@@ -587,7 +591,7 @@ export class UISystem {
         const el = document.createElement('div');
         el.className = `absolute z-[500] font-ancient font-bold ${color} pointer-events-none animate-stat-up whitespace-nowrap`;
         el.textContent = text;
-        
+
         const app = document.getElementById('app');
         const appRect = app.getBoundingClientRect();
         const rect = anchor.getBoundingClientRect();
@@ -605,7 +609,7 @@ export class UISystem {
     spawnQiParticles(x, y, count = 10, color = '#4FD1C5') {
         const app = document.getElementById('app');
         let container = document.querySelector('.qi-particles');
-        
+
         if (!container) {
             container = document.createElement('div');
             container.className = 'qi-particles absolute inset-0 pointer-events-none overflow-hidden';
@@ -619,7 +623,7 @@ export class UISystem {
             p.style.boxShadow = `0 0 8px ${color}`;
             p.style.left = `${x}px`;
             p.style.top = `${y}px`;
-            
+
             container.appendChild(p);
 
             const angle = Math.random() * Math.PI * 2;
@@ -662,24 +666,24 @@ export class UISystem {
 
         const quote = overlay.querySelector('.death-quote');
         quote.textContent = message;
-        
+
         overlay.style.display = 'flex';
         // Force reflow
         void overlay.offsetWidth;
         overlay.classList.add('show');
-        
+
         audioManager.playSfx('death'); // Assuming there's a death sound
 
         return new Promise(resolve => {
             const btn = overlay.querySelector('#death-restart-btn');
             const actions = overlay.querySelector('.death-actions');
-            
+
             setTimeout(() => actions.classList.add('opacity-100'), 5000);
-            
+
             btn.onclick = () => {
-                gsap.to(overlay, { 
-                    opacity: 0, 
-                    duration: 1, 
+                gsap.to(overlay, {
+                    opacity: 0,
+                    duration: 1,
                     onComplete: () => {
                         overlay.style.display = 'none';
                         overlay.classList.remove('show');
@@ -702,7 +706,7 @@ export class UISystem {
         const container = document.getElementById('loot-container');
         const magicCircle = document.getElementById('loot-magic-circle');
         const hint = document.getElementById('loot-continue-hint');
-        
+
         if (!overlay || !container) return;
 
         const rarityConfigs = {
@@ -723,11 +727,11 @@ export class UISystem {
 
             for (const item of lootItems) {
                 const config = rarityConfigs[item.quality] || rarityConfigs['Phàm Khí'];
-                
+
                 // Clear previous item
                 container.innerHTML = '';
                 hint.classList.add('opacity-0');
-                
+
                 // Set color for magic circle
                 magicCircle.style.color = config.color;
                 magicCircle.style.opacity = '0.4';
@@ -755,7 +759,7 @@ export class UISystem {
 
                 // Play Sound
                 audioManager.playSfx(config.sfx);
-                
+
                 // Effects
                 if (config.shake) this.screenShake(config.shake);
                 if (config.flash) {
@@ -897,7 +901,7 @@ export class UISystem {
         name.textContent = item.name;
         poem1.textContent = item.poem ? item.poem[0] : '';
         poem2.textContent = item.poem ? item.poem[1] : '';
-        
+
         gsap.set([name, poem1, poem2, btn, magicCircle, anomaly, imgWrapper], { opacity: 0 });
         gsap.set(imgWrapper, { scale: 0.5 });
         gsap.set(name, { y: 20 });
@@ -908,18 +912,18 @@ export class UISystem {
 
             // Phase 1: The Anomaly Begins
             tl.to(overlay, { backgroundColor: '#000', duration: 0.1 })
-              .add(() => this.screenShake('high'))
-              .to(anomaly, { opacity: 1, duration: 1, ease: "power2.out" })
-              .to(magicCircle, { opacity: 1, scale: 1.2, duration: 1.5, ease: "power4.out" }, "-=0.5");
+                .add(() => this.screenShake('high'))
+                .to(anomaly, { opacity: 1, duration: 1, ease: "power2.out" })
+                .to(magicCircle, { opacity: 1, scale: 1.2, duration: 1.5, ease: "power4.out" }, "-=0.5");
 
             // Phase 2: Item Emerges
             tl.to(imgWrapper, { opacity: 1, scale: 1, duration: 1.5, ease: "back.out(1.2)" }, "-=0.8")
-              .to(name, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "-=0.5");
+                .to(name, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "-=0.5");
 
             // Phase 3: The Poem (Typewriter-ish)
             tl.to(poem1, { opacity: 1, duration: 1.5, ease: "power1.inOut" }, "+=0.5")
-              .to(poem2, { opacity: 1, duration: 1.5, ease: "power1.inOut" }, "+=1.0")
-              .to(btn, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, "+=0.5");
+                .to(poem2, { opacity: 1, duration: 1.5, ease: "power1.inOut" }, "+=1.0")
+                .to(btn, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, "+=0.5");
 
             // Audio cues
             audioManager.playSfx('thunder');
@@ -946,10 +950,10 @@ export class UISystem {
 
         const quality = metadata.quality || item.quality;
         const qClass = this.getQualityClass(quality);
-        
+
         let statsHtml = '';
         if (item.stats) {
-            statsHtml = `<div class="mt-2 pt-2 border-t border-white/5 space-y-1">` + 
+            statsHtml = `<div class="mt-2 pt-2 border-t border-white/5 space-y-1">` +
                 Object.entries(item.stats).map(([k, v]) => `
                     <div class="flex justify-between text-[8px]">
                         <span class="text-gray-500 uppercase">${this.getStatLabel(k)}</span>
@@ -977,7 +981,7 @@ export class UISystem {
         const app = document.getElementById('app');
         const appRect = app.getBoundingClientRect();
         const rect = this.elTooltip.getBoundingClientRect();
-        
+
         const padding = 15;
         let x = event.clientX - appRect.left + padding;
         let y = event.clientY - appRect.top + padding;
@@ -1019,7 +1023,7 @@ export class UISystem {
     }
 
     // --- Travel System UI Methods ---
-    
+
     showTravelOverlay(travelData) {
         const overlay = document.getElementById('travel-overlay');
         if (!overlay) return;
@@ -1038,9 +1042,9 @@ export class UISystem {
             const toName = findLocationName(travelData.route.to);
             routeText.textContent = `${fromName} → ${toName}`;
         }
-        
+
         if (dist) dist.textContent = `${travelData.route.baseDistance} dặm`;
-        
+
         if (time) {
             const days = (travelData.gameHours / 24).toFixed(1);
             time.textContent = `${days} ngày`;
@@ -1072,9 +1076,9 @@ export class UISystem {
     updateTravelProgress(progress) {
         const progressBar = document.getElementById('travel-progress-bar');
         const entity = document.getElementById('travel-entity');
-        
+
         if (progressBar) progressBar.style.width = `${progress}%`;
-        
+
         // Entity moves from 0% to 100% since it's aligned properly now
         if (entity) {
             entity.style.left = `${progress}%`;
@@ -1087,10 +1091,10 @@ export class UISystem {
 
         const el = document.createElement('div');
         el.className = `opacity-0 -translate-x-2 transition-all duration-300`;
-        
+
         let colorClass = 'text-gray-300';
         let icon = 'ph-info';
-        
+
         if (type === 'warning') {
             colorClass = 'text-yellow-400';
             icon = 'ph-warning text-yellow-500';
@@ -1114,7 +1118,7 @@ export class UISystem {
         `;
 
         container.appendChild(el);
-        
+
         // Triggers reflow and animates in
         setTimeout(() => {
             el.classList.remove('opacity-0', '-translate-x-2');
@@ -1169,19 +1173,19 @@ export class UISystem {
                     let isLocked = false;
                     if (worldId === 'nhan_gioi' && rName === 'Loạn Tinh Hải') {
                         if (state) {
-                            const currentLoc = state.currentLocId ? 
+                            const currentLoc = state.currentLocId ?
                                 (typeof getLocationById === 'function' ? getLocationById(state.currentWorldId, state.currentLocId) : null)
                                 : null;
                             const isAlreadyThere = currentLoc && currentLoc.regionId === 'loan_tinh_hai';
                             if (!isAlreadyThere) {
                                 const atTeleport = state.currentLocId === 'thuong_co_truyen_tong_tran';
                                 const hasTalisman = state.player?.inventory && (
-                                    state.player.inventory.hasItem('pha_khong_phu') || 
-                                    state.player.inventory.hasItem('thun_di_phu') || 
+                                    state.player.inventory.hasItem('pha_khong_phu') ||
+                                    state.player.inventory.hasItem('thun_di_phu') ||
                                     state.player.inventory.hasItem('truyen_tong_lenh')
                                 );
                                 const hasBoat = state.player?.inventory && (
-                                    state.player.inventory.hasItem('ngu_phong_phi_chu') || 
+                                    state.player.inventory.hasItem('ngu_phong_phi_chu') ||
                                     state.player.inventory.hasItem('linh_thuyen_so')
                                 );
                                 if (!atTeleport && !hasTalisman && !hasBoat) {
@@ -1198,7 +1202,7 @@ export class UISystem {
                             <span>${rName} ${isLocked ? '🔒' : ''}</span>
                         </div>
                     `;
-                    
+
                     if (isLocked) {
                         html += `<div class="region-children pl-4 border-l border-white/5 space-y-2 mt-0.5">`;
                         html += `
@@ -1226,7 +1230,7 @@ export class UISystem {
                             locs.forEach(loc => {
                                 const minLocked = state.player?.realmId < loc.minRealm;
                                 const maxLocked = loc.maxRealm !== undefined && state.player?.realmId > loc.maxRealm;
-                                
+
                                 let isTimeLocked = false;
                                 let timeMessage = '';
                                 if (loc.openingRules && state.systems.time) {
@@ -1333,7 +1337,7 @@ export class UISystem {
         if (defaultBtn) {
             defaultBtn.click();
         }
-     }
+    }
 
     initHorizontalScrollRoll() {
         const containers = document.querySelectorAll('.overflow-x-auto');
@@ -1373,13 +1377,13 @@ export class UISystem {
         const focus = state.player?.cultivationFocus || 'tuvi';
         const hasTech = !!state.player?.mainTechniqueId;
         const shouldRun = this.currentScreenId === 'screen-main' && focus === 'tuvi' && hasTech;
-        
+
         if (shouldRun) {
             if (!this.qiBubbleInterval) {
                 // Initial spawn of 2 bubbles immediately
                 setTimeout(() => this.spawnQiBubble(), 800);
                 setTimeout(() => this.spawnQiBubble(), 2000);
-                
+
                 this.qiBubbleInterval = setInterval(() => {
                     if (this.currentScreenId === 'screen-main') {
                         this.spawnQiBubble();
@@ -1392,7 +1396,7 @@ export class UISystem {
             }
         }
     }
-    
+
     stopQiBubbleSystem() {
         if (this.qiBubbleInterval) {
             clearInterval(this.qiBubbleInterval);
@@ -1407,13 +1411,13 @@ export class UISystem {
     spawnQiBubble() {
         const container = document.getElementById('qi-bubbles-container');
         if (!container || this.currentScreenId !== 'screen-main') return;
-        
+
         const focus = state.player?.cultivationFocus || 'tuvi';
         const hasTech = !!state.player?.mainTechniqueId;
         if (focus !== 'tuvi' || !hasTech) return;
-        
+
         let allowedBubbles = [];
-        
+
         // Traditional location-based elemental Qi
         const loc = getLocationById(state.currentWorldId, state.currentLocId);
         const defaultQi = {
@@ -1421,11 +1425,11 @@ export class UISystem {
             'Phong': 5, 'Lôi': 5, 'Băng': 5, 'Quang': 5, 'Ám': 5
         };
         const elementQi = loc?.elementQi || defaultQi;
-        
+
         const elements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ', 'Phong', 'Lôi', 'Băng', 'Quang', 'Ám'];
         const allowedElements = elements.filter(el => (elementQi[el] || 0) > 0);
         if (allowedElements.length === 0) return;
-        
+
         // Weighted random selection based on elementQi proportions
         let totalWeight = 0;
         allowedElements.forEach(el => {
@@ -1444,70 +1448,70 @@ export class UISystem {
             }
         }
         const ELEMENT_CONFIGS = {
-            'Kim': { color: '#fcd34d', name: 'Kim' },
-            'Mộc': { color: '#4ade80', name: 'Mộc' },
-            'Thủy': { color: '#3b82f6', name: 'Thủy' },
-            'Hỏa': { color: '#ef4444', name: 'Hỏa' },
-            'Thổ': { color: '#d97706', name: 'Thổ' },
-            'Phong': { color: '#94a3b8', name: 'Phong' },
-            'Lôi': { color: '#fbbf24', name: 'Lôi' },
-            'Băng': { color: '#60a5fa', name: 'Băng' },
-            'Quang': { color: '#fffbeb', name: 'Quang' },
-            'Ám': { color: '#a855f7', name: 'Ám' }
+            'Kim': { color: '#D4AF37', name: 'Kim' },
+            'Mộc': { color: '#2E8B57', name: 'Mộc' },
+            'Thủy': { color: '#2563EB', name: 'Thủy' },
+            'Hỏa': { color: '#DC2626', name: 'Hỏa' },
+            'Thổ': { color: '#8B5A2B', name: 'Thổ' },
+            'Phong': { color: '#A7C7E7', name: 'Phong' },
+            'Lôi': { color: '#7C3AED', name: 'Lôi' },
+            'Băng': { color: '#7DD3FC', name: 'Băng' },
+            'Quang': { color: '#FDE68A', name: 'Quang' },
+            'Ám': { color: '#312E81', name: 'Ám' }
         };
         const sizeMult = 0.7 + Math.random() * 0.7; // 0.7 to 1.4
         allowedBubbles.push({ ...ELEMENT_CONFIGS[randomElName], rawName: randomElName, type: 'tuvi', sizeMult });
-        
+
         const cfg = allowedBubbles[0];
         if (!cfg) return;
-        
+
         const bubble = document.createElement('div');
         bubble.className = 'qi-bubble';
         bubble.style.setProperty('--element-color', cfg.color);
-        
+
         // Random horizontal start pos (allow full screen width)
         const startX = 5 + Math.random() * 90;
         bubble.style.left = `${startX}%`;
         bubble.style.bottom = `-60px`;
-        
+
         // Dynamic visual bubble size
         bubble.style.width = `${Math.round(52 * sizeMult)}px`;
         bubble.style.height = `${Math.round(52 * sizeMult)}px`;
-        
+
         // Drift and duration
         const driftX = Math.random() * 120 - 60;
         bubble.style.setProperty('--float-x', `${driftX}px`);
-        
+
         const duration = 12 + Math.random() * 8;
         bubble.style.animationDuration = `${duration}s`;
-        
+
         bubble.innerHTML = `
             <div class="qi-bubble-core" style="--element-color: ${cfg.color}"></div>
             <span class="text-[7.5px] text-white/95 font-bold uppercase tracking-[0.2em] mt-1 select-none font-ancient text-center leading-none">${cfg.name}</span>
         `;
-        
+
         bubble.onclick = (e) => {
             e.stopPropagation();
             this.popBubble(bubble, cfg);
         };
-        
+
         bubble.addEventListener('animationend', () => bubble.remove());
         container.appendChild(bubble);
     }
- 
+
     popBubble(bubble, cfg, isAuto = false) {
         if (bubble.dataset.popped) return;
         bubble.dataset.popped = 'true';
-        
+
         // Check suitability with player's root elements
         const playerElements = state.player?.spiritualRoot?.elements || [];
         const isCompatible = isAuto || playerElements.includes(cfg.rawName);
-        
+
         const containerRect = document.getElementById('screen-main').getBoundingClientRect();
         const rect = bubble.getBoundingClientRect();
         const x = rect.left - containerRect.left + rect.width / 2;
         const y = rect.top - containerRect.top + rect.height / 2;
-        
+
         if (!isCompatible) {
             // Incompatible root: show warning and cancel pop
             if (window.audioManager && typeof window.audioManager.playSfx === 'function') {
@@ -1517,7 +1521,7 @@ export class UISystem {
                     window.audioManager.playSfx('click');
                 }
             }
-            
+
             const warnText = document.createElement('div');
             warnText.className = 'absolute z-40 font-bold font-ancient text-[8px] text-red-500 pointer-events-none select-none filter drop-shadow-[0_0_3px_rgba(0,0,0,0.9)]';
             warnText.textContent = `Linh căn bất hợp (${cfg.name})`;
@@ -1525,7 +1529,7 @@ export class UISystem {
             warnText.style.top = `${y}px`;
             warnText.style.transform = 'translate(-50%, -50%)';
             document.getElementById('screen-main').appendChild(warnText);
-            
+
             gsap.to(warnText, {
                 y: -45,
                 opacity: 0,
@@ -1533,15 +1537,15 @@ export class UISystem {
                 ease: 'power1.out',
                 onComplete: () => warnText.remove()
             });
-            
+
             bubble.removeAttribute('data-popped');
             return;
         }
-        
+
         if (!isAuto && window.audioManager && typeof window.audioManager.playSfx === 'function') {
             window.audioManager.playSfx('click');
         }
-        
+
         // Spawn expanding pop ring
         const popRing = document.createElement('div');
         popRing.className = 'pop-ring';
@@ -1550,7 +1554,7 @@ export class UISystem {
         popRing.style.top = `${y}px`;
         document.getElementById('screen-main').appendChild(popRing);
         setTimeout(() => popRing.remove(), 500);
-        
+
         // Remove bubble element smoothly
         gsap.to(bubble, {
             scale: 0,
@@ -1558,7 +1562,7 @@ export class UISystem {
             duration: 0.15,
             onComplete: () => bubble.remove()
         });
-        
+
         if (isAuto) {
             // Show gain text for auto absorb
             let tvps = state.player?.tuViPerSecond || 1;
@@ -1574,7 +1578,7 @@ export class UISystem {
             gainText.style.top = `${y}px`;
             gainText.style.transform = 'translate(-50%, -50%)';
             document.getElementById('screen-main').appendChild(gainText);
-            
+
             gsap.to(gainText, {
                 y: -65,
                 opacity: 0,
@@ -1595,7 +1599,7 @@ export class UISystem {
                     gainText.style.top = `${y}px`;
                     gainText.style.transform = 'translate(-50%, -50%)';
                     document.getElementById('screen-main').appendChild(gainText);
-                    
+
                     gsap.to(gainText, {
                         y: -65,
                         opacity: 0,
@@ -1606,14 +1610,14 @@ export class UISystem {
                 }
             }
         }
-        
+
         // Spawn flying trail particles to portrait
         const portrait = document.getElementById('aura-border');
         if (portrait) {
             const portRect = portrait.getBoundingClientRect();
             const destX = portRect.left - containerRect.left + portRect.width / 2;
             const destY = portRect.top - containerRect.top + portRect.height / 2;
-            
+
             for (let i = 0; i < 4; i++) {
                 const p = document.createElement('div');
                 p.className = 'qi-trail-particle';
@@ -1621,14 +1625,14 @@ export class UISystem {
                 p.style.left = `${x}px`;
                 p.style.top = `${y}px`;
                 document.getElementById('screen-main').appendChild(p);
-                
+
                 const ctrlX = x + (Math.random() * 200 - 100);
                 const ctrlY = y - (50 + Math.random() * 100);
-                
+
                 const tl = gsap.timeline({
                     onComplete: () => p.remove()
                 });
-                
+
                 tl.to(p, {
                     x: ctrlX - x,
                     y: ctrlY - y,
@@ -1711,7 +1715,7 @@ export class UISystem {
         bubble.style.animation = 'none';
         bubble.style.opacity = '0';
         bubble.style.transform = 'scale(0.5)';
-        
+
         const startX = 25 + Math.random() * 50; // 25% to 75%
         const startY = 35 + Math.random() * 20; // 35% to 55%
         bubble.style.left = `${startX}%`;
@@ -1742,7 +1746,7 @@ export class UISystem {
 
     handleCultivationSuccess(result) {
         if (!result || !result.success) return;
-        
+
         const focus = result.type;
         const cycles = state.player.meridianCycles || {
             tuvi: { step: 0, count: 0 },
@@ -1757,7 +1761,7 @@ export class UISystem {
             const auraBorder = document.getElementById('aura-border');
             if (auraBorder) {
                 gsap.killTweensOf(auraBorder);
-                gsap.fromTo(auraBorder, 
+                gsap.fromTo(auraBorder,
                     { boxShadow: '0 0 10px rgba(79, 209, 197, 0.25)', borderColor: 'rgba(79, 209, 197, 0.4)' },
                     { boxShadow: '0 0 50px rgba(79, 209, 197, 0.95)', borderColor: 'rgba(79, 209, 197, 0.9)', duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out" }
                 );
@@ -1767,7 +1771,7 @@ export class UISystem {
             const auraBorder = document.getElementById('aura-border');
             if (auraBorder) {
                 gsap.killTweensOf(auraBorder);
-                gsap.fromTo(auraBorder, 
+                gsap.fromTo(auraBorder,
                     { boxShadow: '0 0 10px rgba(239, 68, 68, 0.25)', borderColor: 'rgba(239, 68, 68, 0.4)' },
                     { boxShadow: '0 0 50px rgba(239, 68, 68, 0.95)', borderColor: 'rgba(239, 68, 68, 0.9)', duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out" }
                 );
@@ -1777,20 +1781,20 @@ export class UISystem {
             const auraBorder = document.getElementById('aura-border');
             if (auraBorder) {
                 gsap.killTweensOf(auraBorder);
-                gsap.fromTo(auraBorder, 
+                gsap.fromTo(auraBorder,
                     { boxShadow: '0 0 10px rgba(168, 85, 247, 0.25)', borderColor: 'rgba(168, 85, 247, 0.4)' },
                     { boxShadow: '0 0 50px rgba(168, 85, 247, 0.95)', borderColor: 'rgba(168, 85, 247, 0.9)', duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out" }
                 );
             }
         }
-        
+
         // Handle cycle completion rewards and cinematic effects
         if (result.cycleCompleted) {
             // Play cinematic sound
             if (focus === 'tuvi') audioManager.playSfx('levelup');
             else if (focus === 'body') audioManager.playSfx('combat_crit');
             else if (focus === 'soul') audioManager.playSfx('breakthrough');
-            
+
             // Spawn shockwave from portrait center
             const portrait = document.getElementById('aura-border');
             if (portrait) {
@@ -1798,31 +1802,31 @@ export class UISystem {
                 const rect = portrait.getBoundingClientRect();
                 const x = rect.left - containerRect.left + rect.width / 2;
                 const y = rect.top - containerRect.top + rect.height / 2;
-                
+
                 const shockwave = document.createElement('div');
                 shockwave.className = 'meridian-shockwave';
                 shockwave.style.setProperty('--focus-color', focus === 'tuvi' ? '#4fd1c5' : (focus === 'body' ? '#ef4444' : '#a855f7'));
                 shockwave.style.left = `${x}px`;
                 shockwave.style.top = `${y}px`;
                 document.getElementById('screen-main').appendChild(shockwave);
-                
+
                 setTimeout(() => shockwave.remove(), 800);
-                
+
                 // Screen shake
                 const screenMain = document.getElementById('screen-main');
                 if (screenMain) {
                     screenMain.classList.add('screen-shake-effect');
                     setTimeout(() => screenMain.classList.remove('screen-shake-effect'), 400);
                 }
-                
+
                 // Float cycle bonus popup
                 const bonusPopup = document.createElement('div');
                 bonusPopup.className = 'cycle-bonus-popup';
-                
+
                 let title = 'Đại Chu Thiên';
                 let label = 'Exp';
                 let textColor = 'text-qi-blue';
-                
+
                 if (focus === 'body') {
                     title = 'Tôi Thể Hoàn Tất';
                     textColor = 'text-red-400';

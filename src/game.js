@@ -499,10 +499,18 @@ export class Game {
         const now = Date.now();
         if (state.ui && state.ui.currentScreenId === 'screen-technique' && this.screens.systems) {
             if (now - (this.lastTechRenderTime || 0) >= 1000) {
-                const activeTab = state.activeTechTab || 'cultivation';
-                const isDetailHidden = this.screens.systems.elTechDetailView && this.screens.systems.elTechDetailView.classList.contains('hidden');
-                if (isDetailHidden && (activeTab === 'cultivation' || activeTab === 'secret')) {
-                    this.screens.systems.renderTechniques(activeTab);
+                const activeTab = state.activeTechTab || 'linh_luc';
+                const isDetailHidden = !this.screens.systems.elTechDetailView || this.screens.systems.elTechDetailView.classList.contains('hidden');
+                
+                if (isDetailHidden) {
+                    if (['linh_luc', 'luyen_the', 'than_thuc', 'secret'].includes(activeTab)) {
+                        this.screens.systems.renderTechniques(activeTab);
+                    }
+                } else {
+                    const techCtrl = this.screens.systems.techniqueController;
+                    if (techCtrl && techCtrl.activeDetailId) {
+                        this.screens.systems.renderTechniqueDetail(techCtrl.activeDetailId, techCtrl.activeDetailIsSecret);
+                    }
                 }
                 this.lastTechRenderTime = now;
             }

@@ -19,6 +19,8 @@ export class TechniqueController {
     renderTechniques(tab = 'linh_luc') {
         if (!state.player) return;
 
+        this.activeDetailId = null;
+        this.activeDetailIsSecret = null;
         state.activeTechTab = tab;
 
         // Update tab styles
@@ -363,6 +365,9 @@ export class TechniqueController {
     renderTechniqueDetail(id, isSecret) {
         if (!this.elTechDetailContent) return;
 
+        this.activeDetailId = id;
+        this.activeDetailIsSecret = isSecret;
+
         const entry = isSecret ? state.player.learnedSecretTechniques.find(s => s.id === id) : state.player.learnedTechniques.find(t => t.id === id);
         const data = isSecret 
             ? getSecretTechniqueById(id) 
@@ -446,7 +451,7 @@ export class TechniqueController {
             <div class="bg-black/40 p-5 rounded-3xl border border-white/5 space-y-4">
                 <div class="flex justify-between items-end mb-1">
                     <span class="text-[9px] text-gray-500 uppercase tracking-widest">Độ Thuần Thục: ${mastery?.name || 'Nhập Môn'}</span>
-                    <span class="text-[10px] font-mono text-white">${entry.mastery} / ${nextMastery?.threshold || 'MAX'}</span>
+                    <span class="text-[10px] font-mono text-white">${Number(entry.mastery.toFixed(2))} / ${nextMastery?.threshold || 'MAX'}</span>
                 </div>
                 <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                     <div class="h-full bg-cultivation-gold" style="width: ${entry.masteryLevel >= 4 ? 100 : (entry.mastery / (nextMastery?.threshold || 1)) * 100}%"></div>

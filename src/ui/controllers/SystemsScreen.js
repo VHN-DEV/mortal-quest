@@ -119,6 +119,10 @@ export class SystemsScreen {
         if (this.btnTechBack) this.btnTechBack.onclick = () => {
             this.elTechListView.classList.remove('hidden');
             this.elTechDetailView.classList.add('hidden');
+            if (this.techniqueController) {
+                this.techniqueController.activeDetailId = null;
+                this.techniqueController.activeDetailIsSecret = null;
+            }
         };
     }
 
