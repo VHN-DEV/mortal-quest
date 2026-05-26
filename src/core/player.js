@@ -1,4 +1,4 @@
-import { getRealmById, RACE_DATA, HUMAN_REALMS, BODY_REALMS, SOUL_REALMS, SWORD_PATH_REALMS, SOUL_PATH_REALMS, getSubRealmsOfCurrent } from '../configs/realm-data.js';
+import { getRealmById, RACE_DATA, HUMAN_REALMS, BODY_REALMS, SOUL_REALMS, SWORD_PATH_REALMS, SOUL_PATH_REALMS, DEMON_REALMS, GHOST_REALMS, SPIRIT_BEAST_REALMS, BUDDHIST_REALMS, CONFUCIAN_REALMS, getSubRealmsOfCurrent } from '../configs/realm-data.js';
 import { Inventory } from './inventory.js';
 import { state } from '../state.js';
 import { getItemById } from '../configs/item-data.js';
@@ -9,7 +9,7 @@ import { CREATION_TRAITS, ROOT_ELEMENTS, SPECIAL_ELEMENTS } from '../configs/cre
 import { TITLES } from '../configs/fate-data.js';
 import { getLocationById, WORLDS } from '../configs/map-data.js';
 import { getSectById } from '../configs/sect-data.js';
-import { getTechniqueTypeSlug } from '../configs/display-mappers.js';
+import { CULTIVATION_PATHS } from '../configs/cultivation-paths.js';
 
 export class Player {
     constructor() {
@@ -17,6 +17,7 @@ export class Player {
         this.gender = "male";
         this.avatar = "player_male";
         this.race = 'HUMAN'; // HUMAN, SPIRIT_BEAST, DEMON, etc.
+        this.mainPath = null; // orthodox, ma_dao, quy_dao, yeu_tu (resolved in calculateStats)
         this.realmId = 0;
         this.tuVi = 0;
         this.buffs = []; // Array of { id, type, value, endTime }
@@ -426,15 +427,42 @@ export class Player {
         else if (this.totalSpent >= 1000) this.vipLevel = 1;
     }
 
+    getComprehension() {
+        let comp = this.comprehension || 10;
+        if (this.specializedPaths?.confucian?.realmId > 0) {
+            comp *= 1.25;
+        }
+        return comp;
+    }
+
     getCurrentRealm(type = 'tuvi') {
         let id;
         if (type === 'tuvi') id = this.realmId;
         else if (type === 'body') id = this.bodyRealmId;
         else if (type === 'soul') id = this.soulRealmId;
-        else if (this.specializedPaths[type]) id = this.specializedPaths[type].realmId;
+        else if (this.specializedPaths && this.specializedPaths[type]) id = this.specializedPaths[type].realmId;
         else id = 0;
         
-        return getRealmById(id, type, this.race);
+        if (type === 'body') return BODY_REALMS.find(r => r.id === id) || BODY_REALMS[0];
+        if (type === 'soul') return SOUL_REALMS.find(r => r.id === id) || SOUL_REALMS[0];
+        if (type === 'sword') return SWORD_PATH_REALMS.find(r => r.id === id) || SWORD_PATH_REALMS[0];
+        if (type === 'soul_path') return SOUL_PATH_REALMS.find(r => r.id === id) || SOUL_PATH_REALMS[0];
+        if (type === 'buddhist') return BUDDHIST_REALMS.find(r => r.id === id) || BUDDHIST_REALMS[0];
+        if (type === 'confucian') return CONFUCIAN_REALMS.find(r => r.id === id) || CONFUCIAN_REALMS[0];
+
+        let list = HUMAN_REALMS;
+        const mainPath = this.mainPath || (this.race === 'YAO' ? 'yeu_tu' : this.race === 'DEMON' ? 'ma_dao' : 'orthodox');
+        if (mainPath === 'ma_dao') list = DEMON_REALMS;
+        else if (mainPath === 'quy_dao') list = GHOST_REALMS;
+        else if (mainPath === 'yeu_tu') list = SPIRIT_BEAST_REALMS;
+        
+        let found = list.find(r => r.id === id);
+        if (!found) {
+            const maxRealm = list[list.length - 1];
+            if (maxRealm && id > maxRealm.id) found = maxRealm;
+            else found = list[0];
+        }
+        return found;
     }
 
     update(delta, multiplier = 1.0) {
@@ -456,18 +484,29 @@ export class Player {
         const hasSoulTech = !!this.mainSoulTechniqueId;
 
         // Comprehension Multiplier
-        const compMult = 1 + (this.comprehension / 100);
+        const compMult = 1 + (this.getComprehension() / 100);
 
         let finalMultiplier = multiplier * stabilityMult * compMult;
         if (this.isSecluded) finalMultiplier *= 5.0; // 5x gain during seclusion
 
-        const tuViGain = hasTuviTech ? this.tuViPerSecond * (focus === 'tuvi' ? 1.0 : 0.2) * finalMultiplier * delta : 0;
+        let tuViGain = hasTuviTech ? this.tuViPerSecond * (focus === 'tuvi' ? 1.0 : 0.2) * finalMultiplier * delta : 0;
         const bodyGain = hasBodyTech ? this.bodyExpPerSecond * (focus === 'body' ? 1.0 : 0.2) * finalMultiplier * delta : 0;
         const soulGain = hasSoulTech ? this.soulExpPerSecond * (focus === 'soul' ? 1.0 : 0.2) * finalMultiplier * delta : 0;
+
+        const mainPath = this.mainPath || 'orthodox';
+        if (mainPath === 'ma_dao') {
+            tuViGain *= 1.2;
+        }
 
         this.tuVi += tuViGain;
         this.bodyExp += bodyGain;
         this.soulExp += soulGain;
+
+        if (this.specializedPaths && this.specializedPaths[focus]) {
+            const baseSpecRate = 5.0 + (this.getComprehension() * 0.2);
+            const specGain = baseSpecRate * finalMultiplier * delta;
+            this.specializedPaths[focus].exp += specGain;
+        }
 
         // 4. Seclusion Events (Randomized)
         if (this.isSecluded && Math.random() < 0.02 * delta) { // ~2% chance per second
@@ -476,7 +515,12 @@ export class Player {
         
         // 5. Forced Breakthrough Check (Heavenly Dao)
         const realm = this.getCurrentRealm(focus);
-        const exp = focus === 'tuvi' ? this.tuVi : (focus === 'body' ? this.bodyExp : this.soulExp);
+        let exp = this.tuVi;
+        if (focus === 'body') exp = this.bodyExp;
+        else if (focus === 'soul') exp = this.soulExp;
+        else if (this.specializedPaths && this.specializedPaths[focus]) {
+            exp = this.specializedPaths[focus].exp;
+        }
         const timeSinceCreation = Date.now() - (this.createdAt || 0);
         
         if (exp >= realm.expRequired * 2.0 && timeSinceCreation > 10000) { // Only after 10 seconds of gameplay
@@ -555,7 +599,7 @@ export class Player {
         }
 
         // Comprehension multiplier: 50 comp = 1x, 100 comp = 1.5x, etc.
-        const compMult = 1.0 + (this.comprehension || 30) / 100;
+        const compMult = 1.0 + (this.getComprehension() || 30) / 100;
 
         // Base rate: gain ~1 mastery point every 100 seconds at 50 comp (no buffs)
         // This means full Nhập Môn -> Tiểu Thành (1000 pts) takes ~100,000s ≈ 28 hours passive
@@ -613,11 +657,30 @@ export class Player {
         
         let targetStability = 100;
         if (diff > 2) targetStability = 100 - (diff - 2) * 10;
+        
+        const mainPath = this.mainPath || 'orthodox';
+        if (mainPath === 'ma_dao') {
+            targetStability -= 15;
+        }
+
         targetStability = Math.max(0, Math.min(100, targetStability));
 
         // Smooth transition
-        if (this.stability > targetStability) this.stability -= 0.1;
-        else if (this.stability < targetStability) this.stability += 0.05;
+        let decayRate = 0.1;
+        let recoveryRate = 0.05;
+        
+        if (this.specializedPaths?.buddhist?.realmId > 0) {
+            decayRate *= 0.5;
+            recoveryRate *= 2.0;
+            targetStability = Math.min(100, targetStability + 10);
+        }
+        
+        if (mainPath === 'ma_dao') {
+            decayRate *= 1.5;
+        }
+
+        if (this.stability > targetStability) this.stability -= decayRate;
+        else if (this.stability < targetStability) this.stability += recoveryRate;
 
         // Heart Demon growth if stability is low
         if (this.stability < 30) {
@@ -807,8 +870,13 @@ export class Player {
                 };
             }
             const cycle = this.meridianCycles[focus] || { step: 0, count: 0 };
-            const currentRealmId = focus === 'tuvi' ? this.realmId : (focus === 'body' ? this.bodyRealmId : this.soulRealmId);
-            const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, this.race);
+            let currentRealmId = this.realmId;
+            if (focus === 'body') currentRealmId = this.bodyRealmId;
+            else if (focus === 'soul') currentRealmId = this.soulRealmId;
+            else if (this.specializedPaths && this.specializedPaths[focus]) {
+                currentRealmId = this.specializedPaths[focus].realmId;
+            }
+            const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, this.race, this.mainPath);
             const maxSteps = subRealms.length > 1 ? subRealms.length : 10;
             cycle.step = (cycle.step + 1) % maxSteps;
             
@@ -913,6 +981,10 @@ export class Player {
         } else if (focus === 'soul') {
             baseExp = Math.max(minBubbleGain, this.soulExpPerSecond * 12 * totalMult * elementMult);
             this.soulExp += baseExp;
+        } else if (this.specializedPaths && this.specializedPaths[focus]) {
+            const baseSpecRate = 5.0 + (this.getComprehension() * 0.2);
+            baseExp = Math.max(minBubbleGain, baseSpecRate * 3 * totalMult * elementMult * sizeMult);
+            this.specializedPaths[focus].exp += baseExp;
         }
         
         // Increment cultivation steps
@@ -924,8 +996,13 @@ export class Player {
             };
         }
         const cycle = this.meridianCycles[focus] || { step: 0, count: 0 };
-        const currentRealmId = focus === 'tuvi' ? this.realmId : (focus === 'body' ? this.bodyRealmId : this.soulRealmId);
-        const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, this.race);
+        let currentRealmId = this.realmId;
+        if (focus === 'body') currentRealmId = this.bodyRealmId;
+        else if (focus === 'soul') currentRealmId = this.soulRealmId;
+        else if (this.specializedPaths && this.specializedPaths[focus]) {
+            currentRealmId = this.specializedPaths[focus].realmId;
+        }
+        const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, this.race, this.mainPath);
         const maxSteps = subRealms.length > 1 ? subRealms.length : 10;
         cycle.step = (cycle.step + 1) % maxSteps;
         
@@ -993,8 +1070,14 @@ export class Player {
         else if (type === 'soul') list = SOUL_REALMS;
         else if (type === 'sword') list = SWORD_PATH_REALMS;
         else if (type === 'soul_path') list = SOUL_PATH_REALMS;
+        else if (type === 'buddhist') list = BUDDHIST_REALMS;
+        else if (type === 'confucian') list = CONFUCIAN_REALMS;
         else {
-            list = RACE_DATA[this.race]?.realms || HUMAN_REALMS;
+            const mainPath = this.mainPath || 'orthodox';
+            if (mainPath === 'ma_dao') list = DEMON_REALMS;
+            else if (mainPath === 'quy_dao') list = GHOST_REALMS;
+            else if (mainPath === 'yeu_tu') list = SPIRIT_BEAST_REALMS;
+            else list = HUMAN_REALMS;
         }
         const maxRealm = list[list.length - 1];
         const currentId = type === 'tuvi' ? this.realmId : (type === 'body' ? this.bodyRealmId : (type === 'soul' ? this.soulRealmId : (this.specializedPaths[type]?.realmId || 0)));
@@ -1048,6 +1131,15 @@ export class Player {
                 stability += rateBonus * 100;
             }
             stability = Math.min(100, stability);
+            
+            const mainPath = this.mainPath || 'orthodox';
+            if (mainPath === 'ma_dao') {
+                stability -= 10;
+            }
+            if (this.specializedPaths?.buddhist?.realmId > 0) {
+                stability += 10;
+            }
+            stability = Math.max(5, Math.min(100, stability));
             
             // Apply Karma Penalty: Accumulated sins weigh down the soul
             const fatePenalty = window.game?.systems?.fate?.getBreakthroughPenalty() || 1.0;
@@ -1368,7 +1460,7 @@ export class Player {
         this.baseStats.def *= (1 + ((this.physiqueTalent || 50) / 500));
 
         // Apply Comprehension
-        this.bonusStats.tuViSpeed *= (1 + ((this.comprehension || 50) / 200));
+        this.bonusStats.tuViSpeed *= (1 + ((this.getComprehension() || 50) / 200));
 
         // Apply Divine Sense
         this.advancedStats.perception = 10 + (soulLevel * 5) + ((this.divineSense || 50) / 5);
@@ -1514,6 +1606,37 @@ export class Player {
         this.atk = Math.max(0, (this.baseStats.atk || 0) + (this.bonusStats.atk || 0));
         this.def = Math.max(0, (this.baseStats.def || 0) + (this.bonusStats.def || 0));
         this.spd = Math.max(1, (this.baseStats.spd || 0) + (this.bonusStats.spd || 0));
+
+        // Resolve mainPath defaults if null
+        if (!this.mainPath) {
+            if (this.race === 'YAO') this.mainPath = 'yeu_tu';
+            else if (this.race === 'DEMON') this.mainPath = 'ma_dao';
+            else this.mainPath = 'orthodox';
+        }
+
+        // Apply path-based stat modifiers
+        if (this.mainPath === 'ma_dao') {
+            this.atk *= 1.3;
+            this.def *= 0.9;
+            this.bonusStats.tuViSpeed *= 1.2;
+        } else if (this.mainPath === 'quy_dao') {
+            this.maxHp *= 1.2;
+            this.spd *= 1.2;
+        } else if (this.mainPath === 'yeu_tu') {
+            this.maxHp *= 1.5;
+            this.def *= 1.2;
+        }
+
+        // Specialized path modifiers
+        if (this.specializedPaths?.buddhist?.realmId > 0) {
+            this.def *= 1.15;
+        }
+        if (this.specializedPaths?.confucian?.realmId > 0) {
+            this.spd *= 1.1;
+        }
+        if (this.specializedPaths?.sword?.realmId > 0) {
+            this.advancedStats.pierce += 0.05 * this.specializedPaths.sword.realmId;
+        }
 
         // 4. Apply TITLE bonuses
         if (this.fate.activeTitleId) {
@@ -2155,7 +2278,7 @@ export class Player {
 
     // Technique Methods
     getComprehensionTier() {
-        const comp = this.comprehension || 30;
+        const comp = this.getComprehension() || 30;
         if (comp < 30) {
             return { id: 'dan_don', name: 'Đần Độn', description: 'Khó hiểu công pháp, tốc độ tu luyện cực chậm', color: '#6b7280' };
         } else if (comp < 50) {
@@ -2267,7 +2390,7 @@ export class Player {
         else if (tier.id === 'yeu_nghiet') savvySpeed = 8.0;
 
         // Savvy points scaling
-        savvySpeed *= (1 + (this.comprehension || 0) / 100);
+        savvySpeed *= (1 + (this.getComprehension() || 0) / 100);
 
         // 2. LINH CĂN (Spiritual Root) Compatibility
         let rootMult = 1.0;
@@ -2846,6 +2969,7 @@ export class Player {
             gender: this.gender,
             avatar: this.avatar,
             race: this.race,
+            mainPath: this.mainPath,
             realmId: this.realmId,
             tuVi: this.tuVi,
             age: this.age,
@@ -2995,6 +3119,98 @@ export class Player {
         };
     }
 
+    embarkPath(pathId) {
+        const pathConfig = CULTIVATION_PATHS[pathId];
+        if (!pathConfig) {
+            return { success: false, msg: "Con đường tu luyện không hợp lệ." };
+        }
+        if (pathConfig.category !== 'specialized') {
+            return { success: false, msg: "Đây không phải là một con đường chuyên sâu." };
+        }
+
+        // Check race requirements
+        if (pathConfig.races && pathConfig.races.length > 0) {
+            if (!pathConfig.races.includes(this.race)) {
+                return { success: false, msg: `Chủng tộc ${this.race} không thể tu luyện con đường này.` };
+            }
+        }
+
+        // Check required main path
+        const mainPath = this.mainPath || 'orthodox';
+        if (pathConfig.requiredMain && pathConfig.requiredMain.length > 0) {
+            if (!pathConfig.requiredMain.includes(mainPath)) {
+                const requiredNames = pathConfig.requiredMain.map(p => CULTIVATION_PATHS[p]?.name || p).join(', ');
+                return { success: false, msg: `Con đường này yêu cầu hệ tu luyện chủ chốt là: ${requiredNames}.` };
+            }
+        }
+
+        if (!this.specializedPaths) this.specializedPaths = {};
+        if (!this.specializedPaths[pathId]) {
+            this.specializedPaths[pathId] = { realmId: 0, exp: 0, name: pathConfig.name };
+        }
+
+        if (this.specializedPaths[pathId].realmId > 0) {
+            return { success: false, msg: `Bạn đã bước vào con đường ${pathConfig.name} rồi.` };
+        }
+
+        // Embark! Set to realm level 1
+        this.specializedPaths[pathId].realmId = 1;
+        this.specializedPaths[pathId].exp = 0;
+        this.calculateStats();
+
+        return { success: true, msg: `Chúc mừng bạn đã bắt đầu tu luyện con đường ${pathConfig.name}!` };
+    }
+
+    convertMainPath(newPathId) {
+        const newPathConfig = CULTIVATION_PATHS[newPathId];
+        if (!newPathConfig) {
+            return { success: false, msg: "Con đường tu luyện mới không hợp lệ." };
+        }
+        if (newPathConfig.category !== 'main') {
+            return { success: false, msg: "Chỉ có thể chuyển đổi giữa các con đường tu luyện chính." };
+        }
+
+        const currentPath = this.mainPath || 'orthodox';
+        if (currentPath === newPathId) {
+            return { success: false, msg: "Bạn đã tu luyện con đường này rồi." };
+        }
+
+        // Check race requirements
+        if (newPathConfig.races && !newPathConfig.races.includes(this.race)) {
+            return { success: false, msg: `Chủng tộc ${this.race} không thể chuyển sang con đường này.` };
+        }
+
+        // Transition logic
+        this.mainPath = newPathId;
+
+        // Reset specialized paths that are no longer compatible
+        let resetPaths = [];
+        if (this.specializedPaths) {
+            Object.entries(this.specializedPaths).forEach(([sid, pData]) => {
+                if (pData.realmId > 0) {
+                    const specConfig = CULTIVATION_PATHS[sid];
+                    if (specConfig && specConfig.requiredMain && specConfig.requiredMain.length > 0) {
+                        if (!specConfig.requiredMain.includes(newPathId)) {
+                            pData.realmId = 0;
+                            pData.exp = 0;
+                            resetPaths.push(specConfig.name);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Recalculate stats
+        this.calculateStats();
+
+        let msg = `Chuyển đổi thành công sang ${newPathConfig.name}!`;
+        if (resetPaths.length > 0) {
+            msg += ` Do không tương thích, các con đường chuyên sâu sau đã bị reset: ${resetPaths.join(', ')}.`;
+        }
+
+        return { success: true, msg };
+    }
+
     /**
      * Khôi phục trạng thái Player từ dữ liệu JSON
      */
@@ -3006,6 +3222,7 @@ export class Player {
         this.gender = data.gender || this.gender;
         this.avatar = data.avatar || (['female', 'Nữ'].includes(this.gender) ? "player_female" : "player_male");
         this.race = data.race || this.race;
+        this.mainPath = data.mainPath || null;
         this.realmId = data.realmId || this.realmId;
         this.tuVi = data.tuVi || 0;
         this.age = data.age || this.age;

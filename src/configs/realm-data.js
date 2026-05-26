@@ -394,14 +394,20 @@ export const getRealmById = (id, type = 'tuvi', race = 'HUMAN') => {
     return list[0];
 };
 
-export const getSubRealmsOfCurrent = (id, type = 'tuvi', race = 'HUMAN') => {
+export const getSubRealmsOfCurrent = (id, type = 'tuvi', race = 'HUMAN', mainPath = 'orthodox') => {
     let list = HUMAN_REALMS;
     if (type === 'body') list = BODY_REALMS;
     else if (type === 'soul') list = SOUL_REALMS;
     else if (type === 'sword') list = SWORD_PATH_REALMS;
     else if (type === 'soul_path') list = SOUL_PATH_REALMS;
+    else if (type === 'buddhist') list = BUDDHIST_REALMS;
+    else if (type === 'confucian') list = CONFUCIAN_REALMS;
     else {
-        list = RACE_DATA[race]?.realms || HUMAN_REALMS;
+        const resolvedPath = mainPath || (race === 'YAO' ? 'yeu_tu' : race === 'DEMON' ? 'ma_dao' : 'orthodox');
+        if (resolvedPath === 'ma_dao') list = DEMON_REALMS;
+        else if (resolvedPath === 'quy_dao') list = GHOST_REALMS;
+        else if (resolvedPath === 'yeu_tu') list = SPIRIT_BEAST_REALMS;
+        else list = HUMAN_REALMS;
     }
     
     const currentRealm = list.find(r => r.id === id) || list[0];

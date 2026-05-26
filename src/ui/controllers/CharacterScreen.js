@@ -5,6 +5,7 @@ import { getPhysiqueById, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../../configs
 import { RACE_DATA } from '../../configs/realm-data.js';
 import { TITLES } from '../../configs/fate-data.js';
 import { getGenderLabel } from '../../configs/display-mappers.js';
+import { CULTIVATION_PATHS } from '../../configs/cultivation-paths.js';
 
 /**
  * Quản lý giao diện chỉ số nhân vật, cảnh giới và các thông tin liên quan.
@@ -45,6 +46,7 @@ export class CharacterScreen {
         // Info
         this.elCharSectInfo = document.getElementById('char-sect-info');
         this.elCharRace = document.getElementById('char-race');
+        this.elCharCultivationPath = document.getElementById('char-cultivation-path');
         this.elCharGender = document.getElementById('char-gender');
         this.elCharTitle = document.getElementById('char-title');
         this.elCharDestinyRating = document.getElementById('char-destiny-rating');
@@ -137,7 +139,7 @@ export class CharacterScreen {
         if (this.elCharComprehension) {
             const tier = state.player.getComprehensionTier();
             this.elCharComprehension.innerHTML = `
-                <span class="font-mono font-bold">${Math.floor(state.player.comprehension || 0)}</span>
+                <span class="font-mono font-bold">${Math.floor(state.player.getComprehension() || 0)}</span>
                 <span class="ml-1 text-[7px] px-1.5 py-0.5 rounded font-bold uppercase whitespace-nowrap" style="color: ${tier.color}; background-color: ${tier.color}15; border: 1px solid ${tier.color}30" title="${tier.description}">${tier.name}</span>
             `;
         }
@@ -165,6 +167,20 @@ export class CharacterScreen {
             this.elCharRace.textContent = raceInfo.name;
             this.elCharRace.className = `text-xs font-bold race-${state.player.race.toLowerCase()}`;
         }
+        
+        // Cultivation Path Info
+        if (this.elCharCultivationPath) {
+            const mainPath = state.player.mainPath || 'orthodox';
+            const pathName = {
+                orthodox: 'Chính Thống',
+                ma_dao: 'Ma Đạo',
+                quy_dao: 'Quỷ Đạo',
+                yeu_tu: 'Yêu Tu'
+            }[mainPath] || 'Chính Thống';
+            this.elCharCultivationPath.textContent = pathName;
+            this.elCharCultivationPath.className = `text-xs font-bold path-${mainPath}`;
+        }
+
         if (this.elCharGender) {
             this.elCharGender.textContent = getGenderLabel(state.player.gender);
         }
@@ -329,33 +345,122 @@ export class CharacterScreen {
     renderSpecializedPaths() {
         if (!this.elSpecializedPaths || !state.player.specializedPaths) return;
         
-        const activePaths = Object.entries(state.player.specializedPaths).filter(([_, path]) => path.realmId > 0);
-        
-        if (activePaths.length === 0) {
-            this.elSpecializedPaths.innerHTML = '<div class="text-[9px] text-gray-600 italic">Chưa dấn thân vào con đường đặc biệt nào</div>';
-            return;
-        }
+        let html = '';
 
-        this.elSpecializedPaths.innerHTML = activePaths.map(([key, path]) => {
-            const realm = state.player.getCurrentRealm(key);
-            const progress = Math.min(100, (path.exp / realm.expRequired) * 100);
+        // 1. Render Main Cultivation Paths
+        html += `<div class="mb-4">
+            <h4 class="text-[10px] text-cultivation-gold font-ancient tracking-widest uppercase mb-2">Hệ Tu Luyện Chủ Chốt</h4>
+            <div class="grid grid-cols-2 gap-2">`;
+        
+        const mainPathIds = ['orthodox', 'ma_dao', 'quy_dao', 'yeu_tu'];
+        mainPathIds.forEach(pid => {
+            const pConfig = CULTIVATION_PATHS[pid];
+            if (!pConfig) return;
+            const isCurrent = (state.player.mainPath || 'orthodox') === pid;
+            const isCompatible = pConfig.races.includes(state.player.race);
             
-            return `
-                <div class="p-3 bg-white/5 border border-white/10 rounded-xl space-y-2">
+            let btnHtml = '';
+            if (isCurrent) {
+                btnHtml = `<span class="text-[8px] text-green-400 font-bold">ĐANG CHỦ TU</span>`;
+            } else if (isCompatible) {
+                btnHtml = `<button onclick="window.game.convertMainPath('${pid}')" class="text-[8px] btn-gold px-2 py-0.5 rounded font-ancient">CHUYỂN HÓA</button>`;
+            } else {
+                btnHtml = `<span class="text-[8px] text-red-500 font-bold opacity-60">KHÔNG HỢP</span>`;
+            }
+
+            html += `
+                <div class="p-3 bg-white/5 border ${isCurrent ? 'border-cultivation-gold/50 bg-white/10' : 'border-white/10'} rounded-xl flex flex-col justify-between space-y-2">
                     <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-ancient text-qi-blue uppercase tracking-widest">${path.name}</span>
-                        <span class="text-[9px] text-gray-500">${realm.name}</span>
+                        <span class="text-[10px] font-ancient text-white flex items-center gap-1">
+                            <span>${pConfig.icon}</span> <span>${pConfig.name}</span>
+                        </span>
                     </div>
-                    <div class="h-1 bg-black/40 rounded-full overflow-hidden">
-                        <div class="h-full bg-qi-blue shadow-[0_0_10px_rgba(79,209,197,0.5)] transition-all" style="width: ${progress}%"></div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-[8px] text-gray-600">${Math.floor(path.exp).toLocaleString()} / ${realm.expRequired.toLocaleString()}</span>
-                        <button onclick="window.game.breakthrough('${key}')" class="text-[8px] btn-gold px-2 py-0.5 rounded ${state.player.canBreakthrough(key).can ? 'animate-pulse' : 'opacity-50'}">ĐỘT PHÁ</button>
+                    <p class="text-[8px] text-gray-500 line-clamp-2">${pConfig.desc}</p>
+                    <div class="flex justify-between items-center pt-1 border-t border-white/5">
+                        <span class="text-[8px] text-gray-600">${pConfig.currency}</span>
+                        ${btnHtml}
                     </div>
                 </div>
             `;
-        }).join('');
+        });
+        html += `</div></div>`;
+
+        // 2. Render Specialized Paths
+        html += `<div>
+            <h4 class="text-[10px] text-qi-blue font-ancient tracking-widest uppercase mb-2">Con Đường Tu Luyện Nhánh</h4>
+            <div class="grid grid-cols-2 gap-2">`;
+            
+        const specializedIds = ['sword', 'soul_path', 'buddhist', 'confucian'];
+        specializedIds.forEach(pid => {
+            const pConfig = CULTIVATION_PATHS[pid];
+            if (!pConfig) return;
+            
+            const playerPath = state.player.specializedPaths[pid];
+            const isUnlocked = playerPath && playerPath.realmId > 0;
+            
+            if (isUnlocked) {
+                const realm = state.player.getCurrentRealm(pid);
+                const progress = Math.min(100, (playerPath.exp / realm.expRequired) * 100);
+                const isFocused = state.player.cultivationFocus === pid;
+                const canBt = state.player.canBreakthrough(pid).can;
+
+                html += `
+                    <div class="p-3 bg-white/5 border border-white/10 rounded-xl flex flex-col justify-between space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-ancient text-qi-blue uppercase tracking-widest">${pConfig.name}</span>
+                            <span class="text-[8px] text-gray-500">${realm.name}</span>
+                        </div>
+                        <div class="h-1 bg-black/40 rounded-full overflow-hidden">
+                            <div class="h-full bg-qi-blue shadow-[0_0_10px_rgba(79,209,197,0.5)] transition-all" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="flex justify-between items-center text-[8px]">
+                            <span class="text-gray-600">${Math.floor(playerPath.exp).toLocaleString()} / ${realm.expRequired.toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1 border-t border-white/5">
+                            <button onclick="window.game.setCultivationFocus('${pid}')" class="text-[8px] px-2 py-0.5 rounded font-ancient ${isFocused ? 'bg-qi-blue text-black font-bold' : 'bg-white/5 border border-white/10 text-gray-400'}">
+                                ${isFocused ? 'ĐANG TU' : 'TẬP TRUNG'}
+                            </button>
+                            <button onclick="window.game.breakthrough('${pid}')" class="text-[8px] btn-gold px-2 py-0.5 rounded font-ancient ${canBt ? 'animate-pulse' : 'opacity-50'}">ĐỘT PHÁ</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Check eligibility
+                const isRaceCompatible = !pConfig.races || pConfig.races.includes(state.player.race);
+                const mainPath = state.player.mainPath || 'orthodox';
+                const isMainPathCompatible = !pConfig.requiredMain || pConfig.requiredMain.length === 0 || pConfig.requiredMain.includes(mainPath);
+                
+                let btnHtml = '';
+                if (isRaceCompatible && isMainPathCompatible) {
+                    btnHtml = `<button onclick="window.game.embarkPath('${pid}')" class="text-[8px] btn-gold px-2 py-0.5 rounded font-ancient">NHẬP ĐẠO</button>`;
+                } else {
+                    let reqText = '';
+                    if (!isRaceCompatible) reqText = 'Chủng tộc';
+                    else if (!isMainPathCompatible) {
+                        const pathNames = pConfig.requiredMain.map(p => CULTIVATION_PATHS[p]?.name || p).join('/');
+                        reqText = `Cần ${pathNames}`;
+                    }
+                    btnHtml = `<span class="text-[8px] text-red-500 font-bold opacity-60" title="${reqText}">${reqText}</span>`;
+                }
+
+                html += `
+                    <div class="p-3 bg-white/5 border border-white/10 border-dashed rounded-xl flex flex-col justify-between space-y-2 opacity-70">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-ancient text-gray-400 uppercase tracking-widest">${pConfig.name}</span>
+                            <span class="text-[8px] text-gray-600">Chưa Nhập Đạo</span>
+                        </div>
+                        <p class="text-[8px] text-gray-600 line-clamp-2">${pConfig.desc}</p>
+                        <div class="flex justify-between items-center pt-1 border-t border-white/5">
+                            <span class="text-[8px] text-gray-700">${pConfig.currency}</span>
+                            ${btnHtml}
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        html += `</div></div>`;
+
+        this.elSpecializedPaths.innerHTML = html;
     }
 
     renderAdvancedStats() {

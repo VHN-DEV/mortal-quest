@@ -422,7 +422,57 @@ window.renderMainStats = () => {
         }
     }
 
-    const progress = (player.tuVi / realm.expRequired) * 100;
+    const focus = player.cultivationFocus || 'tuvi';
+    const activeRealm = player.getCurrentRealm(focus);
+    
+    let currentExp = player.tuVi;
+    if (focus === 'body') currentExp = player.bodyExp;
+    else if (focus === 'soul') currentExp = player.soulExp;
+    else if (player.specializedPaths && player.specializedPaths[focus]) {
+        currentExp = player.specializedPaths[focus].exp;
+    }
+    const progress = (currentExp / activeRealm.expRequired) * 100;
+
+    // Update local qi headers and purity based on main path
+    const localQiTitle = document.getElementById('local-qi-title');
+    const mainPurityTag = document.getElementById('main-purity-tag');
+    const mainPath = player.mainPath || 'orthodox';
+    if (localQiTitle) {
+        if (mainPath === 'ma_dao') localQiTitle.textContent = 'Tỷ Lệ Ma Khí Địa Phương';
+        else if (mainPath === 'quy_dao') localQiTitle.textContent = 'Tỷ Lệ Âm Khí Địa Phương';
+        else if (mainPath === 'yeu_tu') localQiTitle.textContent = 'Tỷ Lệ Yêu Lực Địa Phương';
+        else localQiTitle.textContent = 'Tỷ Lệ Linh Khí Địa Phương';
+    }
+    if (mainPurityTag && mainPurityTag.textContent && !mainPurityTag.textContent.includes('-')) {
+        if (mainPath === 'ma_dao') mainPurityTag.textContent = 'MA KHÍ';
+        else if (mainPath === 'quy_dao') mainPurityTag.textContent = 'ÂM KHÍ';
+        else if (mainPath === 'yeu_tu') mainPurityTag.textContent = 'YÊU LỰC';
+        else mainPurityTag.textContent = 'LINH KHÍ';
+    }
+
+    // Update main bar label
+    const mainBarLabel = document.getElementById('main-focus-bar-label');
+    if (mainBarLabel) {
+        if (focus === 'tuvi') {
+            if (mainPath === 'ma_dao') mainBarLabel.textContent = 'Ma Khí';
+            else if (mainPath === 'quy_dao') mainBarLabel.textContent = 'Âm Khí';
+            else if (mainPath === 'yeu_tu') mainBarLabel.textContent = 'Yêu Lực';
+            else mainBarLabel.textContent = 'Tu Vi';
+        } else if (focus === 'body') {
+            mainBarLabel.textContent = 'Luyện Thể';
+        } else if (focus === 'soul') {
+            mainBarLabel.textContent = 'Thần Thức';
+        } else {
+            // Specialized paths
+            const focusNames = {
+                sword: 'Kiếm Ý',
+                soul_path: 'Hồn Lực',
+                buddhist: 'Phật Pháp',
+                confucian: 'Nho Học'
+            };
+            mainBarLabel.textContent = focusNames[focus] || 'Tu Luyện';
+        }
+    }
 
     // Detect passive cultivation tuVi gain and spawn auto absorbing bubble
     if (state.ui) {
@@ -453,13 +503,19 @@ window.renderMainStats = () => {
     const elBtnCultivateText = document.getElementById('cultivate-btn-text');
 
     if (elProgress) {
-        // Sử dụng style.width trực tiếp thay vì GSAP trong vòng lặp render mỗi khung hình
-        // để tránh xung đột hoạt ảnh và đảm bảo khớp 100% với con số hiển thị.
         elProgress.style.width = `${Math.min(100, progress)}%`;
     }
-    if (elTuViText) elTuViText.textContent = `${Math.floor(player.tuVi).toLocaleString()} / ${realm.expRequired.toLocaleString()}`;
+    if (elTuViText) elTuViText.textContent = `${Math.floor(currentExp).toLocaleString()} / ${activeRealm.expRequired.toLocaleString()}`;
 
     let tvps = player.tuViPerSecond;
+    if (focus === 'body') tvps = player.bodyExpPerSecond;
+    else if (focus === 'soul') tvps = player.soulExpPerSecond;
+    else if (['sword', 'soul_path', 'buddhist', 'confucian'].includes(focus)) {
+        tvps = 5.0 + (player.getComprehension() * 0.2);
+    }
+    if (mainPath === 'ma_dao' && focus === 'tuvi') {
+        tvps *= 1.2;
+    }
     if (state.systems.time) {
         const season = state.systems.time.getSeason();
         if (season.bonus && season.bonus.tvps) tvps *= season.bonus.tvps;
@@ -499,15 +555,39 @@ window.renderMainStats = () => {
         circleSoul.style.strokeDashoffset = offset;
     }
 
-    const focus = player.cultivationFocus || 'tuvi';
+    let tuviBtnText = 'Pháp lực';
+    if (mainPath === 'ma_dao') tuviBtnText = 'Ma khí';
+    else if (mainPath === 'quy_dao') tuviBtnText = 'Âm khí';
+    else if (mainPath === 'yeu_tu') tuviBtnText = 'Yêu lực';
+
+    let tuviLabel = 'THU NẠP LINH KHÍ';
+    if (mainPath === 'ma_dao') tuviLabel = 'THU NẠP MA KHÍ';
+    else if (mainPath === 'quy_dao') tuviLabel = 'THU NẠP ÂM KHÍ';
+    else if (mainPath === 'yeu_tu') tuviLabel = 'THU NẠP YÊU LỰC';
+
     const focusMap = {
-        tuvi: { id: 'focus-tuvi', label: 'THU NẠP LINH KHÍ', icon: 'ph-sparkle' },
+        tuvi: { id: 'focus-tuvi', label: tuviLabel, icon: 'ph-sparkle' },
         body: { id: 'focus-body', label: 'RÈN LUYỆN NHỤC THÂN', icon: 'ph-fire' },
-        soul: { id: 'focus-soul', label: 'TÔI LUYỆN THẦN THỨC', icon: 'ph-brain' }
+        soul: { id: 'focus-soul', label: 'TÔI LUYỆN THẦN THỨC', icon: 'ph-brain' },
+        sword: { id: 'focus-sword', label: 'TĨNH TÂM NGỘ KIẾM', icon: 'ph-sword' },
+        soul_path: { id: 'focus-soul_path', label: 'LUYỆN HỒN ĐẠO', icon: 'ph-eye' },
+        buddhist: { id: 'focus-buddhist', label: 'THAM THIỀN PHẬT PHÁP', icon: 'ph-scroll' },
+        confucian: { id: 'focus-confucian', label: 'ĐỌC SÁCH THÁNH HIỀN', icon: 'ph-book-open' }
     };
-    Object.entries(focusMap).forEach(([key, data]) => {
-        const btn = document.getElementById(data.id);
+
+    const mainTabs = {
+        tuvi: 'focus-tuvi',
+        body: 'focus-body',
+        soul: 'focus-soul'
+    };
+    Object.entries(mainTabs).forEach(([key, id]) => {
+        const btn = document.getElementById(id);
         if (!btn) return;
+        
+        if (key === 'tuvi') {
+            btn.textContent = tuviBtnText;
+        }
+
         const active = key === focus;
         const activeClass = key === 'tuvi'
             ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30 focus-tuvi'

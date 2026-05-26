@@ -1050,11 +1050,44 @@ export class Game {
     }
 
     setCultivationFocus(focus) {
-        if (!state.player || !['tuvi', 'body', 'soul'].includes(focus)) return;
+        if (!state.player) return;
+        const validFocuses = ['tuvi', 'body', 'soul', 'sword', 'soul_path', 'buddhist', 'confucian'];
+        if (!validFocuses.includes(focus)) return;
+
+        // Check if focus is specialized and not unlocked yet
+        if (['sword', 'soul_path', 'buddhist', 'confucian'].includes(focus)) {
+            if (!state.player.specializedPaths?.[focus] || state.player.specializedPaths[focus].realmId <= 0) {
+                state.ui.toast("Chưa dấn thân vào con đường chuyên sâu này!", "error");
+                return;
+            }
+        }
+
         state.player.cultivationFocus = focus;
         this.refreshUI();
         if (state.ui && typeof state.ui.startQiBubbleSystem === 'function') {
             state.ui.startQiBubbleSystem();
+        }
+    }
+
+    async embarkPath(pathId) {
+        if (!state.player) return;
+        const res = state.player.embarkPath(pathId);
+        if (res.success) {
+            state.ui.toast(res.msg, "success");
+            this.refreshUI();
+        } else {
+            state.ui.toast(res.msg, "error");
+        }
+    }
+
+    async convertMainPath(newPathId) {
+        if (!state.player) return;
+        const res = state.player.convertMainPath(newPathId);
+        if (res.success) {
+            state.ui.toast(res.msg, "success");
+            this.refreshUI();
+        } else {
+            state.ui.toast(res.msg, "error");
         }
     }
 

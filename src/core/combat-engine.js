@@ -452,6 +452,12 @@ export class CombatEngine {
             case 'spirit_stone':
                 this.playerCrushStone();
                 break;
+            case 'sword-intent':
+                this.playerSwordIntent();
+                break;
+            case 'soul-repress':
+                this.playerSoulRepress();
+                break;
         }
     }
 
@@ -549,12 +555,20 @@ export class CombatEngine {
         const suppression = this.calculateRealmSuppression(this.player, this.enemy);
         const damage = Math.floor(this.player.atk * 2.5 * suppression);
         
-        // Sword Intent ignores 50% more defense
+        // Sword Intent ignores 80% defense
         const effectiveEnemyDef = Math.floor(this.enemy.def * 0.2); 
-        const finalDmg = Math.max(1, damage - effectiveEnemyDef);
+        
+        // Kiếm Ý true damage scales with sword specialized path level
+        const swordRealm = this.player.specializedPaths?.sword?.realmId || 0;
+        const trueDmg = swordRealm * 15;
+        const finalDmg = Math.max(1, damage - effectiveEnemyDef) + trueDmg;
         
         this.enemy.hp -= finalDmg;
-        this.addLog(`Kiếm quang xé rách hư không, gây <span class="text-red-500 font-bold">${finalDmg}</span> sát thương!`);
+        if (trueDmg > 0) {
+            this.addLog(`Kiếm quang xé rách hư không, gây <span class="text-red-500 font-bold">${finalDmg}</span> sát thương (chứa ${trueDmg} sát thương thực từ Kiếm Ý)!`);
+        } else {
+            this.addLog(`Kiếm quang xé rách hư không, gây <span class="text-red-500 font-bold">${finalDmg}</span> sát thương!`);
+        }
         this.onUpdate('damage', { target: 'enemy', value: finalDmg, crit: true });
         
         this.endPlayerTurn();
@@ -596,8 +610,55 @@ export class CombatEngine {
     playerDefend() {
         this.playerDefending = true;
         this.addLog("Ngươi vận chuyển chân khí, hình thành hộ thân linh giáp.");
+        
+        // Buddhist Path bonus: +10% max HP shield and light heal when defending
+        const buddhistRealm = this.player.specializedPaths?.buddhist?.realmId || 0;
+        if (buddhistRealm > 0) {
+            const shieldAmt = Math.floor(this.player.maxHp * 0.1 * buddhistRealm);
+            const healAmt = Math.floor(this.player.maxHp * 0.05 * buddhistRealm);
+            
+            this.status.player.shield = (this.status.player.shield || 0) + shieldAmt;
+            this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmt);
+            
+            this.addLog(`☸️ [Phật Tu] Hộ Thể Kim Quang kích hoạt: Nhận +${shieldAmt} Giáp Hộ Thân và hồi phục +${healAmt} khí huyết!`);
+        }
+
         this.turn = 1;
         this.nextTurn();
+    }
+
+    playerSoulRepress() {
+        const costMana = 30;
+        if (this.player.mana < costMana) {
+            this.addLog("Linh lực không đủ để thi triển Nhiếp Hồn!");
+            return;
+        }
+        this.player.mana -= costMana;
+
+        this.addLog("<span class='text-qi-purple font-ancient'>Thần Thức Trấn Áp!</span> Ngươi giải phóng thần hải hồn lực khổng lồ oanh tạc thần hồn đối phương.");
+
+        const suppression = this.calculateRealmSuppression(this.player, this.enemy);
+        
+        // Soul Damage scales with Perception (Divine Sense) and Soul Realm level
+        const perception = this.player.advancedStats?.perception || 10;
+        const soulRealm = this.player.specializedPaths?.soul_path?.realmId || 1;
+        
+        let damage = Math.floor((perception * 3 + soulRealm * 25) * suppression);
+        const finalDmg = Math.max(1, damage);
+
+        this.enemy.hp -= finalDmg;
+        this.addLog(`Thần hồn đối phương rung động dữ dội, chịu <span class="text-purple-400 font-bold">${finalDmg}</span> hồn thương!`);
+        this.onUpdate('damage', { target: 'enemy', value: finalDmg, crit: false });
+
+        // Chance to stun: 30% + (perception diff * 1%)
+        const ePerception = this.enemy.perception || 10;
+        const stunChance = 0.3 + (perception - ePerception) * 0.01;
+        if (Math.random() < stunChance) {
+            this.status.enemy.stun = Math.max(this.status.enemy.stun || 0, 1);
+            this.addLog(`<span class="text-yellow-400 font-bold">CHOÁNG VÁNG!</span> Thần hồn đối phương bị đánh trúng, lâm vào trạng thái ngốc trệ.`);
+        }
+
+        this.endPlayerTurn();
     }
 
     playerEscape() {
@@ -840,7 +901,7 @@ export class CombatEngine {
     }
 
     playerSummonCorpse() {
-        if (!this.player.unlockedProfessions?.includes('corpse')) {
+        if (!this.player.unlockedProfessions?.includes('corpse') && this.player.mainPath !== 'quy_dao') {
             this.addLog("Chưa mở khóa Luyện Thi Thuật!");
             return;
         }
@@ -849,9 +910,16 @@ export class CombatEngine {
             this.addLog("Không có thi khôi đã luyện để triệu hồi!");
             return;
         }
-        const dmg = Math.max(1, Math.floor((corpse.stats?.atk || this.player.atk * 0.6) * 0.8 + (this.player.corpseLevel || 1) * 12));
+        let dmg = Math.max(1, Math.floor((corpse.stats?.atk || this.player.atk * 0.6) * 0.8 + (this.player.corpseLevel || 1) * 12));
+        
+        if (this.player.mainPath === 'quy_dao') {
+            dmg = Math.floor(dmg * 1.3);
+            this.addLog(`👻 [Quỷ Đạo] Triệu hồi Thi Khôi cực hạn! Thi khôi ${corpse.name} hung mãnh oanh kích gây ${dmg} sát thương!`);
+        } else {
+            this.addLog(`Thi khôi ${corpse.name} hung mãnh công kích gây ${dmg} sát thương!`);
+        }
+        
         this.enemy.hp -= dmg;
-        this.addLog(`Thi khôi ${corpse.name} hung mãnh công kích gây ${dmg} sát thương!`);
         this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
         if (Math.random() < 0.2) {
             this.status.enemy.stun = Math.max(this.status.enemy.stun, 1);

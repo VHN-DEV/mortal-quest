@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-AwayJRAt.js"></script>
+  <script type="module" crossorigin src="./assets/index-DTfissLo.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-B30hkozn.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gntnCqAy.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
@@ -1138,7 +1138,7 @@
                 <div class="space-y-1.5">
                     <div class="flex justify-between items-end">
                         <div class="flex flex-col">
-                            <span class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Tu Vi</span>
+                            <span id="main-focus-bar-label" class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Tu Vi</span>
                             <span id="tu-vi-per-sec" class="text-[7px] text-qi-purple/60 italic"></span>
                         </div>
                         <span id="tu-vi-text" class="text-[10px] font-mono text-qi-blue">0 / 100</span>
@@ -1182,7 +1182,7 @@
                 <!-- Element Qi Grid Container for Cultivation Screen -->
                 <div class="p-3 border border-white/5 rounded-xl bg-black/40 space-y-2">
                     <div class="flex justify-between items-center text-[7.5px] uppercase tracking-wider font-bold mb-1">
-                        <span class="text-qi-blue">Tỷ Lệ Linh Khí Địa Phương</span>
+                        <span class="text-qi-blue" id="local-qi-title">Tỷ Lệ Linh Khí Địa Phương</span>
                         <span id="main-purity-tag" class="text-gray-500 text-[7px] leading-none">LINH KHÍ</span>
                     </div>
                     <div id="main-element-qi-grid" class="grid grid-cols-5 gap-1.5">
@@ -1426,6 +1426,12 @@
                             class="text-[10px] font-ancient text-cultivation-gold mb-1 uppercase tracking-widest">
                             Môn Phái</h3>
                         <div id="char-sect-info" class="text-xs italic text-gray-500">Độc Hành</div>
+                    </div>
+                    <div>
+                        <h3
+                            class="text-[10px] font-ancient text-cultivation-gold mb-1 uppercase tracking-widest">
+                            Tu Luyện</h3>
+                        <div id="char-cultivation-path" class="text-xs font-bold text-white">-</div>
                     </div>
                 </div>
                 <div>
@@ -4358,6 +4364,12 @@
                         <button id="btn-insect" class="battle-action-btn-new">
                             <i class="ph ph-bug"></i>
                             <span>Kỳ Trùng</span>
+                        </button>
+                    </div>
+                    <div id="tab-hon" class="tab-pane hidden grid grid-cols-1 gap-2">
+                        <button id="btn-soul-repress" class="battle-action-btn-new">
+                            <i class="ph ph-brain"></i>
+                            <span>Nhiếp Hồn</span>
                         </button>
                     </div>
                     <div id="tab-khac" class="tab-pane hidden grid grid-cols-1 gap-2">

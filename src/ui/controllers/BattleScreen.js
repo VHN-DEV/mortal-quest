@@ -62,6 +62,7 @@ export class BattleScreen {
         this.btnPuppet = document.getElementById('btn-puppet');
         this.btnCorpse = document.getElementById('btn-corpse');
         this.btnInsect = document.getElementById('btn-insect');
+        this.btnSoulRepress = document.getElementById('btn-soul-repress');
         this.btnEscape = document.getElementById('btn-escape');
 
         this.chantingContainer = document.getElementById('battle-chanting-container');
@@ -91,6 +92,7 @@ export class BattleScreen {
         if (this.btnPuppet) this.btnPuppet.onclick = () => this.handleAction('puppet');
         if (this.btnCorpse) this.btnCorpse.onclick = () => this.handleAction('corpse');
         if (this.btnInsect) this.btnInsect.onclick = () => this.handleAction('insect');
+        if (this.btnSoulRepress) this.btnSoulRepress.onclick = () => this.handleAction('soul-repress');
         if (this.btnEscape) this.btnEscape.onclick = () => this.handleAction('escape');
         if (this.btnSecret) this.btnSecret.onclick = () => this.toggleSecretList();
 
@@ -369,6 +371,14 @@ export class BattleScreen {
 
     updateProfessionTabs() {
         const unlocked = new Set(state.player?.unlockedProfessions || []);
+        
+        if (state.player?.mainPath === 'quy_dao') {
+            unlocked.add('corpse');
+        }
+        if (state.player?.specializedPaths?.soul_path?.realmId > 0) {
+            unlocked.add('soul_path');
+        }
+
         const tabs = {
             'talisman': 'phu',
             'beast': 'thu-thu',
