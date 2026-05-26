@@ -22,15 +22,43 @@ export class TechniqueSystem {
         const playerTech = this.player.learnedTechniques.find(t => t.id === techId);
         if (!playerTech) return false;
 
+        const techData = getTechniqueById(techId) || (this.player.customTechniques || []).find(t => t.id === techId);
+        if (!techData) return false;
+
         playerTech.mastery += amount;
         
         // Cập nhật cấp độ thuần thục
-        const currentMastery = MASTERY_LEVELS.filter(m => playerTech.mastery >= m.threshold).pop();
+        let currentMastery = MASTERY_LEVELS.filter(m => playerTech.mastery >= m.threshold).pop();
         playerTech.masteryLevel = currentMastery.id;
 
-        // Kiểm tra tiến hóa nếu đạt Viên Mãn
-        if (currentMastery.id === 4) {
+        // Nếu đạt Viên Mãn (id >= 4) và chưa đạt tối đa tầng (maxStage)
+        if (currentMastery.id >= 4 && playerTech.stage < (techData.maxStage || 10)) {
+            // Tự động đột phá lên tầng tiếp theo!
+            playerTech.stage++;
+            playerTech.mastery = 0; // Reset về Nhập Môn của tầng mới
+            playerTech.masteryLevel = 1;
+
+            const stageName = (techData.stageNames && techData.stageNames[playerTech.stage - 1]) 
+                ? `: ${techData.stageNames[playerTech.stage - 1]}` 
+                : "";
+
+            // Thêm sự kiện đột phá tự động để hệ thống hiển thị thông báo
+            this.player.pendingEvents.push({
+                type: 'technique_breakthrough',
+                msg: `🎉 Cảnh giới tăng vọt! Đạo hữu đã tự động đột phá ${techData.name} lên Tầng ${playerTech.stage}${stageName}!`
+            });
+
+            // Kiểm tra tiến hóa công pháp
             this.checkEvolution(techId);
+
+            this.player.calculateStats();
+        } else if (playerTech.stage >= (techData.maxStage || 10)) {
+            // Nếu đã đạt tầng tối đa, giới hạn độ thuần thục tối đa ở Đại Viên Mãn
+            const maxThreshold = MASTERY_LEVELS[MASTERY_LEVELS.length - 1].threshold; // 40000
+            if (playerTech.mastery >= maxThreshold) {
+                playerTech.mastery = maxThreshold;
+                playerTech.masteryLevel = 5; // Đại Viên Mãn
+            }
         }
 
         return true;

@@ -466,6 +466,8 @@ export class Game {
                     }
                 } else if (ev.type === 'npc_killed') {
                     state.ui.toast(ev.msg, 'error');
+                } else if (ev.type === 'technique_breakthrough' || ev.type === 'technique_evolution') {
+                    state.ui.alert(ev.msg, "Ngộ Đạo Thông Thiên");
                 }
             });
         }

@@ -1,5 +1,5 @@
 import { state } from '../../state.js';
-import { getTechniqueById, getSecretTechniqueById, MASTERY_LEVELS } from '../../configs/technique-data.js';
+import { getTechniqueById, getSecretTechniqueById, MASTERY_LEVELS, TECHNIQUE_LEVELS } from '../../configs/technique-data.js';
 
 export class TechniqueController {
     constructor(parentScreen) {
@@ -15,6 +15,135 @@ export class TechniqueController {
     get elTechDetailView() { return this.parentScreen.elTechDetailView; }
     get elTechDetailContent() { return this.parentScreen.elTechDetailContent; }
     get elTechPoints() { return this.parentScreen.elTechPoints; }
+
+    getTechniquePassiveRate(entry, data) {
+        if (!state.player || !data) return 0;
+        
+        const type = data.type;
+        if (type !== 'Linh Lực' && type !== 'Luyện Thể' && type !== 'Thần Thức' && type !== 'Song Tu' && type !== 'Phụ Trợ') return 0;
+
+        const masteryLevel = entry.masteryLevel || 1;
+        const qualityLevel = TECHNIQUE_LEVELS[data.quality];
+        const qualityMult = qualityLevel ? qualityLevel.multiplier : 1.0;
+
+        const masteryBonus = data.masteryBonuses ? data.masteryBonuses[masteryLevel] : null;
+        const masteryMult = MASTERY_LEVELS.find(m => m.id === masteryLevel)?.multiplier || 1.0;
+        
+        let attributeMult = 1.0;
+        if (state.player.spiritualRoot) {
+            if (data.compatibility) {
+                const rootType = state.player.spiritualRoot.type;
+                if (data.compatibility[rootType]) {
+                    attributeMult = data.compatibility[rootType];
+                } else if (rootType.includes('Tạp') && data.compatibility['Tạp']) {
+                    attributeMult = data.compatibility['Tạp'];
+                } else if (rootType === 'Thiên Linh Căn') {
+                    attributeMult = 1.5;
+                }
+            } else if (data.element) {
+                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' || 
+                    state.player.spiritualRoot.type.includes(data.element)) {
+                    attributeMult = 1.5;
+                }
+            }
+        }
+
+        const stageMult = 1 + ((entry.stage || 1) - 1) * 0.2;
+        const finalMult = masteryMult * qualityMult * attributeMult * stageMult;
+
+        if (type === 'Linh Lực' || type === 'Song Tu' || type === 'Phụ Trợ') {
+            const baseTvps = masteryBonus?.tvps || data.effects?.tvps || 0;
+            let finalTvps = baseTvps * finalMult;
+            
+            // Apply environmental Qi
+            finalTvps *= state.player.getEnvironmentalQiMultiplier();
+            
+            // Apply active formations
+            state.player.activeFormations.forEach(f => {
+                if (f.id === 'tu_linh_tran') finalTvps *= 1.2;
+            });
+
+            // Apply social
+            if (state.systems.social && state.systems.social.bonds.daoLu) {
+                finalTvps *= 1.2;
+                const daoLu = state.systems.npc.npcs.find(n => n.id === state.systems.social.bonds.daoLu);
+                if (daoLu && daoLu.location === state.player.currentLocId) {
+                    finalTvps *= 1.1;
+                }
+            }
+            
+            // Apply buffs
+            if (state.player.buffs) {
+                state.player.buffs.forEach(b => {
+                    if (b.stat === 'tu_vi_speed') finalTvps *= b.value;
+                });
+            }
+            
+            return finalTvps;
+        } else if (type === 'Luyện Thể') {
+            const baseBodyPs = masteryBonus?.bodyPs || data.effects?.bodyPs || 0;
+            let finalBodyPs = baseBodyPs * finalMult;
+            if (state.player.buffs) {
+                state.player.buffs.forEach(b => {
+                    if (b.stat === 'body_speed') finalBodyPs *= b.value;
+                });
+            }
+            return finalBodyPs;
+        } else if (type === 'Thần Thức') {
+            const baseSoulPs = masteryBonus?.soulPs || data.effects?.soulPs || 0;
+            let finalSoulPs = baseSoulPs * finalMult;
+            if (state.player.buffs) {
+                state.player.buffs.forEach(b => {
+                    if (b.stat === 'soul_speed') finalSoulPs *= b.value;
+                });
+            }
+            return finalSoulPs;
+        }
+        
+        return 0;
+    }
+
+    getTechniqueActiveStats(entry, data) {
+        if (!state.player || !data) return {};
+
+        const masteryLevel = entry.masteryLevel || 1;
+        const qualityLevel = TECHNIQUE_LEVELS[data.quality];
+        const qualityMult = qualityLevel ? qualityLevel.multiplier : 1.0;
+
+        const masteryMult = MASTERY_LEVELS.find(m => m.id === masteryLevel)?.multiplier || 1.0;
+        
+        let attributeMult = 1.0;
+        if (state.player.spiritualRoot) {
+            if (data.compatibility) {
+                const rootType = state.player.spiritualRoot.type;
+                if (data.compatibility[rootType]) {
+                    attributeMult = data.compatibility[rootType];
+                } else if (rootType.includes('Tạp') && data.compatibility['Tạp']) {
+                    attributeMult = data.compatibility['Tạp'];
+                } else if (rootType === 'Thiên Linh Căn') {
+                    attributeMult = 1.5;
+                }
+            } else if (data.element) {
+                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' || 
+                    state.player.spiritualRoot.type.includes(data.element)) {
+                    attributeMult = 1.5;
+                }
+            }
+        }
+
+        const stageMult = 1 + ((entry.stage || 1) - 1) * 0.2;
+        const finalMult = masteryMult * qualityMult * attributeMult * stageMult;
+
+        const results = {};
+        if (data.stats) {
+            if (data.stats.atk) results.atk = data.stats.atk * finalMult;
+            if (data.stats.def) results.def = data.stats.def * finalMult;
+            if (data.stats.hp) results.hp = data.stats.hp * finalMult;
+            if (data.stats.mana) results.mana = data.stats.mana * finalMult;
+            if (data.stats.spd) results.spd = data.stats.spd * finalMult;
+        }
+        return results;
+    }
 
     renderTechniques(tab = 'linh_luc') {
         if (!state.player) return;
@@ -333,9 +462,42 @@ export class TechniqueController {
                         const stageLabel = data.stageLabel || 'Tầng';
                         const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
 
+                        // Check equipped state
+                        let isEquipped = false;
+                        if (data.type === 'Linh Lực') isEquipped = state.player.mainTechniqueId === entry.id;
+                        else if (data.type === 'Luyện Thể') isEquipped = state.player.mainBodyTechniqueId === entry.id;
+                        else if (data.type === 'Thần Thức') isEquipped = state.player.mainSoulTechniqueId === entry.id;
+
+                        // Calculate passive rate text
+                        const rate = this.getTechniquePassiveRate(entry, data);
+                        let rateText = '';
+                        if (data.type === 'Linh Lực') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
+                        else if (data.type === 'Luyện Thể') rateText = `+${rate.toFixed(1)} Thể Exp/s`;
+                        else if (data.type === 'Thần Thức') rateText = `+${rate.toFixed(1)} Thần Exp/s`;
+
+                        // Calculate stat bonuses when active/equipped
+                        const activeStats = this.getTechniqueActiveStats(entry, data);
+                        const statsParts = [];
+                        if (activeStats.hp) statsParts.push(`Máu +${Math.round(activeStats.hp)}`);
+                        if (activeStats.mana) statsParts.push(`Mana +${Math.round(activeStats.mana)}`);
+                        if (activeStats.atk) statsParts.push(`Công +${Math.round(activeStats.atk)}`);
+                        if (activeStats.def) statsParts.push(`Thủ +${Math.round(activeStats.def)}`);
+                        if (activeStats.spd) statsParts.push(`Thân pháp +${Math.round(activeStats.spd)}`);
+                        const statsText = statsParts.length > 0 ? `| ${statsParts.join(' | ')}` : '';
+
                         let borderColor = 'border-qi-blue/10 bg-qi-blue/5';
-                        if (tab === 'luyen_the') borderColor = 'border-orange-500/10 bg-orange-500/5';
-                        else if (tab === 'than_thuc') borderColor = 'border-cyan-500/10 bg-cyan-500/5';
+                        if (isEquipped) {
+                            if (tab === 'linh_luc') {
+                                borderColor = 'border-qi-blue/30 bg-qi-blue/[0.03] shadow-[0_0_15px_rgba(59,130,246,0.05)]';
+                            } else if (tab === 'luyen_the') {
+                                borderColor = 'border-orange-500/30 bg-orange-500/[0.03] shadow-[0_0_15px_rgba(249,115,22,0.05)]';
+                            } else if (tab === 'than_thuc') {
+                                borderColor = 'border-cyan-500/30 bg-cyan-500/[0.03] shadow-[0_0_15px_rgba(6,182,212,0.05)]';
+                            }
+                        } else {
+                            if (tab === 'luyen_the') borderColor = 'border-orange-500/10 bg-orange-500/5';
+                            else if (tab === 'than_thuc') borderColor = 'border-cyan-500/10 bg-cyan-500/5';
+                        }
 
                         const el = document.createElement('div');
                         el.className = `p-4 border ${borderColor} rounded-2xl flex items-center justify-between hover:bg-white/5 cursor-pointer transition-all mb-3`;
@@ -343,10 +505,15 @@ export class TechniqueController {
                             <div class="flex items-center space-x-4">
                                 <div class="text-2xl">${data.icon || '📜'}</div>
                                 <div>
-                                    <h4 class="text-sm font-bold text-white">${data.name}</h4>
-                                    <div class="flex items-center space-x-2 mt-1">
+                                    <h4 class="text-sm font-bold text-white flex items-center flex-wrap gap-1.5">
+                                        ${data.name}
+                                        ${isEquipped ? `<span class="text-[7px] px-1.5 py-0.5 bg-green-500/20 text-green-300 border border-green-500/30 rounded font-bold uppercase tracking-wider animate-pulse flex items-center gap-0.5">☯ ĐANG CHỦ TU</span>` : ''}
+                                    </h4>
+                                    <div class="flex items-center flex-wrap gap-x-2 gap-y-1 mt-1 text-[8px] text-gray-500">
                                         <span class="text-[8px] px-1.5 py-0.5 bg-black/40 rounded border border-white/5 text-gray-400 font-mono">${stageName}</span>
                                         <span class="text-[8px] text-cultivation-gold font-bold">${mastery?.name || 'Nhập Môn'}</span>
+                                        <span class="text-[8px] text-qi-blue font-semibold">${rateText}</span>
+                                        <span class="text-[8px] text-gray-400 font-mono">${statsText}</span>
                                     </div>
                                 </div>
                             </div>
@@ -384,7 +551,9 @@ export class TechniqueController {
         const stageLabel = data.stageLabel || 'Tầng';
         const stageName = (data.stageNames && data.stageNames[entry.stage - 1]) ? data.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
 
-        const canBreakthrough = entry.masteryLevel >= 4 && (entry.stage < (data.maxStage || 10));
+        const isFullyMastered = isSecret 
+            ? (entry.masteryLevel >= 5) 
+            : (entry.stage >= (data.maxStage || 10) && entry.masteryLevel >= 5);
 
         let isMain = false;
         let equipLabel = 'THIẾT LẬP CHỦ TU';
@@ -421,20 +590,75 @@ export class TechniqueController {
             }
         }
 
-        let equipBtnHTML = '';
+        // Calculate active rates and stats parameters
+        let rateText = '';
+        let statsText = '';
         if (!isSecret) {
+            const rate = this.getTechniquePassiveRate(entry, data);
+            if (data.type === 'Linh Lực') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
+            else if (data.type === 'Luyện Thể') rateText = `+${rate.toFixed(1)} Thể Exp/s`;
+            else if (data.type === 'Thần Thức') rateText = `+${rate.toFixed(1)} Thần Exp/s`;
+            else if (data.type === 'Song Tu' || data.type === 'Phụ Trợ') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
+
+            const activeStats = this.getTechniqueActiveStats(entry, data);
+            const statsParts = [];
+            if (activeStats.hp) statsParts.push(`Máu +${Math.round(activeStats.hp)}`);
+            if (activeStats.mana) statsParts.push(`Mana +${Math.round(activeStats.mana)}`);
+            if (activeStats.atk) statsParts.push(`Công +${Math.round(activeStats.atk)}`);
+            if (activeStats.def) statsParts.push(`Thủ +${Math.round(activeStats.def)}`);
+            if (activeStats.spd) statsParts.push(`Thân pháp +${Math.round(activeStats.spd)}`);
+            statsText = statsParts.join(' | ');
+        }
+
+        // Create elegant compact horizontal button row
+        let buttonsHtml = '';
+        if (!isSecret) {
+            let leftBtn = '';
+            if (isFullyMastered) {
+                leftBtn = `<button class="flex-1 py-3 bg-gray-800 text-gray-500 opacity-50 cursor-not-allowed text-[10px] font-bold rounded-xl">ĐÃ VIÊN MÃN</button>`;
+            } else {
+                leftBtn = `<button class="flex-1 py-3 ${(state.player.techniquePoints || 0) >= 1 ? 'bg-qi-blue text-black active:scale-95' : 'bg-gray-800 text-gray-500 opacity-50 cursor-not-allowed'} text-[10px] font-bold rounded-xl transition-all" 
+                    ${(state.player.techniquePoints || 0) >= 1 ? `onclick="window.game.cultivateTechnique('${id}', ${isSecret})"` : ''}>THAM NGỘ</button>`;
+            }
+
+            let rightBtn = '';
             if (isMain) {
-                equipBtnHTML = `
-                    <button class="w-full py-4 bg-cultivation-gold/15 text-cultivation-gold border border-cultivation-gold/20 text-xs font-bold rounded-2xl cursor-default opacity-80" disabled>
-                        <i class="ph ph-check-circle mr-1"></i> ${equippedLabel}
+                rightBtn = `
+                    <button class="flex-1 py-3 bg-cultivation-gold/15 text-cultivation-gold border border-cultivation-gold/20 text-[10px] font-bold rounded-xl cursor-default opacity-80" disabled>
+                        <i class="ph ph-check-circle mr-0.5"></i> ${equippedLabel}
                     </button>
-                    ${unequipBtnHTML}
                 `;
             } else {
-                equipBtnHTML = `
-                    <button class="w-full py-4 bg-cultivation-gold text-black text-xs font-bold rounded-2xl active:scale-95 transition-all" onclick="window.game.setMainTechnique('${id}')">
-                        <i class="ph ph-shield-star mr-1"></i> ${equipLabel}
+                rightBtn = `
+                    <button class="flex-1 py-3 bg-cultivation-gold text-black text-[10px] font-bold rounded-xl active:scale-95 transition-all" onclick="window.game.setMainTechnique('${id}')">
+                        <i class="ph ph-shield-star mr-0.5"></i> ${equipLabel.replace('TRANG BỊ ', '')}
                     </button>
+                `;
+            }
+
+            buttonsHtml = `
+                <div class="flex space-x-2 mt-4">
+                    ${leftBtn}
+                    ${rightBtn}
+                </div>
+                ${isMain && unequipBtnHTML ? `
+                    <div class="mt-2">
+                        <button class="w-full py-2.5 bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-bold rounded-xl active:scale-95 transition-all hover:bg-red-500/25"
+                            onclick="window.game.player.unequipTechnique('${data.type === 'Phụ Trợ' ? 'Phụ Trợ' : data.type}', '${id}'); window.game.ui.renderTechniques('phu_tro');">
+                            🗑️ THÁO GỠ
+                        </button>
+                    </div>
+                ` : ''}
+            `;
+        } else {
+            if (isFullyMastered) {
+                buttonsHtml = `<div class="mt-4"><button class="w-full py-3 bg-gray-800 text-gray-500 opacity-50 cursor-not-allowed text-[10px] font-bold rounded-xl">ĐÃ VIÊN MÃN</button></div>`;
+            } else {
+                buttonsHtml = `
+                    <div class="mt-4">
+                        <button class="w-full py-3 ${(state.player.techniquePoints || 0) >= 1 ? 'bg-qi-blue text-black active:scale-95' : 'bg-gray-800 text-gray-500 opacity-50 cursor-not-allowed'} text-[10px] font-bold rounded-xl transition-all" 
+                            ${(state.player.techniquePoints || 0) >= 1 ? `onclick="window.game.cultivateTechnique('${id}', ${isSecret})"` : ''}>THAM NGỘ BÍ PHÁP</button>
+                    </div>
                 `;
             }
         }
@@ -457,12 +681,14 @@ export class TechniqueController {
                     <div class="h-full bg-cultivation-gold" style="width: ${entry.masteryLevel >= 4 ? 100 : (entry.mastery / (nextMastery?.threshold || 1)) * 100}%"></div>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-3 mt-6">
-                    <button class="py-4 bg-qi-blue text-black text-xs font-bold rounded-2xl active:scale-95 transition-all" onclick="window.game.cultivateTechnique('${id}', ${isSecret})">TU LUYỆN</button>
-                    <button class="py-4 ${canBreakthrough ? 'bg-cultivation-gold' : 'bg-gray-800 opacity-50'} text-black text-xs font-bold rounded-2xl active:scale-95 transition-all" 
-                        onclick="window.game.breakthroughTechnique('${id}', ${isSecret})">ĐỘT PHÁ TẦNG</button>
-                </div>
-                ${equipBtnHTML ? `<div class="mt-3">${equipBtnHTML}</div>` : ''}
+                ${rateText || statsText ? `
+                    <div class="pt-3 border-t border-white/5 flex flex-col space-y-1.5 text-center">
+                        ${rateText ? `<p class="text-[10px] text-qi-blue font-bold flex items-center justify-center gap-1"><i class="ph ph-lightning"></i> Tốc độ hấp thu: ${rateText}</p>` : ''}
+                        ${statsText ? `<p class="text-[9px] text-gray-400 font-mono flex items-center justify-center gap-1"><i class="ph ph-shield"></i> Thuộc tính: ${statsText}</p>` : ''}
+                    </div>
+                ` : ''}
+                
+                ${buttonsHtml}
             </div>
 
             <div class="space-y-4">
@@ -563,6 +789,19 @@ export class TechniqueController {
                                 'Song Tu': 'text-pink-300 border-pink-500/20 bg-pink-500/5',
                                 'Phụ Trợ': 'text-emerald-300 border-emerald-500/20 bg-emerald-500/5'
                             }[d.type] || 'text-gray-400 border-white/5';
+                            
+                            const rate = this.getTechniquePassiveRate(t, d);
+                            const rateText = rate > 0 ? `<span class="text-[7px] px-1.5 py-0.5 bg-black/40 border border-white/5 rounded text-gray-400 font-mono">+${rate.toFixed(1)} Tu Vi/s</span>` : '';
+
+                            const activeStats = this.getTechniqueActiveStats(t, d);
+                            const statsParts = [];
+                            if (activeStats.hp) statsParts.push(`Máu +${Math.round(activeStats.hp)}`);
+                            if (activeStats.mana) statsParts.push(`Mana +${Math.round(activeStats.mana)}`);
+                            if (activeStats.atk) statsParts.push(`Công +${Math.round(activeStats.atk)}`);
+                            if (activeStats.def) statsParts.push(`Thủ +${Math.round(activeStats.def)}`);
+                            if (activeStats.spd) statsParts.push(`Thân pháp +${Math.round(activeStats.spd)}`);
+                            const statsText = statsParts.length > 0 ? `<span class="text-[7px] text-gray-500 font-mono">(${statsParts.join(', ')})</span>` : '';
+
                             return `
                                 <div class="p-3 border border-white/5 rounded-2xl flex items-center justify-between hover:bg-white/5 hover:border-white/10 cursor-pointer transition-all duration-300"
                                     onclick="window.game.ui.renderTechniqueDetail('${t.id}', false)">
@@ -570,7 +809,11 @@ export class TechniqueController {
                                         <span class="text-xl">${d.icon || '📜'}</span>
                                         <div>
                                             <p class="text-xs font-bold text-white">${d.name}</p>
-                                            <span class="text-[7px] px-1.5 py-0.5 rounded border ${catColor} font-bold uppercase tracking-wider">${d.type}</span>
+                                            <div class="flex items-center space-x-1.5 mt-0.5 flex-wrap gap-y-1">
+                                                <span class="text-[7px] px-1.5 py-0.5 rounded border ${catColor} font-bold uppercase tracking-wider">${d.type}</span>
+                                                ${rateText}
+                                                ${statsText}
+                                            </div>
                                         </div>
                                     </div>
                                     <button class="text-[8px] px-2 py-1 bg-cultivation-gold text-black font-bold rounded-xl active:scale-95 transition-all hover:bg-white"
