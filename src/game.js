@@ -1060,6 +1060,64 @@ export class Game {
         }
     }
 
+    /**
+     * Thuê Ngộ Đạo Thất tại Vạn Bảo Các hoặc dùng phòng trong Động Phủ.
+     * Khi thuê thành công, buff `ngo_dao_that` sẽ kích hoạt, tăng passive mastery ×10 trong suốt thời gian thuê.
+     */
+    async rentNgoDaoThat(source = 'shop') {
+        if (!state.player) return;
+
+        const now = Date.now();
+        const existingBuff = (state.player.buffs || []).find(b => b.stat === 'mastery_speed' && b.id === 'ngo_dao_that' && b.endTime > now);
+        if (existingBuff) {
+            const remainingHours = Math.ceil((existingBuff.endTime - now) / 3600000);
+            state.ui.toast(`Ngươi đang ở trong Ngộ Đạo Thất! Còn ${remainingHours} giờ hiệu lực.`, 'info');
+            return;
+        }
+
+        // Pricing: 1 day (72h real) = 1000 LS, 3 days = 2500 LS, 7 days = 5000 LS
+        const rentalOptions = [
+            { label: '1 Ngày (1.000 Linh Thạch)', value: 1, price: 1000, icon: 'ph-moon' },
+            { label: '3 Ngày (2.500 Linh Thạch)', value: 3, price: 2500, icon: 'ph-moon-stars' },
+            { label: '7 Ngày (5.000 Linh Thạch)', value: 7, price: 5000, icon: 'ph-stars' },
+        ];
+
+        const days = await state.ui.promptOptions(
+            '🏮 Thuê Ngộ Đạo Thất',
+            rentalOptions,
+            'Ngộ Đạo Thất được bố trí đặc biệt với linh khí cực kỳ nồng đậm, phủ kín trận pháp dẫn linh, giúp tốc độ lĩnh ngộ công pháp tăng gấp 10 lần. Chọn thời gian thuê phòng:'
+        );
+
+        if (!days) return;
+        const option = rentalOptions.find(o => o.value === days);
+        if (!option) return;
+
+        // Check and deduct Linh Shi
+        if ((state.player.lingShi || 0) < option.price) {
+            state.ui.toast(`Không đủ Linh Thạch! Cần ${option.price.toLocaleString()} Linh Thạch.`, 'error');
+            return;
+        }
+
+        state.player.spendLingShi(option.price);
+
+        // Apply the Ngộ Đạo Thất buff
+        const durationMs = days * 24 * 3600 * 1000; // Real-time milliseconds
+        state.player.addBuff({
+            id: 'ngo_dao_that',
+            name: 'Ngộ Đạo Thất',
+            desc: `Đang ở trong Ngộ Đạo Thất: tốc độ lĩnh ngộ tăng x10 trong ${days} ngày`,
+            stat: 'mastery_speed',
+            value: 10.0,
+            duration: durationMs
+        });
+
+        state.ui.toast(
+            `✨ Thuê Ngộ Đạo Thất thành công! Tốc độ lĩnh ngộ công pháp tăng x10 trong ${days} ngày!`,
+            'success'
+        );
+        this.refreshUI();
+    }
+
     async enterSeclusion() {
         if (!state.player) return;
         if (state.player.isSecluded) return;
@@ -1102,21 +1160,29 @@ export class Game {
 
         // Calculate total minutes: 12 months * 30 days * 12 hours = 4320 mins/year
         const totalMinutes = durationYears * 4320;
+        const totalSeconds = totalMinutes * 60;
 
         // Calculate expected tuvi gain
-        // Seclusion gives 5x multiplier. delta is not available here, so we simulate 1s intervals
-        // Player.js: tuViGain = tuViPerSecond * focusMult * finalMultiplier * delta
-        // finalMultiplier = multiplier * stabilityMult * compMult * seclusionMult(5.0)
-
-        // Simplified calculation for summary:
         const focus = state.player.cultivationFocus || 'tuvi';
         const rate = focus === 'tuvi' ? state.player.tuViPerSecond : (focus === 'body' ? state.player.bodyExpPerSecond : state.player.soulExpPerSecond);
-        const baseGainPerMins = rate * 60; // Rate is per second, but let's assume 1 min game = 1s real for calculation
+        const baseGainPerMins = rate * 60;
         const seclusionMult = 5.0;
         const totalGain = baseGainPerMins * totalMinutes * seclusionMult * (1 + (state.player.comprehension / 100));
 
+        // Calculate expected mastery gain
+        const now = Date.now();
+        const ngoDaoThatBuff = (state.player.buffs || []).find(b => b.id === 'ngo_dao_that' && b.endTime > now);
+        const masteryBuffMult = ngoDaoThatBuff ? ngoDaoThatBuff.value : 1.0;
+        const compMult = 1.0 + (state.player.comprehension || 30) / 100;
+        const basePassiveRate = 0.01; // pts/sec
+        const totalMasteryGain = Math.floor(basePassiveRate * compMult * masteryBuffMult * totalSeconds);
+
+        const ngoDaoThatLabel = ngoDaoThatBuff
+            ? `<br><span class="text-purple-400 font-bold">🏮 Ngộ Đạo Thất đang hoạt động! Thuần thục công pháp tăng thêm khoảng ${totalMasteryGain.toLocaleString()} điểm.</span>`
+            : `<br><span class="text-gray-500 text-xs">💡 Thuê Ngộ Đạo Thất tại Vạn Bảo Các để tăng thêm thuần thục công pháp trong khi bế quan.</span>`;
+
         const confirm = await state.ui.confirm(
-            `Ngươi chắc chắn muốn tiêu hao <span class="text-yellow-400 font-bold">${requiredPills.toLocaleString()} viên Tịch Cốc Đan</span> để bế quan trong ${durationYears} năm?<br><br>Dự kiến tu vi sẽ tăng thêm khoảng <span class="text-green-400 font-bold">${Math.floor(totalGain).toLocaleString()}</span> điểm.`,
+            `Ngươi chắc chắn muốn tiêu hao <span class="text-yellow-400 font-bold">${requiredPills.toLocaleString()} viên Tịch Cốc Đan</span> để bế quan trong ${durationYears} năm?<br><br>Dự kiến tu vi sẽ tăng thêm khoảng <span class="text-green-400 font-bold">${Math.floor(totalGain).toLocaleString()}</span> điểm.${ngoDaoThatLabel}`,
             "Xác Nhận Nhập Định"
         );
 
@@ -1146,18 +1212,35 @@ export class Game {
             state.systems.time.skipTime(totalMinutes);
         }
 
-        // Apply gain to player (TimeSystem.advanceTime handles age, but we need to apply TuVi manually or through skip logic)
-        // Since we don't have a fast-forward simulation of every second, we apply a bulk gain
+        // Apply Tu Vi / Body / Soul gain
         state.player.tuVi += (focus === 'tuvi' ? totalGain : totalGain * 0.2);
         state.player.bodyExp += (focus === 'body' ? totalGain : totalGain * 0.2);
         state.player.soulExp += (focus === 'soul' ? totalGain : totalGain * 0.2);
 
+        // Apply Mastery Gain to all equipped techniques
+        if (totalMasteryGain > 0) {
+            const equippedIds = [
+                state.player.mainTechniqueId,
+                state.player.mainBodyTechniqueId,
+                state.player.mainSoulTechniqueId
+            ].filter(Boolean);
+            const techSys = state.systems && state.systems.technique;
+            equippedIds.forEach(tid => {
+                if (techSys) techSys.addMastery(tid, totalMasteryGain);
+                else {
+                    const t = (state.player.learnedTechniques || []).find(l => l.id === tid);
+                    if (t) t.mastery = (t.mastery || 0) + totalMasteryGain;
+                }
+            });
+        }
+
         // Check for breakthroughs during seclusion
-        state.player.isSecluded = true; // Temporary set to true for trigger check
+        state.player.isSecluded = true;
         for (let i = 0; i < durationYears; i++) {
             if (Math.random() < 0.1) state.player.triggerSeclusionEvent();
         }
         state.player.isSecluded = false;
+
 
         setTimeout(() => {
             state.ui.showLoading(false);

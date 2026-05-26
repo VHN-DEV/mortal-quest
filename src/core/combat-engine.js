@@ -1315,6 +1315,9 @@ export class CombatEngine {
         this.player.tuVi += reward;
         this.addLog(`Luyện hóa khí huyết kẻ địch, nhận được ${reward} tu vi.`);
 
+        // Combat Mastery Reward: fighting builds technique mastery
+        this._awardCombatMastery();
+
         // Trigger Mission System
         if (state.systems.mission) {
             state.systems.mission.onAction('kill', 1);
@@ -1323,6 +1326,40 @@ export class CombatEngine {
         // Notify UI to handle loot
         this.onUpdate('loot', { enemy: this.enemy });
     }
+
+    /**
+     * Award mastery to all equipped techniques after winning combat.
+     * Gain scales with enemy strength and player comprehension.
+     */
+    _awardCombatMastery() {
+        const equippedIds = [
+            this.player.mainTechniqueId,
+            this.player.mainBodyTechniqueId,
+            this.player.mainSoulTechniqueId
+        ].filter(Boolean);
+
+        if (equippedIds.length === 0) return;
+
+        // Base combat mastery = enemy level * 2 (min 5, max 200)
+        const enemyLevel = this.enemy.level || 1;
+        const compBonus = 1.0 + (this.player.comprehension || 30) / 100;
+        const baseMastery = Math.min(200, Math.max(5, Math.floor(enemyLevel * 2 * compBonus)));
+
+        const techSys = state.systems && state.systems.technique;
+        equippedIds.forEach(tid => {
+            if (techSys) {
+                techSys.addMastery(tid, baseMastery);
+            } else {
+                const t = (this.player.learnedTechniques || []).find(l => l.id === tid);
+                if (t) t.mastery = (t.mastery || 0) + baseMastery;
+            }
+        });
+
+        if (baseMastery > 0) {
+            this.addLog(`<span class="text-cultivation-gold">Kinh nghiệm chiến đấu đúc kết, toàn bộ công pháp nhận thêm <b>+${baseMastery}</b> điểm thuần thục.</span>`);
+        }
+    }
+
 
     lose() {
         this.isActive = false;

@@ -515,6 +515,9 @@ export class Player {
         // Tick technique and secret manual comprehension
         this.tickComprehendingTechniques(delta);
 
+        // 8. Passive Mastery Gain for equipped techniques
+        this.tickPassiveMastery(delta);
+
         // 7. Mortality Check
         this.checkMortality();
     }
@@ -527,6 +530,68 @@ export class Player {
             }
         }
     }
+
+    /**
+     * Passive mastery accumulation per tick for all equipped techniques.
+     * Rate scales with Ngộ Tính (comprehension), elemental compatibility, quality penalty,
+     * and any active Ngộ Đạo Trà buff.
+     */
+    tickPassiveMastery(delta) {
+        const equippedIds = [
+            this.mainTechniqueId,
+            this.mainBodyTechniqueId,
+            this.mainSoulTechniqueId
+        ].filter(Boolean);
+
+        if (equippedIds.length === 0) return;
+
+        // Mastery speed buff multiplier from Ngộ Đạo Trà
+        const now = Date.now();
+        let masteryBuffMult = 1.0;
+        if (this.buffs) {
+            const mastBuff = this.buffs.find(b => b.stat === 'mastery_speed' && b.endTime > now);
+            if (mastBuff) masteryBuffMult = mastBuff.value;
+        }
+
+        // Comprehension multiplier: 50 comp = 1x, 100 comp = 1.5x, etc.
+        const compMult = 1.0 + (this.comprehension || 30) / 100;
+
+        // Base rate: gain ~1 mastery point every 100 seconds at 50 comp (no buffs)
+        // This means full Nhập Môn -> Tiểu Thành (1000 pts) takes ~100,000s ≈ 28 hours passive
+        const baseRate = 0.01; // points per second
+
+        equippedIds.forEach(tid => {
+            const entry = this.learnedTechniques ? this.learnedTechniques.find(t => t.id === tid) : null;
+            if (!entry) return;
+
+            // Quality penalty: higher-grade techniques are harder to master passively
+            const { getTechniqueById } = window._techniqueDataCache || {};
+            let qualityPenalty = 1.0;
+            // We can't easily import here but we know quality strings
+            const techEntry = (this.learnedTechniques || []).find(t => t.id === tid);
+
+            // Calculate final rate
+            const rate = baseRate * compMult * masteryBuffMult;
+            const gain = rate * delta;
+
+            entry.mastery = (entry.mastery || 0) + gain;
+
+            // Update mastery level threshold (import is already at top of file)
+            // Use the MASTERY_LEVELS that's imported at the top of player.js
+            if (typeof MASTERY_LEVELS !== 'undefined') {
+                const currentMastery = MASTERY_LEVELS.filter(m => entry.mastery >= m.threshold).pop();
+                if (currentMastery && currentMastery.id > (entry.masteryLevel || 1)) {
+                    entry.masteryLevel = currentMastery.id;
+                    this.pendingEvents.push({
+                        type: 'seclusion_event',
+                        eventType: 'insight',
+                        msg: `✨ [ĐỘ THUẦN THỤC TĂNG CẤP] Sau bao năm dày công tu luyện, công pháp đã đạt đến cảnh giới ${currentMastery.name}!`
+                    });
+                }
+            }
+        });
+    }
+
 
     triggerSeclusionEvent() {
         const events = [
@@ -718,14 +783,17 @@ export class Player {
             const totalMult = rootMult * (1 + luckBonus) * variance * efficiency;
 
             let gain = 0;
+            // Minimum gain = 1.5% of current realm requirement, so early game always shows visible progress
+            const realm = this.getCurrentRealm(focus);
+            const minGain = Math.max(1, Math.floor((realm.expRequired || 500) * 0.015));
             if (focus === 'tuvi') {
-                gain = this.tuViPerSecond * 3 * totalMult;
+                gain = Math.max(minGain, this.tuViPerSecond * 3 * totalMult);
                 this.tuVi += gain;
             } else if (focus === 'body') {
-                gain = this.bodyExpPerSecond * 12 * totalMult;
+                gain = Math.max(minGain, this.bodyExpPerSecond * 12 * totalMult);
                 this.bodyExp += gain;
             } else if (focus === 'soul') {
-                gain = this.soulExpPerSecond * 12 * totalMult;
+                gain = Math.max(minGain, this.soulExpPerSecond * 12 * totalMult);
                 this.soulExp += gain;
             }
 
@@ -809,8 +877,12 @@ export class Player {
         
         // Different multipliers and logic per focus type
         if (focus === 'tuvi') {
-            // Traditional element matching
-            if (this.spiritualRoot && this.spiritualRoot.name && this.spiritualRoot.name.includes(rawName)) {
+            // Check element match via elements array (more reliable than name string matching)
+            const rootElements = (this.spiritualRoot && this.spiritualRoot.elements) ? this.spiritualRoot.elements : [];
+            if (rootElements.includes(rawName)) {
+                elementMult = 1.5;
+            } else if (this.spiritualRoot && this.spiritualRoot.name && this.spiritualRoot.name.includes(rawName)) {
+                // Fallback: name-based check for compatibility
                 elementMult = 1.5;
             }
         } else if (focus === 'body') {
@@ -825,16 +897,20 @@ export class Player {
             }
         }
         
+        // Minimum gain = 2% of current realm requirement scaled by bubble size
+        const bubbleRealm = this.getCurrentRealm(focus);
+        const minBubbleGain = Math.max(1, Math.floor((bubbleRealm.expRequired || 500) * 0.02 * sizeMult));
+
         // Exp gain (free from stamina/mana cost)
         let baseExp = 0;
         if (focus === 'tuvi') {
-            baseExp = this.tuViPerSecond * 3 * totalMult * elementMult * sizeMult;
+            baseExp = Math.max(minBubbleGain, this.tuViPerSecond * 3 * totalMult * elementMult * sizeMult);
             this.tuVi += baseExp;
         } else if (focus === 'body') {
-            baseExp = this.bodyExpPerSecond * 12 * totalMult * elementMult;
+            baseExp = Math.max(minBubbleGain, this.bodyExpPerSecond * 12 * totalMult * elementMult);
             this.bodyExp += baseExp;
         } else if (focus === 'soul') {
-            baseExp = this.soulExpPerSecond * 12 * totalMult * elementMult;
+            baseExp = Math.max(minBubbleGain, this.soulExpPerSecond * 12 * totalMult * elementMult);
             this.soulExp += baseExp;
         }
         
@@ -2029,6 +2105,38 @@ export class Player {
                     }
                     success = true;
                     msg = `Lĩnh hội thành công! Nghề ${effect.profession} đã được mở khóa trong Bách Nghệ Đường.`;
+                    break;
+                case 'technique_mastery': {
+                    // Instantly add flat mastery to all equipped techniques
+                    const masterGain = effect.value || 500;
+                    const equippedIds = [this.mainTechniqueId, this.mainBodyTechniqueId, this.mainSoulTechniqueId].filter(Boolean);
+                    if (equippedIds.length === 0) {
+                        return { success: false, msg: "Ngươi chưa trang bị công pháp nào!" };
+                    }
+                    const techSys = state.systems && state.systems.technique;
+                    if (techSys) {
+                        equippedIds.forEach(tid => techSys.addMastery(tid, masterGain));
+                    } else {
+                        // Fallback: directly mutate
+                        equippedIds.forEach(tid => {
+                            const t = this.learnedTechniques.find(l => l.id === tid);
+                            if (t) t.mastery = (t.mastery || 0) + masterGain;
+                        });
+                    }
+                    success = true;
+                    msg = `[ĐẠI NGỘ] Sử dụng ${item.name}! Toàn bộ công pháp đang tu luyện nhận thêm ${masterGain} điểm thuần thục!`;
+                    break;
+                }
+                case 'technique_mastery_buff':
+                    // Apply a timed buff that multiplies passive mastery gain rate
+                    this.addBuff({
+                        id: 'ngo_dao_buff',
+                        stat: 'mastery_speed',
+                        value: effect.value || 2.0,
+                        duration: (effect.duration || 7200) * 1000
+                    });
+                    success = true;
+                    msg = `Sử dụng ${item.name}! Tốc độ lĩnh ngộ công pháp tăng ${effect.value || 2}x trong ${Math.floor((effect.duration || 7200) / 3600)} giờ!`;
                     break;
             }
         }

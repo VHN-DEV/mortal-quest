@@ -66,7 +66,12 @@ export class ShopController {
         if (state.views.shop === 'buy') {
             this.elShopBuyView.classList.remove('hidden');
             this.elShopSellView.classList.add('hidden');
-            this.renderShopBuy();
+            // Special case: Dịch Vụ section has its own UI
+            if (state.systems.shop && state.systems.shop.currentSection === 'dich_vu') {
+                this.renderShopServices();
+            } else {
+                this.renderShopBuy();
+            }
         } else {
             this.elShopBuyView.classList.add('hidden');
             this.elShopSellView.classList.remove('hidden');
@@ -83,7 +88,8 @@ export class ShopController {
             { id: 'phap_bao', name: 'Trang Bị', icon: '⚔️' },
             { id: 'cong_phap', name: 'Bí Tịch', icon: '📜' },
             { id: 'bach_nghe', name: 'Bách Nghệ', icon: '⚒️' },
-            { id: 'ky_vat', name: 'Kỳ Vật', icon: '💎' }
+            { id: 'ky_vat', name: 'Kỳ Vật', icon: '💎' },
+            { id: 'dich_vu', name: 'Dịch Vụ', icon: '🏮' }
         ];
 
         const currentButtons = this.elShopSectionNav.querySelectorAll('button');
@@ -476,5 +482,60 @@ export class ShopController {
             };
             this.elShopSellGrid.appendChild(el);
         });
+    }
+
+    /**
+     * Render services section (Dịch Vụ) — Ngộ Đạo Thất rental and more.
+     */
+    renderShopServices() {
+        if (!this.elShopBuyView) return;
+        this.elShopBuyView.innerHTML = '';
+
+        const now = Date.now();
+        const ngoBuff = (state.player?.buffs || []).find(b => b.id === 'ngo_dao_that' && b.endTime > now);
+        const remainingHours = ngoBuff ? Math.ceil((ngoBuff.endTime - now) / 3600000) : 0;
+        const isActive = !!ngoBuff;
+
+        const card = document.createElement('div');
+        card.className = 'p-4 rounded-2xl border border-purple-500/30 bg-purple-900/10 space-y-3';
+        card.innerHTML = `
+            <div class="flex items-center space-x-3">
+                <div class="text-4xl">🏮</div>
+                <div>
+                    <div class="text-sm font-bold text-purple-300">Ngộ Đạo Thất</div>
+                    <div class="text-[9px] text-gray-400 mt-0.5">Phòng lĩnh ngộ đặc biệt với trận pháp dẫn linh nồng đậm, tốc độ thuần thục công pháp tăng x10.</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center text-[9px]">
+                <div class="p-2 rounded-xl bg-black/40 border border-white/5">
+                    <div class="text-purple-400 font-bold text-xs">×10</div>
+                    <div class="text-gray-500">Lĩnh ngộ</div>
+                </div>
+                <div class="p-2 rounded-xl bg-black/40 border border-white/5">
+                    <div class="text-cultivation-gold font-bold text-xs">Bế Quan</div>
+                    <div class="text-gray-500">Tương thích</div>
+                </div>
+                <div class="p-2 rounded-xl bg-black/40 border border-white/5">
+                    <div class="text-green-400 font-bold text-xs">${isActive ? `Còn ${remainingHours}h` : 'Chưa thuê'}</div>
+                    <div class="text-gray-500">Trạng thái</div>
+                </div>
+            </div>
+            <div class="space-y-1 text-[9px] text-gray-500">
+                <div>📌 Giá thuê: <span class="text-cultivation-gold">1.000</span> Linh Thạch / ngày</div>
+                <div>📌 Tác dụng tốt nhất khi kết hợp với Bế Quan</div>
+                <div>📌 Dùng kèm Ngộ Đạo Đan để tăng hiệu quả tối đa</div>
+            </div>
+            ${isActive
+                ? `<div class="py-2 text-center text-[10px] font-bold text-purple-300 border border-purple-500/30 rounded-xl animate-pulse">✨ Đang ở trong Ngộ Đạo Thất — Còn ${remainingHours} giờ</div>`
+                : `<button onclick="window.game.rentNgoDaoThat('shop')" class="w-full py-2.5 rounded-xl text-[11px] font-bold text-black bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 hover:to-indigo-400 active:scale-95 transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)]">🏮 THUÊ NGỘ ĐẠO THẤT</button>`
+            }
+        `;
+        this.elShopBuyView.appendChild(card);
+
+        // Spacer + hint
+        const hint = document.createElement('div');
+        hint.className = 'text-center text-[9px] text-gray-600 italic pt-2';
+        hint.textContent = '— Thêm dịch vụ sẽ được mở khóa khi cảnh giới tiến bộ —';
+        this.elShopBuyView.appendChild(hint);
     }
 }

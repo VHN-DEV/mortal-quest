@@ -6,6 +6,8 @@ export const SHOPS = {
                 { id: 'ngung_khi_dan', stock: 50 },
                 { id: 'tich_coc_dan', stock: 100 },
                 { id: 'hoi_huyet_dan', stock: 100 },
+                { id: 'ngo_dao_tra', stock: 20 },
+                { id: 'ngo_dao_dan', stock: 5, minVip: 1 },
                 { id: 'thanh_tam_dan', stock: 10 },
                 { id: 'truc_co_dan', stock: 2, minVip: 1 },
                 { id: 'hoa_nguyen_dan', stock: 1, minVip: 2 }

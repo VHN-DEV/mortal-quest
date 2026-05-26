@@ -460,6 +460,26 @@ export const ITEMS = {
         description: 'Đan dược giúp tu sĩ không cần ăn uống, duy trì sinh mệnh khi bế quan (mỗi ngày bế quan tiêu hao 1 viên). Sử dụng riêng lẻ giúp tăng nhẹ tốc độ tu luyện trong 1 giờ.',
         effect: { type: 'buff', stat: 'tu_vi_speed', value: 1.1, duration: 3600 }
     },
+    'ngo_dao_tra': {
+        id: 'ngo_dao_tra',
+        name: 'Ngộ Đạo Trà',
+        type: 'consumable',
+        icon: '🍵',
+        quality: 'Linh Khí',
+        price: 800,
+        description: 'Loại trà đặc chế từ linh thảo trăm năm và suối ngộ đạo. Uống vào tâm trí thêm minh mẫn, tốc độ lĩnh ngộ công pháp tăng gấp đôi trong 2 giờ.',
+        effect: { type: 'technique_mastery_buff', value: 2.0, duration: 7200 }
+    },
+    'ngo_dao_dan': {
+        id: 'ngo_dao_dan',
+        name: 'Ngộ Đạo Đan',
+        type: 'consumable',
+        icon: '💠',
+        quality: 'Pháp Bảo',
+        price: 5000,
+        description: 'Viên đan chắt lọc từ tinh hoa ngộ tính nghìn năm. Uống vào ngay lập tức lĩnh ngộ được đại đạo thiên địa, tức thì tăng 500 điểm thuần thục cho toàn bộ công pháp đang trang bị.',
+        effect: { type: 'technique_mastery', value: 500 }
+    },
     'tich_coc_thao': {
         id: 'tich_coc_thao',
         name: 'Tịch Cốc Thảo',
