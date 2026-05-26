@@ -30,29 +30,30 @@ export class ShopController {
         return this.parentScreen.getQualityClass(quality);
     }
 
-    getTechniqueCategoryForBook(itemData) {
-        if (!itemData) return null;
+    getTechniqueCategoriesForBook(itemData) {
+        if (!itemData) return [];
         
+        const categories = [];
         const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
         const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
         if (isRecipe) {
-            return 'Bí Pháp';
+            categories.push('Bí Pháp');
         }
 
         const techId = itemData.techniqueId;
-        if (!techId) return null;
+        if (techId) {
+            const tech = getTechniqueById(techId);
+            if (tech) {
+                categories.push(tech.type); 
+            }
 
-        const tech = getTechniqueById(techId);
-        if (tech) {
-            return tech.type; 
+            const secret = getSecretTechniqueById(techId);
+            if (secret) {
+                categories.push(secret.category);
+            }
         }
 
-        const secret = getSecretTechniqueById(techId);
-        if (secret) {
-            return secret.category;
-        }
-
-        return null;
+        return categories;
     }
 
     renderShop() {
@@ -320,8 +321,8 @@ export class ShopController {
                 if (shop.currentSection === 'phap_bao') {
                     return itemData.type === this.shopSubFilter;
                 } else if (shop.currentSection === 'cong_phap') {
-                    const techCategory = this.getTechniqueCategoryForBook(itemData);
-                    return techCategory === this.shopSubFilter;
+                    const techCategories = this.getTechniqueCategoriesForBook(itemData);
+                    return techCategories.includes(this.shopSubFilter);
                 } else if (['bach_nghe', 'ky_vat'].includes(shop.currentSection)) {
                     const shopData = SHOPS[shop.currentShopId];
                     const sectionItems = shopData.sections[this.shopSubFilter] || [];
@@ -375,6 +376,11 @@ export class ShopController {
                 }
             };
 
+            const categories = this.getTechniqueCategoriesForBook(itemData);
+            const categoryLabels = categories.length > 0
+                ? `<div class="flex flex-wrap gap-1 mt-1">${categories.map(cat => `<span class="px-1.5 py-0.5 rounded bg-qi-blue/10 border border-qi-blue/20 text-[6px] font-ancient uppercase tracking-widest text-qi-blue font-bold shadow-[0_0_4px_rgba(79,209,197,0.1)]">${cat}</span>`).join('')}</div>`
+                : '';
+
             const info = document.createElement('div');
             info.className = 'flex items-center space-x-3';
             info.innerHTML = `
@@ -382,6 +388,7 @@ export class ShopController {
                 <div>
                     <div class="text-sm font-bold text-white">${itemData.name}</div>
                     <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality}${(itemData.quality.toLowerCase().includes('khí') || itemData.quality.toLowerCase().includes('bảo') || itemData.quality.toLowerCase().includes('phẩm') || itemData.quality.toLowerCase().includes('giai') || itemData.quality.toLowerCase().includes('hỏa') || itemData.quality.toLowerCase().includes('lôi') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(itemData.quality)) ? '' : ' phẩm'} | Kho: ${item.stock}</div>
+                    ${categoryLabels}
                 </div>
             `;
 
@@ -465,8 +472,8 @@ export class ShopController {
             // Specific filter for merged Công Pháp
             if (sectionType === 'cong_phap') {
                 if (subFilter !== 'all') {
-                    const techCategory = this.getTechniqueCategoryForBook(itemData);
-                    if (techCategory !== subFilter) return false;
+                    const techCategories = this.getTechniqueCategoriesForBook(itemData);
+                    if (!techCategories.includes(subFilter)) return false;
                 } else {
                     const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
                     const isBook = (itemData.type === 'book' || itemData.type === 'technique') && !isManualAction;

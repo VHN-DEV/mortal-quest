@@ -14,6 +14,32 @@ export class InventoryScreen {
         this.initEvents();
     }
 
+    getTechniqueCategoriesForBook(itemData) {
+        if (!itemData) return [];
+        
+        const categories = [];
+        const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
+        const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
+        if (isRecipe) {
+            categories.push('Bí Pháp');
+        }
+
+        const techId = itemData.techniqueId;
+        if (techId) {
+            const tech = getTechniqueById(techId);
+            if (tech) {
+                categories.push(tech.type); 
+            }
+
+            const secret = getSecretTechniqueById(techId);
+            if (secret) {
+                categories.push(secret.category);
+            }
+        }
+
+        return categories;
+    }
+
     initElements() {
         this.elInventoryGrid = document.getElementById('inventory-grid');
         this.elInventoryCapacity = document.getElementById('inventory-capacity');
@@ -296,10 +322,17 @@ export class InventoryScreen {
             const qClass = this.getQualityClass(displayQuality);
 
             const el = document.createElement('div');
-            el.className = `p-2 border rounded-lg bg-black/20 flex flex-col items-center cursor-pointer transition-all border-${qClass}/30 ${state.selectedItemId === item.id ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'}`;
+            el.className = `p-2 border rounded-lg bg-black/20 flex flex-col items-center justify-between cursor-pointer transition-all border-${qClass}/30 ${state.selectedItemId === item.id ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'} min-h-[72px]`;
+            
+            const categories = this.getTechniqueCategoriesForBook(itemData);
+            const gridCategoryHtml = categories.length > 0
+                ? `<div class="flex flex-wrap gap-0.5 justify-center mt-1 w-full overflow-hidden max-h-[14px] leading-none">${categories.map(cat => `<span class="px-0.5 py-0.2 rounded bg-qi-blue/20 text-[5px] text-qi-blue uppercase font-ancient whitespace-nowrap scale-90 border border-qi-blue/30 leading-none">${cat}</span>`).join('')}</div>`
+                : '';
+
             el.innerHTML = `
-                <div class="text-2xl mb-1">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
-                <div class="text-[10px] text-gray-400">x${item.quantity}</div>
+                <div class="text-2xl mb-0.5">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
+                <div class="text-[9px] text-gray-400">x${item.quantity}</div>
+                ${gridCategoryHtml}
             `;
             el.onclick = () => this.selectItem(item.id);
             this.elInventoryGrid.appendChild(el);
@@ -416,7 +449,16 @@ export class InventoryScreen {
         };
 
         const qualitySuffix = (displayQuality.toLowerCase().includes('khí') || displayQuality.toLowerCase().includes('bảo') || displayQuality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(displayQuality)) ? '' : ' Phẩm';
-        this.elDetailType.textContent = `${displayQuality}${qualitySuffix} | ${typeNames[itemData.type] || itemData.type}`;
+        
+        let typeLabel = typeNames[itemData.type] || itemData.type;
+        if (itemData.type === 'book' || itemData.type === 'technique' || itemData.type === 'recipe' || itemData.type === 'talisman_recipe') {
+            const categories = this.getTechniqueCategoriesForBook(itemData);
+            if (categories.length > 0) {
+                typeLabel += ` (${categories.join(', ')})`;
+            }
+        }
+
+        this.elDetailType.textContent = `${displayQuality}${qualitySuffix} | ${typeLabel}`;
 
         // Bag Transfer UI
         if (this.elTransferContainer && this.elTransferBags) {
