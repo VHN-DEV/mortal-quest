@@ -24,7 +24,7 @@ export class CreationSystem {
         this.selectedOrigin = 'tan_tu';
         this.selectedTraits = [];
         this.playerName = "Phàm Nhân";
-        this.playerGender = "Nam";
+        this.playerGender = "male";
         this.playerAge = 18;
         this.playerAvatar = "player_male";
         this.startingLingShi = 0;
@@ -507,9 +507,9 @@ export class CreationSystem {
         this.mode = 'custom';
 
         this.playerName = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)];
-        this.playerGender = Math.random() < 0.5 ? 'Nam' : 'Nữ';
+        this.playerGender = Math.random() < 0.5 ? 'male' : 'female';
         this.playerAge = Math.floor(Math.random() * 41) + 12;
-        this.playerAvatar = this.playerGender === 'Nam' ? 'player_male' : 'player_female';
+        this.playerAvatar = this.playerGender === 'male' ? 'player_male' : 'player_female';
 
         const raceKeys = Object.keys(CREATION_RACES);
         this.selectedRace = raceKeys[Math.floor(Math.random() * raceKeys.length)];

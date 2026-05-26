@@ -4,6 +4,7 @@ import { getTechniqueById, MASTERY_LEVELS } from '../../configs/technique-data.j
 import { getPhysiqueById, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../../configs/physique-data.js';
 import { RACE_DATA } from '../../configs/realm-data.js';
 import { TITLES } from '../../configs/fate-data.js';
+import { getGenderLabel } from '../../configs/display-mappers.js';
 
 /**
  * Quản lý giao diện chỉ số nhân vật, cảnh giới và các thông tin liên quan.
@@ -165,7 +166,7 @@ export class CharacterScreen {
             this.elCharRace.className = `text-xs font-bold race-${state.player.race.toLowerCase()}`;
         }
         if (this.elCharGender) {
-            this.elCharGender.textContent = state.player.gender || "Nam";
+            this.elCharGender.textContent = getGenderLabel(state.player.gender);
         }
         
         if (this.elCharTitle) {

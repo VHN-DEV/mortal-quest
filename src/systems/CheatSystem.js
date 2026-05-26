@@ -112,7 +112,7 @@ export class CheatSystem {
 
         // Check if player is already at peak realm to avoid rolling an uncompletable breakthrough mission
         const checkBreakthrough = this.player.canBreakthrough('tuvi');
-        if (checkBreakthrough.reason !== "Đã đạt đến cảnh giới chí cao vô thượng, không thể đột phá thêm!") {
+        if (!checkBreakthrough.isMax) {
             missions.push({ id: 'm_breakthrough', name: 'Nghịch Thiên Đột Phá', desc: 'Tiến hành đột phá cảnh giới 1 lần.', type: 'breakthrough', target: 1 });
         }
 

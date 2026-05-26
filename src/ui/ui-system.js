@@ -1171,7 +1171,8 @@ export class UISystem {
 
                 for (const [rName, subregions] of Object.entries(regions)) {
                     let isLocked = false;
-                    if (worldId === 'nhan_gioi' && rName === 'Loạn Tinh Hải') {
+                    const isLoanTinhHai = rName === 'Loạn Tinh Hải' || Object.values(subregions).some(sub => sub.some(loc => loc.regionId === 'loan_tinh_hai'));
+                    if (worldId === 'nhan_gioi' && isLoanTinhHai) {
                         if (state) {
                             const currentLoc = state.currentLocId ?
                                 (typeof getLocationById === 'function' ? getLocationById(state.currentWorldId, state.currentLocId) : null)

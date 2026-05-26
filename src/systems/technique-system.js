@@ -273,11 +273,12 @@ export class TechniqueSystem {
                     attributeMult = techData.compatibility[rootType];
                 } else if (rootType.includes('Tạp') && techData.compatibility['Tạp']) {
                     attributeMult = techData.compatibility['Tạp'];
-                } else if (rootType === 'Thiên Linh Căn') {
+                } else if (rootType === 'Thiên Linh Căn' || this.player.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5;
                 }
             } else if (techData.element) {
-                if (this.player.spiritualRoot.type === 'Thiên Linh Căn' || 
+                const rootId = this.player.spiritualRoot.id || '';
+                if (this.player.spiritualRoot.type === 'Thiên Linh Căn' || rootId === 'thien_linh_can' || 
                     this.player.spiritualRoot.type.includes(techData.element)) {
                     attributeMult = 1.5;
                 }
@@ -415,7 +416,7 @@ export class TechniqueSystem {
         const newCustomTech = {
             id: customId,
             name: name,
-            type: 'Linh Lực',
+            type: 'linh_luc',
             element: element || 'Neutral',
             quality: 'Địa Giai',
             description: `Công pháp chí cao do chính ${this.player.name} khai tông sáng lập, tích lũy thiên địa chi lực.`,

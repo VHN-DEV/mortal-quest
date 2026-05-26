@@ -14,8 +14,8 @@ export class NPC {
         this.type = isSpecial ? 'special' : template.type;
         this.role = isSpecial ? template.role : template.roles[Math.floor(Math.random() * template.roles.length)];
         this.title = template.title;
-        this.name = isSpecial ? template.name : this.generateName();
-        this.gender = isSpecial ? template.gender : (Math.random() > 0.5 ? 'Nam' : 'Nữ');
+        const rawGender = isSpecial ? template.gender : (Math.random() > 0.5 ? 'male' : 'female');
+        this.gender = (rawGender === 'Nam' || rawGender === 'male') ? 'male' : 'female';
         this.age = isSpecial ? (100 + Math.floor(Math.random() * 200)) : (18 + Math.floor(Math.random() * 100));
         this.portrait = template.portrait;
         
@@ -35,7 +35,7 @@ export class NPC {
         this.relationship = 0; // -100 to 100
         this.specialRelation = null; // 'dao_lu', 'su_do', etc.
         this.memory = []; // List of interactions: { type: 'saved_life', time: 123 }
-        this.mood = 'Bình thường';
+        this.mood = 'normal';
         
         this.dialogues = template.dialogues;
         this.isSpecial = isSpecial;
@@ -157,7 +157,7 @@ export class NPC {
 
         const rootMultiplier = CREATION_ROOTS[this.rootId]?.bonus?.tvps || 1;
         const physiqueMultiplier = this.physiqueId !== 'bin_thuong' ? 1.5 : 1.0;
-        const moodMultiplier = this.mood === 'Vui vẻ' ? 1.2 : (this.mood === 'U sầu' ? 0.8 : 1.0);
+        const moodMultiplier = this.mood === 'happy' ? 1.2 : (this.mood === 'sad' ? 0.8 : 1.0);
         
         const tuViGain = (this.realmId * 0.8) * rootMultiplier * physiqueMultiplier * moodMultiplier * pillBonus * delta;
         this.tuVi += tuViGain;
@@ -174,14 +174,14 @@ export class NPC {
                 this.realmId++;
                 this.tuVi = 0;
                 this.calculateStats();
-                this.mood = 'Vui vẻ';
+                this.mood = 'happy';
                 if (npcSystem && npcSystem.addNews) {
                     npcSystem.addNews(`[Đột Phá] ${this.name} đã đột phá thành công lên ${getRealmById(this.realmId).name}! Thiên địa dị tượng xuất hiện.`);
                 }
             } else {
                 // Failure
                 this.tuVi = Math.floor(currentRealm.expRequired * 0.5); // Lose 50% exp
-                this.mood = 'U sầu';
+                this.mood = 'sad';
                 
                 // Death chance on failure (higher realms have higher death chance)
                 const deathChance = this.realmId * 5; 

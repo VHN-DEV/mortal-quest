@@ -2,6 +2,7 @@ import { state } from '../../state.js';
 import { getRealmById } from '../../configs/realm-data.js';
 import { NPC_PERSONALITIES, NPC_GOALS } from '../../configs/npc-data.js';
 import { CREATION_ROOTS, CREATION_PHYSIQUES } from '../../configs/creation-data.js';
+import { getGenderLabel } from '../../configs/display-mappers.js';
 
 export class NPCScreen {
     constructor() {
@@ -360,7 +361,7 @@ export class NPCScreen {
                                 ${realm.name}
                             </span>
                             <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase bg-white/5 border border-white/10 text-gray-400">
-                                ${npc.gender} · ${npc.age} Tuổi
+                                ${getGenderLabel(npc.gender)} · ${npc.age} Tuổi
                             </span>
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 import { state } from '../../state.js';
 import { getTechniqueById, getSecretTechniqueById, MASTERY_LEVELS, TECHNIQUE_LEVELS } from '../../configs/technique-data.js';
+import { getTechniqueTypeSlug, getTechniqueTypeLabel } from '../../configs/display-mappers.js';
 
 export class TechniqueController {
     constructor(parentScreen) {
@@ -39,8 +40,8 @@ export class TechniqueController {
     getTechniquePassiveRate(entry, data) {
         if (!state.player || !data) return 0;
 
-        const type = data.type;
-        if (type !== 'Linh Lực' && type !== 'Luyện Thể' && type !== 'Thần Thức' && type !== 'Song Tu' && type !== 'Phụ Trợ') return 0;
+        const type = getTechniqueTypeSlug(data.type);
+        if (type !== 'linh_luc' && type !== 'luyen_the' && type !== 'than_thuc' && type !== 'song_tu' && type !== 'phu_tro') return 0;
 
         const masteryLevel = entry.masteryLevel || 1;
         const qualityLevel = TECHNIQUE_LEVELS[data.quality];
@@ -57,11 +58,12 @@ export class TechniqueController {
                     attributeMult = data.compatibility[rootType];
                 } else if (rootType.includes('Tạp') && data.compatibility['Tạp']) {
                     attributeMult = data.compatibility['Tạp'];
-                } else if (rootType === 'Thiên Linh Căn') {
+                } else if (rootType === 'Thiên Linh Căn' || state.player.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5;
                 }
             } else if (data.element) {
-                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' ||
+                const rootId = state.player.spiritualRoot.id || '';
+                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' || rootId === 'thien_linh_can' ||
                     state.player.spiritualRoot.type.includes(data.element)) {
                     attributeMult = 1.5;
                 }
@@ -71,7 +73,7 @@ export class TechniqueController {
         const stageMult = 1 + ((entry.stage || 1) - 1) * 0.2;
         const finalMult = masteryMult * qualityMult * attributeMult * stageMult;
 
-        if (type === 'Linh Lực' || type === 'Song Tu' || type === 'Phụ Trợ') {
+        if (type === 'linh_luc' || type === 'song_tu' || type === 'phu_tro') {
             const baseTvps = masteryBonus?.tvps || data.effects?.tvps || 0;
             let finalTvps = baseTvps * finalMult;
 
@@ -100,7 +102,7 @@ export class TechniqueController {
             }
 
             return finalTvps;
-        } else if (type === 'Luyện Thể') {
+        } else if (type === 'luyen_the') {
             const baseBodyPs = masteryBonus?.bodyPs || data.effects?.bodyPs || 0;
             let finalBodyPs = baseBodyPs * finalMult;
             if (state.player.buffs) {
@@ -109,7 +111,7 @@ export class TechniqueController {
                 });
             }
             return finalBodyPs;
-        } else if (type === 'Thần Thức') {
+        } else if (type === 'than_thuc') {
             const baseSoulPs = masteryBonus?.soulPs || data.effects?.soulPs || 0;
             let finalSoulPs = baseSoulPs * finalMult;
             if (state.player.buffs) {
@@ -140,11 +142,12 @@ export class TechniqueController {
                     attributeMult = data.compatibility[rootType];
                 } else if (rootType.includes('Tạp') && data.compatibility['Tạp']) {
                     attributeMult = data.compatibility['Tạp'];
-                } else if (rootType === 'Thiên Linh Căn') {
+                } else if (rootType === 'Thiên Linh Căn' || state.player.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5;
                 }
             } else if (data.element) {
-                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' ||
+                const rootId = state.player.spiritualRoot.id || '';
+                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' || rootId === 'thien_linh_can' ||
                     state.player.spiritualRoot.type.includes(data.element)) {
                     attributeMult = 1.5;
                 }
@@ -365,9 +368,10 @@ export class TechniqueController {
                     } else {
                         const d = getTechniqueById(c.id) || (state.player.customTechniques || []).find(t => t.id === c.id);
                         if (!d) return false;
-                        if (d.type === 'Độn Thuật') { cat = 'Pháp Thuật'; subCat = 'Độn Thuật'; }
-                        else if (d.type === 'Phụ Trợ') { cat = 'Pháp Thuật'; subCat = 'Phụ Trợ'; }
-                        else if (d.type === 'Song Tu') { cat = 'Bí Pháp'; subCat = 'Phụ Trợ'; }
+                        const dType = getTechniqueTypeSlug(d.type);
+                        if (dType === 'don_thuat') { cat = 'Pháp Thuật'; subCat = 'Độn Thuật'; }
+                        else if (dType === 'phu_tro') { cat = 'Pháp Thuật'; subCat = 'Phụ Trợ'; }
+                        else if (dType === 'song_tu') { cat = 'Bí Pháp'; subCat = 'Phụ Trợ'; }
                         else return false;
                     }
 
@@ -386,9 +390,10 @@ export class TechniqueController {
                     if (c.isSecret) return false;
                     const d = getTechniqueById(c.id) || (state.player.customTechniques || []).find(t => t.id === c.id);
                     if (!d) return false;
-                    if (tab === 'linh_luc') return d.type === 'Linh Lực';
-                    if (tab === 'luyen_the') return d.type === 'Luyện Thể';
-                    if (tab === 'than_thuc') return d.type === 'Thần Thức';
+                    const dType = getTechniqueTypeSlug(d.type);
+                    if (tab === 'linh_luc') return dType === 'linh_luc';
+                    if (tab === 'luyen_the') return dType === 'luyen_the';
+                    if (tab === 'than_thuc') return dType === 'than_thuc';
                     return false;
                 }
             });
@@ -580,11 +585,12 @@ export class TechniqueController {
                 state.player.learnedTechniques.forEach(entry => {
                     const data = getTechniqueById(entry.id) || (state.player.customTechniques || []).find(t => t.id === entry.id);
                     if (!data) return;
-                    if (tab === 'linh_luc' && data.type !== 'Linh Lực') return;
-                    if (tab === 'luyen_the' && data.type !== 'Luyện Thể') return;
-                    if (tab === 'than_thuc' && data.type !== 'Thần Thức') return;
+                    const dType = getTechniqueTypeSlug(data.type);
+                    if (tab === 'linh_luc' && dType !== 'linh_luc') return;
+                    if (tab === 'luyen_the' && dType !== 'luyen_the') return;
+                    if (tab === 'than_thuc' && dType !== 'than_thuc') return;
 
-                    list.push({ entry, data, isSecret: false, subCat: data.type });
+                    list.push({ entry, data, isSecret: false, subCat: getTechniqueTypeLabel(data.type) });
                 });
             }
 
@@ -625,21 +631,23 @@ export class TechniqueController {
                     if (isSecret) {
                         isEquipped = (state.player.equippedSecretTechniqueIds || []).includes(entry.id);
                     } else {
-                        if (data.type === 'Linh Lực') isEquipped = state.player.mainTechniqueId === entry.id;
-                        else if (data.type === 'Luyện Thể') isEquipped = state.player.mainBodyTechniqueId === entry.id;
-                        else if (data.type === 'Thần Thức') isEquipped = state.player.mainSoulTechniqueId === entry.id;
-                        else if (data.type === 'Độn Thuật') isEquipped = state.player.mainEscapeId === entry.id;
-                        else if (data.type === 'Song Tu') isEquipped = state.player.mainDualId === entry.id;
-                        else if (data.type === 'Phụ Trợ') isEquipped = (state.player.equippedAuxiliaryIds || []).includes(entry.id);
+                        const dType = getTechniqueTypeSlug(data.type);
+                        if (dType === 'linh_luc') isEquipped = state.player.mainTechniqueId === entry.id;
+                        else if (dType === 'luyen_the') isEquipped = state.player.mainBodyTechniqueId === entry.id;
+                        else if (dType === 'than_thuc') isEquipped = state.player.mainSoulTechniqueId === entry.id;
+                        else if (dType === 'don_thuat') isEquipped = state.player.mainEscapeId === entry.id;
+                        else if (dType === 'song_tu') isEquipped = state.player.mainDualId === entry.id;
+                        else if (dType === 'phu_tro') isEquipped = (state.player.equippedAuxiliaryIds || []).includes(entry.id);
                     }
 
                     // Passive rate display
                     let rateText = '';
                     if (!isSecret) {
                         const rate = this.getTechniquePassiveRate(entry, data);
-                        if (data.type === 'Linh Lực' || data.type === 'Song Tu' || data.type === 'Phụ Trợ') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
-                        else if (data.type === 'Luyện Thể') rateText = `+${rate.toFixed(1)} Thể Exp/s`;
-                        else if (data.type === 'Thần Thức') rateText = `+${rate.toFixed(1)} Thần Exp/s`;
+                        const dType = getTechniqueTypeSlug(data.type);
+                        if (dType === 'linh_luc' || dType === 'song_tu' || dType === 'phu_tro') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
+                        else if (dType === 'luyen_the') rateText = `+${rate.toFixed(1)} Thể Exp/s`;
+                        else if (dType === 'than_thuc') rateText = `+${rate.toFixed(1)} Thần Exp/s`;
                     }
 
                     // Active stat bonuses comparison display
@@ -727,12 +735,13 @@ export class TechniqueController {
             isEquipped = (state.player.equippedSecretTechniqueIds || []).includes(id);
             unequipType = 'Bí Pháp';
         } else {
-            if (data.type === 'Linh Lực') { isEquipped = state.player.mainTechniqueId === id; }
-            else if (data.type === 'Luyện Thể') { isEquipped = state.player.mainBodyTechniqueId === id; }
-            else if (data.type === 'Thần Thức') { isEquipped = state.player.mainSoulTechniqueId === id; }
-            else if (data.type === 'Độn Thuật') { isEquipped = state.player.mainEscapeId === id; unequipType = 'Độn Thuật'; }
-            else if (data.type === 'Song Tu') { isEquipped = state.player.mainDualId === id; unequipType = 'Song Tu'; }
-            else if (data.type === 'Phụ Trợ') { isEquipped = (state.player.equippedAuxiliaryIds || []).includes(id); unequipType = 'Phụ Trợ'; }
+            const dType = getTechniqueTypeSlug(data.type);
+            if (dType === 'linh_luc') { isEquipped = state.player.mainTechniqueId === id; }
+            else if (dType === 'luyen_the') { isEquipped = state.player.mainBodyTechniqueId === id; }
+            else if (dType === 'than_thuc') { isEquipped = state.player.mainSoulTechniqueId === id; }
+            else if (dType === 'don_thuat') { isEquipped = state.player.mainEscapeId === id; unequipType = 'Độn Thuật'; }
+            else if (dType === 'song_tu') { isEquipped = state.player.mainDualId === id; unequipType = 'Song Tu'; }
+            else if (dType === 'phu_tro') { isEquipped = (state.player.equippedAuxiliaryIds || []).includes(id); unequipType = 'Phụ Trợ'; }
         }
 
         // Calculate passive rate text and stat bonuses
@@ -740,9 +749,10 @@ export class TechniqueController {
         let statsText = '';
         if (!isSecret) {
             const rate = this.getTechniquePassiveRate(entry, data);
-            if (data.type === 'Linh Lực' || data.type === 'Song Tu' || data.type === 'Phụ Trợ') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
-            else if (data.type === 'Luyện Thể') rateText = `+${rate.toFixed(1)} Thể Exp/s`;
-            else if (data.type === 'Thần Thức') rateText = `+${rate.toFixed(1)} Thần Exp/s`;
+            const dType = getTechniqueTypeSlug(data.type);
+            if (dType === 'linh_luc' || dType === 'song_tu' || dType === 'phu_tro') rateText = `+${rate.toFixed(1)} Tu Vi/s`;
+            else if (dType === 'luyen_the') rateText = `+${rate.toFixed(1)} Thể Exp/s`;
+            else if (dType === 'than_thuc') rateText = `+${rate.toFixed(1)} Thần Exp/s`;
 
             const activeStats = this.getTechniqueActiveStats(entry, data);
             const statsParts = [];
@@ -898,13 +908,15 @@ export class TechniqueController {
         const dualSlot = _slotCard('☯️ Song Tu', 'border-pink-500/20 bg-pink-500/[0.03] shadow-[0_0_15px_rgba(236,72,153,0.03)]', '☯️', dualTech, dualLearned, 'Chưa trang bị', 'Song Tu');
 
         // Learned but unequipped techniques of these types
-        const learnableTabs = ['Độn Thuật', 'Song Tu', 'Phụ Trợ'];
+        const learnableSlugs = ['don_thuat', 'song_tu', 'phu_tro'];
         const unequipped = p.learnedTechniques.filter(t => {
             const d = getTechniqueById(t.id);
-            if (!d || !learnableTabs.includes(d.type)) return false;
-            if (d.type === 'Độn Thuật') return p.mainEscapeId !== t.id;
-            if (d.type === 'Song Tu') return p.mainDualId !== t.id;
-            if (d.type === 'Phụ Trợ') return !(p.equippedAuxiliaryIds || []).includes(t.id);
+            if (!d) return false;
+            const dType = getTechniqueTypeSlug(d.type);
+            if (!learnableSlugs.includes(dType)) return false;
+            if (dType === 'don_thuat') return p.mainEscapeId !== t.id;
+            if (dType === 'song_tu') return p.mainDualId !== t.id;
+            if (dType === 'phu_tro') return !(p.equippedAuxiliaryIds || []).includes(t.id);
             return false;
         });
 
@@ -920,11 +932,15 @@ export class TechniqueController {
                         ${unequipped.map(t => {
                 const d = getTechniqueById(t.id);
                 if (!d) return '';
+                const dType = getTechniqueTypeSlug(d.type);
                 const catColor = {
+                    'don_thuat': 'text-yellow-300 border-yellow-500/20 bg-yellow-500/5',
+                    'song_tu': 'text-pink-300 border-pink-500/20 bg-pink-500/5',
+                    'phu_tro': 'text-emerald-300 border-emerald-500/20 bg-emerald-500/5',
                     'Độn Thuật': 'text-yellow-300 border-yellow-500/20 bg-yellow-500/5',
                     'Song Tu': 'text-pink-300 border-pink-500/20 bg-pink-500/5',
                     'Phụ Trợ': 'text-emerald-300 border-emerald-500/20 bg-emerald-500/5'
-                }[d.type] || 'text-gray-400 border-white/5';
+                }[dType] || 'text-gray-400 border-white/5';
 
                 const rate = this.getTechniquePassiveRate(t, d);
                 const rateText = rate > 0 ? `<span class="text-[7px] px-1.5 py-0.5 bg-black/40 border border-white/5 rounded text-gray-400 font-mono">+${rate.toFixed(1)} Tu Vi/s</span>` : '';

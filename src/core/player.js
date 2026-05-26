@@ -9,11 +9,12 @@ import { CREATION_TRAITS, ROOT_ELEMENTS, SPECIAL_ELEMENTS } from '../configs/cre
 import { TITLES } from '../configs/fate-data.js';
 import { getLocationById, WORLDS } from '../configs/map-data.js';
 import { getSectById } from '../configs/sect-data.js';
+import { getTechniqueTypeSlug } from '../configs/display-mappers.js';
 
 export class Player {
     constructor() {
         this.name = "Phàm Nhân";
-        this.gender = "Nam";
+        this.gender = "male";
         this.avatar = "player_male";
         this.race = 'HUMAN'; // HUMAN, SPIRIT_BEAST, DEMON, etc.
         this.realmId = 0;
@@ -998,7 +999,7 @@ export class Player {
         const maxRealm = list[list.length - 1];
         const currentId = type === 'tuvi' ? this.realmId : (type === 'body' ? this.bodyRealmId : (type === 'soul' ? this.soulRealmId : (this.specializedPaths[type]?.realmId || 0)));
         if (maxRealm && currentId >= maxRealm.id) {
-            return { can: false, reason: "Đã đạt đến cảnh giới chí cao vô thượng, không thể đột phá thêm!" };
+            return { can: false, isMax: true, reason: "Đã đạt đến cảnh giới chí cao vô thượng, không thể đột phá thêm!" };
         }
 
         let currentExp = 0;
@@ -1728,12 +1729,13 @@ export class Player {
                     attributeMult = techData.compatibility[rootType];
                 } else if (rootType.includes('Tạp') && techData.compatibility['Tạp']) {
                     attributeMult = techData.compatibility['Tạp'];
-                } else if (rootType === 'Thiên Linh Căn') {
+                } else if (rootType === 'Thiên Linh Căn' || this.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5; // Heaven Root gets 1.5x bonus for everything
                 }
             } else if (techData.element) {
                 // Legacy element match (50% bonus if technique matches spiritual root element)
-                if (this.spiritualRoot.type === 'Thiên Linh Căn' || 
+                const rootId = this.spiritualRoot.id || '';
+                if (this.spiritualRoot.type === 'Thiên Linh Căn' || rootId === 'thien_linh_can' || 
                     this.spiritualRoot.type.includes(techData.element)) {
                     attributeMult = 1.5;
                 }
@@ -2169,7 +2171,7 @@ export class Player {
 
     getTechniqueComprehensionInfo(techId) {
         const tech = getTechniqueById(techId) || getSecretTechniqueById(techId) || (this.customTechniques || []).find(t => t.id === techId);
-        if (!tech) return { baseTime: 60, difficultyName: 'Phổ Thông', element: 'Neutral', type: 'Linh Lực' };
+        if (!tech) return { baseTime: 60, difficultyName: 'Phổ Thông', element: 'Neutral', type: 'linh_luc' };
         
         const quality = tech.quality || 'Phàm Giai';
         let baseTime = 60;
@@ -2195,7 +2197,7 @@ export class Player {
             baseTime, 
             difficultyName,
             element: tech.element || 'Neutral',
-            type: tech.type || 'Linh Lực'
+            type: getTechniqueTypeSlug(tech.type || 'linh_luc')
         };
     }
 
@@ -2315,7 +2317,7 @@ export class Player {
         // 4. THỂ CHẤT (Physique) for Luyện Thể techniques
         let physiqueMult = 1.0;
         let physiqueBonusText = '';
-        const isBodyRefining = techData.type === 'Luyện Thể';
+        const isBodyRefining = getTechniqueTypeSlug(techData.type) === 'luyen_the';
         
         if (isBodyRefining && this.physique && this.physique.id) {
             const premiumPhysiques = ['hoang_co_thanh_the', 'kim_cuong_bao_the', 'van_menh_hu_vo', 'thon_thien_the', 'tu_la_huyet_the', 'chan_long_the', 'dau_chien_thanh_the', 'hon_don_the', 'tien_thien_thanh_the_dao_thai', 'vinh_hang_tien_the'];
@@ -2410,7 +2412,7 @@ export class Player {
 
         if (Math.random() < backlashChance) {
             // Check Soul Backlash
-            if ((techData.type === 'Thần Thức' || minDivineSense > 0) && (this.divineSense || 0) < minDivineSense) {
+            if ((getTechniqueTypeSlug(techData.type) === 'than_thuc' || minDivineSense > 0) && (this.divineSense || 0) < minDivineSense) {
                 const stabilityLoss = 5 + Math.floor(Math.random() * 6);
                 const hpLoss = Math.floor((this.maxHp || 100) * (0.02 + Math.random() * 0.03));
                 const manaLoss = Math.floor((this.maxMana || 50) * (0.05 + Math.random() * 0.05));
@@ -2528,11 +2530,12 @@ export class Player {
         });
 
         // Auto-equip as main if none equipped for that path
-        if (techData.type === 'Linh Lực' && !this.mainTechniqueId) {
+        const techType = getTechniqueTypeSlug(techData.type);
+        if (techType === 'linh_luc' && !this.mainTechniqueId) {
             this.mainTechniqueId = techId;
-        } else if (techData.type === 'Luyện Thể' && !this.mainBodyTechniqueId) {
+        } else if (techType === 'luyen_the' && !this.mainBodyTechniqueId) {
             this.mainBodyTechniqueId = techId;
-        } else if (techData.type === 'Thần Thức' && !this.mainSoulTechniqueId) {
+        } else if (techType === 'than_thuc' && !this.mainSoulTechniqueId) {
             this.mainSoulTechniqueId = techId;
         }
 
@@ -2730,24 +2733,24 @@ export class Player {
             return { success: true, msg: `Đã trang bị bí pháp: ${techData.name}` };
         }
 
-        const type = techData.type;
+        const type = getTechniqueTypeSlug(techData.type);
         let currentMainId = null;
 
-        if (type === 'Linh Lực') {
+        if (type === 'linh_luc') {
             currentMainId = this.mainTechniqueId;
-        } else if (type === 'Luyện Thể') {
+        } else if (type === 'luyen_the') {
             currentMainId = this.mainBodyTechniqueId;
-        } else if (type === 'Thần Thức') {
+        } else if (type === 'than_thuc') {
             currentMainId = this.mainSoulTechniqueId;
-        } else if (type === 'Độn Thuật') {
+        } else if (type === 'don_thuat') {
             this.mainEscapeId = id;
             if (typeof this.calculateStats === 'function') this.calculateStats();
             return { success: true, msg: `Đã trang bị độn thuật: ${techData.name}` };
-        } else if (type === 'Song Tu') {
+        } else if (type === 'song_tu') {
             this.mainDualId = id;
             if (typeof this.calculateStats === 'function') this.calculateStats();
             return { success: true, msg: `Đã trang bị công pháp song tu: ${techData.name}` };
-        } else if (type === 'Phụ Trợ') {
+        } else if (type === 'phu_tro') {
             if (!this.equippedAuxiliaryIds) this.equippedAuxiliaryIds = [];
             if (this.equippedAuxiliaryIds.includes(id)) {
                 return { success: false, msg: "Công pháp phụ trợ này đã được trang bị rồi." };
@@ -2801,11 +2804,11 @@ export class Player {
             }
         }
 
-        if (type === 'Linh Lực') {
+        if (type === 'linh_luc') {
             this.mainTechniqueId = id;
-        } else if (type === 'Luyện Thể') {
+        } else if (type === 'luyen_the') {
             this.mainBodyTechniqueId = id;
-        } else if (type === 'Thần Thức') {
+        } else if (type === 'than_thuc') {
             this.mainSoulTechniqueId = id;
         }
 
@@ -3001,7 +3004,7 @@ export class Player {
         // Basic Info
         this.name = data.name || this.name;
         this.gender = data.gender || this.gender;
-        this.avatar = data.avatar || (this.gender === "Nữ" ? "player_female" : "player_male");
+        this.avatar = data.avatar || (['female', 'Nữ'].includes(this.gender) ? "player_female" : "player_male");
         this.race = data.race || this.race;
         this.realmId = data.realmId || this.realmId;
         this.tuVi = data.tuVi || 0;

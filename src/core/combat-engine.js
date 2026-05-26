@@ -1011,7 +1011,8 @@ export class CombatEngine {
             ignoreDefPct = Math.max(ignoreDefPct, 0.10 + (playerSecret?.stage || 1) * 0.03);
             // Spiritual root compatibility boost (+15% defense ignore for matching or Thiên Linh Căn)
             const pRootType = this.player.spiritualRoot?.type || '';
-            if (pRootType === 'Thiên Linh Căn' || (secretData.element && pRootType.includes(secretData.element))) {
+            const pRootId = this.player.spiritualRoot?.id || '';
+            if (pRootId === 'thien_linh_can' || pRootType === 'Thiên Linh Căn' || (secretData.element && pRootType.includes(secretData.element))) {
                 ignoreDefPct = Math.min(1.0, ignoreDefPct + 0.15);
                 this.addLog(`✨ Linh căn tương hợp kích phát Thần Thông dị động, gia tăng xuyên thấu hộ giáp đối địch!`);
             }

@@ -51,9 +51,16 @@ export class DestinySystem {
         else if (elementCount === 2) typeName = `Song Linh Căn`;
         else if (elementCount === 3) typeName = `Tam Linh Căn`;
         else if (elementCount === 4) typeName = `Ngụy Linh Căn`;
-        else typeName = `Ngũ Hành Linh Căn`;
+        let rootId = 'ngu_hanh_linh_can';
+        if (mutated) rootId = 'di_linh_can';
+        else if (elementCount === 1) rootId = 'thien_linh_can';
+        else if (elementCount === 2) rootId = 'song_linh_can';
+        else if (elementCount === 3) rootId = 'tam_linh_can';
+        else if (elementCount === 4) rootId = 'nguy_linh_can';
+        else rootId = 'ngu_hanh_linh_can';
 
         return {
+            id: rootId,
             type: typeName,
             elements: elements,
             mutated: mutated,

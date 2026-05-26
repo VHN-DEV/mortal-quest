@@ -1339,7 +1339,7 @@ export class MapScreen {
                     el.classList.add('grid-cell-player');
                     
                     const player = state.player;
-                    const portraitKey = player.avatar || (player.gender === 'Nữ' ? 'player_female' : 'player_male');
+                    const portraitKey = player.avatar || (['female', 'Nữ'].includes(player.gender) ? 'player_female' : 'player_male');
                     const portraitUrl = ASSETS.portraits[portraitKey] || './src/assets/images/players/player_male.webp';
 
                     el.innerHTML = `

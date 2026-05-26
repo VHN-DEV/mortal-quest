@@ -879,7 +879,7 @@ export class Game {
         const elName = document.getElementById('player-name-header');
         if (elName) elName.textContent = player.name;
 
-        const portraitKey = player.avatar || (player.gender === 'Nữ' ? 'player_female' : 'player_male');
+        const portraitKey = player.avatar || (['female', 'Nữ'].includes(player.gender) ? 'player_female' : 'player_male');
         const portraitUrl = ASSETS.portraits[portraitKey];
 
         const elPortrait = document.getElementById('header-portrait');
@@ -2519,7 +2519,8 @@ export class Game {
 
     filterAvatarGender(gender) {
         if (state.systems.creation) {
-            state.systems.creation.avatarFilterGender = gender;
+            const slug = (gender === 'male' || gender === 'Nam') ? 'male' : (gender === 'female' || gender === 'Nữ') ? 'female' : 'all';
+            state.systems.creation.avatarFilterGender = slug;
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }
@@ -2533,9 +2534,10 @@ export class Game {
 
     selectCreationGender(gender) {
         if (state.systems.creation) {
-            state.systems.creation.playerGender = gender;
-            state.systems.creation.playerAvatar = gender === 'Nam' ? 'player_male' : 'player_female';
-            state.systems.creation.avatarFilterGender = gender;
+            const slug = (gender === 'male' || gender === 'Nam') ? 'male' : 'female';
+            state.systems.creation.playerGender = slug;
+            state.systems.creation.playerAvatar = slug === 'male' ? 'player_male' : 'player_female';
+            state.systems.creation.avatarFilterGender = slug;
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }

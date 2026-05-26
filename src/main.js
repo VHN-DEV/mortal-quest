@@ -714,32 +714,32 @@ const formatOriginResources = (origin) => {
 
 const PORTRAIT_REGISTRY = [
     // Males
-    { id: 'player_male', name: 'Nam Tiên Sĩ', gender: 'Nam', race: 'HUMAN' },
-    { id: 'han_lap', name: 'Hàn Lập', gender: 'Nam', race: 'HUMAN' },
-    { id: 'han_phi_vu', name: 'Hàn Phi Vũ', gender: 'Nam', race: 'HUMAN' },
-    { id: 'bach_tu_linh', name: 'Bạch Tử Linh', gender: 'Nam', race: 'HUMAN' },
-    { id: 'han_vien', name: 'Hàn Viên', gender: 'Nam', race: 'HUMAN' },
-    { id: 'kiem_vo_tam', name: 'Kiếm Vô Tâm', gender: 'Nam', race: 'HUMAN' },
-    { id: 'vo_danh', name: 'Vô Danh Tiên Khách', gender: 'Nam', race: 'HUMAN' },
-    { id: 'bang_nguyet', name: 'Băng Nguyệt', gender: 'Nam', race: 'HUMAN' },
-    { id: 'player_legacy', name: 'Cổ Đạo Hữu', gender: 'Nam', race: 'HUMAN' },
-    { id: 'sect_elder', name: 'Tông Môn Trưởng Lão', gender: 'Nam', race: 'HUMAN' },
-    { id: 'merchant', name: 'Vạn Bảo Thương Nhân', gender: 'Nam', race: 'HUMAN' },
-    { id: 'demon', name: 'Ma Tộc Chân Ma', gender: 'Nam', race: 'DEMON' },
+    { id: 'player_male', name: 'Nam Tiên Sĩ', gender: 'male', race: 'HUMAN' },
+    { id: 'han_lap', name: 'Hàn Lập', gender: 'male', race: 'HUMAN' },
+    { id: 'han_phi_vu', name: 'Hàn Phi Vũ', gender: 'male', race: 'HUMAN' },
+    { id: 'bach_tu_linh', name: 'Bạch Tử Linh', gender: 'male', race: 'HUMAN' },
+    { id: 'han_vien', name: 'Hàn Viên', gender: 'male', race: 'HUMAN' },
+    { id: 'kiem_vo_tam', name: 'Kiếm Vô Tâm', gender: 'male', race: 'HUMAN' },
+    { id: 'vo_danh', name: 'Vô Danh Tiên Khách', gender: 'male', race: 'HUMAN' },
+    { id: 'bang_nguyet', name: 'Băng Nguyệt', gender: 'male', race: 'HUMAN' },
+    { id: 'player_legacy', name: 'Cổ Đạo Hữu', gender: 'male', race: 'HUMAN' },
+    { id: 'sect_elder', name: 'Tông Môn Trưởng Lão', gender: 'male', race: 'HUMAN' },
+    { id: 'merchant', name: 'Vạn Bảo Thương Nhân', gender: 'male', race: 'HUMAN' },
+    { id: 'demon', name: 'Ma Tộc Chân Ma', gender: 'male', race: 'DEMON' },
 
     // Females
-    { id: 'player_female', name: 'Nữ Tiên Sĩ', gender: 'Nữ', race: 'HUMAN' },
-    { id: 'du_nhuoc_nhan', name: 'Dư Nhược Nhan', gender: 'Nữ', race: 'HUMAN' },
-    { id: 'phuong_ca', name: 'Phương Ca', gender: 'Nữ', race: 'HUMAN' },
-    { id: 'phuong_vu', name: 'Phương Vũ', gender: 'Nữ', race: 'HUMAN' },
-    { id: 'tran_tu_huyen', name: 'Trần Tử Huyền', gender: 'Nữ', race: 'HUMAN' },
-    { id: 'xich_nguyet', name: 'Xích Nguyệt', gender: 'Nữ', race: 'HUMAN' },
-    { id: 'tu_linh', name: 'Tử Linh Tiên Tử', gender: 'Nữ', race: 'HUMAN' },
-    { id: 'thanh_lien', name: 'Thanh Liên Nữ Đế', gender: 'Nữ', race: 'HUMAN' },
-    { id: 'thanh_nhi', name: 'Thanh Nhi', gender: 'Nữ', race: 'HUMAN' },
-    { id: 'bach_minh_anh', name: 'Bạch Minh Anh', gender: 'Nữ', race: 'HUMAN' },
-    { id: 'lan_anh', name: 'Lan Anh', gender: 'Nữ', race: 'HUMAN' },
-    { id: 'minh_nguyet', name: 'Minh Nguyệt', gender: 'Nữ', race: 'HUMAN' }
+    { id: 'player_female', name: 'Nữ Tiên Sĩ', gender: 'female', race: 'HUMAN' },
+    { id: 'du_nhuoc_nhan', name: 'Dư Nhược Nhan', gender: 'female', race: 'HUMAN' },
+    { id: 'phuong_ca', name: 'Phương Ca', gender: 'female', race: 'HUMAN' },
+    { id: 'phuong_vu', name: 'Phương Vũ', gender: 'female', race: 'HUMAN' },
+    { id: 'tran_tu_huyen', name: 'Trần Tử Huyền', gender: 'female', race: 'HUMAN' },
+    { id: 'xich_nguyet', name: 'Xích Nguyệt', gender: 'female', race: 'HUMAN' },
+    { id: 'tu_linh', name: 'Tử Linh Tiên Tử', gender: 'female', race: 'HUMAN' },
+    { id: 'thanh_lien', name: 'Thanh Liên Nữ Đế', gender: 'female', race: 'HUMAN' },
+    { id: 'thanh_nhi', name: 'Thanh Nhi', gender: 'female', race: 'HUMAN' },
+    { id: 'bach_minh_anh', name: 'Bạch Minh Anh', gender: 'female', race: 'HUMAN' },
+    { id: 'lan_anh', name: 'Lan Anh', gender: 'female', race: 'HUMAN' },
+    { id: 'minh_nguyet', name: 'Minh Nguyệt', gender: 'female', race: 'HUMAN' }
 ];
 
 window.renderCreationScreen = () => {
@@ -984,8 +984,8 @@ window.renderCreationScreen = () => {
     const btnMale = document.getElementById('creation-gender-male');
     const btnFemale = document.getElementById('creation-gender-female');
     if (btnMale && btnFemale) {
-        btnMale.className = `flex-grow py-2 text-[10px] font-ancient uppercase rounded-lg transition-all ${sys.playerGender === 'Nam' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500 hover:text-white'}`;
-        btnFemale.className = `flex-grow py-2 text-[10px] font-ancient uppercase rounded-lg transition-all ${sys.playerGender === 'Nữ' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500 hover:text-white'}`;
+        btnMale.className = `flex-grow py-2 text-[10px] font-ancient uppercase rounded-lg transition-all ${sys.playerGender === 'male' || sys.playerGender === 'Nam' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500 hover:text-white'}`;
+        btnFemale.className = `flex-grow py-2 text-[10px] font-ancient uppercase rounded-lg transition-all ${sys.playerGender === 'female' || sys.playerGender === 'Nữ' ? 'bg-qi-blue/20 text-qi-blue border border-qi-blue/30' : 'text-gray-500 hover:text-white'}`;
     }
 
     // Age Input
@@ -1012,8 +1012,8 @@ window.renderCreationScreen = () => {
     // 2. Filter buttons visual updates inside modal
     const genderFilters = {
         all: document.getElementById('avatar-filter-gender-all'),
-        Nam: document.getElementById('avatar-filter-gender-nam'),
-        Nữ: document.getElementById('avatar-filter-gender-nu')
+        male: document.getElementById('avatar-filter-gender-nam'),
+        female: document.getElementById('avatar-filter-gender-nu')
     };
     Object.entries(genderFilters).forEach(([g, btn]) => {
         if (!btn) return;
