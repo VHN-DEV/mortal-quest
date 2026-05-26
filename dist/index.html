@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Phàm Nhân Vấn Đạo - Game Tu Tiên</title>
     <link rel="icon" type="image/png" href="./assets/favicon-CWeKJLFk.png">
-  <script type="module" crossorigin src="./assets/index-DTfissLo.js"></script>
+  <script type="module" crossorigin src="./assets/index-dIzJ65dF.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor-capacitor-B30hkozn.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gntnCqAy.js">
   <link rel="modulepreload" crossorigin href="./assets/vendor-gsap-CzGW6FVa.js">
@@ -2302,9 +2302,14 @@
             <!-- Tab: Công Pháp & Bí Pháp (NEW) -->
 <div id="screen-technique" class="screen hidden flex flex-col h-full p-6 overflow-hidden">
     <div class="flex justify-between items-end mb-8 shrink-0">
-        <div>
-            <h2 class="text-3xl font-ancient text-qi-blue">Công Pháp</h2>
-            <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Lĩnh Ngộ Thiên Đạo</p>
+        <div class="flex items-center space-x-3">
+            <button id="tech-back-btn" class="hidden w-8 h-8 rounded-full border border-qi-blue/20 bg-qi-blue/5 text-qi-blue flex items-center justify-center hover:bg-qi-blue/10 active:scale-95 transition-all">
+                <i class="ph ph-caret-left text-lg"></i>
+            </button>
+            <div>
+                <h2 class="text-3xl font-ancient text-qi-blue">Công Pháp</h2>
+                <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Lĩnh Ngộ Thiên Đạo</p>
+            </div>
         </div>
         <div class="text-right">
             <div class="text-[9px] font-ancient text-cultivation-gold uppercase tracking-widest">Ngộ Tính
@@ -2374,11 +2379,6 @@
     </div>
 
     <div id="tech-detail-view" class="hidden flex flex-col flex-grow min-h-0 space-y-6">
-        <button id="tech-back-btn"
-            class="flex items-center text-qi-blue text-xs font-ancient uppercase tracking-widest">
-            <i class="ph ph-caret-left mr-2"></i>Quay lại
-        </button>
-
         <div id="tech-detail-content" class="flex-grow overflow-y-auto space-y-6 pb-10">
             <!-- Technique details will be here -->
         </div>

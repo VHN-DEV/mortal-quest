@@ -286,6 +286,9 @@ export class TechniqueController {
     renderTechniques(tab = 'linh_luc') {
         if (!state.player) return;
 
+        const backBtn = document.getElementById('tech-back-btn');
+        if (backBtn) backBtn.classList.add('hidden');
+
         this.activeDetailId = null;
         this.activeDetailIsSecret = null;
         state.activeTechTab = tab;
@@ -716,6 +719,9 @@ export class TechniqueController {
 
         if (this.elTechListView) this.elTechListView.classList.add('hidden');
         if (this.elTechDetailView) this.elTechDetailView.classList.remove('hidden');
+
+        const backBtn = document.getElementById('tech-back-btn');
+        if (backBtn) backBtn.classList.remove('hidden');
 
         const currentMasteryIdx = MASTERY_LEVELS.findIndex(m => m.id === (entry.masteryLevel || 1));
         const mastery = MASTERY_LEVELS[currentMasteryIdx];
