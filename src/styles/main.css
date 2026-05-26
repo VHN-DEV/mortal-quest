@@ -2890,6 +2890,21 @@ select option:checked {
     }
 }
 
+/* Custom scrollbar hidden helper for horizontal scrolling pill rows */
+.custom-scrollbar-hidden {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+.custom-scrollbar-hidden::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 
 
 

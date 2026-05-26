@@ -2,6 +2,7 @@ import { state } from '../../state.js';
 import { getItemById } from '../../configs/item-data.js';
 import { SHOPS } from '../../configs/shop-data.js';
 import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
+import { getTechniqueById, getSecretTechniqueById } from '../../configs/technique-data.js';
 
 export class ShopController {
     constructor(parentScreen) {
@@ -27,6 +28,31 @@ export class ShopController {
 
     getQualityClass(quality) {
         return this.parentScreen.getQualityClass(quality);
+    }
+
+    getTechniqueCategoryForBook(itemData) {
+        if (!itemData) return null;
+        
+        const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
+        const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
+        if (isRecipe) {
+            return 'Bí Pháp';
+        }
+
+        const techId = itemData.techniqueId;
+        if (!techId) return null;
+
+        const tech = getTechniqueById(techId);
+        if (tech) {
+            return tech.type; 
+        }
+
+        const secret = getSecretTechniqueById(techId);
+        if (secret) {
+            return secret.category;
+        }
+
+        return null;
     }
 
     renderShop() {
@@ -136,39 +162,44 @@ export class ShopController {
 
         if (section === 'phap_bao') {
             subFilters = [
-                { id: 'all', name: '--- Lọc Loại Trang Bị ---' },
-                { id: 'weapon', name: 'Linh Khí (Vũ Khí)' },
-                { id: 'armor', name: 'Pháp Y (Giáp)' },
-                { id: 'accessory', name: 'Trang Sức' },
-                { id: 'attackArtifact', name: 'Pháp Bảo: Chủ Chiến' },
-                { id: 'defenseArtifact', name: 'Pháp Bảo: Hộ Thân' },
-                { id: 'flightArtifact', name: 'Pháp Bảo: Phi Hành' },
-                { id: 'spaceArtifact', name: 'Pháp Bảo: Càn Khôn' },
-                { id: 'formationArtifact', name: 'Pháp Bảo: Trận Đạo' },
-                { id: 'supportArtifact', name: 'Pháp Bảo: Phụ Trợ' },
-                { id: 'soulArtifact', name: 'Pháp Bảo: Hồn Đạo' }
+                { id: 'all', name: 'TẤT CẢ' },
+                { id: 'weapon', name: 'VŨ KHÍ' },
+                { id: 'armor', name: 'GIÁP Y' },
+                { id: 'accessory', name: 'TRANG SỨC' },
+                { id: 'attackArtifact', name: 'CHỦ CHIẾN' },
+                { id: 'defenseArtifact', name: 'HỘ THÂN' },
+                { id: 'flightArtifact', name: 'PHI HÀNH' },
+                { id: 'spaceArtifact', name: 'CÀN KHÔN' },
+                { id: 'formationArtifact', name: 'TRẬN ĐẠO' },
+                { id: 'supportArtifact', name: 'PHỤ TRỢ' },
+                { id: 'soulArtifact', name: 'HỒN ĐẠO' }
             ];
         } else if (section === 'cong_phap') {
             subFilters = [
-                { id: 'all', name: '--- Lọc Loại Bí Tịch ---' },
-                { id: 'cultivation', name: 'Công Pháp Tu Luyện' },
-                { id: 'manual', name: 'Bí Tịch Kỹ Năng' }
+                { id: 'all', name: 'TẤT CẢ' },
+                { id: 'Linh Lực', name: 'LINH LỰC' },
+                { id: 'Luyện Thể', name: 'LUYỆN THỂ' },
+                { id: 'Luyện Hồn', name: 'LUYỆN HỒN' },
+                { id: 'Pháp Thuật', name: 'PHÁP THUẬT' },
+                { id: 'Thần Thông', name: 'THẦN THÔNG' },
+                { id: 'Thần Hồn Thuật', name: 'THẦN HỒN' },
+                { id: 'Bí Pháp', name: 'BÍ PHÁP' }
             ];
         } else if (section === 'bach_nghe') {
             subFilters = [
-                { id: 'all', name: '--- Lọc Loại Bách Nghệ ---' },
-                { id: 'nguyen_lieu', name: 'Nguyên Liệu' },
-                { id: 'phu_luc', name: 'Phù Lục' },
-                { id: 'tran_phap', name: 'Trận Pháp' },
-                { id: 'luyen_khi', name: 'Luyện Khí' },
-                { id: 'linh_dien', name: 'Linh Điền' }
+                { id: 'all', name: 'TẤT CẢ' },
+                { id: 'nguyen_lieu', name: 'NGUYÊN LIỆU' },
+                { id: 'phu_luc', name: 'PHÙ LỤC' },
+                { id: 'tran_phap', name: 'TRẬN PHÁP' },
+                { id: 'luyen_khi', name: 'LUYỆN KHÍ' },
+                { id: 'linh_dien', name: 'LINH ĐIỀN' }
             ];
         } else if (section === 'ky_vat') {
             subFilters = [
-                { id: 'all', name: '--- Lọc Loại Kỳ Vật ---' },
-                { id: 'tui_tru_vat', name: 'Túi Trữ Vật' },
-                { id: 'ky_trung', name: 'Kỳ Trùng' },
-                { id: 'linh_thu', name: 'Linh Thú' }
+                { id: 'all', name: 'TẤT CẢ' },
+                { id: 'tui_tru_vat', name: 'TRỮ VẬT' },
+                { id: 'ky_trung', name: 'KỲ TRÙNG' },
+                { id: 'linh_thu', name: 'LINH THÚ' }
             ];
         }
 
@@ -181,18 +212,26 @@ export class ShopController {
         }
 
         this.elShopSubFilterNav.classList.remove('hidden');
-        this.elShopSubFilterNav.className = "p-2";
-        this.elShopSubFilterNav.innerHTML = `
-            <select id="shop-subfilter-select" class="w-full bg-black/40 text-qi-blue border border-qi-blue/20 rounded-lg px-2 py-1.5 text-[9px] font-ancient uppercase tracking-widest outline-none transition-all focus:border-qi-blue/50">
-                ${subFilters.map(f => `<option value="${f.id}" ${this.shopSubFilter === f.id ? 'selected' : ''}>${f.name}</option>`).join('')}
-            </select>
-        `;
+        this.elShopSubFilterNav.innerHTML = subFilters.map(f => {
+            const active = this.shopSubFilter === f.id;
+            return `
+                <button data-subfilter="${f.id}" 
+                    class="px-3.5 py-1.5 rounded-full text-[8px] font-ancient uppercase tracking-widest transition-all duration-200 shrink-0 border ${
+                        active 
+                            ? 'bg-qi-blue/20 text-qi-blue border-qi-blue/40 shadow-[0_0_8px_rgba(79,209,197,0.2)] font-bold active:scale-95' 
+                            : 'bg-white/[0.02] text-gray-500 border-white/5 hover:border-white/10 active:scale-98'
+                    }">
+                    ${f.name}
+                </button>
+            `;
+        }).join('');
 
-        const select = this.elShopSubFilterNav.querySelector('#shop-subfilter-select');
-        select.onchange = (e) => {
-            this.shopSubFilter = e.target.value;
-            this.renderShop();
-        };
+        this.elShopSubFilterNav.querySelectorAll('button[data-subfilter]').forEach(btn => {
+            btn.onclick = () => {
+                this.shopSubFilter = btn.dataset.subfilter;
+                this.renderShop();
+            };
+        });
     }
 
     renderShopQualityFilters() {
@@ -205,38 +244,57 @@ export class ShopController {
 
         if (!showQuality) {
             this.elShopQualityFilterNav.classList.add('hidden');
-            this.elShopSubFilterNav.classList.remove('border-r', 'border-white/5');
             this.elShopQualityFilterNav.innerHTML = '';
             return;
         }
 
-        this.elShopSubFilterNav.classList.add('border-r', 'border-white/5');
         const qualities = [
-            { id: 'all', name: 'Tất cả phẩm' },
-            { id: 'Phàm Khí', name: 'Phàm Khí' },
-            { id: 'Pháp Khí', name: 'Pháp Khí' },
-            { id: 'Linh Khí', name: 'Linh Khí' },
-            { id: 'Pháp Bảo', name: 'Pháp Bảo' },
-            { id: 'Cổ Bảo', name: 'Cổ Bảo' },
-            { id: 'Linh Bảo', name: 'Linh Bảo' },
-            { id: 'Thông Thiên Linh Bảo', name: 'Thông Thiên Linh Bảo' },
-            { id: 'Tiên Khí', name: 'Tiên Khí' },
-            { id: 'Danh Khí', name: 'Danh Khí' }
+            { id: 'all', name: 'TẤT CẢ PHẨM' },
+            { id: 'Phàm Khí', name: 'PHÀM KHÍ' },
+            { id: 'Pháp Khí', name: 'PHÁP KHÍ' },
+            { id: 'Linh Khí', name: 'LINH KHÍ' },
+            { id: 'Pháp Bảo', name: 'PHÁP BẢO' },
+            { id: 'Cổ Bảo', name: 'CỔ BẢO' },
+            { id: 'Linh Bảo', name: 'LINH BẢO' },
+            { id: 'Thông Thiên Linh Bảo', name: 'THÔNG THIÊN' },
+            { id: 'Tiên Khí', name: 'TIÊN KHÍ' },
+            { id: 'Danh Khí', name: 'DANH KHÍ' }
         ];
 
-        this.elShopQualityFilterNav.classList.remove('hidden');
-        this.elShopQualityFilterNav.className = "p-2 flex-1 border-white/5";
-        this.elShopQualityFilterNav.innerHTML = `
-            <select id="shop-quality-select" class="w-full bg-black/40 text-cultivation-gold border border-cultivation-gold/20 rounded-lg px-2 py-1.5 text-[9px] font-ancient uppercase tracking-widest outline-none transition-all focus:border-cultivation-gold/50">
-                ${qualities.map(q => `<option value="${q.id}" ${this.shopQualityFilter === q.id ? 'selected' : ''}>${q.name}</option>`).join('')}
-            </select>
-        `;
-
-        const select = this.elShopQualityFilterNav.querySelector('#shop-quality-select');
-        select.onchange = (e) => {
-            this.shopQualityFilter = e.target.value;
-            this.renderShop();
+        const qColors = {
+            'Phàm Khí': 'text-gray-400 border-gray-500/20 bg-gray-500/5',
+            'Pháp Khí': 'text-green-400 border-green-500/20 bg-green-500/5',
+            'Linh Khí': 'text-qi-blue border-qi-blue/20 bg-qi-blue/5',
+            'Pháp Bảo': 'text-purple-400 border-purple-500/20 bg-purple-500/5',
+            'Cổ Bảo': 'text-orange-400 border-orange-500/20 bg-orange-500/5',
+            'Linh Bảo': 'text-red-400 border-red-500/20 bg-red-500/5',
+            'Thông Thiên Linh Bảo': 'text-cultivation-gold border-cultivation-gold/20 bg-cultivation-gold/5 font-bold shimmer-gold',
+            'Tiên Khí': 'text-pink-400 border-pink-500/20 bg-pink-500/5',
+            'Danh Khí': 'text-yellow-400 border-yellow-500/20 bg-yellow-500/5 font-bold'
         };
+
+        this.elShopQualityFilterNav.classList.remove('hidden');
+        this.elShopQualityFilterNav.innerHTML = qualities.map(q => {
+            const active = this.shopQualityFilter === q.id;
+            const qColor = qColors[q.id] || 'text-gray-500 border-white/5';
+            return `
+                <button data-quality="${q.id}" 
+                    class="px-3.5 py-1.5 rounded-full text-[8px] font-ancient uppercase tracking-widest transition-all duration-200 shrink-0 border ${
+                        active 
+                            ? (q.id === 'all' ? 'bg-cultivation-gold/20 text-cultivation-gold border-cultivation-gold/40 shadow-[0_0_8px_rgba(212,175,55,0.2)] font-bold active:scale-95' : `${qColor.replace('/5', '/20')} border-opacity-60 shadow-[0_0_8px_rgba(255,255,255,0.05)] font-bold active:scale-95`) 
+                            : 'bg-white/[0.02] text-gray-500 border-white/5 hover:border-white/10 active:scale-98'
+                    }">
+                    ${q.name}
+                </button>
+            `;
+        }).join('');
+
+        this.elShopQualityFilterNav.querySelectorAll('button[data-quality]').forEach(btn => {
+            btn.onclick = () => {
+                this.shopQualityFilter = btn.dataset.quality;
+                this.renderShop();
+            };
+        });
     }
 
     renderShopBuy() {
@@ -262,12 +320,8 @@ export class ShopController {
                 if (shop.currentSection === 'phap_bao') {
                     return itemData.type === this.shopSubFilter;
                 } else if (shop.currentSection === 'cong_phap') {
-                    const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
-                    const isBook = (itemData.type === 'book' || itemData.type === 'technique') && !isManualAction;
-                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
-
-                    if (this.shopSubFilter === 'cultivation') return isBook;
-                    if (this.shopSubFilter === 'manual') return isRecipe;
+                    const techCategory = this.getTechniqueCategoryForBook(itemData);
+                    return techCategory === this.shopSubFilter;
                 } else if (['bach_nghe', 'ky_vat'].includes(shop.currentSection)) {
                     const shopData = SHOPS[shop.currentShopId];
                     const sectionItems = shopData.sections[this.shopSubFilter] || [];
@@ -410,14 +464,15 @@ export class ShopController {
 
             // Specific filter for merged Công Pháp
             if (sectionType === 'cong_phap') {
-                const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc'));
-                const isBook = (itemData.type === 'book' || itemData.type === 'technique') && !isManualAction;
-                const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || (itemData.type === 'consumable' && itemData.effect?.type === 'unlock_profession') || isManualAction;
-
-                if (subFilter === 'cultivation' && !isBook) return false;
-                if (subFilter === 'manual' && isBook) return false;
-                if (subFilter === 'manual' && !isRecipe && !isBook) return false;
-                if (subFilter === 'all' && !isBook && !isRecipe) return false;
+                if (subFilter !== 'all') {
+                    const techCategory = this.getTechniqueCategoryForBook(itemData);
+                    if (techCategory !== subFilter) return false;
+                } else {
+                    const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
+                    const isBook = (itemData.type === 'book' || itemData.type === 'technique') && !isManualAction;
+                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
+                    if (!isBook && !isRecipe) return false;
+                }
             }
 
             // Sub-filter for Bách Nghệ / Kỳ Vật
