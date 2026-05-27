@@ -19,3 +19,18 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Capacitor & WebView Specific ProGuard Rules
+-keep class com.getcapacitor.** { *; }
+-keep interface com.getcapacitor.** { *; }
+-keep class * extends com.getcapacitor.Plugin { *; }
+-keep class * extends com.getcapacitor.BridgeActivity { *; }
+
+# Preserve Javascript interface bindings
+-keepattributes JavascriptInterface
+-keepattributes Signature
+-keepattributes *Annotation*
+
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
