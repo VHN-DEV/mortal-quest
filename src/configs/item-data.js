@@ -3518,6 +3518,15 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 12000,
         description: 'Trứng của Hỏa Viêm Thú, ấm nóng như hòn than, liên tục tỏa ra hỏa diễm nhỏ.'
+    },
+    'co_dai': {
+        id: 'co_dai',
+        name: 'Cỏ Dại',
+        type: 'material',
+        icon: '🌱',
+        quality: 'Phàm Khí',
+        price: 1,
+        description: 'Cỏ dại mọc ven đường, không có linh khí.'
     }
 };
 

@@ -775,7 +775,7 @@ export class MapScreen {
         }
     }
 
-    handleMove() {
+    async handleMove() {
         if (state.player.stamina < 5) {
             state.ui.toast('Thể lực khô cạn!', 'error');
             return;
@@ -800,12 +800,15 @@ export class MapScreen {
             this.updateEventDisplay(desc, event.icon || '📜');
             
             if (event.type === 'loot') {
-                const resultMsg = event.result(state.player);
+                const resultMsg = await event.result(state.player, window.game);
                 const droppedShi = Math.floor(Math.random() * 10 * state.player.realmId);
                 state.player.addLingShi(droppedShi);
                 setTimeout(() => {
                     this.updateEventDisplay(resultMsg + ` (+${droppedShi} LT)`, '🎁');
-                    if (window.game && typeof window.game.saveGame === 'function') window.game.saveGame();
+                    if (window.game) {
+                        window.game.refreshUI();
+                        if (typeof window.game.saveGame === 'function') window.game.saveGame();
+                    }
                 }, 1000);
             } else if (event.type === 'npc') {
                 setTimeout(() => {
@@ -1297,6 +1300,42 @@ export class MapScreen {
         if (state.player) state.player.explorationProgress = state.explorationProgress;
     }
 
+    getHtmlForCell(cell, status) {
+        const isVisited = status === 'visited';
+        const opacityClass = isVisited ? 'opacity-30' : '';
+        
+        switch (cell.type) {
+            case 'rock':
+                return `<i class="ph ph-hexagon-corners text-slate-400 text-base md:text-lg ${opacityClass}"></i>`;
+            case 'river':
+                return `<i class="ph ph-waves text-blue-400 text-base md:text-lg ${isVisited ? 'opacity-30' : 'animate-pulse'}"></i>`;
+            case 'grass':
+                return `<i class="ph ph-leaf text-emerald-400 text-base md:text-lg ${isVisited ? 'opacity-30' : 'animate-bounce-subtle'}"></i>`;
+            case 'qi':
+                return `<i class="ph ph-spiral text-cyan-400 text-base md:text-lg ${isVisited ? 'opacity-30' : 'animate-spin-slow'}"></i>`;
+            case 'event':
+                return `<i class="ph ph-question text-yellow-400 text-base md:text-lg ${opacityClass}"></i>`;
+            case 'stairs_up':
+                return `<i class="ph ph-caret-double-up text-emerald-400 text-base md:text-lg ${isVisited ? 'opacity-30' : 'animate-bounce-subtle'}"></i>`;
+            case 'stairs_down':
+                return `<i class="ph ph-caret-double-down text-blue-400 text-base md:text-lg ${isVisited ? 'opacity-30' : 'animate-bounce-subtle'}"></i>`;
+            case 'sect_entrance':
+                return `<i class="ph ph-fortress text-indigo-400 text-base md:text-lg ${opacityClass}"></i>`;
+            case 'dungeon_entrance':
+                return `<i class="ph ph-portal text-purple-400 text-base md:text-lg ${isVisited ? 'opacity-30' : 'animate-pulse'}"></i>`;
+            case 'corpse':
+                return `
+                    <div class="w-[85%] h-[85%] rounded-xl border border-qi-purple/40 shadow-[0_0_10px_rgba(168,85,247,0.3)] flex items-center justify-center bg-purple-950/20 ${isVisited ? 'opacity-30' : 'animate-pulse'}">
+                        <i class="ph ph-package text-purple-400 text-base md:text-lg"></i>
+                    </div>
+                `;
+            case 'empty':
+                return `<div class="w-1.5 h-1.5 rounded-full ${isVisited ? 'bg-white/10' : 'bg-white/30'}"></div>`;
+            default:
+                return `<span class="text-base select-none ${opacityClass}">${cell.icon}</span>`;
+        }
+    }
+
     renderGridMap() {
         if (!this.elExploreGridBoard) return;
 
@@ -1351,16 +1390,20 @@ export class MapScreen {
                     el.classList.add('grid-cell-foggy');
                     const trigrams = ['☰', '☱', '☲', '☳', '☴', '☵', '☶', '☷'];
                     const trigram = trigrams[(x + y) % 8];
-                    el.innerHTML = `<span class="text-sm font-bold opacity-30 select-none">${trigram}</span>`;
-                } else if (cell.type === 'corpse') {
-                    el.classList.add('grid-cell-corpse');
                     el.innerHTML = `
-                        <div class="w-[85%] h-[85%] rounded-xl border border-qi-purple shadow-[0_0_10px_rgba(168,85,247,0.7)] flex items-center justify-center bg-purple-950/40 animate-pulse" title="${cell.corpseName || 'Thi Thể'}">
-                            <span class="text-lg select-none">${cell.icon || '📦'}</span>
+                        <div class="relative w-full h-full flex items-center justify-center group overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-purple-950/10 via-black/90 to-[#0a0612] transition-colors duration-500"></div>
+                            <div class="absolute w-[80%] h-[80%] rounded-full border border-purple-500/10 group-hover:border-purple-500/30 transition-colors animate-spin-slow opacity-60"></div>
+                            <span class="relative z-10 text-xs font-bold text-purple-400/50 group-hover:text-purple-400 transition-all select-none drop-shadow-[0_0_4px_rgba(168,85,247,0.4)]">${trigram}</span>
                         </div>
                     `;
-                } else if (cell.status === 'unlocked') {
-                    el.classList.add('grid-cell-unlocked');
+                } else {
+                    // Cập nhật trạng thái ô
+                    if (cell.status === 'unlocked') {
+                        el.classList.add('grid-cell-unlocked');
+                    } else if (cell.status === 'visited') {
+                        el.classList.add('grid-cell-visited');
+                    }
 
                     // Gán các class địa hình tiên hiệp đặc hữu
                     if (cell.type === 'rock') el.classList.add('grid-cell-rock');
@@ -1373,7 +1416,14 @@ export class MapScreen {
                     else if (cell.type === 'sect_entrance') el.classList.add('grid-cell-sect-gate');
                     else if (cell.type === 'dungeon_entrance') el.classList.add('grid-cell-stairs-up');
 
-                    if (cell.type === 'guard' || cell.type === 'boss') {
+                    // Nếu là ô Boss, rực đỏ cảnh báo hiểm họa
+                    if (cell.type === 'boss' && cell.status !== 'visited' && cell.status === 'unlocked') {
+                        el.classList.remove('grid-cell-unlocked');
+                        el.classList.add('grid-cell-boss');
+                    }
+
+                    // Render nội dung ô dựa trên loại ô
+                    if ((cell.type === 'guard' || cell.type === 'boss') && cell.status !== 'visited') {
                         const beastIdx = cell.beastIdx !== undefined ? cell.beastIdx : ((x * 7 + y * 13) % BEAST_IMAGES.length);
                         const imgUrl = getAssetUrl(BEAST_IMAGES[beastIdx]);
                         el.innerHTML = `
@@ -1381,7 +1431,7 @@ export class MapScreen {
                                 <img src="${imgUrl}" class="w-full h-full object-cover">
                             </div>
                         `;
-                    } else if (cell.type === 'npc_event') {
+                    } else if (cell.type === 'npc_event' && cell.status !== 'visited') {
                         const npcIdx = cell.npcIdx !== undefined ? cell.npcIdx : ((x * 5 + y * 11) % NPC_IMAGES.length);
                         const imgUrl = getAssetUrl(NPC_IMAGES[npcIdx]);
                         el.innerHTML = `
@@ -1390,23 +1440,9 @@ export class MapScreen {
                             </div>
                         `;
                     } else {
-                        el.innerHTML = `<span class="text-lg md:text-xl select-none">${cell.icon}</span>`;
+                        // Render Phosphor Icons thay vì emojis
+                        el.innerHTML = this.getHtmlForCell(cell, cell.status);
                     }
-                } else if (cell.status === 'visited') {
-                    el.classList.add('grid-cell-visited');
-                    if (cell.type === 'river') el.classList.add('grid-cell-river');
-                    else if (cell.type === 'stairs_up') el.classList.add('grid-cell-stairs-up');
-                    else if (cell.type === 'stairs_down') el.classList.add('grid-cell-stairs-down');
-                    else if (cell.type === 'sect_entrance') el.classList.add('grid-cell-sect-gate');
-                    else if (cell.type === 'dungeon_entrance') el.classList.add('grid-cell-stairs-up');
-                    
-                    el.innerHTML = `<span class="text-base opacity-25 select-none">${cell.icon}</span>`;
-                }
-
-                // Nếu là ô Boss, rực đỏ cảnh báo hiểm họa
-                if (cell.type === 'boss' && cell.status !== 'visited' && cell.status === 'unlocked') {
-                    el.classList.remove('grid-cell-unlocked');
-                    el.classList.add('grid-cell-boss');
                 }
 
                 // Gắn sự kiện click
@@ -1623,19 +1659,39 @@ export class MapScreen {
                 }
                 case 'grass':
                 case 'herbs': {
-                    const herbDrops = loc && loc.resources ? loc.resources.filter(r => r.type === 'herb' || r.type === 'ore') : [];
-                    let rewardId = 'linh_thao_thuong';
-                    if (herbDrops.length > 0) {
-                        rewardId = herbDrops[Math.floor(Math.random() * herbDrops.length)].id;
+                    const herbDrops = [];
+                    if (loc && loc.resources) {
+                        loc.resources.forEach(rId => {
+                            const item = getItemById(rId);
+                            if (item && (item.type === 'material' || item.type === 'seed' || item.type === 'ore' || item.type === 'herb')) {
+                                herbDrops.push(item);
+                            }
+                        });
                     }
-                    
-                    const qty = 1 + Math.floor(Math.random() * 2);
+
+                    const isWeed = Math.random() < 0.75;
+                    let rewardId = 'co_dai';
+                    let qty = 1;
+
+                    if (!isWeed) {
+                        if (herbDrops.length > 0) {
+                            rewardId = herbDrops[Math.floor(Math.random() * herbDrops.length)].id;
+                        } else {
+                            rewardId = 'linh_thao_thap';
+                        }
+                        qty = 1 + Math.floor(Math.random() * 2);
+                    } else {
+                        qty = 1 + Math.floor(Math.random() * 3);
+                    }
+
                     const droppedShi = Math.floor(Math.random() * 12 * state.player.realmId) + 5;
 
                     await window.game.receiveItem(rewardId, qty);
                     state.player.addLingShi(droppedShi);
 
-                    this.updateEventDisplay(`🌾 [BỤI CỎ TÌM KIẾM] Thu thập thành công [${qty}x Thảo dược] và [💎 ${droppedShi}x Linh thạch] ẩn giấu dưới lớp cỏ rậm!`);
+                    const itemData = getItemById(rewardId);
+                    const itemName = itemData ? itemData.name : 'Vật phẩm';
+                    this.updateEventDisplay(`🌾 [BỤI CỎ TÌM KIẾM] Thu thập thành công [${qty}x ${itemName}] và [💎 ${droppedShi}x Linh thạch] ẩn giấu dưới lớp cỏ rậm!`);
                     break;
                 }
                 case 'qi': {
