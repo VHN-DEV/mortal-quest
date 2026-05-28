@@ -521,12 +521,157 @@ export class InventoryScreen {
         this.elDetailDesc.innerHTML = this.linkifyDescription(desc, id);
         if (this.elDetailStats) this.elDetailStats.innerHTML = '';
 
-        // Show stats for all equippable items
+        // Show stats for all equippable items, techniques, and consumables
         if (itemData.stats && this.elDetailStats) {
             Object.entries(itemData.stats).forEach(([key, val]) => {
                 const statEl = document.createElement('div');
                 statEl.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
                 statEl.innerHTML = `<span>${this.getStatLabel(key)}</span><span class="text-qi-blue font-mono">+${val}</span>`;
+                this.elDetailStats.appendChild(statEl);
+            });
+        } else if ((itemData.type === 'book' || itemData.type === 'technique') && itemData.techniqueId && this.elDetailStats) {
+            const tech = getTechniqueById(itemData.techniqueId) || getSecretTechniqueById(itemData.techniqueId);
+            if (tech) {
+                // Add basic tech properties
+                if (tech.type) {
+                    const row = document.createElement('div');
+                    row.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                    row.innerHTML = `<span>Phân loại</span><span class="text-white">${tech.type}</span>`;
+                    this.elDetailStats.appendChild(row);
+                }
+                if (tech.element && tech.element !== 'Neutral') {
+                    const row = document.createElement('div');
+                    row.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                    row.innerHTML = `<span>Ngũ hành</span><span class="text-white">${tech.element}</span>`;
+                    this.elDetailStats.appendChild(row);
+                }
+                // Add stats
+                if (tech.stats) {
+                    Object.entries(tech.stats).forEach(([key, val]) => {
+                        const row = document.createElement('div');
+                        row.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                        row.innerHTML = `<span>Cộng thuộc tính (${this.getStatLabel(key)})</span><span class="text-qi-blue font-mono">+${val}</span>`;
+                        this.elDetailStats.appendChild(row);
+                    });
+                }
+                // Add effects
+                if (tech.effects) {
+                    Object.entries(tech.effects).forEach(([key, val]) => {
+                        let valStr = val;
+                        let label = key;
+                        if (key === 'tvps') {
+                            label = 'Tốc độ tu vi';
+                            valStr = `+${Math.round((val - 1) * 100)}%`;
+                        } else if (key === 'bodyPs') {
+                            label = 'Tốc độ luyện thể';
+                            valStr = `+${Math.round((val - 1) * 100)}%`;
+                        } else if (key === 'soulPs') {
+                            label = 'Tốc độ thần thức';
+                            valStr = `+${Math.round((val - 1) * 100)}%`;
+                        } else if (key === 'lifespanBonus') {
+                            label = 'Thọ nguyên';
+                            valStr = `+${val} năm`;
+                        } else if (key.endsWith('Damage') || key.endsWith('Dmg')) {
+                            label = 'Sát thương';
+                            valStr = `+${Math.round((val - 1) * 100)}%`;
+                        } else {
+                            const effectLabels = {
+                                manaRegen: 'Hồi phục pháp lực',
+                                stability: 'Ổn định kinh mạch',
+                                manaConsumptionReduce: 'Giảm tiêu hao pháp lực',
+                                deviationRiskReduce: 'Giảm nguy cơ tẩu hỏa',
+                                devRiskReduce: 'Giảm nguy cơ tẩu hỏa',
+                                healing: 'Hiệu quả trị liệu',
+                                dodge: 'Tỷ lệ né tránh',
+                                critChance: 'Tỷ lệ bạo kích',
+                                cooldownReduction: 'Giảm thời gian hồi'
+                            };
+                            label = effectLabels[key] || key;
+                            if (val > 0 && val < 1) {
+                                valStr = `+${Math.round(val * 100)}%`;
+                            } else if (val > 1) {
+                                valStr = `+${Math.round((val - 1) * 100)}%`;
+                            }
+                        }
+                        const row = document.createElement('div');
+                        row.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                        row.innerHTML = `<span>${label}</span><span class="text-green-400 font-mono">${valStr}</span>`;
+                        this.elDetailStats.appendChild(row);
+                    });
+                }
+                // Add compatibility
+                if (tech.compatibility) {
+                    const compParts = Object.entries(tech.compatibility)
+                        .filter(([_, val]) => val !== 1.0)
+                        .map(([key, val]) => `${key}: ${val}x`);
+                    if (compParts.length > 0) {
+                        const row = document.createElement('div');
+                        row.className = 'flex flex-col text-[10px] text-gray-400 border-b border-white/5 py-1';
+                        row.innerHTML = `<span class="mb-1">Tương thích Linh Căn:</span><span class="text-cultivation-gold font-mono text-[9px]">${compParts.join(' | ')}</span>`;
+                        this.elDetailStats.appendChild(row);
+                    }
+                }
+            }
+        } else if (itemData.effect && this.elDetailStats) {
+            const effect = itemData.effect;
+            const effectList = [];
+            
+            if (effect.type === 'tu_vi') {
+                effectList.push({ label: 'Tăng tu vi', val: `+${effect.value}` });
+            } else if (effect.type === 'breakthrough_chance') {
+                effectList.push({ label: 'Tỷ lệ đột phá', val: `+${Math.round(effect.value * 100)}%` });
+            } else if (effect.type === 'restore') {
+                if (effect.hp) {
+                    const hpStr = effect.hp < 1.0 ? `+${Math.round(effect.hp * 100)}% Khí Huyết` : `+${effect.hp} Khí Huyết`;
+                    effectList.push({ label: 'Hồi phục', val: hpStr });
+                }
+                if (effect.mana) {
+                    const manaStr = effect.mana < 1.0 ? `+${Math.round(effect.mana * 100)}% Pháp Lực` : `+${effect.mana} Pháp Lực`;
+                    effectList.push({ label: 'Hồi phục', val: manaStr });
+                }
+            } else if (effect.type === 'buff') {
+                const statLabels = {
+                    'tu_vi_speed': 'Tốc độ tu vi',
+                    'tuViSpeed': 'Tốc độ tu vi',
+                    'soulPs': 'Tốc độ thần thức',
+                    'def_pct': 'Phòng thủ',
+                    'atk_pct': 'Tấn công',
+                    'beastSuccess': 'Tỷ lệ thu phục thú'
+                };
+                const statLabel = statLabels[effect.stat] || effect.stat;
+                let valStr = '';
+                if (effect.value > 1.0) {
+                    valStr = `+${Math.round((effect.value - 1) * 100)}%`;
+                } else if (effect.value > 0 && effect.value < 1.0) {
+                    valStr = `+${Math.round(effect.value * 100)}%`;
+                } else {
+                    valStr = `+${effect.value}`;
+                }
+                effectList.push({ label: `Tăng ${statLabel}`, val: valStr });
+                if (effect.duration) {
+                    effectList.push({ label: 'Thời gian hiệu lực', val: `${Math.round(effect.duration / 60)} phút` });
+                }
+            } else if (effect.type && effect.type.startsWith('learn_')) {
+                effectList.push({ label: 'Học công thức', val: 'Mở khóa công thức chế tạo mới' });
+            } else if (effect.type === 'unlock_profession') {
+                const profNames = {
+                    alchemy: 'Luyện Đan',
+                    smithing: 'Luyện Khí',
+                    talisman: 'Phù Lục',
+                    formation: 'Trận Pháp',
+                    puppet: 'Khôi Lỗi',
+                    corpse: 'Luyện Thi',
+                    beast: 'Ngự Thú'
+                };
+                effectList.push({ label: 'Mở khóa nghề', val: profNames[effect.profession] || effect.profession });
+            } else if (effect.type === 'technique_mastery') {
+                effectList.push({ label: 'Ngộ tính công pháp', val: `+${effect.value} điểm` });
+            }
+
+            effectList.forEach(eff => {
+                const statEl = document.createElement('div');
+                statEl.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                statEl.innerHTML = `<span>${eff.label}</span><span class="text-green-400 font-mono">${eff.val}</span>`;
                 this.elDetailStats.appendChild(statEl);
             });
         }
