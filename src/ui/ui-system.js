@@ -6,6 +6,7 @@ import { logger } from '../utils/logger.js';
 import { getAssetUrl } from '../configs/asset-data.js';
 import { getItemById } from '../configs/item-data.js';
 import { findLocationName, DANGER_LEVELS, getWorlds, getLocationById } from '../configs/map-data.js';
+import { getDisplayQuality } from '../utils/ui-utils.js';
 import { getRealmById } from '../configs/realm-data.js';
 
 export class UISystem {
@@ -962,12 +963,14 @@ export class UISystem {
                 `).join('') + `</div>`;
         }
 
+        const displayQuality = getDisplayQuality(quality, item.type);
+
         this.elTooltip.innerHTML = `
             <div class="flex items-center space-x-2 mb-1">
                 <div class="text-xl">${item.icon || '📦'}</div>
                 <div class="flex flex-col">
                     <span class="text-[10px] font-bold text-white font-ancient quality-${qClass}">${item.name}</span>
-                    <span class="text-[7px] text-gray-500 uppercase tracking-tighter">${quality}</span>
+                    <span class="text-[7px] text-gray-500 uppercase tracking-tighter">${displayQuality}</span>
                 </div>
             </div>
             <div class="text-[9px] text-gray-400 italic leading-tight">${item.description || ''}</div>

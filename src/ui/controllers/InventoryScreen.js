@@ -4,6 +4,7 @@ import { getAssetUrl } from '../../configs/asset-data.js';
 import { getItemConnections } from '../../utils/item-connections.js';
 import { getTechniqueById, getSecretTechniqueById } from '../../configs/technique-data.js';
 import { BEASTS } from '../../configs/beast-data.js';
+import { getDisplayQuality } from '../../utils/ui-utils.js';
 
 /**
  * Quản lý giao diện túi đồ và trang bị.
@@ -448,7 +449,8 @@ export class InventoryScreen {
             'seed': 'Linh Chủng'
         };
 
-        const qualitySuffix = (displayQuality.toLowerCase().includes('khí') || displayQuality.toLowerCase().includes('bảo') || displayQuality.toLowerCase().includes('phẩm') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(displayQuality)) ? '' : ' Phẩm';
+        const mappedQuality = getDisplayQuality(displayQuality, itemData.type);
+        const qualitySuffix = (mappedQuality.toLowerCase().includes('khí') || mappedQuality.toLowerCase().includes('bảo') || mappedQuality.toLowerCase().includes('phẩm') || mappedQuality.toLowerCase().includes('giai') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(mappedQuality)) ? '' : ' Phẩm';
         
         let typeLabel = typeNames[itemData.type] || itemData.type;
         if (itemData.type === 'book' || itemData.type === 'technique' || itemData.type === 'recipe' || itemData.type === 'talisman_recipe') {
@@ -458,7 +460,7 @@ export class InventoryScreen {
             }
         }
 
-        this.elDetailType.textContent = `${displayQuality}${qualitySuffix} | ${typeLabel}`;
+        this.elDetailType.textContent = `${mappedQuality}${qualitySuffix} | ${typeLabel}`;
 
         // Bag Transfer UI
         if (this.elTransferContainer && this.elTransferBags) {

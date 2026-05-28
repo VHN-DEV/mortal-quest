@@ -3,6 +3,7 @@ import { getItemById } from '../../configs/item-data.js';
 import { SHOPS } from '../../configs/shop-data.js';
 import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 import { getTechniqueById, getSecretTechniqueById } from '../../configs/technique-data.js';
+import { getDisplayQuality } from '../../utils/ui-utils.js';
 
 export class ShopController {
     constructor(parentScreen) {
@@ -249,7 +250,7 @@ export class ShopController {
             return;
         }
 
-        const qualities = [
+        let qualities = [
             { id: 'all', name: 'TẤT CẢ PHẨM' },
             { id: 'Phàm Khí', name: 'PHÀM KHÍ' },
             { id: 'Pháp Khí', name: 'PHÁP KHÍ' },
@@ -261,6 +262,21 @@ export class ShopController {
             { id: 'Tiên Khí', name: 'TIÊN KHÍ' },
             { id: 'Danh Khí', name: 'DANH KHÍ' }
         ];
+
+        if (section === 'cong_phap') {
+            qualities = [
+                { id: 'all', name: 'TẤT CẢ PHẨM' },
+                { id: 'Phàm Khí', name: 'PHÀM GIAI' },
+                { id: 'Pháp Khí', name: 'HOÀNG GIAI' },
+                { id: 'Linh Khí', name: 'HUYỀN GIAI' },
+                { id: 'Pháp Bảo', name: 'ĐỊA GIAI' },
+                { id: 'Cổ Bảo', name: 'THIÊN GIAI' },
+                { id: 'Linh Bảo', name: 'LINH GIAI' },
+                { id: 'Thông Thiên Linh Bảo', name: 'THÁNH GIAI' },
+                { id: 'Tiên Khí', name: 'TIÊN GIAI' },
+                { id: 'Danh Khí', name: 'ĐẾ GIAI' }
+            ];
+        }
 
         const qColors = {
             'Phàm Khí': 'text-gray-400 border-gray-500/20 bg-gray-500/5',
@@ -381,13 +397,15 @@ export class ShopController {
                 ? `<div class="flex flex-wrap gap-1 mt-1">${categories.map(cat => `<span class="px-1.5 py-0.5 rounded bg-qi-blue/10 border border-qi-blue/20 text-[6px] font-ancient uppercase tracking-widest text-qi-blue font-bold shadow-[0_0_4px_rgba(79,209,197,0.1)]">${cat}</span>`).join('')}</div>`
                 : '';
 
+            const displayQuality = getDisplayQuality(itemData.quality, itemData.type);
+
             const info = document.createElement('div');
             info.className = 'flex items-center space-x-3';
             info.innerHTML = `
                 <div class="text-2xl bg-black/60 p-2 rounded-lg border border-${qClass}/30">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
                 <div>
                     <div class="text-sm font-bold text-white">${itemData.name}</div>
-                    <div class="text-[9px] font-bold quality-${qClass}">${itemData.quality}${(itemData.quality.toLowerCase().includes('khí') || itemData.quality.toLowerCase().includes('bảo') || itemData.quality.toLowerCase().includes('phẩm') || itemData.quality.toLowerCase().includes('giai') || itemData.quality.toLowerCase().includes('hỏa') || itemData.quality.toLowerCase().includes('lôi') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(itemData.quality)) ? '' : ' phẩm'} | Kho: ${item.stock}</div>
+                    <div class="text-[9px] font-bold quality-${qClass}">${displayQuality}${(displayQuality.toLowerCase().includes('khí') || displayQuality.toLowerCase().includes('bảo') || displayQuality.toLowerCase().includes('phẩm') || displayQuality.toLowerCase().includes('giai') || displayQuality.toLowerCase().includes('hỏa') || displayQuality.toLowerCase().includes('lôi') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(displayQuality)) ? '' : ' phẩm'} | Kho: ${item.stock}</div>
                     ${categoryLabels}
                 </div>
             `;

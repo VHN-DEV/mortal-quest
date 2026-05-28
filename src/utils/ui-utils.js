@@ -109,3 +109,28 @@ export function renderGridItem(item, options = {}) {
         </div>
     `;
 }
+
+/**
+ * Maps item quality to technique/manual quality if it is a cultivation technique/recipe/talisman recipe book.
+ * @param {string} quality 
+ * @param {string} type 
+ * @returns {string}
+ */
+export function getDisplayQuality(quality, type) {
+    const isManualOrRecipe = ['book', 'technique', 'recipe', 'talisman_recipe'].includes(type);
+    if (!isManualOrRecipe) return quality;
+
+    const map = {
+        'Phàm Khí': 'Phàm Giai',
+        'Pháp Khí': 'Hoàng Giai',
+        'Linh Khí': 'Huyền Giai',
+        'Pháp Bảo': 'Địa Giai',
+        'Cổ Bảo': 'Thiên Giai',
+        'Linh Bảo': 'Linh Giai',
+        'Thông Thiên Linh Bảo': 'Thánh Giai',
+        'Tiên Khí': 'Tiên Giai',
+        'Danh Khí': 'Đế Giai'
+    };
+    return map[quality] || quality;
+}
+
