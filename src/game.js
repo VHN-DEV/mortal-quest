@@ -269,7 +269,7 @@ export class Game {
                 btn.onclick = async () => {
                     await state.ui.switchScreen(screenId, btn);
                     if (screenId === 'screen-technique') {
-                        this.screens.systems.renderTechniques(state.activeTechTab || 'cultivation');
+                        this.screens.systems.renderTechniques(state.activeTechTab || 'linh_luc');
                     } else if (screenId === 'screen-crafting-hub') {
                         this.screens.systems.renderCraftingHub();
                     } else if (screenId === 'screen-npc') {
@@ -2541,7 +2541,7 @@ export class Game {
             if (res.success) {
                 state.ui.toast(res.msg, 'success');
                 if (this.screens.systems) {
-                    this.screens.systems.renderTechniques('cultivation');
+                    this.screens.systems.renderTechniques('linh_luc');
                 }
             } else {
                 state.ui.toast(res.msg, 'error');

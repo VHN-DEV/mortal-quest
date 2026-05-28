@@ -53,7 +53,7 @@ class GameState {
             shop: 'buy',
             alchemy: 'recipes',
             beast: 'beast',
-            tech: 'cultivation'
+            tech: 'linh_luc'
         };
 
         this.currentDestiny = null;
