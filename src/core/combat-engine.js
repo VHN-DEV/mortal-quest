@@ -349,9 +349,21 @@ export class CombatEngine {
         this.addLog(`<span class="text-yellow-400">${this.enemy.name} cảm thấy bất ổn, đang tìm cách thoát thân!</span>`);
         this.isActive = false;
         this.onUpdate('enemy-escape-attempt');
+        // Safety fallback: if chase overlay is never interacted with, end combat after 60s
+        this._escapeTimeout = setTimeout(() => {
+            if (!this.isActive) {
+                this.onEnd?.('escape');
+            }
+        }, 60000);
     }
 
     chaseEnemy() {
+        // Clear the safety fallback timeout since the player has interacted
+        if (this._escapeTimeout) {
+            clearTimeout(this._escapeTimeout);
+            this._escapeTimeout = null;
+        }
+
         const playerSpd = this.player.spd;
         const enemySpd = this.enemy.spd;
 

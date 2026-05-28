@@ -2674,6 +2674,10 @@ export class Game {
 
     giveupChase() {
         if (state.currentCombat) {
+            if (state.currentCombat._escapeTimeout) {
+                clearTimeout(state.currentCombat._escapeTimeout);
+                state.currentCombat._escapeTimeout = null;
+            }
             state.ui.toggleOverlay(document.getElementById('chase-overlay'), false);
             state.ui.toast("Ngươi quyết định không đuổi theo, kẻ địch đã trốn thoát thành công.", "info");
             state.currentCombat.onEnd?.('escape');
