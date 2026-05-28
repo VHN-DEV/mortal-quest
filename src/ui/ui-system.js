@@ -1558,20 +1558,14 @@ export class UISystem {
             }
 
             const warnText = document.createElement('div');
-            warnText.className = 'absolute z-40 font-bold font-ancient text-[8px] text-red-500 pointer-events-none select-none filter drop-shadow-[0_0_3px_rgba(0,0,0,0.9)]';
+            warnText.className = 'absolute z-40 font-bold font-ancient text-[8px] text-red-500 pointer-events-none select-none filter drop-shadow-[0_0_3px_rgba(0,0,0,0.9)] warn-text-float-up';
             warnText.textContent = `Linh căn bất hợp (${cfg.name})`;
             warnText.style.left = `${x}px`;
             warnText.style.top = `${y}px`;
             warnText.style.transform = 'translate(-50%, -50%)';
             document.getElementById('screen-main').appendChild(warnText);
 
-            gsap.to(warnText, {
-                y: -45,
-                opacity: 0,
-                duration: 1.2,
-                ease: 'power1.out',
-                onComplete: () => warnText.remove()
-            });
+            warnText.addEventListener('animationend', () => warnText.remove());
 
             bubble.removeAttribute('data-popped');
             return;
@@ -1590,13 +1584,11 @@ export class UISystem {
         document.getElementById('screen-main').appendChild(popRing);
         setTimeout(() => popRing.remove(), 500);
 
-        // Remove bubble element smoothly
-        gsap.to(bubble, {
-            scale: 0,
-            opacity: 0,
-            duration: 0.15,
-            onComplete: () => bubble.remove()
-        });
+        // Remove bubble element smoothly using CSS Transitions
+        bubble.style.transition = 'transform 0.15s ease-in, opacity 0.15s ease-in';
+        bubble.style.transform = 'scale(0)';
+        bubble.style.opacity = '0';
+        bubble.addEventListener('transitionend', () => bubble.remove());
 
         if (isAuto) {
             // Show gain text for auto absorb
@@ -1607,20 +1599,14 @@ export class UISystem {
             }
             const gainVal = Math.max(1, Math.floor(tvps * 2));
             const gainText = document.createElement('div');
-            gainText.className = 'absolute z-40 font-bold font-mono text-[9px] text-qi-blue pointer-events-none select-none filter drop-shadow-[0_0_4px_rgba(79,209,197,0.8)]';
+            gainText.className = 'absolute z-40 font-bold font-mono text-[9px] text-qi-blue pointer-events-none select-none filter drop-shadow-[0_0_4px_rgba(79,209,197,0.8)] gain-text-float-up';
             gainText.textContent = `+${gainVal} Tu Vi (Hấp Thu)`;
             gainText.style.left = `${x}px`;
             gainText.style.top = `${y}px`;
             gainText.style.transform = 'translate(-50%, -50%)';
             document.getElementById('screen-main').appendChild(gainText);
 
-            gsap.to(gainText, {
-                y: -65,
-                opacity: 0,
-                duration: 1.4,
-                ease: 'power2.out',
-                onComplete: () => gainText.remove()
-            });
+            gainText.addEventListener('animationend', () => gainText.remove());
         } else {
             // Trigger controller absorb action with type and size multiplier
             if (window.game && typeof window.game.absorbBubble === 'function') {
@@ -1628,20 +1614,14 @@ export class UISystem {
                 if (result && result.success) {
                     // Spawn beautiful floating +Exp text
                     const gainText = document.createElement('div');
-                    gainText.className = 'absolute z-40 font-bold font-mono text-[9px] text-qi-blue pointer-events-none select-none filter drop-shadow-[0_0_4px_rgba(79,209,197,0.8)]';
+                    gainText.className = 'absolute z-40 font-bold font-mono text-[9px] text-qi-blue pointer-events-none select-none filter drop-shadow-[0_0_4px_rgba(79,209,197,0.8)] gain-text-float-up';
                     gainText.textContent = `+${Math.floor(result.gain)} Tu Vi`;
                     gainText.style.left = `${x}px`;
                     gainText.style.top = `${y}px`;
                     gainText.style.transform = 'translate(-50%, -50%)';
                     document.getElementById('screen-main').appendChild(gainText);
 
-                    gsap.to(gainText, {
-                        y: -65,
-                        opacity: 0,
-                        duration: 1.4,
-                        ease: 'power2.out',
-                        onComplete: () => gainText.remove()
-                    });
+                    gainText.addEventListener('animationend', () => gainText.remove());
                 }
             }
         }
@@ -1653,33 +1633,35 @@ export class UISystem {
             const destX = portRect.left - containerRect.left + portRect.width / 2;
             const destY = portRect.top - containerRect.top + portRect.height / 2;
 
-            for (let i = 0; i < 4; i++) {
+            // Reduce to 1 particle for auto-absorb, 2 for manual tap to preserve performance
+            const numParticles = isAuto ? 1 : 2;
+            for (let i = 0; i < numParticles; i++) {
                 const p = document.createElement('div');
                 p.className = 'qi-trail-particle';
                 p.style.setProperty('--element-color', cfg.color);
                 p.style.left = `${x}px`;
                 p.style.top = `${y}px`;
+                
+                // Hardware accelerated transition
+                p.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease-in, scale 0.6s ease-in';
+                p.style.transform = 'translate(0px, 0px) scale(1)';
                 document.getElementById('screen-main').appendChild(p);
 
-                const ctrlX = x + (Math.random() * 200 - 100);
-                const ctrlY = y - (50 + Math.random() * 100);
+                // Midpoint offsets for a curved path effect
+                const midX = (Math.random() * 120 - 60);
+                const midY = -(30 + Math.random() * 50);
 
-                const tl = gsap.timeline({
-                    onComplete: () => p.remove()
+                // Animate first to mid point, then to destination
+                requestAnimationFrame(() => {
+                    p.style.transform = `translate(${midX}px, ${midY}px) scale(1.2)`;
+                    
+                    setTimeout(() => {
+                        p.style.transform = `translate(${destX - x}px, ${destY - y}px) scale(0.3)`;
+                        p.style.opacity = '0';
+                    }, 200);
                 });
 
-                tl.to(p, {
-                    x: ctrlX - x,
-                    y: ctrlY - y,
-                    duration: 0.35,
-                    ease: "power1.out"
-                }).to(p, {
-                    x: destX - x,
-                    y: destY - y,
-                    scale: 0.3,
-                    duration: 0.45,
-                    ease: "power2.in"
-                });
+                p.addEventListener('transitionend', () => p.remove());
             }
         }
     }
@@ -1749,7 +1731,7 @@ export class UISystem {
         bubble.style.setProperty('--element-color', cfg.color);
         bubble.style.animation = 'none';
         bubble.style.opacity = '0';
-        bubble.style.transform = 'scale(0.5)';
+        bubble.style.transform = 'scale(0.5) translate(0px, 0px)';
 
         const startX = 25 + Math.random() * 50; // 25% to 75%
         const startY = 35 + Math.random() * 20; // 35% to 55%
@@ -1766,17 +1748,16 @@ export class UISystem {
         container.appendChild(bubble);
 
         const floatDuration = 0.8 + Math.random() * 0.4;
-        gsap.to(bubble, {
-            opacity: 1,
-            scale: 1,
-            y: -50 - Math.random() * 30,
-            x: (Math.random() - 0.5) * 40,
-            duration: floatDuration,
-            ease: 'power1.out',
-            onComplete: () => {
-                this.popBubble(bubble, cfg, true);
-            }
+        bubble.style.transition = `transform ${floatDuration}s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${floatDuration}s ease-out`;
+        
+        requestAnimationFrame(() => {
+            bubble.style.opacity = '1';
+            bubble.style.transform = `scale(1) translate(${(Math.random() - 0.5) * 40}px, ${-50 - Math.random() * 30}px)`;
         });
+
+        setTimeout(() => {
+            this.popBubble(bubble, cfg, true);
+        }, floatDuration * 1000);
     }
 
     handleCultivationSuccess(result) {
@@ -1791,35 +1772,19 @@ export class UISystem {
         const currentStep = cycles[focus].step;
 
         // Custom visual response depending on the refinement focus type
-        if (focus === 'tuvi') {
-            // Pulse the aura border with cyan glow
-            const auraBorder = document.getElementById('aura-border');
-            if (auraBorder) {
-                gsap.killTweensOf(auraBorder);
-                gsap.fromTo(auraBorder,
-                    { boxShadow: '0 0 10px rgba(79, 209, 197, 0.25)', borderColor: 'rgba(79, 209, 197, 0.4)' },
-                    { boxShadow: '0 0 50px rgba(79, 209, 197, 0.95)', borderColor: 'rgba(79, 209, 197, 0.9)', duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out" }
-                );
-            }
-        } else if (focus === 'body') {
-            // Pulse the aura border with red glow
-            const auraBorder = document.getElementById('aura-border');
-            if (auraBorder) {
-                gsap.killTweensOf(auraBorder);
-                gsap.fromTo(auraBorder,
-                    { boxShadow: '0 0 10px rgba(239, 68, 68, 0.25)', borderColor: 'rgba(239, 68, 68, 0.4)' },
-                    { boxShadow: '0 0 50px rgba(239, 68, 68, 0.95)', borderColor: 'rgba(239, 68, 68, 0.9)', duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out" }
-                );
-            }
-        } else if (focus === 'soul') {
-            // Pulse the aura border with purple glow
-            const auraBorder = document.getElementById('aura-border');
-            if (auraBorder) {
-                gsap.killTweensOf(auraBorder);
-                gsap.fromTo(auraBorder,
-                    { boxShadow: '0 0 10px rgba(168, 85, 247, 0.25)', borderColor: 'rgba(168, 85, 247, 0.4)' },
-                    { boxShadow: '0 0 50px rgba(168, 85, 247, 0.95)', borderColor: 'rgba(168, 85, 247, 0.9)', duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out" }
-                );
+        const auraBorder = document.getElementById('aura-border');
+        if (auraBorder) {
+            auraBorder.classList.remove('pulse-glow-tuvi', 'pulse-glow-body', 'pulse-glow-soul');
+            
+            // Trigger reflow to restart CSS animation
+            void auraBorder.offsetWidth;
+            
+            if (focus === 'tuvi') {
+                auraBorder.classList.add('pulse-glow-tuvi');
+            } else if (focus === 'body') {
+                auraBorder.classList.add('pulse-glow-body');
+            } else if (focus === 'soul') {
+                auraBorder.classList.add('pulse-glow-soul');
             }
         }
 

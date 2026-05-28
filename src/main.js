@@ -309,17 +309,70 @@ window.showLocationDetailPopup = showLocationDetailPopup;
 
 let lastRenderedLocId = null;
 
+// --- OPTIMIZATION HELPERS FOR MAIN STATS SCREEN ---
+const mainStatsCache = {
+    elements: new Map(),
+    lastValues: new Map()
+};
+
+function getCachedEl(id) {
+    let el = mainStatsCache.elements.get(id);
+    if (!el) {
+        el = document.getElementById(id);
+        if (el) mainStatsCache.elements.set(id, el);
+    }
+    return el;
+}
+
+function updateCachedText(id, val) {
+    const el = getCachedEl(id);
+    if (!el) return;
+    if (mainStatsCache.lastValues.get(id) !== val) {
+        mainStatsCache.lastValues.set(id, val);
+        el.textContent = val;
+    }
+}
+
+function updateCachedHtml(id, val) {
+    const el = getCachedEl(id);
+    if (!el) return;
+    if (mainStatsCache.lastValues.get(id) !== val) {
+        mainStatsCache.lastValues.set(id, val);
+        el.innerHTML = val;
+    }
+}
+
+function updateCachedStyleWidth(id, pct) {
+    const el = getCachedEl(id);
+    if (!el) return;
+    const rounded = pct.toFixed(1) + '%';
+    const key = `${id}_width`;
+    if (mainStatsCache.lastValues.get(key) !== rounded) {
+        mainStatsCache.lastValues.set(key, rounded);
+        el.style.width = rounded;
+    }
+}
+
+function updateCachedDashOffset(id, offset, totalCircumference) {
+    const el = getCachedEl(id);
+    if (!el) return;
+    const rounded = offset.toFixed(2);
+    const key = `${id}_offset`;
+    if (mainStatsCache.lastValues.get(key) !== rounded) {
+        mainStatsCache.lastValues.set(key, rounded);
+        el.style.strokeDashoffset = rounded;
+    }
+}
+
 window.renderMainStats = () => {
     const player = state.player;
     if (!player) return;
 
-    // 1. Render global stats (Header & Time HUD) - always update!
+    // 1. Render global stats (Header & Time HUD) - always update with dirty checking!
     const realm = player.getCurrentRealm();
-    const elRealm = document.getElementById('current-realm');
-    if (elRealm) elRealm.textContent = realm.name;
+    updateCachedText('current-realm', realm.name);
 
-    const elLingShiText = document.getElementById('ling-shi-text');
-    if (elLingShiText) elLingShiText.innerHTML = player.getFormattedLingShi();
+    updateCachedHtml('ling-shi-text', player.getFormattedLingShi());
 
     renderTimeHUD();
 
@@ -327,25 +380,20 @@ window.renderMainStats = () => {
     if (state.ui && state.ui.currentScreenId !== 'screen-main') return;
 
     // Render current location name and background dynamically
-    const elLocName = document.getElementById('main-current-location');
-    const elMainScreen = document.getElementById('screen-main');
+    const elLocName = getCachedEl('main-current-location');
+    const elMainScreen = getCachedEl('screen-main');
 
     if (elLocName || elMainScreen) {
         const locName = findLocationName(state.currentLocId);
-        if (elLocName && elLocName.textContent !== locName) {
-            elLocName.textContent = locName;
-        }
+        updateCachedText('main-current-location', locName);
 
         const loc = getLocationById(state.currentWorldId, state.currentLocId);
-
         const focus = player.cultivationFocus || 'tuvi';
         const bgKey = `${state.currentLocId}`;
+        
         if (elMainScreen && elMainScreen.dataset.bgKey !== bgKey) {
             elMainScreen.dataset.bgKey = bgKey;
-            
             const bgUrl = loc?.image || ASSETS.backgrounds.cultivation;
-
-            // Set linear-gradient overlay for excellent readability and atmosphere
             elMainScreen.style.backgroundImage = `linear-gradient(to bottom, rgba(10, 10, 12, 0.55), rgba(10, 10, 12, 0.85)), url('${bgUrl}')`;
             elMainScreen.style.backgroundSize = 'cover';
             elMainScreen.style.backgroundPosition = 'center';
@@ -353,7 +401,7 @@ window.renderMainStats = () => {
         }
 
         // Set cultivation-specific portrait for the center avatar frame
-        const mainPortrait = document.getElementById('main-player-portrait');
+        const mainPortrait = getCachedEl('main-player-portrait');
         if (mainPortrait) {
             let focusPortraitUrl = '';
             if (focus === 'tuvi') focusPortraitUrl = getAssetUrl('cultivation/tu_vi.webp');
@@ -372,60 +420,69 @@ window.renderMainStats = () => {
             soul: { border: 'rgba(168, 85, 247, 0.4)', shadow: 'rgba(168, 85, 247, 0.25)' } // Purple
         };
         const borderCfg = focusColors[focus] || focusColors.tuvi;
-        const auraBorder = document.getElementById('aura-border');
+        const auraBorder = getCachedEl('aura-border');
         if (auraBorder) {
-            auraBorder.style.borderColor = borderCfg.border;
-            auraBorder.style.boxShadow = `0 0 50px ${borderCfg.shadow}`;
+            const borderKey = `${borderCfg.border}_${borderCfg.shadow}`;
+            if (mainStatsCache.lastValues.get('aura_border_style') !== borderKey) {
+                mainStatsCache.lastValues.set('aura_border_style', borderKey);
+                auraBorder.style.borderColor = borderCfg.border;
+                auraBorder.style.boxShadow = `0 0 50px ${borderCfg.shadow}`;
+            }
         }
 
-        // Render 10-element local Qi distribution grid on the main cultivation screen
-        const elMainQiGrid = document.getElementById('main-element-qi-grid');
-        const elMainPurityTag = document.getElementById('main-purity-tag');
+        // Render 10-element local Qi distribution grid (rendered static to current location)
+        const elMainQiGrid = getCachedEl('main-element-qi-grid');
+        const mainPath = player.mainPath || 'orthodox';
+        
         if (elMainQiGrid && loc) {
-            const ELEMENT_COLORS = {
-                'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
-                'Phong': '#94a3b8', 'Lôi': '#fbbf24', 'Băng': '#60a5fa', 'Quang': '#fffbeb', 'Ám': '#a855f7'
-            };
-            const ELEMENT_ICONS = {
-                'Kim': '⚔️', 'Mộc': '🌿', 'Thủy': '💧', 'Hỏa': '🔥', 'Thổ': '⛰️',
-                'Phong': '🌪️', 'Lôi': '⚡', 'Băng': '❄️', 'Quang': '☀️', 'Ám': '🌙'
-            };
-
-            // Get location specific elementQi or default balanced
-            const defaultQi = {
-                'Kim': 15, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 15,
-                'Phong': 5, 'Lôi': 5, 'Băng': 5, 'Quang': 5, 'Ám': 5
-            };
-            const elementQi = loc.elementQi || defaultQi;
-
-            if (elMainPurityTag && loc.energies && loc.energies.length > 0) {
-                const mainEnergy = loc.energies[0];
-                const purityMap = {
-                    'TINH_THUAN': 'Tinh Thuần',
-                    'CUC_PHAM': 'Cực Phẩm',
-                    'TAP': 'Tạp Chất',
-                    'DAO': 'Đạo Vận'
+            const gridKey = `${state.currentLocId}_${mainPath}`;
+            if (mainStatsCache.lastValues.get('main_qi_grid') !== gridKey) {
+                mainStatsCache.lastValues.set('main_qi_grid', gridKey);
+                
+                const ELEMENT_COLORS = {
+                    'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
+                    'Phong': '#94a3b8', 'Lôi': '#fbbf24', 'Băng': '#60a5fa', 'Quang': '#fffbeb', 'Ám': '#a855f7'
                 };
-                elMainPurityTag.textContent = `${mainEnergy.type.replace(/_/g, ' ').toUpperCase()} - ${purityMap[mainEnergy.purity] || 'Thường'}`;
+                const ELEMENT_ICONS = {
+                    'Kim': '⚔️', 'Mộc': '🌿', 'Thủy': '💧', 'Hỏa': '🔥', 'Thổ': '⛰️',
+                    'Phong': '🌪️', 'Lôi': '⚡', 'Băng': '❄️', 'Quang': '☀️', 'Ám': '🌙'
+                };
+
+                const defaultQi = {
+                    'Kim': 15, 'Mộc': 15, 'Thủy': 15, 'Hỏa': 15, 'Thổ': 15,
+                    'Phong': 5, 'Lôi': 5, 'Băng': 5, 'Quang': 5, 'Ám': 5
+                };
+                const elementQi = loc.elementQi || defaultQi;
+
+                if (loc.energies && loc.energies.length > 0) {
+                    const mainEnergy = loc.energies[0];
+                    const purityMap = {
+                        'TINH_THUAN': 'Tinh Thuần',
+                        'CUC_PHAM': 'Cực Phẩm',
+                        'TAP': 'Tạp Chất',
+                        'DAO': 'Đạo Vận'
+                    };
+                    updateCachedText('main-purity-tag', `${mainEnergy.type.replace(/_/g, ' ').toUpperCase()} - ${purityMap[mainEnergy.purity] || 'Thường'}`);
+                }
+
+                const elements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ', 'Phong', 'Lôi', 'Băng', 'Quang', 'Ám'];
+                elMainQiGrid.innerHTML = elements.map(el => {
+                    const pct = elementQi[el] || 0;
+                    const color = ELEMENT_COLORS[el];
+                    const icon = ELEMENT_ICONS[el];
+                    const active = pct > 0;
+
+                    return `
+                        <div class="flex flex-col items-center justify-center p-1.5 rounded-lg border transition-all select-none
+                            ${active ? 'bg-white/[0.02] border-white/10' : 'bg-black/10 border-white/[0.02] opacity-30'}"
+                            style="${active ? `border-color: ${color}20 !important; box-shadow: inset 0 0 4px ${color}10 !important;` : ''}">
+                            <span class="text-xs filter drop-shadow-[0_0_2px_${color}]" style="color: ${color}">${icon}</span>
+                            <span class="text-[7px] font-ancient font-semibold text-gray-400 mt-0.5">${el}</span>
+                            <span class="text-[8px] font-mono font-bold mt-0.5" style="color: ${active ? color : '#6b7280'}">${pct}%</span>
+                        </div>
+                    `;
+                }).join('');
             }
-
-            const elements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ', 'Phong', 'Lôi', 'Băng', 'Quang', 'Ám'];
-            elMainQiGrid.innerHTML = elements.map(el => {
-                const pct = elementQi[el] || 0;
-                const color = ELEMENT_COLORS[el];
-                const icon = ELEMENT_ICONS[el];
-                const active = pct > 0;
-
-                return `
-                    <div class="flex flex-col items-center justify-center p-1.5 rounded-lg border transition-all select-none
-                        ${active ? 'bg-white/[0.02] border-white/10' : 'bg-black/10 border-white/[0.02] opacity-30'}"
-                        style="${active ? `border-color: ${color}20 !important; box-shadow: inset 0 0 4px ${color}10 !important;` : ''}">
-                        <span class="text-xs filter drop-shadow-[0_0_2px_${color}]" style="color: ${color}">${icon}</span>
-                        <span class="text-[7px] font-ancient font-semibold text-gray-400 mt-0.5">${el}</span>
-                        <span class="text-[8px] font-mono font-bold mt-0.5" style="color: ${active ? color : '#6b7280'}">${pct}%</span>
-                    </div>
-                `;
-            }).join('');
         }
     }
 
@@ -441,45 +498,44 @@ window.renderMainStats = () => {
     const progress = (currentExp / activeRealm.expRequired) * 100;
 
     // Update local qi headers and purity based on main path
-    const localQiTitle = document.getElementById('local-qi-title');
-    const mainPurityTag = document.getElementById('main-purity-tag');
     const mainPath = player.mainPath || 'orthodox';
-    if (localQiTitle) {
-        if (mainPath === 'ma_dao') localQiTitle.textContent = 'Tỷ Lệ Ma Khí Địa Phương';
-        else if (mainPath === 'quy_dao') localQiTitle.textContent = 'Tỷ Lệ Âm Khí Địa Phương';
-        else if (mainPath === 'yeu_tu') localQiTitle.textContent = 'Tỷ Lệ Yêu Lực Địa Phương';
-        else localQiTitle.textContent = 'Tỷ Lệ Linh Khí Địa Phương';
-    }
+    
+    let targetQiTitle = 'Tỷ Lệ Linh Khí Địa Phương';
+    if (mainPath === 'ma_dao') targetQiTitle = 'Tỷ Lệ Ma Khí Địa Phương';
+    else if (mainPath === 'quy_dao') targetQiTitle = 'Tỷ Lệ Âm Khí Địa Phương';
+    else if (mainPath === 'yeu_tu') targetQiTitle = 'Tỷ Lệ Yêu Lực Địa Phương';
+    updateCachedText('local-qi-title', targetQiTitle);
+
+    const mainPurityTag = getCachedEl('main-purity-tag');
     if (mainPurityTag && mainPurityTag.textContent && !mainPurityTag.textContent.includes('-')) {
-        if (mainPath === 'ma_dao') mainPurityTag.textContent = 'MA KHÍ';
-        else if (mainPath === 'quy_dao') mainPurityTag.textContent = 'ÂM KHÍ';
-        else if (mainPath === 'yeu_tu') mainPurityTag.textContent = 'YÊU LỰC';
-        else mainPurityTag.textContent = 'LINH KHÍ';
+        let purityText = 'LINH KHÍ';
+        if (mainPath === 'ma_dao') purityText = 'MA KHÍ';
+        else if (mainPath === 'quy_dao') purityText = 'ÂM KHÍ';
+        else if (mainPath === 'yeu_tu') purityText = 'YÊU LỰC';
+        updateCachedText('main-purity-tag', purityText);
     }
 
     // Update main bar label
-    const mainBarLabel = document.getElementById('main-focus-bar-label');
-    if (mainBarLabel) {
-        if (focus === 'tuvi') {
-            if (mainPath === 'ma_dao') mainBarLabel.textContent = 'Ma Khí';
-            else if (mainPath === 'quy_dao') mainBarLabel.textContent = 'Âm Khí';
-            else if (mainPath === 'yeu_tu') mainBarLabel.textContent = 'Yêu Lực';
-            else mainBarLabel.textContent = 'Tu Vi';
-        } else if (focus === 'body') {
-            mainBarLabel.textContent = 'Luyện Thể';
-        } else if (focus === 'soul') {
-            mainBarLabel.textContent = 'Thần Thức';
-        } else {
-            // Specialized paths
-            const focusNames = {
-                sword: 'Kiếm Ý',
-                soul_path: 'Hồn Lực',
-                buddhist: 'Phật Pháp',
-                confucian: 'Nho Học'
-            };
-            mainBarLabel.textContent = focusNames[focus] || 'Tu Luyện';
-        }
+    let barLabelText = 'Tu Luyện';
+    if (focus === 'tuvi') {
+        if (mainPath === 'ma_dao') barLabelText = 'Ma Khí';
+        else if (mainPath === 'quy_dao') barLabelText = 'Âm Khí';
+        else if (mainPath === 'yeu_tu') barLabelText = 'Yêu Lực';
+        else barLabelText = 'Tu Vi';
+    } else if (focus === 'body') {
+        barLabelText = 'Luyện Thể';
+    } else if (focus === 'soul') {
+        barLabelText = 'Thần Thức';
+    } else {
+        const focusNames = {
+            sword: 'Kiếm Ý',
+            soul_path: 'Hồn Lực',
+            buddhist: 'Phật Pháp',
+            confucian: 'Nho Học'
+        };
+        barLabelText = focusNames[focus] || 'Tu Luyện';
     }
+    updateCachedText('main-focus-bar-label', barLabelText);
 
     // Detect passive cultivation tuVi gain and spawn auto absorbing bubble
     if (state.ui) {
@@ -499,20 +555,8 @@ window.renderMainStats = () => {
         state.ui.lastTuVi = player.tuVi;
     }
 
-    const elProgress = document.getElementById('tu-vi-progress');
-    const elTuViText = document.getElementById('tu-vi-text');
-    const elPerSec = document.getElementById('tu-vi-per-sec');
-    const elBodyProgress = document.getElementById('body-progress');
-    const elBodyText = document.getElementById('body-text');
-    const elSoulProgress = document.getElementById('soul-progress');
-    const elSoulText = document.getElementById('soul-text');
-    const elBtnBreakthrough = document.getElementById('breakthrough-btn');
-    const elBtnCultivateText = document.getElementById('cultivate-btn-text');
-
-    if (elProgress) {
-        elProgress.style.width = `${Math.min(100, progress)}%`;
-    }
-    if (elTuViText) elTuViText.textContent = `${Math.floor(currentExp).toLocaleString()} / ${activeRealm.expRequired.toLocaleString()}`;
+    updateCachedStyleWidth('tu-vi-progress', Math.min(100, progress));
+    updateCachedText('tu-vi-text', `${Math.floor(currentExp).toLocaleString()} / ${activeRealm.expRequired.toLocaleString()}`);
 
     let tvps = player.tuViPerSecond;
     if (focus === 'body') tvps = player.bodyExpPerSecond;
@@ -528,39 +572,23 @@ window.renderMainStats = () => {
         if (season.bonus && season.bonus.tvps) tvps *= season.bonus.tvps;
     }
 
-    if (elPerSec) elPerSec.textContent = `+${tvps.toFixed(1)}/s`;
+    updateCachedText('tu-vi-per-sec', `+${tvps.toFixed(1)}/s`);
 
     const bodyRealm = player.getCurrentRealm('body');
     const soulRealm = player.getCurrentRealm('soul');
     const bodyPercent = Math.min(100, (player.bodyExp / bodyRealm.expRequired) * 100);
     const soulPercent = Math.min(100, (player.soulExp / soulRealm.expRequired) * 100);
 
-    if (elBodyProgress) elBodyProgress.style.width = `${bodyPercent}%`;
-    if (elSoulProgress) elSoulProgress.style.width = `${soulPercent}%`;
+    updateCachedStyleWidth('body-progress', bodyPercent);
+    updateCachedStyleWidth('soul-progress', soulPercent);
 
-    if (elBodyText) elBodyText.textContent = `${Math.floor(bodyPercent)}%`;
-    if (elSoulText) elSoulText.textContent = `${Math.floor(soulPercent)}%`;
+    updateCachedText('body-text', `${Math.floor(bodyPercent)}%`);
+    updateCachedText('soul-text', `${Math.floor(soulPercent)}%`);
 
-    // Circular Progress Update
-    const circleTuVi = document.getElementById('circle-tu-vi');
-    const circleBody = document.getElementById('circle-body');
-    const circleSoul = document.getElementById('circle-soul');
-
-    if (circleTuVi) {
-        const circumference = 301.6;
-        const offset = circumference - (Math.min(100, progress) / 100) * circumference;
-        circleTuVi.style.strokeDashoffset = offset;
-    }
-    if (circleBody) {
-        const circumference = 276.5;
-        const offset = circumference - (bodyPercent / 100) * circumference;
-        circleBody.style.strokeDashoffset = offset;
-    }
-    if (circleSoul) {
-        const circumference = 251.3;
-        const offset = circumference - (soulPercent / 100) * circumference;
-        circleSoul.style.strokeDashoffset = offset;
-    }
+    // Circular Progress Update with dirty checking
+    updateCachedDashOffset('circle-tu-vi', 301.6 - (Math.min(100, progress) / 100) * 301.6, 301.6);
+    updateCachedDashOffset('circle-body', 276.5 - (bodyPercent / 100) * 276.5, 276.5);
+    updateCachedDashOffset('circle-soul', 251.3 - (soulPercent / 100) * 251.3, 251.3);
 
     let tuviBtnText = 'Pháp lực';
     if (mainPath === 'ma_dao') tuviBtnText = 'Ma khí';
@@ -588,11 +616,11 @@ window.renderMainStats = () => {
         soul: 'focus-soul'
     };
     Object.entries(mainTabs).forEach(([key, id]) => {
-        const btn = document.getElementById(id);
+        const btn = getCachedEl(id);
         if (!btn) return;
         
         if (key === 'tuvi') {
-            btn.textContent = tuviBtnText;
+            updateCachedText(id, tuviBtnText);
         }
 
         const active = key === focus;
@@ -601,8 +629,16 @@ window.renderMainStats = () => {
             : key === 'body'
                 ? 'bg-red-500/20 text-red-400 border border-red-500/30 focus-body'
                 : 'bg-qi-purple/20 text-qi-purple border border-qi-purple/30 focus-soul';
-        btn.className = `flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all ${active ? activeClass : 'text-gray-500 border border-transparent hover:text-white'}`;
+        
+        const targetClass = `flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all ${active ? activeClass : 'text-gray-500 border border-transparent hover:text-white'}`;
+        const classKey = `${id}_class`;
+        if (mainStatsCache.lastValues.get(classKey) !== targetClass) {
+            mainStatsCache.lastValues.set(classKey, targetClass);
+            btn.className = targetClass;
+        }
     });
+
+    const elBtnCultivateText = getCachedEl('cultivate-btn-text');
     if (elBtnCultivateText) {
         const cfg = focusMap[focus];
         const cycle = player.meridianCycles?.[focus] || { step: 0, count: 0 };
@@ -610,46 +646,57 @@ window.renderMainStats = () => {
         const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, player.race);
         const maxSteps = subRealms.length > 1 ? subRealms.length : 10;
         
-        elBtnCultivateText.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-0.5 select-none">
-                ${focus === 'tuvi' ? `
-                <span class="text-[7.5px] text-cultivation-gold/90 font-mono tracking-[0.2em] font-black uppercase mb-0.5">
-                    Chu Thiên: ${cycle.step} / ${maxSteps} (Lũy kế: ${cycle.count})
-                </span>
-                ` : ''}
-                <span class="text-xs font-bold tracking-[0.25em] flex items-center justify-center">
-                    <i class="ph ${cfg.icon} mr-2 text-glow"></i>${cfg.label}
-                </span>
-            </div>
-        `;
-    }
-    if (elBtnBreakthrough) {
-        const check = player.canBreakthrough(focus);
-        elBtnBreakthrough.disabled = !check.can;
-        elBtnBreakthrough.title = check.can ? '' : (check.reason || 'Chưa đủ điều kiện');
+        const contentKey = `${focus}_${cycle.step}_${maxSteps}_${cycle.count}`;
+        if (mainStatsCache.lastValues.get('cultivate_btn_content') !== contentKey) {
+            mainStatsCache.lastValues.set('cultivate_btn_content', contentKey);
+            elBtnCultivateText.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-0.5 select-none">
+                    ${focus === 'tuvi' ? `
+                    <span class="text-[7.5px] text-cultivation-gold/90 font-mono tracking-[0.2em] font-black uppercase mb-0.5">
+                        Chu Thiên: ${cycle.step} / ${maxSteps} (Lũy kế: ${cycle.count})
+                    </span>
+                    ` : ''}
+                    <span class="text-xs font-bold tracking-[0.25em] flex items-center justify-center">
+                        <i class="ph ${cfg.icon} mr-2 text-glow"></i>${cfg.label}
+                    </span>
+                </div>
+            `;
+        }
     }
 
-    const meridianContainer = document.getElementById('meridian-circle-container');
-    const cycles = player.meridianCycles || {
-        tuvi: { step: 0, count: 0 },
-        body: { step: 0, count: 0 },
-        soul: { step: 0, count: 0 }
-    };
-    
+    const elBtnBreakthrough = getCachedEl('breakthrough-btn');
+    if (elBtnBreakthrough) {
+        const check = player.canBreakthrough(focus);
+        const checkKey = `${check.can}_${check.reason || ''}`;
+        if (mainStatsCache.lastValues.get('breakthrough_btn_check') !== checkKey) {
+            mainStatsCache.lastValues.set('breakthrough_btn_check', checkKey);
+            elBtnBreakthrough.disabled = !check.can;
+            elBtnBreakthrough.title = check.can ? '' : (check.reason || 'Chưa đủ điều kiện');
+        }
+    }
+
+    const meridianContainer = getCachedEl('meridian-circle-container');
     if (meridianContainer) {
         if (focus !== 'tuvi') {
-            meridianContainer.style.display = 'none';
+            if (mainStatsCache.lastValues.get('meridian_container_display') !== 'none') {
+                mainStatsCache.lastValues.set('meridian_container_display', 'none');
+                meridianContainer.style.display = 'none';
+            }
         } else {
-            meridianContainer.style.display = 'block';
-            const currentRealmId = focus === 'tuvi' ? player.realmId : (focus === 'body' ? player.bodyRealmId : player.soulRealmId);
+            if (mainStatsCache.lastValues.get('meridian_container_display') !== 'block') {
+                mainStatsCache.lastValues.set('meridian_container_display', 'block');
+                meridianContainer.style.display = 'block';
+            }
+            const currentRealmId = player.realmId;
             const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, player.race);
             const numNodes = subRealms.length > 1 ? subRealms.length : 10;
             
             // Rebuild nodes if they don't match the current focus or count
             const currentCount = meridianContainer.querySelectorAll('.meridian-node').length;
-            if (currentCount !== numNodes || meridianContainer.dataset.arrangedFocus !== focus) {
+            const arrangedKey = `${focus}_${numNodes}`;
+            if (mainStatsCache.lastValues.get('meridian_arranged_key') !== arrangedKey) {
+                mainStatsCache.lastValues.set('meridian_arranged_key', arrangedKey);
                 meridianContainer.innerHTML = '';
-                meridianContainer.dataset.arrangedFocus = focus;
                 
                 for (let i = 0; i < numNodes; i++) {
                     const node = document.createElement('div');
@@ -673,21 +720,24 @@ window.renderMainStats = () => {
             }
             
             const currentRealmIdx = subRealms.findIndex(r => r.id === currentRealmId);
-            
-            const tvNodes = meridianContainer.querySelectorAll('.meridian-node');
-            tvNodes.forEach((node, idx) => {
-                const isCompleted = currentRealmIdx !== -1 && idx < currentRealmIdx;
-                const isCurrentRealm = currentRealmIdx !== -1 && idx === currentRealmIdx;
-                
-                node.classList.toggle('completed', isCompleted);
-                node.classList.toggle('current-realm', isCurrentRealm);
-                node.classList.remove('active');
-                
-                const rInfo = subRealms[idx];
-                if (rInfo) {
-                    node.title = rInfo.name;
-                }
-            });
+            const nodesStateKey = `${focus}_${currentRealmId}_${currentRealmIdx}`;
+            if (mainStatsCache.lastValues.get('meridian_nodes_state_key') !== nodesStateKey) {
+                mainStatsCache.lastValues.set('meridian_nodes_state_key', nodesStateKey);
+                const tvNodes = meridianContainer.querySelectorAll('.meridian-node');
+                tvNodes.forEach((node, idx) => {
+                    const isCompleted = currentRealmIdx !== -1 && idx < currentRealmIdx;
+                    const isCurrentRealm = currentRealmIdx !== -1 && idx === currentRealmIdx;
+                    
+                    node.classList.toggle('completed', isCompleted);
+                    node.classList.toggle('current-realm', isCurrentRealm);
+                    node.classList.remove('active');
+                    
+                    const rInfo = subRealms[idx];
+                    if (rInfo) {
+                        node.title = rInfo.name;
+                    }
+                });
+            }
         }
     }
 };

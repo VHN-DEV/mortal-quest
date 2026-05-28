@@ -2929,6 +2929,64 @@ select option:checked {
     pointer-events: none;
 }
 
+/* Aura border success pulse */
+@keyframes pulse-glow-tuvi-anim {
+    0% { box-shadow: 0 0 10px rgba(79, 209, 197, 0.25); border-color: rgba(79, 209, 197, 0.4); }
+    50% { box-shadow: 0 0 50px rgba(79, 209, 197, 0.95); border-color: rgba(79, 209, 197, 0.9); }
+    100% { box-shadow: 0 0 10px rgba(79, 209, 197, 0.25); border-color: rgba(79, 209, 197, 0.4); }
+}
+.pulse-glow-tuvi {
+    animation: pulse-glow-tuvi-anim 0.3s ease-out;
+}
+
+@keyframes pulse-glow-body-anim {
+    0% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.25); border-color: rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 50px rgba(239, 68, 68, 0.95); border-color: rgba(239, 68, 68, 0.9); }
+    100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.25); border-color: rgba(239, 68, 68, 0.4); }
+}
+.pulse-glow-body {
+    animation: pulse-glow-body-anim 0.3s ease-out;
+}
+
+@keyframes pulse-glow-soul-anim {
+    0% { box-shadow: 0 0 10px rgba(168, 85, 247, 0.25); border-color: rgba(168, 85, 247, 0.4); }
+    50% { box-shadow: 0 0 50px rgba(168, 85, 247, 0.95); border-color: rgba(168, 85, 247, 0.9); }
+    100% { box-shadow: 0 0 10px rgba(168, 85, 247, 0.25); border-color: rgba(168, 85, 247, 0.4); }
+}
+.pulse-glow-soul {
+    animation: pulse-glow-soul-anim 0.3s ease-out;
+}
+
+/* Floating gain/warn texts */
+@keyframes gain-text-float-up-anim {
+    0% {
+        transform: translate(-50%, -50%) translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) translateY(-65px);
+        opacity: 0;
+    }
+}
+.gain-text-float-up {
+    animation: gain-text-float-up-anim 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes warn-text-float-up-anim {
+    0% {
+        transform: translate(-50%, -50%) translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) translateY(-45px);
+        opacity: 0;
+    }
+}
+.warn-text-float-up {
+    animation: warn-text-float-up-anim 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+
 
 
 
