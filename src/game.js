@@ -1,6 +1,6 @@
 import { state } from './state.js';
 import { Player } from './core/player.js';
-import { SaveSystem } from './core/save-system.js';
+import { SaveSystem, utf8_to_hex, hex_to_utf8 } from './core/save-system.js';
 import { UISystem } from './ui/ui-system.js';
 import { ASSETS } from './configs/asset-data.js';
 import { EnemyGenerator } from './core/enemy.js';
@@ -8,6 +8,7 @@ import { getLocationById } from './configs/map-data.js';
 import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
 import { Preferences } from '@capacitor/preferences';
+import { Capacitor } from '@capacitor/core';
 import { getSectById, SECTS } from './configs/sect-data.js';
 import { getRealmById } from './configs/realm-data.js';
 import { CREATION_SYSTEMS } from './configs/creation-data.js';
@@ -47,6 +48,15 @@ import { MissionSystem } from './systems/MissionSystem.js';
 import { MissionScreen } from './ui/controllers/MissionScreen.js';
 import { CheatSystem } from './systems/CheatSystem.js';
 import { CheatSystemScreen } from './ui/controllers/CheatSystemScreen.js';
+
+function slugifyName(name) {
+    if (!name) return 'VoDanh';
+    return name.normalize('NFD')
+               .replace(/[\u0300-\u036f]/g, '')
+               .replace(/[đĐ]/g, 'd')
+               .replace(/[^a-zA-Z0-9]/g, '')
+               .trim();
+}
 
 export class Game {
     constructor() {
@@ -702,12 +712,14 @@ export class Game {
         state.ui.toast("Toàn bộ Mệnh Đồ Lục đã bị xóa sạch cát bụi!", "success");
     }
 
+
     showSaveMenu(slot) {
         const options = [
             { label: 'Tiếp Tục Chơi', value: 'load', icon: 'ph-play' },
             { label: 'Đổi Tên Nhân Vật', value: 'rename', icon: 'ph-pencil' },
             { label: 'Xóa Dữ Liệu', value: 'delete', icon: 'ph-trash' },
-            { label: 'Sao Lưu (Backup)', value: 'backup', icon: 'ph-copy' },
+            { label: 'Xuất Ô Lưu Này (Export)', value: 'export_slot', icon: 'ph-export' },
+            { label: 'Nhập Đè Ô Lưu Này (Import)', value: 'import_slot', icon: 'ph-import' },
             { label: 'Thống Kê Chi Tiết', value: 'stats', icon: 'ph-chart-bar' }
         ];
 
@@ -721,12 +733,226 @@ export class Game {
                         await SaveSystem.renameSave(slot, newName);
                         await this.screens.save.render();
                     }
-                } else if (action === 'backup') {
-                    state.ui.toast('Tính năng sao lưu đám mây đang được phát triển.', 'info');
+                } else if (action === 'export_slot') {
+                    await this.exportSaves(slot);
+                } else if (action === 'import_slot') {
+                    await this.importSaves(slot);
                 } else if (action === 'stats') {
                     state.ui.toast('Tính năng xem thống kê chi tiết đang được phát triển.', 'info');
                 }
             });
+    }
+
+    async exportSaves(slot = null) {
+        try {
+            const options = [
+                { label: 'Xuất Ra File (.json)', value: 'file', icon: 'ph-file-arrow-down' },
+                { label: 'Sao Chép Mã Save (Văn Bản)', value: 'text', icon: 'ph-copy' }
+            ];
+            
+            const title = slot ? `Xuất Ô Lưu Số ${slot}` : 'Xuất Toàn Bộ Mệnh Đồ';
+            const subtitle = slot ? `Chọn hình thức xuất dữ liệu của ô lưu số ${slot} để chuyển thiết bị.` : 'Chọn hình thức xuất toàn bộ dữ liệu lưu trữ để chuyển thiết bị.';
+            const choice = await state.ui.promptOptions(title, options, subtitle);
+            if (!choice) return;
+            
+            state.ui.showLoading(true, 'Đang phong ấn đạo quả...');
+            
+            let saveData;
+            let fileName;
+            if (slot !== null) {
+                saveData = await SaveSystem.exportSlotSave(slot);
+                const charName = slugifyName(saveData.metadata?.name);
+                fileName = `PhamNhanVanDao_Slot_${slot}_${charName}.json`;
+            } else {
+                saveData = await SaveSystem.exportAllSaves();
+                fileName = `PhamNhanVanDao_AllSaves_${Date.now()}.json`;
+            }
+            
+            const jsonStr = JSON.stringify(saveData);
+            state.ui.showLoading(false);
+            
+            if (choice === 'file') {
+                const isAndroid = Capacitor.getPlatform() === 'android';
+                
+                if (isAndroid) {
+                    try {
+                        const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem');
+                        const writeResult = await Filesystem.writeFile({
+                            path: fileName,
+                            data: jsonStr,
+                            directory: Directory.Cache,
+                            encoding: Encoding.UTF8
+                        });
+                        
+                        const { Share } = await import('@capacitor/share');
+                        await Share.share({
+                            title: slot ? `Sao Lưu Ô ${slot}` : 'Mệnh Đồ Lục Sao Lưu',
+                            text: slot ? `File sao lưu ô lưu số ${slot} game Phàm Nhân Vấn Đạo` : 'File sao lưu toàn bộ game Phàm Nhân Vấn Đạo',
+                            url: writeResult.uri,
+                            dialogTitle: 'Lưu hoặc Chia Sẻ File Save'
+                        });
+                        state.ui.toast('Xuất file thành công!', 'success');
+                    } catch (e) {
+                        logger.error('save', 'Lỗi khi xuất file trên Android', e);
+                        state.ui.toast('Lỗi xuất file. Hãy dùng hình thức Sao Chép Mã Save.', 'error');
+                    }
+                } else {
+                    // Web fallback (cho kiểm thử trên môi trường web)
+                    const blob = new Blob([jsonStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    state.ui.toast('Đã tải xuống file save!', 'success');
+                }
+            } else if (choice === 'text') {
+                const hexStr = utf8_to_hex(jsonStr);
+                try {
+                    await navigator.clipboard.writeText(hexStr);
+                    state.ui.alert('Mã save đã được sao chép vào bộ nhớ tạm. Hãy gửi mã này sang thiết bị mới để nhập!', 'Sao Chép Thành Công');
+                } catch (err) {
+                    state.ui.prompt('Sao chép thủ công mã save bên dưới:', () => {}, hexStr, 'Mã Save Của Bạn');
+                }
+            }
+        } catch (e) {
+            state.ui.showLoading(false);
+            logger.error('save', 'Lỗi xuất save:', e);
+            state.ui.toast(e.message || 'Có lỗi xảy ra khi xuất dữ liệu!', 'error');
+        }
+    }
+
+    async importSaves(targetSlot = null) {
+        try {
+            const options = [
+                { label: 'Nhập Từ File (.json)', value: 'file', icon: 'ph-file-arrow-up' },
+                { label: 'Nhập Bằng Mã Save (Văn Bản)', value: 'text', icon: 'ph-keyboard' }
+            ];
+            
+            const title = targetSlot ? `Nhập Đè Ô Lưu Số ${targetSlot}` : 'Nhập Mệnh Đồ';
+            const choice = await state.ui.promptOptions(title, options, 'Chọn hình thức nhập dữ liệu lưu trữ để tiếp tục hành trình.');
+            if (!choice) return;
+            
+            if (choice === 'file') {
+                const fileInput = document.getElementById('import-save-file');
+                if (fileInput) {
+                    if (targetSlot) {
+                        fileInput.dataset.targetSlot = targetSlot;
+                    } else {
+                        delete fileInput.dataset.targetSlot;
+                    }
+                    fileInput.click();
+                } else {
+                    state.ui.toast('Không tìm thấy cổng nhập file', 'error');
+                }
+            } else if (choice === 'text') {
+                state.ui.prompt('Dán mã save đã sao chép ở thiết bị cũ vào đây:', async (code) => {
+                    if (!code || code.trim() === '') return;
+                    
+                    state.ui.showLoading(true, 'Đang giải mã đạo quả...');
+                    try {
+                        const jsonStr = hex_to_utf8(code.trim());
+                        const data = JSON.parse(jsonStr);
+                        state.ui.showLoading(false);
+                        await this.importSavesData(data, targetSlot);
+                    } catch (err) {
+                        state.ui.showLoading(false);
+                        state.ui.toast('Mã save không hợp lệ hoặc bị lỗi định dạng!', 'error');
+                    }
+                }, '', targetSlot ? `Nhập Vào Ô ${targetSlot}` : 'Nhập Mã Save');
+            }
+        } catch (e) {
+            state.ui.showLoading(false);
+            logger.error('save', 'Lỗi nhập save:', e);
+            state.ui.toast('Có lỗi xảy ra khi chuẩn bị nhập dữ liệu!', 'error');
+        }
+    }
+
+    async importSavesData(data, targetSlot = null) {
+        try {
+            if (!data || (data.type !== 'mortal_quest_save_export' && data.type !== 'mortal_quest_slot_export')) {
+                state.ui.toast('Dữ liệu lưu trữ không đúng định dạng Phàm Nhân Vấn Đạo!', 'error');
+                return;
+            }
+            
+            if (data.type === 'mortal_quest_save_export') {
+                if (targetSlot !== null) {
+                    const proceed = await state.ui.confirm(
+                        'File bạn chọn chứa TOÀN BỘ các ô lưu trữ. Nếu đồng ý, TOÀN BỘ các ô hiện tại trên thiết bị sẽ bị ghi đè!',
+                        'Xác Nhận Khôi Phục Toàn Bộ'
+                    );
+                    if (!proceed) return;
+                } else {
+                    const proceed = await state.ui.confirm(
+                        'Bạn có chắc muốn nhập toàn bộ dữ liệu? Hành động này sẽ GHI ĐÈ và XÓA BỎ TOÀN BỘ các ô lưu trữ hiện tại!',
+                        'Cảnh Báo Ghi Đè Toàn Bộ'
+                    );
+                    if (!proceed) return;
+                }
+                
+                state.ui.showLoading(true, 'Đang trùng kiến mệnh đồ...');
+                const success = await SaveSystem.importAllSaves(data);
+                state.ui.showLoading(false);
+                
+                if (success) {
+                    state.ui.toast('Nhập dữ liệu thành công!', 'success');
+                    if (this.screens.save) {
+                        await this.screens.save.render();
+                    }
+                } else {
+                    state.ui.toast('Nhập dữ liệu thất bại!', 'error');
+                }
+            } else if (data.type === 'mortal_quest_slot_export') {
+                let slot = targetSlot;
+                
+                if (slot === null) {
+                    const slotChoices = [
+                        { label: `Ô lưu số 1 (Ghi đè)`, value: '1' },
+                        { label: `Ô lưu số 2 (Ghi đè)`, value: '2' },
+                        { label: `Ô lưu số 3 (Ghi đè)`, value: '3' },
+                        { label: `Ô lưu số 4 (Ghi đè)`, value: '4' },
+                        { label: `Ô lưu số 5 (Ghi đè)`, value: '5' }
+                    ];
+                    
+                    const charName = data.metadata?.name || 'Vô Danh';
+                    const charRealm = data.metadata?.realm || 'Chưa Tu Luyện';
+                    const selectedSlot = await state.ui.promptOptions(
+                        'Chọn Ô Lưu Đích', 
+                        slotChoices, 
+                        `Phát hiện dữ liệu của đạo hữu [${charName} - ${charRealm}]. Vui lòng chọn ô lưu muốn ghi đè:`
+                    );
+                    if (!selectedSlot) return;
+                    slot = parseInt(selectedSlot, 10);
+                } else {
+                    const charName = data.metadata?.name || 'Vô Danh';
+                    const confirmed = await state.ui.confirm(
+                        `Ngươi có chắc muốn nhập nhân vật [${charName}] đè vào Ô Lưu số ${slot} không? Dữ liệu cũ ở ô này sẽ biến mất!`,
+                        `Xác Nhận Nhập Đè Ô ${slot}`
+                    );
+                    if (!confirmed) return;
+                }
+                
+                state.ui.showLoading(true, `Đang nạp đạo quả vào ô ${slot}...`);
+                const success = await SaveSystem.importSlotSave(slot, data);
+                state.ui.showLoading(false);
+                
+                if (success) {
+                    state.ui.toast(`Nhập dữ liệu vào ô ${slot} thành công!`, 'success');
+                    if (this.screens.save) {
+                        await this.screens.save.render();
+                    }
+                } else {
+                    state.ui.toast('Nhập dữ liệu thất bại!', 'error');
+                }
+            }
+        } catch (e) {
+            state.ui.showLoading(false);
+            logger.error('save', 'Lỗi nhập save:', e);
+            state.ui.toast('Lỗi hệ thống khi nhập dữ liệu!', 'error');
+        }
     }
 
     // --- Systems Initialization ---

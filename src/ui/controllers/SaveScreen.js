@@ -2,6 +2,7 @@ import { state } from '../../state.js';
 import { SaveSystem } from '../../core/save-system.js';
 import { ASSETS } from '../../configs/asset-data.js';
 import { findLocationName } from '../../configs/map-data.js';
+import { Capacitor } from '@capacitor/core';
 
 export class SaveScreen {
     constructor() {
@@ -20,11 +21,32 @@ export class SaveScreen {
 
     async render() {
         const metadata = await SaveSystem.getAllMetadata();
+        const transferHtml = `
+            <!-- Device Transfer Section -->
+            <div class="flex items-center justify-between p-4 rounded-3xl border border-white/10 bg-white/5 space-x-4 mb-2 shrink-0">
+                <div class="flex flex-col">
+                    <span class="text-xs text-cultivation-gold font-ancient uppercase tracking-wider">Chuyển Thiết Bị</span>
+                    <span class="text-[9px] text-gray-500 mt-0.5">Xuất/Nhập lưu trữ sang máy khác</span>
+                </div>
+                <div class="flex space-x-2">
+                    <button id="btn-export-saves" 
+                        class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-cultivation-gold/10 border border-cultivation-gold/30 text-[10px] font-bold text-cultivation-gold hover:bg-cultivation-gold/20 active:scale-95 transition-all">
+                        <i class="ph ph-export text-xs"></i>
+                        <span>Xuất</span>
+                    </button>
+                    <button id="btn-import-saves" 
+                        class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-qi-blue/10 border border-qi-blue/30 text-[10px] font-bold text-qi-blue hover:bg-qi-blue/20 active:scale-95 transition-all">
+                        <i class="ph ph-import text-xs"></i>
+                        <span>Nhập</span>
+                    </button>
+                </div>
+            </div>
+        `;
 
         this.container.innerHTML = `
-            <div class="flex flex-col h-full p-6 space-y-8">
+            <div class="flex flex-col h-full p-6 space-y-6">
                 <!-- Header -->
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between shrink-0">
                     <button id="btn-save-back" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-400">
                         <i class="ph ph-arrow-left text-xl"></i>
                     </button>
@@ -37,9 +59,14 @@ export class SaveScreen {
                     </button>
                 </div>
 
+                ${transferHtml}
+
                 <div class="flex-grow space-y-4 overflow-y-auto custom-scroll pb-10">
                     ${[1, 2, 3, 4, 5].map(slot => this.renderSlot(slot, metadata[slot])).join('')}
                 </div>
+                
+                <!-- Hidden file input for import -->
+                <input type="file" id="import-save-file" accept=".json" style="display: none;" />
             </div>
         `;
 
@@ -159,6 +186,45 @@ export class SaveScreen {
         if (btnBack) {
             btnBack.onclick = () => {
                 state.ui.switchScreen('screen-start');
+            };
+        }
+
+        const btnExport = document.getElementById('btn-export-saves');
+        if (btnExport) {
+            btnExport.onclick = (e) => {
+                e.stopPropagation();
+                window.game.exportSaves();
+            };
+        }
+
+        const btnImport = document.getElementById('btn-import-saves');
+        if (btnImport) {
+            btnImport.onclick = (e) => {
+                e.stopPropagation();
+                window.game.importSaves();
+            };
+        }
+
+        const fileInput = document.getElementById('import-save-file');
+        if (fileInput) {
+            fileInput.onchange = async (e) => {
+                const file = e.target.files[0];
+                const targetSlot = fileInput.dataset.targetSlot ? parseInt(fileInput.dataset.targetSlot, 10) : null;
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = async (evt) => {
+                        try {
+                            const data = JSON.parse(evt.target.result);
+                            await window.game.importSavesData(data, targetSlot);
+                            // Reset input
+                            fileInput.value = '';
+                            delete fileInput.dataset.targetSlot;
+                        } catch (err) {
+                            state.ui.toast('Lỗi đọc file: Định dạng JSON không hợp lệ', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
             };
         }
     }
