@@ -10,7 +10,7 @@ import { MINING_NODES } from '../../configs/mining-data.js';
 import { audioManager } from '../../utils/audio-manager.js';
 import { gsap } from 'gsap';
 import { getItemById } from '../../configs/item-data.js';
-import { EnemyGenerator } from '../../core/enemy.js';
+import { Enemy, EnemyGenerator } from '../../core/enemy.js';
 import { BEASTS } from '../../configs/beast-data.js';
 
 const BEAST_IMAGES = [
@@ -1136,7 +1136,7 @@ export class MapScreen {
             'portraits/xich_nguyet': 'Xích Nguyệt'
         };
 
-        const randomNames = ['Lâm Phong', 'Diệp Vô Đạo', 'Tiêu Cửu', 'Vương Đằng', 'Lý Tầm', 'Mặc Lão'];
+        const randomNames = ['Lệ Phi Vũ', 'Lục Sư Huynh', 'Trần Xảo Thiến', 'Vương Thiền', 'Tống Mông', 'Đồng Chiến', 'Tuyên Nhạc'];
 
         let typeIdx = 0;
 
@@ -1659,16 +1659,21 @@ export class MapScreen {
                 }
                 case 'npc_event': {
                     const npcName = cell.npcName || "Cổ nhân di tích";
+                    const npcIdx = cell.npcIdx !== undefined ? cell.npcIdx : ((x * 5 + y * 11) % NPC_IMAGES.length);
+                    const overrideImage = getAssetUrl(NPC_IMAGES[npcIdx]);
+                    
                     this.updateEventDisplay(`👤 [KỲ NGỘ] Ngươi gặp tu sĩ ${npcName} đang tĩnh tọa...`);
                     setTimeout(async () => {
                         const choice = await state.ui.promptOptions(
                             `Bất Ngờ Gặp ${npcName}`,
                             [
-                                { id: 'talk', text: "Đàm đạo và bồi lễ (-50 Linh thạch, +Tu vi)" },
-                                { id: 'trade', text: "Giao dịch bí bảo mua Linh Thảo" },
-                                { id: 'leave', text: "Chắp tay rời đi" }
+                                { id: 'talk', text: "Cung kính chắp tay, đàm đạo bồi lễ (-50 Linh thạch, +Tu vi)", icon: 'ph-chat-circle-dots' },
+                                { id: 'trade', text: "Trao đổi linh thạch lấy linh thảo (-100 Linh thạch, +1 Cực phẩm Linh Thảo)", icon: 'ph-arrows-left-right' },
+                                { id: 'rob', text: "Sát cơ bùng phát, giết người đoạt bảo! (Chiến đấu giành cực phẩm bí bảo)", icon: 'ph-skull' },
+                                { id: 'leave', text: "Lặng lẽ đề phòng, chắp tay rời đi", icon: 'ph-wind' }
                             ],
-                            `${npcName} thần sắc thâm trầm, thở ra khí xám chắp tay: 'Đạo hữu hữu duyên dừng bước, cùng nhau đàm đạo trao đổi đan dược chứ?'`
+                            `${npcName} thần sắc thâm trầm, thở ra khí xám chắp tay: 'Đạo hữu hữu duyên dừng bước, cùng nhau đàm đạo trao đổi đan dược chứ?'`,
+                            overrideImage
                         );
                         if (choice === 'talk') {
                             if (state.player.inventory.hasItem('linh_thach', 50) || state.player.lingShi >= 50) {
@@ -1681,10 +1686,37 @@ export class MapScreen {
                                 this.updateEventDisplay(`👤 ${npcName} phất tay áo chán ghét rời đi vì ngươi quá nghèo túng.`);
                             }
                         } else if (choice === 'trade') {
-                            await window.game.receiveItem('linh_thao_cuc_pham', 1);
-                            this.updateEventDisplay(`👤 Giao dịch hoàn tất! Ngươi nhận được 1x [Linh Thảo Cực Phẩm] tuyệt diệu từ ${npcName}.`);
+                            if (state.player.inventory.hasItem('linh_thach', 100) || state.player.lingShi >= 100) {
+                                state.player.addLingShi(-100);
+                                await window.game.receiveItem('linh_thao_cuc_pham', 1);
+                                this.updateEventDisplay(`👤 Giao dịch hoàn tất! Ngươi bỏ ra 100 Linh thạch, nhận được 1x [Linh Thảo Cực Phẩm] tuyệt diệu từ ${npcName}.`);
+                            } else {
+                                state.ui.toast("Không đủ Linh thạch để giao dịch!", "warning");
+                                this.updateEventDisplay(`👤 ${npcName} từ chối giao dịch vì ngươi không đủ Linh thạch.`);
+                            }
+                        } else if (choice === 'rob') {
+                            this.updateEventDisplay(`👤 [SÁT CƠ BÙNG PHÁT] Ngươi đột ngột ra tay, phi kiếm biến thành cầu vồng dài đánh lén ${npcName}!`);
+                            setTimeout(() => {
+                                const targetRealm = Math.max(1, state.player.realmId + Math.floor(Math.random() * 3) - 1);
+                                const npcEnemy = new Enemy(targetRealm, { name: npcName, img: overrideImage, statMult: 1.2, race: 'HUMAN' });
+                                EnemyGenerator.populateLoot(npcEnemy);
+                                
+                                // Guaranteed high quality drops for successful robbing
+                                npcEnemy.inventory.push({ id: 'linh_thao_cuc_pham', quantity: 1 + Math.floor(Math.random() * 2) });
+                                if (Math.random() < 0.4) {
+                                    npcEnemy.inventory.push({ id: 'hoa_nguyen_dan', quantity: 1 });
+                                }
+                                
+                                window.game.startBattle(npcEnemy, null, (win) => {
+                                    if (win) {
+                                        this.updateEventDisplay(`👤 [GIẾT NGƯỜI ĐOẠT BẢO] ${npcName} đã bị chém giết! Ngươi thu hoạch túi trữ vật và nhận được toàn bộ bí bảo.`);
+                                    } else {
+                                        this.updateEventDisplay(`👤 Tập kích thất bại, ngươi bị ${npcName} đánh bại!`);
+                                    }
+                                });
+                            }, 1500);
                         } else {
-                            this.updateEventDisplay(`👤 Ngươi chắp tay cáo từ ${npcName}, an toàn tiếp tục hành trình.`);
+                            this.updateEventDisplay(`👤 Ngươi chắp tay cáo từ ${npcName}, đề phòng lẫn nhau rồi rời đi.`);
                         }
                         this.renderGridMap();
                     }, 1000);

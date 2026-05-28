@@ -248,19 +248,43 @@ export class UISystem {
             const originalCancelText = this.modalBtnCancel.textContent;
 
             this.modalTitle.textContent = title;
-            this.modalIcon.className = `ph ph-list text-5xl text-qi-blue animate-bounce-subtle`;
+            
+            // Select thematic icon based on title keywords
+            let iconClass = 'ph-yin-yang';
+            const lowerTitle = title.toLowerCase();
+            if (lowerTitle.includes('chiến thắng') || lowerTitle.includes('chiến lợi phẩm') || lowerTitle.includes('loot') || lowerTitle.includes('bí bảo') || lowerTitle.includes('kho báu')) {
+                iconClass = 'ph-treasure-chest';
+            } else if (lowerTitle.includes('gặp') || lowerTitle.includes('bái kiến') || lowerTitle.includes('đối thoại') || lowerTitle.includes('npc') || lowerTitle.includes('tiên nhân')) {
+                iconClass = 'ph-user-focus';
+            } else if (lowerTitle.includes('tập kích') || lowerTitle.includes('bắt đầu') || lowerTitle.includes('cảnh báo') || lowerTitle.includes('lôi phạt') || lowerTitle.includes('kiếp') || lowerTitle.includes('chiến đấu')) {
+                iconClass = 'ph-swords';
+            } else if (lowerTitle.includes('lưu') || lowerTitle.includes('dữ liệu') || lowerTitle.includes('hành trình') || lowerTitle.includes('lưu trữ')) {
+                iconClass = 'ph-scroll';
+            } else if (lowerTitle.includes('lối ra') || lowerTitle.includes('lối xuống') || lowerTitle.includes('lối lên') || lowerTitle.includes('stairs') || lowerTitle.includes('cầu thang')) {
+                iconClass = 'ph-stairs';
+            } else if (lowerTitle.includes('cài đặt') || lowerTitle.includes('thiết lập') || lowerTitle.includes('hệ thống')) {
+                iconClass = 'ph-gear-six';
+            }
+
+            const isSpinning = iconClass === 'ph-yin-yang' || iconClass === 'ph-gear-six';
+            this.modalIcon.className = `ph ${iconClass} text-4xl text-cultivation-gold ${isSpinning ? 'animate-spin-slow' : 'animate-bounce-subtle'}`;
 
             const optionsContainer = document.createElement('div');
-            optionsContainer.className = 'flex flex-col space-y-2 w-full mt-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar';
+            optionsContainer.className = 'flex flex-col space-y-2.5 w-full mt-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar';
 
             options.forEach(opt => {
                 const label = opt.label !== undefined ? opt.label : (opt.text !== undefined ? opt.text : '');
                 const value = opt.value !== undefined ? opt.value : opt.id;
                 const btn = document.createElement('button');
-                btn.className = 'w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-ancient text-gray-300 transition-all active:scale-95 flex items-center justify-center space-x-2 group';
+                
+                // Premium left-aligned list style for options
+                btn.className = 'w-full py-3.5 px-4 bg-gradient-to-r from-white/[0.03] to-white/[0.01] hover:from-cultivation-gold/10 hover:to-transparent border border-white/5 hover:border-cultivation-gold/30 rounded-2xl text-xs font-ancient text-gray-300 hover:text-cultivation-gold transition-all duration-300 active:scale-[0.98] flex items-center justify-start space-x-3 group relative overflow-hidden shadow-sm';
+                
                 btn.innerHTML = `
-                    ${opt.icon ? `<i class="ph ${opt.icon} text-lg group-hover:scale-110 transition-transform"></i>` : ''}
-                    <span>${label}</span>
+                    <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-cultivation-gold/20 group-hover:border-cultivation-gold/40 transition-colors flex-shrink-0">
+                        <i class="ph ${opt.icon || 'ph-caret-right'} text-sm text-gray-400 group-hover:text-cultivation-gold group-hover:translate-x-0.5 transition-all"></i>
+                    </div>
+                    <span class="text-left font-serif font-medium flex-grow leading-relaxed text-gray-200 group-hover:text-white transition-colors">${label}</span>
                 `;
                 btn.onclick = () => {
                     this.toggleOverlay(this.modalOverlay, false, () => {
@@ -275,14 +299,21 @@ export class UISystem {
             let contentHTML = '';
             if (illustration) {
                 contentHTML += `
-                    <div class="w-full h-36 rounded-2xl overflow-hidden border border-white/10 mb-4 shadow-lg shadow-black/80 relative">
+                    <div class="w-full h-36 rounded-2xl overflow-hidden border border-cultivation-gold/10 mb-4 shadow-lg shadow-black/80 relative">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
                         <img src="${illustration}" class="w-full h-full object-cover">
                     </div>
                 `;
             }
             if (description) {
-                contentHTML += `<div class="text-xs text-gray-400 mb-4 px-2 italic leading-relaxed border-l-2 border-qi-blue/30 pl-4">${description}</div>`;
+                contentHTML += `
+                    <div class="text-xs text-gray-300 mb-5 px-4 py-3 bg-white/[0.02] border-l-2 border-cultivation-gold rounded-r-xl italic font-serif leading-relaxed text-left relative overflow-hidden shadow-inner">
+                        <div class="absolute right-2 bottom-1 opacity-[0.03] pointer-events-none">
+                            <i class="ph ph-quotes text-5xl text-white"></i>
+                        </div>
+                        ${description}
+                    </div>
+                `;
             }
 
             this.modalMessage.innerHTML = contentHTML;
