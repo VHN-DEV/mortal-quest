@@ -27,62 +27,66 @@
         <div class="flex-grow flex flex-col justify-center items-center p-2 space-y-2 overflow-hidden min-h-0 relative">
             
             <!-- Enemy Team Container -->
-            <div id="enemy-team" class="w-full max-w-4xl flex flex-row flex-wrap justify-center gap-2 overflow-y-auto custom-scroll max-h-[35%]">
+            <div id="enemy-team" class="w-full max-w-4xl flex flex-row flex-wrap justify-center gap-4 overflow-y-auto custom-scroll py-2">
                 <!-- Entity Entry (Enemy) -->
-                <div class="relative group flex items-center space-x-2 bg-white/[0.02] border border-white/5 p-1.5 rounded-lg w-48 max-w-full">
-                    <div class="battle-aura scale-50" style="--aura-color: #ef4444;"></div>
+                <div id="enemy-card" class="relative group flex items-center space-x-4 bg-slate-950/60 border border-red-500/20 p-3 rounded-2xl w-72 max-w-full shadow-[0_0_25px_rgba(239,68,68,0.15)] transition-all duration-300 hover:border-red-500/50">
+                    <div class="battle-aura" style="--aura-color: #ef4444;"></div>
                     <div class="relative flex-none">
-                        <div class="portrait-glow opacity-30" style="--aura-color: #ef4444;"></div>
-                        <div id="enemy-portrait-btn" class="w-9 h-9 rounded-md overflow-hidden border border-red-900/20 shadow-md cursor-pointer hover:border-red-500/50 transition-all" title="Click để xem chi tiết chỉ số">
+                        <div class="portrait-glow opacity-40" style="--aura-color: #ef4444;"></div>
+                        <div id="enemy-portrait-btn" class="w-16 h-16 rounded-xl overflow-hidden border-2 border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.25)] cursor-pointer hover:border-red-500 hover:scale-105 transition-all duration-300" title="Click để xem chi tiết chỉ số">
                             <img id="enemy-img" src="" class="w-full h-full object-cover">
                         </div>
-                        <div id="enemy-status-effects" class="absolute -right-1 -bottom-1 flex space-x-0.5"></div>
+                        <div id="enemy-status-effects" class="absolute -right-2 -bottom-2 flex space-x-0.5 z-20"></div>
                     </div>
-                    <div class="flex-grow space-y-1 min-w-0">
-                        <div class="flex justify-between items-baseline">
-                            <h3 class="text-xs font-ancient text-red-400 truncate"><span id="battle-enemy-name">Kẻ Địch</span> <span id="battle-enemy-realm" class="text-[8px] text-gray-500 font-normal ml-1"></span></h3>
-                            <span id="enemy-hp-text" class="text-[7px] font-mono text-red-500/80">100/100</span>
+                    <div class="flex-grow space-y-2 min-w-0">
+                        <div class="space-y-0.5">
+                            <span class="text-[8px] text-red-500/70 font-ancient uppercase tracking-widest">Kẻ Thù</span>
+                            <h3 class="text-sm font-ancient font-bold text-red-400 truncate"><span id="battle-enemy-name">Kẻ Địch</span></h3>
+                            <div class="flex items-center justify-between text-[9px] text-gray-400">
+                                <span id="battle-enemy-realm" class="font-ancient">Luyện Khí Kỳ</span>
+                                <span id="enemy-hp-text" class="font-mono text-red-400 font-bold">100/100</span>
+                            </div>
                         </div>
-                        <div class="h-1 w-full bg-red-950/40 rounded-full overflow-hidden border border-red-900/10">
-                            <div id="battle-enemy-hp" class="h-full bg-red-600 bar-liquid" style="width: 100%"></div>
+                        <div class="h-2 w-full bg-red-950/40 rounded-full overflow-hidden border border-red-500/20 shadow-inner">
+                            <div id="battle-enemy-hp" class="h-full bg-gradient-to-r from-red-600 to-rose-500 bar-liquid" style="width: 100%"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Duel Divider -->
-            <div class="flex items-center space-x-3 w-full max-w-xs opacity-30">
-                <div class="h-px flex-1 bg-gradient-to-r from-transparent to-qi-blue/20"></div>
-                <div class="text-[6px] text-qi-blue/40 font-ancient uppercase tracking-[0.3em] whitespace-nowrap">Đối Quyết</div>
-                <div class="h-px flex-1 bg-gradient-to-l from-transparent to-qi-blue/20"></div>
+            <div class="flex items-center space-x-4 w-full max-w-sm opacity-50 py-1">
+                <div class="h-[2px] flex-1 bg-gradient-to-r from-transparent via-qi-blue/30 to-transparent"></div>
+                <div class="text-[8px] text-qi-blue font-ancient uppercase tracking-[0.4em] whitespace-nowrap animate-pulse">Đối Quyết Thiên Kiếp</div>
+                <div class="h-[2px] flex-1 bg-gradient-to-l from-transparent via-qi-blue/30 to-transparent"></div>
             </div>
 
             <!-- Player Team Container -->
-            <div id="player-team" class="w-full max-w-4xl flex flex-row flex-wrap justify-center gap-2 overflow-y-auto custom-scroll max-h-[35%]">
-                <div class="relative group flex items-center space-x-2 bg-white/[0.02] border border-white/5 p-1.5 rounded-lg w-48 max-w-full">
-                    <div class="battle-aura scale-50" style="--aura-color: #4fd1c5;"></div>
+            <div id="player-team" class="w-full max-w-4xl flex flex-row flex-wrap justify-center gap-4 overflow-y-auto custom-scroll py-2">
+                <div id="player-card" class="relative group flex items-center space-x-4 bg-slate-950/60 border border-qi-blue/20 p-3 rounded-2xl w-72 max-w-full shadow-[0_0_25px_rgba(79,209,197,0.15)] transition-all duration-300 hover:border-qi-blue/50">
+                    <div class="battle-aura" style="--aura-color: #4fd1c5;"></div>
                     <div class="relative flex-none">
-                        <div class="portrait-glow opacity-30" style="--aura-color: #4fd1c5;"></div>
-                        <div class="w-9 h-9 rounded-md overflow-hidden border border-qi-blue/20 shadow-md">
+                        <div class="portrait-glow opacity-40" style="--aura-color: #4fd1c5;"></div>
+                        <div class="w-16 h-16 rounded-xl overflow-hidden border-2 border-qi-blue/30 shadow-[0_0_15px_rgba(79,209,197,0.25)] transition-all duration-300">
                             <img id="battle-player-img" src="" class="w-full h-full object-cover">
                         </div>
-                        <div id="player-status-effects" class="absolute -left-1 -bottom-1 flex space-x-0.5"></div>
+                        <div id="player-status-effects" class="absolute -left-2 -bottom-2 flex space-x-0.5 z-20"></div>
                     </div>
-                    <div class="flex-grow space-y-1 min-w-0">
-                        <div class="flex justify-between items-baseline">
-                            <h3 id="battle-player-name" class="text-xs font-ancient text-white truncate">Bản Tọa</h3>
-                            <div class="flex items-center space-x-1.5">
-                                <span id="player-hp-text" class="text-[7px] font-mono text-qi-jade">100/100</span>
-                                <span class="text-[6px] text-gray-600">|</span>
-                                <span id="player-mana-text" class="text-[7px] font-mono text-qi-blue">100/100</span>
+                    <div class="flex-grow space-y-2 min-w-0">
+                        <div class="space-y-0.5">
+                            <span class="text-[8px] text-qi-blue/70 font-ancient uppercase tracking-widest">Bản Thể</span>
+                            <h3 id="battle-player-name" class="text-sm font-ancient font-bold text-white truncate">Bản Tọa</h3>
+                            <div class="flex items-center justify-between text-[8px] text-gray-400 font-mono">
+                                <span id="player-hp-text" class="text-qi-jade font-bold">HP 100/100</span>
+                                <span id="player-mana-text" class="text-qi-blue font-bold">MP 100/100</span>
                             </div>
                         </div>
-                        <div class="space-y-0.5">
-                            <div class="h-1 w-full bg-qi-jade/10 rounded-full overflow-hidden border border-qi-jade/10">
-                                <div id="battle-player-hp" class="h-full bg-qi-jade bar-liquid" style="width: 100%"></div>
+                        <div class="space-y-1">
+                            <div class="h-2 w-full bg-qi-jade/10 rounded-full overflow-hidden border border-qi-jade/20 shadow-inner">
+                                <div id="battle-player-hp" class="h-full bg-gradient-to-r from-qi-jade to-emerald-400 bar-liquid" style="width: 100%"></div>
                             </div>
-                            <div class="h-0.5 w-full bg-qi-blue/10 rounded-full overflow-hidden border border-qi-blue/10">
-                                <div id="battle-player-mana" class="h-full bg-qi-blue bar-liquid" style="width: 100%"></div>
+                            <div class="h-1 w-full bg-qi-blue/10 rounded-full overflow-hidden border border-qi-blue/20 shadow-inner">
+                                <div id="battle-player-mana" class="h-full bg-gradient-to-r from-qi-blue to-cyan-400 bar-liquid" style="width: 100%"></div>
                             </div>
                         </div>
                     </div>

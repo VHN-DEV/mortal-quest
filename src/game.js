@@ -1082,7 +1082,27 @@ export class Game {
                 'bach_minh_anh': { location: 'thai_nhat_mon', realm: 18 },
                 'han_vien': { location: 'huyen_cot_dao', realm: 22 },
                 'lan_anh': { location: 'dan_thap', realm: 20 },
-                'minh_nguyet': { location: 'yem_nguyet_tong', realm: 16 }
+                'minh_nguyet': { location: 'yem_nguyet_tong', realm: 16 },
+
+                // New Special NPCs
+                'dong_ninh': { location: 'tieu_cuc_cung', realm: 25 },
+                'han_chan_quan': { location: 'thanh_van_tong', realm: 35 },
+                'han_thien_quan': { location: 'loi_dinh_ma_thanh', realm: 38 },
+                'hang_nga': { location: 'quang_han_gioi', realm: 42 },
+                'hua_lap_quoc': { location: 'sat_luc_ma_thanh', realm: 20 },
+                'lieu_mi': { location: 'huyen_cot_dao', realm: 22 },
+                'lieu_nguyet_nhi': { location: 'dieu_am_mon', realm: 24 },
+                'ly_mo_uyen': { location: 'dan_thap', realm: 25 },
+                'nam_cung_uyen': { location: 'yem_nguyet_tong', realm: 38 },
+                'natra': { location: 'thanh_van_tong', realm: 28 },
+                'ngan_nguyet': { location: 'bach_nhac_phong', realm: 32 },
+                'ngao_at': { location: 'thanh_dia_yeu_toc', realm: 30 },
+                'thien_van_tu': { location: 'thien_uyen_thanh', realm: 36 },
+                'tieu_ngan_nguyet': { location: 'thien_ho_toc', realm: 15 },
+                'tu_do_nam': { location: 'linh_vong_son', realm: 35 },
+                'vuong_co_than': { location: 'cu_kiem_mon', realm: 30 },
+                'vuong_ma_than': { location: 'linh_vong_son', realm: 45 },
+                'vuong_ma_tu': { location: 'linh_vong_son', realm: 40 }
             };
 
             Object.entries(specialNpcSpawns).forEach(([id, config]) => {
@@ -1099,6 +1119,44 @@ export class Game {
                 tuLinh.specialRelation = 'dao_lu';
                 hanLap.relatives.push(tuLinh.id);
                 tuLinh.relatives.push(hanLap.id);
+            }
+
+            // Relationship: Han Lap & Nam Cung Uyen (Dao Lu)
+            const namCungUyen = state.systems.npc.npcs.find(n => n.templateId === 'nam_cung_uyen');
+            if (hanLap && namCungUyen) {
+                namCungUyen.relationship = 100;
+                if (!hanLap.relatives.includes(namCungUyen.id)) hanLap.relatives.push(namCungUyen.id);
+                if (!namCungUyen.relatives.includes(hanLap.id)) namCungUyen.relatives.push(hanLap.id);
+            }
+
+            // Relationship: Han Lap & Ngan Nguyet (Companion / Relative)
+            const nganNguyet = state.systems.npc.npcs.find(n => n.templateId === 'ngan_nguyet');
+            if (hanLap && nganNguyet) {
+                nganNguyet.relationship = 100;
+                if (!hanLap.relatives.includes(nganNguyet.id)) hanLap.relatives.push(nganNguyet.id);
+                if (!nganNguyet.relatives.includes(hanLap.id)) nganNguyet.relatives.push(hanLap.id);
+            }
+
+            // Relationship: Vuong Lam & Ly Mo Uyen (Dao Lu)
+            const vuongLam = state.systems.npc.npcs.find(n => n.templateId === 'vuong_ma_tu');
+            const lyMoUyen = state.systems.npc.npcs.find(n => n.templateId === 'ly_mo_uyen');
+            if (vuongLam && lyMoUyen) {
+                vuongLam.relationship = 100;
+                lyMoUyen.relationship = 100;
+                vuongLam.specialRelation = 'dao_lu';
+                lyMoUyen.specialRelation = 'dao_lu';
+                vuongLam.relatives.push(lyMoUyen.id);
+                lyMoUyen.relatives.push(vuongLam.id);
+            }
+
+            // Relationship: Vuong Lam & Tu Do Nam (Su Do)
+            const tuDoNam = state.systems.npc.npcs.find(n => n.templateId === 'tu_do_nam');
+            if (vuongLam && tuDoNam) {
+                vuongLam.relationship = 100;
+                tuDoNam.relationship = 100;
+                vuongLam.specialRelation = 'su_do';
+                vuongLam.relatives.push(tuDoNam.id);
+                tuDoNam.relatives.push(vuongLam.id);
             }
         }
 

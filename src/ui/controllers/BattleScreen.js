@@ -126,8 +126,11 @@ export class BattleScreen {
                 state.ui.toggleOverlay(this.overlay, true);
                 audioManager.playBgm('battle');
                 this.enemyName.textContent = combat.enemy.name;
-                this.playerName.textContent = state.player.name;
-                if (this.playerImg) this.playerImg.src = ASSETS.portraits.player;
+                if (this.playerName) this.playerName.textContent = state.player.name;
+                if (this.playerImg) {
+                    const portraitKey = state.player.avatar || (['female', 'Nữ'].includes(state.player.gender) ? 'cultivator_female' : 'cultivator_male');
+                    this.playerImg.src = ASSETS.portraits[portraitKey] || ASSETS.portraits.player;
+                }
                 if (this.enemyRealm) this.enemyRealm.textContent = combat.enemy.realmName || 'Vô Danh';
                 if (this.enemyImg) this.enemyImg.src = combat.enemy.image || ASSETS.enemies.wolf;
                 if (this.battleBg) {
@@ -286,6 +289,19 @@ export class BattleScreen {
             this.turnIndicator.textContent = 'Lượt đối phương';
             this.turnIndicator.className = 'px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-[8px] text-red-400 font-ancient uppercase tracking-widest';
         }
+
+        // Active turn glowing border enhancements
+        const playerCard = document.getElementById('player-card');
+        const enemyCard = document.getElementById('enemy-card');
+        if (playerCard && enemyCard) {
+            if (turn === 0) {
+                playerCard.classList.add('combat-active-turn-player');
+                enemyCard.classList.remove('combat-active-turn-enemy');
+            } else {
+                playerCard.classList.remove('combat-active-turn-player');
+                enemyCard.classList.add('combat-active-turn-enemy');
+            }
+        }
     }
 
     updateTimeline() {
@@ -296,7 +312,8 @@ export class BattleScreen {
 
         this.timeline.innerHTML = order.map(entity => {
             const isActive = (entity.id === 'player' && combat.turn === 0) || (entity.id === 'enemy' && combat.turn === 1);
-            const img = entity.id === 'player' ? ASSETS.portraits.player : (combat.enemy.image || ASSETS.enemies.wolf);
+            const portraitKey = state.player.avatar || (['female', 'Nữ'].includes(state.player.gender) ? 'cultivator_female' : 'cultivator_male');
+            const img = entity.id === 'player' ? (ASSETS.portraits[portraitKey] || ASSETS.portraits.player) : (combat.enemy.image || ASSETS.enemies.wolf);
             
             return `
                 <div class="relative group">
@@ -352,18 +369,43 @@ export class BattleScreen {
         const anchor = data.target === 'enemy' ? this.enemyHpBar : this.playerHpBar;
         state.ui.createDamagePopup(anchor, data.value, data.crit);
 
-        // Shake the target portrait
+        // Slide/attack kinetic animations for cards
+        const targetCard = data.target === 'enemy' ? document.getElementById('enemy-card') : document.getElementById('player-card');
+        const attackerCard = data.target === 'enemy' ? document.getElementById('player-card') : document.getElementById('enemy-card');
         const targetImg = data.target === 'enemy' ? this.enemyImg : this.playerImg;
-        if (targetImg && data.value > 0) {
+
+        if (attackerCard && data.value > 0) {
+            const slideY = data.target === 'enemy' ? -15 : 15; // Player slides up (-15), Enemy slides down (+15)
+            gsap.to(attackerCard, {
+                y: slideY,
+                duration: 0.12,
+                yoyo: true,
+                repeat: 1,
+                ease: "power2.out"
+            });
+        }
+
+        // Shake target card
+        if (targetCard && data.value > 0) {
+            gsap.fromTo(targetCard, 
+                { x: -6 }, 
+                { x: 6, duration: 0.04, repeat: 6, yoyo: true, ease: "none", onComplete: () => {
+                    gsap.set(targetCard, { x: 0 });
+                }}
+            );
+        } else if (targetImg && data.value > 0) {
             gsap.fromTo(targetImg, 
                 { x: -5 }, 
                 { x: 5, duration: 0.05, repeat: 5, yoyo: true, ease: "none", onComplete: () => {
                     gsap.set(targetImg, { x: 0 });
                 }}
             );
-            // Flash red
+        }
+
+        // Flash target red
+        if (targetImg && data.value > 0) {
             gsap.fromTo(targetImg, 
-                { filter: "brightness(1) sepia(1) saturate(10) hue-rotate(-50deg)" }, 
+                { filter: "brightness(2) sepia(1) saturate(10) hue-rotate(-50deg)" }, 
                 { filter: "brightness(1) sepia(0) saturate(1) hue-rotate(0deg)", duration: 0.4 }
             );
         }

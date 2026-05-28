@@ -134,7 +134,27 @@ export const ASSETS = {
         han_vien: getAssetUrl('portraits/han_vien'),
         lan_anh: getAssetUrl('portraits/lan_anh'),
         minh_nguyet: getAssetUrl('portraits/minh_nguyet'),
-        bach_thanh_anh: getAssetUrl('portraits/bach_thanh_anh'),
+                bach_thanh_anh: getAssetUrl('portraits/bach_thanh_anh'),
+
+        // New Special NPCs
+        dong_ninh: getAssetUrl('portraits/dong_ninh'),
+        han_chan_quan: getAssetUrl('portraits/han_chan_quan'),
+        han_thien_quan: getAssetUrl('portraits/han_thien_quan'),
+        hang_nga: getAssetUrl('portraits/hang_nga'),
+        hua_lap_quoc: getAssetUrl('portraits/hua_lap_quoc'),
+        lieu_mi: getAssetUrl('portraits/lieu_mi'),
+        lieu_nguyet_nhi: getAssetUrl('portraits/lieu_nguyet_nhi'),
+        ly_mo_uyen: getAssetUrl('portraits/ly_mo_uyen'),
+        nam_cung_uyen: getAssetUrl('portraits/nam_cung_uyen'),
+        natra: getAssetUrl('portraits/natra'),
+        ngan_nguyet: getAssetUrl('portraits/ngan_nguyet'),
+        ngao_at: getAssetUrl('portraits/ngao_at'),
+        thien_van_tu: getAssetUrl('portraits/thien_van_tu'),
+        tieu_ngan_nguyet: getAssetUrl('portraits/tieu_ngan_nguyet'),
+        tu_do_nam: getAssetUrl('portraits/tu_do_nam'),
+        vuong_co_than: getAssetUrl('portraits/vuong_co_than'),
+        vuong_ma_than: getAssetUrl('portraits/vuong_ma_than'),
+        vuong_ma_tu: getAssetUrl('portraits/vuong_ma_tu'),
 
         // Nameless NPCs replaced with proper names
         lac_ly: getAssetUrl('portraits/lac_ly'),
@@ -191,6 +211,15 @@ export const ASSETS = {
         demon_cultivator: getAssetUrl('enemies/demon_cultivator'),
         zombie: getAssetUrl('enemies/zombie'),
         ghost: getAssetUrl('enemies/demon_cultivator'),
+        thanh_long: getAssetUrl('beasts/thanh_long'),
+        giao_long: getAssetUrl('beasts/giao_long'),
+        hac_xa: getAssetUrl('beasts/hac_xa'),
+        hoa_viem: getAssetUrl('beasts/hoa_viem'),
+        bang_hung: getAssetUrl('beasts/bang_hung'),
+        con_bang: getAssetUrl('beasts/con_bang'),
+        chu_tuoc: getAssetUrl('beasts/chu_tuoc'),
+        u_minh_mong_diep: getAssetUrl('beasts/u-minh-mong-diep'),
+        that_thai_thien_long: getAssetUrl('beasts/that_thai_thien_long')
     }, 'enemies', 'wolf'),
 
     // Yêu Thú (Linh Thú, Dị Thú...)

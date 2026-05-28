@@ -127,7 +127,16 @@ export class EnemyGenerator {
             { name: 'Ma Tu', img: ASSETS.enemies.demon_cultivator, statMult: 1.3, race: 'DEMON' },
             { name: 'Lôi Long', img: ASSETS.enemies.dragon, statMult: 2.0, race: 'DRAGON' },
             { name: 'Hành Thi', img: ASSETS.enemies.zombie, statMult: 0.7, race: 'ZOMBIE' },
-            { name: 'Quỷ Hồn', img: ASSETS.enemies.ghost, statMult: 0.9, race: 'GHOST' }
+            { name: 'Quỷ Hồn', img: ASSETS.enemies.ghost, statMult: 0.9, race: 'GHOST' },
+            { name: 'Thanh Long', img: ASSETS.enemies.thanh_long, statMult: 2.5, race: 'DRAGON' },
+            { name: 'Giao Long', img: ASSETS.enemies.giao_long, statMult: 1.8, race: 'SPIRIT_BEAST' },
+            { name: 'Hắc Xà', img: ASSETS.enemies.hac_xa, statMult: 1.4, race: 'SPIRIT_BEAST' },
+            { name: 'Hỏa Viêm Thú', img: ASSETS.enemies.hoa_viem, statMult: 1.5, race: 'SPIRIT_BEAST' },
+            { name: 'Băng Hùng', img: ASSETS.enemies.bang_hung, statMult: 1.3, race: 'SPIRIT_BEAST' },
+            { name: 'Côn Bằng', img: ASSETS.enemies.con_bang, statMult: 2.8, race: 'DRAGON' },
+            { name: 'Chu Tước', img: ASSETS.enemies.chu_tuoc, statMult: 2.3, race: 'SPIRIT_BEAST' },
+            { name: 'U Minh Mộng Điệp', img: ASSETS.enemies.u_minh_mong_diep, statMult: 1.2, race: 'SPIRIT_BEAST' },
+            { name: 'Thất Thái Thiên Long', img: ASSETS.enemies.that_thai_thien_long, statMult: 2.7, race: 'DRAGON' }
         ];
 
         const targetRealm = Math.max(1, playerRealmId + Math.floor(Math.random() * 5) - 2);

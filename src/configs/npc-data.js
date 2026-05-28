@@ -508,6 +508,320 @@ export const SPECIAL_NPCS = {
             'romance': ['Băng tâm ngàn năm, chỉ vì ngươi mà tan chảy. Từ nay thiên hạ phong tuyết, ta nguyện cùng ngươi đối mặt.'],
             'special_move': ['Vạn Lý Băng Phong!']
         }
+    },
+    'dong_ninh': {
+        id: 'dong_ninh',
+        name: 'Đông Ninh',
+        gender: 'Nữ',
+        title: 'Lãnh Sương Tiên Tử',
+        portrait: ASSETS.portraits.dong_ninh,
+        personality: 'lanh_lung',
+        goal: 'thanh_tien',
+        role: 'Băng Hệ Tu Sĩ',
+        isRomanceable: true,
+        desc: 'Truyền nhân Băng Linh tộc, dung mạo tuyệt mỹ nhưng tính cách thanh lãnh như băng tuyết ngàn năm.',
+        dialogues: {
+            'meet': ['Hàn khí của ta có thể làm đóng băng kinh mạch, đạo hữu đừng lại gần.', 'Linh thú ở đây đang ngủ say, xin đừng làm phiền chúng.'],
+            'friendly': ['Ngươi là người đầu tiên chịu đựng được hàn sương thiên phú của ta mà không lùi bước.'],
+            'romance': ['Băng thiên tuyết địa cô độc ngàn năm, nay nguyện cùng đạo hữu chia sẻ ấm áp này.'],
+            'special_move': ['Cực Hàn Băng Long Phá!']
+        }
+    },
+    'han_chan_quan': {
+        id: 'han_chan_quan',
+        name: 'Hàn Chân Quân',
+        gender: 'Nam',
+        title: 'Huyền Minh Chân Quân',
+        portrait: ASSETS.portraits.han_chan_quan,
+        personality: 'chinh_truc',
+        goal: 'chan_hung_tong_mon',
+        role: 'Trưởng Lão',
+        isRomanceable: false,
+        desc: 'Vị đại năng lánh đời sở hữu tu vi thông thiên triệt địa, bảo hộ một phương bình an.',
+        dialogues: {
+            'meet': ['Hậu bối có chí khí. Đi trên con đường nghịch thiên tu hành, đạo tâm phải vững.', 'Tu hành không chỉ luyện khí, mà còn là luyện tâm.'],
+            'friendly': ['Lão phu rất thưởng thức sự tiến bộ của ngươi. Hãy nhận lấy bình đan dược này.'],
+            'special_move': ['Huyền Minh Thần Lôi!']
+        }
+    },
+    'han_thien_quan': {
+        id: 'han_thien_quan',
+        name: 'Hàn Thiên Quân',
+        gender: 'Nam',
+        title: 'Lôi Đình Vô Thượng',
+        portrait: ASSETS.portraits.han_thien_quan,
+        personality: 'kieu_ngao',
+        goal: 'thanh_tien',
+        role: 'Lôi Tu',
+        isRomanceable: false,
+        desc: 'Chưởng khống thiên lôi chi lực, tính cách cương trực bá đạo, ghét nhất tà ma ngoại đạo.',
+        dialogues: {
+            'meet': ['Thiên lôi cuồn cuộn, kẻ lười nhác tu luyện sẽ bị thiên kiếp đánh tan tành!', 'Ngươi có muốn thử tiếp một chiêu thiên lôi của lão phu?'],
+            'friendly': ['Khí khái không tệ, dám đón nhận lôi uy của lão phu.'],
+            'special_move': ['Cửu Thiên Huyền Sát Đại Lôi Tiệp!']
+        }
+    },
+    'hang_nga': {
+        id: 'hang_nga',
+        name: 'Hằng Nga',
+        gender: 'Nữ',
+        title: 'Quảng Hàn Tiên Tử',
+        portrait: ASSETS.portraits.hang_nga,
+        personality: 'lanh_lung',
+        goal: 'thanh_tien',
+        role: 'Pháp Sư',
+        isRomanceable: true,
+        desc: 'Tuyệt thế tiên tử cô độc ngự trị tại Quảng Hàn Cung, sở hữu năng lực nguyệt quang huyền diệu.',
+        dialogues: {
+            'meet': ['Nguyệt quang thanh lãnh, chiếu sáng nhân gian cô quạnh.', 'Ngươi tìm kiếm tiên đạo, có biết tiên giới cũng tịch mịch vô ngần?'],
+            'friendly': ['Có người trò chuyện dưới ánh trăng thanh, Quảng Hàn Cung cũng bớt đi vài phần lạnh lẽo.'],
+            'romance': ['Nguyện làm chim liền cánh, cùng đạo hữu ngao du vạn dặm tinh không dưới ánh trăng kia.'],
+            'special_move': ['Nguyệt Hoa Vô Ảnh Biến!']
+        }
+    },
+    'hua_lap_quoc': {
+        id: 'hua_lap_quoc',
+        name: 'Hứa Lập Quốc',
+        gender: 'Nam',
+        title: 'Sát Lục Ma Hồn',
+        portrait: ASSETS.portraits.hua_lap_quoc,
+        personality: 'quy_quyet',
+        goal: 'bao_thu',
+        role: 'Ma Hồn',
+        isRomanceable: false,
+        desc: 'Linh hồn kiếm linh lanh lợi quỷ quyệt, am hiểu xu nịnh nhưng cũng là đệ nhất sát thủ ma đạo.',
+        dialogues: {
+            'meet': ['Ối chao! Chủ nhân anh minh thần võ, vạn tuế vạn vạn tuế... Ơ, không phải chủ nhân ta à? Đe dọa ai đấy!', 'Ta là Hứa Lập Quốc, đệ nhất ma hồn tôn quý!'],
+            'friendly': ['Đạo hữu quả là anh tuấn phi phàm, có cần ta đi ám sát kẻ thù của ngươi không? Giá cả hữu nghị.'],
+            'special_move': ['Sát Lục Ma Kích!']
+        }
+    },
+    'lieu_mi': {
+        id: 'lieu_mi',
+        name: 'Liễu Mi',
+        gender: 'Nữ',
+        title: 'Thiên Sát Nữ Ma',
+        portrait: ASSETS.portraits.lieu_mi,
+        personality: 'dien_cuong',
+        goal: 'bao_thu',
+        role: 'Ma Tu',
+        isRomanceable: true,
+        desc: 'Nữ ma tu hành sự tàn nhẫn điên cuồng, oán hận thâm sâu, thân thế tràn ngập bi kịch.',
+        dialogues: {
+            'meet': ['Đàn ông thế gian đều là kẻ bội bạc! Chết đi!... Khoan đã, ngươi có vẻ khác biệt.', 'Đừng nhìn ta bằng ánh mắt đó, ta sẽ móc mắt ngươi ra đấy.'],
+            'friendly': ['Ngươi không sợ ta sao? Kẻ điên cuồng như ta cũng cần một tri kỷ.'],
+            'romance': ['Ta nguyện vì ngươi nhuốm máu cả thiên hạ, nhưng nếu ngươi phản bội, ta sẽ cùng ngươi đồng quy vu tận.'],
+            'special_move': ['Thiên Sát Ma Quang Phá!']
+        }
+    },
+    'lieu_nguyet_nhi': {
+        id: 'lieu_nguyet_nhi',
+        name: 'Liễu Nguyệt Nhi',
+        gender: 'Nữ',
+        title: 'Diệu Âm Tiên Cô',
+        portrait: ASSETS.portraits.lieu_nguyet_nhi,
+        personality: 'hoa_nha',
+        goal: 'tim_dao_lu',
+        role: 'Âm Nhạc Tu Sĩ',
+        isRomanceable: true,
+        desc: 'Cựu môn đồ Diệu Âm Môn, thanh tao thoát tục, gảy đàn tỳ bà khống chế thần hồn kẻ địch.',
+        dialogues: {
+            'meet': ['Một khúc tỳ bà tiễn hồng trần, đạo hữu có muốn lắng nghe khúc nhạc thanh tâm?', 'Âm luật cũng là một đạo, dung hợp giữa đất trời.'],
+            'friendly': ['Đạo hữu thấu hiểu tiếng đàn của thiếp thân, chính là bá nha tử kỳ tái thế.'],
+            'romance': ['Từ nay về sau, tiếng đàn của thiếp thân chỉ gảy cho một mình đạo hữu thưởng thức.'],
+            'special_move': ['Diệu Âm Nhiếp Hồn Khúc!']
+        }
+    },
+    'ly_mo_uyen': {
+        id: 'ly_mo_uyen',
+        name: 'Lý Mộ Uyển',
+        gender: 'Nữ',
+        title: 'Đan Đạo Tông Sư',
+        portrait: ASSETS.portraits.ly_mo_uyen,
+        personality: 'hoa_nha',
+        goal: 'tim_dao_lu',
+        role: 'Luyện Đan Sư',
+        isRomanceable: true,
+        desc: 'Tuyệt thế đan sư ôn nhu hiền thục, cả đời tình sâu nghĩa nặng với Vương Lâm, ngưng kết đan đạo đỉnh phong.',
+        dialogues: {
+            'meet': ['Thiếp thân Lý Mộ Uyển, đang tìm kiếm linh dược để luyện chế đan dược.', 'Đạo hữu sắc mặt có chút tái, đan dược này hi vọng có thể giúp được ngươi.'],
+            'friendly': ['Có đạo hữu bồi bạn đàm đạo đan thuật, thiếp thân cảm thấy vô cùng vui mừng.'],
+            'romance': ['Dù thiên đạo có diệt, luân hồi có chuyển, thiếp vẫn nguyện canh giữ bên chàng mãi mãi.'],
+            'special_move': ['Cửu Chuyển Đan Hỏa Trận!']
+        }
+    },
+    'nam_cung_uyen': {
+        id: 'nam_cung_uyen',
+        name: 'Nam Cung Uyển',
+        gender: 'Nữ',
+        title: 'Yểm Nguyệt Cựu Tổ',
+        portrait: ASSETS.portraits.nam_cung_uyen,
+        personality: 'lanh_lung',
+        goal: 'thanh_tien',
+        role: 'Pháp Sư',
+        isRomanceable: true,
+        desc: 'Trưởng lão của Yểm Nguyệt Tông, dung nhan vô song, cùng Hàn Lập trải qua nhiều kiếp nạn san sẻ đạo lữ.',
+        dialogues: {
+            'meet': ['Bản cung Nam Cung Uyển. Đạo hữu đến đây có việc gì khẩn cầu?', 'Luân Hồi Thần Công bá đạo dị thường, chớ có coi thường.'],
+            'friendly': ['Ngươi quả là người cẩn trọng, tính khí rất giống một người quen của ta.'],
+            'romance': ['Mấy ngàn năm tu vi cũng không đổi được một khắc cùng người sánh vai bước qua nhân gian.'],
+            'special_move': ['Tố Nữ Luân Hồi Công!']
+        }
+    },
+    'natra': {
+        id: 'natra',
+        name: 'Natra',
+        gender: 'Nam',
+        title: 'Tam Thái Tử',
+        portrait: ASSETS.portraits.natra,
+        personality: 'dien_cuong',
+        goal: 'bao_thu',
+        role: 'Chiến Sĩ',
+        isRomanceable: false,
+        desc: 'Thần tướng chiến đấu cường đại, sinh ra từ hoa sen, tính tình kiêu ngạo hiếu chiến, sức mạnh vô song.',
+        dialogues: {
+            'meet': ['Bản thái tử chính là Natra! Ai dám cản đường lôi hỏa thương của ta?', 'Chiến đấu là bản năng của ta, ngươi muốn luận bàn không?'],
+            'friendly': ['Ha ha! Sảng khoái! Ngươi có tư cách làm bằng hữu chiến đấu của ta.'],
+            'special_move': ['Hỗn Thiên Dải Lụa Càn Khôn Vòng!']
+        }
+    },
+    'ngan_nguyet': {
+        id: 'ngan_nguyet',
+        name: 'Ngân Nguyệt',
+        gender: 'Nữ',
+        title: 'Linh Hồ Thánh Nữ',
+        portrait: ASSETS.portraits.ngan_nguyet,
+        personality: 'trung_thanh',
+        goal: 'tim_dao_lu',
+        role: 'Triệu Hoán Sư',
+        isRomanceable: true,
+        desc: 'Linh hồ chuyển thế tôn quý, luôn trung thành tuyệt đối bồi bạn bên cạnh Hàn Lập.',
+        dialogues: {
+            'meet': ['Ngân Nguyệt bái kiến đạo hữu. Thiếp thân luôn ẩn nấp trong khí linh bảo vật.', 'Đừng lo lắng, Ngân Nguyệt không có ác ý đâu.'],
+            'friendly': ['Có thể bồi bạn bên cạnh đạo hữu là niềm vinh hạnh của thiếp thân.'],
+            'romance': ['Dù là linh thể hay phàm nhân, Ngân Nguyệt nguyện đời đời kiếp kiếp làm bạn đồng hành cùng chàng.'],
+            'special_move': ['Linh Hồ Huyễn Ảnh Tiệp!']
+        }
+    },
+    'ngao_at': {
+        id: 'ngao_at',
+        name: 'Ngao Ất',
+        gender: 'Nam',
+        title: 'Đông Hải Long Tử',
+        portrait: ASSETS.portraits.ngao_at,
+        personality: 'kieu_ngao',
+        goal: 'chan_hung_tong_mon',
+        role: 'Long Tộc Tu Sĩ',
+        isRomanceable: false,
+        desc: 'Thái tử Đông Hải Long tộc kiêu ngạo tôn quý, sở hữu huyết mạch chân long cực kỳ nồng đậm.',
+        dialogues: {
+            'meet': ['Long tộc chí tôn không dung thứ cho sự bất kính của phàm nhân!', 'Linh thạch hạ phẩm kia mà cũng dám đem ra trước mặt ta?'],
+            'friendly': ['Ngươi có chút khí tức khiến bản thái tử cảm thấy thoải mái.'],
+            'special_move': ['Chân Long Nộ Hống!']
+        }
+    },
+    'thien_van_tu': {
+        id: 'thien_van_tu',
+        name: 'Thiên Vân Tử',
+        gender: 'Nam',
+        title: 'Thiên Vân Tông Chủ',
+        portrait: ASSETS.portraits.thien_van_tu,
+        personality: 'chinh_truc',
+        goal: 'chan_hung_tong_mon',
+        role: 'Tông Chủ',
+        isRomanceable: false,
+        desc: 'Tông chủ chính trực của Thiên Vân Tông, luôn dốc lòng vì sự hưng thịnh của môn phái và đệ tử.',
+        dialogues: {
+            'meet': ['Chào mừng đạo hữu ghé thăm Thiên Vân Tông. Mong rằng ngươi thu hoạch được cơ duyên.', 'Đại cục vi trọng, làm người tu hành chớ nên ích kỷ.'],
+            'friendly': ['Tấm lòng nghĩa hiệp của đạo hữu quả thực đáng quý. Thiên Vân Tông luôn mở rộng cửa đón chào.'],
+            'special_move': ['Thiên Vân Vô Cực Trận!']
+        }
+    },
+    'tieu_ngan_nguyet': {
+        id: 'tieu_ngan_nguyet',
+        name: 'Tiểu Ngân Nguyệt',
+        gender: 'Nữ',
+        title: 'Cửu Vĩ Linh Hồ',
+        portrait: ASSETS.portraits.tieu_ngan_nguyet,
+        personality: 'hoa_nha',
+        goal: 'tim_dao_lu',
+        role: 'Trị Liệu Sư',
+        isRomanceable: true,
+        desc: 'Ấn ký Cửu Vĩ hồ linh nhỏ bé ngây thơ xinh xắn, thích ăn linh quả và dạo chơi.',
+        dialogues: {
+            'meet': ['Chào đạo hữu! Người có linh quả ngon ngon cho ta ăn không nha?', 'Ngân Nguyệt thích chơi đùa cùng ngươi nhất!'],
+            'friendly': ['Oa, đạo hữu tốt bụng quá, Ngân Nguyệt sẽ giúp người trị thương nè.'],
+            'romance': ['Mãi mãi bám lấy đạo hữu, không bao giờ buông ra đâu nha!'],
+            'special_move': ['Cửu Vĩ Linh Hộ Hồi Xuân!']
+        }
+    },
+    'tu_do_nam': {
+        id: 'tu_do_nam',
+        name: 'Tư Đồ Nam',
+        gender: 'Nam',
+        title: 'Thiên Sát Tà Tôn',
+        portrait: ASSETS.portraits.tu_do_nam,
+        personality: 'quy_quyet',
+        goal: 'tim_truyen_thua',
+        role: 'Tiên Nhân Hồn Thể',
+        isRomanceable: false,
+        desc: 'Lão tổ anh linh tà phái tự do phóng khoáng, tính khí quái đản bất tuân thiên địa đạo lý.',
+        dialogues: {
+            'meet': ['Khặc khặc! Bản tôn Tư Đồ Nam lại xuất thế rồi! Tiểu tử kia, có muốn bái bản tôn làm sư phụ?', 'Tu tiên là nghịch thiên nhi hành, tu cái gì phật đạo chính nghĩa giả tạo đó!'],
+            'friendly': ['Ngươi thật có cá tính của ma tu tà tôn ta. Rất hợp khẩu vị lão phu.'],
+            'special_move': ['Thiên Sát Tà Quang Diệt!']
+        }
+    },
+    'vuong_co_than': {
+        id: 'vuong_co_than',
+        name: 'Vương Cô Thần',
+        gender: 'Nam',
+        title: 'Cô Thần Kiếm Chủ',
+        portrait: ASSETS.portraits.vuong_co_than,
+        personality: 'lanh_lung',
+        goal: 'bao_thu',
+        role: 'Kiếm Tu',
+        isRomanceable: false,
+        desc: 'Kiếm khách cô độc tuyệt đỉnh môn phái, lấy sát lục rèn giũa ý chí kiếm đạo của bản thân.',
+        dialogues: {
+            'meet': ['Độc hành cô độc chính là số mệnh của kiếm khách.', 'Kiếm xuất vỏ là phải thấy máu.'],
+            'friendly': ['Ta ngửi thấy ý chí kiếm đạo mãnh liệt từ ngươi. Chúng ta cùng rèn kiếm nhé.'],
+            'special_move': ['Tuyệt Mệnh Cô Thần Nhất Kiếm!']
+        }
+    },
+    'vuong_ma_than': {
+        id: 'vuong_ma_than',
+        name: 'Vương Ma Thần',
+        gender: 'Nam',
+        title: 'Cổ Thần Thần Lực',
+        portrait: ASSETS.portraits.vuong_ma_than,
+        personality: 'lanh_lung',
+        goal: 'chan_hung_tong_mon',
+        role: 'Thần Lực Luyện Thể',
+        isRomanceable: false,
+        desc: 'Cổ thần vĩ đại chấn nhiếp bát hoang, nhục thân khai thiên lập địa lực lượng cực hạn.',
+        dialogues: {
+            'meet': ['Cổ Thần ý chí không thể lay chuyển! Kẻ yếu đuối kia hãy lui ra.', 'Một quyền khai thiên, một chưởng tịch diệt.'],
+            'friendly': ['Sức mạnh của ngươi tuy nhỏ bé nhưng ý chí rất đáng khen ngợi.'],
+            'special_move': ['Cổ Thần Khai Thiên Quyền!']
+        }
+    },
+    'vuong_ma_tu': {
+        id: 'vuong_ma_tu',
+        name: 'Vương Ma Tử',
+        gender: 'Nam',
+        title: 'Sát Tinh Vương Lâm',
+        portrait: ASSETS.portraits.vuong_ma_tu,
+        personality: 'da_nghi',
+        goal: 'bao_thu',
+        role: 'Luyện Thể Kiếm Tu',
+        isRomanceable: false,
+        desc: 'Sát tinh Vương Lâm khét tiếng tàn ác vô tình với kẻ địch nhưng nặng tình nặng nghĩa với người thân thương.',
+        dialogues: {
+            'meet': ['Tu tiên giới kẻ mạnh ăn thịt kẻ yếu. Cút đi trước khi sát khí của ta quét sạch ngươi.', 'Lý Mộ Uyển là nghịch lân của ta. Kẻ nào chạm vào nàng ta tru di cửu tộc!'],
+            'friendly': ['Ngươi giúp ta bảo hộ Mộ Uyển, ân tình này Vương Lâm khắc cốt ghi tâm.'],
+            'special_move': ['Cực Cảnh Sát Lục Khí!']
+        }
     }
 };
 
