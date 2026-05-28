@@ -2905,6 +2905,12 @@ select option:checked {
   height: 0 !important;
 }
 
+/* Ensure all main scrollable screens have enough padding at the bottom so they aren't blocked by the bottom nav */
+.screen.overflow-y-auto,
+.screen > .flex-grow.overflow-y-auto {
+  padding-bottom: calc(85px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
 
 
 

@@ -3,7 +3,12 @@
     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="ui.toggleOverlay('item-detail', false)">
     </div>
     <div
-        class="relative w-full max-w-sm bg-[#0a0c10] border border-white/10 rounded-[2.5rem] p-6 shadow-2xl animate-zoom-in overflow-hidden">
+        class="relative w-full max-w-sm bg-[#0a0c10] border border-white/10 rounded-[2rem] p-5 shadow-2xl animate-zoom-in overflow-hidden">
+        <!-- Close Button (Top Right) -->
+        <button onclick="ui.toggleOverlay('item-detail', false)"
+            class="absolute top-4 right-4 z-[30] w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-all active:scale-95">
+            <span class="text-xs">✕</span>
+        </button>
         <div class="absolute -top-24 -left-24 w-48 h-48 bg-qi-blue/10 rounded-full blur-[80px]"></div>
         <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-cultivation-gold/5 rounded-full blur-[80px]">
         </div>
@@ -93,9 +98,5 @@
                 GIAO DỊCH
             </button>
         </div>
-
-        <button onclick="ui.toggleOverlay('item-detail', false)"
-            class="mt-6 w-full py-3 text-gray-600 text-[10px] font-bold uppercase tracking-widest active:opacity-50 transition-all">RỜI
-            KHỎI</button>
     </div>
 </div>
