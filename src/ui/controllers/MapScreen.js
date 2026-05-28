@@ -1068,6 +1068,54 @@ export class MapScreen {
         const loc = getLocationById(this.viewedWorldId || state.currentWorldId, locId);
         const isSectOrGuild = SECTS[locId] || (loc && loc.special === 'guild');
 
+        // Xác định chủ đề của địa điểm (Location Theme Classification)
+        const nameLower = (loc && loc.name) ? loc.name.toLowerCase() : '';
+        const idLower = locId ? locId.toLowerCase() : '';
+        const descLower = (loc && loc.description) ? loc.description.toLowerCase() : '';
+
+        let theme = 'FOREST_MOUNTAIN'; // Chủ đề mặc định
+
+        if (isSectOrGuild) {
+            theme = 'SECT';
+        } else if (
+            idLower.includes('hop_hoan') || idLower.includes('ngu_linh') || 
+            idLower.includes('quy_linh') || idLower.includes('ma_diem') || 
+            idLower.includes('thien_sat') || idLower.includes('thien_huyen') || 
+            idLower.includes('ma_dao') || idLower.includes('thien_la') ||
+            nameLower.includes('ma đạo') || nameLower.includes('ma tông') || nameLower.includes('quỷ') || nameLower.includes('hắc sát')
+        ) {
+            theme = 'DEMONIC_SECT';
+        } else if (
+            idLower.includes('bien') || idLower.includes('dao') || idLower.includes('giang') || 
+            idLower.includes('ho') || idLower.includes('hai') || idLower.includes('lac_long') || 
+            nameLower.includes('biển') || nameLower.includes('đảo') || nameLower.includes('giang') || 
+            nameLower.includes('hồ') || nameLower.includes('sông') || nameLower.includes('hải')
+        ) {
+            theme = 'SEA_OCEAN';
+        } else if (
+            idLower.includes('cam_dia') || idLower.includes('huyet') || idLower.includes('mat_canh') || 
+            idLower.includes('co_mo') || idLower.includes('phong_do') || idLower.includes('tu_dia') || 
+            idLower.includes('tan_tich') || nameLower.includes('cấm địa') || nameLower.includes('mật cảnh') || 
+            nameLower.includes('tử địa') || nameLower.includes('phong đô') || nameLower.includes('tàn tích') ||
+            nameLower.includes('cổ mộ') || nameLower.includes('phần mộ')
+        ) {
+            theme = 'DUNGEON_FORBIDDEN';
+        } else if (
+            idLower.includes('tran') || idLower.includes('thanh') || idLower.includes('phu') || 
+            idLower.includes('hoi') || idLower.includes('gia_trang') || idLower.includes('mac_phu') ||
+            nameLower.includes('trấn') || nameLower.includes('thành') || nameLower.includes('phủ') || 
+            nameLower.includes('thị hội') || nameLower.includes('gia trang') || nameLower.includes('mặc phủ') || nameLower.includes('phố')
+        ) {
+            theme = 'CITY_TOWN';
+        } else if (
+            idLower.includes('son') || idLower.includes('mach') || idLower.includes('lam') || 
+            idLower.includes('rung') || idLower.includes('thao_nguyen') || idLower.includes('coc') || 
+            nameLower.includes('sơn') || nameLower.includes('mạch') || nameLower.includes('lâm') || 
+            nameLower.includes('rừng') || nameLower.includes('thảo nguyên') || nameLower.includes('cốc') || nameLower.includes('núi')
+        ) {
+            theme = 'FOREST_MOUNTAIN';
+        }
+
         // Phân phối ngẫu nhiên các loại sự kiện cho 62 ô trung gian (trừ Start và Exit)
         let types = [];
         if (isSectOrGuild) {
@@ -1088,19 +1136,41 @@ export class MapScreen {
                 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty' // 10 Hành lang đá cổ thanh tịnh
             ];
         } else {
-            // Mật cảnh/Dungeons hiểm nguy
-            types = [
-                'rock', 'rock', 'rock', 'rock', 'rock', 'rock', 'rock', 'rock', // 8 Đá chặn đường
-                'river', 'river', 'river', 'river', 'river', 'river',          // 6 Dòng sông Linh Giang dữ dội
-                'grass', 'grass', 'grass', 'grass', 'grass', 'grass', 
-                'grass', 'grass', 'grass', 'grass', 'grass', 'grass',          // 12 Bụi cỏ hoang
-                'empty', 'empty', 'empty', 'empty', 'empty', 'empty',          // 6 Ô trống bù đắp
-                'guard', 'guard', 'guard', 'guard', 'guard', 'guard',          // 6 Yêu thú hoành hành chắn đường (giảm từ 12)
-                'qi', 'qi', 'qi', 'qi', 'qi', 'qi',                            // 6 Mắt trận khí địa linh
-                'event', 'event', 'event', 'event', 'event', 'event',          // 6 Kỳ ngộ bí kính hoang cổ
-                'npc_event', 'npc_event', 'npc_event', 'npc_event',            // 4 Cổ nhân di tích / Tu sĩ lạc lối
-                'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty' // 8 Ô trống đường mòn hoang vắng
-            ];
+            // Mật cảnh/Dungeons hiểm nguy - Tỷ lệ sinh động tùy theo độ nguy hiểm
+            const danger = (loc && loc.danger) ? loc.danger : 'ha_cap';
+            let numGuards = 6;
+            let numNpcs = 4;
+            let numGrass = 12;
+            let numQi = 6;
+            let numEvents = 6;
+            let numRocks = 8;
+            let numRivers = 6;
+            let numEmpty = 14;
+
+            if (danger === 'an_toan') {
+                numGuards = 1; numNpcs = 10; numGrass = 14; numQi = 10; numEvents = 10; numRocks = 6; numRivers = 4; numEmpty = 7;
+            } else if (danger === 'ha_cap') {
+                numGuards = 3; numNpcs = 7; numGrass = 12; numQi = 8; numEvents = 8; numRocks = 8; numRivers = 6; numEmpty = 10;
+            } else if (danger === 'trung_cap') {
+                numGuards = 6; numNpcs = 5; numGrass = 10; numQi = 8; numEvents = 8; numRocks = 8; numRivers = 6; numEmpty = 11;
+            } else if (danger === 'cao_cap') {
+                numGuards = 9; numNpcs = 3; numGrass = 8; numQi = 6; numEvents = 8; numRocks = 10; numRivers = 8; numEmpty = 10;
+            } else if (danger === 'nguy_hiem') {
+                numGuards = 12; numNpcs = 2; numGrass = 6; numQi = 5; numEvents = 7; numRocks = 12; numRivers = 10; numEmpty = 8;
+            } else if (danger === 'cuc_ky_nguy_hiem') {
+                numGuards = 16; numNpcs = 1; numGrass = 4; numQi = 4; numEvents = 6; numRocks = 14; numRivers = 10; numEmpty = 7;
+            } else if (danger === 'tu_dia') {
+                numGuards = 22; numNpcs = 0; numGrass = 2; numQi = 3; numEvents = 5; numRocks = 15; numRivers = 10; numEmpty = 5;
+            }
+
+            for (let i = 0; i < numGuards; i++) types.push('guard');
+            for (let i = 0; i < numNpcs; i++) types.push('npc_event');
+            for (let i = 0; i < numGrass; i++) types.push('grass');
+            for (let i = 0; i < numQi; i++) types.push('qi');
+            for (let i = 0; i < numEvents; i++) types.push('event');
+            for (let i = 0; i < numRocks; i++) types.push('rock');
+            for (let i = 0; i < numRivers; i++) types.push('river');
+            for (let i = 0; i < numEmpty; i++) types.push('empty');
         }
 
         // Shuffle thuật toán Fisher-Yates để phân bố tự nhiên
@@ -1109,9 +1179,106 @@ export class MapScreen {
             [types[i], types[j]] = [types[j], types[i]];
         }
 
-        // Tạo danh sách NPC/Thú duy nhất cho tầng này
-        const floorNpcs = [...NPC_IMAGES].sort(() => Math.random() - 0.5);
-        const floorBeasts = [...BEAST_IMAGES].sort(() => Math.random() - 0.5);
+        // Tạo danh sách NPC/Thú duy nhất cho tầng này theo chủ đề địa lý
+        let themeNpcs = [];
+        let themeBeasts = [];
+
+        if (theme === 'SECT') {
+            themeNpcs = [
+                'portraits/sect_elder',
+                'portraits/kiem_vo_tam',
+                'portraits/han_lap',
+                'portraits/han_phi_vu',
+                'portraits/vo_danh',
+                'portraits/tran_tu_huyen',
+                'portraits/bach_minh_anh',
+                'portraits/bang_nguyet'
+            ];
+            themeBeasts = [
+                'beasts/thanh-van-ly-thu',
+                'enemies/rogue_cultivator',
+                'enemies/dragon_legacy'
+            ];
+        } else if (theme === 'DEMONIC_SECT') {
+            themeNpcs = [
+                'portraits/demon',
+                'portraits/xich_nguyet',
+                'portraits/han_vien',
+                'portraits/tu_linh',
+                'portraits/phuong_ca'
+            ];
+            themeBeasts = [
+                'enemies/demon_cultivator',
+                'enemies/zombie',
+                'beasts/u-minh-mong-diep'
+            ];
+        } else if (theme === 'SEA_OCEAN') {
+            themeNpcs = [
+                'portraits/merchant',
+                'portraits/vo_danh',
+                'portraits/bang_nguyet',
+                'portraits/tu_linh',
+                'portraits/lan_anh'
+            ];
+            themeBeasts = [
+                'enemies/dragon_legacy',
+                'enemies/fire_dragon',
+                'beasts/huyen-giap-dia-long'
+            ];
+        } else if (theme === 'DUNGEON_FORBIDDEN') {
+            themeNpcs = [
+                'portraits/demon',
+                'portraits/vo_danh',
+                'portraits/han_lap',
+                'portraits/han_vien'
+            ];
+            themeBeasts = [
+                'beasts/u-minh-mong-diep',
+                'enemies/fire_dragon',
+                'enemies/zombie',
+                'enemies/demon_cultivator'
+            ];
+        } else if (theme === 'CITY_TOWN') {
+            themeNpcs = [
+                'portraits/merchant',
+                'portraits/bach_minh_anh',
+                'portraits/bach_tu_linh',
+                'portraits/du_nhuoc_nhan',
+                'portraits/lan_anh',
+                'portraits/minh_nguyet',
+                'portraits/phuong_vu',
+                'portraits/thanh_lien',
+                'portraits/thanh_nhi'
+            ];
+            themeBeasts = [
+                'enemies/black_tiger',
+                'enemies/rogue_cultivator',
+                'enemies/spirit_wolf'
+            ];
+        } else {
+            // FOREST_MOUNTAIN
+            themeNpcs = [
+                'portraits/vo_danh',
+                'portraits/han_lap',
+                'portraits/tran_tu_huyen',
+                'portraits/du_nhuoc_nhan',
+                'portraits/thanh_lien',
+                'portraits/thanh_nhi'
+            ];
+            themeBeasts = [
+                'beasts/huyen-giap-dia-long',
+                'enemies/black_tiger',
+                'enemies/spirit_wolf',
+                'enemies/wolf_legacy',
+                'beasts/thanh-van-ly-thu'
+            ];
+        }
+
+        const finalNpcPool = themeNpcs.length > 0 ? themeNpcs : NPC_IMAGES;
+        const finalBeastPool = themeBeasts.length > 0 ? themeBeasts : BEAST_IMAGES;
+
+        const floorNpcs = [...finalNpcPool].sort(() => Math.random() - 0.5);
+        const floorBeasts = [...finalBeastPool].sort(() => Math.random() - 0.5);
         let npcCounter = 0;
         let beastCounter = 0;
 
@@ -1138,8 +1305,6 @@ export class MapScreen {
             'portraits/vo_danh': 'Vô Danh Lão Giả',
             'portraits/xich_nguyet': 'Xích Nguyệt'
         };
-
-        const randomNames = ['Lệ Phi Vũ', 'Lục Sư Huynh', 'Trần Xảo Thiến', 'Vương Thiền', 'Tống Mông', 'Đồng Chiến', 'Tuyên Nhạc'];
 
         let typeIdx = 0;
 
@@ -1219,7 +1384,31 @@ export class MapScreen {
                     if (type === 'npc_event') {
                         const imgPath = floorNpcs[npcCounter % floorNpcs.length];
                         cellData.npcIdx = NPC_IMAGES.indexOf(imgPath);
-                        cellData.npcName = npcNamesMap[imgPath] || randomNames[npcCounter % randomNames.length];
+                        
+                        let thematicName = npcNamesMap[imgPath];
+                        if (!thematicName) {
+                            if (theme === 'SECT') {
+                                const sectNames = ['Hoàng Phong Cốc Đệ Tử', 'Lệ Phi Vũ', 'Lục Sư Huynh', 'Trần Xảo Thiến', 'Tống Mông', 'Đồng Chiến', 'Tuyên Nhạc'];
+                                thematicName = sectNames[npcCounter % sectNames.length];
+                            } else if (theme === 'DEMONIC_SECT') {
+                                const demonNames = ['Ma Đạo Sử Giả', 'Hợp Hoan Tông Tu Sĩ', 'Quỷ Linh Môn Đệ Tử', 'Ma Hỏa Thần Quân', 'Cực Âm Tổ Sư', 'U Linh Ma Tu'];
+                                thematicName = demonNames[npcCounter % demonNames.length];
+                            } else if (theme === 'SEA_OCEAN') {
+                                const seaNames = ['Hải Vực Tán Tu', 'Bán Đảo Linh Thương', 'Cổ Hải Đạo Nhân', 'Đông Hải Long Nhân', 'Vạn Hải Thuyền Trưởng'];
+                                thematicName = seaNames[npcCounter % seaNames.length];
+                            } else if (theme === 'DUNGEON_FORBIDDEN') {
+                                const dungeonNames = ['Cấm Địa Tán Nhân', 'Tà Linh Chân Nhân', 'Di Tích Thủ Vệ', 'Huyết Hồn Tà Tu', 'Cổ Nhân Tàn Hồn'];
+                                thematicName = dungeonNames[npcCounter % dungeonNames.length];
+                            } else if (theme === 'CITY_TOWN') {
+                                const townNames = ['Linh Bảo Các Chấp Sự', 'Vạn Bảo Thương Nhân', 'Gia Tộc Tiền Bối', 'Phàm Nhân Võ Sư', 'Hắc Tâm Thương Nhân'];
+                                thematicName = townNames[npcCounter % townNames.length];
+                            } else {
+                                // FOREST_MOUNTAIN
+                                const forestNames = ['Thái Nhạc Sơn Tán Tu', 'Tiêu Dao Tu Sĩ', 'Thảo Dược Nhân', 'Vô Danh Lão Giả', 'Sơn Dã Dược Đồng'];
+                                thematicName = forestNames[npcCounter % forestNames.length];
+                            }
+                        }
+                        cellData.npcName = thematicName;
                         npcCounter++;
                     } else if (type === 'guard') {
                         cellData.beastIdx = BEAST_IMAGES.indexOf(floorBeasts[beastCounter % floorBeasts.length]);
