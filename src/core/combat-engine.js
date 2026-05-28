@@ -55,14 +55,43 @@ export class CombatEngine {
         const aRealm = attacker.realmId || 1;
         const dRealm = defender.realmId || 1;
 
-        if (aRealm > dRealm) {
-            const diff = aRealm - dRealm;
-            mult = 1.0 + (diff * 0.15); // 15% bonus per realm difference
+        const getMajorRealmLevel = (realmId) => {
+            if (!realmId || realmId === 0) return 0;
+            if (realmId <= 13) return 1; // Luyện Khí / Yêu Thú
+            if (realmId <= 17) return 2; // Trúc Cơ / Yêu Linh
+            if (realmId <= 21) return 3; // Kết Đan / Yêu Tướng
+            if (realmId <= 25) return 4; // Nguyên Anh / Yêu Soái
+            if (realmId <= 29) return 5; // Hóa Thần / Yêu Vương
+            if (realmId <= 33) return 6; // Luyện Hư / Yêu Hoàng
+            if (realmId <= 37) return 7; // Hợp Thể / Yêu Tôn
+            if (realmId <= 41) return 8; // Đại Thừa / Yêu Thánh
+            if (realmId <= 45) return 9; // Độ Kiếp / Yêu Đế
+            if (realmId <= 49) return 10; // Chân Tiên / Yêu Tiên
+            if (realmId <= 53) return 11; // Kim Tiên
+            if (realmId <= 60) return 12; // Thái Ất
+            return 13; // Đại La / Đạo Tổ
+        };
+
+        const aMajor = getMajorRealmLevel(aRealm);
+        const dMajor = getMajorRealmLevel(dRealm);
+
+        if (aMajor > dMajor) {
+            const majorDiff = aMajor - dMajor;
+            const subDiff = aRealm - dRealm;
+            mult = 1.0 + (majorDiff * 0.5) + (subDiff * 0.05); // Lore-accurate suppression
             this.addLog(`<span class="text-cultivation-gold">Uy áp!</span> Cảnh giới cao áp chế kẻ yếu, uy lực tăng mạnh.`);
+        } else if (aMajor < dMajor) {
+            const majorDiff = dMajor - aMajor;
+            const subDiff = dRealm - aRealm;
+            // 60% penalty per major realm difference, plus sub-realm penalties
+            mult = Math.max(0.05, Math.pow(0.4, majorDiff) - (subDiff * 0.02));
+            this.addLog(`<span class="text-red-400">Trấn áp!</span> Cảnh giới kẻ địch quá cao, ngươi chịu áp chế cảnh giới nặng nề.`);
+        } else if (aRealm > dRealm) {
+            const diff = aRealm - dRealm;
+            mult = 1.0 + (diff * 0.05); // Small bonus for sub-realm difference within same major realm
         } else if (aRealm < dRealm) {
             const diff = dRealm - aRealm;
-            mult = Math.max(0.3, 1.0 - (diff * 0.2)); // 20% penalty per realm difference
-            this.addLog(`<span class="text-red-400">Trấn áp!</span> Cảnh giới kẻ địch quá cao, ngươi cảm thấy khó thở.`);
+            mult = Math.max(0.7, 1.0 - (diff * 0.05)); // Small penalty for sub-realm difference within same major realm
         }
 
         return mult;
@@ -129,7 +158,7 @@ export class CombatEngine {
             this.turn = 1;
         } else {
             this.addLog(`Khởi động cuộc chiến với ${this.enemy.name}!`);
-            this.turn = this.player.spd >= this.enemy.spd ? 0 : 1;
+            this.turn = this.turnOrder[0].id === 'player' ? 0 : 1;
         }
         this.nextTurn();
     }
@@ -804,8 +833,10 @@ export class CombatEngine {
             this.addLog("Không có đan dược hồi phục để sử dụng!");
             return;
         }
+        const potionName = getItemById(potion.id)?.name || 'đan dược';
         this.player.inventory.useItem(potion.id, 1);
-        this.addLog(`Ngươi dùng ${getItemById(potion.id)?.name || 'đan dược'}, điều tức hồi phục.`);
+        this.addLog(`Ngươi dùng ${potionName}, điều tức hồi phục.`);
+        this.onUpdate('damage', { target: 'player', value: 0, crit: false }); // Force refresh HP/Mana bars immediately
         this.endPlayerTurn();
     }
 

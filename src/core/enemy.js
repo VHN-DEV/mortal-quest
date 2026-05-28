@@ -19,6 +19,10 @@ export class Enemy {
         return elements[this.realmId % elements.length];
     }
 
+    get level() {
+        return this.realmId;
+    }
+
     constructor(realmId, typeData) {
         this.realmId = realmId;
         this.race = typeData.race || 'HUMAN';
@@ -34,6 +38,38 @@ export class Enemy {
         this.equipment = { weapon: null, armor: null, artifact: null };
         this.skills = [];
         
+        // Initialize xianxia stats
+        let physBonus = 0;
+        let dsBonus = 0;
+        let compBonus = 0;
+        let dtBonus = 0;
+        let hdBonus = 0;
+        
+        if (this.race === 'DEMON') {
+            hdBonus += 15; // Ma tộc dễ bị tâm ma quấy nhiễu
+            dsBonus += 5;
+        } else if (this.race === 'DRAGON') {
+            physBonus += 25; // Long tộc thân thể cường hãn
+        } else if (this.race === 'SPIRIT_BEAST') {
+            physBonus += 10;
+            compBonus -= 5; // Thú tộc ngộ tính kém hơn nhân tộc
+        } else if (this.race === 'GHOST') {
+            dsBonus += 15; // Quỷ hồn thần thức mạnh
+            physBonus -= 15; // Không có thân thể vật lý
+        } else if (this.race === 'ZOMBIE') {
+            physBonus += 15; // Thi tộc mình đồng da sắt
+            dsBonus -= 10; // Mất đi thần trí
+        }
+        
+        const baseVal = 40 + this.realmId * 2;
+        const varianceVal = () => Math.floor(Math.random() * 15) - 7;
+        
+        this.comprehension = Math.max(5, Math.floor(10 + this.realmId * 0.5 + compBonus + (Math.random() * 6 - 3)));
+        this.heartDemon = Math.max(0, Math.floor(Math.random() * 20 + hdBonus));
+        this.daoTam = Math.max(10, Math.floor(baseVal + dtBonus + varianceVal()));
+        this.divineSense = Math.max(10, Math.floor(baseVal + dsBonus + varianceVal()));
+        this.physiqueTalent = Math.max(10, Math.floor(baseVal + physBonus + varianceVal()));
+        
         this.calculateStats();
     }
 
@@ -48,13 +84,20 @@ export class Enemy {
         const hpPercent = this.maxHp ? (this.hp / this.maxHp) : 1.0;
         const manaPercent = this.maxMana ? (this.mana / this.maxMana) : 1.0;
 
+        // Base values scaled by realm
         this.maxHp = Math.floor(100 * baseMultiplier * variance * raceMults.hp);
         this.atk = Math.floor(10 * baseMultiplier * variance * raceMults.atk);
         this.def = Math.floor(5 * baseMultiplier * variance * raceMults.def);
         this.spd = Math.floor((10 + (this.realmId * 1.5)) * variance * raceMults.spd);
-        
         this.maxMana = Math.floor(50 * baseMultiplier);
-        this.perception = Math.floor(5 + (this.realmId * 1.8) * variance);
+
+        // Apply physiqueTalent (căn cốt) just like player
+        this.maxHp = Math.round(this.maxHp * (1 + (this.physiqueTalent / 200)));
+        this.def = Math.round(this.def * (1 + (this.physiqueTalent / 500)));
+
+        // Apply divineSense (thần thức) just like player to perception
+        this.perception = Math.floor(10 + (this.realmId * 2) + (this.divineSense / 5));
+        this.perception = Math.round(this.perception * variance);
 
         // Initialize Advanced Stats
         this.advancedStats = {
@@ -89,6 +132,13 @@ export class Enemy {
             this.advancedStats.critRate += 0.03; // Yêu thú dã tính có tỷ lệ bạo kích cao hơn
         } else if (this.race === 'GHOST') {
             this.advancedStats.pierce += 0.05; // Quỷ hồn công kích vô hình dễ xuyên phòng ngự
+        }
+
+        // Apply Heart Demon penalties if high
+        if (this.heartDemon > 10) {
+            const hdPenalty = 1 - (this.heartDemon / 200);
+            this.atk = Math.round(this.atk * hdPenalty);
+            this.advancedStats.critRate *= hdPenalty;
         }
 
         // Apply equipment bonuses dynamically (generic loop over stats)

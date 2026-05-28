@@ -595,6 +595,16 @@ export class BattleScreen {
         if (spdEl) spdEl.textContent = Math.floor(enemy.spd);
         if (senseEl) senseEl.textContent = Math.floor(enemy.perception);
 
+        const comprehensionEl = document.getElementById('enemy-stats-comprehension');
+        const physiqueEl = document.getElementById('enemy-stats-physique');
+        const daotamEl = document.getElementById('enemy-stats-daotam');
+        const heartdemonEl = document.getElementById('enemy-stats-heartdemon');
+
+        if (comprehensionEl) comprehensionEl.textContent = Math.floor(enemy.comprehension || 10);
+        if (physiqueEl) physiqueEl.textContent = Math.floor(enemy.physiqueTalent || 50);
+        if (daotamEl) daotamEl.textContent = Math.floor(enemy.daoTam || 50);
+        if (heartdemonEl) heartdemonEl.textContent = `${Math.floor(enemy.heartDemon || 0)}%`;
+
         // Populate advanced stats
         const advContainer = document.getElementById('enemy-advanced-stats-container');
         if (advContainer) {
