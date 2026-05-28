@@ -31,7 +31,7 @@ window.game = game; // Global access cho onclick trong HTML
 window.state = state;
 
 // Khi DOM sẵn sàng, bắt đầu game
-document.addEventListener('DOMContentLoaded', async () => {
+const startGame = async () => {
     const elLoading = document.getElementById('loading-screen');
     const elBar = document.getElementById('loading-bar');
     const elPercent = document.getElementById('loading-percent');
@@ -118,7 +118,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Lỗi khởi động game:', err);
         if (elText) elText.textContent = 'Lỗi nạp linh khí. Vui lòng làm mới trang.';
     }
-});
+};
+
+// Khởi chạy game linh hoạt tùy theo readyState của document để tránh race condition
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    startGame();
+} else {
+    document.addEventListener('DOMContentLoaded', startGame);
+}
 
 // --- COMPATIBILITY LAYER ---
 // Các hàm này được gọi từ HTML hoặc các file JS cũ. 
