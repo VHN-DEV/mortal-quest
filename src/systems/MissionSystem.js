@@ -94,7 +94,7 @@ export class MissionSystem {
             if (mission.status === 'active' && mission.progress >= mission.target) {
                 // Phát thưởng
                 state.player.addLingShi(mission.reward);
-                state.ui.alert(`Nhiệm vụ hoàn thành! Nhận được ${mission.reward.toLocaleString()} Linh Thạch.`, "Công Đức Viên Mãn");
+                state.ui.toast(`Nhiệm vụ hoàn thành! Nhận được ${mission.reward.toLocaleString()} Linh Thạch.`, "success");
                 
                 // Xóa nhiệm vụ và cập nhật thống kê
                 this.missions.splice(index, 1);

@@ -62,7 +62,7 @@ export class CorpseSystem {
             
             if (this.player.addCorpseExp(type.level * 100)) {
                 const info = getCorpseLevelInfo(this.player.corpseLevel);
-                this.ui.alert(`Đẳng cấp Luyện Thi Sư tăng lên ${info.name}!`, "Thi Đạo Tấn Thăng");
+                this.ui.toast(`Đẳng cấp Luyện Thi Sư tăng lên ${info.name}!`, "success");
             }
 
             return { success: true, msg: `Luyện chế thành công [${quality}] ${type.name}!` };

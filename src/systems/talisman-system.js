@@ -68,7 +68,7 @@ export class TalismanSystem {
             
             if (this.player.addTalismanExp(recipe.expGain)) {
                  const nextLevelInfo = getTalismanLevelInfo(this.player.talismanLevel);
-                 this.ui.alert(`Chúc mừng! Ngươi đã đột phá lên ${nextLevelInfo.name}!`, "Phù Đạo Tấn Thăng");
+                 this.ui.toast(`Chúc mừng! Ngươi đã đột phá lên ${nextLevelInfo.name}!`, "success");
             }
             return { success: true, msg: `Ngươi đã vẽ thành công một tấm [${quality}] ${recipe.name}!` };
         } else {

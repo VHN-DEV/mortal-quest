@@ -185,7 +185,7 @@ export class Inventory {
             if (state.systems.beast) {
                 const res = state.systems.beast.hatch(itemId);
                 if (res.success) {
-                    state.ui.alert(res.msg, "Ấp Nở Thành Công");
+                    state.ui.toast(res.msg, "success");
                     return true;
                 } else {
                     state.ui.toast(res.msg, "error");
@@ -329,14 +329,14 @@ export class Inventory {
             });
         } else if (effect.type === 'unlock_profession') {
             if (this.player.unlockProfession(effect.profession)) {
-                state.ui.alert(`Chúc mừng! Ngươi đã lĩnh hội bí pháp và mở khóa nghề ${effect.profession === 'alchemy' ? 'Luyện Đan' :
+                state.ui.toast(`Chúc mừng! Ngươi đã lĩnh hội bí pháp và mở khóa nghề ${effect.profession === 'alchemy' ? 'Luyện Đan' :
                     effect.profession === 'talisman' ? 'Phù Lục' :
                         effect.profession === 'smithing' ? 'Luyện Khí' :
                             effect.profession === 'formation' ? 'Trận Pháp' :
                                 effect.profession === 'puppet' ? 'Khôi Lỗi' :
                                     effect.profession === 'corpse' ? 'Luyện Thi' :
                                         effect.profession === 'beast' ? 'Ngự Thú' :
-                                            effect.profession === 'insect' ? 'Khu Trùng' : effect.profession}!`, "Mở Khóa Nghề Nghiệp");
+                                            effect.profession === 'insect' ? 'Khu Trùng' : effect.profession}!`, "success");
             } else {
                 state.ui.toast("Ngươi đã lĩnh hội bí pháp này từ trước rồi.", "info");
             }

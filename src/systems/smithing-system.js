@@ -87,7 +87,7 @@ export class SmithingSystem {
             
             if (this.player.addSmithingExp(recipe.expGain)) {
                  const nextInfo = getSmithingLevelInfo(this.player.smithingLevel);
-                 this.ui.alert(`Đẳng cấp Luyện Khí Sư tăng lên ${nextInfo.name}!`, "Rèn Thần Kỹ");
+                 this.ui.toast(`Đẳng cấp Luyện Khí Sư tăng lên ${nextInfo.name}!`, "success");
             }
             return { 
                 success: true, 

@@ -174,7 +174,7 @@ export class AlchemySystem {
                 await window.game.receiveItem(result.resultId, quantity, itemMetadata);
                 if (this.player.addAlchemyExp(recipe.level * 10)) {
                     const levelInfo = getAlchemyLevelInfo(this.player.alchemyLevel);
-                    this.ui.alert(`Đẳng cấp Luyện Dược Sư tăng lên ${levelInfo.name}!`, "Đan Đạo Tấn Thăng");
+                    this.ui.toast(`Đẳng cấp Luyện Dược Sư tăng lên ${levelInfo.name}!`, "success");
                 }
                 
                 if (quantity > 1) {

@@ -247,7 +247,7 @@ export class BattleScreen {
             drops.push(`[${count}x Yêu Thú Cốt]`);
         }
 
-        state.ui.alert(`Ngươi thuần thục mổ xẻ ${enemy.name}, thu được: ${drops.join(', ')}`, "Thu Thập Nguyên Liệu");
+        state.ui.toast(`Ngươi thuần thục mổ xẻ ${enemy.name}, thu được: ${drops.join(', ')}`, "success");
     }
 
     collectMonsterCorpse(enemy) {

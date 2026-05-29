@@ -813,7 +813,7 @@ export class Game {
                 const hexStr = utf8_to_hex(jsonStr);
                 try {
                     await navigator.clipboard.writeText(hexStr);
-                    state.ui.alert('Mã save đã được sao chép vào bộ nhớ tạm. Hãy gửi mã này sang thiết bị mới để nhập!', 'Sao Chép Thành Công');
+                    state.ui.toast('Mã save đã được sao chép vào bộ nhớ tạm. Hãy gửi mã này sang thiết bị mới để nhập!', 'success');
                 } catch (err) {
                     state.ui.prompt('Sao chép thủ công mã save bên dưới:', () => {}, hexStr, 'Mã Save Của Bạn');
                 }

@@ -35,7 +35,7 @@ export class TreasureScreen {
         if (this.btnRecognize) {
             this.btnRecognize.onclick = () => {
                 const res = state.systems.treasure.recognize(this.currentSlot);
-                state.ui.alert(res.msg, res.success ? 'Thành Công' : 'Thất Bại');
+                state.ui.toast(res.msg, res.success ? 'success' : 'error');
                 this.render();
             };
         }
