@@ -555,8 +555,26 @@ window.renderMainStats = () => {
         state.ui.lastTuVi = player.tuVi;
     }
 
-    updateCachedStyleWidth('tu-vi-progress', Math.min(100, progress));
-    updateCachedText('tu-vi-text', `${Math.floor(currentExp).toLocaleString()} / ${activeRealm.expRequired.toLocaleString()}`);
+    // Toggle progress bar containers
+    const elTuViContainer = getCachedEl('tu-vi-bar-container');
+    const elBodyContainer = getCachedEl('body-bar-container');
+    const elSoulContainer = getCachedEl('soul-bar-container');
+
+    if (elTuViContainer && elBodyContainer && elSoulContainer) {
+        if (focus === 'body') {
+            elBodyContainer.classList.remove('hidden');
+            elTuViContainer.classList.add('hidden');
+            elSoulContainer.classList.add('hidden');
+        } else if (focus === 'soul') {
+            elSoulContainer.classList.remove('hidden');
+            elTuViContainer.classList.add('hidden');
+            elBodyContainer.classList.add('hidden');
+        } else {
+            elTuViContainer.classList.remove('hidden');
+            elBodyContainer.classList.add('hidden');
+            elSoulContainer.classList.add('hidden');
+        }
+    }
 
     let tvps = player.tuViPerSecond;
     if (focus === 'body') tvps = player.bodyExpPerSecond;
@@ -572,21 +590,29 @@ window.renderMainStats = () => {
         if (season.bonus && season.bonus.tvps) tvps *= season.bonus.tvps;
     }
 
-    updateCachedText('tu-vi-per-sec', `+${tvps.toFixed(1)}/s`);
+    if (focus === 'body') {
+        updateCachedStyleWidth('body-progress', Math.min(100, progress));
+        updateCachedText('body-text', `${Math.floor(currentExp).toLocaleString()} / ${activeRealm.expRequired.toLocaleString()}`);
+        updateCachedText('body-per-sec', `+${tvps.toFixed(1)}/s`);
+    } else if (focus === 'soul') {
+        updateCachedStyleWidth('soul-progress', Math.min(100, progress));
+        updateCachedText('soul-text', `${Math.floor(currentExp).toLocaleString()} / ${activeRealm.expRequired.toLocaleString()}`);
+        updateCachedText('soul-per-sec', `+${tvps.toFixed(1)}/s`);
+    } else {
+        updateCachedStyleWidth('tu-vi-progress', Math.min(100, progress));
+        updateCachedText('tu-vi-text', `${Math.floor(currentExp).toLocaleString()} / ${activeRealm.expRequired.toLocaleString()}`);
+        updateCachedText('tu-vi-per-sec', `+${tvps.toFixed(1)}/s`);
+    }
 
+    const tuviRealm = player.getCurrentRealm('tuvi');
     const bodyRealm = player.getCurrentRealm('body');
     const soulRealm = player.getCurrentRealm('soul');
+    const tuviPercent = Math.min(100, (player.tuVi / tuviRealm.expRequired) * 100);
     const bodyPercent = Math.min(100, (player.bodyExp / bodyRealm.expRequired) * 100);
     const soulPercent = Math.min(100, (player.soulExp / soulRealm.expRequired) * 100);
 
-    updateCachedStyleWidth('body-progress', bodyPercent);
-    updateCachedStyleWidth('soul-progress', soulPercent);
-
-    updateCachedText('body-text', `${Math.floor(bodyPercent)}%`);
-    updateCachedText('soul-text', `${Math.floor(soulPercent)}%`);
-
     // Circular Progress Update with dirty checking
-    updateCachedDashOffset('circle-tu-vi', 301.6 - (Math.min(100, progress) / 100) * 301.6, 301.6);
+    updateCachedDashOffset('circle-tu-vi', 301.6 - (tuviPercent / 100) * 301.6, 301.6);
     updateCachedDashOffset('circle-body', 276.5 - (bodyPercent / 100) * 276.5, 276.5);
     updateCachedDashOffset('circle-soul', 251.3 - (soulPercent / 100) * 251.3, 251.3);
 

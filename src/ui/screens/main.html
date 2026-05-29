@@ -84,8 +84,8 @@
             </div>
 
             <div class="w-full space-y-4 px-4">
-                <!-- Tu Vi Bar -->
-                <div class="space-y-1.5">
+                <!-- Tu Vi Bar Container -->
+                <div id="tu-vi-bar-container" class="space-y-1.5">
                     <div class="flex justify-between items-end">
                         <div class="flex flex-col">
                             <span id="main-focus-bar-label" class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Tu Vi</span>
@@ -100,30 +100,35 @@
                     </div>
                 </div>
 
-                <!-- Secondary Progress Bars (Body & Soul) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <div class="flex justify-between items-end px-0.5">
-                            <span class="text-[7px] text-gray-600 font-ancient uppercase tracking-widest">Huyết
-                                khí</span>
-                            <span id="body-text" class="text-[8px] font-mono text-red-400/70">0%</span>
+                <!-- Body Bar Container -->
+                <div id="body-bar-container" class="space-y-1.5 hidden">
+                    <div class="flex justify-between items-end">
+                        <div class="flex flex-col">
+                            <span class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Luyện Thể / Huyết Khí</span>
+                            <span id="body-per-sec" class="text-[7px] text-red-400/60 italic"></span>
                         </div>
-                        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                            <div id="body-progress"
-                                class="h-full bg-red-500 shadow-[0_0_5px_rgba(239, 68, 68, 0.3)] transition-all duration-700"
-                                style="width: 0%"></div>
-                        </div>
+                        <span id="body-text" class="text-[10px] font-mono text-red-400">0%</span>
                     </div>
-                    <div class="space-y-1.5">
-                        <div class="flex justify-between items-end px-0.5">
-                            <span class="text-[7px] text-gray-600 font-ancient uppercase tracking-widest">Hồn lực</span>
-                            <span id="soul-text" class="text-[8px] font-mono text-purple-400/70">0%</span>
+                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
+                        <div id="body-progress"
+                            class="h-full bg-gradient-to-r from-red-500 via-orange-500 to-red-500 bg-[length:200%_100%] animate-gradient-x transition-all duration-700 shadow-[0_0_8px_rgba(239,68,68,0.4)]"
+                            style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Soul Bar Container -->
+                <div id="soul-bar-container" class="space-y-1.5 hidden">
+                    <div class="flex justify-between items-end">
+                        <div class="flex flex-col">
+                            <span class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Thần Thức / Hồn Lực</span>
+                            <span id="soul-per-sec" class="text-[7px] text-purple-400/60 italic"></span>
                         </div>
-                        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                            <div id="soul-progress"
-                                class="h-full bg-purple-500 shadow-[0_0_5px_rgba(168, 85, 247, 0.3)] transition-all duration-700"
-                                style="width: 0%"></div>
-                        </div>
+                        <span id="soul-text" class="text-[10px] font-mono text-purple-400">0%</span>
+                    </div>
+                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
+                        <div id="soul-progress"
+                            class="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 bg-[length:200%_100%] animate-gradient-x transition-all duration-700 shadow-[0_0_8px_rgba(168,85,247,0.4)]"
+                            style="width: 0%"></div>
                     </div>
                 </div>
             </div>

@@ -651,48 +651,45 @@ export class UISystem {
             .to(bagua, { opacity: 0, scale: 1.4, duration: 1.0, ease: "power2.in" }, "-=1.0")
             .to(title, { opacity: 0, y: -120, scale: 1.1, duration: 0.8, ease: "power3.in" }, "-=0.8");
 
-        // Spawn a meridian-like expanding ring
+        // Spawn a meridian-like expanding ring (CSS-animated for performance)
         const ring = document.createElement('div');
         ring.className = 'meridian-shockwave absolute z-[1150]';
         const rect = app.getBoundingClientRect();
         ring.style.left = `${rect.width / 2}px`;
         ring.style.top = `${rect.height / 2}px`;
+        ring.style.setProperty('--focus-color', '#fbbf24');
         app.appendChild(ring);
-        gsap.fromTo(ring,
-            { width: 120, height: 120, opacity: 1, borderWidth: 5 },
-            { width: 750, height: 750, opacity: 0, borderWidth: 0.2, duration: 0.85, ease: "power3.out", onComplete: () => ring.remove() }
-        );
+        setTimeout(() => ring.remove(), 850);
 
-        // Spawn gold stardust drifting downwards
+        // Spawn gold stardust drifting downwards (Optimized particle count and styles to prevent lag)
         const pContainer = effect.querySelector('.particles-burst');
-        const count = 50;
+        const count = 18;
         for (let i = 0; i < count; i++) {
             const p = document.createElement('div');
-            p.className = 'absolute rounded-full pointer-events-none';
-            const size = 1.5 + Math.random() * 3.5;
+            p.className = 'absolute rounded-full pointer-events-none bg-cultivation-gold';
+            const size = 2.0 + Math.random() * 3.0;
             p.style.width = `${size}px`;
             p.style.height = `${size}px`;
-            p.style.backgroundColor = '#D4AF37';
-            p.style.boxShadow = '0 0 6px #D4AF37';
+            p.style.opacity = `${0.6 + Math.random() * 0.4}`;
             
             // Random start position near center
-            const startX = rect.width / 2 + (Math.random() - 0.5) * 120;
-            const startY = rect.height / 2 + (Math.random() - 0.5) * 100;
+            const startX = rect.width / 2 + (Math.random() - 0.5) * 80;
+            const startY = rect.height / 2 + (Math.random() - 0.5) * 80;
             p.style.left = `${startX}px`;
             p.style.top = `${startY}px`;
             pContainer.appendChild(p);
 
             const angle = Math.random() * Math.PI * 2;
-            const speed = 50 + Math.random() * 150;
+            const speed = 40 + Math.random() * 100;
             const destX = Math.cos(angle) * speed;
-            const destY = Math.sin(angle) * speed + 100; // Drift down extra
+            const destY = Math.sin(angle) * speed + 80; // Drift down extra
 
             gsap.to(p, {
                 x: destX,
                 y: destY,
                 opacity: 0,
-                scale: 0.1,
-                duration: 1.0 + Math.random() * 1.5,
+                scale: 0.2,
+                duration: 0.8 + Math.random() * 0.8,
                 ease: "power1.out"
             });
         }
