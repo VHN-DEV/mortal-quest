@@ -1781,11 +1781,24 @@ export class UISystem {
         document.getElementById('screen-main').appendChild(popRing);
         setTimeout(() => popRing.remove(), 500);
 
+        // Freeze bubble at its current animated position before stopping the keyframe animation
+        const computedStyle = window.getComputedStyle(bubble);
+        const currentBottom = computedStyle.bottom;
+        const currentTransform = computedStyle.transform;
+
+        bubble.style.bottom = currentBottom;
+        bubble.style.transform = currentTransform;
+        bubble.style.animation = 'none';
+
+        // Force reflow
+        void bubble.offsetHeight;
+
         // Remove bubble element smoothly using CSS Transitions
         bubble.style.transition = 'transform 0.15s ease-in, opacity 0.15s ease-in';
         bubble.style.transform = 'scale(0)';
         bubble.style.opacity = '0';
         bubble.addEventListener('transitionend', () => bubble.remove());
+        setTimeout(() => bubble.remove(), 250);
 
         if (isAuto) {
             // Show gain text for auto absorb

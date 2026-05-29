@@ -171,13 +171,13 @@ const showLocationDetailPopup = (worldId, locId) => {
             const minRealmName = getRealmById(loc.minRealm).name;
             const maxRealmName = getRealmById(loc.maxRealm).name;
             elMinRealm.textContent = `${minRealmName} - ${maxRealmName}`;
-            
+
             const satisfies = state.player.realmId >= loc.minRealm && state.player.realmId <= loc.maxRealm;
             elMinRealm.className = `text-[10px] font-ancient uppercase tracking-wider block ${satisfies ? 'text-cultivation-gold' : 'text-red-500'}`;
         } else {
             const realmName = getRealmById(loc.minRealm).name;
             elMinRealm.textContent = realmName;
-            
+
             const satisfies = state.player.realmId >= loc.minRealm;
             elMinRealm.className = `text-[10px] font-ancient uppercase tracking-wider block ${satisfies ? 'text-cultivation-gold' : 'text-red-500'}`;
         }
@@ -240,7 +240,7 @@ const showLocationDetailPopup = (worldId, locId) => {
                 const typeName = typeMap[eng.type] || eng.type.replace(/_/g, ' ').toUpperCase();
                 const purityName = purityMap[eng.purity] || 'Thường';
                 const purityColor = purityColors[eng.purity] || '#a855f7';
-                
+
                 let detailStr = `${typeName} (Nồng độ: ${eng.concentration}%)`;
                 if (eng.element) {
                     detailStr = `${eng.element}-Thuộc Tính ${typeName} (Nồng độ: ${eng.concentration}%)`;
@@ -269,7 +269,7 @@ const showLocationDetailPopup = (worldId, locId) => {
             'Phong': 5, 'Lôi': 5, 'Băng': 5, 'Quang': 5, 'Ám': 5
         };
         const elementQi = loc.elementQi || defaultQi;
-        
+
         const ELEMENT_COLORS = {
             'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
             'Phong': '#94a3b8', 'Lôi': '#fbbf24', 'Băng': '#60a5fa', 'Quang': '#fffbeb', 'Ám': '#a855f7'
@@ -278,7 +278,7 @@ const showLocationDetailPopup = (worldId, locId) => {
             'Kim': '⚔️', 'Mộc': '🌿', 'Thủy': '💧', 'Hỏa': '🔥', 'Thổ': '⛰️',
             'Phong': '🌪️', 'Lôi': '⚡', 'Băng': '❄️', 'Quang': '☀️', 'Ám': '🌙'
         };
-        
+
         const elements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ', 'Phong', 'Lôi', 'Băng', 'Quang', 'Ám'];
         elElementQi.innerHTML = elements.map(el => {
             const pct = elementQi[el] || 0;
@@ -390,7 +390,7 @@ window.renderMainStats = () => {
         const loc = getLocationById(state.currentWorldId, state.currentLocId);
         const focus = player.cultivationFocus || 'tuvi';
         const bgKey = `${state.currentLocId}`;
-        
+
         if (elMainScreen && elMainScreen.dataset.bgKey !== bgKey) {
             elMainScreen.dataset.bgKey = bgKey;
             const bgUrl = loc?.image || ASSETS.backgrounds.cultivation;
@@ -433,12 +433,12 @@ window.renderMainStats = () => {
         // Render 10-element local Qi distribution grid (rendered static to current location)
         const elMainQiGrid = getCachedEl('main-element-qi-grid');
         const mainPath = player.mainPath || 'orthodox';
-        
+
         if (elMainQiGrid && loc) {
             const gridKey = `${state.currentLocId}_${mainPath}`;
             if (mainStatsCache.lastValues.get('main_qi_grid') !== gridKey) {
                 mainStatsCache.lastValues.set('main_qi_grid', gridKey);
-                
+
                 const ELEMENT_COLORS = {
                     'Kim': '#fcd34d', 'Mộc': '#4ade80', 'Thủy': '#3b82f6', 'Hỏa': '#ef4444', 'Thổ': '#d97706',
                     'Phong': '#94a3b8', 'Lôi': '#fbbf24', 'Băng': '#60a5fa', 'Quang': '#fffbeb', 'Ám': '#a855f7'
@@ -488,7 +488,7 @@ window.renderMainStats = () => {
 
     const focus = player.cultivationFocus || 'tuvi';
     const activeRealm = player.getCurrentRealm(focus);
-    
+
     let currentExp = player.tuVi;
     if (focus === 'body') currentExp = player.bodyExp;
     else if (focus === 'soul') currentExp = player.soulExp;
@@ -499,7 +499,7 @@ window.renderMainStats = () => {
 
     // Update local qi headers and purity based on main path
     const mainPath = player.mainPath || 'orthodox';
-    
+
     let targetQiTitle = 'Tỷ Lệ Linh Khí Địa Phương';
     if (mainPath === 'ma_dao') targetQiTitle = 'Tỷ Lệ Ma Khí Địa Phương';
     else if (mainPath === 'quy_dao') targetQiTitle = 'Tỷ Lệ Âm Khí Địa Phương';
@@ -618,7 +618,7 @@ window.renderMainStats = () => {
     Object.entries(mainTabs).forEach(([key, id]) => {
         const btn = getCachedEl(id);
         if (!btn) return;
-        
+
         if (key === 'tuvi') {
             updateCachedText(id, tuviBtnText);
         }
@@ -629,7 +629,7 @@ window.renderMainStats = () => {
             : key === 'body'
                 ? 'bg-red-500/20 text-red-400 border border-red-500/30 focus-body'
                 : 'bg-qi-purple/20 text-qi-purple border border-qi-purple/30 focus-soul';
-        
+
         const targetClass = `flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all ${active ? activeClass : 'text-gray-500 border border-transparent hover:text-white'}`;
         const classKey = `${id}_class`;
         if (mainStatsCache.lastValues.get(classKey) !== targetClass) {
@@ -645,7 +645,7 @@ window.renderMainStats = () => {
         const currentRealmId = focus === 'tuvi' ? player.realmId : (focus === 'body' ? player.bodyRealmId : player.soulRealmId);
         const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, player.race);
         const maxSteps = subRealms.length > 1 ? subRealms.length : 10;
-        
+
         const contentKey = `${focus}_${cycle.step}_${maxSteps}_${cycle.count}`;
         if (mainStatsCache.lastValues.get('cultivate_btn_content') !== contentKey) {
             mainStatsCache.lastValues.set('cultivate_btn_content', contentKey);
@@ -690,21 +690,21 @@ window.renderMainStats = () => {
             const currentRealmId = player.realmId;
             const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, player.race);
             const numNodes = subRealms.length > 1 ? subRealms.length : 10;
-            
+
             // Rebuild nodes if they don't match the current focus or count
             const currentCount = meridianContainer.querySelectorAll('.meridian-node').length;
             const arrangedKey = `${focus}_${numNodes}`;
             if (mainStatsCache.lastValues.get('meridian_arranged_key') !== arrangedKey) {
                 mainStatsCache.lastValues.set('meridian_arranged_key', arrangedKey);
                 meridianContainer.innerHTML = '';
-                
+
                 for (let i = 0; i < numNodes; i++) {
                     const node = document.createElement('div');
                     node.className = 'meridian-node';
                     node.dataset.index = i;
                     meridianContainer.appendChild(node);
                 }
-                
+
                 // Position them in a ring
                 const nodes = meridianContainer.querySelectorAll('.meridian-node');
                 const parentWidth = meridianContainer.offsetWidth || 288;
@@ -718,7 +718,7 @@ window.renderMainStats = () => {
                     node.style.transform = 'translate(-50%, -50%)';
                 });
             }
-            
+
             const currentRealmIdx = subRealms.findIndex(r => r.id === currentRealmId);
             const nodesStateKey = `${focus}_${currentRealmId}_${currentRealmIdx}`;
             if (mainStatsCache.lastValues.get('meridian_nodes_state_key') !== nodesStateKey) {
@@ -727,11 +727,11 @@ window.renderMainStats = () => {
                 tvNodes.forEach((node, idx) => {
                     const isCompleted = currentRealmIdx !== -1 && idx < currentRealmIdx;
                     const isCurrentRealm = currentRealmIdx !== -1 && idx === currentRealmIdx;
-                    
+
                     node.classList.toggle('completed', isCompleted);
                     node.classList.toggle('current-realm', isCurrentRealm);
                     node.classList.remove('active');
-                    
+
                     const rInfo = subRealms[idx];
                     if (rInfo) {
                         node.title = rInfo.name;
@@ -1258,24 +1258,16 @@ window.renderCreationScreen = () => {
         const classInfo = sys.getRootClassification();
         const rootData = CREATION_ROOTS[sys.selectedRoot];
         const bonuses = (formatCreationBonus(rootData.bonus) || 'Chỉ số cơ bản').split(' · ');
+        const isMutated = sys.selectedRoot === 'di_linh_can';
 
+        sys.selectedRootElements.forEach(elName => {
+            const pct = sys.selectedRootElementProportions[elName] || 0;
+            const el = ROOT_ELEMENTS[elName];
+            if (el) {
+                bonuses.push(`${el.icon} Hấp thu hệ ${elName} +${pct}%`);
+            }
+        });
 
-
-        if (true) { // normal elements always active
-            ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'].forEach(elName => {
-                const pct = sys.selectedRootElementProportions[elName] || 0;
-                if (pct > 0) {
-                    const icon = ROOT_ELEMENTS[elName]?.icon || '✨';
-                    bonuses.push(`${icon} Hấp thu hệ ${elName} +${pct}%`);
-                }
-            });
-            sys.selectedRootElements.forEach(elName => {
-                const baseElement = ROOT_ELEMENTS[elName];
-                const icon = baseElement?.icon || '✨';
-                bonuses.push(`${icon} Hấp thu hệ ${elName} +100%`);
-            });
-        }
-        
         if (sys.isMutated && sys.mutatedElement) {
             const mutatedEl = SPECIAL_ELEMENTS[sys.mutatedElement];
             if (mutatedEl) {
@@ -1283,48 +1275,102 @@ window.renderCreationScreen = () => {
             }
         }
 
+        const maxElements = {
+            'thien_linh_can': 1,
+            'di_linh_can': 1,
+            'song_linh_can': 2,
+            'tam_linh_can': 3,
+            'nguy_linh_can': 4,
+            'ngu_hanh_linh_can': 5
+        }[sys.selectedRoot] || 1;
+
+        let elementSelectorHtml = '';
+        if (sys.selectedRoot !== 'ngu_hanh_linh_can') {
+            const candidates = isMutated
+                ? ['Lôi', 'Băng', 'Phong', 'Độc', 'Quang', 'Ám']
+                : ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+
+            const registry = isMutated ? SPECIAL_ELEMENTS : ROOT_ELEMENTS;
+
+            elementSelectorHtml = `
+                <div class="space-y-2 mb-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[8px] text-gray-400 uppercase tracking-widest font-bold">Chọn Thuộc Tính (${isMutated ? 1 : sys.selectedRootElements.length}/${maxElements})</span>
+                        <span class="text-[7.5px] text-gray-500 italic">Nhấn để chọn hệ thuộc tính</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${candidates.map(elName => {
+                const isActive = isMutated
+                    ? sys.mutatedElement === elName
+                    : sys.selectedRootElements.includes(elName);
+                const el = registry[elName];
+                const color = ELEMENT_COLORS[elName] || '#fff';
+
+                return `
+                                <div onclick="window.game.toggleCreationRootElement('${elName}')"
+                                    class="px-3 py-1.5 rounded-xl border text-[9px] font-ancient font-semibold uppercase tracking-wider transition-all duration-200 active:scale-95 flex items-center space-x-1 cursor-pointer select-none"
+                                    style="${isActive
+                        ? `color: ${color}; border-color: ${color}40; background: ${color}15; box-shadow: 0 0 10px ${color}15;`
+                        : `color: #6b7280; border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.3);`
+                    }"
+                                >
+                                    <span class="text-xs">${el.icon}</span>
+                                    <span>${elName}</span>
+                                </div>
+                            `;
+            }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        const slidersHtml = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'].map(elName => {
+            const pct = sys.selectedRootElementProportions[elName] || 0;
+            const el = ROOT_ELEMENTS[elName];
+            const color = ELEMENT_COLORS[elName];
+
+            return `
+                <div class="flex items-center justify-between gap-3 py-1 border-b border-white/[0.02]">
+                    <div class="flex items-center gap-1.5 w-20 shrink-0 text-[9px] font-medium" style="color: ${color}">
+                        <span class="text-xs">${el.icon}</span>
+                        <span class="font-ancient font-semibold">${elName}</span>
+                        <span class="font-mono font-bold ml-auto">${pct}%</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-grow">
+                        <button onclick="window.game.adjustCreationRootProportion('${elName}', ${pct - 1})" 
+                            style="width: 18px !important; height: 18px !important; min-width: 18px !important; min-height: 18px !important; padding: 0 !important; margin: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; font-size: 10px !important; line-height: 1 !important; border-radius: 4px !important; background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: #9ca3af !important; cursor: pointer !important; transition: all 0.2s !important;"
+                            onmouseenter="this.style.setProperty('background', 'rgba(255,255,255,0.15)', 'important'); this.style.setProperty('color', '#fff', 'important');" 
+                            onmouseleave="this.style.setProperty('background', 'rgba(255,255,255,0.05)', 'important'); this.style.setProperty('color', '#9ca3af', 'important');"
+                            class="select-none">
+                            -
+                        </button>
+                        <input type="range" min="0" max="100" value="${pct}" 
+                            class="flex-grow h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-white transition-all hover:bg-white/10"
+                            style="background: linear-gradient(to right, ${color} 0%, ${color} ${pct}%, rgba(255,255,255,0.05) ${pct}%, rgba(255,255,255,0.05) 100%) !important"
+                            oninput="window.game.adjustCreationRootProportion('${elName}', this.value)"
+                        >
+                        <button onclick="window.game.adjustCreationRootProportion('${elName}', ${pct + 1})" 
+                            style="width: 18px !important; height: 18px !important; min-width: 18px !important; min-height: 18px !important; padding: 0 !important; margin: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; font-size: 10px !important; line-height: 1 !important; border-radius: 4px !important; background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: #9ca3af !important; cursor: pointer !important; transition: all 0.2s !important;"
+                            onmouseenter="this.style.setProperty('background', 'rgba(255,255,255,0.15)', 'important'); this.style.setProperty('color', '#fff', 'important');" 
+                            onmouseleave="this.style.setProperty('background', 'rgba(255,255,255,0.05)', 'important'); this.style.setProperty('color', '#9ca3af', 'important');"
+                            class="select-none">
+                            +
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
         let tabContentHtml = `
                 <div class="mt-4 p-4 rounded-xl border border-white/5 bg-black/20 space-y-3">
+                    ${elementSelectorHtml}
+
                     <div class="flex justify-between items-center text-[8px] uppercase tracking-wider font-bold mb-1">
                         <span class="text-qi-blue">Tỷ Lệ Thuộc Tính (Tổng: 100%)</span>
                         <span style="color: ${ROOT_RARITY[sys.rootRarity].color}">${classInfo.name}</span>
                     </div>
                     <div class="space-y-3">
-                        ${['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'].map(elName => {
-                const pct = sys.selectedRootElementProportions[elName] || 0;
-                const el = ROOT_ELEMENTS[elName];
-                const color = ELEMENT_COLORS[elName];
-                return `
-                                <div class="flex items-center justify-between gap-3 py-1 border-b border-white/[0.02]">
-                                    <div class="flex items-center gap-1.5 w-20 shrink-0 text-[9px] font-medium" style="color: ${color}">
-                                        <span class="text-xs">${el.icon}</span>
-                                        <span class="font-ancient font-semibold">${elName}</span>
-                                        <span class="font-mono font-bold ml-auto">${pct}%</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 flex-grow">
-                                        <button onclick="window.game.adjustCreationRootProportion('${elName}', ${pct - 1})" 
-                                            style="width: 18px !important; height: 18px !important; min-width: 18px !important; min-height: 18px !important; padding: 0 !important; margin: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; font-size: 10px !important; line-height: 1 !important; border-radius: 4px !important; background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: #9ca3af !important; cursor: pointer !important; transition: all 0.2s !important;"
-                                            onmouseenter="this.style.setProperty('background', 'rgba(255,255,255,0.15)', 'important'); this.style.setProperty('color', '#fff', 'important');" 
-                                            onmouseleave="this.style.setProperty('background', 'rgba(255,255,255,0.05)', 'important'); this.style.setProperty('color', '#9ca3af', 'important');"
-                                            class="select-none">
-                                            -
-                                        </button>
-                                        <input type="range" min="0" max="100" value="${pct}" 
-                                            class="flex-grow h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-white transition-all hover:bg-white/10"
-                                            style="background: linear-gradient(to right, ${color} 0%, ${color} ${pct}%, rgba(255,255,255,0.05) ${pct}%, rgba(255,255,255,0.05) 100%) !important"
-                                            oninput="window.game.adjustCreationRootProportion('${elName}', this.value)"
-                                        >
-                                        <button onclick="window.game.adjustCreationRootProportion('${elName}', ${pct + 1})" 
-                                            style="width: 18px !important; height: 18px !important; min-width: 18px !important; min-height: 18px !important; padding: 0 !important; margin: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; font-size: 10px !important; line-height: 1 !important; border-radius: 4px !important; background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: #9ca3af !important; cursor: pointer !important; transition: all 0.2s !important;"
-                                            onmouseenter="this.style.setProperty('background', 'rgba(255,255,255,0.15)', 'important'); this.style.setProperty('color', '#fff', 'important');" 
-                                            onmouseleave="this.style.setProperty('background', 'rgba(255,255,255,0.05)', 'important'); this.style.setProperty('color', '#9ca3af', 'important');"
-                                            class="select-none">
-                                            +
-                                        </button>
-                                    </div>
-                                </div>
-                            `;
-            }).join('')}
+                        ${slidersHtml}
                     </div>
                     
                     ${!classInfo.isBalanced ? `
@@ -1355,9 +1401,6 @@ window.renderCreationScreen = () => {
                             <i class="ph ph-lightning text-[10px]"></i>
                             <span>Tốn: ${rootData.cost} Điểm</span>
                         </div>
-                        <span class="text-[8px] bg-qi-blue/10 border border-qi-blue/20 text-qi-blue px-2 py-0.5 rounded uppercase font-bold tracking-wider">
-                            Thay đổi <i class="ph ph-caret-right ml-0.5"></i>
-                        </span>
                     </div>
                 </div>
                 
@@ -1482,7 +1525,7 @@ window.renderCreationScreen = () => {
     if (elStartingLocation) {
         // Collect all locations
         let optionsHtml = `<option value="auto" ${sys.selectedStartingLocation === 'auto' ? 'selected' : ''}>🌟 Tự Động (Theo Chủng Tộc & Thể Chất)</option>`;
-        
+
         // Group by world/danger level for better organization, but simple list is fine for now
         // Let's group by World
         for (const [worldId, world] of Object.entries(WORLDS)) {
@@ -1495,7 +1538,7 @@ window.renderCreationScreen = () => {
                 optionsHtml += `</optgroup>`;
             }
         }
-        
+
         // Use a flag to avoid infinite loops if setting innerHTML triggers onchange
         if (elStartingLocation.innerHTML !== optionsHtml) {
             elStartingLocation.innerHTML = optionsHtml;
@@ -1752,7 +1795,7 @@ window.openCreationSelectionModal = (type) => {
     } else if (type === 'cheat') {
         title = 'Chọn Bàn Tay Vàng';
         subtitle = 'Hệ thống phụ trợ giúp nghịch thiên cải mệnh';
-        
+
         const activeNone = sys.selectedCheatSystem === null;
         html += `
             <div onclick="window.game.selectCreationCheatSystem(null); window.game.closeCreationSelectionModal();" 

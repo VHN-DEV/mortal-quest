@@ -6,6 +6,14 @@ const RANDOM_NAMES = [
     'Lâm Phong', 'Mộc Vân', 'Hàn Tuyết', 'Sở Thiên', 'Diệp Trần', 'Vân Mộng', 'Tần Mặc', 'Bạch Ly', 'Tiêu Dao', 'Nguyệt Nhi'
 ];
 
+const MUTATED_RECIPES = {
+    'Lôi': ['Kim', 'Thủy'],
+    'Băng': ['Thủy', 'Thổ'],
+    'Phong': ['Mộc', 'Thổ'],
+    'Độc': ['Mộc', 'Thủy'],
+    'Quang': ['Kim', 'Hỏa'],
+    'Ám': ['Thủy', 'Hỏa']
+};
 
 export class CreationSystem {
     constructor() {
@@ -348,8 +356,10 @@ export class CreationSystem {
         this.rootTab = (rootId === 'di_linh_can' ? 'mutated' : 'normal');
 
         if (rootId === 'di_linh_can') {
-            this.selectedRootElements = ['Lôi'];
-            this.selectedRootElementProportions = { 'Lôi': 100 };
+            this.selectedRootElements = ['Kim', 'Thủy'];
+            this.selectedRootElementProportions = { 'Kim': 50, 'Thủy': 50, 'Mộc': 0, 'Hỏa': 0, 'Thổ': 0 };
+            this.isMutated = true;
+            this.mutatedElement = 'Lôi';
         } else {
             if (rootId === 'ngu_hanh_linh_can') {
                 this.selectedRootElements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
@@ -385,6 +395,29 @@ export class CreationSystem {
     }
 
     toggleRootElement(element) {
+        if (this.selectedRoot === 'di_linh_can') {
+            const baseEls = MUTATED_RECIPES[element];
+            if (baseEls) {
+                this.selectedRootElements = [...baseEls];
+                this.selectedRootElementProportions = {};
+                this.selectedRootElements.forEach(el => {
+                    this.selectedRootElementProportions[el] = 50;
+                });
+                
+                const allNormal = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+                allNormal.forEach(el => {
+                    if (this.selectedRootElementProportions[el] === undefined) {
+                        this.selectedRootElementProportions[el] = 0;
+                    }
+                });
+                
+                this.isMutated = true;
+                this.mutatedElement = element;
+            }
+            this.calculatePoints();
+            return;
+        }
+
         const root = CREATION_ROOTS[this.selectedRoot];
         if (root.id === 'ngu_hanh_linh_can') return; // Fixed
 
@@ -406,9 +439,36 @@ export class CreationSystem {
                 this.selectedRootElements.push(element);
             } else if (maxElements === 1) {
                 this.selectedRootElements = [element];
+            } else {
+                // Shift out the oldest element and push the new one
+                this.selectedRootElements.shift();
+                this.selectedRootElements.push(element);
             }
         }
-        this.resetProportions();
+
+        // Reinitialize proportions
+        const N = this.selectedRootElements.length;
+        if (N > 0) {
+            const base = Math.floor(100 / N);
+            const remainder = 100 - (base * N);
+
+            this.selectedRootElementProportions = {};
+            this.selectedRootElements.forEach((el, index) => {
+                this.selectedRootElementProportions[el] = base + (index === 0 ? remainder : 0);
+            });
+        }
+
+        // Initialize others to 0
+        const candidates = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
+
+        candidates.forEach(el => {
+            if (this.selectedRootElementProportions[el] === undefined) {
+                this.selectedRootElementProportions[el] = 0;
+            }
+        });
+
+        this.checkMutation();
+        this.calculatePoints();
     }
 
     calculatePoints() {

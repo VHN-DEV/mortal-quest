@@ -1495,7 +1495,7 @@ export class MapScreen {
         
         switch (cell.type) {
             case 'rock':
-                return `<i class="ph ph-hexagon-corners text-slate-400 text-base md:text-lg ${opacityClass}"></i>`;
+                return `<i class="ph ph-cube text-slate-400 text-base md:text-lg ${opacityClass}"></i>`;
             case 'river':
                 return `<i class="ph ph-waves text-blue-400 text-base md:text-lg ${isVisited ? 'opacity-30' : 'animate-pulse'}"></i>`;
             case 'grass':
@@ -1833,13 +1833,37 @@ export class MapScreen {
                     break;
                 }
                 case 'empty': {
-                    const emptyMsgs = [
-                        'Ngươi tiến vào vùng cổ lộ yên tĩnh, thanh âm xào xạc hòa quyện.',
-                        'Nơi đây chỉ có sỏi đá phong trần, không gặp bất cứ chướng ngại nào.',
-                        'Dừng chân tĩnh tọa, cảm nhận thiên địa an lành.',
-                        'Đường đi rộng mở, thần thức thoải mái sảng khoái.'
-                    ];
-                    this.updateEventDisplay(emptyMsgs[Math.floor(Math.random() * emptyMsgs.length)]);
+                    const loc = getLocationById(this.viewedWorldId || state.currentWorldId, state.currentLocId);
+                    const danger = (loc && loc.danger) ? loc.danger : 'ha_cap';
+                    
+                    const ambushChances = {
+                        'an_toan': 0.0,
+                        'ha_cap': 0.05,
+                        'trung_cap': 0.10,
+                        'cao_cap': 0.15,
+                        'nguy_hiem': 0.20,
+                        'cuc_ky_nguy_hiem': 0.25,
+                        'tu_dia': 0.30
+                    };
+                    const chance = ambushChances[danger] !== undefined ? ambushChances[danger] : 0.10;
+                    
+                    if (Math.random() < chance) {
+                        const beastIdx = Math.floor(Math.random() * BEAST_IMAGES.length);
+                        const overrideImage = getAssetUrl(BEAST_IMAGES[beastIdx]);
+                        
+                        this.updateEventDisplay(`🚨 [TẬP KÍCH BẤT NGỜ] Không gian chấn động! Một đầu hung thú ẩn nấp trong bóng tối đột ngột lao ra tập kích ngươi!`);
+                        setTimeout(() => {
+                            window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId, null, overrideImage);
+                        }, 1000);
+                    } else {
+                        const emptyMsgs = [
+                            'Ngươi tiến vào vùng cổ lộ yên tĩnh, thanh âm xào xạc hòa quyện.',
+                            'Nơi đây chỉ có sỏi đá phong trần, không gặp bất cứ chướng ngại nào.',
+                            'Dừng chân tĩnh tọa, cảm nhận thiên địa an lành.',
+                            'Đường đi rộng mở, thần thức thoải mái sảng khoái.'
+                        ];
+                        this.updateEventDisplay(emptyMsgs[Math.floor(Math.random() * emptyMsgs.length)]);
+                    }
                     break;
                 }
                 case 'river': {
