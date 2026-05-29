@@ -27,6 +27,9 @@ export class CharacterScreen {
         this.elCharRemainingAge = document.getElementById('char-remaining-age-container');
         this.elCharStability = document.getElementById('char-stability');
         this.elCharComprehension = document.getElementById('char-comprehension');
+        this.elCharDivineSense = document.getElementById('char-divine-sense');
+        this.elCharPhysiqueTalent = document.getElementById('char-physique-talent');
+        this.elCharDaoTam = document.getElementById('char-dao-tam');
         
         // Realms
         this.elCharRealmTuvi = document.getElementById('char-realm-tuvi');
@@ -64,9 +67,7 @@ export class CharacterScreen {
         // Lists
         this.elCharPartyList = document.getElementById('char-party-list');
         this.elFormationList = document.getElementById('active-formations-list');
-        this.elCharAdvancedStats = document.getElementById('char-advanced-stats');
         this.elSpecializedPaths = document.getElementById('char-specialized-paths');
-        this.elCharTalentsList = document.getElementById('char-talents-list');
     }
     
     initEvents() {
@@ -142,6 +143,15 @@ export class CharacterScreen {
                 <span class="font-mono font-bold">${Math.floor(state.player.getComprehension() || 0)}</span>
                 <span class="ml-1 text-[7px] px-1.5 py-0.5 rounded font-bold uppercase whitespace-nowrap" style="color: ${tier.color}; background-color: ${tier.color}15; border: 1px solid ${tier.color}30" title="${tier.description}">${tier.name}</span>
             `;
+        }
+        if (this.elCharDivineSense) {
+            this.elCharDivineSense.textContent = Math.floor(state.player.divineSense || 50);
+        }
+        if (this.elCharPhysiqueTalent) {
+            this.elCharPhysiqueTalent.textContent = Math.floor(state.player.physiqueTalent || 50);
+        }
+        if (this.elCharDaoTam) {
+            this.elCharDaoTam.textContent = Math.floor(state.player.daoTam || 50);
         }
 
         // Render Realms & Progress
@@ -299,12 +309,6 @@ export class CharacterScreen {
         // Formations
         this.renderFormations();
         
-        // Advanced Stats
-        this.renderAdvancedStats();
-        
-        // Talents
-        this.renderTalents();
-        
         // Energy (Qi)
         if (typeof window.game.renderEnergy === 'function') window.game.renderEnergy();
         
@@ -312,82 +316,14 @@ export class CharacterScreen {
         this.renderSpecializedPaths();
     }
 
-    renderTalents() {
-        if (!this.elCharTalentsList || !state.player) return;
-        
-        const talents = {
-            comprehension: { name: 'Ngộ Tính', icon: '🧠', color: 'bg-qi-blue' },
-            luck: { name: 'Khí Vận', icon: '✨', color: 'bg-cultivation-gold' },
-            daoTam: { name: 'Đạo Tâm', icon: '🛡️', color: 'bg-emerald-500' },
-            divineSense: { name: 'Thần Thức', icon: '👁️', color: 'bg-qi-purple' },
-            physiqueTalent: { name: 'Căn Cốt', icon: '🦴', color: 'bg-red-500' }
-        };
-
-        this.elCharTalentsList.innerHTML = Object.entries(talents).map(([key, data]) => {
-            const val = state.player[key] || 50;
-            return `
-                <div class="space-y-1">
-                    <div class="flex justify-between items-center text-[10px]">
-                        <div class="flex items-center space-x-1">
-                            <span class="opacity-80">${data.icon}</span>
-                            <span class="text-gray-400 uppercase tracking-widest">${data.name}</span>
-                        </div>
-                        <span class="font-mono font-bold text-white">${val}</span>
-                    </div>
-                    <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                        <div class="h-full ${data.color} shadow-[0_0_8px_rgba(0,0,0,0.5)] transition-all duration-500" style="width: ${val}%"></div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
     renderSpecializedPaths() {
         if (!this.elSpecializedPaths || !state.player.specializedPaths) return;
         
         let html = '';
 
-        // 1. Render Main Cultivation Paths
-        html += `<div class="mb-4">
-            <h4 class="text-[10px] text-cultivation-gold font-ancient tracking-widest uppercase mb-2">Hệ Tu Luyện Chủ Chốt</h4>
-            <div class="grid grid-cols-2 gap-2">`;
-        
-        const mainPathIds = ['orthodox', 'ma_dao', 'quy_dao', 'yeu_tu'];
-        mainPathIds.forEach(pid => {
-            const pConfig = CULTIVATION_PATHS[pid];
-            if (!pConfig) return;
-            const isCurrent = (state.player.mainPath || 'orthodox') === pid;
-            const isCompatible = pConfig.races.includes(state.player.race);
-            
-            let btnHtml = '';
-            if (isCurrent) {
-                btnHtml = `<span class="text-[8px] text-green-400 font-bold">ĐANG CHỦ TU</span>`;
-            } else if (isCompatible) {
-                btnHtml = `<button onclick="window.game.convertMainPath('${pid}')" class="text-[8px] btn-gold px-2 py-0.5 rounded font-ancient">CHUYỂN HÓA</button>`;
-            } else {
-                btnHtml = `<span class="text-[8px] text-red-500 font-bold opacity-60">KHÔNG HỢP</span>`;
-            }
-
-            html += `
-                <div class="p-3 bg-white/5 border ${isCurrent ? 'border-cultivation-gold/50 bg-white/10' : 'border-white/10'} rounded-xl flex flex-col justify-between space-y-2">
-                    <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-ancient text-white flex items-center gap-1">
-                            <span>${pConfig.icon}</span> <span>${pConfig.name}</span>
-                        </span>
-                    </div>
-                    <p class="text-[8px] text-gray-500 line-clamp-2">${pConfig.desc}</p>
-                    <div class="flex justify-between items-center pt-1 border-t border-white/5">
-                        <span class="text-[8px] text-gray-600">${pConfig.currency}</span>
-                        ${btnHtml}
-                    </div>
-                </div>
-            `;
-        });
-        html += `</div></div>`;
-
-        // 2. Render Specialized Paths
+        // Render Specialized Paths
         html += `<div>
-            <h4 class="text-[10px] text-qi-blue font-ancient tracking-widest uppercase mb-2">Con Đường Tu Luyện Nhánh</h4>
+            <h4 class="text-[10px] text-qi-blue font-ancient tracking-widest uppercase mb-2">Nhánh Tu Luyện</h4>
             <div class="grid grid-cols-2 gap-2">`;
             
         const specializedIds = ['sword', 'soul_path', 'buddhist', 'confucian'];
@@ -461,40 +397,6 @@ export class CharacterScreen {
         html += `</div></div>`;
 
         this.elSpecializedPaths.innerHTML = html;
-    }
-
-    renderAdvancedStats() {
-        if (!this.elCharAdvancedStats || !state.player.advancedStats) return;
-        
-        const stats = state.player.advancedStats;
-        const labels = {
-            pierce: 'Phá Giáp',
-            soulPierce: 'Phá Hồn',
-            critRate: 'Bạo Kích',
-            critDmg: 'Sát Thương Bạo',
-            lifeSteal: 'Huyết Tế',
-            soulRepress: 'Trấn Áp Thần Thức',
-            daoVun: 'Đạo Vận',
-            murderQi: 'Sát Khí',
-            allRes: 'Kháng Tất Cả'
-        };
-
-        this.elCharAdvancedStats.innerHTML = Object.entries(labels).map(([key, label]) => {
-            const val = stats[key] || 0;
-            if (val === 0 || val === 1.0) return ''; // Hide empty stats
-            
-            let displayVal = val;
-            if (['critRate', 'critDmg', 'pierce', 'soulPierce', 'lifeSteal', 'allRes', 'damageReduction'].includes(key)) {
-                displayVal = (val * 100).toFixed(1) + '%';
-            }
-
-            return `
-                <div class="flex justify-between items-center border-b border-white/5 py-1">
-                    <span class="text-gray-500 text-[10px]">${label}:</span>
-                    <span class="text-white font-mono text-[10px]">${displayVal}</span>
-                </div>
-            `;
-        }).join('');
     }
 
     renderTechniqueInfo(element, techId) {

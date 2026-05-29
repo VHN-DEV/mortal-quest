@@ -186,34 +186,5 @@ export class MountainController {
             }
         }
 
-        // Accumulated Qi (Character Screen)
-        const elCharEnergyList = document.getElementById('char-energy-list');
-        if (elCharEnergyList) {
-            const entries = Object.entries(state.player.qiAccumulated).filter(([_, data]) => data.amount > 0);
-            if (entries.length === 0) {
-                elCharEnergyList.innerHTML = '<div class="text-[9px] text-gray-600 italic">Chưa có khí tức tích lũy</div>';
-            } else {
-                elCharEnergyList.innerHTML = entries.map(([typeId, data]) => {
-                    const type = state.systems.energy.getEnergyType(typeId);
-                    const purity = state.systems.energy.getPurity(data.purity);
-                    const logAmount = Math.log10(data.amount + 1);
-                    return `
-                        <div class="p-2 bg-white/5 border border-white/10 rounded-lg flex items-center justify-between">
-                            <div class="flex items-center space-x-2">
-                                <span class="text-sm">${type.icon}</span>
-                                <div>
-                                    <div class="text-[9px] font-bold text-white font-ancient">${type.name}</div>
-                                    <div class="text-[7px] text-qi-blue uppercase">${purity.name}</div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-[8px] font-mono text-gray-400">${Math.floor(data.amount).toLocaleString()} Qi</div>
-                                <div class="text-[7px] text-cultivation-gold">+${(logAmount * 10).toFixed(1)} Bonus</div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-        }
     }
 }
