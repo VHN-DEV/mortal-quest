@@ -195,7 +195,7 @@ export class CombatEngine {
                         this.player.hp = Math.max(1, this.player.hp - backlashDmg);
                         this.status.player.instability = Math.max(this.status.player.instability || 0, 3); // 3 turns of stat reductions
                         this.addLog(`🔴 <span class="text-red-500 font-bold">TẨU HỎA NHẬP MA!</span> Linh lực song tu phản phệ khiến đạo tâm điên đảo, chịu ${backlashDmg} sát thương và giảm 30% chiến lực trong 3 lượt!`);
-                        this.onUpdate('damage', { target: 'player', value: backlashDmg, crit: true });
+                        this.onUpdate('damage', { target: 'player', value: backlashDmg, crit: true, actionType: 'backlash' });
                         if (this.player.hp <= 1 && this.player.hp > 0) {
                             this.player.hp = 0;
                             this.lose();
@@ -329,7 +329,7 @@ export class CombatEngine {
             const finalDmg = Math.max(1, Math.floor((damage - Math.floor(this.player.def / 2)) * (1 - dr) * (1 - allRes)));
             this.player.hp -= finalDmg;
             this.addLog(msg + ` Gây ${finalDmg} sát thương.`);
-            this.onUpdate('damage', { target: 'player', value: finalDmg, crit: true });
+            this.onUpdate('damage', { target: 'player', value: finalDmg, crit: true, actionType: 'skill', skillId: skillId });
         } else {
             this.addLog(msg);
         }
@@ -354,7 +354,7 @@ export class CombatEngine {
             const dmg = data.effect.value || 100;
             this.player.hp -= dmg;
             this.addLog(`${this.enemy.name} kích hoạt <span class="text-orange-500">${data.name}</span>, oanh tạc gây ${dmg} sát thương!`);
-            this.onUpdate('damage', { target: 'player', value: dmg, crit: true });
+            this.onUpdate('damage', { target: 'player', value: dmg, crit: true, actionType: 'talisman' });
         } else if (data.effect?.type === 'buff' && data.effect.stat === 'def') {
             this.enemy.def += (data.effect.value || 50);
             this.addLog(`${this.enemy.name} sử dụng ${data.name}, phòng ngự tăng mạnh!`);
@@ -427,7 +427,7 @@ export class CombatEngine {
             this.enemy.hp -= burnDmg;
             this.status.enemy.burn--;
             this.addLog(`${this.enemy.name} bị Dị Hỏa thiêu đốt: -${burnDmg} HP.`);
-            this.onUpdate('damage', { target: 'enemy', value: burnDmg, crit: false });
+            this.onUpdate('damage', { target: 'enemy', value: burnDmg, crit: false, actionType: 'burn' });
             if (this.enemy.hp <= 0) {
                 this.enemy.hp = 0;
                 this.win();
@@ -553,7 +553,7 @@ export class CombatEngine {
         
         if (Math.random() > hitChance) {
             this.addLog(`<span class="text-gray-500">Hụt!</span> Đối phương ảo ảnh chớp nhoáng, né tránh đòn đánh.`);
-            this.onUpdate('damage', { target: 'enemy', value: 0, crit: false });
+            this.onUpdate('damage', { target: 'enemy', value: 0, crit: false, actionType: 'miss' });
             this.endPlayerTurn();
             return;
         }
@@ -577,7 +577,7 @@ export class CombatEngine {
             const verb = this.getAttackVerb(this.player.race);
             this.addLog(`Ngươi ${verb}, gây ${finalDamage} sát thương.`);
         }
-        this.onUpdate('damage', { target: 'enemy', value: finalDamage, crit });
+        this.onUpdate('damage', { target: 'enemy', value: finalDamage, crit, actionType: 'attack' });
 
         this.handlePartyAssistance(finalDamage);
         this.endPlayerTurn();
@@ -610,7 +610,7 @@ export class CombatEngine {
         } else {
             this.addLog(`Kiếm quang xé rách hư không, gây <span class="text-red-500 font-bold">${finalDmg}</span> sát thương!`);
         }
-        this.onUpdate('damage', { target: 'enemy', value: finalDmg, crit: true });
+        this.onUpdate('damage', { target: 'enemy', value: finalDmg, crit: true, actionType: 'sword-intent' });
         
         this.endPlayerTurn();
     }
@@ -639,7 +639,7 @@ export class CombatEngine {
                 const npcDamage = Math.max(1, Math.floor(npc.atk * 0.4) - Math.floor(this.enemy.def / 4));
                 this.enemy.hp -= npcDamage;
                 this.addLog(`${npc.name} (${npc.role}) hỗ trợ gây ${npcDamage} sát thương.`);
-                this.onUpdate('damage', { target: 'enemy', value: npcDamage, crit: false });
+                this.onUpdate('damage', { target: 'enemy', value: npcDamage, crit: false, actionType: 'party' });
             });
 
             const bonus = Math.floor(finalDamage * 0.1 * this.player.party.length);
@@ -689,7 +689,7 @@ export class CombatEngine {
 
         this.enemy.hp -= finalDmg;
         this.addLog(`Thần hồn đối phương rung động dữ dội, chịu <span class="text-purple-400 font-bold">${finalDmg}</span> hồn thương!`);
-        this.onUpdate('damage', { target: 'enemy', value: finalDmg, crit: false });
+        this.onUpdate('damage', { target: 'enemy', value: finalDmg, crit: false, actionType: 'soul-repress' });
 
         // Chance to stun: 30% + (perception diff * 1%)
         const ePerception = this.enemy.perception || 10;
@@ -788,7 +788,7 @@ export class CombatEngine {
         const damage = Math.floor(this.player.atk * 1.8);
         this.enemy.hp -= damage;
         this.addLog(`Ngươi kết ấn thi triển Linh Thuật, oanh tạc gây ${damage} sát thương!`);
-        this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
+        this.onUpdate('damage', { target: 'enemy', value: damage, crit: true, actionType: 'skill' });
 
         if (this.enemy.hp <= 0) {
             this.enemy.hp = 0;
@@ -819,7 +819,7 @@ export class CombatEngine {
         this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, this.player.atk * 0.3 * flame.power);
         this.addLog(`Ngươi dẫn động <span class="text-orange-500">${flame.name}</span>, hỏa diễm ngập trời gây ${damage} sát thương!`);
         this.addLog(`${this.enemy.name} bị <span class="text-red-500">THIÊU ĐỐT</span> bởi Dị Hỏa!`);
-        this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
+        this.onUpdate('damage', { target: 'enemy', value: damage, crit: true, actionType: 'flame' });
 
         this.endPlayerTurn();
     }
@@ -836,7 +836,7 @@ export class CombatEngine {
         const potionName = getItemById(potion.id)?.name || 'đan dược';
         this.player.inventory.useItem(potion.id, 1);
         this.addLog(`Ngươi dùng ${potionName}, điều tức hồi phục.`);
-        this.onUpdate('damage', { target: 'player', value: 0, crit: false }); // Force refresh HP/Mana bars immediately
+        this.onUpdate('damage', { target: 'player', value: 0, crit: false, actionType: 'potion' }); // Force refresh HP/Mana bars immediately
         this.endPlayerTurn();
     }
 
@@ -856,7 +856,7 @@ export class CombatEngine {
             const dmg = data.effect.value || 120;
             this.enemy.hp -= dmg;
             this.addLog(`Bạn kích hoạt ${data.name}, gây ${dmg} sát thương.`);
-            this.onUpdate('damage', { target: 'enemy', value: dmg, crit: true });
+            this.onUpdate('damage', { target: 'enemy', value: dmg, crit: true, actionType: 'talisman' });
         } else if (data.effect?.type === 'buff' && data.effect.stat === 'def') {
             this.player.def += data.effect.value || 60;
             this.addLog(`${data.name} bảo hộ thân thể, phòng ngự tăng tạm thời!`);
@@ -902,7 +902,7 @@ export class CombatEngine {
         
         this.enemy.hp -= dmg;
         this.addLog(`Linh thú <span class="text-green-400">${beast.name}</span> (Cấp ${beast.level}) xuất chiến, gây ${dmg} sát thương!`);
-        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
+        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false, actionType: 'beast' });
         this.endPlayerTurn();
     }
 
@@ -921,7 +921,7 @@ export class CombatEngine {
         const dmg = Math.max(1, Math.floor(this.player.atk * 1.2 + levelBonus));
         this.enemy.hp -= dmg;
         this.addLog(`Bạn bố trí trận pháp áp chế chiến trường, gây ${dmg} sát thương.`);
-        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
+        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false, actionType: 'formation' });
         this.endPlayerTurn();
     }
 
@@ -939,7 +939,7 @@ export class CombatEngine {
         const dmg = Math.max(1, Math.floor(this.player.atk * 0.9 * qualityBonus + (this.player.puppetLevel || 1) * 15));
         this.enemy.hp -= dmg;
         this.addLog(`Khôi lỗi xuất trận, cơ quan liên kích gây ${dmg} sát thương!`);
-        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
+        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false, actionType: 'puppet' });
         this.endPlayerTurn();
     }
 
@@ -963,7 +963,7 @@ export class CombatEngine {
         }
         
         this.enemy.hp -= dmg;
-        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false });
+        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false, actionType: 'corpse' });
         if (Math.random() < 0.2) {
             this.status.enemy.stun = Math.max(this.status.enemy.stun, 1);
             this.addLog(`${this.enemy.name} bị thi khí trấn áp, choáng 1 lượt!`);
@@ -989,7 +989,7 @@ export class CombatEngine {
         
         this.enemy.hp -= swarmDmg;
         this.addLog(`Bầy kỳ trùng <span class="text-yellow-500">${insect.name}</span> (Cấp ${insect.level}) cắn xé, gây ${swarmDmg} sát thương!`);
-        this.onUpdate('damage', { target: 'enemy', value: swarmDmg, crit: false });
+        this.onUpdate('damage', { target: 'enemy', value: swarmDmg, crit: false, actionType: 'insect' });
         
         // Hiệu ứng phụ: Độc (Burn)
         this.status.enemy.burn = Math.max(this.status.enemy.burn, 2);
@@ -1253,7 +1253,7 @@ export class CombatEngine {
             }
         }
 
-        this.onUpdate('damage', { target: 'enemy', value: damage, crit: true });
+        this.onUpdate('damage', { target: 'enemy', value: damage, crit: true, actionType: 'secret', secretId: secretId });
 
         if (this.enemy.hp <= 0) {
             this.enemy.hp = 0;
@@ -1284,7 +1284,7 @@ export class CombatEngine {
 
         if (Math.random() > hitChance) {
             this.addLog(`${this.enemy.name} tấn công nhưng ngươi đã né tránh thành công!`);
-            this.onUpdate('damage', { target: 'player', value: 0, crit: false });
+            this.onUpdate('damage', { target: 'player', value: 0, crit: false, actionType: 'miss' });
             this.turn = 0;
             this.nextTurn();
             return;
@@ -1382,7 +1382,7 @@ export class CombatEngine {
 
         this.player.hp -= finalPlayerDamage;
         this.addLog(attackMsg);
-        this.onUpdate('damage', { target: 'player', value: finalPlayerDamage, crit });
+        this.onUpdate('damage', { target: 'player', value: finalPlayerDamage, crit, actionType: 'attack' });
 
         if (this.player.hp <= 0) {
             this.player.hp = 0;

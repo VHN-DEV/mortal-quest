@@ -1201,27 +1201,30 @@ export class Game {
                 state.systems.cheat.onAction('cultivate', 1);
             }
 
-            // Delegate animation handling to UI system
-            if (state.ui && typeof state.ui.handleCultivationSuccess === 'function') {
-                state.ui.handleCultivationSuccess(result);
-            }
+            // Skip visual effects if auto-cultivating to prevent performance lag
+            if (!state.autoCultivateInterval) {
+                // Delegate animation handling to UI system
+                if (state.ui && typeof state.ui.handleCultivationSuccess === 'function') {
+                    state.ui.handleCultivationSuccess(result);
+                }
 
-            const btn = document.getElementById('cultivate-btn');
-            if (btn) {
-                state.ui.showStatUpEffect(btn, `+${Math.floor(result.gain)} ${result.type === 'tuvi' ? 'Tu Vi' : (result.type === 'body' ? 'Khí Huyết' : 'Thần Niệm')}`);
+                const btn = document.getElementById('cultivate-btn');
+                if (btn) {
+                    state.ui.showStatUpEffect(btn, `+${Math.floor(result.gain)} ${result.type === 'tuvi' ? 'Tu Vi' : (result.type === 'body' ? 'Khí Huyết' : 'Thần Niệm')}`);
 
-                // Spawn particles from center of portrait to outward
-                const portrait = document.getElementById('aura-border');
-                if (portrait) {
-                    const rect = portrait.getBoundingClientRect();
-                    const appRect = document.getElementById('app').getBoundingClientRect();
-                    const centerX = rect.left - appRect.left + rect.width / 2;
-                    const centerY = rect.top - appRect.top + rect.height / 2;
+                    // Spawn particles from center of portrait to outward
+                    const portrait = document.getElementById('aura-border');
+                    if (portrait) {
+                        const rect = portrait.getBoundingClientRect();
+                        const appRect = document.getElementById('app').getBoundingClientRect();
+                        const centerX = rect.left - appRect.left + rect.width / 2;
+                        const centerY = rect.top - appRect.top + rect.height / 2;
 
-                    const count = state.player.isSecluded ? 5 : 15;
-                    const particleColor = result.type === 'tuvi' ? '#4FD1C5' : (result.type === 'body' ? '#F87171' : '#A78BFA');
+                        const count = state.player.isSecluded ? 5 : 15;
+                        const particleColor = result.type === 'tuvi' ? '#4FD1C5' : (result.type === 'body' ? '#F87171' : '#A78BFA');
 
-                    state.ui.spawnQiParticles(centerX, centerY, count, particleColor);
+                        state.ui.spawnQiParticles(centerX, centerY, count, particleColor);
+                    }
                 }
             }
         }
@@ -2966,6 +2969,19 @@ export class Game {
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }
+
+    openCreationSelectionModal(type) {
+        if (typeof window.openCreationSelectionModal === 'function') {
+            window.openCreationSelectionModal(type);
+        }
+    }
+
+    closeCreationSelectionModal() {
+        if (typeof window.closeCreationSelectionModal === 'function') {
+            window.closeCreationSelectionModal();
+        }
+    }
+
 
     async startCreationGame() {
         if (state.systems.creation) {

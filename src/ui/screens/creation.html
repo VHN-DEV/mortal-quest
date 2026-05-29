@@ -247,6 +247,31 @@
         </button>
     </div>
 
+    <!-- Creation Selection Glassmorphic Modal -->
+    <div id="creation-selection-modal"
+        class="fixed inset-0 bg-black/85 backdrop-blur-xl z-[1500] hidden flex items-center justify-center p-4 md:p-6 animate-fade-in pointer-events-auto">
+        <div
+            class="w-full max-w-lg bg-qi-ink/95 border border-white/10 rounded-3xl p-6 md:p-8 shadow-[0_0_60px_rgba(0,0,0,0.8)] flex flex-col max-h-[85vh]">
+            <!-- Header -->
+            <div class="flex justify-between items-center border-b border-white/5 pb-4 mb-4 shrink-0">
+                <div class="space-y-0.5 text-left">
+                    <h3 id="creation-selection-title" class="text-base md:text-lg font-ancient text-cultivation-gold uppercase tracking-widest">Chọn Lựa</h3>
+                    <p id="creation-selection-subtitle" class="text-[8px] md:text-[9px] text-gray-500 uppercase tracking-widest text-left">Lựa chọn nhân quả tương hợp</p>
+                </div>
+                <button onclick="window.game.closeCreationSelectionModal()"
+                    class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-all duration-300">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            </div>
+
+            <!-- List (Scrollable) -->
+            <div id="creation-selection-list"
+                class="flex-grow space-y-3 overflow-y-auto max-h-[55vh] min-h-0 custom-scrollbar p-1">
+                <!-- Dynamically rendered options -->
+            </div>
+        </div>
+    </div>
+
     <!-- Avatar Selector Glassmorphic Modal -->
     <div id="creation-avatar-modal"
         class="fixed inset-0 bg-black/85 backdrop-blur-xl z-[1500] hidden flex items-center justify-center p-4 md:p-6 animate-fade-in pointer-events-auto">

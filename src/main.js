@@ -545,7 +545,7 @@ window.renderMainStats = () => {
         }
 
         const tuViDiff = player.tuVi - state.ui.lastTuVi;
-        if (tuViDiff > 0 && player.cultivationFocus === 'tuvi') {
+        if (tuViDiff > 0 && player.cultivationFocus === 'tuvi' && !state.autoCultivateInterval) {
             const now = Date.now();
             if (now - state.ui.lastBubbleAbsorbTime > 2000) { // Limit frequency to every 2 seconds
                 state.ui.lastBubbleAbsorbTime = now;
@@ -1221,30 +1221,34 @@ window.renderCreationScreen = () => {
         }
     }
 
-    // Race List
+    // Race List (Show selected card, click to open selection modal)
     const elRaces = document.getElementById('creation-races-list');
     if (elRaces) {
-        elRaces.innerHTML = Object.values(CREATION_RACES).map(r => {
-            const active = sys.selectedRace === r.id;
-            const bonuses = (formatCreationBonus(r.bonus) || 'Chỉ số cơ bản').split(' · ');
-            return `
-                <button onclick="window.game.selectCreationRace('${r.id}')" 
-                    class="q-card min-w-[140px] ${active ? 'active text-red-400 border-red-400' : 'text-gray-400 border-white/10'}">
-                    <div class="flex justify-between items-start gap-2">
-                        <div class="q-title ${active ? 'text-red-400' : ''}">${r.name}</div>
+        const r = CREATION_RACES[sys.selectedRace] || CREATION_RACES['HUMAN'];
+        const bonuses = (formatCreationBonus(r.bonus) || 'Chỉ số cơ bản').split(' · ');
+        elRaces.innerHTML = `
+            <div onclick="window.game.openCreationSelectionModal('race')" 
+                class="q-card active text-red-400 border-red-400 w-full cursor-pointer hover:bg-white/[0.02] transition-all flex flex-col gap-2 relative">
+                <div class="flex justify-between items-start gap-2">
+                    <div class="q-title text-red-400 font-ancient font-bold">${r.name}</div>
+                    <div class="flex items-center space-x-2 shrink-0">
                         <div class="q-cost">
-                            <i class="ph ph-users"></i>
+                            <i class="ph ph-users text-[10px]"></i>
                             ${r.cost}
                         </div>
+                        <span class="text-[8px] bg-red-400/10 border border-red-400/20 text-red-400 px-2 py-0.5 rounded uppercase font-bold tracking-wider">
+                            Thay đổi <i class="ph ph-caret-right ml-0.5"></i>
+                        </span>
                     </div>
-                    <div class="q-desc">${r.desc}</div>
-                    <div class="q-bonus-list">
-                        ${bonuses.map(b => `<span class="q-bonus-tag" style="color: #f87171; background: rgba(248, 113, 113, 0.1); border-color: rgba(248, 113, 113, 0.2)">${b}</span>`).join('')}
-                    </div>
-                </button>
-            `;
-        }).join('');
+                </div>
+                <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed">${r.desc}</div>
+                <div class="q-bonus-list flex flex-wrap gap-1">
+                    ${bonuses.map(b => `<span class="q-bonus-tag text-[8px]" style="color: #f87171; background: rgba(248, 113, 113, 0.1); border-color: rgba(248, 113, 113, 0.2)">${b}</span>`).join('')}
+                </div>
+            </div>
+        `;
     }
+
 
     if (elRoots) {
         const ELEMENT_COLORS = {
@@ -1339,20 +1343,25 @@ window.renderCreationScreen = () => {
 
 
         elRoots.innerHTML = `
-            
-            <div class="q-card active border-qi-blue/30 p-4 rounded-xl bg-gradient-to-br from-black/40 to-white/[0.02] border border-white/5 flex flex-col gap-2.5">
+            <div onclick="window.game.openCreationSelectionModal('root')" 
+                class="q-card active border-qi-blue/30 p-4 rounded-xl bg-gradient-to-br from-black/40 to-white/[0.02] border border-white/5 flex flex-col gap-2.5 cursor-pointer hover:bg-white/[0.02] transition-all">
                 <div class="flex justify-between items-center">
-                    <div class="flex flex-col">
+                    <div class="flex flex-col text-left">
                         <span class="text-[8px] text-gray-500 uppercase tracking-widest leading-none mb-1">Cấp bậc Linh Căn</span>
                         <span class="text-xs font-ancient font-bold text-qi-blue">${classInfo.name}</span>
                     </div>
-                    <div class="flex items-center gap-1 px-2.5 py-1 bg-qi-blue/10 border border-qi-blue/20 text-qi-blue rounded-lg text-[9px] font-bold">
-                        <i class="ph ph-lightning text-[10px]"></i>
-                        <span>Tốn: ${rootData.cost} Điểm</span>
+                    <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-1 px-2.5 py-1 bg-qi-blue/10 border border-qi-blue/20 text-qi-blue rounded-lg text-[9px] font-bold">
+                            <i class="ph ph-lightning text-[10px]"></i>
+                            <span>Tốn: ${rootData.cost} Điểm</span>
+                        </div>
+                        <span class="text-[8px] bg-qi-blue/10 border border-qi-blue/20 text-qi-blue px-2 py-0.5 rounded uppercase font-bold tracking-wider">
+                            Thay đổi <i class="ph ph-caret-right ml-0.5"></i>
+                        </span>
                     </div>
                 </div>
                 
-                <div class="text-[8.5px] text-gray-400 leading-relaxed font-light">
+                <div class="text-[8.5px] text-gray-400 leading-relaxed font-light text-left">
                     ${rootData.desc}
                 </div>
                 
@@ -1416,50 +1425,56 @@ window.renderCreationScreen = () => {
     }
 
     if (elPhysiques) {
-        elPhysiques.innerHTML = Object.values(CREATION_PHYSIQUES).map(p => {
-            const active = sys.selectedPhysique === p.id;
-            const physData = PHYSIQUES[p.id] || p; // Fallback to p if not in PHYSIQUES
-            const bonuses = (formatCreationBonus(physData.bonus) || 'Chỉ số cơ bản').split(' · ');
-            return `
-                <button onclick="window.game.selectCreationPhysique('${p.id}')" 
-                    class="q-card ${active ? 'active text-qi-purple border-qi-purple' : 'text-gray-400 border-white/10'} w-full">
-                    <div class="flex justify-between items-start gap-2">
-                        <div class="q-title ${active ? 'text-qi-purple' : ''}">${p.name}</div>
+        const p = CREATION_PHYSIQUES[sys.selectedPhysique] || CREATION_PHYSIQUES['binh_thuong'];
+        const physData = PHYSIQUES[p.id] || p;
+        const bonuses = (formatCreationBonus(physData.bonus) || 'Chỉ số cơ bản').split(' · ');
+        elPhysiques.innerHTML = `
+            <div onclick="window.game.openCreationSelectionModal('physique')" 
+                class="q-card active text-qi-purple border-qi-purple w-full cursor-pointer hover:bg-white/[0.02] transition-all flex flex-col gap-2 relative">
+                <div class="flex justify-between items-start gap-2">
+                    <div class="q-title text-qi-purple font-ancient font-bold">${p.name}</div>
+                    <div class="flex items-center space-x-2 shrink-0">
                         <div class="q-cost">
-                            <i class="ph ph-sparkle"></i>
+                            <i class="ph ph-sparkle text-[10px]"></i>
                             ${p.cost}
                         </div>
+                        <span class="text-[8px] bg-qi-purple/10 border border-qi-purple/20 text-qi-purple px-2 py-0.5 rounded uppercase font-bold tracking-wider">
+                            Thay đổi <i class="ph ph-caret-right ml-0.5"></i>
+                        </span>
                     </div>
-                    <div class="q-desc">${p.desc}</div>
-                    <div class="q-bonus-list">
-                        ${bonuses.map(b => `<span class="q-bonus-tag" style="color: #a855f7; background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.2)">${b}</span>`).join('')}
-                    </div>
-                </button>
-            `;
-        }).join('');
+                </div>
+                <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed">${p.desc}</div>
+                <div class="q-bonus-list flex flex-wrap gap-1">
+                    ${bonuses.map(b => `<span class="q-bonus-tag text-[8px]" style="color: #a855f7; background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.2)">${b}</span>`).join('')}
+                </div>
+            </div>
+        `;
     }
 
     if (elOrigins) {
-        elOrigins.innerHTML = Object.values(CREATION_ORIGINS).map(o => {
-            const active = sys.selectedOrigin === o.id;
-            const resources = (formatOriginResources(o) || '').split(' · ');
-            return `
-                <button onclick="window.game.selectCreationOrigin('${o.id}')" 
-                    class="q-card ${active ? 'active text-qi-blue border-qi-blue' : 'text-gray-400 border-white/10'} w-full">
-                    <div class="flex justify-between items-start gap-2">
-                        <div class="q-title ${active ? 'text-qi-blue' : ''}">${o.name}</div>
+        const o = CREATION_ORIGINS[sys.selectedOrigin] || CREATION_ORIGINS['tan_tu'];
+        const resources = (formatOriginResources(o) || '').split(' · ');
+        elOrigins.innerHTML = `
+            <div onclick="window.game.openCreationSelectionModal('origin')" 
+                class="q-card active text-qi-blue border-qi-blue w-full cursor-pointer hover:bg-white/[0.02] transition-all flex flex-col gap-2 relative">
+                <div class="flex justify-between items-start gap-2">
+                    <div class="q-title text-qi-blue font-ancient font-bold">${o.name}</div>
+                    <div class="flex items-center space-x-2 shrink-0">
                         <div class="q-cost">
-                            <i class="ph ph-scroll"></i>
+                            <i class="ph ph-scroll text-[10px]"></i>
                             ${o.cost}
                         </div>
+                        <span class="text-[8px] bg-qi-blue/10 border border-qi-blue/20 text-qi-blue px-2 py-0.5 rounded uppercase font-bold tracking-wider">
+                            Thay đổi <i class="ph ph-caret-right ml-0.5"></i>
+                        </span>
                     </div>
-                    <div class="q-desc">${o.desc}</div>
-                    <div class="q-bonus-list">
-                        ${resources.map(r => `<span class="q-bonus-tag" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2)">${r}</span>`).join('')}
-                    </div>
-                </button>
-            `;
-        }).join('');
+                </div>
+                <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed">${o.desc}</div>
+                <div class="q-bonus-list flex flex-wrap gap-1">
+                    ${resources.map(r => `<span class="q-bonus-tag text-[8px]" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2)">${r}</span>`).join('')}
+                </div>
+            </div>
+        `;
     }
 
     // Starting Location Dropdown
@@ -1491,82 +1506,100 @@ window.renderCreationScreen = () => {
         };
     }
 
-    // Cheat Systems List
+    // Cheat Systems Selection (Selected Card)
     const elSystems = document.getElementById('creation-systems-list');
     if (elSystems) {
-        elSystems.innerHTML = CREATION_SYSTEMS.map(s => {
-            const active = sys.selectedCheatSystem === s.id;
-            return `
-                <button onclick="window.game.selectCreationCheatSystem('${s.id}')" 
-                    class="q-card text-left ${active ? 'active border-amber-500/80 shadow-[0_0_15px_rgba(245,158,11,0.15)]' : 'text-gray-400 border-white/10'} w-full transition-all duration-300">
-                    <div class="flex justify-between items-start gap-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-base text-amber-400"><i class="${s.icon}"></i></span>
-                            <div class="q-title font-ancient ${active ? 'text-cultivation-gold' : 'text-white/80'}">${s.name}</div>
+        if (sys.selectedCheatSystem) {
+            const s = CREATION_SYSTEMS.find(cs => cs.id === sys.selectedCheatSystem);
+            if (s) {
+                elSystems.innerHTML = `
+                    <div onclick="window.game.openCreationSelectionModal('cheat')" 
+                        class="q-card active border-amber-500/80 shadow-[0_0_15px_rgba(245,158,11,0.15)] w-full cursor-pointer hover:bg-white/[0.02] transition-all flex flex-col gap-2 relative text-left">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-base text-amber-400"><i class="${s.icon}"></i></span>
+                                <div class="q-title font-ancient text-cultivation-gold font-bold">${s.name}</div>
+                            </div>
+                            <div class="flex items-center space-x-2 shrink-0">
+                                <div class="text-[8px] px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-cultivation-gold uppercase font-bold tracking-wider">
+                                    ${s.difficulty}
+                                </div>
+                                <span class="text-[8px] bg-amber-500/15 border border-amber-500/30 text-cultivation-gold px-2 py-0.5 rounded uppercase font-bold tracking-wider">
+                                    Thay đổi <i class="ph ph-caret-right ml-0.5"></i>
+                                </span>
+                            </div>
                         </div>
-                        <div class="text-[8px] px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-cultivation-gold uppercase font-bold tracking-wider">
-                            ${s.difficulty}
+                        <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed">${s.desc}</div>
+                        <div class="q-bonus-list flex flex-wrap gap-1">
+                            <span class="q-bonus-tag text-[8px]" style="color: #fbbf24; background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.2)">
+                                Kiểu nhận: ${s.claimStyle === 'direct' ? 'Nhận Trực Tiếp' : s.claimStyle === 'chest' ? 'Rương Ngẫu Nhiên' : 'Chọn 1 Trong 3'}
+                            </span>
                         </div>
                     </div>
-                    <div class="q-desc mt-1.5 text-left">${s.desc}</div>
-                    <div class="q-bonus-list mt-2 flex flex-wrap gap-1">
-                        <span class="q-bonus-tag text-[8px] font-ancient" style="color: #fbbf24; background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.2)">
-                            Kiểu nhận: ${s.claimStyle === 'direct' ? 'Nhận Trực Tiếp' : s.claimStyle === 'chest' ? 'Rương Ngẫu Nhiên' : 'Chọn 1 Trong 3'}
-                        </span>
-                    </div>
-                </button>
+                `;
+            } else {
+                elSystems.innerHTML = '';
+            }
+        } else {
+            elSystems.innerHTML = `
+                <div onclick="window.game.openCreationSelectionModal('cheat')" 
+                    class="w-full py-4 border border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center text-gray-500 hover:text-white hover:border-qi-blue/50 transition-all cursor-pointer bg-black/20">
+                    <i class="ph ph-hand-waving text-xl mb-1.5 text-qi-blue"></i>
+                    <span class="text-xs font-ancient uppercase tracking-widest">Chọn Bàn Tay Vàng (Cheat)</span>
+                    <span class="text-[8px] text-gray-500 uppercase tracking-widest mt-1">Chưa chọn hệ thống hỗ trợ</span>
+                </div>
             `;
-        }).join('');
+        }
     }
 
 
-    // --- Artifacts List ---
+    // --- Artifacts Selection (Selected Card) ---
     const elArtifacts = document.getElementById('creation-artifacts-list');
     if (elArtifacts) {
-        const RARITY_COLOR = {
-            'Danh Khí': { text: 'text-red-400', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' },
-            'Tiên Khí': { text: 'text-cyan-400', bg: 'rgba(34,211,238,0.1)', border: 'rgba(34,211,238,0.3)' },
-            'Thông Thiên Linh Bảo': { text: 'text-amber-400', bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.3)' },
-        };
-
-        elArtifacts.innerHTML = Object.values(CREATION_ARTIFACTS)
-            .filter(a => a.rarity === 'Danh Khí')
-            .map(a => {
-                const active = sys.selectedArtifact === a.id;
-                const col = RARITY_COLOR[a.rarity] || { text: 'text-gray-400', bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.1)' };
-
-                // Get item icon from database or default based on id
+        if (sys.selectedArtifact && sys.selectedArtifact !== 'none') {
+            const a = CREATION_ARTIFACTS[sys.selectedArtifact];
+            if (a) {
                 const itemData = getItemById(a.id);
-                const icon = itemData?.icon || (
-                    a.id.includes('binh') ? '🍶' :
-                        a.id.includes('dinh') ? '🏺' :
-                            a.id.includes('cam') ? '🎻' :
-                                a.id.includes('quan') ? '🎓' : '🔮'
-                );
-
-                return `
-                    <button onclick="window.game.selectCreationArtifact('${a.id}')"
-                        class="q-card text-left w-full ${active ? 'active border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.15)]' : 'text-gray-400 border-white/10'} transition-all duration-300"
-                    >
+                const icon = itemData?.icon || '🔮';
+                elArtifacts.innerHTML = `
+                    <div onclick="window.game.openCreationSelectionModal('artifact')" 
+                        class="q-card active border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.15)] w-full cursor-pointer hover:bg-white/[0.02] transition-all flex flex-col gap-2 relative text-left">
                         <div class="flex justify-between items-start gap-2">
                             <div class="flex items-center space-x-2">
                                 <span class="text-base text-red-400">${icon}</span>
-                                <div class="q-title font-ancient ${active ? 'text-red-400 font-bold' : 'text-white/80'}">${a.name}</div>
+                                <div class="q-title font-ancient text-red-400 font-bold">${a.name}</div>
                             </div>
-                            <div class="text-[8px] px-2 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-red-400 font-bold uppercase tracking-wider flex items-center gap-0.5">
-                                <i class="ph ph-star"></i>
-                                -${a.cost}
+                            <div class="flex items-center space-x-2 shrink-0">
+                                <div class="text-[8px] px-2 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-red-400 font-bold uppercase tracking-wider flex items-center gap-0.5">
+                                    <i class="ph ph-star"></i>
+                                    -${a.cost}
+                                </div>
+                                <span class="text-[8px] bg-red-500/15 border border-red-500/30 text-red-400 px-2 py-0.5 rounded uppercase font-bold tracking-wider">
+                                    Thay đổi <i class="ph ph-caret-right ml-0.5"></i>
+                                </span>
                             </div>
                         </div>
-                        <div class="q-desc mt-1.5 text-left">${a.desc}</div>
-                        <div class="q-bonus-list mt-2 flex flex-wrap gap-1">
-                            <span class="q-bonus-tag text-[8px] font-ancient" style="color: ${col.text.replace('text-', '')}; background: ${col.bg}; border-color: ${col.border}">
+                        <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed">${a.desc}</div>
+                        <div class="q-bonus-list flex flex-wrap gap-1">
+                            <span class="q-bonus-tag text-[8px]" style="color: #f87171; background: rgba(248, 113, 113, 0.1); border-color: rgba(248, 113, 113, 0.2)">
                                 Phẩm giai: ${a.rarity}
                             </span>
                         </div>
-                    </button>
+                    </div>
                 `;
-            }).join('');
+            } else {
+                elArtifacts.innerHTML = '';
+            }
+        } else {
+            elArtifacts.innerHTML = `
+                <div onclick="window.game.openCreationSelectionModal('artifact')" 
+                    class="w-full py-4 border border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center text-gray-500 hover:text-white hover:border-qi-blue/50 transition-all cursor-pointer bg-black/20">
+                    <i class="ph ph-magic-wand text-xl mb-1.5 text-cultivation-gold animate-pulse"></i>
+                    <span class="text-xs font-ancient uppercase tracking-widest">Chọn Bảo Vật Khởi Đầu</span>
+                    <span class="text-[8px] text-gray-500 uppercase tracking-widest mt-1">Không bắt buộc · Tốn 150 Điểm</span>
+                </div>
+            `;
+        }
     }
 
     if (elTraits) {
@@ -1607,6 +1640,213 @@ window.renderCreationScreen = () => {
         };
     }
 
+};
+
+// Selection Modal Functions
+window.openCreationSelectionModal = (type) => {
+    const modal = document.getElementById('creation-selection-modal');
+    const titleEl = document.getElementById('creation-selection-title');
+    const subtitleEl = document.getElementById('creation-selection-subtitle');
+    const listEl = document.getElementById('creation-selection-list');
+    const sys = state.systems.creation;
+
+    if (!modal || !listEl || !sys) return;
+
+    let title = 'Chọn Lựa';
+    let subtitle = 'Định hình cơ duyên của bạn';
+    let html = '';
+
+    if (type === 'race') {
+        title = 'Chọn Chủng Tộc';
+        subtitle = 'Quyết định căn cốt và tốc độ tu luyện cơ bản';
+        html = Object.values(CREATION_RACES).map(r => {
+            const active = sys.selectedRace === r.id;
+            const bonuses = (formatCreationBonus(r.bonus) || 'Chỉ số cơ bản').split(' · ');
+            return `
+                <div onclick="window.game.selectCreationRace('${r.id}'); window.game.closeCreationSelectionModal();" 
+                    class="q-card cursor-pointer transition-all duration-300 ${active ? 'active text-red-400 border-red-400' : 'text-gray-400 border-white/10'}">
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="q-title font-ancient font-bold ${active ? 'text-red-400' : 'text-white/80'}">${r.name}</div>
+                        <div class="q-cost">
+                            <i class="ph ph-users text-[10px]"></i>
+                            ${r.cost}
+                        </div>
+                    </div>
+                    <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1">${r.desc}</div>
+                    <div class="q-bonus-list flex flex-wrap gap-1 mt-2">
+                        ${bonuses.map(b => `<span class="q-bonus-tag text-[8.5px]" style="color: #f87171; background: rgba(248, 113, 113, 0.1); border-color: rgba(248, 113, 113, 0.2)">${b}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } else if (type === 'root') {
+        title = 'Chọn Cấp Linh Căn';
+        subtitle = 'Cấp bậc linh căn ảnh hưởng lớn tới hiệu suất hấp thu linh khí';
+        html = Object.values(CREATION_ROOTS).map(r => {
+            const active = sys.selectedRoot === r.id;
+            const bonuses = (formatCreationBonus(r.bonus) || 'Chỉ số cơ bản').split(' · ');
+            return `
+                <div onclick="window.game.selectCreationRoot('${r.id}'); window.game.closeCreationSelectionModal();" 
+                    class="q-card cursor-pointer transition-all duration-300 ${active ? 'active text-qi-blue border-qi-blue' : 'text-gray-400 border-white/10'}">
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="q-title font-ancient font-bold ${active ? 'text-qi-blue' : 'text-white/80'}">${r.name}</div>
+                        <div class="q-cost">
+                            <i class="ph ph-lightning text-[10px]"></i>
+                            ${r.cost}
+                        </div>
+                    </div>
+                    <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1">${r.desc}</div>
+                    <div class="q-bonus-list flex flex-wrap gap-1 mt-2">
+                        ${bonuses.map(b => `<span class="q-bonus-tag text-[8.5px]" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2)">${b}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } else if (type === 'physique') {
+        title = 'Chọn Thể Chất Đặc Biệt';
+        subtitle = 'Nhục thân bẩm sinh mang các loại thần thông dị năng';
+        html = Object.values(CREATION_PHYSIQUES).map(p => {
+            const active = sys.selectedPhysique === p.id;
+            const physData = PHYSIQUES[p.id] || p;
+            const bonuses = (formatCreationBonus(physData.bonus) || 'Chỉ số cơ bản').split(' · ');
+            return `
+                <div onclick="window.game.selectCreationPhysique('${p.id}'); window.game.closeCreationSelectionModal();" 
+                    class="q-card cursor-pointer transition-all duration-300 ${active ? 'active text-qi-purple border-qi-purple' : 'text-gray-400 border-white/10'}">
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="q-title font-ancient font-bold ${active ? 'text-qi-purple' : 'text-white/80'}">${p.name}</div>
+                        <div class="q-cost">
+                            <i class="ph ph-sparkle text-[10px]"></i>
+                            ${p.cost}
+                        </div>
+                    </div>
+                    <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1">${p.desc}</div>
+                    <div class="q-bonus-list flex flex-wrap gap-1 mt-2">
+                        ${bonuses.map(b => `<span class="q-bonus-tag text-[8.5px]" style="color: #a855f7; background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.2)">${b}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } else if (type === 'origin') {
+        title = 'Chọn Xuất Thân';
+        subtitle = 'Gia cảnh khởi đầu ảnh hưởng tới tài nguyên và bảo vật tùy thân';
+        html = Object.values(CREATION_ORIGINS).map(o => {
+            const active = sys.selectedOrigin === o.id;
+            const resources = (formatOriginResources(o) || '').split(' · ');
+            return `
+                <div onclick="window.game.selectCreationOrigin('${o.id}'); window.game.closeCreationSelectionModal();" 
+                    class="q-card cursor-pointer transition-all duration-300 ${active ? 'active text-qi-blue border-qi-blue' : 'text-gray-400 border-white/10'}">
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="q-title font-ancient font-bold ${active ? 'text-qi-blue' : 'text-white/80'}">${o.name}</div>
+                        <div class="q-cost">
+                            <i class="ph ph-scroll text-[10px]"></i>
+                            ${o.cost}
+                        </div>
+                    </div>
+                    <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1">${o.desc}</div>
+                    <div class="q-bonus-list flex flex-wrap gap-1 mt-2">
+                        ${resources.map(r => `<span class="q-bonus-tag text-[8.5px]" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2)">${r}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } else if (type === 'cheat') {
+        title = 'Chọn Bàn Tay Vàng';
+        subtitle = 'Hệ thống phụ trợ giúp nghịch thiên cải mệnh';
+        
+        const activeNone = sys.selectedCheatSystem === null;
+        html += `
+            <div onclick="window.game.selectCreationCheatSystem(null); window.game.closeCreationSelectionModal();" 
+                class="q-card cursor-pointer transition-all duration-300 ${activeNone ? 'active border-white text-white' : 'text-gray-400 border-white/10'}">
+                <div class="q-title font-ancient font-bold">Không Lựa Chọn</div>
+                <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1">Tu hành dựa vào ý chí bản thân, không cần hệ thống ngoại lực hỗ trợ.</div>
+            </div>
+        `;
+
+        html += CREATION_SYSTEMS.map(s => {
+            const active = sys.selectedCheatSystem === s.id;
+            return `
+                <div onclick="window.game.selectCreationCheatSystem('${s.id}'); window.game.closeCreationSelectionModal();" 
+                    class="q-card cursor-pointer transition-all duration-300 ${active ? 'active border-amber-500/80 shadow-[0_0_15px_rgba(245,158,11,0.15)]' : 'text-gray-400 border-white/10'}">
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-base text-amber-400"><i class="${s.icon}"></i></span>
+                            <div class="q-title font-ancient font-bold ${active ? 'text-cultivation-gold' : 'text-white/80'}">${s.name}</div>
+                        </div>
+                        <div class="text-[8px] px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-cultivation-gold uppercase font-bold tracking-wider">
+                            ${s.difficulty}
+                        </div>
+                    </div>
+                    <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1.5">${s.desc}</div>
+                    <div class="q-bonus-list flex flex-wrap gap-1 mt-2">
+                        <span class="q-bonus-tag text-[8px] font-ancient" style="color: #fbbf24; background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.2)">
+                            Kiểu nhận: ${s.claimStyle === 'direct' ? 'Nhận Trực Tiếp' : s.claimStyle === 'chest' ? 'Rương Ngẫu Nhiên' : 'Chọn 1 Trong 3'}
+                        </span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } else if (type === 'artifact') {
+        title = 'Chọn Bảo Vật Khởi Đầu';
+        subtitle = 'Linh bảo mang theo phụ trợ quá trình tu luyện';
+
+        const RARITY_COLOR = {
+            'Danh Khí': { text: 'text-red-400', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' },
+            'Tiên Khí': { text: 'text-cyan-400', bg: 'rgba(34,211,238,0.1)', border: 'rgba(34,211,238,0.3)' },
+            'Thông Thiên Linh Bảo': { text: 'text-amber-400', bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.3)' },
+        };
+
+        const activeNone = sys.selectedArtifact === 'none';
+        html += `
+            <div onclick="window.game.selectCreationArtifact('none'); window.game.closeCreationSelectionModal();" 
+                class="q-card cursor-pointer transition-all duration-300 ${activeNone ? 'active border-white text-white' : 'text-gray-400 border-white/10'}">
+                <div class="q-title font-ancient font-bold">Không Mang Bảo Vật</div>
+                <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1">Không đem theo bảo vật tùy thân bẩm sinh.</div>
+            </div>
+        `;
+
+        html += Object.values(CREATION_ARTIFACTS)
+            .filter(a => a.rarity === 'Danh Khí')
+            .map(a => {
+                const active = sys.selectedArtifact === a.id;
+                const col = RARITY_COLOR[a.rarity] || { text: 'text-gray-400', bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.1)' };
+
+                const itemData = getItemById(a.id);
+                const icon = itemData?.icon || '🔮';
+
+                return `
+                    <div onclick="window.game.selectCreationArtifact('${a.id}'); window.game.closeCreationSelectionModal();" 
+                        class="q-card cursor-pointer transition-all duration-300 ${active ? 'active border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.15)]' : 'text-gray-400 border-white/10'}">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-base text-red-400">${icon}</span>
+                                <div class="q-title font-ancient font-bold ${active ? 'text-red-400' : 'text-white/80'}">${a.name}</div>
+                            </div>
+                            <div class="text-[8px] px-2 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-red-400 font-bold uppercase tracking-wider flex items-center gap-0.5">
+                                <i class="ph ph-star"></i>
+                                -${a.cost}
+                            </div>
+                        </div>
+                        <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1.5">${a.desc}</div>
+                        <div class="q-bonus-list flex flex-wrap gap-1 mt-2">
+                            <span class="q-bonus-tag text-[8px] font-ancient" style="color: ${col.text.replace('text-', '')}; background: ${col.bg}; border-color: ${col.border}">
+                                Phẩm giai: ${a.rarity}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+    }
+
+    titleEl.textContent = title;
+    subtitleEl.textContent = subtitle;
+    listEl.innerHTML = html;
+
+    modal.classList.remove('hidden');
+};
+
+window.closeCreationSelectionModal = () => {
+    const modal = document.getElementById('creation-selection-modal');
+    if (modal) modal.classList.add('hidden');
 };
 
 // Global error handler

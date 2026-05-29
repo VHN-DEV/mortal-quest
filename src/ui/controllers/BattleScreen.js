@@ -374,6 +374,9 @@ export class BattleScreen {
         const attackerCard = data.target === 'enemy' ? document.getElementById('player-card') : document.getElementById('enemy-card');
         const targetImg = data.target === 'enemy' ? this.enemyImg : this.playerImg;
 
+        // Trigger combat VFX
+        this.spawnCombatVfx(targetCard, attackerCard, data);
+
         if (attackerCard && data.value > 0) {
             const slideY = data.target === 'enemy' ? -15 : 15; // Player slides up (-15), Enemy slides down (+15)
             gsap.to(attackerCard, {
@@ -408,6 +411,244 @@ export class BattleScreen {
                 { filter: "brightness(2) sepia(1) saturate(10) hue-rotate(-50deg)" }, 
                 { filter: "brightness(1) sepia(0) saturate(1) hue-rotate(0deg)", duration: 0.4 }
             );
+        }
+    }
+
+    spawnCombatVfx(targetCard, attackerCard, data) {
+        const arena = document.getElementById('battle-arena');
+        if (!arena) return;
+
+        const arenaRect = arena.getBoundingClientRect();
+        
+        // Find coordinates of target card
+        const tRect = targetCard ? targetCard.getBoundingClientRect() : null;
+        if (!tRect) return;
+
+        const tCenterX = tRect.left - arenaRect.left + tRect.width / 2;
+        const tCenterY = tRect.top - arenaRect.top + tRect.height / 2;
+
+        // Find coordinates of attacker card
+        let aCenterX = tCenterX;
+        let aCenterY = tCenterY;
+        if (attackerCard) {
+            const aRect = attackerCard.getBoundingClientRect();
+            aCenterX = aRect.left - arenaRect.left + aRect.width / 2;
+            aCenterY = aRect.top - arenaRect.top + aRect.height / 2;
+        }
+
+        const type = data.actionType || 'attack';
+        const isCrit = data.crit || false;
+
+        // Define a helper for spawning spark particles
+        const spawnSparks = (cx, cy, color, count = 12, size = 6) => {
+            for (let i = 0; i < count; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'absolute rounded-full pointer-events-none z-[110]';
+                spark.style.width = `${size}px`;
+                spark.style.height = `${size}px`;
+                spark.style.backgroundColor = color;
+                spark.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}`;
+                spark.style.left = `${cx}px`;
+                spark.style.top = `${cy}px`;
+                arena.appendChild(spark);
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 40 + Math.random() * 80;
+                const destX = Math.cos(angle) * distance;
+                const destY = Math.sin(angle) * distance;
+
+                gsap.to(spark, {
+                    x: destX,
+                    y: destY,
+                    scale: 0.2,
+                    opacity: 0,
+                    duration: 0.4 + Math.random() * 0.4,
+                    ease: "power2.out",
+                    onComplete: () => spark.remove()
+                });
+            }
+        };
+
+        // 1. CHÍ MẠNG / CRIT arena shockwave
+        if (isCrit && data.value > 0) {
+            const shock = document.createElement('div');
+            shock.className = 'arena-shockwave';
+            arena.appendChild(shock);
+            gsap.fromTo(shock,
+                { scale: 0.4, opacity: 0.8 },
+                { scale: 2.2, opacity: 0, duration: 0.5, ease: "power3.out", onComplete: () => shock.remove() }
+            );
+
+            // Shake the screen a little extra
+            state.ui.screenShake('medium');
+        }
+
+        // 2. Specific effects based on type
+        if (type === 'miss') {
+            // Do nothing, text popup handled by showDamage
+            return;
+        }
+
+        if (type === 'attack') {
+            // Standard Slash trail
+            const slash = document.createElement('div');
+            slash.className = 'combat-slash-effect';
+            const color = data.target === 'enemy' ? '#4fd1c5' : '#ef4444';
+            slash.style.setProperty('--slash-color', color);
+            slash.style.left = `${tCenterX - 110}px`;
+            slash.style.top = `${tCenterY - 2}px`;
+            
+            const rotation = (Math.random() > 0.5 ? 1 : -1) * (20 + Math.random() * 20);
+            slash.style.transform = `rotate(${rotation}deg) scaleY(2)`;
+            arena.appendChild(slash);
+
+            gsap.fromTo(slash, 
+                { width: 0, opacity: 1 },
+                { width: 220, opacity: 0, scaleY: 0.2, duration: 0.22, ease: "power2.out", onComplete: () => {
+                    slash.remove();
+                    spawnSparks(tCenterX, tCenterY, color, 8, 5);
+                }}
+            );
+        }
+        else if (type === 'sword-intent') {
+            // Spawn 3 rapid flying swords from attacker to target
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    if (this.overlay && !this.overlay.classList.contains('hidden')) {
+                        const sword = document.createElement('div');
+                        sword.className = 'absolute pointer-events-none z-[120]';
+                        sword.style.width = '35px';
+                        sword.style.height = '2px';
+                        const color = '#4fd1c5';
+                        sword.style.background = `linear-gradient(90deg, ${color}, transparent)`;
+                        sword.style.boxShadow = `0 0 8px ${color}`;
+                        
+                        // Start slightly offset around the attacker center
+                        const startX = aCenterX + (Math.random() - 0.5) * 40;
+                        const startY = aCenterY + (Math.random() - 0.5) * 40;
+                        sword.style.left = `${startX}px`;
+                        sword.style.top = `${startY}px`;
+
+                        const destX = tCenterX + (Math.random() - 0.5) * 30;
+                        const destY = tCenterY + (Math.random() - 0.5) * 30;
+
+                        const angle = Math.atan2(destY - startY, destX - startX) * 180 / Math.PI;
+                        sword.style.transform = `rotate(${angle}deg) scaleX(0)`;
+                        arena.appendChild(sword);
+
+                        gsap.timeline()
+                            .to(sword, { scaleX: 1.5, duration: 0.1, ease: "power1.out" })
+                            .to(sword, {
+                                x: destX - startX,
+                                y: destY - startY,
+                                duration: 0.22,
+                                ease: "power2.in"
+                            })
+                            .to(sword, {
+                                opacity: 0,
+                                scaleX: 0,
+                                duration: 0.05,
+                                onComplete: () => {
+                                    sword.remove();
+                                    spawnSparks(destX, destY, color, 5, 4);
+                                }
+                            });
+                    }
+                }, i * 120);
+            }
+        }
+        else if (type === 'flame') {
+            // Rising sparks and fire blast
+            spawnSparks(tCenterX, tCenterY, '#f97316', 20, 8);
+            
+            const fireBlast = document.createElement('div');
+            fireBlast.className = 'absolute rounded-full border border-orange-500 pointer-events-none z-[105]';
+            fireBlast.style.left = `${tCenterX}px`;
+            fireBlast.style.top = `${tCenterY}px`;
+            fireBlast.style.transform = 'translate(-50%, -50%)';
+            arena.appendChild(fireBlast);
+
+            gsap.fromTo(fireBlast,
+                { width: 10, height: 10, opacity: 1, borderWidth: 4, boxShadow: '0 0 10px #f97316' },
+                { width: 150, height: 150, opacity: 0, borderWidth: 0.5, duration: 0.45, ease: "power2.out", onComplete: () => fireBlast.remove() }
+            );
+        }
+        else if (type === 'soul-repress') {
+            // Expanding purple mental shockwaves
+            const color = '#a855f7';
+            for (let i = 0; i < 2; i++) {
+                setTimeout(() => {
+                    if (this.overlay && !this.overlay.classList.contains('hidden')) {
+                        const ripple = document.createElement('div');
+                        ripple.className = 'soul-ripple';
+                        ripple.style.left = `${tCenterX}px`;
+                        ripple.style.top = `${tCenterY}px`;
+                        arena.appendChild(ripple);
+
+                        gsap.fromTo(ripple,
+                            { width: 15, height: 15, opacity: 1, borderWidth: 3 },
+                            { width: 160, height: 160, opacity: 0, borderWidth: 0.5, duration: 0.55, ease: "power2.out", onComplete: () => ripple.remove() }
+                        );
+                        spawnSparks(tCenterX, tCenterY, color, 6, 5);
+                    }
+                }, i * 200);
+            }
+        }
+        else if (type === 'skill') {
+            // Linh Pháp / Spell - colored blast matching the skill or typical jade/blue
+            const color = '#38bdf8'; // Sky blue
+            spawnSparks(tCenterX, tCenterY, color, 16, 7);
+
+            const blast = document.createElement('div');
+            blast.className = 'absolute rounded-full pointer-events-none z-[105]';
+            blast.style.background = `radial-gradient(circle, ${color}33 0%, transparent 70%)`;
+            blast.style.left = `${tCenterX}px`;
+            blast.style.top = `${tCenterY}px`;
+            blast.style.transform = 'translate(-50%, -50%)';
+            arena.appendChild(blast);
+
+            gsap.fromTo(blast,
+                { width: 20, height: 20, opacity: 1 },
+                { width: 180, height: 180, opacity: 0, duration: 0.5, ease: "power2.out", onComplete: () => blast.remove() }
+            );
+        }
+        else if (type === 'secret') {
+            // Secret technique - mega golden effect!
+            const secretId = data.secretId || '';
+            let color = '#fbbf24'; // Gold
+            let count = 25;
+            let size = 8;
+            
+            if (secretId.includes('ho_the_kiem_don') || secretId.includes('thanh_nguyen')) {
+                color = '#22d3ee'; // Cyan
+            } else if (secretId.includes('huyet_sat') || secretId.includes('ma_diem')) {
+                color = '#ef4444'; // Red
+            } else if (secretId.includes('van_doc')) {
+                color = '#22c55e'; // Green
+            }
+
+            spawnSparks(tCenterX, tCenterY, color, count, size);
+
+            // Double expanding rings
+            for (let j = 0; j < 2; j++) {
+                const ring = document.createElement('div');
+                ring.className = 'absolute rounded-full border border-white pointer-events-none z-[105]';
+                ring.style.borderColor = color;
+                ring.style.left = `${tCenterX}px`;
+                ring.style.top = `${tCenterY}px`;
+                ring.style.transform = 'translate(-50%, -50%)';
+                arena.appendChild(ring);
+
+                gsap.fromTo(ring,
+                    { width: 10, height: 10, opacity: 1, borderWidth: 5, boxShadow: `0 0 15px ${color}` },
+                    { width: 200 + j * 40, height: 200 + j * 40, opacity: 0, borderWidth: 0.2, duration: 0.5 + j * 0.15, ease: "power3.out", onComplete: () => ring.remove() }
+                );
+            }
+        }
+        else if (['beast', 'puppet', 'corpse', 'insect', 'formation', 'party'].includes(type)) {
+            // Summon types - nature/summon green or gold
+            const color = type === 'corpse' ? '#6b7280' : (type === 'insect' ? '#eab308' : '#10b981');
+            spawnSparks(tCenterX, tCenterY, color, 12, 6);
         }
     }
 

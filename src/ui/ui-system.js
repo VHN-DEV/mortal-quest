@@ -40,6 +40,15 @@ export class UISystem {
 
         // Initialize smooth horizontal drag-scroll roll behavior
         this.initHorizontalScrollRoll();
+
+        // Listen to visibility change to stop/start qi bubble system (prevent pile-up in background)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.stopQiBubbleSystem();
+            } else {
+                this.startQiBubbleSystem();
+            }
+        });
     }
 
     updateTimeUI(time) {
@@ -583,37 +592,168 @@ export class UISystem {
     showBreakthroughEffect(realmName) {
         this.screenShake('high');
 
+        // Create the lightning flash overlay
+        const flash = document.createElement('div');
+        flash.className = 'lightning-flash-overlay absolute inset-0 bg-white z-[1250] pointer-events-none';
+        const app = document.getElementById('app');
+        app.appendChild(flash);
+        gsap.to(flash, { opacity: 0, duration: 0.35, ease: "power2.out", onComplete: () => flash.remove() });
+
         const effect = document.createElement('div');
-        effect.className = 'absolute inset-0 z-[300] flex flex-col items-center justify-center pointer-events-none';
+        effect.className = 'absolute inset-0 z-[1200] flex flex-col items-center justify-center pointer-events-none overflow-hidden';
         effect.innerHTML = `
-            <div class="breakthrough-glow absolute w-64 h-64 bg-cultivation-gold/40 rounded-full blur-[100px] opacity-0"></div>
-            <div class="breakthrough-title opacity-0 scale-50">
-                <h2 class="text-6xl font-charm text-cultivation-gold text-center drop-shadow-[0_0_30px_rgba(212,175,55,0.9)]">ĐỘT PHÁ</h2>
-                <p class="text-2xl font-ancient text-white text-center mt-2 tracking-[0.6em] uppercase text-glow">${realmName}</p>
+            <div class="breakthrough-glow absolute w-72 h-72 bg-cultivation-gold/40 rounded-full blur-[100px] opacity-0"></div>
+            <!-- Spinning Bagua Outline -->
+            <div class="bagua-matrix-bg absolute w-[360px] h-[360px] opacity-0 scale-75 pointer-events-none z-0">
+                <svg viewBox="0 0 200 200" class="w-full h-full text-cultivation-gold/25">
+                    <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="1" />
+                    <circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="6 3" />
+                    <circle cx="100" cy="100" r="60" fill="none" stroke="currentColor" stroke-width="0.8" />
+                    <circle cx="100" cy="100" r="30" fill="none" stroke="currentColor" stroke-width="0.5" />
+                    <path d="M100 5 L100 20 M100 180 L100 195 M5 100 L20 100 M180 100 L195 100" stroke="currentColor" stroke-width="1.5" />
+                    <path d="M33 33 L44 44 M156 156 L167 167 M33 167 L44 156 M156 33 L167 44" stroke="currentColor" stroke-width="1.5" />
+                    <path d="M100 70 A 15 15 0 0 0 100 100 A 15 15 0 0 1 100 130 A 30 30 0 0 0 100 70 Z" fill="currentColor" opacity="0.15" />
+                    <path d="M100 70 A 15 15 0 0 0 100 100 A 15 15 0 0 1 100 130 A 30 30 0 0 1 100 70 Z" fill="none" stroke="currentColor" stroke-width="0.5" />
+                    <circle cx="100" cy="85" r="3" fill="currentColor" />
+                    <circle cx="100" cy="115" r="3" fill="currentColor" opacity="0.4" />
+                </svg>
+            </div>
+            <!-- Breakthrough Title container -->
+            <div class="breakthrough-title relative z-10 opacity-0 scale-50 text-center">
+                <h2 class="text-7xl font-charm text-cultivation-gold drop-shadow-[0_0_35px_rgba(218,165,32,0.95)] tracking-widest">ĐỘT PHÁ</h2>
+                <div class="w-32 h-[1px] bg-gradient-to-r from-transparent via-cultivation-gold to-transparent mx-auto my-3"></div>
+                <p class="text-2xl font-ancient text-white tracking-[0.6em] uppercase text-glow">${realmName}</p>
             </div>
             <div class="particles-burst absolute inset-0"></div>
         `;
 
-        const app = document.getElementById('app');
         app.appendChild(effect);
 
         const glow = effect.querySelector('.breakthrough-glow');
+        const bagua = effect.querySelector('.bagua-matrix-bg');
         const title = effect.querySelector('.breakthrough-title');
 
         const tl = gsap.timeline({
             onComplete: () => effect.remove()
         });
 
-        tl.to(glow, { opacity: 1, scale: 2.5, duration: 0.6, ease: "power4.out" })
-            .to(title, { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(2)" }, "-=0.4")
-            .to(glow, { opacity: 0, scale: 4, duration: 1.2, ease: "power2.in" }, "+=0.8")
-            .to(title, { opacity: 0, y: -100, scale: 1.2, duration: 0.8, ease: "power3.in" }, "-=0.8");
+        tl.to(glow, { opacity: 1, scale: 2.8, duration: 0.6, ease: "power4.out" })
+            .to(bagua, { opacity: 1, scale: 1, rotation: 180, duration: 2.2, ease: "power2.out" }, "-=0.5")
+            .to(title, { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.8)" }, "-=2.0")
+            .to(glow, { opacity: 0, scale: 4.5, duration: 1.2, ease: "power2.in" }, "+=0.4")
+            .to(bagua, { opacity: 0, scale: 1.4, duration: 1.0, ease: "power2.in" }, "-=1.0")
+            .to(title, { opacity: 0, y: -120, scale: 1.1, duration: 0.8, ease: "power3.in" }, "-=0.8");
 
-        // Spawn a lot of particles
+        // Spawn a meridian-like expanding ring
+        const ring = document.createElement('div');
+        ring.className = 'meridian-shockwave absolute z-[1150]';
         const rect = app.getBoundingClientRect();
-        this.spawnQiParticles(rect.width / 2, rect.height / 2, 40, '#D4AF37');
+        ring.style.left = `${rect.width / 2}px`;
+        ring.style.top = `${rect.height / 2}px`;
+        app.appendChild(ring);
+        gsap.fromTo(ring,
+            { width: 120, height: 120, opacity: 1, borderWidth: 5 },
+            { width: 750, height: 750, opacity: 0, borderWidth: 0.2, duration: 0.85, ease: "power3.out", onComplete: () => ring.remove() }
+        );
+
+        // Spawn gold stardust drifting downwards
+        const pContainer = effect.querySelector('.particles-burst');
+        const count = 50;
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('div');
+            p.className = 'absolute rounded-full pointer-events-none';
+            const size = 1.5 + Math.random() * 3.5;
+            p.style.width = `${size}px`;
+            p.style.height = `${size}px`;
+            p.style.backgroundColor = '#D4AF37';
+            p.style.boxShadow = '0 0 6px #D4AF37';
+            
+            // Random start position near center
+            const startX = rect.width / 2 + (Math.random() - 0.5) * 120;
+            const startY = rect.height / 2 + (Math.random() - 0.5) * 100;
+            p.style.left = `${startX}px`;
+            p.style.top = `${startY}px`;
+            pContainer.appendChild(p);
+
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 50 + Math.random() * 150;
+            const destX = Math.cos(angle) * speed;
+            const destY = Math.sin(angle) * speed + 100; // Drift down extra
+
+            gsap.to(p, {
+                x: destX,
+                y: destY,
+                opacity: 0,
+                scale: 0.1,
+                duration: 1.0 + Math.random() * 1.5,
+                ease: "power1.out"
+            });
+        }
 
         audioManager.playSfx('breakthrough');
+    }
+
+    handleCultivationSuccess(result) {
+        const portrait = document.getElementById('aura-border');
+        if (!portrait) return;
+
+        const rect = portrait.getBoundingClientRect();
+        const app = document.getElementById('app');
+        if (!app) return;
+
+        const appRect = app.getBoundingClientRect();
+        const centerX = rect.left - appRect.left + rect.width / 2;
+        const centerY = rect.top - appRect.top + rect.height / 2;
+
+        const type = result.type || 'tuvi';
+        const color = type === 'tuvi' ? '#4FD1C5' : (type === 'body' ? '#F87171' : '#A78BFA');
+        const glowClass = type === 'tuvi' ? 'pulse-glow-tuvi' : (type === 'body' ? 'pulse-glow-body' : 'pulse-glow-soul');
+
+        // Number of particles
+        const count = state.player.isSecluded ? 6 : 14;
+
+        // Spiritual gathering vacuum effect
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('div');
+            p.className = 'absolute rounded-full pointer-events-none z-[60]';
+            p.style.width = '6px';
+            p.style.height = '6px';
+            p.style.backgroundColor = color;
+            p.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}`;
+
+            // Spawn at random angle along a circle outside the portrait
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 100 + Math.random() * 60; // 100px - 160px away
+            const spawnX = centerX + Math.cos(angle) * distance;
+            const spawnY = centerY + Math.sin(angle) * distance;
+
+            p.style.left = `${spawnX}px`;
+            p.style.top = `${spawnY}px`;
+
+            app.appendChild(p);
+
+            // Animate flying into the center
+            gsap.to(p, {
+                x: centerX - spawnX,
+                y: centerY - spawnY,
+                scale: 0.3,
+                opacity: 0.4,
+                duration: 0.4 + Math.random() * 0.35,
+                ease: "power2.in",
+                onComplete: () => {
+                    p.remove();
+                    // When first particles hit the center, trigger the portrait glow pulse
+                    if (i === 0) {
+                        portrait.classList.remove('pulse-glow-tuvi', 'pulse-glow-body', 'pulse-glow-soul');
+                        // Force a reflow
+                        void portrait.offsetWidth;
+                        portrait.classList.add(glowClass);
+                        // Auto remove class after animation completes (0.3s)
+                        setTimeout(() => portrait.classList.remove(glowClass), 310);
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -636,7 +776,7 @@ export class UISystem {
     }
 
     /**
-     * Spawn QI particles at a specific position
+     * Spawn QI particles at a specific position (converging/spiraling inward)
      */
     spawnQiParticles(x, y, count = 10, color = '#4FD1C5') {
         const app = document.getElementById('app');
@@ -650,29 +790,83 @@ export class UISystem {
 
         for (let i = 0; i < count; i++) {
             const p = document.createElement('div');
-            p.className = 'absolute w-1 h-1 rounded-full pointer-events-none z-[60]';
-            p.style.backgroundColor = color;
-            p.style.boxShadow = `0 0 8px ${color}`;
+            p.className = 'qi-trail-particle';
+            p.style.setProperty('--element-color', color);
             p.style.left = `${x}px`;
             p.style.top = `${y}px`;
+            p.style.transform = 'translate(-50%, -50%) scale(0)';
+            p.style.opacity = '0';
 
             container.appendChild(p);
 
             const angle = Math.random() * Math.PI * 2;
-            const distance = 40 + Math.random() * 120;
-            const destX = Math.cos(angle) * distance;
-            const destY = Math.sin(angle) * distance;
-            const scale = 0.5 + Math.random() * 1.5;
-
-            gsap.to(p, {
-                x: destX,
-                y: destY,
-                opacity: 0,
-                scale: 0,
-                duration: 0.5 + Math.random() * 1,
-                ease: "power2.out",
-                onComplete: () => p.remove()
+            const startDist = 100 + Math.random() * 80;
+            const spiralAngleOffset = (Math.random() > 0.5 ? 1 : -1) * (Math.PI / 2 + Math.random() * Math.PI);
+            const delay = Math.random() * 0.15;
+            
+            const obj = { t: 0 };
+            gsap.to(obj, {
+                t: 1,
+                duration: 0.5 + Math.random() * 0.35,
+                delay: delay,
+                ease: "power1.in",
+                onUpdate: () => {
+                    const t = obj.t;
+                    const curX = x + Math.cos(angle + t * spiralAngleOffset) * (startDist * (1 - t));
+                    const curY = y + Math.sin(angle + t * spiralAngleOffset) * (startDist * (1 - t));
+                    
+                    p.style.left = `${curX}px`;
+                    p.style.top = `${curY}px`;
+                    p.style.transform = `translate(-50%, -50%) scale(${0.4 + t * 0.8})`;
+                    p.style.opacity = `${t < 0.15 ? t / 0.15 : 1 - (t - 0.15) / 0.85}`;
+                },
+                onComplete: () => {
+                    p.remove();
+                    this.triggerPortraitHitEffect(color);
+                }
             });
+        }
+    }
+
+    /**
+     * Triggers a visual flash and pulse effect on the player portrait corresponding to the absorbed energy color
+     */
+    triggerPortraitHitEffect(color) {
+        const auraGlow = document.getElementById('aura-glow');
+        const auraBorder = document.getElementById('aura-border');
+        
+        if (auraGlow) {
+            gsap.killTweensOf(auraGlow);
+            gsap.fromTo(auraGlow,
+                { 
+                    backgroundColor: color,
+                    opacity: 0.8,
+                    scale: 1.05
+                },
+                {
+                    backgroundColor: 'rgba(79, 209, 197, 0.05)',
+                    opacity: 0.35,
+                    scale: 1.25,
+                    duration: 0.5,
+                    ease: "power2.out"
+                }
+            );
+        }
+        
+        if (auraBorder) {
+            gsap.killTweensOf(auraBorder);
+            gsap.fromTo(auraBorder,
+                {
+                    borderColor: color,
+                    boxShadow: `0 0 35px ${color}, inset 0 0 20px ${color}`
+                },
+                {
+                    borderColor: 'rgba(212, 175, 55, 0.3)',
+                    boxShadow: '0 0 60px rgba(212, 175, 55, 0.15)',
+                    duration: 0.5,
+                    ease: "power2.out"
+                }
+            );
         }
     }
 
@@ -1494,7 +1688,7 @@ export class UISystem {
             'Quang': { color: '#FDE68A', name: 'Quang' },
             'Ám': { color: '#312E81', name: 'Ám' }
         };
-        const sizeMult = 0.7 + Math.random() * 0.7; // 0.7 to 1.4
+        const sizeMult = 0.5 + Math.random() * 0.45; // 0.5 to 0.95
         allowedBubbles.push({ ...ELEMENT_CONFIGS[randomElName], rawName: randomElName, type: 'tuvi', sizeMult });
 
         const cfg = allowedBubbles[0];
@@ -1510,8 +1704,8 @@ export class UISystem {
         bubble.style.bottom = `-60px`;
 
         // Dynamic visual bubble size
-        bubble.style.width = `${Math.round(52 * sizeMult)}px`;
-        bubble.style.height = `${Math.round(52 * sizeMult)}px`;
+        bubble.style.width = `${Math.round(46 * sizeMult)}px`;
+        bubble.style.height = `${Math.round(46 * sizeMult)}px`;
 
         // Drift and duration
         const driftX = Math.random() * 120 - 60;
@@ -1525,10 +1719,13 @@ export class UISystem {
             <span class="text-[7.5px] text-white/95 font-bold uppercase tracking-[0.2em] mt-1 select-none font-ancient text-center leading-none">${cfg.name}</span>
         `;
 
-        bubble.onclick = (e) => {
+        const handlePop = (e) => {
+            e.preventDefault();
             e.stopPropagation();
             this.popBubble(bubble, cfg);
         };
+        bubble.onclick = handlePop;
+        bubble.ontouchstart = handlePop;
 
         bubble.addEventListener('animationend', () => bubble.remove());
         container.appendChild(bubble);
@@ -1723,7 +1920,7 @@ export class UISystem {
             ...ELEMENT_CONFIGS[randomElName] || ELEMENT_CONFIGS['Mộc'],
             rawName: randomElName,
             type: 'tuvi',
-            sizeMult: 0.65 + Math.random() * 0.35
+            sizeMult: 0.5 + Math.random() * 0.4
         };
 
         const bubble = document.createElement('div');
@@ -1737,8 +1934,8 @@ export class UISystem {
         const startY = 35 + Math.random() * 20; // 35% to 55%
         bubble.style.left = `${startX}%`;
         bubble.style.bottom = `${startY}%`;
-        bubble.style.width = `${Math.round(52 * cfg.sizeMult)}px`;
-        bubble.style.height = `${Math.round(52 * cfg.sizeMult)}px`;
+        bubble.style.width = `${Math.round(46 * cfg.sizeMult)}px`;
+        bubble.style.height = `${Math.round(46 * cfg.sizeMult)}px`;
 
         bubble.innerHTML = `
             <div class="qi-bubble-core" style="--element-color: ${cfg.color}"></div>
