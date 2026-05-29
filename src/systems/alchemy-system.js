@@ -160,7 +160,7 @@ export class AlchemySystem {
 
             if (result.success) {
                 // Output quantity
-                let quantity = 1;
+                let quantity = recipe.yield || 1;
                 if (cauldron && cauldron.outputBonus) quantity += cauldron.outputBonus;
 
                 // Create item with metadata

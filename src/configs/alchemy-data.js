@@ -128,7 +128,8 @@ export const ALCHEMY_RECIPES = [
         ],
         baseSuccessRate: 0.9,
         time: 2,
-        description: 'Đan dược cơ bản giúp tu sĩ bế quan không cần ăn uống, mỗi viên duy trì 1 ngày.'
+        yield: 10,
+        description: 'Đan dược cơ bản giúp tu sĩ bế quan không cần ăn uống, mỗi viên duy trì 1 ngày. Mỗi lần luyện chế thu được 10 viên.'
     },
     {
         id: 'ngung_khi_dan',

@@ -1453,6 +1453,9 @@ export class Game {
         if (state.player.isSecluded) return;
 
         const options = [
+            { label: 'Bế quan 1 tháng (Cần 30 Tịch Cốc Đan)', value: 1 / 12, icon: 'ph-sparkle' },
+            { label: 'Bế quan 3 tháng (Cần 90 Tịch Cốc Đan)', value: 3 / 12, icon: 'ph-wind' },
+            { label: 'Bế quan 6 tháng (Cần 180 Tịch Cốc Đan)', value: 6 / 12, icon: 'ph-cloud-fog' },
             { label: 'Bế quan 1 năm (Cần 360 Tịch Cốc Đan)', value: 1, icon: 'ph-moon' },
             { label: 'Bế quan 10 năm (Cần 3600 Tịch Cốc Đan)', value: 10, icon: 'ph-moon-stars' },
             { label: 'Bế quan 50 năm (Cần 18000 Tịch Cốc Đan)', value: 50, icon: 'ph-stars' },
@@ -1467,8 +1470,18 @@ export class Game {
 
         if (!durationYears) return;
 
+        const formatDurationText = (years) => {
+            if (years < 1) {
+                const months = Math.round(years * 12);
+                return `${months} tháng`;
+            }
+            return `${years} năm`;
+        };
+
+        const durationText = formatDurationText(durationYears);
+
         // Verify player has enough Tịch Cốc Đan
-        const requiredPills = durationYears * 360;
+        const requiredPills = Math.round(durationYears * 360);
         let currentPills = 0;
         if (state.player.inventory && state.player.inventory.bags) {
             for (const bag of state.player.inventory.bags) {
@@ -1481,7 +1494,7 @@ export class Game {
 
         if (currentPills < requiredPills) {
             state.ui.alert(
-                `Hành động thất bại! Bế quan trong ${durationYears} năm yêu cầu phải có đủ <span class="text-red-400 font-bold">${requiredPills.toLocaleString()} viên Tịch Cốc Đan</span> (mỗi viên duy trì 1 ngày).<br><br>
+                `Hành động thất bại! Bế quan trong ${durationText} yêu cầu phải có đủ <span class="text-red-400 font-bold">${requiredPills.toLocaleString()} viên Tịch Cốc Đan</span> (mỗi viên duy trì 1 ngày).<br><br>
                 Hiện tại ngươi chỉ có <span class="text-yellow-400 font-bold">${currentPills.toLocaleString()} viên</span>. Hãy chuẩn bị thêm rồi quay lại!`,
                 "Thiếu Tịch Cốc Đan"
             );
@@ -1489,7 +1502,7 @@ export class Game {
         }
 
         // Calculate total minutes: 12 months * 30 days * 12 hours = 4320 mins/year
-        const totalMinutes = durationYears * 4320;
+        const totalMinutes = Math.round(durationYears * 4320);
         const totalSeconds = totalMinutes * 60;
 
         // Calculate expected tuvi gain
@@ -1512,7 +1525,7 @@ export class Game {
             : `<br><span class="text-gray-500 text-xs">💡 Thuê Ngộ Đạo Thất tại Vạn Bảo Các để tăng thêm thuần thục công pháp trong khi bế quan.</span>`;
 
         const confirm = await state.ui.confirm(
-            `Ngươi chắc chắn muốn tiêu hao <span class="text-yellow-400 font-bold">${requiredPills.toLocaleString()} viên Tịch Cốc Đan</span> để bế quan trong ${durationYears} năm?<br><br>Dự kiến tu vi sẽ tăng thêm khoảng <span class="text-green-400 font-bold">${Math.floor(totalGain).toLocaleString()}</span> điểm.${ngoDaoThatLabel}`,
+            `Ngươi chắc chắn muốn tiêu hao <span class="text-yellow-400 font-bold">${requiredPills.toLocaleString()} viên Tịch Cốc Đan</span> để bế quan trong ${durationText}?<br><br>Dự kiến tu vi sẽ tăng thêm khoảng <span class="text-green-400 font-bold">${Math.floor(totalGain).toLocaleString()}</span> điểm.${ngoDaoThatLabel}`,
             "Xác Nhận Nhập Định"
         );
 
@@ -1566,8 +1579,9 @@ export class Game {
 
         // Check for breakthroughs during seclusion
         state.player.isSecluded = true;
-        for (let i = 0; i < durationYears; i++) {
-            if (Math.random() < 0.1) state.player.triggerSeclusionEvent();
+        const durationMonths = Math.round(durationYears * 12);
+        for (let i = 0; i < durationMonths; i++) {
+            if (Math.random() < (0.1 / 12)) state.player.triggerSeclusionEvent();
         }
         state.player.isSecluded = false;
 
@@ -1575,7 +1589,7 @@ export class Game {
         setTimeout(() => {
             state.ui.showLoading(false);
             state.ui.alert(
-                `Sau ${durationYears} năm bế quan khổ tu, ngươi đã xuất quan. Tuổi hiện tại: ${state.player.age}. Tu vi tinh tiến vượt bậc!`,
+                `Sau ${durationText} bế quan khổ tu, ngươi đã xuất quan. Tuổi hiện tại: ${state.player.age}. Tu vi tinh tiến vượt bậc!`,
                 "Xuất Quan Đại Cát"
             );
             if (state.systems.cheat) {
