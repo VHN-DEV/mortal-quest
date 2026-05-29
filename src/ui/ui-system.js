@@ -88,7 +88,14 @@ export class UISystem {
      * @param {number} duration milliseconds
      */
     toast(message, type = 'info', duration = 5000) {
+        const existing = Array.from(this.notifContainer.children).find(
+            child => child.dataset.message === message
+        );
+        if (existing) return;
+
         const toast = document.createElement('div');
+        toast.dataset.message = message;
+        toast.dataset.type = type;
         toast.className = `w-full p-4 bg-cultivation-dark/95 border-l-4 rounded-r-xl shadow-2xl relative overflow-hidden transform pointer-events-auto flex items-center space-x-3 opacity-0`;
 
         const colors = {
