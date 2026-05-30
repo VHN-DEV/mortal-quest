@@ -1125,6 +1125,23 @@ export class Player {
         return this.stability;
     }
 
+    getBreakthroughSuccessRate(type = 'tuvi') {
+        let baseRate = this.getStability();
+        const mainPath = this.mainPath || 'orthodox';
+        if (mainPath === 'ma_dao') {
+            baseRate -= 10;
+        }
+        if (this.specializedPaths?.buddhist?.realmId > 0) {
+            baseRate += 10;
+        }
+        baseRate = Math.max(5, Math.min(100, baseRate));
+        
+        const fatePenalty = window.game?.systems?.fate?.getBreakthroughPenalty() || 1.0;
+        baseRate *= fatePenalty;
+        
+        return Math.floor(Math.max(5, Math.min(100, baseRate)));
+    }
+
     breakthrough(type = 'tuvi', isForced = false, rateBonus = 0) {
         const check = this.canBreakthrough(type);
         if (check.can) {
@@ -1807,7 +1824,34 @@ export class Player {
 
         // 5. Finalize Secondary Stats
         const baseLifespan = raceInfo.baseLifespan || 100;
-        this.maxAge = baseLifespan + (this.realmId * 50) + this.bonusStats.maxAge + (this.permanentLifespanBonus || 0);
+        const raceFactor = baseLifespan / 100;
+        
+        let realmAgeBonus = 0;
+        const rId = this.realmId;
+        
+        if (rId === 0) {
+            realmAgeBonus = 0;
+        } else if (rId >= 1 && rId <= 13) {
+            realmAgeBonus = rId * 2;
+        } else if (rId >= 14 && rId <= 17) {
+            realmAgeBonus = 100 + (rId - 13) * 10;
+        } else if (rId >= 18 && rId <= 21) {
+            realmAgeBonus = 400 + (rId - 17) * 25;
+        } else if (rId >= 22 && rId <= 25) {
+            realmAgeBonus = 900 + (rId - 21) * 50;
+        } else if (rId >= 26 && rId <= 29) {
+            realmAgeBonus = 1900 + (rId - 25) * 100;
+        } else if (rId >= 30 && rId <= 33) {
+            realmAgeBonus = 2900 + (rId - 29) * 150;
+        } else if (rId >= 34 && rId <= 37) {
+            realmAgeBonus = 4900 + (rId - 33) * 250;
+        } else if (rId >= 38 && rId <= 41) {
+            realmAgeBonus = 9900 + (rId - 37) * 500;
+        } else {
+            realmAgeBonus = 99999900;
+        }
+        
+        this.maxAge = Math.floor(baseLifespan + realmAgeBonus * raceFactor + this.bonusStats.maxAge + (this.permanentLifespanBonus || 0));
 
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);

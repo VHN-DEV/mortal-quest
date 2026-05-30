@@ -19,19 +19,29 @@ export class CharacterScreen {
     initElements() {
         // Stats
         this.elCharHp = document.getElementById('char-hp');
+        this.elCharHpBar = document.getElementById('char-hp-bar');
         this.elCharAtk = document.getElementById('char-atk');
         this.elCharDef = document.getElementById('char-def');
         this.elCharSpd = document.getElementById('char-spd');
         this.elCharMana = document.getElementById('char-mana');
+        this.elCharManaBar = document.getElementById('char-mana-bar');
+        this.elCharCritRate = document.getElementById('char-crit-rate');
+        this.elCharDodge = document.getElementById('char-dodge');
         this.elCharAge = document.getElementById('char-age');
         this.elCharRemainingAge = document.getElementById('char-remaining-age-container');
         this.elCharStability = document.getElementById('char-stability');
+        this.elCharBreakthroughRate = document.getElementById('char-breakthrough-rate');
         this.elCharComprehension = document.getElementById('char-comprehension');
         this.elCharDivineSense = document.getElementById('char-divine-sense');
         this.elCharPhysiqueTalent = document.getElementById('char-physique-talent');
         this.elCharDaoTam = document.getElementById('char-dao-tam');
         
-        // Realms
+        // Cultivation Main
+        this.elCharRealmName = document.getElementById('char-realm-name');
+        this.elCharRealmExpBar = document.getElementById('char-realm-exp-bar');
+        this.elCharExpDetails = document.getElementById('char-exp-details');
+        
+        // Realms (Bottom detail progress cards)
         this.elCharRealmTuvi = document.getElementById('char-realm-tuvi');
         this.elCharRealmBody = document.getElementById('char-realm-body');
         this.elCharRealmSoul = document.getElementById('char-realm-soul');
@@ -92,6 +102,12 @@ export class CharacterScreen {
             this.elCharHp.textContent = `${Math.floor(hp)} / ${Math.floor(maxHp)}`;
         }
         
+        if (this.elCharHpBar) {
+            const hp = state.player.hp || 0;
+            const maxHp = state.player.maxHp || 100;
+            this.elCharHpBar.style.width = `${Math.min(100, (hp / maxHp) * 100)}%`;
+        }
+        
         if (this.elCharAtk) {
             const base = Math.floor(state.player.baseStats.atk || 0);
             const bonus = Math.floor(state.player.bonusStats.atk || 0);
@@ -116,13 +132,29 @@ export class CharacterScreen {
             this.elCharMana.textContent = `${Math.floor(mana)} / ${Math.floor(maxMana)}`;
         }
 
+        if (this.elCharManaBar) {
+            const mana = state.player.mana || 0;
+            const maxMana = state.player.maxMana || 50;
+            this.elCharManaBar.style.width = `${Math.min(100, (mana / maxMana) * 100)}%`;
+        }
+
+        if (this.elCharCritRate) {
+            const crit = state.player.advancedStats?.critRate || 0.05;
+            this.elCharCritRate.textContent = `${Math.round(crit * 100)}%`;
+        }
+
+        if (this.elCharDodge) {
+            const dodge = state.player.advancedStats?.dodge || 0;
+            this.elCharDodge.textContent = `${Math.round(dodge * 100)}%`;
+        }
+
         // Render Age & Lifespan combined
         const playerAge = state.player.age || 0;
         const maxAge = state.player.maxAge || 100;
         const remaining = Math.max(0, maxAge - Math.floor(playerAge));
         
         if (this.elCharAge) {
-            this.elCharAge.textContent = `${Math.floor(playerAge)} / ${maxAge}`;
+            this.elCharAge.textContent = `${Math.floor(playerAge)} / ${maxAge} tuổi`;
         }
         
         if (this.elCharRemainingAge) {
@@ -135,8 +167,15 @@ export class CharacterScreen {
         if (this.elCharStability) {
             const stability = state.player.stability || 100;
             this.elCharStability.textContent = `${Math.floor(stability)}%`;
-            this.elCharStability.className = stability > 90 ? 'text-green-400' : (stability < 40 ? 'text-red-500' : 'text-cultivation-gold');
+            this.elCharStability.className = stability > 90 ? 'text-green-400 font-bold' : (stability < 40 ? 'text-red-500 font-bold' : 'text-cultivation-gold font-bold');
         }
+
+        if (this.elCharBreakthroughRate) {
+            const btRate = state.player.getBreakthroughSuccessRate('tuvi');
+            this.elCharBreakthroughRate.textContent = `${btRate}%`;
+            this.elCharBreakthroughRate.className = btRate > 80 ? 'text-green-400 font-bold' : (btRate < 45 ? 'text-red-500 font-bold animate-pulse' : 'text-cyan-400 font-bold');
+        }
+
         if (this.elCharComprehension) {
             const tier = state.player.getComprehensionTier();
             this.elCharComprehension.innerHTML = `
@@ -159,6 +198,17 @@ export class CharacterScreen {
         const bodyRealm = state.player.getCurrentRealm('body');
         const soulRealm = state.player.getCurrentRealm('soul');
 
+        // Main Realm Bar
+        if (this.elCharRealmName) {
+            this.elCharRealmName.textContent = tuviRealm.name;
+        }
+        if (this.elCharExpDetails) {
+            this.elCharExpDetails.textContent = `${Math.floor(state.player.tuVi || 0).toLocaleString()} / ${tuviRealm.expRequired.toLocaleString()}`;
+        }
+        if (this.elCharRealmExpBar) {
+            this.elCharRealmExpBar.style.width = `${Math.min(100, (state.player.tuVi / tuviRealm.expRequired) * 100)}%`;
+        }
+
         if (this.elCharRealmTuvi) this.elCharRealmTuvi.textContent = tuviRealm.name;
         if (this.elCharRealmBody) this.elCharRealmBody.textContent = bodyRealm.name;
         if (this.elCharRealmSoul) this.elCharRealmSoul.textContent = soulRealm.name;
@@ -174,7 +224,8 @@ export class CharacterScreen {
         // Race Info
         if (this.elCharRace) {
             const raceInfo = RACE_DATA[state.player.race] || RACE_DATA.HUMAN;
-            this.elCharRace.textContent = raceInfo.name;
+            const genderLabel = getGenderLabel(state.player.gender);
+            this.elCharRace.textContent = `${raceInfo.name} (${genderLabel})`;
             this.elCharRace.className = `text-xs font-bold race-${state.player.race.toLowerCase()}`;
         }
         
