@@ -718,7 +718,7 @@ export class UISystem {
         const glowClass = type === 'tuvi' ? 'pulse-glow-tuvi' : (type === 'body' ? 'pulse-glow-body' : 'pulse-glow-soul');
 
         // Number of particles
-        const count = state.player.isSecluded ? 6 : 14;
+        const count = state.player.isSecluded ? 8 : 20;
 
         // Spiritual gathering vacuum effect
         for (let i = 0; i < count; i++) {
@@ -728,10 +728,11 @@ export class UISystem {
             p.style.height = '6px';
             p.style.backgroundColor = color;
             p.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}`;
+            p.style.willChange = 'transform, opacity';
 
-            // Spawn at random angle along a circle outside the portrait
-            const angle = Math.random() * Math.PI * 2;
-            const distance = 100 + Math.random() * 60; // 100px - 160px away
+            // Spawn evenly distributed along a circle outside the portrait with a tiny random jitter
+            const angle = (i / count) * Math.PI * 2 + (Math.random() * 0.15 - 0.075);
+            const distance = 110 + Math.random() * 70; // 110px - 180px away (just outside avatar circle)
             const spawnX = centerX + Math.cos(angle) * distance;
             const spawnY = centerY + Math.sin(angle) * distance;
 
@@ -744,10 +745,11 @@ export class UISystem {
             gsap.to(p, {
                 x: centerX - spawnX,
                 y: centerY - spawnY,
-                scale: 0.3,
-                opacity: 0.4,
-                duration: 0.4 + Math.random() * 0.35,
+                scale: 0.2,
+                opacity: 0.3,
+                duration: 0.45 + Math.random() * 0.3,
                 ease: "power2.in",
+                force3D: true,
                 onComplete: () => {
                     p.remove();
                     // When first particles hit the center, trigger the portrait glow pulse
@@ -1705,7 +1707,7 @@ export class UISystem {
             'Quang': { color: '#FDE68A', name: 'Quang' },
             'Ám': { color: '#312E81', name: 'Ám' }
         };
-        const sizeMult = 0.5 + Math.random() * 0.45; // 0.5 to 0.95
+        const sizeMult = 0.85 + Math.random() * 0.35; // 0.85 to 1.2 (Bubble size range ~39px to ~55px)
         allowedBubbles.push({ ...ELEMENT_CONFIGS[randomElName], rawName: randomElName, type: 'tuvi', sizeMult });
 
         const cfg = allowedBubbles[0];
@@ -1733,7 +1735,7 @@ export class UISystem {
 
         bubble.innerHTML = `
             <div class="qi-bubble-core" style="--element-color: ${cfg.color}"></div>
-            <span class="text-[7.5px] text-white/95 font-bold uppercase tracking-[0.2em] mt-1 select-none font-ancient text-center leading-none">${cfg.name}</span>
+            <span class="text-[8px] text-white/95 font-bold uppercase tracking-wider mt-1 select-none font-ancient text-center leading-none">${cfg.name}</span>
         `;
 
         const handlePop = (e) => {
@@ -1950,7 +1952,7 @@ export class UISystem {
             ...ELEMENT_CONFIGS[randomElName] || ELEMENT_CONFIGS['Mộc'],
             rawName: randomElName,
             type: 'tuvi',
-            sizeMult: 0.5 + Math.random() * 0.4
+            sizeMult: 0.85 + Math.random() * 0.35 // 0.85 to 1.2
         };
 
         const bubble = document.createElement('div');
@@ -1969,7 +1971,7 @@ export class UISystem {
 
         bubble.innerHTML = `
             <div class="qi-bubble-core" style="--element-color: ${cfg.color}"></div>
-            <span class="text-[7.5px] text-white/95 font-bold uppercase tracking-[0.2em] mt-1 select-none font-ancient text-center leading-none">${cfg.name}</span>
+            <span class="text-[8px] text-white/95 font-bold uppercase tracking-wider mt-1 select-none font-ancient text-center leading-none">${cfg.name}</span>
         `;
 
         container.appendChild(bubble);
