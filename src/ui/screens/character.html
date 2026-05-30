@@ -177,18 +177,6 @@
         </div>
     </div>
 
-    <!-- Specialized Paths Section -->
-    <div class="bg-black/40 p-4 rounded-2xl border border-white/5 mb-6">
-        <h3
-            class="text-xs font-ancient text-qi-blue mb-4 uppercase tracking-widest border-b border-white/5 pb-2 flex justify-between items-center">
-            <span>Nhánh Tu Luyện</span>
-            <i class="ph ph-path text-qi-blue"></i>
-        </h3>
-        <div id="char-specialized-paths" class="space-y-3">
-            <!-- Dynamic Specialized Paths -->
-        </div>
-    </div>
-
     <!-- Active Techniques -->
     <div class="mb-4 grid grid-cols-1 gap-2">
         <div class="bg-black/40 p-3 rounded-2xl border border-qi-blue/20 flex items-center justify-between group cursor-pointer"
@@ -296,25 +284,8 @@
         </div>
 
         <div class="bg-black/40 p-4 rounded-2xl border border-white/5 space-y-6">
-            <!-- Party -->
-            <div class="space-y-3">
-                <h4 class="text-[9px] text-gray-500 uppercase tracking-widest border-b border-white/5 pb-1">
-                    Đồng Hành Tổ Đội</h4>
-                <div id="char-party-list" class="space-y-2">
-                    <div class="text-[9px] text-gray-600 italic">Chưa có đồng hành</div>
-                </div>
-            </div>
-
             <%- include('./src/ui/overlays/treasure.html') %>
 
-            <!-- Formations -->
-            <div class="space-y-3">
-                <h4 class="text-[9px] text-gray-500 uppercase tracking-widest border-b border-white/5 pb-1">
-                    Trận Pháp Kích Hoạt</h4>
-                <div id="active-formations-list" class="space-y-2">
-                    <div class="text-[9px] text-gray-600 italic">Chưa có trận pháp nào</div>
-                </div>
-            </div>
             <!-- System Actions -->
             <div class="mt-8 space-y-4">
                 <button id="btn-save-exit"
