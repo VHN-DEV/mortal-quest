@@ -420,9 +420,15 @@ export class Game {
 
         // Stamina, Mana, HP regen
         let regenMult = player.stability < 20 ? 0.2 : 1.0;
-        player.stamina = Math.min(player.maxStamina, player.stamina + 0.1 * delta * regenMult);
-        player.mana = Math.min(player.maxMana, player.mana + 0.05 * delta * regenMult);
-        player.hp = Math.min(player.maxHp, player.hp + 0.01 * player.maxHp * delta * regenMult);
+        if (player.isSecluded) {
+            player.stamina = Math.min(player.maxStamina, player.stamina + 0.1 * delta * regenMult);
+            player.mana = Math.min(player.maxMana, player.mana + 0.05 * player.maxMana * delta * regenMult);
+            player.hp = Math.min(player.maxHp, player.hp + 0.01 * player.maxHp * delta * regenMult);
+        } else {
+            player.stamina = Math.min(player.maxStamina, player.stamina + 0.01 * delta * regenMult);
+            player.mana = Math.min(player.maxMana, player.mana + 0.001 * player.maxMana * delta * regenMult);
+            player.hp = Math.min(player.maxHp, player.hp + 0.0002 * player.maxHp * delta * regenMult);
+        }
 
         // Advance time in O(1)
         if (state.systems.time) {

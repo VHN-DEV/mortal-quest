@@ -469,6 +469,12 @@ export class Player {
 
     update(delta, multiplier = 1.0) {
         this.lastUpdate = Date.now();
+        this.playTime = (this.playTime || 0) + delta;
+
+        // Skip passive ticking and regeneration entirely if the player is currently in combat!
+        if (typeof state !== 'undefined' && state.currentCombat) {
+            return;
+        }
 
         // 1. Calculate Stability & Heart Demon progression
         this.calculateStability();
@@ -542,9 +548,15 @@ export class Player {
         const finalHpRegenMult = regenMult * (this.hpRegenMult !== undefined ? this.hpRegenMult : 1.0);
         const finalManaRegenMult = regenMult * (this.manaRegenMult !== undefined ? this.manaRegenMult : 1.0);
 
-        this.stamina = Math.min(this.maxStamina, this.stamina + 0.1 * delta * regenMult);
-        this.mana = Math.min(this.maxMana, this.mana + 0.05 * delta * finalManaRegenMult);
-        this.hp = Math.min(this.maxHp, this.hp + 0.01 * this.maxHp * delta * finalHpRegenMult);
+        if (this.isSecluded) {
+            this.stamina = Math.min(this.maxStamina, this.stamina + 0.1 * delta * regenMult);
+            this.mana = Math.min(this.maxMana, this.mana + 0.05 * this.maxMana * delta * finalManaRegenMult);
+            this.hp = Math.min(this.maxHp, this.hp + 0.01 * this.maxHp * delta * finalHpRegenMult);
+        } else {
+            this.stamina = Math.min(this.maxStamina, this.stamina + 0.01 * delta * regenMult);
+            this.mana = Math.min(this.maxMana, this.mana + 0.001 * this.maxMana * delta * finalManaRegenMult);
+            this.hp = Math.min(this.maxHp, this.hp + 0.0002 * this.maxHp * delta * finalHpRegenMult);
+        }
 
         // 6b. Apply Periodic Status Effect Ticks (DOT & Lifespan drain)
         if (this.buffs) {

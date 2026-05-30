@@ -77,7 +77,7 @@ export class Enemy {
         const raceInfo = RACE_DATA[this.race] || RACE_DATA.HUMAN;
         const raceMults = raceInfo.statMult;
         
-        const baseMultiplier = Math.pow(1.4, this.realmId - 1) * this.statMult;
+        const baseMultiplier = Math.pow(1.8, this.realmId - 1) * this.statMult;
         const variance = 0.9 + Math.random() * 0.2;
         
         // Keep HP & Mana percentage
