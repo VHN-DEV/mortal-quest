@@ -4,7 +4,7 @@
 
     <!-- Identity Header Card (Top Meta Card) -->
     <div
-        class="grid grid-cols-3 gap-3 mb-6 bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-4 text-center backdrop-blur-md relative overflow-hidden shadow-lg shadow-black/20">
+        class="shrink-0 grid grid-cols-3 gap-3 mb-6 bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-4 text-center backdrop-blur-md relative overflow-hidden shadow-lg shadow-black/20">
         <div
             class="absolute -top-10 -right-10 w-24 h-24 bg-cultivation-gold/5 rounded-full blur-2xl pointer-events-none">
         </div>
@@ -47,7 +47,7 @@
 
     <!-- Active Status Effects Panel (Premium Deck) -->
     <div id="char-status-effects-panel"
-        class="hidden flex flex-col p-4 mb-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md relative overflow-hidden shadow-md shadow-black/10">
+        class="hidden shrink-0 flex flex-col p-4 mb-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md relative overflow-hidden shadow-md shadow-black/10">
         <div class="absolute -top-10 -left-10 w-24 h-24 bg-qi-blue/5 rounded-full blur-2xl pointer-events-none"></div>
         <h3
             class="text-xs font-ancient text-cultivation-gold mb-3 uppercase tracking-widest flex items-center gap-1.5 font-bold">
@@ -406,10 +406,6 @@
             </div>
         </div>
 
-        <!-- Treasure Overlay Include -->
-        <div class="bg-black/40 p-4 rounded-2xl border border-white/5 space-y-6 shadow-inner">
-            <%- include('./src/ui/overlays/treasure.html') %>
-        </div>
     </div>
 
     <!-- Global System Actions (Sleek Save & Exit Button) -->
