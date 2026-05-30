@@ -154,7 +154,7 @@ export class Game {
             }
         }, true);
 
-        setInterval(async () => await this.saveGame(), 30000);
+        this.autoSaveInterval = setInterval(async () => await this.saveGame(), 30000);
     }
 
     initGlobalEvents() {
@@ -295,7 +295,7 @@ export class Game {
             if (savedScreen && savedScreen !== 'screen-start' && savedScreen !== 'screen-creation') {
                 const btnId = Object.keys(navMappings).find(key => navMappings[key] === savedScreen);
                 const btn = document.getElementById(btnId);
-                if (btn) {
+                if (btn && typeof btn.onclick === 'function') {
                     await btn.onclick();
 
                     // If we are on adventure, ensure the sub-view is also restored
@@ -309,7 +309,7 @@ export class Game {
 
             // Default to main screen if no valid saved screen
             const mainBtn = document.getElementById('nav-main');
-            if (mainBtn) await mainBtn.onclick();
+            if (mainBtn && typeof mainBtn.onclick === 'function') await mainBtn.onclick();
         }
 
         this.initOverlayButtons();
@@ -501,7 +501,10 @@ export class Game {
         if (state.systems.fate) state.systems.fate.checkTribulation();
         if (state.systems.treasure) state.systems.treasure.update(delta);
 
-        if (state.player.hp <= 0) window.game.handleDeath();
+        if (state.player.hp <= 0 && !this._handlingDeath) {
+            this._handlingDeath = true;
+            window.game.handleDeath();
+        }
     }
 
     render() {
@@ -603,6 +606,15 @@ export class Game {
     }
 
     async loadGame(savedData) {
+        // Clear auto-save interval to prevent double-save when loading a new slot
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+            this.autoSaveInterval = null;
+        }
+        // Reset death guard flags for the new session
+        this._handlingDeath = false;
+        state.isDead = false;
+
         state.player = new Player();
         state.player.load(savedData);
 
@@ -640,6 +652,11 @@ export class Game {
 
         await SaveSystem.setLastSlot(SaveSystem.currentSlot);
 
+        // Restart auto-save interval for the new session (was cleared at top of loadGame)
+        if (!this.autoSaveInterval) {
+            this.autoSaveInterval = setInterval(async () => await this.saveGame(), 30000);
+        }
+
         audioManager.playBgm('main');
         this.refreshUI();
     }
@@ -657,6 +674,10 @@ export class Game {
     async saveAndExit() {
         if (!state.player) return;
         await this.saveGame();
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+            this.autoSaveInterval = null;
+        }
         if (state.autoCultivateInterval) {
             clearInterval(state.autoCultivateInterval);
             state.autoCultivateInterval = null;
@@ -1624,6 +1645,7 @@ export class Game {
     handleDeath(reason = "Ngươi đã vẫn lạc...") {
         if (state.isDead) return;
         state.isDead = true;
+        this._handlingDeath = false; // Reset guard for next session
 
         const source = this.getRebirthProtectionSource();
         if (source && this.consumeRebirthProtection(source)) {
@@ -1645,6 +1667,12 @@ export class Game {
     }
 
     async restartFromDeath(reason = null) {
+        // Stop auto-save — player is dead, no valid state to save
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+            this.autoSaveInterval = null;
+        }
+
         const quotes = [
             "Tu vi cả đời hóa thành hư không, mây khói tan biến...",
             "Trăm năm tu đạo, một sớm thành không.",

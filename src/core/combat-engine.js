@@ -310,12 +310,13 @@ export class CombatEngine {
                 msg = `${this.enemy.name} bộc phát linh lực toàn thân, oanh kích về phía ngươi!`;
                 damage = Math.floor(this.enemy.atk * 1.8);
                 break;
-            case 'HEAL_TECHNIQUE':
+            case 'HEAL_TECHNIQUE': {
                 const heal = Math.floor(this.enemy.maxHp * 0.25);
                 this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + heal);
                 msg = `${this.enemy.name} thi triển mật thuật trị thương, khí sắc khôi phục!`;
                 damage = 0;
                 break;
+            }
             default:
                 msg = `${this.enemy.name} thi triển kỹ năng đặc thù!`;
         }

@@ -168,14 +168,14 @@ const showLocationDetailPopup = (worldId, locId) => {
     const elMinRealm = document.getElementById('loc-detail-min-realm');
     if (elMinRealm) {
         if (loc.maxRealm !== undefined) {
-            const minRealmName = getRealmById(loc.minRealm).name;
-            const maxRealmName = getRealmById(loc.maxRealm).name;
+            const minRealmName = getRealmById(loc.minRealm)?.name ?? 'Không rõ';
+            const maxRealmName = getRealmById(loc.maxRealm)?.name ?? 'Không rõ';
             elMinRealm.textContent = `${minRealmName} - ${maxRealmName}`;
 
             const satisfies = state.player.realmId >= loc.minRealm && state.player.realmId <= loc.maxRealm;
             elMinRealm.className = `text-[10px] font-ancient uppercase tracking-wider block ${satisfies ? 'text-cultivation-gold' : 'text-red-500'}`;
         } else {
-            const realmName = getRealmById(loc.minRealm).name;
+            const realmName = getRealmById(loc.minRealm)?.name ?? 'Không rõ';
             elMinRealm.textContent = realmName;
 
             const satisfies = state.player.realmId >= loc.minRealm;

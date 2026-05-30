@@ -138,7 +138,17 @@ export const SaveSystem = {
     clearAll: async () => {
         try {
             await localforage.clear();
-            localStorage.clear();
+            // Only remove game-specific localStorage keys to avoid wiping Capacitor Preferences
+            // and other browser settings (audio, etc.)
+            const gameKeyPrefixes = ['mortal_quest_', 'MortalQuest'];
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && gameKeyPrefixes.some(prefix => key.startsWith(prefix))) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
         } catch (e) {
             console.error('Lỗi khi xóa sạch dữ liệu:', e);
         }

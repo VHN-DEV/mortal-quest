@@ -611,13 +611,17 @@ export class Player {
             if (!entry) return;
 
             // Quality penalty: higher-grade techniques are harder to master passively
-            const { getTechniqueById } = window._techniqueDataCache || {};
             let qualityPenalty = 1.0;
-            // We can't easily import here but we know quality strings
-            const techEntry = (this.learnedTechniques || []).find(t => t.id === tid);
+            if (typeof getTechniqueById === 'function') {
+                const techData = getTechniqueById(tid);
+                if (techData && techData.grade) {
+                    const gradePenalties = { 'ha': 1.0, 'trung': 0.8, 'thuong': 0.6, 'cuc': 0.4, 'thien': 0.2 };
+                    qualityPenalty = gradePenalties[techData.grade] || 1.0;
+                }
+            }
 
             // Calculate final rate
-            const rate = baseRate * compMult * masteryBuffMult;
+            const rate = baseRate * compMult * masteryBuffMult * qualityPenalty;
             const gain = rate * delta;
 
             entry.mastery = (entry.mastery || 0) + gain;
@@ -1558,6 +1562,12 @@ export class Player {
             
             let mult = isRecognized ? 1.0 : 0.3; // 70% penalty if not recognized
 
+            // Durability penalty: apply IMMEDIATELY so it affects ALL stats from this item
+            if (this.equipmentMetadata?.[slot]?.durability !== undefined &&
+                this.equipmentMetadata[slot].durability < 20) {
+                mult *= 0.5; // 50% penalty for broken artifacts — affects atk/def/pierce/extra etc.
+            }
+
             if (item.stats.atk) this.bonusStats.atk += item.stats.atk * mult;
             if (item.stats.def) this.bonusStats.def += item.stats.def * mult;
             if (item.stats.spd) this.bonusStats.spd += item.stats.spd * mult;
@@ -1582,18 +1592,14 @@ export class Player {
             // Apply EXTRA STATS from metadata
             if (this.equipmentMetadata && this.equipmentMetadata[slot]) {
                 const meta = this.equipmentMetadata[slot];
+
                 if (meta.extraStat) {
                     const { type, value } = meta.extraStat;
                     if (this.advancedStats.hasOwnProperty(type)) {
-                        this.advancedStats[type] += value;
+                        this.advancedStats[type] += value * mult;
                     } else if (this.bonusStats.hasOwnProperty(type)) {
-                        this.bonusStats[type] += value;
+                        this.bonusStats[type] += value * mult;
                     }
-                }
-                
-                // Durability penalty
-                if (meta.durability < 20) {
-                    mult *= 0.5; // Additional 50% penalty if artifact is broken
                 }
             }
         });
@@ -1716,8 +1722,9 @@ export class Player {
         }
         
         // Add Energy (Qi) System Bonuses
-        if (typeof energySystem !== 'undefined' && energySystem) {
-            const energyBonuses = energySystem.getStatBonuses();
+        const energySystemRef = state?.systems?.energy;
+        if (energySystemRef && typeof energySystemRef.getStatBonuses === 'function') {
+            const energyBonuses = energySystemRef.getStatBonuses();
             this.atk += energyBonuses.atk || 0;
             this.def += energyBonuses.def || 0;
             this.maxHp += energyBonuses.hp || 0;
@@ -1752,7 +1759,8 @@ export class Player {
             this.cultivationPath = 'Ma Tu';
             this.atk = Math.floor(this.atk * 1.25);
             this.advancedStats.lifeSteal += 0.25;
-            this.karma -= 2; // Suffer minor demonic karma decrease over time/recalculations
+            // NOTE: karma drain was intentionally removed from calculateStats — it ran every second.
+            // Karma penalty for Ma Tu should be applied ONCE when equipping the technique, not per-tick.
         }
         // Độc Tu (Poison Cultivator)
         else if (this.mainTechniqueId === 'van_doc_hoa_cot_quyet') {

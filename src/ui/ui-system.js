@@ -951,75 +951,75 @@ export class UISystem {
             'Danh Khí': { color: '#f87171', label: 'DANH KHÍ', sfx: 'thunder', shake: 'high', flash: true, premium: true },
         };
 
-        return new Promise(async (resolve) => {
-            overlay.classList.remove('hidden');
-            overlay.classList.add('flex', 'opacity-100');
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex', 'opacity-100');
 
-            for (const item of lootItems) {
-                const config = rarityConfigs[item.quality] || rarityConfigs['Phàm Khí'];
+        for (const item of lootItems) {
+            const config = rarityConfigs[item.quality] || rarityConfigs['Phàm Khí'];
 
-                // Clear previous item
-                container.innerHTML = '';
-                hint.classList.add('opacity-0');
+            // Clear previous item
+            container.innerHTML = '';
+            hint.classList.add('opacity-0');
 
-                // Set color for magic circle
-                magicCircle.style.color = config.color;
-                magicCircle.style.opacity = '0.4';
+            // Set color for magic circle
+            magicCircle.style.color = config.color;
+            magicCircle.style.opacity = '0.4';
 
-                const itemHtml = `
-                    <div class="loot-item-card flex flex-col items-center opacity-0">
-                        <div class="relative w-32 h-32 mb-8 group">
-                            <div class="loot-item-glow absolute inset-[-40px] rounded-full blur-3xl opacity-60" style="background: radial-gradient(circle, ${config.color} 0%, transparent 70%)"></div>
-                            <img src="${item.image}" class="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_${config.color}]">
-                            <div class="absolute inset-0 border-2 border-${item.quality.toLowerCase()} rounded-2xl opacity-20 group-hover:opacity-100 transition-opacity"></div>
-                        </div>
-                        <div class="text-center space-y-2">
-                            <h3 class="text-4xl font-charm text-glow tracking-wider mb-2 ${config.rainbow ? 'quality-tien-khi' : ''}" style="color: ${config.rainbow ? 'transparent' : config.color}; text-shadow: 0 0 20px ${config.rainbow ? '#ffffff66' : config.color + '66'}">${item.name}</h3>
-                            <div class="flex items-center justify-center space-x-4">
-                                <div class="h-px w-8 bg-gradient-to-r from-transparent to-white/20"></div>
-                                <span class="text-[10px] font-bold tracking-[0.4em] uppercase" style="color: ${config.color}">${config.label}</span>
-                                <div class="h-px w-8 bg-gradient-to-l from-transparent to-white/20"></div>
-                            </div>
-                            <p class="text-xs text-white/40 font-ancient italic mt-4 max-w-[280px] leading-relaxed">"${item.description || 'Vật phẩm thần bí ẩn chứa linh lực dồi dào.'}"</p>
-                        </div>
+            const itemHtml = `
+                <div class="loot-item-card flex flex-col items-center opacity-0">
+                    <div class="relative w-32 h-32 mb-8 group">
+                        <div class="loot-item-glow absolute inset-[-40px] rounded-full blur-3xl opacity-60" style="background: radial-gradient(circle, ${config.color} 0%, transparent 70%)"></div>
+                        <img src="${item.image}" class="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_${config.color}]">
+                        <div class="absolute inset-0 border-2 border-${item.quality.toLowerCase()} rounded-2xl opacity-20 group-hover:opacity-100 transition-opacity"></div>
                     </div>
-                `;
-                container.innerHTML = itemHtml;
-                const card = container.querySelector('.loot-item-card');
+                    <div class="text-center space-y-2">
+                        <h3 class="text-4xl font-charm text-glow tracking-wider mb-2 ${config.rainbow ? 'quality-tien-khi' : ''}" style="color: ${config.rainbow ? 'transparent' : config.color}; text-shadow: 0 0 20px ${config.rainbow ? '#ffffff66' : config.color + '66'}">${item.name}</h3>
+                        <div class="flex items-center justify-center space-x-4">
+                            <div class="h-px w-8 bg-gradient-to-r from-transparent to-white/20"></div>
+                            <span class="text-[10px] font-bold tracking-[0.4em] uppercase" style="color: ${config.color}">${config.label}</span>
+                            <div class="h-px w-8 bg-gradient-to-l from-transparent to-white/20"></div>
+                        </div>
+                        <p class="text-xs text-white/40 font-ancient italic mt-4 max-w-[280px] leading-relaxed">"${item.description || 'Vật phẩm thần bí ẩn chứa linh lực dồi dào.'}"</p>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = itemHtml;
+            const card = container.querySelector('.loot-item-card');
 
-                // Play Sound
-                audioManager.playSfx(config.sfx);
+            // Play Sound
+            audioManager.playSfx(config.sfx);
 
-                // Effects
-                if (config.shake) this.screenShake(config.shake);
-                if (config.flash) {
-                    const flash = document.createElement('div');
-                    flash.className = 'rarity-flash fixed inset-0 z-[2000] bg-white opacity-0 pointer-events-none';
-                    document.body.appendChild(flash);
-                    gsap.to(flash, { opacity: 0.8, duration: 0.1, yoyo: true, repeat: 1, onComplete: () => flash.remove() });
-                }
-
-                // Animation
-                await gsap.timeline()
-                    .fromTo(card, { scale: 0.5, opacity: 0, y: 50 }, { scale: 1, opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" })
-                    .to(hint, { opacity: 1, duration: 1, ease: "power1.inOut" }, "-=0.2");
-
-                // Wait for click
-                await new Promise(r => {
-                    const nextHandler = () => {
-                        overlay.removeEventListener('click', nextHandler);
-                        r();
-                    };
-                    overlay.addEventListener('click', nextHandler);
-                });
-
-                // Animate out before next item
-                if (lootItems.length > 1 && lootItems.indexOf(item) < lootItems.length - 1) {
-                    await gsap.to(card, { scale: 1.2, opacity: 0, duration: 0.4, ease: "power2.in" });
-                }
+            // Effects
+            if (config.shake) this.screenShake(config.shake);
+            if (config.flash) {
+                const flash = document.createElement('div');
+                flash.className = 'rarity-flash fixed inset-0 z-[2000] bg-white opacity-0 pointer-events-none';
+                document.body.appendChild(flash);
+                gsap.to(flash, { opacity: 0.8, duration: 0.1, yoyo: true, repeat: 1, onComplete: () => flash.remove() });
             }
 
-            // Close overlay
+            // Animation
+            await gsap.timeline()
+                .fromTo(card, { scale: 0.5, opacity: 0, y: 50 }, { scale: 1, opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" })
+                .to(hint, { opacity: 1, duration: 1, ease: "power1.inOut" }, "-=0.2");
+
+            // Wait for click
+            await new Promise(r => {
+                const nextHandler = () => {
+                    overlay.removeEventListener('click', nextHandler);
+                    r();
+                };
+                overlay.addEventListener('click', nextHandler);
+            });
+
+            // Animate out before next item
+            if (lootItems.length > 1 && lootItems.indexOf(item) < lootItems.length - 1) {
+                await gsap.to(card, { scale: 1.2, opacity: 0, duration: 0.4, ease: "power2.in" });
+            }
+        }
+
+        // Close overlay
+        await new Promise(r => {
             gsap.to(overlay, {
                 opacity: 0,
                 duration: 0.5,
@@ -1027,7 +1027,7 @@ export class UISystem {
                     overlay.classList.add('hidden');
                     overlay.classList.remove('flex');
                     container.innerHTML = '';
-                    resolve();
+                    r();
                 }
             });
         });
@@ -1617,11 +1617,20 @@ export class UISystem {
                 setTimeout(() => this.spawnQiBubble(), 800);
                 setTimeout(() => this.spawnQiBubble(), 2000);
 
-                this.qiBubbleInterval = setInterval(() => {
-                    if (this.currentScreenId === 'screen-main') {
-                        this.spawnQiBubble();
-                    }
-                }, 4000 + Math.random() * 2000);
+                // Use dynamic rescheduling so each interval is independently random
+                const scheduleNext = () => {
+                    // Store as a timeout ID so stopQiBubbleSystem can clear it
+                    this.qiBubbleInterval = setTimeout(() => {
+                        if (this.currentScreenId === 'screen-main') {
+                            this.spawnQiBubble();
+                        }
+                        // Only reschedule if system should still run
+                        if (this.qiBubbleInterval !== null) {
+                            scheduleNext();
+                        }
+                    }, 4000 + Math.random() * 2000);
+                };
+                scheduleNext();
             }
         } else {
             if (this.qiBubbleInterval) {
@@ -1632,7 +1641,7 @@ export class UISystem {
 
     stopQiBubbleSystem() {
         if (this.qiBubbleInterval) {
-            clearInterval(this.qiBubbleInterval);
+            clearTimeout(this.qiBubbleInterval);
             this.qiBubbleInterval = null;
         }
         const container = document.getElementById('qi-bubbles-container');
