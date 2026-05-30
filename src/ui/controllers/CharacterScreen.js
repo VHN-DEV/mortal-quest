@@ -78,6 +78,10 @@ export class CharacterScreen {
         this.elCharPartyList = document.getElementById('char-party-list');
         this.elFormationList = document.getElementById('active-formations-list');
         this.elSpecializedPaths = document.getElementById('char-specialized-paths');
+
+        // Active Status Panels
+        this.elCharStatusPanel = document.getElementById('char-status-effects-panel');
+        this.elCharStatusList = document.getElementById('char-status-effects-list');
     }
     
     initEvents() {
@@ -365,6 +369,9 @@ export class CharacterScreen {
         
         // Specialized Paths
         this.renderSpecializedPaths();
+        
+        // Active Status Effects
+        this.renderStatusEffects();
     }
 
     renderSpecializedPaths() {
@@ -505,5 +512,65 @@ export class CharacterScreen {
                 </div>
             `).join('');
         }
+    }
+
+    renderStatusEffects() {
+        if (!this.elCharStatusPanel || !this.elCharStatusList) return;
+
+        const buffs = state.player.buffs || [];
+        if (buffs.length === 0) {
+            this.elCharStatusPanel.classList.add('hidden');
+            return;
+        }
+
+        this.elCharStatusPanel.classList.remove('hidden');
+
+        const THEME_MAP = {
+            'Buff': { border: 'border-cyan-500/30', bg: 'bg-cyan-500/10', text: 'text-cyan-400', shadow: 'shadow-[0_0_8px_rgba(6,182,212,0.2)]' },
+            'Debuff': { border: 'border-red-500/30', bg: 'bg-red-500/10', text: 'text-red-400', shadow: 'shadow-[0_0_8px_rgba(239,68,68,0.2)]' },
+            'Thể Chất': { border: 'border-yellow-600/30', bg: 'bg-yellow-600/10', text: 'text-yellow-500', shadow: 'shadow-[0_0_8px_rgba(217,119,6,0.2)]' },
+            'Thần Hồn': { border: 'border-purple-500/30', bg: 'bg-purple-500/10', text: 'text-purple-400', shadow: 'shadow-[0_0_8px_rgba(168,85,247,0.2)]' },
+            'Nguyên Khí': { border: 'border-orange-500/30', bg: 'bg-orange-500/10', text: 'text-orange-400', shadow: 'shadow-[0_0_8px_rgba(249,115,22,0.2)]' },
+            'Ngũ Hành': { border: 'border-green-500/30', bg: 'bg-green-500/10', text: 'text-green-400', shadow: 'shadow-[0_0_8px_rgba(34,197,94,0.2)]' },
+            'Đặc Thù': { border: 'border-amber-500/30', bg: 'bg-amber-500/10', text: 'text-amber-400', shadow: 'shadow-[0_0_8px_rgba(245,158,11,0.2)]' },
+            'Thiên Kiếp': { border: 'border-purple-600/40 bg-purple-950/20 text-purple-300 animate-pulse border-double', shadow: 'shadow-[0_0_12px_rgba(147,51,234,0.4)]' }
+        };
+
+        const now = Date.now();
+        this.elCharStatusList.innerHTML = buffs.map(b => {
+            const theme = THEME_MAP[b.category] || { border: 'border-white/10', bg: 'bg-white/5', text: 'text-white', shadow: 'none' };
+            const stacksLabel = b.stacks > 1 ? `<span class="ml-1 px-1 bg-black/60 rounded text-[7px] text-white font-bold font-mono">x${b.stacks}</span>` : '';
+            
+            let durLabel = 'Vô Hạn';
+            if (b.duration !== undefined && b.duration !== null && b.duration !== Infinity) {
+                const mins = Math.floor(b.duration / 60);
+                const secs = Math.floor(b.duration % 60);
+                durLabel = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+            }
+
+            let details = `[Trạng Thái: ${b.name}]\nPhân Loại: ${b.category} (${b.type === 'buff' ? 'Cát Lợi' : 'Bất Lợi'})\n`;
+            details += `Hiệu quả: ${b.desc}\n`;
+            if (b.effects) {
+                details += `Thuộc tính tăng/giảm:\n`;
+                Object.entries(b.effects).forEach(([stat, val]) => {
+                    const sign = val > 0 ? '+' : '';
+                    const percent = Math.round(val * 100);
+                    details += `  - ${stat.toUpperCase()}: ${sign}${percent}%\n`;
+                });
+            }
+            if (b.curedBy) {
+                details += `Cách giải: ${b.curedBy.join(', ')}\n`;
+            }
+            details += `Thời gian còn lại: ${durLabel}`;
+
+            return `
+                <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border ${theme.border} ${theme.bg} ${theme.text} ${theme.shadow} text-[9px] font-ancient transition-all hover:scale-105 select-none cursor-help relative group" title="${details}">
+                    <span class="text-xs">${b.icon || '✨'}</span>
+                    <span class="font-bold tracking-wide">${b.name}</span>
+                    ${stacksLabel}
+                    <span class="text-[7.5px] opacity-60 ml-1.5 font-mono border-l border-white/10 pl-1.5">${durLabel}</span>
+                </div>
+            `;
+        }).join('');
     }
 }

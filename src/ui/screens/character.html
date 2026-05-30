@@ -30,6 +30,17 @@
         </div>
     </div>
 
+    <!-- Active Status Effects Panel (Premium Deck) -->
+    <div id="char-status-effects-panel" class="hidden flex flex-col p-4 mb-4 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md relative overflow-hidden">
+        <div class="absolute -top-10 -left-10 w-24 h-24 bg-qi-blue/5 rounded-full blur-2xl pointer-events-none"></div>
+        <h3 class="text-xs font-ancient text-cultivation-gold mb-3 uppercase tracking-widest flex items-center gap-1.5 font-bold">
+            <i class="ph ph-heartbeat text-sm animate-pulse"></i> Đang Hoạt Động Trạng Thái
+        </h3>
+        <div id="char-status-effects-list" class="flex flex-wrap gap-2.5">
+            <!-- Dynamic badges populated via CharacterScreen.js -->
+        </div>
+    </div>
+
     <div class="grid grid-cols-2 gap-6 mb-6">
         <!-- Avatar & Equipment Slots -->
         <div class="relative aspect-[3/4] bg-white/5 rounded-2xl border border-white/10">

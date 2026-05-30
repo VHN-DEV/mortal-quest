@@ -11,6 +11,7 @@ import { getLocationById, WORLDS } from '../configs/map-data.js';
 import { getSectById } from '../configs/sect-data.js';
 import { CULTIVATION_PATHS } from '../configs/cultivation-paths.js';
 import { getTechniqueTypeSlug } from '../configs/display-mappers.js';
+import { getStatusEffectById, STATUS_EFFECT_TEMPLATES } from '../configs/status-effect-data.js';
 
 export class Player {
     constructor() {
@@ -538,9 +539,33 @@ export class Player {
         let regenMult = 1.0;
         if (this.stability < 20) regenMult = 0.2; // Heart Demon suppresses regen
 
+        const finalHpRegenMult = regenMult * (this.hpRegenMult !== undefined ? this.hpRegenMult : 1.0);
+        const finalManaRegenMult = regenMult * (this.manaRegenMult !== undefined ? this.manaRegenMult : 1.0);
+
         this.stamina = Math.min(this.maxStamina, this.stamina + 0.1 * delta * regenMult);
-        this.mana = Math.min(this.maxMana, this.mana + 0.05 * delta * regenMult);
-        this.hp = Math.min(this.maxHp, this.hp + 0.01 * this.maxHp * delta * regenMult);
+        this.mana = Math.min(this.maxMana, this.mana + 0.05 * delta * finalManaRegenMult);
+        this.hp = Math.min(this.maxHp, this.hp + 0.01 * this.maxHp * delta * finalHpRegenMult);
+
+        // 6b. Apply Periodic Status Effect Ticks (DOT & Lifespan drain)
+        if (this.buffs) {
+            this.buffs.forEach(b => {
+                if (b.effects) {
+                    const stacks = b.stacks || 1;
+                    if (b.effects.dot_hp) {
+                        const hpLoss = Math.abs(b.effects.dot_hp) * this.maxHp * delta * stacks;
+                        this.hp = Math.max(1, this.hp - hpLoss);
+                    }
+                    if (b.effects.dot_mana) {
+                        const manaLoss = Math.abs(b.effects.dot_mana) * this.maxMana * delta * stacks;
+                        this.mana = Math.max(0, this.mana - manaLoss);
+                    }
+                    if (b.effects.burn_lifespan) {
+                        const ageInc = b.effects.burn_lifespan * delta * stacks;
+                        this.age = Math.min(this.maxAge || 200, this.age + ageInc);
+                    }
+                }
+            });
+        }
 
         // Update Buffs
         this.updateBuffs(delta);
@@ -716,7 +741,21 @@ export class Player {
         
         const now = Date.now();
         const beforeCount = this.buffs.length;
-        this.buffs = this.buffs.filter(b => b.endTime > now);
+        
+        this.buffs.forEach(b => {
+            if (b.duration !== undefined && b.duration !== null && b.duration !== Infinity) {
+                b.duration = Math.max(0, b.duration - delta);
+                b.endTime = now + b.duration * 1000;
+            }
+        });
+
+        // Filter out expired status effects
+        this.buffs = this.buffs.filter(b => {
+            if (b.duration !== undefined) {
+                return b.duration > 0 || b.duration === Infinity;
+            }
+            return b.endTime > now;
+        });
         
         if (this.buffs.length !== beforeCount) {
             this.calculateStats();
@@ -724,11 +763,8 @@ export class Player {
     }
 
     addBuff(buff) {
-        // buff: { id, stat, value, duration (ms) }
+        // Legacy buff compatibility
         const endTime = Date.now() + (buff.duration || 0);
-        
-        // Remove existing same type buff if needed or stack?
-        // For now, replace if same id
         const index = this.buffs.findIndex(b => b.id === buff.id);
         if (index > -1) {
             this.buffs[index].endTime = endTime;
@@ -741,6 +777,59 @@ export class Player {
         }
         this.calculateStats();
     }
+
+    addStatusEffect(effectId, duration = null, source = "Chiến đấu") {
+        const config = getStatusEffectById(effectId);
+        if (!config) return;
+
+        const existingIndex = this.buffs.findIndex(b => b.id === effectId);
+        const finalDuration = duration !== null ? duration : config.duration;
+        const now = Date.now();
+        const endTime = finalDuration === Infinity ? Infinity : now + finalDuration * 1000;
+
+        if (existingIndex > -1) {
+            const effect = this.buffs[existingIndex];
+            effect.stacks = Math.min(config.maxStacks || 1, (effect.stacks || 1) + 1);
+            effect.duration = finalDuration;
+            effect.endTime = endTime;
+        } else {
+            this.buffs.push({
+                id: config.id,
+                name: config.name,
+                category: config.category,
+                type: config.type,
+                icon: config.icon,
+                desc: config.desc,
+                maxStacks: config.maxStacks || 1,
+                stacks: 1,
+                duration: finalDuration,
+                combatTurns: config.combatTurns,
+                isCureable: config.isCureable,
+                effects: config.effects,
+                source: source,
+                startTime: now,
+                endTime: endTime
+            });
+        }
+        this.calculateStats();
+    }
+
+    removeStatusEffect(effectId) {
+        const beforeCount = this.buffs.length;
+        this.buffs = this.buffs.filter(b => b.id !== effectId);
+        if (this.buffs.length !== beforeCount) {
+            this.calculateStats();
+        }
+    }
+
+    hasStatusEffect(effectId) {
+        return this.buffs.some(b => b.id === effectId);
+    }
+
+    getStatusEffect(effectId) {
+        return this.buffs.find(b => b.id === effectId) || null;
+    }
+
 
     // --- Fate Methods ---
     addReputation(amount) {
@@ -1134,6 +1223,17 @@ export class Player {
         if (this.specializedPaths?.buddhist?.realmId > 0) {
             baseRate += 10;
         }
+        
+        // Apply Status Effect breakthrough modifications
+        if (this.buffs) {
+            this.buffs.forEach(b => {
+                if (b.effects && b.effects.breakthrough_rate) {
+                    const stacks = b.stacks || 1;
+                    baseRate += b.effects.breakthrough_rate * 100 * stacks;
+                }
+            });
+        }
+
         baseRate = Math.max(5, Math.min(100, baseRate));
         
         const fatePenalty = window.game?.systems?.fate?.getBreakthroughPenalty() || 1.0;
@@ -1152,6 +1252,17 @@ export class Player {
             if (rateBonus) {
                 stability += rateBonus * 100;
             }
+
+            // Apply Status Effect breakthrough modifications
+            if (this.buffs) {
+                this.buffs.forEach(b => {
+                    if (b.effects && b.effects.breakthrough_rate) {
+                        const stacks = b.stacks || 1;
+                        stability += b.effects.breakthrough_rate * 100 * stacks;
+                    }
+                });
+            }
+
             stability = Math.min(100, stability);
             
             const mainPath = this.mainPath || 'orthodox';
@@ -1338,6 +1449,8 @@ export class Player {
         this.tuViPerSecond = 0;
         this.bodyExpPerSecond = 0;
         this.soulExpPerSecond = 0;
+        this.hpRegenMult = 1.0;
+        this.manaRegenMult = 1.0;
 
         // 0. Initialize BONUS & ADVANCED STATS
         this.bonusStats = {
@@ -1693,17 +1806,49 @@ export class Player {
             this.tuViPerSecond *= 1.05;
         }
 
-        // Apply Buffs to final stats
+        // Apply Buffs and Status Effects to final stats
         if (this.buffs) {
             this.buffs.forEach(b => {
-                if (b.stat === 'atk') this.atk *= b.value;
-                if (b.stat === 'def') this.def *= b.value;
-                if (b.stat === 'spd') this.spd *= b.value;
-                if (b.stat === 'maxHp') this.maxHp *= b.value;
-                if (b.stat === 'maxMana') this.maxMana *= b.value;
-                if (b.stat === 'tu_vi_speed') this.tuViPerSecond *= b.value;
-                if (b.stat === 'body_speed') this.bodyExpPerSecond *= b.value;
-                if (b.stat === 'soul_speed') this.soulExpPerSecond *= b.value;
+                // Legacy buff processing
+                if (b.stat) {
+                    if (b.stat === 'atk') this.atk *= b.value;
+                    else if (b.stat === 'def') this.def *= b.value;
+                    else if (b.stat === 'spd') this.spd *= b.value;
+                    else if (b.stat === 'maxHp') this.maxHp *= b.value;
+                    else if (b.stat === 'maxMana') this.maxMana *= b.value;
+                    else if (b.stat === 'tu_vi_speed') this.tuViPerSecond *= b.value;
+                    else if (b.stat === 'body_speed') this.bodyExpPerSecond *= b.value;
+                    else if (b.stat === 'soul_speed') this.soulExpPerSecond *= b.value;
+                    return;
+                }
+
+                // New Status Effect processing
+                if (b.effects) {
+                    const stacks = b.stacks || 1;
+                    Object.entries(b.effects).forEach(([statKey, modVal]) => {
+                        const mult = 1 + (modVal * stacks);
+                        if (statKey === 'atk') this.atk = Math.max(0, this.atk * mult);
+                        else if (statKey === 'def') this.def = Math.max(0, this.def * mult);
+                        else if (statKey === 'spd') this.spd = Math.max(1, this.spd * mult);
+                        else if (statKey === 'maxHp') this.maxHp = Math.max(1, this.maxHp * mult);
+                        else if (statKey === 'maxMana') this.maxMana = Math.max(1, this.maxMana * mult);
+                        else if (statKey === 'tu_vi_speed') this.tuViPerSecond = Math.max(0, this.tuViPerSecond * mult);
+                        else if (statKey === 'body_speed') this.bodyExpPerSecond = Math.max(0, this.bodyExpPerSecond * mult);
+                        else if (statKey === 'soul_speed') this.soulExpPerSecond = Math.max(0, this.soulExpPerSecond * mult);
+                        else if (statKey === 'hp_regen') this.hpRegenMult = Math.max(0, this.hpRegenMult * mult);
+                        else if (statKey === 'mana_regen') this.manaRegenMult = Math.max(0, this.manaRegenMult * mult);
+                        else if (statKey === 'critRate') {
+                            this.advancedStats.critRate = Math.max(0, this.advancedStats.critRate + modVal * stacks);
+                        }
+                        else if (statKey === 'dodge') {
+                            this.advancedStats.dodge = Math.max(0, this.advancedStats.dodge + modVal * stacks);
+                        }
+                        else if (statKey === 'divine_sense') {
+                            this.divineSense = Math.max(1, (this.divineSense || 50) * mult);
+                            this.advancedStats.perception = Math.max(1, this.advancedStats.perception * mult);
+                        }
+                    });
+                }
             });
         }
 
@@ -2243,7 +2388,28 @@ export class Player {
         let success = false;
         let msg = "";
 
-        if (item.effect) {
+        if (itemId === 'dan_giai_doc') {
+            const beforeCount = this.buffs.length;
+            this.buffs = this.buffs.filter(b => b.id !== 'hoa_doc' && b.id !== 'moc_doc' && !b.id.includes('doc'));
+            success = true;
+            if (this.buffs.length < beforeCount) {
+                msg = `Sử dụng ${item.name}! Độc tố chướng khí tích tụ trong cơ thể đã bị thanh lý hoàn toàn!`;
+            } else {
+                msg = `Sử dụng ${item.name}! Linh mạch thanh khiết, không phát hiện độc tố ẩn tàng.`;
+            }
+        } else if (itemId === 'hoa_nguyen_dan') {
+            const hadTauHoa = this.hasStatusEffect('tau_hoa_nhap_ma');
+            const hadCanCo = this.hasStatusEffect('can_co_bat_on');
+            this.removeStatusEffect('tau_hoa_nhap_ma');
+            this.removeStatusEffect('can_co_bat_on');
+            this.deviationTime = 0;
+            success = true;
+            if (hadTauHoa || hadCanCo) {
+                msg = `Sử dụng ${item.name}! Pháp lực điên cuồng được quy đạo, trị khỏi hoàn toàn Tẩu Hỏa Nhập Ma và củng cố đạo cơ vững chắc!`;
+            } else {
+                msg = `Sử dụng ${item.name}! Đạo tâm được củng cố vô cùng kiên định!`;
+            }
+        } else if (item.effect) {
             const effect = item.effect;
             switch (effect.type) {
                 case 'tu_vi':
@@ -2270,8 +2436,42 @@ export class Player {
                 case 'restore':
                     if (effect.hp) this.hp = Math.min(this.maxHp, this.hp + effect.hp);
                     if (effect.mana) this.mana = Math.min(this.maxMana, this.mana + effect.mana);
+                    
+                    // Also cure some internal injuries (nội thương)
+                    let injuryCured = false;
+                    const noiThuongNhe = this.getStatusEffect('noi_thuong_nhe');
+                    const noiThuong = this.getStatusEffect('noi_thuong');
+                    const trongThuong = this.getStatusEffect('trong_thuong');
+                    
+                    if (noiThuongNhe) {
+                        if (noiThuongNhe.stacks > 1) {
+                            noiThuongNhe.stacks--;
+                        } else {
+                            this.removeStatusEffect('noi_thuong_nhe');
+                        }
+                        injuryCured = true;
+                    } else if (noiThuong) {
+                        if (noiThuong.stacks > 1) {
+                            noiThuong.stacks--;
+                        } else {
+                            this.removeStatusEffect('noi_thuong');
+                        }
+                        injuryCured = true;
+                    } else if (trongThuong) {
+                        if (trongThuong.stacks > 1) {
+                            trongThuong.stacks--;
+                        } else {
+                            this.removeStatusEffect('trong_thuong');
+                        }
+                        injuryCured = true;
+                    }
+                    
                     success = true;
-                    msg = `Sử dụng ${item.name}, hồi phục trạng thái!`;
+                    if (injuryCured) {
+                        msg = `Sử dụng ${item.name}, khí huyết dồi dào, nội thương của ngươi đã dịu đi đáng kể!`;
+                    } else {
+                        msg = `Sử dụng ${item.name}, hồi phục trạng thái!`;
+                    }
                     break;
                 case 'unlock_profession':
                     if (this.unlockedProfessions.includes(effect.profession)) {

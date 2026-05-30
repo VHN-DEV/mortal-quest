@@ -1,6 +1,7 @@
 import { getTechniqueById, getSecretTechniqueById } from '../configs/technique-data.js';
 import { getFlameById } from '../configs/alchemy-data.js';
 import { getItemById } from '../configs/item-data.js';
+import { getStatusEffectById, STATUS_EFFECT_TEMPLATES } from '../configs/status-effect-data.js';
 
 export class CombatEngine {
     constructor(player, enemy, onUpdate, onEnd, ambushType = null, environment = 'NORMAL') {
@@ -28,8 +29,128 @@ export class CombatEngine {
             player: { stun: 0, shield: 0, speed: 0 },
             enemy: { burn: 0, burnPower: 0, stun: 0, shield: 0, speed: 0 }
         };
+        this.enemy.buffs = this.enemy.buffs || [];
         this.turnOrder = [];
         this.calculateTurnOrder();
+    }
+
+    getEnemyMultiplier(statKey) {
+        let multiplier = 1.0;
+        if (this.enemy.buffs) {
+            this.enemy.buffs.forEach(b => {
+                if (b.effects && b.effects[statKey]) {
+                    const stacks = b.stacks || 1;
+                    multiplier += b.effects[statKey] * stacks;
+                }
+            });
+        }
+        return Math.max(0.1, multiplier);
+    }
+
+    addEnemyStatusEffect(effectId) {
+        const config = getStatusEffectById(effectId);
+        if (!config) return;
+
+        this.enemy.buffs = this.enemy.buffs || [];
+        const existingIndex = this.enemy.buffs.findIndex(b => b.id === effectId);
+
+        if (existingIndex > -1) {
+            const effect = this.enemy.buffs[existingIndex];
+            effect.stacks = Math.min(config.maxStacks || 1, (effect.stacks || 1) + 1);
+            effect.duration = config.duration;
+        } else {
+            this.enemy.buffs.push({
+                id: config.id,
+                name: config.name,
+                category: config.category,
+                type: config.type,
+                desc: config.desc,
+                maxStacks: config.maxStacks || 1,
+                stacks: 1,
+                duration: config.duration,
+                effects: config.effects
+            });
+        }
+        this.addLog(`✨ Đòn đánh của ngươi khiến đối thủ chịu trạng thái <span class="text-red-400 font-bold">[${config.name}]</span>!`);
+    }
+
+    applyCombatStatusEffects(attacker, defender, isAttackerPlayer, damage, wasCrit) {
+        if (isAttackerPlayer) {
+            this.enemy.buffs = this.enemy.buffs || [];
+            
+            // 1. Kiếm tu: accumulates "Nội Thương"
+            if (this.player.specializedPaths?.sword?.realmId > 0) {
+                if (wasCrit || Math.random() < 0.35) {
+                    this.addEnemyStatusEffect('noi_thuong_nhe');
+                }
+            }
+            // 2. Độc tu: accumulates "Mộc Độc"
+            if (this.player.specializedPaths?.poison?.realmId > 0) {
+                if (Math.random() < 0.4) {
+                    this.addEnemyStatusEffect('moc_doc');
+                }
+            }
+            // 3. Hồn tu: accumulates "Thần Hồn Tổn Thương"
+            if (this.player.specializedPaths?.soul_path?.realmId > 0 || this.player.specializedPaths?.soul?.realmId > 0) {
+                if (Math.random() < 0.3) {
+                    this.addEnemyStatusEffect('than_hon_ton_thuong');
+                }
+            }
+            // 4. Thể tu: accumulates "Thần Hồn Chấn Động"
+            if (this.player.specializedPaths?.body_path?.realmId > 0 || this.player.specializedPaths?.body?.realmId > 0) {
+                if (Math.random() < 0.3) {
+                    this.addEnemyStatusEffect('than_hon_chan_dong');
+                }
+            }
+            // 5. Ma tu: accumulates "Tâm Ma Xâm Thực"
+            if (this.player.mainPath === 'ma_dao') {
+                if (Math.random() < 0.25) {
+                    this.addEnemyStatusEffect('tam_ma_xam_thuc');
+                }
+            }
+        } else {
+            // Enemy attacking Player -> apply persistent player.addStatusEffect
+            
+            // Standard chance: 20% to apply "noi_thuong_nhe"
+            if (Math.random() < 0.20) {
+                this.player.addStatusEffect('noi_thuong_nhe', null, this.enemy.name);
+                this.addLog(`⚠️ Linh khí chấn động mạnh! Bản thân bị tổn thương kinh mạch, tích tụ trạng thái <span class="text-yellow-500 font-bold">[Nội Thương Nhẹ]</span>.`);
+            }
+            
+            // Critical hit: 45% chance to apply "Nội Thương" or "Kinh Mạch Tổn Thương"
+            if (wasCrit && Math.random() < 0.45) {
+                if (Math.random() < 0.5) {
+                    this.player.addStatusEffect('noi_thuong', null, this.enemy.name);
+                    this.addLog(`🚨 Huyết dịch ngược dòng! Chịu cự lực oanh kích chấn thương nặng, mắc trạng thái <span class="text-red-500 font-bold">[Nội Thương]</span>!`);
+                } else {
+                    this.player.addStatusEffect('kinh_mach_ton_thuong', null, this.enemy.name);
+                    this.addLog(`⚡ Pháp lực phản phệ! Kinh mạch rạn nứt nghiêm trọng, mắc trạng thái <span class="text-red-500 font-bold">[Kinh Mạch Tổn Thương]</span>!`);
+                }
+            }
+
+            // Archetype-based buildup:
+            if (this.enemyArchetype === 'ASSASSIN' && Math.random() < 0.25) {
+                const poisonType = Math.random() < 0.5 ? 'moc_doc' : 'hoa_doc';
+                this.player.addStatusEffect(poisonType, null, this.enemy.name);
+                this.addLog(`🐍 Độc khí xâm nhập! Ngươi bị trúng độc sâu sắc, mắc trạng thái <span class="text-green-500 font-bold">[${poisonType === 'moc_doc' ? 'Mộc Độc' : 'Hỏa Độc'}]</span>!`);
+            }
+
+            if (this.enemyArchetype === 'BERSERKER' && Math.random() < 0.3) {
+                if (Math.random() < 0.5) {
+                    this.player.addStatusEffect('than_hon_chan_dong', null, this.enemy.name);
+                    this.addLog(`🌀 Thần hồn dao động! Đầu óc ù tai mê muội, mắc trạng thái <span class="text-purple-500 font-bold">[Thần Hồn Chấn Động]</span>.`);
+                } else {
+                    this.player.addStatusEffect('chan_nguyen_hon_loan', null, this.enemy.name);
+                    this.addLog(`💥 Chân nguyên hỗn loạn! Cát khí tàn phá khí hải, mắc trạng thái <span class="text-orange-500 font-bold">[Chân Nguyên Hỗn Loạn]</span>.`);
+                }
+            }
+
+            if (this.enemyArchetype === 'TANK' && Math.random() < 0.25) {
+                const slowType = Math.random() < 0.5 ? 'tho_tre' : 'loi_phe';
+                this.player.addStatusEffect(slowType, null, this.enemy.name);
+                this.addLog(`⚡ Thân thể ngưng trệ! Ngươi bị tê liệt bởi pháp lực nặng nề, mắc trạng thái <span class="text-yellow-600 font-bold">[${slowType === 'tho_tre' ? 'Thổ Trệ' : 'Lôi Phệ'}]</span>.`);
+            }
+        }
     }
 
     calculateTurnOrder() {
@@ -423,6 +544,9 @@ export class CombatEngine {
     }
 
     processTurnStatus() {
+        const now = Date.now();
+
+        // 1. Tick down enemy standard burn
         if (this.status.enemy.burn > 0 && this.enemy.hp > 0) {
             const burnDmg = Math.max(1, Math.floor(this.status.enemy.burnPower));
             this.enemy.hp -= burnDmg;
@@ -434,6 +558,74 @@ export class CombatEngine {
                 this.win();
                 return;
             }
+        }
+
+        // 2. Tick down Player's persistent status effects (1 combat turn = 15 seconds)
+        if (this.turn === 0 && this.player.buffs && this.player.buffs.length > 0) {
+            this.player.buffs.forEach(b => {
+                if (b.duration !== undefined && b.duration !== null && b.duration !== Infinity) {
+                    b.duration = Math.max(0, b.duration - 15);
+                    b.endTime = now + b.duration * 1000;
+                }
+
+                // Process HP/Mana DOTs in combat
+                if (b.effects) {
+                    const stacks = b.stacks || 1;
+                    if (b.effects.dot_hp) {
+                        const hpLoss = Math.floor(Math.abs(b.effects.dot_hp) * this.player.maxHp * 15 * stacks);
+                        this.player.hp = Math.max(1, this.player.hp - hpLoss);
+                        this.addLog(`⚠️ Trạng thái [${b.name}] ăn mòn khí huyết: Bản thân mất -${hpLoss} HP!`);
+                        this.onUpdate('damage', { target: 'player', value: hpLoss, crit: false, actionType: 'dot' });
+                    }
+                    if (b.effects.dot_mana) {
+                        const manaLoss = Math.floor(Math.abs(b.effects.dot_mana) * this.player.maxMana * 15 * stacks);
+                        this.player.mana = Math.max(0, this.player.mana - manaLoss);
+                        this.addLog(`🧪 Trạng thái [${b.name}] tiêu hao pháp lực: Bản thân mất -${manaLoss} Mana!`);
+                    }
+                    if (b.effects.burn_lifespan) {
+                        const ageInc = b.effects.burn_lifespan * 15 * stacks;
+                        this.player.age = Math.min(this.player.maxAge || 200, this.player.age + ageInc);
+                    }
+                }
+            });
+
+            const countBefore = this.player.buffs.length;
+            this.player.buffs = this.player.buffs.filter(b => {
+                if (b.duration !== undefined) {
+                    return b.duration > 0 || b.duration === Infinity;
+                }
+                return b.endTime > now;
+            });
+
+            if (this.player.buffs.length !== countBefore) {
+                this.player.calculateStats();
+            }
+        }
+
+        // 3. Tick down Enemy's temporary status effects in combat
+        if (this.turn === 1 && this.enemy.buffs && this.enemy.buffs.length > 0) {
+            this.enemy.buffs.forEach(b => {
+                if (b.duration !== undefined && b.duration !== null && b.duration !== Infinity) {
+                    b.duration = Math.max(0, b.duration - 15);
+                }
+
+                // Process HP DOTs on Enemy
+                if (b.effects && b.effects.dot_hp && this.enemy.hp > 0) {
+                    const stacks = b.stacks || 1;
+                    const hpLoss = Math.max(1, Math.floor(Math.abs(b.effects.dot_hp) * this.enemy.maxHp * 15 * stacks));
+                    this.enemy.hp = Math.max(0, this.enemy.hp - hpLoss);
+                    this.addLog(`💥 ${this.enemy.name} chịu ảnh hưởng từ [${b.name}]: mất -${hpLoss} HP.`);
+                    this.onUpdate('damage', { target: 'enemy', value: hpLoss, crit: false, actionType: 'dot' });
+                    
+                    if (this.enemy.hp <= 0) {
+                        this.enemy.hp = 0;
+                        this.win();
+                        return;
+                    }
+                }
+            });
+
+            this.enemy.buffs = this.enemy.buffs.filter(b => b.duration > 0 || b.duration === Infinity);
         }
 
         // Tick down player instability (backlash or secret side-effects)
@@ -536,7 +728,7 @@ export class CombatEngine {
         const elementalMult = this.getElementalMultiplier(playerElement, enemyElement);
 
         const pierce = this.player.advancedStats.pierce || 0;
-        const effectiveEnemyDef = Math.floor(this.enemy.def * (1 - pierce));
+        const effectiveEnemyDef = Math.max(1, Math.floor(this.enemy.def * this.getEnemyMultiplier('def') * (1 - pierce)));
         
         const eDr = this.enemy.advancedStats?.damageReduction || 0;
         const eAllRes = this.enemy.advancedStats?.allRes || 0;
@@ -579,6 +771,8 @@ export class CombatEngine {
             this.addLog(`Ngươi ${verb}, gây ${finalDamage} sát thương.`);
         }
         this.onUpdate('damage', { target: 'enemy', value: finalDamage, crit, actionType: 'attack' });
+
+        this.applyCombatStatusEffects(this.player, this.enemy, true, finalDamage, crit);
 
         this.handlePartyAssistance(finalDamage);
         this.endPlayerTurn();
@@ -1317,7 +1511,8 @@ export class CombatEngine {
             allRes += 0.10;
         }
         
-        let damage = Math.max(1, (this.enemy.atk - Math.floor(effectivePlayerDef / 2)) * suppression * elementalMult * (1 - dr) * (1 - allRes));
+        const effectiveEnemyAtk = Math.max(1, Math.floor(this.enemy.atk * this.getEnemyMultiplier('atk')));
+        let damage = Math.max(1, (effectiveEnemyAtk - Math.floor(effectivePlayerDef / 2)) * suppression * elementalMult * (1 - dr) * (1 - allRes));
 
         // Calculate Enemy Critical Strike
         let critRate = this.enemy.advancedStats?.critRate || 0.05;
@@ -1335,8 +1530,8 @@ export class CombatEngine {
 
         // Archetypes adjustments
         if (this.enemyArchetype === 'ASSASSIN' && Math.random() < 0.35) {
-            const truePart = Math.floor(this.enemy.atk * 0.4);
-            const normalPart = Math.max(1, this.enemy.atk - Math.floor(effectivePlayerDef * 0.3));
+            const truePart = Math.floor(effectiveEnemyAtk * 0.4);
+            const normalPart = Math.max(1, effectiveEnemyAtk - Math.floor(effectivePlayerDef * 0.3));
             damage = (truePart + normalPart) * suppression * (1 - dr) * (1 - allRes);
             if (crit) damage = Math.floor(damage * critDmg);
             attackMsg = `${this.enemy.name} biến ảo khôn lường, xuyên qua sơ hở gây <span class="text-red-400 font-bold">${Math.floor(damage)}</span> sát thương!`;
@@ -1384,6 +1579,8 @@ export class CombatEngine {
         this.player.hp -= finalPlayerDamage;
         this.addLog(attackMsg);
         this.onUpdate('damage', { target: 'player', value: finalPlayerDamage, crit, actionType: 'attack' });
+
+        this.applyCombatStatusEffects(this.enemy, this.player, false, finalPlayerDamage, crit);
 
         if (this.player.hp <= 0) {
             this.player.hp = 0;
