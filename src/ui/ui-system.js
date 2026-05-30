@@ -609,24 +609,26 @@ export class UISystem {
         const effect = document.createElement('div');
         effect.className = 'absolute inset-0 z-[1200] flex flex-col items-center justify-center pointer-events-none overflow-hidden';
         effect.innerHTML = `
-            <div class="breakthrough-glow absolute w-72 h-72 bg-cultivation-gold/40 rounded-full blur-[100px] opacity-0"></div>
+            <div class="breakthrough-glow absolute w-72 h-72 bg-cultivation-gold/40 rounded-full blur-[100px] opacity-0" style="will-change: transform, opacity;"></div>
             <!-- Spinning Bagua Outline -->
-            <div class="bagua-matrix-bg absolute w-[360px] h-[360px] opacity-0 scale-75 pointer-events-none z-0">
-                <svg viewBox="0 0 200 200" class="w-full h-full text-cultivation-gold/25">
-                    <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="1" />
-                    <circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="6 3" />
-                    <circle cx="100" cy="100" r="60" fill="none" stroke="currentColor" stroke-width="0.8" />
-                    <circle cx="100" cy="100" r="30" fill="none" stroke="currentColor" stroke-width="0.5" />
-                    <path d="M100 5 L100 20 M100 180 L100 195 M5 100 L20 100 M180 100 L195 100" stroke="currentColor" stroke-width="1.5" />
-                    <path d="M33 33 L44 44 M156 156 L167 167 M33 167 L44 156 M156 33 L167 44" stroke="currentColor" stroke-width="1.5" />
-                    <path d="M100 70 A 15 15 0 0 0 100 100 A 15 15 0 0 1 100 130 A 30 30 0 0 0 100 70 Z" fill="currentColor" opacity="0.15" />
-                    <path d="M100 70 A 15 15 0 0 0 100 100 A 15 15 0 0 1 100 130 A 30 30 0 0 1 100 70 Z" fill="none" stroke="currentColor" stroke-width="0.5" />
-                    <circle cx="100" cy="85" r="3" fill="currentColor" />
-                    <circle cx="100" cy="115" r="3" fill="currentColor" opacity="0.4" />
-                </svg>
+            <div class="bagua-matrix-wrapper absolute w-[360px] h-[360px] opacity-0 scale-75 pointer-events-none z-0 flex items-center justify-center" style="will-change: transform, opacity;">
+                <div class="bagua-matrix-bg w-full h-full pointer-events-none">
+                    <svg viewBox="0 0 200 200" class="w-full h-full text-cultivation-gold/25">
+                        <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="1" />
+                        <circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="6 3" />
+                        <circle cx="100" cy="100" r="60" fill="none" stroke="currentColor" stroke-width="0.8" />
+                        <circle cx="100" cy="100" r="30" fill="none" stroke="currentColor" stroke-width="0.5" />
+                        <path d="M100 5 L100 20 M100 180 L100 195 M5 100 L20 100 M180 100 L195 100" stroke="currentColor" stroke-width="1.5" />
+                        <path d="M33 33 L44 44 M156 156 L167 167 M33 167 L44 156 M156 33 L167 44" stroke="currentColor" stroke-width="1.5" />
+                        <path d="M100 70 A 15 15 0 0 0 100 100 A 15 15 0 0 1 100 130 A 30 30 0 0 0 100 70 Z" fill="currentColor" opacity="0.15" />
+                        <path d="M100 70 A 15 15 0 0 0 100 100 A 15 15 0 0 1 100 130 A 30 30 0 0 1 100 70 Z" fill="none" stroke="currentColor" stroke-width="0.5" />
+                        <circle cx="100" cy="85" r="3" fill="currentColor" />
+                        <circle cx="100" cy="115" r="3" fill="currentColor" opacity="0.4" />
+                    </svg>
+                </div>
             </div>
             <!-- Breakthrough Title container -->
-            <div class="breakthrough-title relative z-10 opacity-0 scale-50 text-center">
+            <div class="breakthrough-title relative z-10 opacity-0 scale-50 text-center" style="will-change: transform, opacity;">
                 <h2 class="text-7xl font-charm text-cultivation-gold drop-shadow-[0_0_35px_rgba(218,165,32,0.95)] tracking-widest">ĐỘT PHÁ</h2>
                 <div class="w-32 h-[1px] bg-gradient-to-r from-transparent via-cultivation-gold to-transparent mx-auto my-3"></div>
                 <p class="text-2xl font-ancient text-white tracking-[0.6em] uppercase text-glow">${realmName}</p>
@@ -637,19 +639,19 @@ export class UISystem {
         app.appendChild(effect);
 
         const glow = effect.querySelector('.breakthrough-glow');
-        const bagua = effect.querySelector('.bagua-matrix-bg');
+        const bagua = effect.querySelector('.bagua-matrix-wrapper');
         const title = effect.querySelector('.breakthrough-title');
 
         const tl = gsap.timeline({
             onComplete: () => effect.remove()
         });
 
-        tl.to(glow, { opacity: 1, scale: 2.8, duration: 0.6, ease: "power4.out" })
-            .to(bagua, { opacity: 1, scale: 1, rotation: 180, duration: 2.2, ease: "power2.out" }, "-=0.5")
-            .to(title, { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.8)" }, "-=2.0")
-            .to(glow, { opacity: 0, scale: 4.5, duration: 1.2, ease: "power2.in" }, "+=0.4")
-            .to(bagua, { opacity: 0, scale: 1.4, duration: 1.0, ease: "power2.in" }, "-=1.0")
-            .to(title, { opacity: 0, y: -120, scale: 1.1, duration: 0.8, ease: "power3.in" }, "-=0.8");
+        tl.to(glow, { opacity: 1, scale: 2.8, duration: 0.6, ease: "power4.out", force3D: true })
+            .to(bagua, { opacity: 1, scale: 1, rotation: 90, duration: 2.2, ease: "power2.out", force3D: true }, "-=0.5")
+            .to(title, { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.8)", force3D: true }, "-=2.0")
+            .to(glow, { opacity: 0, scale: 4.5, duration: 1.2, ease: "power2.in", force3D: true }, "+=0.4")
+            .to(bagua, { opacity: 0, scale: 1.4, duration: 1.0, ease: "power2.in", force3D: true }, "-=1.0")
+            .to(title, { opacity: 0, y: -120, scale: 1.1, duration: 0.8, ease: "power3.in", force3D: true }, "-=0.8");
 
         // Spawn a meridian-like expanding ring (CSS-animated for performance)
         const ring = document.createElement('div');
@@ -663,7 +665,7 @@ export class UISystem {
 
         // Spawn gold stardust drifting downwards (Optimized particle count and styles to prevent lag)
         const pContainer = effect.querySelector('.particles-burst');
-        const count = 18;
+        const count = 10;
         for (let i = 0; i < count; i++) {
             const p = document.createElement('div');
             p.className = 'absolute rounded-full pointer-events-none bg-cultivation-gold';
@@ -671,6 +673,7 @@ export class UISystem {
             p.style.width = `${size}px`;
             p.style.height = `${size}px`;
             p.style.opacity = `${0.6 + Math.random() * 0.4}`;
+            p.style.willChange = 'transform, opacity';
             
             // Random start position near center
             const startX = rect.width / 2 + (Math.random() - 0.5) * 80;
@@ -690,7 +693,8 @@ export class UISystem {
                 opacity: 0,
                 scale: 0.2,
                 duration: 0.8 + Math.random() * 0.8,
-                ease: "power1.out"
+                ease: "power1.out",
+                force3D: true
             });
         }
 

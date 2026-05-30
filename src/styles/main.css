@@ -3057,13 +3057,14 @@ select option:checked {
 /* 2. Breakthrough Animations */
 .bagua-matrix-bg {
     animation: bagua-rotate 25s linear infinite;
+    transform-origin: center;
 }
 @keyframes bagua-rotate {
     from {
-        transform: translate(-50%, -50%) rotate(0deg);
+        transform: rotate(0deg);
     }
     to {
-        transform: translate(-50%, -50%) rotate(360deg);
+        transform: rotate(360deg);
     }
 }
 
