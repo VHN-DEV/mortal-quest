@@ -191,6 +191,47 @@
                     <span>CÔNG PHÁP & BÍ THUẬT</span>
                 </button>
 
+                <!-- Đại Viên Mãn Actions Panel -->
+                <div id="dai-vien-man-panel" class="hidden p-4 border border-qi-purple/30 rounded-2xl bg-black/60 space-y-3 shadow-[0_0_20px_rgba(159,122,234,0.15)] animate-fade-in shrink-0">
+                    <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                        <span class="text-[9px] font-ancient uppercase tracking-wider text-qi-purple font-bold">Cảnh Giới Đại Viên Mãn</span>
+                        <span id="dai-vien-man-status" class="text-[7.5px] px-2 py-0.5 rounded bg-qi-purple/20 text-qi-purple border border-qi-purple/30 font-ancient tracking-widest font-black uppercase">Tích Lũy</span>
+                    </div>
+                    
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-3 gap-2 py-1">
+                        <div class="flex flex-col items-center p-1.5 rounded bg-white/[0.02] border border-white/5">
+                            <span class="text-[6.5px] text-gray-500 font-ancient uppercase tracking-wider">Áp Lực Thiên Đạo</span>
+                            <span id="thien-dao-pressure" class="text-[9px] font-mono font-bold text-red-400 mt-0.5">0%</span>
+                        </div>
+                        <div class="flex flex-col items-center p-1.5 rounded bg-white/[0.02] border border-white/5">
+                            <span class="text-[6.5px] text-gray-500 font-ancient uppercase tracking-wider">Căn Cơ Linh Lực</span>
+                            <span id="can-co-value" class="text-[9px] font-mono font-bold text-qi-blue mt-0.5">0%</span>
+                        </div>
+                        <div class="flex flex-col items-center p-1.5 rounded bg-white/[0.02] border border-white/5">
+                            <span class="text-[6.5px] text-gray-500 font-ancient uppercase tracking-wider">Pháp Lực Tinh Thuần</span>
+                            <span id="tinh-thuan-value" class="text-[9px] font-mono font-bold text-cultivation-gold mt-0.5">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Options -->
+                    <div class="flex flex-col space-y-2">
+                        <button id="btn-dot-pha-ngay" class="py-2 bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 rounded-xl text-white font-ancient font-black uppercase tracking-[0.2em] text-[9px] shadow-[0_0_15px_rgba(212,175,55,0.2)] transition-all active:scale-95">
+                            ⚡ ĐỘT PHÁ NGAY (Tỷ lệ: 0%)
+                        </button>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="btn-cung-co-can-co" class="py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-300 font-ancient uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95">
+                                <i class="ph ph-shield-check"></i>
+                                <span>Củng Cố Căn Cơ</span>
+                            </button>
+                            <button id="btn-nen-phap-luc" class="py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-300 font-ancient uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95">
+                                <i class="ph ph-stack"></i>
+                                <span>Nén Pháp Lực</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Action Grid -->
                 <div class="grid grid-cols-2 gap-3">
                     <button id="breakthrough-btn"

@@ -592,6 +592,54 @@ export const STATUS_EFFECT_TEMPLATES = {
             spd: -0.2,
             tu_vi_speed: -0.2
         }
+    },
+    chan_nguyen_bao_dong: {
+        id: 'chan_nguyen_bao_dong',
+        name: 'Chân Nguyên Bạo Động',
+        category: 'QI',
+        type: 'debuff',
+        icon: '💥',
+        desc: 'Nén pháp lực không thành dẫn đến chân nguyên nổi loạn, giảm 30% Phòng ngự và mất 2% HP tối đa mỗi giây.',
+        maxStacks: 1,
+        duration: 300,
+        combatTurns: 15,
+        isCureable: true,
+        effects: {
+            def: -0.3,
+            dot_hp: -0.02
+        }
+    },
+    linh_khi_qua_tai: {
+        id: 'linh_khi_qua_tai',
+        name: 'Linh Khí Quá Tải',
+        category: 'QI',
+        type: 'debuff',
+        icon: '🎈',
+        desc: 'Linh lực tràn trề kinh mạch quá tải, giảm 20% Né tránh và 15% Tốc độ chiến đấu.',
+        maxStacks: 1,
+        duration: 600,
+        combatTurns: 25,
+        isCureable: true,
+        effects: {
+            dodge: -0.2,
+            spd: -0.15
+        }
+    },
+    ap_luc_thien_dao: {
+        id: 'ap_luc_thien_dao',
+        name: 'Áp Lực Thiên Đạo',
+        category: 'TRIBULATION',
+        type: 'debuff',
+        icon: '⚡',
+        desc: 'Nén cảnh giới quá lâu hứng chịu lực ép từ Thiên Đạo, giảm 15% Công kích và 10% Tốc độ tu luyện.',
+        maxStacks: 1,
+        duration: Infinity,
+        combatTurns: 999,
+        isCureable: false,
+        effects: {
+            atk: -0.15,
+            tu_vi_speed: -0.10
+        }
     }
 };
 

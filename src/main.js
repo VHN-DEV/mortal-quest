@@ -701,6 +701,51 @@ window.renderMainStats = () => {
         }
     }
 
+    // Render Dai Vien Man Panel
+    const elDaiVienManPanel = getCachedEl('dai-vien-man-panel');
+    if (elDaiVienManPanel) {
+        const isDaiVienMan = focus === 'tuvi' && player.tuViState !== 'accumulating';
+        if (isDaiVienMan) {
+            elDaiVienManPanel.classList.remove('hidden');
+            
+            // Update stats
+            updateCachedText('thien-dao-pressure', `${player.thien_dao_ap_luc.toFixed(1)}%`);
+            updateCachedText('can-co-value', `${player.can_co.toFixed(1)}%`);
+            updateCachedText('tinh-thuan-value', Math.floor(player.tinh_thuan).toLocaleString());
+            
+            let statusText = 'Đại Viên Mãn';
+            if (player.tuViState === 'consolidating') statusText = 'Củng Cố Căn Cơ';
+            else if (player.tuViState === 'condensing') statusText = 'Nén Pháp Lực';
+            updateCachedText('dai-vien-man-status', statusText);
+            
+            const rate = player.getBreakthroughSuccessRate('tuvi');
+            // Update btn-dot-pha-ngay text
+            const btnDotPhaNgay = getCachedEl('btn-dot-pha-ngay');
+            if (btnDotPhaNgay) {
+                btnDotPhaNgay.textContent = `⚡ ĐỘT PHÁ NGAY (Tỷ lệ: ${rate}%)`;
+            }
+            
+            // Style sub-buttons based on active state
+            const btnCungCo = getCachedEl('btn-cung-co-can-co');
+            if (btnCungCo) {
+                const active = player.tuViState === 'consolidating';
+                btnCungCo.className = `py-1.5 rounded-xl uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95 border ${
+                    active ? 'bg-qi-blue/20 text-qi-blue border-qi-blue/50 font-bold font-black' : 'bg-white/5 text-gray-300 border-white/10'
+                }`;
+            }
+            
+            const btnNen = getCachedEl('btn-nen-phap-luc');
+            if (btnNen) {
+                const active = player.tuViState === 'condensing';
+                btnNen.className = `py-1.5 rounded-xl uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95 border ${
+                    active ? 'bg-qi-purple/20 text-qi-purple border-qi-purple/50 font-bold font-black' : 'bg-white/5 text-gray-300 border-white/10'
+                }`;
+            }
+        } else {
+            elDaiVienManPanel.classList.add('hidden');
+        }
+    }
+
     const meridianContainer = getCachedEl('meridian-circle-container');
     if (meridianContainer) {
         if (focus !== 'tuvi') {

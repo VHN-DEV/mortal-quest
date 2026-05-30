@@ -199,6 +199,46 @@ export class Game {
         const breakthroughBtn = document.getElementById('breakthrough-btn');
         if (breakthroughBtn) breakthroughBtn.onclick = () => this.breakthrough();
 
+        // PNTT Dai Vien Man panel handlers
+        const btnDotPhaNgay = document.getElementById('btn-dot-pha-ngay');
+        if (btnDotPhaNgay) {
+            btnDotPhaNgay.onclick = () => {
+                this.breakthrough('tuvi', true); // Bypass panel toggling
+            };
+        }
+
+        const btnCungCoCanCo = document.getElementById('btn-cung-co-can-co');
+        if (btnCungCoCanCo) {
+            btnCungCoCanCo.onclick = () => {
+                if (!state.player) return;
+                if (state.player.tuViState === 'consolidating') {
+                    state.player.tuViState = 'full';
+                    state.ui.toast("Dừng củng cố căn cơ.", "info");
+                } else {
+                    state.player.tuViState = 'consolidating';
+                    state.ui.toast("Bắt đầu củng cố căn cơ. Linh khí tích lũy sẽ chuyển hóa thành Căn Cơ.", "success");
+                }
+                if (typeof window.renderMainStats === 'function') window.renderMainStats();
+                this.refreshUI();
+            };
+        }
+
+        const btnNenPhapLuc = document.getElementById('btn-nen-phap-luc');
+        if (btnNenPhapLuc) {
+            btnNenPhapLuc.onclick = () => {
+                if (!state.player) return;
+                if (state.player.tuViState === 'condensing') {
+                    state.player.tuViState = 'full';
+                    state.ui.toast("Dừng nén pháp lực.", "info");
+                } else {
+                    state.player.tuViState = 'condensing';
+                    state.ui.toast("Bắt đầu nén pháp lực. Có nguy cơ Chân Nguyên Bạo Động nhưng sẽ gia tăng thuộc tính sau đột phá.", "warning");
+                }
+                if (typeof window.renderMainStats === 'function') window.renderMainStats();
+                this.refreshUI();
+            };
+        }
+
         const autoCultivate = document.getElementById('auto-cultivate-toggle');
         if (autoCultivate) autoCultivate.onchange = (e) => this.toggleAutoCultivate(e.target.checked);
 
@@ -1273,9 +1313,19 @@ export class Game {
         return result;
     }
 
-    async breakthrough(customFocus = null) {
+    async breakthrough(customFocus = null, bypassPanel = false) {
         if (!state.player) return;
         const focus = customFocus || state.player.cultivationFocus || 'tuvi';
+
+        // PNTT Dai Vien Man panel toggling
+        if (focus === 'tuvi' && state.player.tuViState !== 'accumulating' && !bypassPanel) {
+            const panel = document.getElementById('dai-vien-man-panel');
+            if (panel) {
+                panel.classList.toggle('hidden');
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            return;
+        }
 
         // First check if they can breakthrough at all
         const canCheck = state.player.canBreakthrough(focus);
