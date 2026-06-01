@@ -616,7 +616,22 @@ export class InventoryScreen {
             const effect = itemData.effect;
             const effectList = [];
             
-            if (effect.type === 'tu_vi') {
+            if (!effect.type) {
+                Object.entries(effect).forEach(([key, val]) => {
+                    const label = this.getStatLabel(key);
+                    let valStr = '';
+                    if (key === 'tuViSpeed' || key === 'breakthroughRate' || key.endsWith('Res')) {
+                        valStr = `+${Math.round(val * 100)}%`;
+                    } else if (key === 'qiAbsorb') {
+                        valStr = `+${Math.round(val)}`;
+                    } else if (key === 'spiritRoot') {
+                        valStr = 'Thanh lọc / Ngộ căn';
+                    } else {
+                        valStr = `+${val}`;
+                    }
+                    effectList.push({ label, val: valStr });
+                });
+            } else if (effect.type === 'tu_vi') {
                 effectList.push({ label: 'Tăng tu vi', val: `+${effect.value}` });
             } else if (effect.type === 'breakthrough_chance') {
                 effectList.push({ label: 'Tỷ lệ đột phá', val: `+${Math.round(effect.value * 100)}%` });
@@ -824,7 +839,9 @@ export class InventoryScreen {
             lifespan: 'Thọ nguyên', life_span: 'Thọ nguyên', qiAbsorb: 'Hấp thụ Linh khí', qi_absorb: 'Hấp thụ Linh khí',
             alchemyBonus: 'Tỉ lệ Luyện đan', alchemy_success: 'Tỉ lệ Luyện đan', smithingBonus: 'Tỉ lệ Luyện khí',
             smithing_success: 'Tỉ lệ Luyện khí', tu_vi_speed: 'Tốc độ Tu luyện', tuViSpeed: 'Tốc độ Tu luyện',
-            spirit: 'Thần thức', slots: 'Ô chứa đồ', breakthroughRate: 'Tỉ lệ Đột phá', breakthrough_rate: 'Tỉ lệ Đột phá'
+            spirit: 'Thần thức', slots: 'Ô chứa đồ', breakthroughRate: 'Tỉ lệ Đột phá', breakthrough_rate: 'Tỉ lệ Đột phá',
+            coldRes: 'Băng kháng', thunderRes: 'Lôi kháng', fireRes: 'Hỏa kháng', poisonRes: 'Độc kháng',
+            spiritRoot: 'Cải tạo Linh Căn', stamina: 'Thể lực', hp: 'Khí huyết'
         };
         return map[statKey] || statKey;
     }

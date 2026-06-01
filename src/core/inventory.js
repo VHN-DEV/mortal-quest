@@ -381,6 +381,185 @@ export class Inventory {
     }
 
     applyEffect(effect, multiplier = 1.0) {
+        if (!effect) return;
+
+        // If it's a direct stat-gaining object (no type property specified)
+        if (!effect.type) {
+            let processed = false;
+            let msgParts = [];
+
+            if (!this.player.permanentStats) {
+                this.player.permanentStats = { maxHp: 0, maxMana: 0, atk: 0, def: 0, spd: 0, tuViSpeed: 0 };
+            }
+
+            // Permanent Base/Bonus stats
+            if (effect.maxHp) {
+                this.player.permanentStats.maxHp = (this.player.permanentStats.maxHp || 0) + Math.round(effect.maxHp * multiplier);
+                msgParts.push(`Sinh lực tối đa +${Math.round(effect.maxHp * multiplier)}`);
+                processed = true;
+            }
+            if (effect.maxMana) {
+                this.player.permanentStats.maxMana = (this.player.permanentStats.maxMana || 0) + Math.round(effect.maxMana * multiplier);
+                msgParts.push(`Pháp lực tối đa +${Math.round(effect.maxMana * multiplier)}`);
+                processed = true;
+            }
+            if (effect.atk) {
+                this.player.permanentStats.atk = (this.player.permanentStats.atk || 0) + Math.round(effect.atk * multiplier);
+                msgParts.push(`Tấn công +${Math.round(effect.atk * multiplier)}`);
+                processed = true;
+            }
+            if (effect.def) {
+                this.player.permanentStats.def = (this.player.permanentStats.def || 0) + Math.round(effect.def * multiplier);
+                msgParts.push(`Phòng thủ +${Math.round(effect.def * multiplier)}`);
+                processed = true;
+            }
+            if (effect.spd) {
+                this.player.permanentStats.spd = (this.player.permanentStats.spd || 0) + Math.round(effect.spd * multiplier);
+                msgParts.push(`Tốc độ +${Math.round(effect.spd * multiplier)}`);
+                processed = true;
+            }
+
+            // Other major attributes
+            if (effect.spirit || effect.divineSense) {
+                const sVal = effect.spirit || effect.divineSense;
+                this.player.divineSense = (this.player.divineSense || 50) + Math.round(sVal * multiplier);
+                msgParts.push(`Thần thức +${Math.round(sVal * multiplier)}`);
+                processed = true;
+            }
+            if (effect.luck) {
+                this.player.luck = (this.player.luck || 50) + Math.round(effect.luck * multiplier);
+                msgParts.push(`Khí vận +${Math.round(effect.luck * multiplier)}`);
+                processed = true;
+            }
+            if (effect.tuViSpeed) {
+                this.player.permanentStats.tuViSpeed = (this.player.permanentStats.tuViSpeed || 0) + effect.tuViSpeed * multiplier;
+                msgParts.push(`Tốc độ tu luyện vĩnh viễn +${Math.round(effect.tuViSpeed * 100 * multiplier)}%`);
+                processed = true;
+            }
+            if (effect.qiAbsorb) {
+                this.player.advancedStats.qiAbsorb = (this.player.advancedStats.qiAbsorb || 0) + effect.qiAbsorb * multiplier;
+                msgParts.push(`Hấp thụ linh khí +${Math.round(effect.qiAbsorb * multiplier)}`);
+                processed = true;
+            }
+            if (effect.lifespan || effect.maxAge) {
+                const addedAge = Math.round((effect.lifespan || effect.maxAge) * multiplier);
+                this.player.permanentLifespanBonus = (this.player.permanentLifespanBonus || 0) + addedAge;
+                msgParts.push(`Thọ nguyên +${addedAge} năm`);
+                processed = true;
+            }
+            if (effect.breakthroughRate) {
+                this.player.permanentBreakthroughBonus = (this.player.permanentBreakthroughBonus || 0) + effect.breakthroughRate * multiplier;
+                msgParts.push(`Tỷ lệ đột phá vĩnh viễn +${Math.round(effect.breakthroughRate * 100 * multiplier)}%`);
+                processed = true;
+            }
+
+            // Resistances
+            if (effect.fireRes) {
+                this.player.advancedStats.fireRes = (this.player.advancedStats.fireRes || 0) + effect.fireRes * multiplier;
+                msgParts.push(`Hỏa kháng +${Math.round(effect.fireRes * 100 * multiplier)}%`);
+                processed = true;
+            }
+            if (effect.poisonRes) {
+                this.player.advancedStats.poisonRes = (this.player.advancedStats.poisonRes || 0) + effect.poisonRes * multiplier;
+                msgParts.push(`Độc kháng +${Math.round(effect.poisonRes * 100 * multiplier)}%`);
+                processed = true;
+            }
+            if (effect.coldRes) {
+                this.player.advancedStats.coldRes = (this.player.advancedStats.coldRes || 0) + effect.coldRes * multiplier;
+                msgParts.push(`Băng kháng +${Math.round(effect.coldRes * 100 * multiplier)}%`);
+                processed = true;
+            }
+            if (effect.thunderRes) {
+                this.player.advancedStats.thunderRes = (this.player.advancedStats.thunderRes || 0) + effect.thunderRes * multiplier;
+                msgParts.push(`Lôi kháng +${Math.round(effect.thunderRes * 100 * multiplier)}%`);
+                processed = true;
+            }
+
+            // Spiritual Root awakening and dynamic refinement
+            if (effect.spiritRoot) {
+                const root = this.player.spiritualRoot;
+                if (root) {
+                    if (root.purity < 100) {
+                        const oldPurity = root.purity;
+                        root.purity = Math.min(100, oldPurity + 10);
+                        // Update the multiplier based on new purity scale
+                        root.multiplier = (root.multiplier / (oldPurity / 100)) * (root.purity / 100);
+                        msgParts.push(`Thanh lọc Linh Căn (Độ thuần khiết: ${oldPurity}% -> ${root.purity}%)`);
+                    } else if (root.elements && root.elements.length > 1 && root.id !== 'thien_linh_can' && root.id !== 'di_linh_can') {
+                        const oldType = root.type;
+                        const removedElement = root.elements.pop();
+                        if (root.proportions) {
+                            delete root.proportions[removedElement];
+                        }
+                        
+                        const remainingCount = root.elements.length;
+                        const share = Math.floor(100 / remainingCount);
+                        const remainder = 100 - (share * remainingCount);
+                        
+                        root.elements.forEach((el, index) => {
+                            if (root.proportions) {
+                                root.proportions[el] = share + (index === 0 ? remainder : 0);
+                            }
+                        });
+
+                        // Reclassify root type
+                        if (remainingCount === 1) {
+                            root.id = 'thien_linh_can';
+                            root.type = `Thiên Linh Căn (${root.elements[0]})`;
+                            root.multiplier *= 1.25;
+                        } else if (remainingCount === 2) {
+                            root.id = 'song_linh_can';
+                            root.type = `Song Linh Căn (${root.elements.join(' - ')}) (Cân Bằng)`;
+                            root.multiplier *= 1.15;
+                        } else if (remainingCount === 3) {
+                            root.id = 'tam_linh_can';
+                            root.type = `Tam Linh Căn (${root.elements.join(' - ')}) (Cân Bằng)`;
+                            root.multiplier *= 1.10;
+                        } else if (remainingCount === 4) {
+                            root.id = 'nguy_linh_can';
+                            root.type = `Tứ Linh Căn (${root.elements.join(' - ')}) (Cân Bằng)`;
+                            root.multiplier *= 1.05;
+                        }
+
+                        msgParts.push(`Tẩy tạp chất! Ngộ ra Linh Căn cao cấp hơn: [${oldType}] -> [${root.type}]`);
+                    } else {
+                        msgParts.push("Linh Căn đã đại viên mãn cực đỉnh không thể tinh lọc thêm");
+                    }
+                } else {
+                    msgParts.push("Thức tỉnh kỳ tích ẩn tàng Linh Căn thành công");
+                }
+                processed = true;
+            }
+
+            // Healing & Restoration (Current status adjustments)
+            if (effect.hp) {
+                const hpAmount = effect.hp <= 1.0 ? Math.floor(this.player.maxHp * effect.hp * multiplier) : Math.round(effect.hp * multiplier);
+                this.player.hp = Math.min(this.player.maxHp, this.player.hp + hpAmount);
+                msgParts.push(`Phục hồi +${hpAmount} Khí huyết`);
+                processed = true;
+            }
+            if (effect.mana) {
+                const manaAmount = effect.mana <= 1.0 ? Math.floor(this.player.maxMana * effect.mana * multiplier) : Math.round(effect.mana * multiplier);
+                this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaAmount);
+                msgParts.push(`Phục hồi +${manaAmount} Pháp lực`);
+                processed = true;
+            }
+            if (effect.stamina) {
+                const staminaAmount = effect.stamina <= 1.0 ? Math.floor(this.player.maxStamina * effect.stamina * multiplier) : Math.round(effect.stamina * multiplier);
+                this.player.stamina = Math.min(this.player.maxStamina, this.player.stamina + staminaAmount);
+                msgParts.push(`Phục hồi +${staminaAmount} Thể lực`);
+                processed = true;
+            }
+
+            if (processed) {
+                this.player.calculateStats();
+                if (typeof state !== 'undefined' && state.ui && state.ui.toast && msgParts.length > 0) {
+                    state.ui.toast(`Luyện hóa hoàn tất: ${msgParts.join(', ')}!`, "success");
+                }
+                return;
+            }
+        }
+
         if (effect.type === 'tu_vi') {
             this.player.tuVi += Math.round(effect.value * multiplier);
         } else if (effect.type === 'heal') {

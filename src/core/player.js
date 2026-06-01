@@ -122,6 +122,18 @@ export class Player {
         this.maxAge = 100;
         this.cheatSystemId = null;
         this.spiritualRoot = null;
+        this.permanentStats = {
+            maxHp: 0,
+            maxMana: 0,
+            atk: 0,
+            def: 0,
+            spd: 0,
+            tuViSpeed: 0,
+            qiAbsorb: 0,
+            luck: 0,
+            spirit: 0,
+            breakthroughRate: 0
+        };
         this.physique = {
             id: 'binh_thuong',
             stage: 'SO_KHAI',
@@ -1608,6 +1620,9 @@ export class Player {
 
     getBreakthroughSuccessRate(type = 'tuvi') {
         let baseRate = this.getStability();
+        if (this.permanentBreakthroughBonus) {
+            baseRate += this.permanentBreakthroughBonus * 100;
+        }
         const mainPath = this.mainPath || 'orthodox';
         if (mainPath === 'ma_dao') baseRate -= 10;
         if (this.specializedPaths?.buddhist?.realmId > 0) baseRate += 10;
@@ -1940,6 +1955,15 @@ export class Player {
             tuViSpeed: 1, bodyExpSpeed: 1, soulExpSpeed: 1,
             maxAge: 0 
         };
+
+        if (this.permanentStats) {
+            if (this.permanentStats.maxHp) this.bonusStats.maxHp += this.permanentStats.maxHp;
+            if (this.permanentStats.maxMana) this.bonusStats.maxMana += this.permanentStats.maxMana;
+            if (this.permanentStats.atk) this.bonusStats.atk += this.permanentStats.atk;
+            if (this.permanentStats.def) this.bonusStats.def += this.permanentStats.def;
+            if (this.permanentStats.spd) this.bonusStats.spd += this.permanentStats.spd;
+            if (this.permanentStats.tuViSpeed) this.bonusStats.tuViSpeed += this.permanentStats.tuViSpeed;
+        }
         
         this.advancedStats = {
             pierce: 0, soulPierce: 0, critRate: 0.05, critDmg: 1.5,

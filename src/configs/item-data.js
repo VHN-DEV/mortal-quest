@@ -2940,7 +2940,6 @@ export const ITEMS = {
         action: 'separate_ngu_cuc_son',
         poem: ['Ngũ Sơn Hợp Nhất Trấn Càn Khôn', 'Vạn Pháp Quy Nguyên Hóa Hư Không']
     },
-    // --- BEAST RELATED ITEMS ---
     'linh_thu_dai_so': {
         id: 'linh_thu_dai_so',
         name: 'Linh Thú Đại (Sơ)',
@@ -3044,8 +3043,6 @@ export const ITEMS = {
         price: 25000,
         description: 'Trứng của Thiên Phong Ngân Uynh, loại kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.'
     },
-
-    // --- SECT EXCLUSIVE TECHNIQUES & SECRETS SCROLLS ---
     'item_thien_kiem_tong_t': {
         id: 'item_thien_kiem_tong_t',
         name: '« Cổ Tịch: Thiên Kiếm Quyết »',
@@ -3386,8 +3383,6 @@ export const ITEMS = {
         secretId: 'khoi_am_tong_bi_tich',
         description: 'Tuyệt kỹ sai sử khôi lỗi tự bộc sát thương cực đoan xé tan giáp cốt địch thủ và gây choáng.'
     },
-
-    // --- PHÁP BẢO MỚI ---
     'ban_long_bang_ngoc_nghien': {
         id: 'ban_long_bang_ngoc_nghien',
         name: 'Bàn Long Băng Ngọc Nghiễn',
@@ -3498,8 +3493,6 @@ export const ITEMS = {
         stats: { def: 3000, maxHp: 2000, maxMana: 800 },
         poem: ['Vạn Thủy Lưu Ly Tịnh Thiên Địa', 'Nhất Bình Thu Tận Vạn Hà Triều']
     },
-
-    // --- TRỨNG LINH THÚ MỚI ---
     'egg_giao_long': {
         id: 'egg_giao_long',
         name: 'Trứng Giao Long',
@@ -3539,8 +3532,6 @@ export const ITEMS = {
         price: 1,
         description: 'Cỏ dại mọc ven đường, không có linh khí.'
     },
-
-    // ===== THIÊN TÀI ĐỊA BẢO =====
     'linh_chi_tien_cao': {
         id: 'linh_chi_tien_cao',
         name: 'Linh Chi Tiên Thảo',
@@ -3655,8 +3646,6 @@ export const ITEMS = {
         description: 'Nhân sâm tuyết có đôi mắt linh quang, đã khai mở ý thức sơ khai, tăng mạnh thần thức người dùng.',
         effect: { spirit: 300, breakthroughRate: 0.05 }
     },
-
-    // ===== ĐAN DƯỢC =====
     'tu_vi_dan': {
         id: 'tu_vi_dan',
         name: 'Tu Vi Đan',
@@ -3807,8 +3796,6 @@ export const ITEMS = {
         description: 'Đan dược huyền thoại, tương truyền có thể phục hồi tử mạng. Hồi phục toàn bộ trạng thái.',
         effect: { hp: 5000, mana: 5000, spirit: 500 }
     },
-
-    // ===== CÔNG PHÁP BỔ SUNG =====
     'nhat_duong_chi_thu': {
         id: 'nhat_duong_chi_thu',
         name: '« Cổ Tịch: Nhật Dương Chi Thư »',
@@ -3899,8 +3886,6 @@ export const ITEMS = {
         secretId: 'than_thong_bi_tich',
         description: 'Tuyệt thế bí điển chứa ba mươi sáu phép thần thông biến hóa, ngộ được một phép đã vô địch cõi trần.'
     },
-
-    // ===== PHÁP BẢO BỔ SUNG =====
     'cu_que_linh_cam': {
         id: 'cu_que_linh_cam',
         name: 'Cự Quế Linh Cầm',
@@ -4001,6 +3986,150 @@ export const ITEMS = {
         description: 'Tháp pháp bảo hình đôi rồng quấn quanh, phóng ra song long hỏa lôi kép, sát thương kinh thiên động địa.',
         stats: { atk: 6000, critChance: 0.2, critDamage: 0.8 },
         poem: ['Song Long Quán Nhật Phá Thiên Thương', 'Nhất Tháp Phi Lôi Vạn Ma Hoàng']
+    },
+    'van_nien_linh_nhu': {
+        id: 'van_nien_linh_nhu',
+        name: 'Vạn Niên Linh Nhũ',
+        type: 'consumable',
+        icon: '🥛',
+        quality: 'Cổ Bảo',
+        price: 60000,
+        description: 'Linh dịch ngàn năm tích tụ trong khe đá vạn thạch, ẩn chứa linh khí tinh thuần chí cực, uống vào lập tức khôi phục toàn bộ pháp lực.',
+        effect: { mana: 99999 }
+    },
+    'cuu_diep_chi': {
+        id: 'cuu_diep_chi',
+        name: 'Cửu Diệp Chi Thảo',
+        type: 'consumable',
+        icon: '🌿',
+        quality: 'Pháp Bảo',
+        price: 40000,
+        description: 'Linh chi chín lá hấp thu tinh hoa nhật nguyệt cực kỳ quý hiếm, ăn vào gia tăng vĩnh viễn tốc độ tu luyện và thần thức.',
+        effect: { tuViSpeed: 0.1, spirit: 100 }
+    },
+    'bang_tuy_chi': {
+        id: 'bang_tuy_chi',
+        name: 'Băng Tủy Chi',
+        type: 'consumable',
+        icon: '❄️',
+        quality: 'Linh Bảo',
+        price: 75000,
+        description: 'Linh chi sinh trưởng nơi vạn năm băng tuyền, hàn khí thấu cốt, dùng để tăng vọt thần thức và băng hệ kháng tính.',
+        effect: { spirit: 250, coldRes: 0.08 }
+    },
+    'khay_loi_moc': {
+        id: 'khay_loi_moc',
+        name: 'Kháng Lôi Mộc',
+        type: 'consumable',
+        icon: '🪵',
+        quality: 'Pháp Bảo',
+        price: 45000,
+        description: 'Thần mộc hấp thu thiên lôi vạn năm không hủy, dùng để tẩy tủy ngọc cốt, nâng cao vĩnh viễn lôi kháng và phòng ngự.',
+        effect: { def: 150, thunderRes: 0.1 }
+    },
+    'thien_linh_qua': {
+        id: 'thien_linh_qua',
+        name: 'Thiên Linh Quả',
+        type: 'consumable',
+        icon: '🍑',
+        quality: 'Linh Bảo',
+        price: 80000,
+        description: 'Thánh quả ngàn năm mới chín một lần, tụ hợp thiên địa linh khí tinh túy nhất, dùng để tăng vĩnh viễn linh lực hấp thu và khí vận.',
+        effect: { qiAbsorb: 500, luck: 15 }
+    },
+    'ngung_oanh_dan': {
+        id: 'ngung_oanh_dan',
+        name: 'Ngưng Oánh Đan',
+        type: 'consumable',
+        icon: '💊',
+        quality: 'Pháp Khí',
+        price: 1200,
+        description: 'Thượng phẩm đan dược của tu sĩ Luyện Khí Kỳ, hỗ trợ đột phá cảnh giới nhỏ và gia tăng nhẹ tốc độ tu luyện.',
+        effect: { tuViSpeed: 0.08 }
+    },
+    'hang_tran_dan': {
+        id: 'hang_tran_dan',
+        name: 'Hàng Trần Đan',
+        type: 'consumable',
+        icon: '🟡',
+        quality: 'Pháp Bảo',
+        price: 15000,
+        description: 'Bảo đan tuyệt tích giúp tu sĩ Trúc Cơ ngưng tụ linh khí hóa thành kim đan, tăng vọt thần thức và tỉ lệ đột phá Kết Đan.',
+        effect: { breakthroughRate: 0.10, spirit: 100 }
+    },
+    'ti_ta_dan': {
+        id: 'ti_ta_dan',
+        name: 'Tị Tà Đan',
+        type: 'consumable',
+        icon: '🟢',
+        quality: 'Pháp Bảo',
+        price: 18000,
+        description: 'Đan dược trừ tà tịch ma, bảo vệ tâm mạch, tăng cường thần thức và suy giảm tâm ma cực mạnh.',
+        effect: { spirit: 150, heartDemon: -30 }
+    },
+    'nguyen_anh_dan': {
+        id: 'nguyen_anh_dan',
+        name: 'Nguyên Anh Đan',
+        type: 'consumable',
+        icon: '🟣',
+        quality: 'Linh Bảo',
+        price: 85000,
+        description: 'Luyện chế từ tà đan cấp cao, đan dược phụ trợ tối thượng giúp ngưng kết Nguyên Anh, tăng mạnh thần thức và tỉ lệ đột phá Nguyên Anh.',
+        effect: { breakthroughRate: 0.15, spirit: 500 }
+    },
+    'dinh_than_dan': {
+        id: 'dinh_than_dan',
+        name: 'Định Thần Đan',
+        type: 'consumable',
+        icon: '🔵',
+        quality: 'Pháp Bảo',
+        price: 22000,
+        description: 'An định thần hồn, gia tăng vĩnh viễn thần thức cùng với độ ổn định kinh mạch khi tu luyện.',
+        effect: { spirit: 350, stability: 30 }
+    },
+    'thanh_truc_phong_van_kiem': {
+        id: 'thanh_truc_phong_van_kiem',
+        name: 'Thanh Trúc Phong Vân Kiếm',
+        type: 'attackArtifact',
+        icon: '🎋',
+        quality: 'Thông Thiên Linh Bảo',
+        price: 300000,
+        description: 'Thanh kiếm chí bảo rèn từ Thiên Tinh Thần Tre cùng linh tơ ong vàng, uy lực kiếm khí cuồng bạo xé rách vạn pháp.',
+        stats: { atk: 12000, spd: 500, critChance: 0.25, swordDmg: 1.35 },
+        poem: ['Thanh Trúc Thần Phong Đan Tiêu Nhạc', 'Vạn Kiếm Quy Tông Luyện Vạn Ma']
+    },
+    'hu_thien_dinh': {
+        id: 'hu_thien_dinh',
+        name: 'Hư Thiên Đỉnh',
+        type: 'supportArtifact',
+        icon: '🏺',
+        quality: 'Thông Thiên Linh Bảo',
+        price: 400000,
+        description: 'Chí tôn cổ đỉnh ngưng tụ càn khôn bát quái khí, mang lại phòng ngự tuyệt đối cùng khả năng thu nạp linh khí tinh thuần không giới hạn.',
+        stats: { spirit: 3000, def: 10000, qiAbsorb: 1200 },
+        poem: ['Hư Thiên Bát Quái Tàng Càn Khôn', 'Cổ Đỉnh Trấn Áp Vạn Sơn Hà']
+    },
+    'phong_loi_phien': {
+        id: 'phong_loi_phien',
+        name: 'Phong Lôi Phiến',
+        type: 'attackArtifact',
+        icon: '🪭',
+        quality: 'Cổ Bảo',
+        price: 160000,
+        description: 'Chiếc quạt cổ đúc từ cánh thần điểu, một lần vung quạt dẫn động phong lôi tàn phá vạn dặm.',
+        stats: { atk: 8000, spd: 300, thunderDmg: 1.25 },
+        poem: ['Phong Lôi Nhất Phất Thiên Địa Động', 'Vạn Kiếp Cuồng Lôi Thiêu Cực Ma']
+    },
+    'than_hoang_giap': {
+        id: 'than_hoang_giap',
+        name: 'Thần Hoàng Giáp',
+        type: 'defenseArtifact',
+        icon: '🥋',
+        quality: 'Thông Thiên Linh Bảo',
+        price: 350000,
+        description: 'Hộ thân giáp y đúc từ kim hỏa thần tủy cực kỳ kiên cố, đem lại sinh lực dồi dào cùng phòng ngự bất phàm.',
+        stats: { def: 12000, maxHp: 15000, damageReduction: 0.25 },
+        poem: ['Thần Hoàng Chiến Giáp Hộ Nguyên Thần', 'Linh Quang Vạn Trượng Kính Thiên Binh']
     }
 };
 
