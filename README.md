@@ -131,3 +131,112 @@ Dự án tích hợp **Capacitor** để chuyển đổi giao diện web thành 
 ---
 
 _Chúc các đạo hữu sớm ngày đốn ngộ thiên đạo, đắc đạo thành tiên!_
+
+# DANH MỤC CỬA HÀNG
+
+│── 📜 Công Pháp
+│ ├── Công Pháp Tu Luyện
+│ ├── Công Pháp Luyện Thể
+│ ├── Công Pháp Thần Hồn
+│ ├── Bí Thuật
+│ ├── Thần Thông
+│ ├── Độn Thuật
+│ ├── Kiếm Quyết
+│ └── Ma Công
+│
+├── ⚔️ Pháp Bảo
+│ ├── Pháp Khí
+│ ├── Linh Khí
+│ ├── Cổ Bảo
+│ ├── Thông Thiên Linh Bảo
+│ ├── Huyền Thiên Chi Bảo
+│ ├── Công Kích
+│ ├── Phòng Ngự
+│ ├── Phi Hành
+│ ├── Trói Buộc
+│ └── Phụ Trợ
+│
+├── 💊 Đan Dược
+│ ├── Tu Luyện
+│ ├── Đột Phá
+│ ├── Hồi Phục
+│ ├── Trị Thương
+│ ├── Giải Độc
+│ ├── Luyện Thể
+│ ├── Tăng Thọ
+│ └── Khác
+│
+├── ⚡ Phù Lục
+│ ├── Công Kích
+│ ├── Phòng Ngự
+│ ├── Trấn Áp
+│ ├── Độn Thuật
+│ ├── Triệu Hồi
+│ └── Truyền Âm
+│
+├── ☯️ Trận Pháp
+│ ├── Công Kích Trận
+│ ├── Phòng Ngự Trận
+│ ├── Tụ Linh Trận
+│ ├── Khốn Trận
+│ ├── Huyễn Trận
+│ ├── Truyền Tống Trận
+│ └── Cấm Chế
+│
+├── 💎 Nguyên Liệu
+│ ├── 🌿 Linh Dược
+│ │ ├── Dưới 100 năm
+│ │ ├── 100 năm
+│ │ ├── 1000 năm
+│ │ ├── 10000 năm
+│ │ └── Vạn Niên Linh Dược
+│ │
+│ ├── 🪵 Linh Mộc
+│ │ ├── Lôi Thuộc Tính
+│ │ ├── Hỏa Thuộc Tính
+│ │ ├── Âm Thuộc Tính
+│ │ └── Dưỡng Hồn
+│ │
+│ ├── ⛏️ Linh Khoáng
+│ │ ├── Kim Loại
+│ │ ├── Tinh Thạch
+│ │ ├── Ngọc Thạch
+│ │ └── Dị Khoáng
+│ │
+│ ├── 🦴 Yêu Thú Tài Liệu
+│ │ ├── Yêu Cốt
+│ │ ├── Yêu Huyết
+│ │ ├── Yêu Đan
+│ │ ├── Da Lông
+│ │ ├── Gân
+│ │ ├── Trảo
+│ │ ├── Yêu Nanh
+│ │ └── Yêu Giác
+│ │
+│ └── 🌟 Thiên Tài Địa Bảo
+│
+├── 🥚 Linh Thú
+│ ├── Trứng Linh Thú
+│ ├── Trứng Kỳ Trùng
+│ ├── Linh Thú
+│ └── Kỳ Trùng
+│
+├── 🤖 Khôi Lỗi
+│ ├── Thi Khôi
+│ └── Linh Khôi
+│
+├── 🏮 Dịch Vụ
+│ ├── Luyện Đan
+│ ├── Luyện Khí
+│ ├── Bồi Dục Linh Thú
+│ ├── Giám Định
+│ ├── Khảm Nạm
+│ ├── Truyền Tống
+│ ├── Treo Thưởng
+│ └── Thu Mua
+│
+├── 🎒 Khác
+│ ├── Ngọc Giản
+│ ├── Bản Đồ
+│ ├── Lệnh Bài
+│ └── Chìa Khóa Bí Cảnh
