@@ -2794,7 +2794,7 @@ export const ITEMS = {
         name: 'Phong Lôi Sí',
         type: 'flightArtifact',
         quality: 'Danh Khí',
-        image: 'artifacts/phong_loi_si.webp',
+        image: 'artifacts/phong-loi-si.svg',
         description: 'Đôi cánh được luyện từ lông vũ của yêu thú lôi hệ và phong hệ cực hiếm. Tốc độ độn thuật vô song, nhưng yêu cầu người sử dụng phải lĩnh ngộ [[phong_loi_quyet_book|Phong Lôi Quyết]] hoặc các Lôi Pháp để làm nguồn năng lượng kích hoạt.',
         price: 2500000,
         stats: { spd: 500, avoidRate: 0.2 },
