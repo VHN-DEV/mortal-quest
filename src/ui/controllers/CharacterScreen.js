@@ -37,6 +37,8 @@ export class CharacterScreen {
         this.elCharDivineSense = document.getElementById('char-divine-sense');
         this.elCharPhysiqueTalent = document.getElementById('char-physique-talent');
         this.elCharDaoTam = document.getElementById('char-dao-tam');
+        this.elCharDanPoison = document.getElementById('char-dan-poison');
+        this.elCharDailyPills = document.getElementById('char-daily-pills');
         
         // Cultivation Main
         this.elCharRealmName = document.getElementById('char-realm-name');
@@ -192,6 +194,27 @@ export class CharacterScreen {
             const btRate = state.player.getBreakthroughSuccessRate('tuvi');
             this.elCharBreakthroughRate.textContent = `${btRate}%`;
             this.elCharBreakthroughRate.className = btRate > 80 ? 'text-green-400 font-bold' : (btRate < 45 ? 'text-red-500 font-bold animate-pulse' : 'text-cyan-400 font-bold');
+        }
+
+        if (this.elCharDanPoison) {
+            const danPoison = state.player.danPoison || 0;
+            this.elCharDanPoison.textContent = `${Math.floor(danPoison)} / 100`;
+            this.elCharDanPoison.className = danPoison > 75 ? 'text-red-500 font-bold font-mono animate-pulse' : (danPoison > 40 ? 'text-purple-400 font-bold font-mono' : 'text-gray-400 font-bold font-mono');
+        }
+
+        if (this.elCharDailyPills) {
+            const dailyCount = state.player.dailyPillStats?.count || 0;
+            const realmId = state.player.realmId || 1;
+            let dailyLimit = 5;
+            if (realmId <= 13) dailyLimit = 5;
+            else if (realmId <= 17) dailyLimit = 7;
+            else if (realmId <= 21) dailyLimit = 10;
+            else if (realmId <= 25) dailyLimit = 12;
+            else if (realmId <= 29) dailyLimit = 15;
+            else dailyLimit = 20;
+
+            this.elCharDailyPills.textContent = `${dailyCount} / ${dailyLimit}`;
+            this.elCharDailyPills.className = dailyCount >= dailyLimit ? 'text-red-400 font-bold font-mono animate-pulse' : 'text-cyan-400 font-bold font-mono';
         }
 
         if (this.elCharComprehension) {

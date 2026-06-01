@@ -159,6 +159,8 @@ export class Player {
         this.currentCauldron = null;
         this.currentFlame = null;
         this.danPoison = 0;
+        this.pillResistance = {};
+        this.dailyPillStats = { day: 0, count: 0 };
         this.knownRecipes = []; // No default recipes
         this.ownedFlames = [];
         this.ownedCauldrons = [];
@@ -632,6 +634,24 @@ export class Player {
 
         // 8. Passive Mastery Gain for equipped techniques
         this.tickPassiveMastery(delta);
+
+        // 6c. Pill Toxicity (Đan Độc) Decay & Heart Demon Backlash
+        if (this.danPoison > 0) {
+            const decayRate = this.isSecluded ? 0.05 : 0.005;
+            this.danPoison = Math.max(0, this.danPoison - decayRate * delta);
+        }
+
+        if (this.danPoison > 75) {
+            // Heart demon backlash / Qi riot
+            if (Math.random() < 0.001 * delta) {
+                const damage = Math.floor(this.maxHp * 0.05);
+                this.hp = Math.max(1, this.hp - damage);
+                this.stability = Math.max(0, this.stability - 2);
+                if (typeof state !== 'undefined' && state.ui && state.ui.toast) {
+                    state.ui.toast("Đan độc quá nồng gây bạo loạn linh lực trong kinh mạch! Khí huyết và Đạo tâm bị tổn hại!", "warning");
+                }
+            }
+        }
 
         // 7. Mortality Check
         this.checkMortality();
@@ -1628,6 +1648,11 @@ export class Player {
             baseRate -= (this.than_hon_qua_tai || 0) * 0.25;                        // -0 to -25%
         }
 
+        // Pill Toxicity Penalty (Up to -40% breakthrough success rate at 100 toxicity)
+        if (this.danPoison > 0) {
+            baseRate -= this.danPoison * 0.4;
+        }
+
         baseRate = Math.max(5, Math.min(100, baseRate));
         const fatePenalty = window.game?.systems?.fate?.getBreakthroughPenalty() || 1.0;
         baseRate *= fatePenalty;
@@ -2353,6 +2378,12 @@ export class Player {
         
         // Apply Environmental Qi Multiplier to Cultivation Speed
         this.tuViPerSecond *= this.getEnvironmentalQiMultiplier();
+        
+        // Apply Pill Toxicity penalty (Up to 35% cultivation speed reduction at 100 toxicity)
+        if (this.danPoison > 0) {
+            const toxicitySpeedPenalty = Math.max(0.3, 1 - (this.danPoison || 0) * 0.005);
+            this.tuViPerSecond *= toxicitySpeedPenalty;
+        }
         
         // --- 7 CULTIVATION PATHS (CLASSES) SYSTEM ---
         this.cultivationPath = null;
@@ -3770,9 +3801,10 @@ export class Player {
             currentFlame: this.currentFlame,
             knownRecipes: [...this.knownRecipes],
             ownedFlames: [...this.ownedFlames],
-            ownedCauldrons: [...this.ownedCauldrons],
             alchemyReputation: this.alchemyReputation,
             danPoison: this.danPoison,
+            pillResistance: { ...this.pillResistance },
+            dailyPillStats: { ...this.dailyPillStats },
             
             smithingLevel: this.smithingLevel,
             smithingExp: this.smithingExp,
@@ -4032,9 +4064,10 @@ export class Player {
         this.currentFlame = data.currentFlame || null;
         this.knownRecipes = data.knownRecipes || [];
         this.ownedFlames = data.ownedFlames || [];
-        this.ownedCauldrons = data.ownedCauldrons || [];
         this.alchemyReputation = data.alchemyReputation || 0;
         this.danPoison = data.danPoison || 0;
+        this.pillResistance = data.pillResistance || {};
+        this.dailyPillStats = data.dailyPillStats || { day: 0, count: 0 };
         
         this.smithingLevel = data.smithingLevel || 1;
         this.smithingExp = data.smithingExp || 0;

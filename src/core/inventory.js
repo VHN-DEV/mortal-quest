@@ -94,11 +94,125 @@ export class Inventory {
         if (!itemInInv || itemInInv.quantity < quantity) return false;
 
         if (itemData.type === 'consumable' && itemData.effect) {
-            for (let i = 0; i < quantity; i++) {
-                this.applyEffect(itemData.effect);
+            const isPill = itemId.endsWith('_dan') || (itemData.name && itemData.name.includes('Đan'));
+            if (isPill) {
+                // Daily Pill Absorption Limit Check
+                const currentDay = state.systems?.time ? state.systems.time.totalDays : 0;
+                if (!this.player.dailyPillStats || this.player.dailyPillStats.day !== currentDay) {
+                    this.player.dailyPillStats = { day: currentDay, count: 0 };
+                }
+
+                const realmId = this.player.realmId || 1;
+                let dailyLimit = 5;
+                if (realmId <= 13) dailyLimit = 5;       // Luyện Khí
+                else if (realmId <= 17) dailyLimit = 7;  // Trúc Cơ
+                else if (realmId <= 21) dailyLimit = 10; // Kết Đan
+                else if (realmId <= 25) dailyLimit = 12; // Nguyên Anh
+                else if (realmId <= 29) dailyLimit = 15; // Hóa Thần
+                else dailyLimit = 20;                     // Higher
+
+                if (this.player.dailyPillStats.count + quantity > dailyLimit) {
+                    if (typeof state !== 'undefined' && state.ui && state.ui.toast) {
+                        state.ui.toast(`Kinh mạch hôm nay đã đạt giới hạn hấp thu (${this.player.dailyPillStats.count}/${dailyLimit} viên). Không thể hấp thu thêm!`, "warning");
+                    }
+                    return false;
+                }
+
+                // Process consumption one by one
+                let totalToxicityAdded = 0;
+                for (let k = 0; k < quantity; k++) {
+                    const metadata = itemInInv.metadata || {};
+                    const danVeins = metadata.danVeins || 0;
+                    
+                    // Determine base toxicity (perfect pills have 0 toxicity)
+                    let pillToxicity = 0;
+                    if (danVeins < 9) {
+                        const basePoison = metadata.poison !== undefined ? metadata.poison : (itemData.stats?.poison || 15);
+                        pillToxicity = Math.max(0, basePoison - danVeins);
+                    }
+
+                    // Count Resistance
+                    if (!this.player.pillResistance) {
+                        this.player.pillResistance = {};
+                    }
+                    const count = this.player.pillResistance[itemId] || 0;
+
+                    // Perfect Veins Resistance Bypass:
+                    // danVeins >= 12 (Tiên Phẩm) ignores 3 levels of resistance
+                    // danVeins >= 9 (Hoàn Mỹ) ignores 2 levels of resistance
+                    // danVeins >= 6 (Cực Phẩm) ignores 1 level of resistance
+                    let bypass = 0;
+                    if (danVeins >= 12) bypass = 3;
+                    else if (danVeins >= 9) bypass = 2;
+                    else if (danVeins >= 6) bypass = 1;
+
+                    const effectiveCount = Math.max(0, count - bypass);
+
+                    // Diminishing Returns Effectiveness Multiplier
+                    let resistanceMult = 1.0;
+                    if (effectiveCount === 0) resistanceMult = 1.0;
+                    else if (effectiveCount === 1) resistanceMult = 0.7;
+                    else if (effectiveCount === 2) resistanceMult = 0.3;
+                    else resistanceMult = 0.1;
+
+                    // Realm-difference Decay Penalty (50% effectiveness decay per tier difference)
+                    // We can map common pill IDs to their tier levels:
+                    let pillTier = 1; // Default to Tier 1 (Luyện Khí)
+                    if (itemId === 'truc_co_dan' || itemId.includes('truc_co')) pillTier = 2;
+                    else if (itemId === 'ket_dan_dan' || itemId.includes('ket_dan')) pillTier = 3;
+                    else if (itemId === 'nguyen_anh_dan' || itemId.includes('nguyen_anh')) pillTier = 4;
+                    else if (itemId === 'hoa_than_dan' || itemId.includes('hoa_than')) pillTier = 5;
+
+                    // Player Tier calculation
+                    let playerTier = 1;
+                    if (realmId <= 13) playerTier = 1;       // Luyện Khí
+                    else if (realmId <= 17) playerTier = 2;  // Trúc Cơ
+                    else if (realmId <= 21) playerTier = 3;  // Kết Đan
+                    else if (realmId <= 25) playerTier = 4;  // Nguyên Anh
+                    else playerTier = 5;                     // Hóa Thần / Higher
+
+                    let tierMult = 1.0;
+                    if (playerTier > pillTier) {
+                        tierMult = Math.pow(0.5, playerTier - pillTier);
+                    }
+
+                    // Combined Multiplier
+                    const finalMult = resistanceMult * tierMult;
+
+                    // Apply the effect
+                    this.applyEffect(itemData.effect, finalMult);
+
+                    // Update player toxicity, resistance history and daily count
+                    this.player.danPoison = Math.min(100, (this.player.danPoison || 0) + pillToxicity);
+                    this.player.pillResistance[itemId] = count + 1;
+                    this.player.dailyPillStats.count += 1;
+                    totalToxicityAdded += pillToxicity;
+                }
+
+                // Show detailed feedback toast
+                if (typeof state !== 'undefined' && state.ui && state.ui.toast) {
+                    let msg = `Đã phục dụng ${quantity} viên ${itemData.name}.`;
+                    if (totalToxicityAdded > 0) {
+                        msg += ` Tích tụ thêm +${totalToxicityAdded} Đan độc.`;
+                    } else {
+                        msg += ` Đan văn Hoàn Mỹ giúp miễn trừ toàn bộ Đan độc!`;
+                    }
+                    state.ui.toast(msg, "success");
+                }
+
+                this.removeItem(itemId, quantity);
+                
+                // Trigger stats recalculation to apply any new toxicity speeds
+                this.player.calculateStats();
+                return true;
+            } else {
+                // Not a pill: execute standard consumable effect
+                for (let i = 0; i < quantity; i++) {
+                    this.applyEffect(itemData.effect);
+                }
+                this.removeItem(itemId, quantity);
+                return true;
             }
-            this.removeItem(itemId, quantity);
-            return true;
         } else if (itemData.type === 'book' && itemData.techniqueId) {
             const res = this.player.startComprehendingTechnique(itemData.techniqueId, false);
             if (res.success) {
@@ -266,18 +380,19 @@ export class Inventory {
         return total;
     }
 
-    applyEffect(effect) {
+    applyEffect(effect, multiplier = 1.0) {
         if (effect.type === 'tu_vi') {
-            this.player.tuVi += effect.value;
+            this.player.tuVi += Math.round(effect.value * multiplier);
         } else if (effect.type === 'heal') {
-            const healAmount = Math.floor(this.player.maxHp * effect.value);
+            const healAmount = Math.floor(this.player.maxHp * effect.value * multiplier);
             this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
         } else if (effect.type === 'lifespan' || effect.type === 'max_age') {
-            this.player.permanentLifespanBonus = (this.player.permanentLifespanBonus || 0) + effect.value;
+            const addedVal = Math.round(effect.value * multiplier);
+            this.player.permanentLifespanBonus = (this.player.permanentLifespanBonus || 0) + addedVal;
             this.player.calculateStats();
-            state.ui.toast(`Thọ nguyên tăng thêm ${effect.value} năm!`, "success");
+            state.ui.toast(`Thọ nguyên tăng thêm ${addedVal} năm!`, "success");
         } else if (effect.type === 'mana') {
-            const manaAmount = Math.floor(this.player.maxMana * effect.value);
+            const manaAmount = Math.floor(this.player.maxMana * effect.value * multiplier);
             this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaAmount);
         } else if (effect.type === 'learn_technique') {
             this.player.learnTechnique(effect.value);
@@ -286,7 +401,17 @@ export class Inventory {
         } else if (effect.type === 'qi_absorb') {
             const es = window.energySystem || (this.player.energySystem);
             if (es) {
-                es.absorbQi(effect.qiType, effect.amount, effect.purity || 'TINH_THUAN');
+                es.absorbQi(effect.qiType, effect.amount * multiplier, effect.purity || 'TINH_THUAN');
+            }
+        } else if (effect.type === 'restore') {
+            if (effect.hp) {
+                this.player.hp = Math.min(this.player.maxHp, this.player.hp + Math.round(effect.hp * multiplier));
+            }
+            if (effect.mana) {
+                this.player.mana = Math.min(this.player.maxMana, this.player.mana + Math.round(effect.mana * multiplier));
+            }
+            if (effect.stamina) {
+                this.player.stamina = Math.min(this.player.maxStamina, this.player.stamina + Math.round(effect.stamina * multiplier));
             }
         } else if (effect.type === 'learn_recipe') {
             if (!this.player.knownRecipes.includes(effect.value)) {
@@ -314,7 +439,7 @@ export class Inventory {
             }
         } else if (effect.type === 'learn_multiple_recipes') {
             if (Array.isArray(effect.value)) {
-                effect.value.forEach(subEffect => this.applyEffect(subEffect));
+                effect.value.forEach(subEffect => this.applyEffect(subEffect, multiplier));
             }
         } else if (effect.type === 'refine_flame') {
             if (!this.player.ownedFlames.includes(effect.value)) {
@@ -330,7 +455,7 @@ export class Inventory {
             this.player.addBuff({
                 id: effect.id || 'temp_buff',
                 stat: effect.stat,
-                value: effect.value,
+                value: effect.value * multiplier,
                 duration: (effect.duration || 3600) * 1000
             });
         } else if (effect.type === 'unlock_profession') {
