@@ -387,6 +387,17 @@ export const BEASTS = {
         description: 'Hạc bay trong mây tím, tốc độ phi hành cực nhanh và mang theo kịch độc sương mù.',
         baseStats: { hp: 900, atk: 160, def: 80, spd: 180 },
         abilities: ['Tử Vân Vụ Khí', 'Cực Tốc Phi Kích']
+    },
+    'hac_thiet_loi_thu': {
+        id: 'hac_thiet_loi_thu',
+        name: 'Hắc Thiết Lôi Thú',
+        type: BEAST_TYPES.DI_THU,
+        bloodline: 'THIEN',
+        icon: '⚡',
+        image: 'beasts/hac_thiet_loi_thu.webp',
+        description: 'Loài dị thú thượng cổ cực kỳ quý hiếm, mang trong mình sức mạnh lôi đình kinh thiên động địa, sừng của nó là nguyên liệu luyện chế lôi hệ chí bảo cực tốt.',
+        baseStats: { hp: 2600, atk: 380, def: 180, spd: 140 },
+        abilities: ['Hắc Lôi Phá Không', 'Tích Lôi Hộ Thể']
     }
 };
 

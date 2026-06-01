@@ -1487,11 +1487,11 @@ export const WORLDS = {
                 subRegionName: "Nội Hải"
             },
             {
-                id: "hu_thien_dien_nhan",
+                id: "hu_thien_dien",
                 name: "Hư Thiên Điện",
                 minRealm: 18,
                 danger: "nguy_hiem",
-                image: getLocImg("hu_thien_dien_nhan"),
+                image: getLocImg("hu_thien_dien"),
                 description: "Điện thờ thượng cổ trôi nổi trong không gian rách nát, chứa Hư Thiên Đỉnh vĩ đại.",
                 resources: ["Hư Thiên Tinh", "Cổ Đan"],
                 energies: [{ "type": "khong_gian_chi_khi", "concentration": 30, "purity": "CUC_PHAM" }],
@@ -1892,22 +1892,6 @@ export const WORLDS = {
                 regionName: "Thiên Nam",
                 subRegionId: "viet_quoc",
                 subRegionName: "Việt Quốc"
-            },
-            {
-                id: "hu_thien_dinh",
-                name: "Hư Thiên Đỉnh",
-                minRealm: 18,
-                danger: "nguy_hiem",
-                image: getLocImg("hu_thien_dinh"),
-                description: "Thông Thiên Linh Bảo đệ nhất nhân giới ngự trị nơi tâm điểm Hư Thiên Điện, ẩn chứa vô số kỳ trù và cự bảo.",
-                resources: ["Hư Thiên Đỉnh Bảo", "Thông Thiên Đan"],
-                energies: [{ "type": "khong_gian_chi_khi", "concentration": 40, "purity": "CUC_PHAM" }],
-                elementQi: { "Kim": 20, "Mộc": 10, "Thủy": 10, "Hỏa": 30, "Thổ": 20, "Phong": 0, "Lôi": 0, "Băng": 0, "Quang": 10, "Ám": 0 },
-                eventProbs: { "combat": 0.4, "loot": 0.4, "npc": 0.05, "empty": 0.15 },
-                regionId: "loan_tinh_hai",
-                regionName: "Loạn Tinh Hải",
-                subRegionId: "noi_hai",
-                subRegionName: "Nội Hải"
             },
             {
                 id: "am_minh_chi_dia",

@@ -50,6 +50,17 @@ export const CAULDRONS = {
         outputBonus: 2,
         description: 'Chứa đựng tinh hoa chi lực của địa long, khống hỏa cực tốt.'
     },
+    'phuong_hoa_lu': {
+        id: 'phuong_hoa_lu',
+        name: 'Phượng Hỏa Lư',
+        quality: 'Pháp Bảo',
+        successBonus: 0.25,
+        qualityBonus: 0.3,
+        stability: 0.9,
+        heatRate: 1.8,
+        outputBonus: 3,
+        description: 'Lò luyện cổ xưa khắc họa phượng hoàng thần điểu, lửa phượng giúp tăng nhanh tốc độ luyện đan và sản lượng đan dược cực tốt.'
+    },
     'thien_lu': {
         id: 'thien_lu',
         name: 'Thiên Cực Thái Hư Lư',
@@ -200,6 +211,14 @@ export const ALCHEMY_RECIPES = [
 ];
 
 export const getRecipeById = (id) => ALCHEMY_RECIPES.find(r => r.id === id);
-export const getCauldronById = (id) => CAULDRONS[id];
-export const getFlameById = (id) => FLAMES[id];
+export const getCauldronById = (id) => {
+    if (!id) return null;
+    const cleanId = id.endsWith('_item') ? id.slice(0, -5) : id;
+    return CAULDRONS[cleanId];
+};
+export const getFlameById = (id) => {
+    if (!id) return null;
+    const cleanId = id.endsWith('_seed') ? id.slice(0, -5) : id;
+    return FLAMES[cleanId];
+};
 export const getAlchemyLevelInfo = (level) => ALCHEMY_LEVELS.find(l => l.level === level) || ALCHEMY_LEVELS[0];

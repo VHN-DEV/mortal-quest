@@ -1447,6 +1447,7 @@ export const ITEMS = {
         icon: '🏺',
         quality: 'Thông Thiên Linh Bảo',
         price: 400000,
+        image: 'items/hu_thien_dinh.webp',
         description: 'Chí tôn cổ đỉnh ngưng tụ càn khôn bát quái khí, mang lại phòng ngự tuyệt đối cùng khả năng thu nạp linh khí tinh thuần không giới hạn.',
         stats: { spirit: 3000, def: 10000, qiAbsorb: 1200 },
         poem: ['Hư Thiên Bát Quái Tàng Càn Khôn', 'Cổ Đỉnh Trấn Áp Vạn Sơn Hà']
@@ -4084,6 +4085,7 @@ export const ITEMS = {
         icon: '🎋',
         quality: 'Thông Thiên Linh Bảo',
         price: 300000,
+        image: 'items/thanh_truc_phong_van_kiem.webp',
         description: 'Thanh kiếm chí bảo rèn từ Thiên Tinh Thần Tre cùng linh tơ ong vàng, uy lực kiếm khí cuồng bạo xé rách vạn pháp.',
         stats: { atk: 12000, spd: 500, critChance: 0.25, swordDmg: 1.35 },
         poem: ['Thanh Trúc Thần Phong Đan Tiêu Nhạc', 'Vạn Kiếm Quy Tông Luyện Vạn Ma']
@@ -4186,6 +4188,57 @@ export const ITEMS = {
         price: 15000,
         description: 'Hướng dẫn chế tạo Cự Hổ Khôi Lỗi khổng lồ bắn ra cột sáng cực mạnh.',
         effect: { type: 'learn_puppet_recipe', value: 'cu_ho_khoi_loi' }
+    },
+    'hu_tien_lenh': {
+        id: 'hu_tien_lenh',
+        name: 'Hư Tiên Lệnh',
+        type: 'material',
+        icon: '🔑',
+        quality: 'Linh Bảo',
+        price: 80000,
+        image: 'items/hu_tien_lenh.webp',
+        description: 'Tấm lệnh bài cổ xưa tỏa ra dao động không gian huyền ảo, là chìa khóa mở lối vào Hư Thiên Điện chứa Hư Thiên Đỉnh.'
+    },
+    'truyen_tin_hac': {
+        id: 'truyen_tin_hac',
+        name: 'Truyền Tin Hạc',
+        type: 'consumable',
+        icon: '🕊️',
+        quality: 'Pháp Khí',
+        price: 150,
+        image: 'items/truyen_tin_hac.webp',
+        description: 'Linh hạc gấp từ phù giấy chứa một luồng ý niệm, chuyên dùng để truyền tin tức giữa các tu sĩ cách xa vạn dặm. Sử dụng hồi phục ngay lập tức 10 Thể lực.',
+        effect: { type: 'restore', stamina: 10 }
+    },
+    'phuong_hoa_lu_item': {
+        id: 'phuong_hoa_lu_item',
+        name: 'Phượng Hoa Lư',
+        type: 'cauldron',
+        icon: '🏺',
+        quality: 'Pháp Bảo',
+        price: 75000,
+        image: 'items/phuong_hoa_lu.webp',
+        description: 'Lò luyện đan thượng cấp khắc hình phượng hoàng lửa sinh động như thật, có thể bảo toàn dược tính của linh thảo tuyệt đối.'
+    },
+    'o_minh_si': {
+        id: 'o_minh_si',
+        name: 'Ô Minh Ty',
+        type: 'material',
+        icon: '🕸️',
+        quality: 'Linh Khí',
+        price: 1500,
+        image: 'items/o_minh_si.webp',
+        description: 'Sợi tơ đen nhánh dẻo dai sinh ra từ tằm ô minh sống nơi u tối, là vật liệu thượng hạng để luyện chế khôi lỗi cao cấp hoặc dệt hộ giáp.'
+    },
+    'trung_hac_thiet_loi_thu': {
+        id: 'trung_hac_thiet_loi_thu',
+        name: 'Trứng Hắc Thiết Lôi Thú',
+        type: 'beast_egg',
+        beastId: 'hac_thiet_loi_thu',
+        icon: '🥚',
+        quality: 'Thiên Cấp',
+        price: 25000,
+        description: 'Trứng của Hắc Thiết Lôi Thú thượng cổ, bao quanh bởi những tia lôi điện đen kịt lách tách kêu gào.'
     }
 };
 

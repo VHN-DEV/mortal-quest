@@ -52,10 +52,10 @@ import { CheatSystemScreen } from './ui/controllers/CheatSystemScreen.js';
 function slugifyName(name) {
     if (!name) return 'VoDanh';
     return name.normalize('NFD')
-               .replace(/[\u0300-\u036f]/g, '')
-               .replace(/[đĐ]/g, 'd')
-               .replace(/[^a-zA-Z0-9]/g, '')
-               .trim();
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[đĐ]/g, 'd')
+        .replace(/[^a-zA-Z0-9]/g, '')
+        .trim();
 }
 
 export class Game {
@@ -407,7 +407,7 @@ export class Game {
             if (state.player) {
                 const now = Date.now();
                 const delta = (now - state.player.lastUpdate) / 1000;
-                
+
                 if (delta > 5.0) {
                     this.processOfflineProgress(delta);
                 } else {
@@ -563,7 +563,7 @@ export class Game {
             if (now - (this.lastTechRenderTime || 0) >= 1000) {
                 const activeTab = state.activeTechTab || 'linh_luc';
                 const isDetailHidden = !this.screens.systems.elTechDetailView || this.screens.systems.elTechDetailView.classList.contains('hidden');
-                
+
                 if (isDetailHidden) {
                     if (['linh_luc', 'luyen_the', 'than_thuc', 'secret'].includes(activeTab)) {
                         this.screens.systems.renderTechniques(activeTab);
@@ -817,14 +817,14 @@ export class Game {
                 { label: 'Xuất Ra File (.json)', value: 'file', icon: 'ph-file-arrow-down' },
                 { label: 'Sao Chép Mã Save (Văn Bản)', value: 'text', icon: 'ph-copy' }
             ];
-            
+
             const title = slot ? `Xuất Ô Lưu Số ${slot}` : 'Xuất Toàn Bộ Mệnh Đồ';
             const subtitle = slot ? `Chọn hình thức xuất dữ liệu của ô lưu số ${slot} để chuyển thiết bị.` : 'Chọn hình thức xuất toàn bộ dữ liệu lưu trữ để chuyển thiết bị.';
             const choice = await state.ui.promptOptions(title, options, subtitle);
             if (!choice) return;
-            
+
             state.ui.showLoading(true, 'Đang phong ấn đạo quả...');
-            
+
             let saveData;
             let fileName;
             if (slot !== null) {
@@ -835,13 +835,13 @@ export class Game {
                 saveData = await SaveSystem.exportAllSaves();
                 fileName = `PhamNhanVanDao_AllSaves_${Date.now()}.json`;
             }
-            
+
             const jsonStr = JSON.stringify(saveData);
             state.ui.showLoading(false);
-            
+
             if (choice === 'file') {
                 const isAndroid = Capacitor.getPlatform() === 'android';
-                
+
                 if (isAndroid) {
                     try {
                         const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem');
@@ -851,7 +851,7 @@ export class Game {
                             directory: Directory.Cache,
                             encoding: Encoding.UTF8
                         });
-                        
+
                         const { Share } = await import('@capacitor/share');
                         await Share.share({
                             title: slot ? `Sao Lưu Ô ${slot}` : 'Mệnh Đồ Lục Sao Lưu',
@@ -883,7 +883,7 @@ export class Game {
                     await navigator.clipboard.writeText(hexStr);
                     state.ui.toast('Mã save đã được sao chép vào bộ nhớ tạm. Hãy gửi mã này sang thiết bị mới để nhập!', 'success');
                 } catch (err) {
-                    state.ui.prompt('Sao chép thủ công mã save bên dưới:', () => {}, hexStr, 'Mã Save Của Bạn');
+                    state.ui.prompt('Sao chép thủ công mã save bên dưới:', () => { }, hexStr, 'Mã Save Của Bạn');
                 }
             }
         } catch (e) {
@@ -899,11 +899,11 @@ export class Game {
                 { label: 'Nhập Từ File (.json)', value: 'file', icon: 'ph-file-arrow-up' },
                 { label: 'Nhập Bằng Mã Save (Văn Bản)', value: 'text', icon: 'ph-keyboard' }
             ];
-            
+
             const title = targetSlot ? `Nhập Đè Ô Lưu Số ${targetSlot}` : 'Nhập Mệnh Đồ';
             const choice = await state.ui.promptOptions(title, options, 'Chọn hình thức nhập dữ liệu lưu trữ để tiếp tục hành trình.');
             if (!choice) return;
-            
+
             if (choice === 'file') {
                 const fileInput = document.getElementById('import-save-file');
                 if (fileInput) {
@@ -919,7 +919,7 @@ export class Game {
             } else if (choice === 'text') {
                 state.ui.prompt('Dán mã save đã sao chép ở thiết bị cũ vào đây:', async (code) => {
                     if (!code || code.trim() === '') return;
-                    
+
                     state.ui.showLoading(true, 'Đang giải mã đạo quả...');
                     try {
                         const jsonStr = hex_to_utf8(code.trim());
@@ -945,7 +945,7 @@ export class Game {
                 state.ui.toast('Dữ liệu lưu trữ không đúng định dạng Phàm Nhân Vấn Đạo!', 'error');
                 return;
             }
-            
+
             if (data.type === 'mortal_quest_save_export') {
                 if (targetSlot !== null) {
                     const proceed = await state.ui.confirm(
@@ -960,11 +960,11 @@ export class Game {
                     );
                     if (!proceed) return;
                 }
-                
+
                 state.ui.showLoading(true, 'Đang trùng kiến mệnh đồ...');
                 const success = await SaveSystem.importAllSaves(data);
                 state.ui.showLoading(false);
-                
+
                 if (success) {
                     state.ui.toast('Nhập dữ liệu thành công!', 'success');
                     if (this.screens.save) {
@@ -975,7 +975,7 @@ export class Game {
                 }
             } else if (data.type === 'mortal_quest_slot_export') {
                 let slot = targetSlot;
-                
+
                 if (slot === null) {
                     const slotChoices = [
                         { label: `Ô lưu số 1 (Ghi đè)`, value: '1' },
@@ -984,12 +984,12 @@ export class Game {
                         { label: `Ô lưu số 4 (Ghi đè)`, value: '4' },
                         { label: `Ô lưu số 5 (Ghi đè)`, value: '5' }
                     ];
-                    
+
                     const charName = data.metadata?.name || 'Vô Danh';
                     const charRealm = data.metadata?.realm || 'Chưa Tu Luyện';
                     const selectedSlot = await state.ui.promptOptions(
-                        'Chọn Ô Lưu Đích', 
-                        slotChoices, 
+                        'Chọn Ô Lưu Đích',
+                        slotChoices,
                         `Phát hiện dữ liệu của đạo hữu [${charName} - ${charRealm}]. Vui lòng chọn ô lưu muốn ghi đè:`
                     );
                     if (!selectedSlot) return;
@@ -1002,11 +1002,11 @@ export class Game {
                     );
                     if (!confirmed) return;
                 }
-                
+
                 state.ui.showLoading(true, `Đang nạp đạo quả vào ô ${slot}...`);
                 const success = await SaveSystem.importSlotSave(slot, data);
                 state.ui.showLoading(false);
-                
+
                 if (success) {
                     state.ui.toast(`Nhập dữ liệu vào ô ${slot} thành công!`, 'success');
                     if (this.screens.save) {
@@ -1143,7 +1143,7 @@ export class Game {
                 'han_lap': { location: 'bach_nhac_phong', realm: 42 },
                 'tu_linh': { location: 'dieu_am_mon', realm: 30 },
                 'kiem_vo_tam': { location: 'cu_kiem_mon', realm: 24 },
-                'vo_danh': { location: 'hu_thien_dien_nhan', realm: 28 },
+                'vo_danh': { location: 'hu_thien_dien', realm: 28 },
                 'bang_nguyet': { location: 'tieu_cuc_cung', realm: 26 },
                 'thanh_lien': { location: 'phat_tong', realm: 20 },
                 'thanh_nhi': { location: 'thien_ho_toc', realm: 12 },
@@ -1319,7 +1319,7 @@ export class Game {
         const focus = customFocus || state.player.cultivationFocus || 'tuvi';
 
         // Unified Cultivation State Panel toggling for all 3 progression pathways
-        const hasVienManState = 
+        const hasVienManState =
             (focus === 'tuvi' && state.player.tuViState !== 'accumulating') ||
             (focus === 'body' && state.player.bodyState !== 'accumulating') ||
             (focus === 'soul' && state.player.soulState !== 'accumulating');
