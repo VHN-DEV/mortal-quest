@@ -33,7 +33,7 @@ export class ShopController {
 
     getTechniqueCategoriesForBook(itemData) {
         if (!itemData) return [];
-        
+
         const categories = [];
         const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
         const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
@@ -45,7 +45,7 @@ export class ShopController {
         if (techId) {
             const tech = getTechniqueById(techId);
             if (tech) {
-                categories.push(tech.type); 
+                categories.push(tech.type);
             }
 
             const secret = getSecretTechniqueById(techId);
@@ -114,7 +114,7 @@ export class ShopController {
         const categories = [
             { id: 'dan_duoc', name: 'Đan Dược', icon: '💊' },
             { id: 'phap_bao', name: 'Trang Bị', icon: '⚔️' },
-            { id: 'cong_phap', name: 'Bí Tịch', icon: '📜' },
+            { id: 'cong_phap', name: 'Công Pháp', icon: '📜' },
             { id: 'bach_nghe', name: 'Bách Nghệ', icon: '⚒️' },
             { id: 'ky_vat', name: 'Kỳ Vật', icon: '💎' },
             { id: 'dich_vu', name: 'Dịch Vụ', icon: '🏮' }
@@ -218,11 +218,10 @@ export class ShopController {
             const active = this.shopSubFilter === f.id;
             return `
                 <button data-subfilter="${f.id}" 
-                    class="px-3.5 py-1.5 rounded-full text-[8px] font-ancient uppercase tracking-widest transition-all duration-200 shrink-0 border ${
-                        active 
-                            ? 'bg-qi-blue/20 text-qi-blue border-qi-blue/40 shadow-[0_0_8px_rgba(79,209,197,0.2)] font-bold active:scale-95' 
-                            : 'bg-white/[0.02] text-gray-500 border-white/5 hover:border-white/10 active:scale-98'
-                    }">
+                    class="px-3.5 py-1.5 rounded-full text-[8px] font-ancient uppercase tracking-widest transition-all duration-200 shrink-0 border ${active
+                    ? 'bg-qi-blue/20 text-qi-blue border-qi-blue/40 shadow-[0_0_8px_rgba(79,209,197,0.2)] font-bold active:scale-95'
+                    : 'bg-white/[0.02] text-gray-500 border-white/5 hover:border-white/10 active:scale-98'
+                }">
                     ${f.name}
                 </button>
             `;
@@ -296,11 +295,10 @@ export class ShopController {
             const qColor = qColors[q.id] || 'text-gray-500 border-white/5';
             return `
                 <button data-quality="${q.id}" 
-                    class="px-3.5 py-1.5 rounded-full text-[8px] font-ancient uppercase tracking-widest transition-all duration-200 shrink-0 border ${
-                        active 
-                            ? (q.id === 'all' ? 'bg-cultivation-gold/20 text-cultivation-gold border-cultivation-gold/40 shadow-[0_0_8px_rgba(212,175,55,0.2)] font-bold active:scale-95' : `${qColor.replace('/5', '/20')} border-opacity-60 shadow-[0_0_8px_rgba(255,255,255,0.05)] font-bold active:scale-95`) 
-                            : 'bg-white/[0.02] text-gray-500 border-white/5 hover:border-white/10 active:scale-98'
-                    }">
+                    class="px-3.5 py-1.5 rounded-full text-[8px] font-ancient uppercase tracking-widest transition-all duration-200 shrink-0 border ${active
+                    ? (q.id === 'all' ? 'bg-cultivation-gold/20 text-cultivation-gold border-cultivation-gold/40 shadow-[0_0_8px_rgba(212,175,55,0.2)] font-bold active:scale-95' : `${qColor.replace('/5', '/20')} border-opacity-60 shadow-[0_0_8px_rgba(255,255,255,0.05)] font-bold active:scale-95`)
+                    : 'bg-white/[0.02] text-gray-500 border-white/5 hover:border-white/10 active:scale-98'
+                }">
                     ${q.name}
                 </button>
             `;
