@@ -403,12 +403,19 @@ export class Player {
     }
 
     addTuVi(amount) {
-        // Khi đã Đại Viên Mãn và đang Nén Pháp Lực: tu vi thô → tinh thuần
-        if (this.tuViState === 'condensing' && this.tuVi >= this._getCurrentRealmExpRequired()) {
-            this.tinh_thuan += amount * 0.3; // 30% chuyển hóa thành tinh thuần
-        } else {
-            this.tuVi += amount;
+        const expRequired = this._getCurrentRealmExpRequired();
+        if (this.tuVi >= expRequired) {
+            if (this.tuViState === 'condensing') {
+                this.tinh_thuan += amount * 0.3; // 30% chuyển hóa thành tinh thuần
+                return;
+            } else if (this.tuViState === 'consolidating') {
+                // Củng cố Căn cơ: chuyển hóa linh khí dư thừa thành Căn Cơ (tối đa 100%)
+                const canCoGain = (amount / expRequired) * 100 * 0.5;
+                this.can_co = Math.min(100, (this.can_co || 0) + canCoGain);
+                return;
+            }
         }
+        this.tuVi += amount;
     }
 
     _getCurrentRealmExpRequired() {
@@ -742,8 +749,8 @@ export class Player {
             });
         }
 
-        // Cap tuVi at expRequired if state is full or condensing
-        if (this.tuViState === 'full' || this.tuViState === 'condensing') {
+        // Cap tuVi at expRequired if state is full, condensing or consolidating
+        if (this.tuViState === 'full' || this.tuViState === 'condensing' || this.tuViState === 'consolidating') {
             this.tuVi = realm.expRequired;
         }
 

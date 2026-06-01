@@ -130,4 +130,31 @@ describe('Player class', () => {
       expect(player.stability).toBeLessThan(100); // Decaying towards target
     });
   });
+
+  describe('Củng Cố Căn Cơ and Nén Pháp Lực', () => {
+    it('should convert excess Tu Vi into tinh_thuan when in condensing state at Đại Viên Mãn', () => {
+      const player = new Player();
+      player.tuViState = 'condensing';
+      const expReq = player._getCurrentRealmExpRequired();
+      player.tuVi = expReq;
+      
+      player.addTuVi(100);
+      
+      expect(player.tuVi).toBe(expReq); // capped
+      expect(player.tinh_thuan).toBe(30); // 30% of 100
+    });
+
+    it('should convert excess Tu Vi into can_co when in consolidating state at Đại Viên Mãn', () => {
+      const player = new Player();
+      player.tuViState = 'consolidating';
+      const expReq = player._getCurrentRealmExpRequired();
+      player.tuVi = expReq;
+      
+      player.addTuVi(expReq * 0.1); // add 10% of expRequired
+      
+      expect(player.tuVi).toBe(expReq); // capped
+      // canCoGain = (amount / expRequired) * 100 * 0.5 = 0.1 * 100 * 0.5 = 5%
+      expect(player.can_co).toBe(5);
+    });
+  });
 });
