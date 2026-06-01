@@ -597,11 +597,11 @@ export const ITEMS = {
         id: 'nguyen_anh_dan',
         name: 'Nguyên Anh Đan',
         type: 'consumable',
-        quality: 'Thông Thiên Linh Bảo',
-        icon: '💊',
-        price: 50000,
-        description: 'Đan dược chứa đựng linh lực khổng lồ, hỗ trợ ngưng kết Nguyên Anh tôn giả, tăng 15% tỷ lệ đột phá Nguyên Anh.',
-        stats: { breakthroughRate: 0.15 }
+        icon: '🟣',
+        quality: 'Linh Bảo',
+        price: 85000,
+        description: 'Luyện chế từ tà đan cấp cao, đan dược phụ trợ tối thượng giúp ngưng kết Nguyên Anh, tăng mạnh thần thức và tỉ lệ đột phá Nguyên Anh.',
+        effect: { breakthroughRate: 0.15, spirit: 500 }
     },
     'hoa_than_dan': {
         id: 'hoa_than_dan',
@@ -1444,12 +1444,12 @@ export const ITEMS = {
         id: 'hu_thien_dinh',
         name: 'Hư Thiên Đỉnh',
         type: 'supportArtifact',
-        quality: 'Tiên Khí',
-        tier: 'THONG_THIEN',
-        image: 'artifacts/hu-thien-dinh.svg',
-        description: 'Đỉnh quý chứa đựng không gian quy tắc, hỗ trợ luyện đan và trấn áp.',
-        price: 500000,
-        stats: { alchemySuccess: 0.2, soulRepress: 30 }
+        icon: '🏺',
+        quality: 'Thông Thiên Linh Bảo',
+        price: 400000,
+        description: 'Chí tôn cổ đỉnh ngưng tụ càn khôn bát quái khí, mang lại phòng ngự tuyệt đối cùng khả năng thu nạp linh khí tinh thuần không giới hạn.',
+        stats: { spirit: 3000, def: 10000, qiAbsorb: 1200 },
+        poem: ['Hư Thiên Bát Quái Tàng Càn Khôn', 'Cổ Đỉnh Trấn Áp Vạn Sơn Hà']
     },
     'bat_linh_xich': {
         id: 'bat_linh_xich',
@@ -4067,16 +4067,6 @@ export const ITEMS = {
         description: 'Đan dược trừ tà tịch ma, bảo vệ tâm mạch, tăng cường thần thức và suy giảm tâm ma cực mạnh.',
         effect: { spirit: 150, heartDemon: -30 }
     },
-    'nguyen_anh_dan': {
-        id: 'nguyen_anh_dan',
-        name: 'Nguyên Anh Đan',
-        type: 'consumable',
-        icon: '🟣',
-        quality: 'Linh Bảo',
-        price: 85000,
-        description: 'Luyện chế từ tà đan cấp cao, đan dược phụ trợ tối thượng giúp ngưng kết Nguyên Anh, tăng mạnh thần thức và tỉ lệ đột phá Nguyên Anh.',
-        effect: { breakthroughRate: 0.15, spirit: 500 }
-    },
     'dinh_than_dan': {
         id: 'dinh_than_dan',
         name: 'Định Thần Đan',
@@ -4097,17 +4087,6 @@ export const ITEMS = {
         description: 'Thanh kiếm chí bảo rèn từ Thiên Tinh Thần Tre cùng linh tơ ong vàng, uy lực kiếm khí cuồng bạo xé rách vạn pháp.',
         stats: { atk: 12000, spd: 500, critChance: 0.25, swordDmg: 1.35 },
         poem: ['Thanh Trúc Thần Phong Đan Tiêu Nhạc', 'Vạn Kiếm Quy Tông Luyện Vạn Ma']
-    },
-    'hu_thien_dinh': {
-        id: 'hu_thien_dinh',
-        name: 'Hư Thiên Đỉnh',
-        type: 'supportArtifact',
-        icon: '🏺',
-        quality: 'Thông Thiên Linh Bảo',
-        price: 400000,
-        description: 'Chí tôn cổ đỉnh ngưng tụ càn khôn bát quái khí, mang lại phòng ngự tuyệt đối cùng khả năng thu nạp linh khí tinh thuần không giới hạn.',
-        stats: { spirit: 3000, def: 10000, qiAbsorb: 1200 },
-        poem: ['Hư Thiên Bát Quái Tàng Càn Khôn', 'Cổ Đỉnh Trấn Áp Vạn Sơn Hà']
     },
     'phong_loi_phien': {
         id: 'phong_loi_phien',
