@@ -302,7 +302,7 @@ export const TECHNIQUES = {
         type: 'Thần Thức',
         element: 'Neutral',
         quality: 'Huyền Giai',
-        description: 'Thần chí tu luyện chí pháp của Cực Âm Tổ Sư, luyện thành thần thức vượt xa cảnh giới, khống chế khôi lỗi cực đoan.',
+        description: 'Bí thuật tăng cường thần thức và tu luyện phân thần thuật do Đại Diễn Thần Quân - tổ sư khai phái của Thiên Trúc Giáo tự sáng tạo từ vạn năm trước, là công pháp bắt buộc để phân tách thần niệm điều khiển nhiều khôi lỗi.',
         comprehendDifficulty: { baseTime: 1500, difficultyName: 'Thần Niệm Thần Bí' },
         maxStage: 7,
         stageLabel: 'Tầng',

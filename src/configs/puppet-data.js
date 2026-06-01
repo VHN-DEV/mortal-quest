@@ -53,6 +53,33 @@ export const PUPPET_RECIPES = [
         ],
         stats: { hp: 300, def: 20, atk: 60, spd: 30 },
         skillLevel: 3
+    },
+    {
+        id: 'thanh_vien_khoi_loi',
+        name: 'Thanh Viên Khôi Lỗi',
+        type: 'COMBAT',
+        grade: 'LINH',
+        description: 'Khôi lỗi tinh xảo hình vượn xanh, là khôi lỗi Trúc Cơ mà Hàn Lập sử dụng nhiều nhất.',
+        materials: [
+            { id: 'thiet_moc_bach_nien', quantity: 10 },
+            { id: 'ling_thach_trung', quantity: 5 }
+        ],
+        stats: { hp: 1500, def: 120, atk: 220, spd: 80 },
+        skillLevel: 5
+    },
+    {
+        id: 'cu_ho_khoi_loi',
+        name: 'Cự Hổ Khôi Lỗi',
+        type: 'WAR',
+        grade: 'HUYEN',
+        description: 'Con hổ khôi lỗi khổng lồ cao năm sáu trượng, há miệng bắn ra cột sáng trắng khổng lồ tiêu hao Hỏa Linh Thạch.',
+        materials: [
+            { id: 'thiet_moc_bach_nien', quantity: 30 },
+            { id: 'huyen_thiet', quantity: 20 },
+            { id: 'hoa_linh_thach_trung', quantity: 5 }
+        ],
+        stats: { hp: 5000, def: 400, atk: 1200, spd: 15 },
+        skillLevel: 8
     }
 ];
 export const getPuppetLevelInfo = (level) => {

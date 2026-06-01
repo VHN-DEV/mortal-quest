@@ -4109,7 +4109,85 @@ export const ITEMS = {
         description: 'Hộ thân giáp y đúc từ kim hỏa thần tủy cực kỳ kiên cố, đem lại sinh lực dồi dào cùng phòng ngự bất phàm.',
         stats: { def: 12000, maxHp: 15000, damageReduction: 0.25 },
         poem: ['Thần Hoàng Chiến Giáp Hộ Nguyên Thần', 'Linh Quang Vạn Trượng Kính Thiên Binh']
+    },
+    'thiet_moc_bach_nien': {
+        id: 'thiet_moc_bach_nien',
+        name: 'Thiết Mộc Trăm Năm',
+        type: 'material',
+        icon: '🪵',
+        quality: 'Linh Khí',
+        price: 1000,
+        description: 'Thân gỗ của Thiết Mộc thụ thọ mệnh vài trăm năm, cứng chắc như sắt thép. Vật liệu chính để luyện khôi lỗi thời kỳ Trúc Cơ của Hàn Lập.'
+    },
+    'thiet_moc_van_nam': {
+        id: 'thiet_moc_van_nam',
+        name: 'Thiết Mộc Vạn Năm',
+        type: 'material',
+        icon: '🪵',
+        quality: 'Cổ Bảo',
+        price: 8000,
+        description: 'Thiết Mộc linh thụ tích lũy linh lực vạn năm cực kỳ trân quý, dẻo dai và dẫn linh tính tuyệt hảo. Vật liệu để luyện khôi lỗi Nguyên Anh kỳ.'
+    },
+    'hoa_linh_thach_trung': {
+        id: 'hoa_linh_thach_trung',
+        name: 'Hỏa Linh Thạch Trung Giai',
+        type: 'spirit_stone',
+        grade: 'TRUNG',
+        attribute: 'FIRE',
+        icon: '🔥',
+        quality: 'Linh Khí',
+        price: 500,
+        weight: 0.02,
+        description: 'Linh thạch trung giai thuộc tính Hỏa tinh thuần, chứa hỏa nguyên lực dồi dào. Dùng làm lõi năng lượng cho Cự Hổ Khôi Lỗi.'
+    },
+    'dai_dien_quyet': {
+        id: 'dai_dien_quyet',
+        name: 'Sách: Đại Diễn Quyết',
+        type: 'book',
+        icon: '📔',
+        quality: 'Linh Khí',
+        price: 8000,
+        techniqueId: 'dai_dien_quyet',
+        description: 'Bí thuật do tổ sư khai phái của Thiên Trúc Giáo Đại Diễn Thần Quân tự sáng tạo, chuyên dùng để tăng cường thần thức và tu luyện phân thần thuật. Là công pháp bắt buộc để điều khiển nhiều khôi lỗi.'
+    },
+    'khoi_loi_chan_giai': {
+        id: 'khoi_loi_chan_giai',
+        name: 'Bí Tịch: Khôi Lỗi Chân Giải',
+        type: 'book',
+        icon: '📖',
+        quality: 'Cổ Bảo',
+        price: 15000,
+        description: 'Bộ bách khoa toàn thư cực kỳ chi tiết về chế tạo khôi lỗi của Thiên Trúc Giáo, dạy cách luyện chế các cấp khôi lỗi thú và khôi lỗi nhân.',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'puppet' },
+                { type: 'learn_puppet_recipe', value: 'thanh_vien_khoi_loi' },
+                { type: 'learn_puppet_recipe', value: 'cu_ho_khoi_loi' }
+            ]
+        }
+    },
+    'bv_thanh_vien_khoi_loi': {
+        id: 'bv_thanh_vien_khoi_loi',
+        name: 'Bản Vẽ: Thanh Viên Khôi Lỗi',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Linh Khí',
+        price: 5000,
+        description: 'Hướng dẫn chế tạo Thanh Viên Khôi Lỗi Trúc Cơ cấp từ Thiết Mộc Trăm Năm.',
+        effect: { type: 'learn_puppet_recipe', value: 'thanh_vien_khoi_loi' }
+    },
+    'bv_cu_ho_khoi_loi': {
+        id: 'bv_cu_ho_khoi_loi',
+        name: 'Bản Vẽ: Cự Hổ Khôi Lỗi',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Cổ Bảo',
+        price: 15000,
+        description: 'Hướng dẫn chế tạo Cự Hổ Khôi Lỗi khổng lồ bắn ra cột sáng cực mạnh.',
+        effect: { type: 'learn_puppet_recipe', value: 'cu_ho_khoi_loi' }
     }
 };
 
 export const getItemById = (id) => ITEMS[id];
+
