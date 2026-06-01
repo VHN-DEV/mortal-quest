@@ -373,6 +373,7 @@ window.renderMainStats = () => {
     updateCachedText('current-realm', realm.name);
 
     updateCachedHtml('ling-shi-text', player.getFormattedLingShi());
+    updateCachedText('header-stamina-text', `${Math.floor(player.stamina)}/${player.maxStamina}`);
 
     renderTimeHUD();
 

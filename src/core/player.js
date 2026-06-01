@@ -2891,8 +2891,18 @@ export class Player {
                     msg = `Sử dụng ${item.name}, hồi phục ${healAmount} HP!`;
                     break;
                 case 'restore':
-                    if (effect.hp) this.hp = Math.min(this.maxHp, this.hp + effect.hp);
-                    if (effect.mana) this.mana = Math.min(this.maxMana, this.mana + effect.mana);
+                    if (effect.hp) {
+                        const amount = effect.hp <= 1 ? Math.floor(this.maxHp * effect.hp) : effect.hp;
+                        this.hp = Math.min(this.maxHp, this.hp + amount);
+                    }
+                    if (effect.mana) {
+                        const amount = effect.mana <= 1 ? Math.floor(this.maxMana * effect.mana) : effect.mana;
+                        this.mana = Math.min(this.maxMana, this.mana + amount);
+                    }
+                    if (effect.stamina) {
+                        const amount = effect.stamina <= 1 ? Math.floor(this.maxStamina * effect.stamina) : effect.stamina;
+                        this.stamina = Math.min(this.maxStamina, this.stamina + amount);
+                    }
                     
                     // Also cure some internal injuries (nội thương)
                     let injuryCured = false;
@@ -2926,8 +2936,10 @@ export class Player {
                     success = true;
                     if (injuryCured) {
                         msg = `Sử dụng ${item.name}, khí huyết dồi dào, nội thương của ngươi đã dịu đi đáng kể!`;
+                    } else if (effect.stamina && !effect.hp && !effect.mana) {
+                        msg = `Uống hạ ${item.name}! Tinh thần rung động sảng khoái, thể lực mệt mỏi trong người nháy mắt tiêu tán!`;
                     } else {
-                        msg = `Sử dụng ${item.name}, hồi phục trạng thái!`;
+                        msg = `Sử dụng ${item.name}, linh mạch ấm áp tràn đầy, hồi phục trạng thái hoàn mỹ!`;
                     }
                     break;
                 case 'unlock_profession':

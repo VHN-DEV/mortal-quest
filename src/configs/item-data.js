@@ -480,6 +480,16 @@ export const ITEMS = {
         description: 'Viên đan chắt lọc từ tinh hoa ngộ tính nghìn năm. Uống vào ngay lập tức lĩnh ngộ được đại đạo thiên địa, tức thì tăng 500 điểm thuần thục cho toàn bộ công pháp đang trang bị.',
         effect: { type: 'technique_mastery', value: 500 }
     },
+    'bach_hoa_linh_tuu': {
+        id: 'bach_hoa_linh_tuu',
+        name: 'Bách Hoa Linh Tửu',
+        type: 'consumable',
+        quality: 'Linh Khí',
+        icon: '🍶',
+        price: 300,
+        description: 'Linh tửu trứ danh chắt lọc từ tinh hoa trăm loài hoa chứa linh khí. Uống vào giúp nâng cao sảng khoái tinh thần, hồi phục ngay lập tức 50 Thể lực.',
+        effect: { type: 'restore', stamina: 50 }
+    },
     'tich_coc_thao': {
         id: 'tich_coc_thao',
         name: 'Tịch Cốc Thảo',
@@ -610,8 +620,8 @@ export const ITEMS = {
         quality: 'Linh Khí',
         icon: '🍶',
         price: 450,
-        description: 'Đan dược bồi bổ nguyên khí, hồi phục 100 Khí Huyết và 50 Linh Lực. Kết hợp từ Linh Thảo (10 năm) và Yêu Thú Tinh Huyết.',
-        effect: { type: 'restore', hp: 100, mana: 50 }
+        description: 'Đan dược bồi bổ nguyên khí, hồi phục 100 Khí Huyết, 50 Linh Lực và 30 Thể Lực. Kết hợp từ Linh Thảo (10 năm) và Yêu Thú Tinh Huyết.',
+        effect: { type: 'restore', hp: 100, mana: 50, stamina: 30 }
     },
     'thuy_tinh': {
         id: 'thuy_tinh',
@@ -743,8 +753,8 @@ export const ITEMS = {
         icon: '💧',
         quality: 'Linh Khí',
         price: 600,
-        description: 'Giọt ngọc lộ tinh khiết thu hoạch từ đỉnh núi Thanh Hư vào lúc bình minh, thanh lọc linh mạch. Hồi phục 30% Khí Huyết và 30% Pháp Lực ngay lập tức.',
-        effect: { type: 'restore', hp: 0.3, mana: 0.3 }
+        description: 'Giọt ngọc lộ tinh khiết thu hoạch từ đỉnh núi Thanh Hư vào lúc bình minh, thanh lọc linh mạch. Hồi phục 30% Khí Huyết, 30% Pháp Lực và 50 Thể Lực ngay lập tức.',
+        effect: { type: 'restore', hp: 0.3, mana: 0.3, stamina: 50 }
     },
 
     // --- Yểm Nguyệt Tông: đan dược song tu ---
