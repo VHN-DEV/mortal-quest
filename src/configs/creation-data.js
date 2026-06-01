@@ -246,7 +246,7 @@ export const CREATION_ORIGINS = {
     'tan_tu': { id: 'tan_tu', name: 'Tán Tu', cost: 0, desc: 'Tự do tự tại, không có tài nguyên khởi đầu.', resources: { lingShi: 100, items: [] }, monthlyResources: { lingShi: 0 } },
     'vo_gia_cu': { id: 'vo_gia_cu', name: 'Vô Gia Cư', cost: -20, desc: 'Không nơi nương tựa, bắt đầu với hai bàn tay trắng.', resources: { lingShi: 0, items: [] }, monthlyResources: { lingShi: 0 } },
     'no_nan': { id: 'no_nan', name: 'Nợ Nần Chồng Chất', cost: -50, desc: 'Gánh trên vai món nợ lớn của gia tộc.', resources: { lingShi: -500, items: [] }, monthlyResources: { lingShi: 0 } },
-    'gia_toc': { id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 40, desc: 'Sinh ra trong gia tộc, có sẵn linh thạch và công pháp.', resources: { lingShi: 1000, items: ['truong_sinh_quyet_book', 'di_hoa_bang', 'di_loi_bang', 'linh_the_luc'] }, monthlyResources: { lingShi: 100 } },
+    'gia_toc': { id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 40, desc: 'Sinh ra trong gia tộc, có sẵn linh thạch và công pháp.', resources: { lingShi: 1000, items: ['truong_sinh_quyet', 'di_hoa_bang', 'di_loi_bang', 'linh_the_luc'] }, monthlyResources: { lingShi: 100 } },
     'tong_mon': { id: 'tong_mon', name: 'Đệ Tử Tông Môn', cost: 60, desc: 'Được tông môn che chở, có pháp bảo phòng thân.', resources: { lingShi: 500, items: ['phi_kiem_go', 'ao_bo_so_cap'] }, monthlyResources: { lingShi: 50 } },
     'ma_dao': { id: 'ma_dao', name: 'Hậu Nhân Ma Đạo', cost: 30, desc: 'Công pháp bá đạo nhưng bị chính đạo truy quét.', resources: { lingShi: 500, items: ['huyet_don_thuat_book'], karma: -50 }, monthlyResources: { lingShi: 0 } },
     'dai_gia_toc': { id: 'dai_gia_toc', name: 'Đại Thế Gia', cost: 100, desc: 'Con cháu thế gia danh tiếng, tài lực dồi dào.', resources: { lingShi: 10000, items: ['ngung_khi_dan', 'ngung_khi_dan'] }, monthlyResources: { lingShi: 1000 } },
@@ -269,7 +269,7 @@ export const CREATION_ORIGINS = {
         desc: 'Trải qua kiếp trước và được quay ngược thời gian, biết trước thiên cơ, khí vận nghịch thiên.',
         resources: {
             lingShi: 5000,
-            items: ['chuong_thien_binh', 'truong_sinh_quyet_book']
+            items: ['chuong_thien_binh', 'truong_sinh_quyet']
         },
         monthlyResources: { lingShi: 50 },
         startingTitle: 'hoi_quy_gia'

@@ -711,13 +711,13 @@ export class InventoryScreen {
         const isSpiritStone = itemData.type === 'spirit_stone';
         const isManual = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc'));
 
-        this.btnUseItem.classList.toggle('hidden', !(['consumable', 'book', 'spirit_stone', 'beast_egg'].includes(itemData.type)) || (fromShop && !isManual));
+        this.btnUseItem.classList.toggle('hidden', !(['consumable', 'book', 'spirit_stone', 'beast_egg', 'recipe', 'talisman_recipe'].includes(itemData.type)) || (fromShop && !isManual));
         if (this.btnCrushStone) this.btnCrushStone.classList.toggle('hidden', !isSpiritStone || fromShop || fromSell);
 
         if (isSpiritStone) {
             this.btnUseItem.textContent = 'LUYỆN HÓA';
         } else {
-            this.btnUseItem.textContent = isManual ? 'XEM' : (itemData.type === 'book' ? 'LĨNH NGỘ' : (itemData.type === 'beast_egg' ? 'ẤP TRỨNG' : 'SỬ DỤNG'));
+            this.btnUseItem.textContent = isManual ? 'XEM' : ((itemData.type === 'book' || itemData.type === 'recipe' || itemData.type === 'talisman_recipe') ? 'LĨNH NGỘ' : (itemData.type === 'beast_egg' ? 'ẤP TRỨNG' : 'SỬ DỤNG'));
         }
 
         const mappedSlot = state.player.getEquipSlotForItemType

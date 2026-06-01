@@ -121,4 +121,28 @@ describe('Inventory class', () => {
     expect(inv.bags[0].items[1].id).toBe('ngung_khi_dan');
     expect(inv.bags[0].items[2].id).toBe('tich_coc_dan');
   });
+
+  it('should support using book and recipe items with effects', () => {
+    const mockPlayer = {
+      unlockedProfessions: [],
+      unlockProfession(id) {
+        if (!this.unlockedProfessions.includes(id)) {
+          this.unlockedProfessions.push(id);
+          return true;
+        }
+        return false;
+      }
+    };
+    const inv = new Inventory(mockPlayer);
+    
+    // Add Đan Đạo Chân Giải book
+    inv.addItem('dan_dao_chan_giai', 1);
+    expect(inv.getItemQuantity('dan_dao_chan_giai')).toBe(1);
+    
+    // Use it
+    const success = inv.useItem('dan_dao_chan_giai', 1);
+    expect(success).toBe(true);
+    expect(inv.getItemQuantity('dan_dao_chan_giai')).toBe(0);
+    expect(mockPlayer.unlockedProfessions).toContain('alchemy');
+  });
 });

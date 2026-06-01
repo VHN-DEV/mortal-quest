@@ -119,6 +119,12 @@ export class Inventory {
                 state.ui.toast(res.msg, 'warning');
                 return false;
             }
+        } else if (itemData.effect && (itemData.type === 'book' || itemData.type === 'recipe' || itemData.type === 'talisman_recipe')) {
+            for (let i = 0; i < quantity; i++) {
+                this.applyEffect(itemData.effect);
+            }
+            this.removeItem(itemId, quantity);
+            return true;
         } else if (itemData.type === 'spirit_stone') {
             const ss = state.systems.spiritStone;
             if (ss) {

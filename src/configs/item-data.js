@@ -1841,7 +1841,8 @@ export const ITEMS = {
         icon: '🩸',
         quality: 'Linh Khí',
         price: 1500,
-        description: 'Ma đạo bí pháp, dùng tinh huyết để độn tẩu cực nhanh.'
+        description: 'Ma đạo bí pháp, dùng tinh huyết để độn tẩu cực nhanh.',
+        effect: { type: 'learn_secret', value: 'huyet_don_thuat' }
     },
     'bp_luyen_khi': {
         id: 'bp_luyen_khi',
