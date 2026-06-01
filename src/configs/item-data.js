@@ -10,7 +10,7 @@
 
 export const ITEMS = {
     // Hạt giống
-    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Linh Thảo', type: 'seed', icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Linh chủng của Linh Thảo Thấp Phẩm.' },
+    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Thanh Phục Thảo', type: 'seed', icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Hạt giống Thanh Phục Thảo, loại linh thảo sơ cấp phổ biến nhất ở Nhân giới.' },
     'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.' },
     'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.' },
     'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.' },
@@ -501,12 +501,12 @@ export const ITEMS = {
     },
     'linh_coc': {
         id: 'linh_coc',
-        name: 'Phàm Cấp Linh Cốc',
+        name: 'Trân Châu Linh Cốc',
         type: 'material',
         icon: '🌾',
         quality: 'Phàm Khí',
         price: 5,
-        description: 'Hạt thóc mang linh khí loãng, dùng để bổ sung sinh cơ cho phàm nhân và tu sĩ cấp thấp.'
+        description: 'Loại linh cốc thường thấy ở Nhân giới, hạt lúa lấp lánh như trân châu tỏa ra linh khí loãng, dùng để bổ sung sinh cơ cho tu sĩ cấp thấp.'
     },
     'dp_tich_coc_dan': {
         id: 'dp_tich_coc_dan',
@@ -530,21 +530,21 @@ export const ITEMS = {
     },
     'linh_thao_thap': {
         id: 'linh_thao_thap',
-        name: 'Linh Thảo Hạ Phẩm',
+        name: 'Thanh Phục Thảo',
         type: 'material',
         icon: '🌿',
         quality: 'Phàm Khí',
         price: 20,
-        description: 'Linh thảo chứa ít linh khí, thường thấy ở các bìa rừng.'
+        description: 'Loại linh thảo sơ cấp cực kỳ phổ biến trong Phàm Nhân Tu Tiên. Hàn Lập từng dùng Thanh Phục Thảo để chế luyện lượng lớn Ngưng Khí Đan.'
     },
     'linh_thao_trung': {
         id: 'linh_thao_trung',
-        name: 'Linh Thảo Trung Phẩm',
+        name: 'Tử Lam Hoa',
         type: 'material',
         icon: '🍃',
         quality: 'Linh Khí',
         price: 100,
-        description: 'Linh thảo có dược tính ổn định, thích hợp luyện đan bậc trung.'
+        description: 'Linh thảo trung phẩm có màu tím lam nhạt đặc trưng của phái Lạc Vân Tông, chứa linh lực vững vàng, thích hợp luyện chế đan dược Trúc Cơ.'
     },
     'hoa_diem_thao': {
         id: 'hoa_diem_thao',
@@ -1150,12 +1150,12 @@ export const ITEMS = {
     },
     'seed_linh_thao_trung': {
         id: 'seed_linh_thao_trung',
-        name: 'Hạt Giống Linh Thảo Trung Cấp',
+        name: 'Linh Chủng Tử Lam Hoa',
         type: 'seed',
         icon: '🌿',
         quality: 'Linh Khí',
         price: 25,
-        description: 'Hạt giống linh thảo cấp trung, cần thời gian gieo trồng lâu hơn.'
+        description: 'Hạt giống Tử Lam Hoa, linh thảo trung phẩm có màu tím lam dịu mắt, sinh trưởng tương đối lâu.'
     },
     'hoi_huyet_dan': {
         id: 'hoi_huyet_dan',
@@ -1930,30 +1930,30 @@ export const ITEMS = {
     // --- ALCHEMY MATERIALS (EXPANDED) ---
     'linh_thao_10y': {
         id: 'linh_thao_10y',
-        name: 'Linh Thảo (10 năm)',
+        name: 'Hoàng Tinh Thảo (10 năm)',
         type: 'material',
         icon: '🌿',
         quality: 'Pháp Khí',
         price: 80,
-        description: 'Linh thảo đã có chút hỏa hầu, dược tính ổn định.'
+        description: 'Thảo dược có thân màu vàng kim nhạt, sau 10 năm đã tích tụ chút linh khí, là nguyên liệu phụ trợ phổ biến.'
     },
     'linh_thao_100y': {
         id: 'linh_thao_100y',
-        name: 'Linh Thảo (100 năm)',
+        name: 'Uẩn Cổ Thảo (100 năm)',
         type: 'material',
         icon: '🍃',
         quality: 'Linh Khí',
         price: 500,
-        description: 'Linh thảo trăm năm, chứa đựng linh khí đậm đặc.'
+        description: 'Linh dược trăm năm trân quý, một trong ba chủ dược chính để luyện chế Trúc Cơ Đan trong Phàm Nhân Tu Tiên.'
     },
     'linh_thao_1000y': {
         id: 'linh_thao_1000y',
-        name: 'Linh Thảo (1000 năm)',
+        name: 'Cửu Khúc Linh Sâm (1000 năm)',
         type: 'material',
         icon: '🎋',
         quality: 'Pháp Bảo',
         price: 5000,
-        description: 'Linh thảo ngàn năm, hiếm có khó tìm, dùng luyện cao cấp đan dược.'
+        description: 'Linh dược ngàn năm cực kỳ hiếm có, đã bắt đầu thông linh tính, thường dùng để luyện chế đan dược phụ trợ Nguyên Anh đột phá.'
     },
 
     // --- MONSTER MATERIALS ---
@@ -2016,12 +2016,12 @@ export const ITEMS = {
     // --- ORES & MINERALS ---
     'linh_thao_van_nam': {
         id: 'linh_thao_van_nam',
-        name: 'Linh Thảo (Vạn năm)',
+        name: 'Vạn Niên Huyết Linh Chi',
         type: 'material',
         icon: '🌺',
         quality: 'Cổ Bảo',
         price: 50000,
-        description: 'Linh thảo sinh trưởng vạn năm, đã thông linh tính, có thể luyện chế Tiên đan.'
+        description: 'Linh dược vạn năm cực kỳ hiếm thấy ở Nhân giới, tích lũy thiên địa tinh hoa vạn năm, dùng để chế luyện các loại đan dược nghịch thiên độ kiếp.'
     },
     'huyen_thiet': {
         id: 'huyen_thiet',
@@ -4239,6 +4239,165 @@ export const ITEMS = {
         quality: 'Thiên Cấp',
         price: 25000,
         description: 'Trứng của Hắc Thiết Lôi Thú thượng cổ, bao quanh bởi những tia lôi điện đen kịt lách tách kêu gào.'
+    },
+
+    // --- BỔ SUNG CÁC LINH THẢO & LINH DƯỢC & HẠT GIỐNG MỚI (PHÀM NHÂN TU TIÊN LORE) ---
+    'linh_thao_cao': {
+        id: 'linh_thao_cao',
+        name: 'Tử Nguyệt Thảo',
+        type: 'material',
+        icon: '🌙',
+        quality: 'Pháp Bảo',
+        price: 1500,
+        description: 'Tử Nguyệt Thảo, một loại linh thảo cao cấp hiếm gặp ở Nhân giới, hình dáng giống như vầng trăng khuyết màu tím phát ra ánh sáng lung linh.'
+    },
+    'seed_ngoc_de_hoa': {
+        id: 'seed_ngoc_de_hoa',
+        name: 'Linh Chủng Ngọc Đề Hoa',
+        type: 'seed',
+        icon: '🌱',
+        quality: 'Pháp Khí',
+        price: 30,
+        description: 'Hạt giống của Ngọc Đề Hoa, loại thảo dược cấp thấp có dược tính cực kỳ ôn hòa, dễ trồng.'
+    },
+    'ngoc_de_hoa': {
+        id: 'ngoc_de_hoa',
+        name: 'Ngọc Đề Hoa',
+        type: 'material',
+        icon: '🌸',
+        quality: 'Pháp Khí',
+        price: 100,
+        description: 'Ngọc Đề Hoa, đóa hoa trắng ngần như ngọc, có tác dụng điều hòa tính nhiệt trong lò luyện đan, ổn định hỏa hầu.'
+    },
+    'seed_thanh_long_tham': {
+        id: 'seed_thanh_long_tham',
+        name: 'Linh Chủng Thanh Long Sâm',
+        type: 'seed',
+        icon: '🌱',
+        quality: 'Linh Khí',
+        price: 120,
+        description: 'Linh chủng của Thanh Long Sâm, đòi hỏi linh điền dồi dào sinh cơ (Mộc thuộc tính).'
+    },
+    'thanh_long_tham': {
+        id: 'thanh_long_tham',
+        name: 'Thanh Long Sâm',
+        type: 'material',
+        icon: '🐉',
+        quality: 'Linh Khí',
+        price: 450,
+        description: 'Thanh Long Sâm, củ nhân sâm có hình thù giống như rồng xanh uốn lượn, chứa mộc thuộc tính linh khí vô cùng tinh thuần.'
+    },
+    'seed_tuyet_oanh_thao': {
+        id: 'seed_tuyet_oanh_thao',
+        name: 'Linh Chủng Tuyết Oánh Thảo',
+        type: 'seed',
+        icon: '❄️',
+        quality: 'Linh Khí',
+        price: 150,
+        description: 'Linh chủng của Tuyết Oánh Thảo, chỉ có thể nảy mầm và sinh trưởng nơi linh điền cực hàn (Băng thuộc tính).'
+    },
+    'tuyet_oanh_thao': {
+        id: 'tuyet_oanh_thao',
+        name: 'Tuyết Oánh Thảo',
+        type: 'material',
+        icon: '❄️',
+        quality: 'Linh Khí',
+        price: 500,
+        description: 'Tuyết Oánh Thảo, loài linh cỏ mọc trên vách núi tuyết vạn năm, lấp lánh như sương tuyết, có tác dụng thanh tẩy kinh mạch, xua tan đan độc.'
+    },
+    'seed_hoa_duong_chi': {
+        id: 'seed_hoa_duong_chi',
+        name: 'Linh Chủng Hỏa Dương Chi',
+        type: 'seed',
+        icon: '🔥',
+        quality: 'Linh Khí',
+        price: 180,
+        description: 'Linh chủng của Hỏa Dương Chi, cần gieo trồng ở linh điền nóng bỏng hỏa khí (Hỏa thuộc tính).'
+    },
+    'hoa_duong_chi': {
+        id: 'hoa_duong_chi',
+        name: 'Hỏa Dương Chi',
+        type: 'material',
+        icon: '🍄',
+        quality: 'Linh Khí',
+        price: 600,
+        description: 'Hỏa Dương Chi, loại nấm linh chi rực đỏ như than hồng, chứa đựng lượng lớn nhiệt năng và hỏa linh lực dồi dào.'
+    },
+    'seed_cuu_tich_chi': {
+        id: 'seed_cuu_tich_chi',
+        name: 'Linh Chủng Cửu Tịch Chi',
+        type: 'seed',
+        icon: '💀',
+        quality: 'Linh Khí',
+        price: 250,
+        description: 'Linh chủng của Cửu Tịch Chi, chỉ nảy mầm trong âm khí dày đặc (Âm Minh thuộc tính).'
+    },
+    'cuu_tich_chi': {
+        id: 'cuu_tich_chi',
+        name: 'Cửu Tịch Chi',
+        type: 'material',
+        icon: '🪨',
+        quality: 'Linh Khí',
+        price: 800,
+        description: 'Cửu Tịch Chi, nấm linh chi đen mọc trong những hang động âm u sâu dưới lòng đất, tích lũy dồi dào u minh âm khí.'
+    },
+    'tieu_dao_qua': {
+        id: 'tieu_dao_qua',
+        name: 'Tiêu Dao Quả',
+        type: 'consumable',
+        icon: '🍑',
+        quality: 'Linh Khí',
+        price: 350,
+        description: 'Tiêu Dao Quả, quả linh ngọt lành ngậm đầy thiên địa tinh hoa. Khi ăn giúp tu sĩ lập tức phục hồi 40 điểm Thể Lực và gia tăng nhẹ tốc độ tu luyện trong 1 giờ.',
+        effect: { type: 'restore', stamina: 40, buff: { stat: 'tu_vi_speed', value: 1.15, duration: 3600 } }
+    },
+    'huyet_lien_hoa': {
+        id: 'huyet_lien_hoa',
+        name: 'Huyết Liên Hoa',
+        type: 'material',
+        icon: '🪷',
+        quality: 'Pháp Bảo',
+        price: 2000,
+        description: 'Huyết Liên Hoa, đóa sen đỏ thẫm sinh trưởng nơi đầm lầy đẫm huyết khí của đại yêu thú, chứa sinh cơ lực lượng vô cùng cuồng bạo.'
+    },
+    'that_tinh_thao': {
+        id: 'that_tinh_thao',
+        name: 'Thất Tinh Thảo',
+        type: 'material',
+        icon: '🌿',
+        quality: 'Pháp Bảo',
+        price: 2200,
+        description: 'Thất Tinh Thảo, loại cỏ linh thảo có bảy chiếc lá sắp xếp tựa như chòm sao Bắc Đẩu, chuyên hấp thụ tinh quang tinh hoa ban đêm để nuôi dưỡng thần thức.'
+    },
+    'ngoc_de_dan': {
+        id: 'ngoc_de_dan',
+        name: 'Ngọc Đề Đan',
+        type: 'consumable',
+        icon: '💊',
+        quality: 'Pháp Khí',
+        price: 450,
+        description: 'Ngọc Đề Đan, viên linh đan sơ cấp dược tính vô cùng ôn hòa. Khi sử dụng trước khi đột phá, giúp gia tăng 5% tỷ lệ đột phá thành công ở Luyện Khí cảnh.',
+        stats: { breakthroughRate: 0.05 }
+    },
+    'hoa_duong_dan': {
+        id: 'hoa_duong_dan',
+        name: 'Hỏa Dương Đan',
+        type: 'consumable',
+        icon: '🔥',
+        quality: 'Linh Khí',
+        price: 1800,
+        description: 'Hỏa Dương Đan, viên linh đan rực lửa giúp tu sĩ kích phát kinh mạch hỏa hệ. Sử dụng gia tăng 15% hỏa thuộc tính sát thương trong 3 trận đấu tiếp theo.',
+        effect: { type: 'buff', stat: 'fire_dmg_pct', value: 0.15, duration: 3 }
+    },
+    'hoi_linh_dan': {
+        id: 'hoi_linh_dan',
+        name: 'Hồi Linh Đan',
+        type: 'consumable',
+        icon: '🧪',
+        quality: 'Pháp Khí',
+        price: 300,
+        description: 'Hồi Linh Đan, đan dược phổ thông giúp hồi phục nhanh chóng 80 điểm Linh Lực ngay lập tức.',
+        effect: { type: 'restore', mana: 80 }
     }
 };
 

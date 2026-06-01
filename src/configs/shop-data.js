@@ -11,7 +11,11 @@ export const SHOPS = {
                 { id: 'ngo_dao_dan', stock: 5, minVip: 1 },
                 { id: 'thanh_tam_dan', stock: 10 },
                 { id: 'truc_co_dan', stock: 2, minVip: 1 },
-                { id: 'hoa_nguyen_dan', stock: 1, minVip: 2 }
+                { id: 'hoa_nguyen_dan', stock: 1, minVip: 2 },
+                { id: 'ngoc_de_dan', stock: 15 },
+                { id: 'hoa_duong_dan', stock: 5, minVip: 1 },
+                { id: 'hoi_linh_dan', stock: 30 },
+                { id: 'tieu_dao_qua', stock: 8 }
             ],
             'phap_bao': [
                 { id: 'pham_lu_item', stock: 10 },
@@ -74,7 +78,13 @@ export const SHOPS = {
                 { id: 'yeu_dan_so', stock: 20 },
                 { id: 'hoa_tinh_thach', stock: 15 },
                 { id: 'thien_dao_than_thach', stock: 1, minVip: 5 },
-                { id: 'thanh_lien_hoa_seed', stock: 1, minVip: 3 }
+                { id: 'thanh_lien_hoa_seed', stock: 1, minVip: 3 },
+                { id: 'ngoc_de_hoa', stock: 100 },
+                { id: 'thanh_long_tham', stock: 40 },
+                { id: 'tuyet_oanh_thao', stock: 30 },
+                { id: 'hoa_duong_chi', stock: 25 },
+                { id: 'cuu_tich_chi', stock: 15 },
+                { id: 'linh_thao_cao', stock: 10, minVip: 1 }
             ],
             'cong_phap': [
                 { id: 'truong_xuan_book', stock: 10 },
@@ -147,9 +157,15 @@ export const SHOPS = {
             ],
             'linh_dien': [
                 { id: 'seed_linh_thao', stock: 100 },
+                { id: 'seed_linh_thao_trung', stock: 50 },
+                { id: 'seed_ngoc_de_hoa', stock: 80 },
+                { id: 'seed_thanh_long_tham', stock: 30 },
                 { id: 'seed_hoa_diem_thao', stock: 20 },
+                { id: 'seed_hoa_duong_chi', stock: 20 },
                 { id: 'seed_han_tuy_hoa', stock: 20 },
-                { id: 'seed_u_minh_hoa', stock: 5, minVip: 1 }
+                { id: 'seed_tuyet_oanh_thao', stock: 20 },
+                { id: 'seed_u_minh_hoa', stock: 5, minVip: 1 },
+                { id: 'seed_cuu_tich_chi', stock: 10 }
             ],
             'ky_trung': [
                 { id: 'egg_phe_kim_trung', stock: 1, minVip: 2 },

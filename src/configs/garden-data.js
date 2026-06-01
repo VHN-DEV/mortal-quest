@@ -32,12 +32,39 @@ export const HERB_AGE_MILESTONES = [
 export const SEEDS = [
     {
         id: 'seed_linh_thao',
-        name: 'Linh Chủng Linh Thảo',
+        name: 'Linh Chủng Thanh Phục Thảo',
         herbId: 'linh_thao_thap',
         grade: 'PHAM',
         baseGrowthTime: 300, // 5 min for 10-year stage
         attributeReq: 'NORMAL',
-        description: 'Linh thảo sơ cấp, dễ trồng.'
+        description: 'Linh thảo sơ cấp Thanh Phục Thảo, cực kỳ dễ trồng.'
+    },
+    {
+        id: 'seed_linh_thao_trung',
+        name: 'Linh Chủng Tử Lam Hoa',
+        herbId: 'linh_thao_trung',
+        grade: 'LINH',
+        baseGrowthTime: 900, // 15 min
+        attributeReq: 'NORMAL',
+        description: 'Linh hoa trung cấp Tử Lam Hoa màu tím nhạt, phát triển ổn định.'
+    },
+    {
+        id: 'seed_ngoc_de_hoa',
+        name: 'Linh Chủng Ngọc Đề Hoa',
+        herbId: 'ngoc_de_hoa',
+        grade: 'PHAM',
+        baseGrowthTime: 450, // 7.5 min
+        attributeReq: 'NORMAL',
+        description: 'Ngọc Đề Hoa có tính ôn hòa, dễ trồng nơi phàm điền.'
+    },
+    {
+        id: 'seed_thanh_long_tham',
+        name: 'Linh Chủng Thanh Long Sâm',
+        herbId: 'thanh_long_tham',
+        grade: 'LINH',
+        baseGrowthTime: 1500, // 25 min
+        attributeReq: 'MOC',
+        description: 'Thanh Long Sâm đòi hỏi mộc thuộc tính linh khí tràn trề.'
     },
     {
         id: 'seed_hoa_diem_thao',
@@ -49,6 +76,15 @@ export const SEEDS = [
         description: 'Linh thảo thuộc tính hỏa, cần linh điền rực cháy.'
     },
     {
+        id: 'seed_hoa_duong_chi',
+        name: 'Linh Chủng Hỏa Dương Chi',
+        herbId: 'hoa_duong_chi',
+        grade: 'LINH',
+        baseGrowthTime: 1800, // 30 min
+        attributeReq: 'HOA',
+        description: 'Nấm hỏa thuộc tính cực mạnh, cần linh điền hỏa thuộc tính cao nhiệt.'
+    },
+    {
         id: 'seed_han_tuy_hoa',
         name: 'Linh Chủng Hàn Tủy Hoa',
         herbId: 'han_tuy_hoa',
@@ -58,6 +94,15 @@ export const SEEDS = [
         description: 'Linh hoa sinh trưởng nơi cực hàn.'
     },
     {
+        id: 'seed_tuyet_oanh_thao',
+        name: 'Linh Chủng Tuyết Oánh Thảo',
+        herbId: 'tuyet_oanh_thao',
+        grade: 'LINH',
+        baseGrowthTime: 1600, // 26.6 min
+        attributeReq: 'BANG',
+        description: 'Linh thảo tuyết trắng tinh khiết, sinh trưởng ở nơi giá buốt cực độ.'
+    },
+    {
         id: 'seed_u_minh_hoa',
         name: 'Linh Chủng U Minh Hoa',
         herbId: 'u_minh_hoa',
@@ -65,6 +110,15 @@ export const SEEDS = [
         baseGrowthTime: 3600, // 1h
         attributeReq: 'AM_MINH',
         description: 'Hấp thụ tử khí để sinh trưởng.'
+    },
+    {
+        id: 'seed_cuu_tich_chi',
+        name: 'Linh Chủng Cửu Tịch Chi',
+        herbId: 'cuu_tich_chi',
+        grade: 'HUYEN',
+        baseGrowthTime: 4200, // 70 min
+        attributeReq: 'AM_MINH',
+        description: 'Linh chi u tối, mút lấy u minh chi khí nơi đáy động sâu để nảy mầm.'
     }
 ];
 

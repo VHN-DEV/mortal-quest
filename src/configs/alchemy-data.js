@@ -140,7 +140,7 @@ export const ALCHEMY_RECIPES = [
         baseSuccessRate: 0.9,
         time: 2,
         yield: 10,
-        description: 'Đan dược cơ bản giúp tu sĩ bế quan không cần ăn uống, mỗi viên duy trì 1 ngày. Mỗi lần luyện chế thu được 10 viên.'
+        description: 'Đan dược cơ bản chế luyện từ Trân Châu Linh Cốc giúp tu sĩ bế quan không cần ăn uống, mỗi viên duy trì 1 ngày. Mỗi lần luyện chế thu được 10 viên.'
     },
     {
         id: 'ngung_khi_dan',
@@ -152,7 +152,33 @@ export const ALCHEMY_RECIPES = [
         ],
         baseSuccessRate: 0.8,
         time: 5,
-        description: 'Dùng để tăng tốc độ tích lũy linh khí cho Luyện Khí cảnh.'
+        description: 'Chế luyện từ Thanh Phục Thảo sơ cấp giúp tu sĩ gia tăng tích lũy tu vi ở Luyện Khí cảnh.'
+    },
+    {
+        id: 'hoi_linh_dan',
+        name: 'Hồi Linh Đan',
+        resultId: 'hoi_linh_dan',
+        level: 1,
+        materials: [
+            { id: 'thanh_long_tham', quantity: 1 },
+            { id: 'linh_thao_thap', quantity: 1 }
+        ],
+        baseSuccessRate: 0.85,
+        time: 6,
+        description: 'Hồi Linh Đan chế luyện từ Thanh Long Sâm dồi dào Mộc sinh cơ và Thanh Phục Thảo, giúp lập tức phục hồi 80 Linh Lực.'
+    },
+    {
+        id: 'ngoc_de_dan',
+        name: 'Ngọc Đề Đan',
+        resultId: 'ngoc_de_dan',
+        level: 2,
+        materials: [
+            { id: 'ngoc_de_hoa', quantity: 2 },
+            { id: 'linh_thao_10y', quantity: 1 }
+        ],
+        baseSuccessRate: 0.75,
+        time: 12,
+        description: 'Ngọc Đề Đan ôn hòa điều hỏa dược tính, uống vào trước khi đột phá Luyện Khí cảnh giúp gia tăng 5% tỷ lệ thành công.'
     },
     {
         id: 'thanh_tam_dan',
@@ -165,7 +191,20 @@ export const ALCHEMY_RECIPES = [
         ],
         baseSuccessRate: 0.7,
         time: 15,
-        description: 'Giúp bình ổn tâm thần, hồi phục 50% Khí Huyết.'
+        description: 'Dùng Hoàng Tinh Thảo (10 năm) bồi dưỡng tinh thần, giúp bình ổn tâm lực, hồi phục 50% Khí Huyết.'
+    },
+    {
+        id: 'bo_nguyen_dan',
+        name: 'Bổ Nguyên Đan',
+        resultId: 'bo_nguyen_dan',
+        level: 2,
+        materials: [
+            { id: 'linh_thao_10y', quantity: 3 },
+            { id: 'yeu_huyet', quantity: 1 }
+        ],
+        baseSuccessRate: 0.65,
+        time: 20,
+        description: 'Sử dụng Hoàng Tinh Thảo (10 năm) bồi bổ nguyên khí, nhanh chóng hồi phục Khí Huyết và Linh Lực.'
     },
     {
         id: 'truc_co_dan',
@@ -179,34 +218,34 @@ export const ALCHEMY_RECIPES = [
         ],
         baseSuccessRate: 0.45,
         time: 60,
-        description: 'Đan dược trọng yếu để đột phá lên Trúc Cơ Cảnh.'
+        description: 'Chế từ Uần Cổ Thảo (100 năm) quý hiếm, linh dược phụ trợ tối trọng yếu để tu sĩ tu luyện đột phá lên Trúc Cơ Cảnh.'
     },
     {
-        id: 'bo_nguyen_dan',
-        name: 'Bổ Nguyên Đan',
-        resultId: 'bo_nguyen_dan',
-        level: 2,
+        id: 'hoa_duong_dan',
+        name: 'Hỏa Dương Đan',
+        resultId: 'hoa_duong_dan',
+        level: 3,
         materials: [
-            { id: 'linh_thao_10y', quantity: 3 },
-            { id: 'yeu_huyet', quantity: 1 }
+            { id: 'hoa_duong_chi', quantity: 1 },
+            { id: 'yeu_dan_so', quantity: 1 }
         ],
-        baseSuccessRate: 0.65,
-        time: 20,
-        description: 'Bồi bổ nguyên khí, hồi phục Khí Huyết và Linh Lực.'
+        baseSuccessRate: 0.55,
+        time: 30,
+        description: 'Luyện chế từ Hỏa Dương Chi nóng ấm, sử dụng giúp tăng mạnh 15% hỏa thuộc tính sát thương trong 3 trận tiếp theo.'
     },
     {
         id: 'ngung_anh_dan',
         name: 'Ngưng Anh Đan',
-        resultId: 'ngung_anh_dan', // Need to add this to item-data later
+        resultId: 'ngung_anh_dan',
         level: 5,
         materials: [
             { id: 'linh_thao_1000y', quantity: 1 },
-            { id: 'yeu_dan_trung', quantity: 1 }, // Need to add to item-data
+            { id: 'yeu_dan_trung', quantity: 1 },
             { id: 'han_ngoc_tuy', quantity: 1 }
         ],
         baseSuccessRate: 0.3,
         time: 180,
-        description: 'Đan dược hỗ trợ ngưng tụ Nguyên Anh, cực kỳ quý hiếm.'
+        description: 'Sử dụng Cửu Khúc Linh Sâm (1000 năm) thông linh làm chủ dược, giúp hỗ trợ tu sĩ phá phôi hóa anh ngưng tụ Nguyên Anh cực kỳ nghịch thiên.'
     }
 ];
 

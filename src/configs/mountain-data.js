@@ -42,7 +42,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 1.0,
         survivalFactor: 0.1,
         description: 'Vùng ngoài cùng, linh khí loãng, nơi tập trung nhiều thảo dược bậc thấp và yêu thú sơ khai.',
-        resources: ['linh_thao_thap', 'ling_thach_ha', 'yeu_huyet'],
+        resources: ['linh_thao_thap', 'ngoc_de_hoa', 'ling_thach_ha', 'yeu_huyet'],
         eventProbs: { combat: 0.1, loot: 0.1, npc: 0.2, empty: 0.6 }
     },
     {
@@ -52,7 +52,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 1.5,
         survivalFactor: 0.2,
         description: 'Rừng sương mù dày đặc, linh giác bị hạn chế, ẩn chứa nhiều loại linh quả sơ cấp.',
-        resources: ['linh_thao_10y', 'seed_linh_thao', 'yeu_dan_so'],
+        resources: ['linh_thao_10y', 'thanh_long_tham', 'tieu_dao_qua', 'seed_linh_thao', 'yeu_dan_so'],
         eventProbs: { combat: 0.15, loot: 0.15, npc: 0.1, empty: 0.6 }
     },
     {
@@ -62,10 +62,10 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 2.2,
         survivalFactor: 0.35,
         description: 'Hệ thống hang động ẩm ướt, nơi cư ngụ của các loài yêu trùng và khoáng thạch hiếm.',
-        resources: ['thuy_tinh', 'ma_thach', 'linh_thao_100y'],
+        resources: ['thuy_tinh', 'ma_thach', 'linh_thao_100y', 'cuu_tich_chi'],
         eventProbs: { combat: 0.2, loot: 0.2, npc: 0.05, empty: 0.55 }
     },
-
+ 
     // --- TRUNG SƠN ---
     {
         id: 'loi_phong',
@@ -74,7 +74,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 3.5,
         survivalFactor: 0.6,
         description: 'Đỉnh núi quanh năm sấm chớp và gió lốc, linh khí bắt đầu trở nên cuồng bạo.',
-        resources: ['loi_linh_thach', 'yeu_dan_trung', 'linh_thao_100y'],
+        resources: ['loi_linh_thach', 'yeu_dan_trung', 'linh_thao_100y', 'that_tinh_thao'],
         eventProbs: { combat: 0.3, loot: 0.2, npc: 0.02, empty: 0.48 }
     },
     {
@@ -87,7 +87,7 @@ export const MOUNTAIN_LAYERS = [
         resources: ['ling_thach_trung', 'bp_luyen_dan', 'bp_phu_luc'],
         eventProbs: { combat: 0.25, loot: 0.4, npc: 0.05, empty: 0.3 }
     },
-
+ 
     // --- NỘI SƠN ---
     {
         id: 'huyet_nguyet',
@@ -96,7 +96,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 6.0,
         survivalFactor: 1.2,
         description: 'Thung lũng bị nguyền rủa, linh khí mang theo sát ý cực mạnh.',
-        resources: ['linh_thao_1000y', 'ma_tinh', 'yeu_dan_cao'],
+        resources: ['linh_thao_1000y', 'huyet_lien_hoa', 'hoa_duong_chi', 'ma_tinh', 'yeu_dan_cao'],
         eventProbs: { combat: 0.4, loot: 0.2, npc: 0.1, empty: 0.3 }
     },
     {
