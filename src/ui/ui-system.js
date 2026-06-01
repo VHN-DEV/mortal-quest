@@ -49,6 +49,9 @@ export class UISystem {
                 this.startQiBubbleSystem();
             }
         });
+
+        // Initialize dynamic image zoom listener
+        this.initImageZoomListener();
     }
 
     updateTimeUI(time) {
@@ -2078,6 +2081,150 @@ export class UISystem {
                 document.getElementById('app').appendChild(bonusPopup);
                 setTimeout(() => bonusPopup.remove(), 1600);
             }
+        }
+    }
+
+    initImageZoomListener() {
+        document.addEventListener('click', (e) => {
+            const img = e.target.closest('img');
+            if (!img) return;
+
+            // Define selectors where image zoom is allowed (ignoring tiny grid/list icons unless they are dynamic lists)
+            const allowedSelectors = [
+                '#detail-icon img',
+                '#phap-bao-detail-icon img',
+                '#treasure-detail-icon img',
+                '#treasure-detail img',
+                '#linh-the-detail-icon img',
+                '#ky-trung-detail-icon img',
+                '#di-hoa-detail-icon img',
+                '#di-loi-detail-icon img',
+                '#chung-toc-detail-icon img',
+                '#npc-portrait',
+                '#npc-trade-portrait',
+                '#main-player-portrait',
+                '#enemy-portrait-btn img',
+                '#enemy-portrait img',
+                '#enemy-img',
+                '#beast-list-view img',
+                '#corpse-list img',
+                '#puppet-list img',
+                '.save-slot img',
+                '.save-card img',
+                '.save-portrait img',
+                '.character-avatar img',
+                '#char-portrait img'
+            ];
+
+            const isZoomable = allowedSelectors.some(selector => img.matches(selector));
+            if (isZoomable && img.src) {
+                this.openImageZoom(img.src);
+            }
+        });
+
+        // Add visual indicator (zoomable-image class) to those images dynamically via MutationObserver
+        const observer = new MutationObserver(() => {
+            const allowedSelectors = [
+                '#detail-icon img',
+                '#phap-bao-detail-icon img',
+                '#treasure-detail-icon img',
+                '#treasure-detail img',
+                '#linh-the-detail-icon img',
+                '#ky-trung-detail-icon img',
+                '#di-hoa-detail-icon img',
+                '#di-loi-detail-icon img',
+                '#chung-toc-detail-icon img',
+                '#npc-portrait',
+                '#npc-trade-portrait',
+                '#main-player-portrait',
+                '#enemy-portrait-btn img',
+                '#enemy-portrait img',
+                '#enemy-img',
+                '#beast-list-view img',
+                '#corpse-list img',
+                '#puppet-list img',
+                '.save-slot img',
+                '.save-card img',
+                '.save-portrait img',
+                '.character-avatar img',
+                '#char-portrait img'
+            ];
+
+            allowedSelectors.forEach(selector => {
+                document.querySelectorAll(selector).forEach(img => {
+                    if (!img.classList.contains('zoomable-image')) {
+                        img.classList.add('zoomable-image');
+                    }
+                });
+            });
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    openImageZoom(imgUrl) {
+        if (!this.elZoomOverlay) {
+            this.elZoomOverlay = document.getElementById('image-zoom-overlay');
+            this.elZoomedImg = document.getElementById('zoomed-image');
+            this.btnDownloadZoomed = document.getElementById('btn-download-zoomed');
+        }
+        if (!this.elZoomOverlay || !this.elZoomedImg) return;
+
+        this.elZoomedImg.src = imgUrl;
+
+        // Animate overlay open
+        this.toggleOverlay(this.elZoomOverlay, true, () => {
+            gsap.fromTo(this.elZoomedImg,
+                { scale: 0.8, opacity: 0 },
+                { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.5)" }
+            );
+        });
+
+        // Set up download click handler
+        if (this.btnDownloadZoomed) {
+            this.btnDownloadZoomed.onclick = (e) => {
+                e.stopPropagation();
+                this.downloadImage(imgUrl);
+            };
+        }
+    }
+
+    async downloadImage(url) {
+        try {
+            this.toast("Đang chuẩn bị tải ảnh...", "info");
+            
+            // Try fetching as a blob to bypass potential cross-origin issues
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            
+            const filename = url.split('/').pop().split('?')[0] || 'mortal-quest-asset.webp';
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            URL.revokeObjectURL(blobUrl);
+            this.toast("Đã tải ảnh thành công!", "success");
+        } catch (error) {
+            console.error("Failed to download image via blob, falling back to direct link", error);
+            // Fallback to direct download link (standard <a> tag)
+            const filename = url.split('/').pop().split('?')[0] || 'mortal-quest-asset.webp';
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.target = "_blank";
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            this.toast("Đã mở ảnh trong tab mới để tải về!", "success");
         }
     }
 }
