@@ -146,15 +146,14 @@ _Chúc các đạo hữu sớm ngày đốn ngộ thiên đạo, đắc đạo t
 │
 ├── ⚔️ Pháp Bảo
 │ ├── Pháp Khí
-│ ├── Linh Khí
+│ ├── Đỉnh Giai Pháp Khí
+│ ├── Phù Bảo
+│ ├── Pháp Bảo
 │ ├── Cổ Bảo
+│ ├── Linh Bảo
 │ ├── Thông Thiên Linh Bảo
 │ ├── Huyền Thiên Chi Bảo
-│ ├── Công Kích
-│ ├── Phòng Ngự
-│ ├── Phi Hành
-│ ├── Trói Buộc
-│ └── Phụ Trợ
+│ └── Tiên Khí
 │
 ├── 💊 Đan Dược
 │ ├── Tu Luyện
@@ -203,6 +202,12 @@ _Chúc các đạo hữu sớm ngày đốn ngộ thiên đạo, đắc đạo t
 │ │ ├── Ngọc Thạch
 │ │ └── Dị Khoáng
 │ │
+│ ├── 💧 Linh Dịch
+│ │ ├── Luyện Thể
+│ │ ├── Dưỡng Hồn
+│ │ ├── Tu Luyện
+│ │ └── Thiên Địa Linh Dịch
+│ │
 │ ├── 🦴 Yêu Thú Tài Liệu
 │ │ ├── Yêu Cốt
 │ │ ├── Yêu Huyết
@@ -212,6 +217,19 @@ _Chúc các đạo hữu sớm ngày đốn ngộ thiên đạo, đắc đạo t
 │ │ ├── Trảo
 │ │ ├── Yêu Nanh
 │ │ └── Yêu Giác
+│ │
+│ ├── 🩸 Luyện Thể Tài Liệu
+│ │ ├── Chân Linh Huyết
+│ │ ├── Yêu Huyết
+│ │ ├── Linh Cốt
+│ │ └── Luyện Thể Linh Quả
+│ │
+│ ├── 👁️ Dưỡng Hồn Tài Liệu
+│ │ ├── Dưỡng Hồn Mộc
+│ │ ├── Hồn Thạch
+│ │ ├── Hồn Tinh
+│ │ ├── Dưỡng Thần Đan
+│ │ └── Hồn Thú Tài Liệu
 │ │
 │ └── 🌟 Thiên Tài Địa Bảo
 │
@@ -225,6 +243,8 @@ _Chúc các đạo hữu sớm ngày đốn ngộ thiên đạo, đắc đạo t
 │ ├── Thi Khôi
 │ └── Linh Khôi
 │
+├── 🎒 Kỳ Vật Dị Bảo
+│
 ├── 🏮 Dịch Vụ
 │ ├── Luyện Đan
 │ ├── Luyện Khí
@@ -233,9 +253,10 @@ _Chúc các đạo hữu sớm ngày đốn ngộ thiên đạo, đắc đạo t
 │ ├── Khảm Nạm
 │ ├── Truyền Tống
 │ ├── Treo Thưởng
-│ └── Thu Mua
+│ ├── Thu Mua
+│ └── Đấu Giá
 │
-├── 🎒 Khác
+├── 📦 Tạp Vật
 │ ├── Ngọc Giản
 │ ├── Bản Đồ
 │ ├── Lệnh Bài
