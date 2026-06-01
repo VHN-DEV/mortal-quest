@@ -2814,7 +2814,7 @@ export const ITEMS = {
         id: 'trung_thien_phong_ngan_uynh',
         name: 'Trứng Thiên Phong Ngân Uynh',
         type: 'consumable',
-        icon: '🦗',
+        icon: '🐞',
         quality: 'Pháp Bảo',
         price: 25000,
         description: 'Trứng của Thiên Phong Ngân Uynh, loại kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.'
