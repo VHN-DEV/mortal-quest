@@ -203,7 +203,8 @@ export class Game {
         const btnDotPhaNgay = document.getElementById('btn-dot-pha-ngay');
         if (btnDotPhaNgay) {
             btnDotPhaNgay.onclick = () => {
-                this.breakthrough('tuvi', true); // Bypass panel toggling
+                const focus = state.player ? state.player.cultivationFocus : 'tuvi';
+                this.breakthrough(focus, true); // Bypass panel toggling
             };
         }
 
@@ -1317,8 +1318,13 @@ export class Game {
         if (!state.player) return;
         const focus = customFocus || state.player.cultivationFocus || 'tuvi';
 
-        // PNTT Dai Vien Man panel toggling
-        if (focus === 'tuvi' && state.player.tuViState !== 'accumulating' && !bypassPanel) {
+        // Unified Cultivation State Panel toggling for all 3 progression pathways
+        const hasVienManState = 
+            (focus === 'tuvi' && state.player.tuViState !== 'accumulating') ||
+            (focus === 'body' && state.player.bodyState !== 'accumulating') ||
+            (focus === 'soul' && state.player.soulState !== 'accumulating');
+
+        if (hasVienManState && !bypassPanel) {
             const panel = document.getElementById('dai-vien-man-panel');
             if (panel) {
                 panel.classList.toggle('hidden');

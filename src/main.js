@@ -701,45 +701,102 @@ window.renderMainStats = () => {
         }
     }
 
-    // Render Dai Vien Man Panel
+    // Unified Cultivation State Panel for Tu Vi, Luyện Thể (Body) & Thần Thức (Soul)
     const elDaiVienManPanel = getCachedEl('dai-vien-man-panel');
     if (elDaiVienManPanel) {
-        const isDaiVienMan = focus === 'tuvi' && player.tuViState !== 'accumulating';
-        if (isDaiVienMan) {
+        const isStateActive = 
+            (focus === 'tuvi' && player.tuViState !== 'accumulating') ||
+            (focus === 'body' && player.bodyState !== 'accumulating') ||
+            (focus === 'soul' && player.soulState !== 'accumulating');
+
+        if (isStateActive) {
             elDaiVienManPanel.classList.remove('hidden');
-            
-            // Update stats
-            updateCachedText('thien-dao-pressure', `${player.thien_dao_ap_luc.toFixed(1)}%`);
-            updateCachedText('can-co-value', `${player.can_co.toFixed(1)}%`);
-            updateCachedText('tinh-thuan-value', Math.floor(player.tinh_thuan).toLocaleString());
-            
-            let statusText = 'Đại Viên Mãn';
-            if (player.tuViState === 'consolidating') statusText = 'Củng Cố Căn Cơ';
-            else if (player.tuViState === 'condensing') statusText = 'Nén Pháp Lực';
-            updateCachedText('dai-vien-man-status', statusText);
-            
-            const rate = player.getBreakthroughSuccessRate('tuvi');
-            // Update btn-dot-pha-ngay text
+
+            const titleEl = getCachedEl('dai-vien-man-title');
+            const statusEl = getCachedEl('dai-vien-man-status');
+            const labelLeftName = getCachedEl('label-left-name');
+            const labelCenterName = getCachedEl('label-center-name');
+            const labelRightName = getCachedEl('label-right-name');
             const btnDotPhaNgay = getCachedEl('btn-dot-pha-ngay');
-            if (btnDotPhaNgay) {
-                btnDotPhaNgay.textContent = `⚡ ĐỘT PHÁ NGAY (Tỷ lệ: ${rate}%)`;
-            }
-            
-            // Style sub-buttons based on active state
-            const btnCungCo = getCachedEl('btn-cung-co-can-co');
-            if (btnCungCo) {
-                const active = player.tuViState === 'consolidating';
-                btnCungCo.className = `py-1.5 rounded-xl uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95 border ${
-                    active ? 'bg-qi-blue/20 text-qi-blue border-qi-blue/50 font-bold font-black' : 'bg-white/5 text-gray-300 border-white/10'
-                }`;
-            }
-            
-            const btnNen = getCachedEl('btn-nen-phap-luc');
-            if (btnNen) {
-                const active = player.tuViState === 'condensing';
-                btnNen.className = `py-1.5 rounded-xl uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95 border ${
-                    active ? 'bg-qi-purple/20 text-qi-purple border-qi-purple/50 font-bold font-black' : 'bg-white/5 text-gray-300 border-white/10'
-                }`;
+            const subButtonsContainer = getCachedEl('dai-vien-man-sub-buttons');
+
+            const rate = player.getBreakthroughSuccessRate(focus);
+
+            if (focus === 'tuvi') {
+                if (titleEl) titleEl.textContent = 'Cảnh Giới Đại Viên Mãn';
+                if (labelLeftName) labelLeftName.textContent = 'Áp Lực Thiên Đạo';
+                if (labelCenterName) labelCenterName.textContent = 'Căn Cơ Linh Lực';
+                if (labelRightName) labelRightName.textContent = 'Pháp Lực Tinh Thuần';
+
+                updateCachedText('thien-dao-pressure', `${player.thien_dao_ap_luc.toFixed(1)}%`);
+                updateCachedText('can-co-value', `${player.can_co.toFixed(1)}%`);
+                updateCachedText('tinh-thuan-value', Math.floor(player.tinh_thuan).toLocaleString());
+
+                let statusText = 'Tích Lũy';
+                if (player.tuViState === 'consolidating') statusText = 'Củng Cố Căn Cơ';
+                else if (player.tuViState === 'condensing') statusText = 'Nén Pháp Lực';
+                if (statusEl) statusEl.textContent = statusText;
+
+                if (btnDotPhaNgay) {
+                    btnDotPhaNgay.textContent = `⚡ ĐỘT PHÁ NGAY (Tỷ lệ: ${rate}%)`;
+                }
+
+                if (subButtonsContainer) subButtonsContainer.classList.remove('hidden');
+
+                // Style sub-buttons based on active state
+                const btnCungCo = getCachedEl('btn-cung-co-can-co');
+                if (btnCungCo) {
+                    const active = player.tuViState === 'consolidating';
+                    btnCungCo.className = `py-1.5 rounded-xl uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95 border ${
+                        active ? 'bg-qi-blue/20 text-qi-blue border-qi-blue/50 font-bold font-black' : 'bg-white/5 text-gray-300 border-white/10'
+                    }`;
+                }
+
+                const btnNen = getCachedEl('btn-nen-phap-luc');
+                if (btnNen) {
+                    const active = player.tuViState === 'condensing';
+                    btnNen.className = `py-1.5 rounded-xl uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95 border ${
+                        active ? 'bg-qi-purple/20 text-qi-purple border-qi-purple/50 font-bold font-black' : 'bg-white/5 text-gray-300 border-white/10'
+                    }`;
+                }
+            } else if (focus === 'body') {
+                if (titleEl) titleEl.textContent = 'Cảnh Giới Luyện Thể Cực Hạn';
+                if (labelLeftName) labelLeftName.textContent = 'Khí Huyết Áp Lực';
+                if (labelCenterName) labelCenterName.textContent = 'Nhục Thân Căn Cốt';
+                if (labelRightName) labelRightName.textContent = 'Độ Tích Lũy';
+
+                updateCachedText('thien-dao-pressure', `${player.khi_huyet_ap_luc.toFixed(1)}%`);
+                updateCachedText('can-co-value', `${player.physiqueTalent || 50}`);
+                
+                const bodyRealm = player.getCurrentRealm('body');
+                const pct = bodyRealm ? Math.min(150, Math.floor((player.bodyExp / bodyRealm.expRequired) * 100)) : 100;
+                updateCachedText('tinh-thuan-value', `${pct}%`);
+
+                if (statusEl) statusEl.textContent = 'Thuế Biến';
+                if (btnDotPhaNgay) {
+                    btnDotPhaNgay.textContent = `💪 THUẾ BIẾN NGAY (Tỷ lệ: ${rate}%)`;
+                }
+
+                if (subButtonsContainer) subButtonsContainer.classList.add('hidden');
+            } else if (focus === 'soul') {
+                if (titleEl) titleEl.textContent = 'Cảnh Giới Thần Thức Cực Hạn';
+                if (labelLeftName) labelLeftName.textContent = 'Thần Hồn Quá Tải';
+                if (labelCenterName) labelCenterName.textContent = 'Thần Hồn Đạo Tâm';
+                if (labelRightName) labelRightName.textContent = 'Độ Tích Lũy';
+
+                updateCachedText('thien-dao-pressure', `${player.than_hon_qua_tai.toFixed(1)}%`);
+                updateCachedText('can-co-value', `${player.daoTam || 50}`);
+
+                const soulRealm = player.getCurrentRealm('soul');
+                const pct = soulRealm ? Math.min(150, Math.floor((player.soulExp / soulRealm.expRequired) * 100)) : 100;
+                updateCachedText('tinh-thuan-value', `${pct}%`);
+
+                if (statusEl) statusEl.textContent = 'Lột Xác';
+                if (btnDotPhaNgay) {
+                    btnDotPhaNgay.textContent = `🌌 LỘT XÁC NGAY (Tỷ lệ: ${rate}%)`;
+                }
+
+                if (subButtonsContainer) subButtonsContainer.classList.add('hidden');
             }
         } else {
             elDaiVienManPanel.classList.add('hidden');

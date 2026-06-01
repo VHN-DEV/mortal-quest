@@ -290,11 +290,21 @@ export class Player {
 
         // --- Hệ thống Đại Viên Mãn (PNTT-style) ---
         // Thay thế forced breakthrough: người chơi chủ động chọn khi nào đột phá
-        this.tuViState = 'accumulating'; // 'accumulating' | 'full' | 'condensing'
+        this.tuViState = 'accumulating'; // 'accumulating' | 'full' | 'condensing' | 'consolidating'
         this.tinh_thuan = 0;      // Pháp Lực Tinh Thuần — tích lũy khi Nén Pháp Lực
         this.can_co = 0;          // Căn Cơ (0-100) — tăng khi Củng Cố, bonus xác suất đột phá
         this.thien_dao_ap_luc = 0; // Áp Lực Thiên Đạo (0-100%) — tăng theo thời gian ở Viên Mãn
-        this.thoiGianDaiVienMan = 0; // Số giây đã ở trạng thái Đại Viên Mãn (game-time)
+        this.thoiGianDaiVienMan = 0; // Số phút game-time đã ở trạng thái Tu Vi Viên Mãn
+
+        // Luyện Thể — Thiên Địa quản (Khí huyết phản phệ)
+        this.bodyState = 'accumulating'; // 'accumulating' | 'full' | 'danger'
+        this.khi_huyet_ap_luc = 0;       // Khí Huyết Áp Lực (0-100) — tăng khi tích quá 100%
+        this.thoiGianBodyVienMan = 0;    // Số phút game-time đã ở trạng thái Body Viên Mãn
+
+        // Thần Thức — Thần Hồn quản (Thần hồn quá tải)
+        this.soulState = 'accumulating'; // 'accumulating' | 'full' | 'danger'
+        this.than_hon_qua_tai = 0;       // Thần Hồn Quá Tải (0-100) — tăng khi tích quá 100%
+        this.thoiGianSoulVienMan = 0;    // Số phút game-time đã ở trạng thái Soul Viên Mãn
     }
 
     get lingShi() {
@@ -550,13 +560,10 @@ export class Player {
 
         if (focus === 'tuvi') {
             this._updateDaiVienManState(realm, exp, delta);
-        } else {
-            // Với body/soul: đơn giản chỉ cap progress ở 100%, không ép
-            if (focus === 'body' && exp >= realm.expRequired * 1.5) {
-                this.bodyExp = realm.expRequired * 1.5;
-            } else if (focus === 'soul' && exp >= realm.expRequired * 1.5) {
-                this.soulExp = realm.expRequired * 1.5;
-            }
+        } else if (focus === 'body') {
+            this._updateBodyVienManState(realm, exp, delta);
+        } else if (focus === 'soul') {
+            this._updateSoulVienManState(realm, exp, delta);
         }
         
         // 6. Regen
@@ -807,6 +814,192 @@ export class Player {
                     type: 'seclusion_event',
                     eventType: 'tribulation_strike',
                     msg: `⚡ [THIÊN LÔI ĐÁNH TRÚNG] Áp lực Thiên Đạo quá cao kích hoạt tiểu thiên kiếp! Một tia sét thiên lôi đột ngột giáng xuống! (HP -20%, Độ Ổn Định -10%, Nhận trạng thái Thiên Lôi Gia Thân)`
+                });
+            }
+        }
+    }
+
+    /**
+     * Luyện Thể Viên Mãn — Thiên Địa quản
+     * Không có Thiên Kiếp, chỉ có tổn thương khí huyết nội tại nếu không đột phá kịp.
+     * 100% = Viên Mãn | 120% = Cực Hạn | 150% = Tuyệt Đỉnh (cap cứng)
+     */
+    _updateBodyVienManState(realm, exp, delta) {
+        const pct = exp / realm.expRequired;
+
+        if (pct < 1.0) {
+            // Chưa đủ — reset về bình thường
+            if (this.bodyState !== 'accumulating') {
+                this.bodyState = 'accumulating';
+                this.khi_huyet_ap_luc = 0;
+                this.thoiGianBodyVienMan = 0;
+                this.removeStatusEffect('khi_huyet_bao_dong');
+                this.removeStatusEffect('kinh_mach_ton_thuong');
+            }
+            return;
+        }
+
+        // Vừa đạt Viên Mãn lần đầu
+        if (this.bodyState === 'accumulating') {
+            this.bodyState = 'full';
+            this.thoiGianBodyVienMan = 0;
+            this.khi_huyet_ap_luc = 0;
+            this.pendingEvents.push({
+                type: 'seclusion_event',
+                eventType: 'body_vien_man',
+                msg: `🔴 [KHÍ HUYẾT VIÊN MÃN] Nhục thân đã đạt cực hạn cảnh giới này! Ngươi có thể Thuế Biến ngay hoặc tiếp tục tích lũy Khí Huyết lên Cực Hạn (120%) / Tuyệt Đỉnh (150%) để tăng thêm tiềm năng — nhưng rủi ro Khí Huyết Bạo Động sẽ tăng theo.`
+            });
+        }
+
+        // Tuyệt Đỉnh: cap cứng ở 150%
+        if (pct >= 1.5) {
+            this.bodyExp = realm.expRequired * 1.5;
+        }
+
+        // Game time tracking
+        let gameMinutesPassed = 0;
+        if (typeof state !== 'undefined' && state.systems && state.systems.time) {
+            const timeSys = state.systems.time;
+            gameMinutesPassed = delta * (timeSys.timeMultiplier || 2.0) / ((timeSys.tickRate || 10000) / 1000);
+        } else {
+            gameMinutesPassed = delta * 0.2;
+        }
+        this.thoiGianBodyVienMan += gameMinutesPassed;
+
+        // Khí huyết áp lực tăng tuyến tính theo mức tích lũy vượt chuẩn
+        if (pct >= 1.0) {
+            const overflowPct = Math.min(1.0, (pct - 1.0) / 0.5); // 0 tại 100%, 1.0 tại 150%
+            const timeFactor = Math.min(1.0, this.thoiGianBodyVienMan / 2160); // 6 tháng
+            this.khi_huyet_ap_luc = Math.min(100, overflowPct * 60 + timeFactor * 40);
+        }
+
+        // Khí Huyết Bạo Động debuff khi áp lực >= 25
+        if (this.khi_huyet_ap_luc >= 25) {
+            if (!this.hasStatusEffect('khi_huyet_bao_dong')) {
+                this.addStatusEffect('khi_huyet_bao_dong', Infinity, 'Khí Huyết Bạo Động');
+            }
+        } else {
+            if (this.hasStatusEffect('khi_huyet_bao_dong')) {
+                this.removeStatusEffect('khi_huyet_bao_dong');
+            }
+        }
+
+        // Kinh Mạch Tổn Thương debuff sau 3 tháng ở Viên Mãn
+        if (this.thoiGianBodyVienMan >= 1080) {
+            if (!this.hasStatusEffect('kinh_mach_ton_thuong')) {
+                this.addStatusEffect('kinh_mach_ton_thuong', Infinity, 'Không Đột Phá Kịp Thời');
+            }
+        } else {
+            if (this.hasStatusEffect('kinh_mach_ton_thuong')) {
+                this.removeStatusEffect('kinh_mach_ton_thuong');
+            }
+        }
+
+        // Random backlash khi tích lên Tuyệt Đỉnh hoặc áp lực cao
+        if (this.khi_huyet_ap_luc >= 40) {
+            const backlashChance = 0.0003 * (this.khi_huyet_ap_luc / 40) * delta;
+            if (Math.random() < backlashChance) {
+                const dmg = Math.floor(this.maxHp * 0.08);
+                this.hp = Math.max(1, this.hp - dmg);
+                const events = [
+                    `💢 [NỨT CƠ] Khí huyết bạo trướng làm gân thịt nứt vỡ! (HP -${dmg})`,
+                    `💥 [RẠN XƯƠNG] Cốt tủy chịu không nổi khí huyết cuồng nhiệt! (HP -${dmg})`,
+                    `⚡ [KINH MẠCH TỔN THƯƠNG] Kinh lạc bị ép đến vỡ, khí huyết tản loạn! (HP -${dmg})`,
+                ];
+                this.pendingEvents.push({
+                    type: 'seclusion_event',
+                    eventType: 'body_backlash',
+                    msg: events[Math.floor(Math.random() * events.length)]
+                });
+            }
+        }
+    }
+
+    /**
+     * Thần Thức Viên Mãn — Thần Hồn quản
+     * Không có Thiên Kiếp, nhưng thần hồn quá tải lâu dài gây tâm ma, huyễn cảnh, mất trí nhớ.
+     * 100% = Viên Mãn | 120% = Cực Hạn | 150% = Tuyệt Đỉnh (cap cứng)
+     */
+    _updateSoulVienManState(realm, exp, delta) {
+        const pct = exp / realm.expRequired;
+
+        if (pct < 1.0) {
+            if (this.soulState !== 'accumulating') {
+                this.soulState = 'accumulating';
+                this.than_hon_qua_tai = 0;
+                this.thoiGianSoulVienMan = 0;
+                this.removeStatusEffect('than_hon_qua_tai_debuff');
+                this.removeStatusEffect('huyen_canh');
+            }
+            return;
+        }
+
+        // Vừa đạt Viên Mãn lần đầu
+        if (this.soulState === 'accumulating') {
+            this.soulState = 'full';
+            this.thoiGianSoulVienMan = 0;
+            this.than_hon_qua_tai = 0;
+            this.pendingEvents.push({
+                type: 'seclusion_event',
+                eventType: 'soul_vien_man',
+                msg: `🌌 [THẦN HỒN VIÊN MÃN] Thần hồn đã viên mãn, sẵn sàng lột xác thăng cấp! Có thể đột phá ngay hoặc tiếp tục nén lên Cực Hạn (120%) / Tuyệt Đỉnh (150%) — nhưng thần hồn quá tải lâu sẽ sinh Tâm Ma và Huyễn Cảnh.`
+            });
+        }
+
+        // Tuyệt Đỉnh: cap cứng ở 150%
+        if (pct >= 1.5) {
+            this.soulExp = realm.expRequired * 1.5;
+        }
+
+        // Game time tracking
+        let gameMinutesPassed = 0;
+        if (typeof state !== 'undefined' && state.systems && state.systems.time) {
+            const timeSys = state.systems.time;
+            gameMinutesPassed = delta * (timeSys.timeMultiplier || 2.0) / ((timeSys.tickRate || 10000) / 1000);
+        } else {
+            gameMinutesPassed = delta * 0.2;
+        }
+        this.thoiGianSoulVienMan += gameMinutesPassed;
+
+        // Thần hồn quá tải tăng theo mức tích lũy và thời gian
+        if (pct >= 1.0) {
+            const overflowPct = Math.min(1.0, (pct - 1.0) / 0.5); // 0 tại 100%, 1.0 tại 150%
+            const timeFactor = Math.min(1.0, this.thoiGianSoulVienMan / 2160); // 6 tháng
+            this.than_hon_qua_tai = Math.min(100, overflowPct * 50 + timeFactor * 50);
+        }
+
+        // Thần Hồn Quá Tải debuff khi >= 25
+        if (this.than_hon_qua_tai >= 25) {
+            if (!this.hasStatusEffect('than_hon_qua_tai_debuff')) {
+                this.addStatusEffect('than_hon_qua_tai_debuff', Infinity, 'Thần Hồn Ứ Đọng');
+            }
+        } else {
+            if (this.hasStatusEffect('than_hon_qua_tai_debuff')) {
+                this.removeStatusEffect('than_hon_qua_tai_debuff');
+            }
+        }
+
+        // Tâm ma tăng thụ động do thần hồn quá tải
+        if (this.than_hon_qua_tai > 0) {
+            this.heartDemon = Math.min(100, this.heartDemon + this.than_hon_qua_tai * 0.0003 * delta);
+        }
+
+        // Huyễn Cảnh ngẫu nhiên sau 3 tháng
+        if (this.than_hon_qua_tai >= 40) {
+            const illusionChance = 0.0002 * (this.than_hon_qua_tai / 40) * delta;
+            if (Math.random() < illusionChance) {
+                this.addStatusEffect('huyen_canh', 120, 'Thần Hồn Quá Tải');
+                this.heartDemon = Math.min(100, this.heartDemon + 5);
+                const events = [
+                    `🌀 [HUYỄN CẢNH] Thần hồn ứ đọng, huyễn cảnh xuất hiện — tâm thần lung lay! (Tâm Ma +5, nhận trạng thái Huyễn Cảnh)`,
+                    `👁️ [TÂM MA XÂM THỰC] Thần hải quá tải, tâm ma thừa cơ xâm nhập thần hồn! (Tâm Ma +5)`,
+                    `🧠 [THẦN HẢI NỨT VỠ] Thần thức cưỡng ép quá giới hạn, thần hải xuất hiện vết nứt! (Tâm Ma +5, Độ Ổn Định giảm)`,
+                ];
+                this.stability = Math.max(0, this.stability - 5);
+                this.pendingEvents.push({
+                    type: 'seclusion_event',
+                    eventType: 'soul_overload',
+                    msg: events[Math.floor(Math.random() * events.length)]
                 });
             }
         }
@@ -1359,9 +1552,25 @@ export class Player {
             }
         }
 
-        return { 
-            can: currentExp >= realm.expRequired, 
-            reason: currentExp < realm.expRequired ? `Cần thêm ${(realm.expRequired - currentExp).toLocaleString()} exp để đột phá.` : "",
+        // 3-tier breakthrough system: 100% / 120% / 150%
+        const pct = currentExp / realm.expRequired;
+        let tier = null;
+        if (pct >= 1.5)      tier = 'tuyet_dinh'; // Tuyệt Đỉnh
+        else if (pct >= 1.2) tier = 'cuc_han';    // Cực Hạn
+        else if (pct >= 1.0) tier = 'vien_man';   // Viên Mãn
+
+        const tierNames = {
+            vien_man:   '🟡 Viên Mãn (100%)',
+            cuc_han:    '🟠 Cực Hạn (120%)',
+            tuyet_dinh: '🔴 Tuyệt Đỉnh (150%)'
+        };
+
+        return {
+            can: tier !== null,
+            tier,
+            tierName: tier ? tierNames[tier] : null,
+            pct,
+            reason: tier === null ? `Cần thêm ${Math.ceil(realm.expRequired - currentExp).toLocaleString()} exp để đột phá.` : '',
             expRequired: realm.expRequired
         };
     }
@@ -1373,141 +1582,207 @@ export class Player {
     getBreakthroughSuccessRate(type = 'tuvi') {
         let baseRate = this.getStability();
         const mainPath = this.mainPath || 'orthodox';
-        if (mainPath === 'ma_dao') {
-            baseRate -= 10;
-        }
-        if (this.specializedPaths?.buddhist?.realmId > 0) {
-            baseRate += 10;
-        }
-        
-        // Apply Status Effect breakthrough modifications
+        if (mainPath === 'ma_dao') baseRate -= 10;
+        if (this.specializedPaths?.buddhist?.realmId > 0) baseRate += 10;
+
+        // Status effect breakthrough modifications
         if (this.buffs) {
             this.buffs.forEach(b => {
                 if (b.effects && b.effects.breakthrough_rate) {
-                    const stacks = b.stacks || 1;
-                    baseRate += b.effects.breakthrough_rate * 100 * stacks;
+                    baseRate += b.effects.breakthrough_rate * 100 * (b.stacks || 1);
                 }
             });
         }
 
-        // Apply PNTT-style bonuses/penalties if type is tuvi
+        // Per-system bonuses and penalties
+        const check = this.canBreakthrough(type);
+        const tier = check.tier || 'vien_man';
+
+        // Tier bonus (shared base for all systems)
+        const tierBonus = { vien_man: 0, cuc_han: 15, tuyet_dinh: 30 };
+        baseRate += tierBonus[tier] || 0;
+
         if (type === 'tuvi') {
-            const canCoBonus = (this.can_co || 0) * 0.5; // Max +50%
+            // Tu Vi: can_co and tinh_thuan bonus, thien_dao_ap_luc penalty
             const realm = this.getCurrentRealm('tuvi');
             const maxTinhThuan = realm ? realm.expRequired : 1000;
-            const tinhThuanBonus = Math.min(30, ((this.tinh_thuan || 0) / maxTinhThuan) * 30); // Max +30%
-            const apLucPenalty = (this.thien_dao_ap_luc || 0) * 0.3; // Max -30%
-
-            baseRate += canCoBonus + tinhThuanBonus - apLucPenalty;
+            baseRate += (this.can_co || 0) * 0.5;                                   // +0 to +50%
+            baseRate += Math.min(30, ((this.tinh_thuan || 0) / maxTinhThuan) * 30); // +0 to +30%
+            baseRate -= (this.thien_dao_ap_luc || 0) * 0.3;                         // -0 to -30%
+        } else if (type === 'body') {
+            // Luyện Thể: tier bonus amplified (+20%/+40%), khi_huyet_ap_luc penalty
+            const extraTierBonus = { vien_man: 0, cuc_han: 5, tuyet_dinh: 10 }; // extra on top
+            baseRate += extraTierBonus[tier] || 0;
+            baseRate -= (this.khi_huyet_ap_luc || 0) * 0.2;                         // -0 to -20%
+        } else if (type === 'soul') {
+            // Thần Thức: tier bonus moderate, than_hon_qua_tai penalty
+            const extraTierBonus = { vien_man: 0, cuc_han: -5, tuyet_dinh: -10 }; // lower than body
+            baseRate += extraTierBonus[tier] || 0;
+            baseRate -= (this.than_hon_qua_tai || 0) * 0.25;                        // -0 to -25%
         }
 
         baseRate = Math.max(5, Math.min(100, baseRate));
-        
         const fatePenalty = window.game?.systems?.fate?.getBreakthroughPenalty() || 1.0;
         baseRate *= fatePenalty;
-        
         return Math.floor(Math.max(5, Math.min(100, baseRate)));
     }
 
     breakthrough(type = 'tuvi', isForced = false, rateBonus = 0) {
         const check = this.canBreakthrough(type);
-        if (check.can) {
-            // Check for Qi Deviation risk
-            let stability = this.getBreakthroughSuccessRate(type);
-            if (isForced) stability *= 0.5; // Double risk for forced breakthrough
-            
-            if (rateBonus) {
-                stability += rateBonus * 100;
-            }
-
-            stability = Math.max(5, Math.min(100, stability));
-            
-            const roll = Math.random() * 100;
-            if (roll > stability) {
-                // Qi Deviation!
-                this.hp *= 0.1; // More severe damage
-                const penalty = isForced ? 0.5 : 0.7;
-                
-                // Imbalance Penalty
-                const tuViDiffBody = this.realmId - this.bodyRealmId;
-                const tuViDiffSoul = this.realmId - this.soulRealmId;
-                
-                // Dao Heart protection
-                const daoTamProtection = (this.daoTam || 50) / 200; // Up to 50% protection
-                
-                let extraMsg = "";
-                if (tuViDiffBody > 5) {
-                    this.hp *= (0.5 + daoTamProtection);
-                    extraMsg += " Thân thể không chịu nổi linh lực bạo tẩu!";
-                }
-                if (tuViDiffSoul > 5) {
-                    this.stability -= (20 * (1 - daoTamProtection));
-                    this.heartDemon += (10 * (1 - daoTamProtection));
-                    extraMsg += " Thần thức lung lay, tâm ma thừa cơ xâm nhập!";
-                }
-
-                if (type === 'tuvi') {
-                    this.tuVi *= penalty;
-                    this.tinh_thuan = 0;
-                    this.can_co = 0;
-                    this.thoiGianDaiVienMan = 0;
-                    this.thien_dao_ap_luc = 0;
-                    this.tuViState = 'accumulating';
-                }
-                else if (type === 'body') this.bodyExp *= penalty;
-                else if (type === 'soul') this.soulExp *= penalty;
-                else if (this.specializedPaths[type]) this.specializedPaths[type].exp *= penalty;
-                
-                return { success: false, msg: (isForced ? "Thiên Đạo cưỡng ép đột phá thất bại! " : "Tẩu hỏa nhập ma! ") + extraMsg };
-            }
-
-            const realm = this.getCurrentRealm(type);
-            if (type === 'tuvi') {
-                this.tuVi = Math.max(0, this.tuVi - realm.expRequired);
-                this.realmId++;
-                
-                // Give bonus stats based on pure mana (tinh_thuan) accumulated
-                if (this.tinh_thuan > 0) {
-                    const pureRatio = Math.min(1.0, this.tinh_thuan / realm.expRequired);
-                    const bonusPercent = pureRatio * 0.15; // Up to +15% permanent stats
-                    
-                    this.atk = Math.round(this.atk * (1 + bonusPercent));
-                    this.def = Math.round(this.def * (1 + bonusPercent));
-                    this.maxHp = Math.round(this.maxHp * (1 + bonusPercent));
-                    this.hp = this.maxHp;
-                    
-                    this.pendingEvents.push({
-                        type: 'seclusion_event',
-                        eventType: 'insight',
-                        msg: `💎 [NGƯNG TỤ TINH ANH] Đột phá thành công! Pháp lực tinh thuần giúp nhục thân và đan điền mở rộng phi thường! (Thuộc tính cơ bản +${(bonusPercent * 100).toFixed(1)}%)`
-                    });
-                }
-
-                // Reset PNTT fields
-                this.tinh_thuan = 0;
-                this.can_co = 0;
-                this.thoiGianDaiVienMan = 0;
-                this.thien_dao_ap_luc = 0;
-                this.tuViState = 'accumulating';
-            } else if (type === 'body') {
-                this.bodyExp -= realm.expRequired;
-                this.bodyRealmId++;
-            } else if (type === 'soul') {
-                this.soulExp -= realm.expRequired;
-                this.soulRealmId++;
-            } else if (this.specializedPaths[type]) {
-                this.specializedPaths[type].exp -= realm.expRequired;
-                this.specializedPaths[type].realmId++;
-            }
-            
-            this.calculateStats();
-            
-            // Dao Heart increases stability after success
-            this.stability = Math.min(100, this.stability + ((this.daoTam || 50) / 10));
-            
-            return { success: true, msg: isForced ? "Thiên Đạo cưỡng ép đột phá thành công! Ngươi may mắn thoát khỏi một kiếp." : "Đột phá thành công!" };
+        if (!check.can) {
+            return { success: false, msg: check.reason || "Chưa đủ điều kiện đột phá." };
         }
-        return { success: false, msg: check.reason || "Chưa đủ điều kiện đột phá." };
+
+        const tier = check.tier || 'vien_man';
+        let stability = this.getBreakthroughSuccessRate(type);
+        if (isForced) stability *= 0.5;
+        if (rateBonus) stability += rateBonus * 100;
+        stability = Math.max(5, Math.min(100, stability));
+
+        const roll = Math.random() * 100;
+
+        if (roll > stability) {
+            // ======== ĐỘT PHÁ THẤT BẠI ========
+            const daoTamProt = (this.daoTam || 50) / 200; // 0-50% protection
+
+            if (type === 'tuvi') {
+                // Tẩu hỏa nhập ma — chân nguyên đảo lộn
+                this.hp *= 0.1;
+                const tuViPenalty = isForced ? 0.5 : 0.7;
+                this.tuVi *= tuViPenalty;
+                // Kiểm tra mất cân bằng Tu Vi-Body-Soul
+                const diffBody = this.realmId - this.bodyRealmId;
+                const diffSoul = this.realmId - this.soulRealmId;
+                let extra = '';
+                if (diffBody > 5) { this.hp *= (0.5 + daoTamProt); extra += ' Thân thể không chịu nổi linh lực bạo tẩu!'; }
+                if (diffSoul > 5) { this.stability -= 20 * (1 - daoTamProt); this.heartDemon += 10 * (1 - daoTamProt); extra += ' Tâm ma thừa cơ xâm nhập!'; }
+                this.addStatusEffect('tau_hoa_nhap_ma', 300, 'Đột Phá Thất Bại');
+                // Reset PNTT fields
+                this.tinh_thuan = 0; this.can_co = 0;
+                this.thoiGianDaiVienMan = 0; this.thien_dao_ap_luc = 0;
+                this.tuViState = 'accumulating';
+                return { success: false, msg: `💀 Tẩu hỏa nhập ma! Chân nguyên đảo lộn, tu vi tổn thất nặng!${extra}` };
+
+            } else if (type === 'body') {
+                // Luyện Thể thất bại — gãy nền móng nhục thân, không tẩu hỏa
+                this.hp *= 0.3; // nhẹ hơn Tu Vi
+                const bodyPenalty = 0.7;
+                this.bodyExp *= bodyPenalty;
+                this.bodyState = 'accumulating';
+                this.khi_huyet_ap_luc = 0;
+                this.thoiGianBodyVienMan = 0;
+                this.removeStatusEffect('khi_huyet_bao_dong');
+                this.removeStatusEffect('kinh_mach_ton_thuong');
+                const bodyMsgs = ['💢 Thuế Biến thất bại! Khí huyết phản phệ làm nhục thân nứt vỡ!', '💥 Gãy nền móng luyện thể! Cơ thể cần thời gian hồi phục.'];
+                this.addStatusEffect('trong_thuong', 600, 'Thuế Biến Thất Bại');
+                return { success: false, msg: bodyMsgs[Math.floor(Math.random() * bodyMsgs.length)] };
+
+            } else if (type === 'soul') {
+                // Thần Thức thất bại — thần hồn tổn thương
+                const soulPenalty = 0.7;
+                this.soulExp *= soulPenalty;
+                this.soulState = 'accumulating';
+                this.than_hon_qua_tai = 0;
+                this.thoiGianSoulVienMan = 0;
+                this.removeStatusEffect('than_hon_qua_tai_debuff');
+                this.heartDemon = Math.min(100, this.heartDemon + 15 * (1 - daoTamProt));
+                this.stability = Math.max(0, this.stability - 10);
+                this.addStatusEffect('than_hon_ton_thuong', 900, 'Thần Hồn Lột Xác Thất Bại');
+                return { success: false, msg: `🌌 Thần hồn lột xác thất bại! Thần hải lung lay, tâm ma xâm thực!` };
+
+            } else {
+                // Specialized path fallback
+                if (this.specializedPaths[type]) this.specializedPaths[type].exp *= 0.7;
+                return { success: false, msg: 'Đột phá thất bại!' };
+            }
+        }
+
+        // ======== ĐỘT PHÁ THÀNH CÔNG ========
+        const realm = this.getCurrentRealm(type);
+        const tierBonusMap = { vien_man: 0, cuc_han: 0.10, tuyet_dinh: 0.20 }; // HP/DEF bonus %
+        const tierBonus = tierBonusMap[tier] || 0;
+
+        if (type === 'tuvi') {
+            this.tuVi = Math.max(0, this.tuVi - realm.expRequired);
+            this.realmId++;
+
+            // Bonus từ tinh_thuan (Nén Pháp Lực)
+            if (this.tinh_thuan > 0) {
+                const pureRatio = Math.min(1.0, this.tinh_thuan / realm.expRequired);
+                const bonus = pureRatio * 0.15 + tierBonus;
+                this.atk = Math.round(this.atk * (1 + bonus));
+                this.def = Math.round(this.def * (1 + bonus));
+                this.maxHp = Math.round(this.maxHp * (1 + bonus));
+                this.hp = this.maxHp;
+                this.pendingEvents.push({ type: 'seclusion_event', eventType: 'insight',
+                    msg: `💎 [NGƯNG TỤ TINH ANH] Đột phá thành công! Pháp lực tinh thuần nâng căn cơ phi thường! (+${((pureRatio * 0.15 + tierBonus) * 100).toFixed(1)}% thuộc tính)` });
+            } else if (tierBonus > 0) {
+                this.maxHp = Math.round(this.maxHp * (1 + tierBonus));
+                this.hp = this.maxHp;
+                this.pendingEvents.push({ type: 'seclusion_event', eventType: 'insight',
+                    msg: `✨ [${tier === 'cuc_han' ? 'CỰC HẠN' : 'TUYỆT ĐỈNH'}] Nền tảng vững chắc giúp cảnh giới mới thăng hoa! (+${(tierBonus * 100).toFixed(0)}% HP)` });
+            }
+
+            // Reset Tu Vi fields
+            this.tinh_thuan = 0; this.can_co = 0;
+            this.thoiGianDaiVienMan = 0; this.thien_dao_ap_luc = 0;
+            this.tuViState = 'accumulating';
+            this.removeStatusEffect('ap_luc_thien_dao');
+            this.removeStatusEffect('linh_khi_qua_tai');
+
+        } else if (type === 'body') {
+            this.bodyExp = Math.max(0, this.bodyExp - realm.expRequired);
+            this.bodyRealmId++;
+
+            // Bonus maxHp từ tier
+            const hpBonus = { vien_man: 0.05, cuc_han: 0.12, tuyet_dinh: 0.20 }[tier] || 0.05;
+            this.maxHp = Math.round(this.maxHp * (1 + hpBonus));
+            this.hp = this.maxHp;
+            if (hpBonus > 0.05) {
+                this.pendingEvents.push({ type: 'seclusion_event', eventType: 'body_breakthrough',
+                    msg: `🔴 [NHỤC THÂN THUẾ BIẾN] Thuế Biến thành công! Nhục thân tái sinh mạnh mẽ hơn! (Max HP +${(hpBonus * 100).toFixed(0)}%)` });
+            }
+
+            // Reset Body fields
+            this.bodyState = 'accumulating';
+            this.khi_huyet_ap_luc = 0; this.thoiGianBodyVienMan = 0;
+            this.removeStatusEffect('khi_huyet_bao_dong');
+            this.removeStatusEffect('kinh_mach_ton_thuong');
+
+        } else if (type === 'soul') {
+            this.soulExp = Math.max(0, this.soulExp - realm.expRequired);
+            this.soulRealmId++;
+
+            // Bonus thần thức từ tier + giảm tâm ma
+            const divineBonus = { vien_man: 0.05, cuc_han: 0.12, tuyet_dinh: 0.20 }[tier] || 0.05;
+            this.divineSense = Math.round(this.divineSense * (1 + divineBonus));
+            const demonReduced = Math.floor(10 + divineBonus * 50);
+            this.heartDemon = Math.max(0, this.heartDemon - demonReduced);
+            if (divineBonus > 0.05) {
+                this.pendingEvents.push({ type: 'seclusion_event', eventType: 'soul_breakthrough',
+                    msg: `🌌 [THẦN HỒN LỘT XÁC] Thần hồn lột xác thành công! Thần thức đột phá thăng hoa! (Thần Thức +${(divineBonus * 100).toFixed(0)}%, Tâm Ma -${demonReduced})` });
+            }
+
+            // Reset Soul fields
+            this.soulState = 'accumulating';
+            this.than_hon_qua_tai = 0; this.thoiGianSoulVienMan = 0;
+            this.removeStatusEffect('than_hon_qua_tai_debuff');
+            this.removeStatusEffect('huyen_canh');
+
+        } else if (this.specializedPaths[type]) {
+            this.specializedPaths[type].exp -= realm.expRequired;
+            this.specializedPaths[type].realmId++;
+        }
+
+        this.calculateStats();
+        this.stability = Math.min(100, this.stability + ((this.daoTam || 50) / 10));
+
+        const successMsgs = {
+            tuvi: '⚡ Đột phá Tu Vi thành công!',
+            body: '💪 Thuế Biến Nhục Thân thành công!',
+            soul: '✨ Thần Hồn Lột Xác thành công!',
+        };
+        return { success: true, tier, msg: successMsgs[type] || 'Đột phá thành công!' };
     }
 
     getEnvironmentalQiMultiplier() {

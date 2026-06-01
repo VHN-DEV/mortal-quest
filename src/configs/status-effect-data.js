@@ -640,6 +640,40 @@ export const STATUS_EFFECT_TEMPLATES = {
             atk: -0.15,
             tu_vi_speed: -0.10
         }
+    },
+    khi_huyet_bao_dong: {
+        id: 'khi_huyet_bao_dong',
+        name: 'Khí Huyết Bạo Động',
+        category: 'BODY',
+        type: 'debuff',
+        icon: '🩸',
+        desc: 'Khí huyết tích tụ quá mức bạo trướng kinh mạch, liên tục thiêu đốt nhục thân. Giảm 30% Phòng ngự và mất 1% HP tối đa mỗi giây.',
+        maxStacks: 1,
+        duration: Infinity,
+        combatTurns: 999,
+        isCureable: true,
+        effects: {
+            def: -0.3,
+            dot_hp: -0.01
+        }
+    },
+    than_hon_qua_tai_debuff: {
+        id: 'than_hon_qua_tai_debuff',
+        name: 'Thần Hồn Quá Tải',
+        category: 'SOUL',
+        type: 'debuff',
+        icon: '🌌',
+        desc: 'Thần hải chứa đựng quá nhiều thần hồn năng lượng, sinh ra huyễn ảo và làm giảm tập trung. Giảm 20% Thần thức, 15% Né tránh và +10% xác suất đánh hụt.',
+        maxStacks: 1,
+        duration: Infinity,
+        combatTurns: 999,
+        isCureable: false,
+        effects: {
+            divine_sense: -0.2,
+            dodge: -0.15,
+            miss_chance: 0.1,
+            breakthrough_rate: -0.15
+        }
     }
 };
 
