@@ -198,7 +198,10 @@ function _classifyItemRaw(item) {
     }
 
     const type = item.type || '';
-    const quality = item.quality || '';
+    let quality = item.quality || '';
+    if (quality && typeof quality === 'object') {
+        quality = quality.name || '';
+    }
     const id = item.id || '';
     const effect = item.effect || {};
 

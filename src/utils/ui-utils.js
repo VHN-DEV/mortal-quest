@@ -22,6 +22,18 @@ export function getQualityClass(quality) {
         'Tiên Khí': 'tien-khi',
         'Danh Khí': 'danh-khi',
 
+        // Object ID mappings for Pháp Bảo
+        'pham_khi': 'pham-khi',
+        'phap_khi': 'phap-khi',
+        'linh_khi': 'linh-khi',
+        'phap_bao': 'phap-bao',
+        'co_bao': 'co-bao',
+        'linh_bao': 'linh-bao',
+        'thong_thien': 'thong-thien',
+        'huyen_thien': 'danh-khi',
+        'tien_khi': 'tien-khi',
+        'danh_khi': 'danh-khi',
+
         // Công Pháp (Giai system)
         'Phàm Giai': 'pham-khi',
         'Hoàng Giai': 'phap-khi',
@@ -34,6 +46,18 @@ export function getQualityClass(quality) {
         'Đế Giai': 'danh-khi',
         'Đạo Giai': 'danh-khi',
 
+        // Object ID mappings for Công Pháp
+        'pham_giai': 'pham-khi',
+        'hoang_giai': 'phap-khi',
+        'huyen_giai': 'linh-khi',
+        'dia_giai': 'phap-bao',
+        'thien_giai': 'co-bao',
+        'linh_giai': 'linh-bao',
+        'thanh_giai': 'thong-thien',
+        'tien_giai': 'tien-khi',
+        'de_giai': 'danh-khi',
+        'dao_giai': 'danh-khi',
+
         // Dị Hỏa / Dị Lôi
         'Phàm Hỏa': 'pham-khi', 'Phàm Lôi': 'pham-khi',
         'Linh Hỏa': 'linh-khi', 'Linh Lôi': 'linh-khi',
@@ -43,6 +67,27 @@ export function getQualityClass(quality) {
         'Tiên Hỏa': 'tien-khi', 'Tiên Lôi': 'tien-khi',
         'Đạo Hỏa': 'danh-khi', 'Đạo Lôi': 'danh-khi',
         'Hồng Mông Tổ Hỏa': 'danh-khi', 'Tổ Lôi': 'danh-khi',
+
+        // Object ID mappings for Dị Hỏa / Dị Lôi
+        'di_hoa': 'co-bao',
+        'pham_hoa': 'pham-khi', 'pham_loi': 'pham-khi',
+        'linh_hoa': 'linh-khi', 'linh_loi': 'linh-khi',
+        'dia_hoa': 'phap-bao', 'dia_loi': 'phap-bao',
+        'thien_hoa': 'co-bao', 'thien_loi': 'co-bao',
+        'thanh_hoa': 'thong-thien', 'thanh_loi': 'thong-thien',
+        'tien_hoa': 'tien-khi', 'tien_loi': 'tien-khi',
+        'tien': 'tien-khi',
+        'dao_hoa': 'danh-khi', 'dao_loi': 'danh-khi',
+        'hong_mong': 'danh-khi', 'to_loi': 'danh-khi',
+
+        // Linh Thú Huyết Mạch
+        'pham_huyet': 'pham-khi',
+        'linh_cap': 'linh-khi',
+        'dia_cap': 'phap-bao',
+        'thien_cap': 'co-bao',
+        'thanh_huyet': 'thong-thien',
+        'tien_huyet': 'tien-khi',
+        'than_huyet': 'danh-khi',
 
         // Dan duoc strings & ids
         'pham': 'pham',
