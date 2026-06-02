@@ -197,7 +197,6 @@ function _classifyItemRaw(item) {
         return { category: 'ky_vat_di_bao', subcategory: 'ngoc_gian' };
     }
 
-    const name = item.name || '';
     const type = item.type || '';
     const quality = item.quality || '';
     const id = item.id || '';
@@ -238,7 +237,7 @@ function _classifyItemRaw(item) {
     }
 
     // 1. Dịch Vụ
-    if (type === ITEM_TYPES.SERVICE || id === 'ngo_dao_that') {
+    if (type === ITEM_TYPES.DICH_VU || id === 'ngo_dao_that') {
         return { category: 'dich_vu', subcategory: 'thue_phong' };
     }
 
@@ -279,82 +278,82 @@ function _classifyItemRaw(item) {
     }
 
     // 7. Trận Pháp
-    if (type === ITEM_TYPES.FORMATION || (effect && effect.type === EFFECT_TYPES.HOC_TRAN_PHAP)) {
+    if (type === ITEM_TYPES.TRAN_PHAP) {
         let sub = 'tu_linh_tran';
-        if (name.includes('Tụ Linh') || id.includes('tu_linh')) {
+        if (id.includes('tu_linh')) {
             sub = 'tu_linh_tran';
-        } else if (name.includes('Ảo Ảnh') || name.includes('Huyễn') || id.includes('ao_anh')) {
+        } else if (id.includes('ao_anh') || id.includes('huyen')) {
             sub = 'huyen_tran';
-        } else if (name.includes('Sát Kiếm') || name.includes('Công Kích') || id.includes('sat_kiem')) {
+        } else if (id.includes('sat_kiem') || id.includes('cong_kich') || id.includes('sat_tran')) {
             sub = 'cong_kich_tran';
-        } else if (name.includes('Hộ Tông') || name.includes('Phòng Ngự') || id.includes('ho_tong')) {
+        } else if (id.includes('ho_tong') || id.includes('phong_ngu')) {
             sub = 'phong_ngu_tran';
-        } else if (name.includes('Khốn')) {
+        } else if (id.includes('khon')) {
             sub = 'khon_tran';
-        } else if (name.includes('Truyền Tống')) {
+        } else if (id.includes('truyen_tong')) {
             sub = 'truyen_tong_tran';
-        } else if (name.includes('Cấm Chế')) {
+        } else if (id.includes('cam_che')) {
             sub = 'cam_che';
         }
         return { category: 'tran_phap', subcategory: sub };
     }
 
     // 8. Khôi Lỗi
-    if (type === ITEM_TYPES.PUPPET || type === ITEM_TYPES.CORPSE || (effect && (effect.type === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI || effect.type === EFFECT_TYPES.HOC_CONG_THUC_THI))) {
+    if (type === ITEM_TYPES.KHOI_LOI || type === ITEM_TYPES.THI_KHOI || (effect && (effect.type === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI || effect.type === EFFECT_TYPES.HOC_CONG_THUC_THI))) {
         let sub = 'linh_khoi';
-        if (type === ITEM_TYPES.CORPSE || effect.type === EFFECT_TYPES.HOC_CONG_THUC_THI || id.includes('thi_')) {
+        if (type === ITEM_TYPES.THI_KHOI || effect.type === EFFECT_TYPES.HOC_CONG_THUC_THI || id.includes('thi_')) {
             sub = 'thi_khoi';
         }
         return { category: 'khoi_loi', subcategory: sub };
     }
 
     // 5. Công Pháp
-    const isBook = type === ITEM_TYPES.BOOK || type === ITEM_TYPES.TECHNIQUE || type === ITEM_TYPES.RECIPE || effect.type === EFFECT_TYPES.HOC_BI_THUAT || effect.type === EFFECT_TYPES.HOC_KY_THUAT || effect.type === 'learn_alchemy_recipe';
-    const isManual = effect.type === EFFECT_TYPES.MO_KHOA_NGHE;
+    const isBook = type === ITEM_TYPES.SACH_CONG_PHAP || type === ITEM_TYPES.TUYET_KY || effect.type === EFFECT_TYPES.HOC_BI_THUAT || effect.type === EFFECT_TYPES.HOC_KY_THUAT || effect.type === EFFECT_TYPES.HOC_CONG_THUC_DAN;
+    const isManual = effect.type === EFFECT_TYPES.MO_KHOA_NGHE || effect.type === EFFECT_TYPES.HOC_NHIEU_CONG_THUC;
 
     if (isBook || isManual) {
         let sub = 'tu_luyen';
-        if (name.includes('Luyện Thể') || id.includes('luyen_the') || id.includes('kim_than')) {
+        if (id.includes('luyen_the') || id.includes('kim_than')) {
             sub = 'luyen_the';
-        } else if (name.includes('Thần Hồn') || name.includes('Luyện Hồn') || id.includes('duong_than')) {
+        } else if (id.includes('than_hon') || id.includes('luyen_hon') || id.includes('duong_than')) {
             sub = 'than_hon';
-        } else if (name.includes('Bí Thuật') || id.includes('bi_thuat') || type === ITEM_TYPES.RECIPE || isManual) {
+        } else if (id.includes('bi_thuat') || type === ITEM_TYPES.DAN_PHUONG || isManual) {
             sub = 'bi_thuat';
-        } else if (name.includes('Thần Thông') || id.includes('than_thong')) {
+        } else if (id.includes('than_thong')) {
             sub = 'than_thong';
-        } else if (name.includes('Độn Thuật') || id.includes('don_thuat')) {
+        } else if (id.includes('don_thuat')) {
             sub = 'don_thuat';
-        } else if (name.includes('Kiếm Quyết') || id.includes('kiem_quyet') || id.includes('kiem')) {
+        } else if (id.includes('kiem_quyet') || id.includes('kiem')) {
             sub = 'kiem_quyet';
-        } else if (name.includes('Ma Công') || id.includes('ma_cong') || id.includes('ma_dien')) {
+        } else if (id.includes('ma_cong') || id.includes('ma_dien')) {
             sub = 'ma_cong';
         }
         return { category: 'cong_phap', subcategory: sub };
     }
 
     // 6. Phù Lục (standard talismans)
-    if (type === ITEM_TYPES.TALISMAN || type === ITEM_TYPES.TALISMAN_RECIPE) {
+    if (type === ITEM_TYPES.PHU_LUC || type === ITEM_TYPES.DON_PHU) {
         let sub = 'cong_kich';
-        if (name.includes('Cầu Phù') || name.includes('Lôi Phù') || name.includes('Công Kích') || id.includes('hoa_cau') || id.includes('thien_loi')) {
+        if (id.includes('hoa_cau') || id.includes('thien_loi') || id.includes('cong_kich') || id.includes('cau_phu') || id.includes('loi_phu')) {
             sub = 'cong_kich';
-        } else if (name.includes('Kim Cương') || name.includes('Phòng Ngự') || id.includes('kim_cuong')) {
+        } else if (id.includes('kim_cuong') || id.includes('phong_ngu')) {
             sub = 'phong_ngu';
-        } else if (name.includes('Thần Hành') || name.includes('Thuấn Di') || name.includes('Phá Không') || id.includes('than_hanh') || id.includes('thun_di') || id.includes('pha_khong')) {
+        } else if (id.includes('than_hanh') || id.includes('thun_di') || id.includes('pha_khong') || id.includes('don_thuat')) {
             sub = 'don_thuat';
-        } else if (name.includes('Trấn Áp')) {
+        } else if (id.includes('tran_ap')) {
             sub = 'tran_ap';
-        } else if (name.includes('Triệu Hồi')) {
+        } else if (id.includes('trieu_hoi')) {
             sub = 'trieu_hoi';
-        } else if (name.includes('Truyền Âm')) {
+        } else if (id.includes('truyen_am')) {
             sub = 'truyen_am';
         }
         return { category: 'phu_luc', subcategory: sub };
     }
 
     // 9. Linh Thú
-    if (type === ITEM_TYPES.BEAST_EGG || type === ITEM_TYPES.BEAST_FOOD) {
+    if (type === ITEM_TYPES.TRUNG_LINH_THU || type === ITEM_TYPES.THUC_AN_LINH_THU) {
         let sub = 'linh_thu';
-        const isEgg = type === ITEM_TYPES.BEAST_EGG;
+        const isEgg = type === ITEM_TYPES.TRUNG_LINH_THU;
         const isKyTrung = id.includes('ky_trung') || id.includes('phe_kim') || id.includes('bang_tam') || id.includes('tri_chu') || id.includes('hac_xa') || id.includes('nga') || id.includes('uynh');
 
         if (isEgg) {
@@ -366,31 +365,37 @@ function _classifyItemRaw(item) {
     }
 
     // 10. Đan Dược
-    if (type === ITEM_TYPES.CONSUMABLE) {
+    if (type === ITEM_TYPES.DAN_DUOC) {
         let sub = 'khac';
-        if (name.includes('Trúc Cơ') || name.includes('Kết Đan') || name.includes('Nguyên Anh') || name.includes('Hóa Thần') || name.includes('Đột Phá') || id.includes('breakthrough')) {
+        if (id.includes('truc_co') || id.includes('ket_dan') || id.includes('nguyen_anh') || id.includes('hoa_than') || id.includes('breakthrough')) {
             sub = 'dot_pha';
-        } else if (name.includes('Ngự Thú') || name.includes('Hồi Phục') || name.includes('Khí Huyết') || name.includes('Bổ Nguyên') || name.includes('Ngọc Lộ') || id.includes('bo_nguyen') || id.includes('restore')) {
+        } else if (id.includes('ngu_thu') || id.includes('restore') || id.includes('khi_huyet') || id.includes('bo_nguyen') || id.includes('ngoc_lo') || id.includes('hoi_phuc')) {
             sub = 'hoi_phuc';
-        } else if (name.includes('Hồi Huyết') || name.includes('Trị Thương')) {
+        } else if (id.includes('hoi_huyet') || id.includes('tri_thuong')) {
             sub = 'tri_thuong';
-        } else if (name.includes('Giải Độc') || id.includes('giai_doc')) {
+        } else if (id.includes('giai_doc')) {
             sub = 'giai_doc';
-        } else if (name.includes('Luyện Thể') || id.includes('luyen_the')) {
+        } else if (id.includes('luyen_the')) {
             sub = 'luyen_the';
-        } else if (name.includes('Tăng Thọ') || name.includes('Tiêu Dao Quả') || id.includes('tieu_dao_qua')) {
+        } else if (id.includes('tang_tho') || id.includes('tieu_dao_qua')) {
             sub = 'tang_tho';
-        } else if (name.includes('Ngưng Khí') || name.includes('Ngộ Đạo') || name.includes('Song Tu') || id.includes('ngung_khi') || id.includes('ngo_dao') || id.includes('song_tu')) {
+        } else if (id.includes('ngung_khi') || id.includes('ngo_dao') || id.includes('song_tu')) {
             sub = 'tu_luyen';
         }
         return { category: 'dan_duoc', subcategory: sub };
     }
 
     // 11. Pháp Bảo
-    const isEquipment = [ITEM_TYPES.WEAPON, ITEM_TYPES.ARMOR, ITEM_TYPES.ACCESSORY, ITEM_TYPES.TREASURE, ITEM_TYPES.HEAD, ITEM_TYPES.NECKLACE, ITEM_TYPES.SHOES, ITEM_TYPES.ATTACK_ARTIFACT, ITEM_TYPES.DEFENSE_ARTIFACT, ITEM_TYPES.FLIGHT_ARTIFACT, ITEM_TYPES.SPACE_ARTIFACT, ITEM_TYPES.FORMATION_ARTIFACT, ITEM_TYPES.SUPPORT_ARTIFACT, ITEM_TYPES.SOUL_ARTIFACT, ITEM_TYPES.CAULDRON, ITEM_TYPES.CRAFTING_ARTIFACT].includes(type);
+    const isEquipment = [
+        ITEM_TYPES.VU_KHI, ITEM_TYPES.GIAP_BAO, ITEM_TYPES.TRANG_SUC, ITEM_TYPES.BAO_VAT,
+        ITEM_TYPES.NON_MAO, ITEM_TYPES.DAY_CHUYEN, ITEM_TYPES.GIAY_HAI,
+        ITEM_TYPES.PHAP_BAO_CONG, ITEM_TYPES.PHAP_BAO_THU, ITEM_TYPES.PHAP_BAO_PHI_HANH,
+        ITEM_TYPES.PHAP_BAO_KHONG_GIAN, ITEM_TYPES.PHAP_BAO_TRAN, ITEM_TYPES.PHAP_BAO_PHU_TRO,
+        ITEM_TYPES.PHAP_BAO_HON, ITEM_TYPES.KHI_BO
+    ].includes(type);
     if (isEquipment) {
         let sub = 'phap_khi';
-        if (name.includes('Phù Bảo') || id.includes('phu_bao')) {
+        if (id.includes('phu_bao')) {
             sub = 'phu_bao';
         } else if (quality === 'Pháp Khí') {
             sub = 'phap_khi';
@@ -415,85 +420,88 @@ function _classifyItemRaw(item) {
     }
 
     // 12. Nguyên Liệu
-    const isMaterial = [ITEM_TYPES.MATERIAL, ITEM_TYPES.HERB, ITEM_TYPES.ORE, ITEM_TYPES.WOOD, ITEM_TYPES.SEED, ITEM_TYPES.SPIRIT_STONE].includes(type);
+    const isMaterial = [
+        ITEM_TYPES.NGUYEN_LIEU, ITEM_TYPES.LINH_DUOC, ITEM_TYPES.LINH_KHOANG,
+        ITEM_TYPES.LINH_MOC, ITEM_TYPES.LINH_CHUNG, ITEM_TYPES.LINH_THACH
+    ].includes(type);
     if (isMaterial) {
         let sub = 'thien_tai';
         let subSub = 'default';
 
-        const isHerb = type === ITEM_TYPES.HERB || type === ITEM_TYPES.SEED;
-        const isWood = type === ITEM_TYPES.WOOD;
-        const isOre = type === ITEM_TYPES.ORE || type === ITEM_TYPES.SPIRIT_STONE;
-        const isLiquid = id.includes('dich') || id.includes('tuy') || name.includes('Dịch') || name.includes('Tủy');
-        const isYeuThu = id.includes('yeu_') || id.includes('yeu_dan') || id.includes('yeu_huyet') || id.includes('yeu_cot') || name.includes('Yêu');
+        const isHerb = type === ITEM_TYPES.LINH_DUOC || type === ITEM_TYPES.LINH_CHUNG;
+        const isWood = type === ITEM_TYPES.LINH_MOC;
+        const isOre = type === ITEM_TYPES.LINH_KHOANG || type === ITEM_TYPES.LINH_THACH;
+        const isLiquid = id.includes('dich') || id.includes('tuy');
+        const isYeuThu = id.includes('yeu_') || id.includes('yeu_dan') || id.includes('yeu_huyet') || id.includes('yeu_cot');
 
         if (isHerb) {
             sub = 'linh_duoc';
-            if (name.includes('Vạn Niên') || id.includes('van_nien')) {
+            if (id.includes('van_nien')) {
                 subSub = 'van_nien';
-            } else if (name.includes('10000 năm') || name.includes('Vạn Năm') || id.includes('cao')) {
+            } else if (id.includes('10000y') || id.includes('cao')) {
                 subSub = '10000_nam';
-            } else if (name.includes('1000 năm') || id.includes('1000y')) {
+            } else if (id.includes('1000y')) {
                 subSub = '1000_nam';
-            } else if (name.includes('100 năm') || id.includes('100y')) {
+            } else if (id.includes('100y')) {
                 subSub = '100_nam';
             } else {
                 subSub = 'duoi_100_nam';
             }
         } else if (isWood) {
             sub = 'linh_moc';
-            if (name.includes('Lôi') || id.includes('loi')) {
+            if (id.includes('loi')) {
                 subSub = 'loi';
-            } else if (name.includes('Hỏa') || id.includes('hoa')) {
+            } else if (id.includes('hoa')) {
                 subSub = 'hoa';
-            } else if (name.includes('Âm') || id.includes('am')) {
+            } else if (id.includes('am')) {
                 subSub = 'am';
-            } else if (name.includes('Dưỡng Hồn') || id.includes('duong_hon')) {
+            } else if (id.includes('duong_hon')) {
                 subSub = 'duong_hon';
             } else {
                 subSub = 'loi';
             }
         } else if (isOre) {
             sub = 'linh_khoang';
-            if (type === ITEM_TYPES.SPIRIT_STONE || name.includes('Tinh Thạch') || id.includes('tinh_thach') || id.includes('spirit_stone')) {
+            if (type === ITEM_TYPES.LINH_THACH || id.includes('tinh_thach') || id.includes('spirit_stone')) {
                 subSub = 'tinh_thach';
-            } else if (name.includes('Thiết') || name.includes('Kim') || id.includes('thiet') || id.includes('kim')) {
+            } else if (id.includes('thiet') || id.includes('kim')) {
                 subSub = 'kim_loai';
-            } else if (name.includes('Ngọc') || id.includes('ngoc')) {
+            } else if (id.includes('ngoc')) {
                 subSub = 'ngoc_thach';
             } else {
                 subSub = 'di_khoang';
             }
         } else if (isLiquid) {
             sub = 'linh_dich';
-            if (name.includes('Luyện Thể') || id.includes('luyen_the')) {
+            if (id.includes('luyen_the')) {
                 subSub = 'luyen_the';
-            } else if (name.includes('Dưỡng Hồn') || id.includes('duong_hon')) {
+            } else if (id.includes('duong_hon')) {
                 subSub = 'duong_hon';
-            } else if (name.includes('Tu Luyện') || id.includes('tu_luyen')) {
+            } else if (id.includes('tu_luyen')) {
                 subSub = 'tu_luyen';
             } else {
                 subSub = 'thien_dia';
             }
         } else if (isYeuThu) {
             sub = 'yeu_thu';
-            if (id.includes('cot') || name.includes('Cốt')) {
+            if (id.includes('cot')) {
                 subSub = 'yeu_cot';
-            } else if (id.includes('huyet') || name.includes('Huyết')) {
+            } else if (id.includes('huyet')) {
                 subSub = 'yeu_huyet';
-            } else if (id.includes('dan') || name.includes('Đan')) {
+            } else if (id.includes('dan')) {
                 subSub = 'yeu_dan';
-            } else if (name.includes('Da') || name.includes('Lông')) {
+            } else if (id.includes('da') || id.includes('long')) {
                 subSub = 'da_long';
-            } else if (name.includes('Gân')) {
+            } else if (id.includes('gan')) {
                 subSub = 'gan';
-            } else if (name.includes('Trảo') || name.includes('Móng')) {
+            } else if (id.includes('trao') || id.includes('mong')) {
                 subSub = 'trao';
-            } else if (name.includes('Nanh') || name.includes('Răng')) {
+            } else if (id.includes('nanh') || id.includes('rang')) {
                 subSub = 'yeu_nanh';
             } else {
                 subSub = 'yeu_giac';
             }
-        } else if (id.includes('luyen_the') || name.includes('Luyện Thể Tài Liệu')) {
+        } else if (id.includes('luyen_the')) {
             sub = 'luyen_the';
             if (id.includes('chan_linh')) {
                 subSub = 'chan_linh_huyet';
@@ -504,7 +512,7 @@ function _classifyItemRaw(item) {
             } else {
                 subSub = 'luyen_the_linh_qua';
             }
-        } else if (id.includes('duong_hon') || name.includes('Dưỡng Hồn')) {
+        } else if (id.includes('duong_hon')) {
             sub = 'duong_hon';
             if (id.includes('moc')) {
                 subSub = 'duong_hon_moc';
@@ -527,22 +535,20 @@ function _classifyItemRaw(item) {
 
     // 13. Kỳ Vật Dị Bảo (including fallback and former Tạp Vật)
     let sub = 'default';
-    if (type === ITEM_TYPES.STORAGE || id.includes('tui_tru_vat') || id.includes('tru_vat') || id.includes('merchant') || id.includes('token_merchant')) {
-        sub = 'default';
-    } else if (type === ITEM_TYPES.MAP || name.includes('Bản Đồ') || id.includes('ban_do')) {
-        sub = 'ban_do';
-    } else if (name.includes('Lệnh Bài') || name.includes('Lệnh') || id.includes('lenh_bai') || id.includes('lenh')) {
-        sub = 'lenh_bai';
-    } else if (name.includes('Chìa Khóa') || id.includes('chia_khoa') || id.includes('key')) {
-        sub = 'chia_khoa';
-    } else if (name.includes('Ngọc Giản') || id.includes('ngoc_gian')) {
-        sub = 'ngoc_gian';
-    } else if (name.includes('Di Hỏa') || id.includes('di_hoa')) {
-        sub = 'di_hoa';
-    } else if (name.includes('Linh Thú Đại') || id.includes('linh_thu_dai')) {
-        sub = 'linh_thu_dai';
-    } else if (name.includes('Túi Trữ Vật') || id.includes('tui_tru_vat')) {
+    if (type === ITEM_TYPES.TUI_TRU_VAT || id.includes('tui_tru_vat') || id.includes('tru_vat')) {
         sub = 'tui_tru_vat';
+    } else if (type === ITEM_TYPES.BAN_DO || id.includes('ban_do')) {
+        sub = 'ban_do';
+    } else if (id.includes('lenh_bai') || id.includes('lenh') || id.includes('merchant') || id.includes('token_merchant')) {
+        sub = 'lenh_bai';
+    } else if (id.includes('chia_khoa') || id.includes('key')) {
+        sub = 'chia_khoa';
+    } else if (id.includes('ngoc_gian') || type === ITEM_TYPES.NGOC_GIAN) {
+        sub = 'ngoc_gian';
+    } else if (id.includes('di_hoa') || type === ITEM_TYPES.DI_HOA) {
+        sub = 'di_hoa';
+    } else if (id.includes('linh_thu_dai') || type === ITEM_TYPES.LINH_THU_DAI) {
+        sub = 'linh_thu_dai';
     }
 
     return { category: 'ky_vat_di_bao', subcategory: sub };
@@ -566,7 +572,7 @@ export function classifyItem(item) {
 export const ITEM_TYPES = {
     DAN_DUOC: 'dan_duoc',
     NGUYEN_LIEU: 'nguyen_lieu',
-    HAT_GIONG: 'hat_giong',
+    LINH_CHUNG: 'linh_chung',
     LINH_THACH: 'linh_thach',
     TRUNG_LINH_THU: 'trung_linh_thu',
     THUC_AN_LINH_THU: 'thuc_an_linh_thu',
@@ -577,7 +583,7 @@ export const ITEM_TYPES = {
     GIAY_VE_PHU: 'giay_ve_phu',
     SACH_CONG_PHAP: 'sach_cong_phap',
     TUYET_KY: 'tuyet_ky',
-    DON_THUOC: 'don_thuoc',
+    DAN_PHUONG: 'dan_phuong',
     BAN_VE_THIET_KE: 'ban_ve_thiet_ke',
     DE_LUYEN_KHI: 'de_luyen_khi',
     DAN_LU: 'dan_lu',

@@ -13,22 +13,22 @@ import { ITEM_TYPES, ITEM_CATEGORIES_ENUM, EFFECT_TYPES } from './item-classific
 export const ITEMS = {
     // Hạt giống
     'linh_chung_thanh_phuc_thao': {
-        id: 'linh_chung_thanh_phuc_thao', name: 'Linh Chủng Thanh Phục Thảo', type: ITEM_TYPES.HAT_GIONG, icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Hạt giống Thanh Phục Thảo, loại linh thảo sơ cấp phổ biến nhất ở Nhân giới.', categories: [
+        id: 'linh_chung_thanh_phuc_thao', name: 'Linh Chủng Thanh Phục Thảo', type: ITEM_TYPES.LINH_CHUNG, icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Hạt giống Thanh Phục Thảo, loại linh thảo sơ cấp phổ biến nhất ở Nhân giới.', categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: 'duoi_100_nam' }
         ]
     },
     'linh_chung_hoa_diem_thao': {
-        id: 'linh_chung_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: ITEM_TYPES.HAT_GIONG, icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.', categories: [
+        id: 'linh_chung_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: ITEM_TYPES.LINH_CHUNG, icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.', categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: '100_nam' }
         ]
     },
     'linh_chung_han_tuy_hoa': {
-        id: 'linh_chung_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: ITEM_TYPES.HAT_GIONG, icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.', categories: [
+        id: 'linh_chung_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: ITEM_TYPES.LINH_CHUNG, icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.', categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: '100_nam' }
         ]
     },
     'linh_chung_u_minh_hoa': {
-        id: 'linh_chung_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: ITEM_TYPES.HAT_GIONG, icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.', categories: [
+        id: 'linh_chung_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: ITEM_TYPES.LINH_CHUNG, icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.', categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: '100_nam' }
         ]
     },
@@ -306,7 +306,7 @@ export const ITEMS = {
     'dan_phuong_ngung_khi_dan': {
         id: 'dan_phuong_ngung_khi_dan',
         name: 'Đan Phương Ngưng Khí Đan',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Khí',
         price: 300,
@@ -319,7 +319,7 @@ export const ITEMS = {
     'dan_phuong_hoi_linh_dan': {
         id: 'dan_phuong_hoi_linh_dan',
         name: 'Đan Phương Hồi Linh Đan',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Khí',
         price: 300,
@@ -332,7 +332,7 @@ export const ITEMS = {
     'dan_phuong_ngoc_de_dan': {
         id: 'dan_phuong_ngoc_de_dan',
         name: 'Đan Phương Ngọc Đề Đan',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Khí',
         price: 450,
@@ -345,7 +345,7 @@ export const ITEMS = {
     'dan_phuong_than_tam_dan': {
         id: 'dan_phuong_than_tam_dan',
         name: 'Đan Phương Thanh Tâm Đan',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Khí',
         price: 500,
@@ -358,7 +358,7 @@ export const ITEMS = {
     'dan_phuong_truc_co_dan': {
         id: 'dan_phuong_truc_co_dan',
         name: 'Đan Phương Trúc Cơ Đan',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Linh Khí',
         price: 2000,
@@ -371,7 +371,7 @@ export const ITEMS = {
     'dan_phuong_bo_nguyen_dan': {
         id: 'dan_phuong_bo_nguyen_dan',
         name: 'Đan Phương Bổ Nguyên Đan',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Khí',
         price: 600,
@@ -384,7 +384,7 @@ export const ITEMS = {
     'dan_phuong_ngung_anh_dan': {
         id: 'dan_phuong_ngung_anh_dan',
         name: 'Đan Phương Ngưng Anh Đan',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Bảo',
         price: 10000,
@@ -399,7 +399,7 @@ export const ITEMS = {
     'ban_ve_thanh_hong_kiem': {
         id: 'ban_ve_thanh_hong_kiem',
         name: 'Bản Vẽ Thanh Hồng Kiếm',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Khí',
         price: 400,
@@ -412,7 +412,7 @@ export const ITEMS = {
     'ban_ve_phi_kiem_tinh_ha': {
         id: 'ban_ve_phi_kiem_tinh_ha',
         name: 'Bản Vẽ Tinh Hà Phi Kiếm',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Linh Khí',
         price: 1500,
@@ -425,7 +425,7 @@ export const ITEMS = {
     'ban_ve_long_lan_giap': {
         id: 'ban_ve_long_lan_giap',
         name: 'Bản Vẽ Long Lân Giáp',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Linh Khí',
         price: 2500,
@@ -438,7 +438,7 @@ export const ITEMS = {
     'ban_ve_bat_quai_kinh': {
         id: 'ban_ve_bat_quai_kinh',
         name: 'Bản Vẽ Bát Quái Kính',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Khí',
         price: 800,
@@ -535,7 +535,7 @@ export const ITEMS = {
     'tran_do_tu_linh_tran': {
         id: 'tran_do_tu_linh_tran',
         name: 'Trận Đồ Tụ Linh Trận',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Khí',
         price: 1000,
@@ -551,7 +551,7 @@ export const ITEMS = {
     'tran_do_ao_anh_tran': {
         id: 'tran_do_ao_anh_tran',
         name: 'Trận Đồ Ảo Ảnh Trận',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Khí',
         price: 1500,
@@ -567,7 +567,7 @@ export const ITEMS = {
     'tran_do_sat_kiem_tran': {
         id: 'tran_do_sat_kiem_tran',
         name: 'Trận Đồ Sát Kiếm Trận',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Linh Khí',
         price: 5000,
@@ -583,7 +583,7 @@ export const ITEMS = {
     'tran_do_ho_tong_dai_tran': {
         id: 'tran_do_ho_tong_dai_tran',
         name: 'Trận Đồ Hộ Tông Đại Trận',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Bảo',
         price: 20000,
@@ -601,7 +601,7 @@ export const ITEMS = {
     'ban_ve_thiet_giap_khoi_loi': {
         id: 'ban_ve_thiet_giap_khoi_loi',
         name: 'Bản Vẽ Thiết Giáp Khôi Lỗi',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Khí',
         price: 1000,
@@ -617,7 +617,7 @@ export const ITEMS = {
     'ban_ve_kiem_khoi': {
         id: 'ban_ve_kiem_khoi',
         name: 'Bản Vẽ Kiếm Khôi',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Linh Khí',
         price: 3000,
@@ -632,7 +632,7 @@ export const ITEMS = {
     'bi_phuong_thi_binh': {
         id: 'bi_phuong_thi_binh',
         name: 'Bí Phương Luyện Chế Thi Binh',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Pháp Khí',
         price: 500,
@@ -645,7 +645,7 @@ export const ITEMS = {
     'bi_phuong_thi_tuong': {
         id: 'bi_phuong_thi_tuong',
         name: 'Bí Phương Luyện Chế Thi Tướng',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Linh Khí',
         price: 2000,
@@ -658,7 +658,7 @@ export const ITEMS = {
     'bi_phuong_dong_giap_thi': {
         id: 'bi_phuong_dong_giap_thi',
         name: 'Bí Phương Luyện Chế Đồng Giáp Thi',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Linh Khí',
         price: 5000,
@@ -749,7 +749,7 @@ export const ITEMS = {
     'dan_phuong_tich_coc_dan': {
         id: 'dan_phuong_tich_coc_dan',
         name: 'Đan Phương Tịch Cốc Đan',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Phàm Khí',
         price: 100,
@@ -982,7 +982,7 @@ export const ITEMS = {
     'ban_ve_phi_kiem_tinh_ha': {
         id: 'ban_ve_phi_kiem_tinh_ha',
         name: 'Bản Vẽ Tinh Hà Phi Kiếm',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Linh Khí',
         price: 1500,
@@ -1560,7 +1560,7 @@ export const ITEMS = {
     'linh_chung_tu_lam_hoa': {
         id: 'linh_chung_tu_lam_hoa',
         name: 'Linh Chủng Tử Lam Hoa',
-        type: ITEM_TYPES.HAT_GIONG,
+        type: ITEM_TYPES.LINH_CHUNG,
         icon: '🌿',
         quality: 'Linh Khí',
         price: 25,
@@ -3339,7 +3339,7 @@ export const ITEMS = {
     'dan_phuong_ngung_khi_dan': {
         id: 'dan_phuong_ngung_khi_dan',
         name: 'Đan Phương Ngưng Khí Đan',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         quality: 'Phàm Khí',
         icon: '📜',
         description: 'Ghi chép cách luyện chế Ngưng Khí Đan.',
@@ -5165,7 +5165,7 @@ export const ITEMS = {
     'ban_ve_thanh_vien_khoi_loi': {
         id: 'ban_ve_thanh_vien_khoi_loi',
         name: 'Bản Vẽ Thanh Viên Khôi Lỗi',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Linh Khí',
         price: 5000,
@@ -5178,7 +5178,7 @@ export const ITEMS = {
     'ban_ve_cu_ho_khoi_loi': {
         id: 'ban_ve_cu_ho_khoi_loi',
         name: 'Bản Vẽ Cự Hổ Khôi Lỗi',
-        type: ITEM_TYPES.DON_THUOC,
+        type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: 'Cổ Bảo',
         price: 15000,
@@ -5272,7 +5272,7 @@ export const ITEMS = {
     'linh_chung_ngoc_de_hoa': {
         id: 'linh_chung_ngoc_de_hoa',
         name: 'Linh Chủng Ngọc Đề Hoa',
-        type: ITEM_TYPES.HAT_GIONG,
+        type: ITEM_TYPES.LINH_CHUNG,
         icon: '🌱',
         quality: 'Pháp Khí',
         price: 30,
@@ -5296,7 +5296,7 @@ export const ITEMS = {
     'linh_chung_thanh_long_sam': {
         id: 'linh_chung_thanh_long_sam',
         name: 'Linh Chủng Thanh Long Sâm',
-        type: ITEM_TYPES.HAT_GIONG,
+        type: ITEM_TYPES.LINH_CHUNG,
         icon: '🌱',
         quality: 'Linh Khí',
         price: 120,
@@ -5320,7 +5320,7 @@ export const ITEMS = {
     'linh_chung_tuyet_oanh_thao': {
         id: 'linh_chung_tuyet_oanh_thao',
         name: 'Linh Chủng Tuyết Oánh Thảo',
-        type: ITEM_TYPES.HAT_GIONG,
+        type: ITEM_TYPES.LINH_CHUNG,
         icon: '❄️',
         quality: 'Linh Khí',
         price: 150,
@@ -5344,7 +5344,7 @@ export const ITEMS = {
     'linh_chung_hoa_duong_chi': {
         id: 'linh_chung_hoa_duong_chi',
         name: 'Linh Chủng Hỏa Dương Chi',
-        type: ITEM_TYPES.HAT_GIONG,
+        type: ITEM_TYPES.LINH_CHUNG,
         icon: '🔥',
         quality: 'Linh Khí',
         price: 180,
@@ -5368,7 +5368,7 @@ export const ITEMS = {
     'linh_chung_cuu_tich_chi': {
         id: 'linh_chung_cuu_tich_chi',
         name: 'Linh Chủng Cửu Tịch Chi',
-        type: ITEM_TYPES.HAT_GIONG,
+        type: ITEM_TYPES.LINH_CHUNG,
         icon: '💀',
         quality: 'Linh Khí',
         price: 250,

@@ -118,7 +118,7 @@ export function getItemConnections(itemId) {
     });
 
     // 7. Nếu là Đan phương/Bản vẽ (Recipe Scroll)
-    if (item.type === 'don_thuoc' && item.effect && item.effect.value) {
+    if (item.type === 'dan_phuong' && item.effect && item.effect.value) {
         const targetId = item.effect.value;
         // Check if it's alchemy, smithing, talisman or puppet
         if (ALCHEMY_RECIPES.some(r => r.id === targetId)) {

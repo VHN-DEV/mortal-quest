@@ -125,7 +125,7 @@ export class Inventory {
                 for (let k = 0; k < quantity; k++) {
                     const metadata = itemInInv.metadata || {};
                     const danVeins = metadata.danVeins || 0;
-                    
+
                     // Determine base toxicity (perfect pills have 0 toxicity)
                     let pillToxicity = 0;
                     if (danVeins < 9) {
@@ -203,7 +203,7 @@ export class Inventory {
                 }
 
                 this.removeItem(itemId, quantity);
-                
+
                 // Trigger stats recalculation to apply any new toxicity speeds
                 this.player.calculateStats();
                 return true;
@@ -235,7 +235,7 @@ export class Inventory {
                 state.ui.toast(res.msg, 'warning');
                 return false;
             }
-        } else if (itemData.effect && (itemData.type === 'sach_cong_phap' || itemData.type === 'don_thuoc' || itemData.type === 'don_phu')) {
+        } else if (itemData.effect && (itemData.type === 'sach_cong_phap' || itemData.type === 'dan_phuong' || itemData.type === 'don_phu')) {
             for (let i = 0; i < quantity; i++) {
                 this.applyEffect(itemData.effect);
             }
@@ -341,7 +341,7 @@ export class Inventory {
         const toBag = this.bags[toBagIndex];
 
         if (!fromBag || !toBag || fromBagIndex === toBagIndex) return { success: false, msg: "Không thể chuyển vào cùng một túi!" };
-        
+
         const item = fromBag.items[itemIndex];
         if (!item) return { success: false, msg: "Vật phẩm không tồn tại!" };
 
@@ -493,11 +493,11 @@ export class Inventory {
                         if (root.proportions) {
                             delete root.proportions[removedElement];
                         }
-                        
+
                         const remainingCount = root.elements.length;
                         const share = Math.floor(100 / remainingCount);
                         const remainder = 100 - (share * remainingCount);
-                        
+
                         root.elements.forEach((el, index) => {
                             if (root.proportions) {
                                 root.proportions[el] = share + (index === 0 ? remainder : 0);

@@ -189,8 +189,8 @@ export class MapScreen {
                 e.preventDefault();
                 const x = e.pageX - this.elExploreGridScrollArea.offsetLeft;
                 const y = e.pageY - this.elExploreGridScrollArea.offsetTop;
-                const walkX = (x - startX) * 1.5; 
-                const walkY = (y - startY) * 1.5; 
+                const walkX = (x - startX) * 1.5;
+                const walkY = (y - startY) * 1.5;
                 this.elExploreGridScrollArea.scrollLeft = scrollLeft - walkX;
                 this.elExploreGridScrollArea.scrollTop = scrollTop - walkY;
             });
@@ -301,7 +301,7 @@ export class MapScreen {
 
     async selectWorld(id, keepState = false) {
         if (!id) return;
-        
+
         const w = getWorlds()[id];
         if (!w) {
             state.ui.toast("Không tìm thấy dữ liệu thế giới!", "error");
@@ -329,7 +329,7 @@ export class MapScreen {
         const w = getWorlds()[this.viewedWorldId];
         if (!w) return;
         this.elLocList.innerHTML = '';
-        
+
         const elSub = this.elCurrentWorldNameSub || document.getElementById('current-world-name-sub');
         const elCurrentLocBadge = document.getElementById('player-current-loc-badge');
         if (elCurrentLocBadge && state.currentLocId) {
@@ -365,12 +365,12 @@ export class MapScreen {
                     if (!isAlreadyThere) {
                         const atTeleport = state.currentLocId === 'thuong_co_truyen_tong_tran';
                         const hasTalisman = state.player.inventory && (
-                            state.player.inventory.hasItem('pha_khong_phu') || 
-                            state.player.inventory.hasItem('thun_di_phu') || 
+                            state.player.inventory.hasItem('pha_khong_phu') ||
+                            state.player.inventory.hasItem('thun_di_phu') ||
                             state.player.inventory.hasItem('truyen_tong_lenh')
                         );
                         const hasBoat = state.player.inventory && (
-                            state.player.inventory.hasItem('ngu_phong_phi_chu') || 
+                            state.player.inventory.hasItem('ngu_phong_phi_chu') ||
                             state.player.inventory.hasItem('linh_thuyen_so')
                         );
 
@@ -477,7 +477,7 @@ export class MapScreen {
             filteredLocs.forEach(loc => {
                 const minLocked = state.player.realmId < loc.minRealm;
                 const maxLocked = loc.maxRealm !== undefined && state.player.realmId > loc.maxRealm;
-                
+
                 let isTimeLocked = false;
                 let timeMessage = '';
                 if (loc.openingRules && state.systems.time) {
@@ -492,7 +492,7 @@ export class MapScreen {
                 }
 
                 const locked = minLocked || maxLocked || isTimeLocked;
-                
+
                 const el = document.createElement('div');
                 el.className = `location-card h-40 p-5 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
 
@@ -550,11 +550,11 @@ export class MapScreen {
 
     getRelativeDanger(loc) {
         if (!state.player) return loc.danger || 'ha_cap';
-        
+
         const playerRealm = state.player.realmId;
         const minRealm = loc.minRealm;
         const baseDanger = loc.danger || 'ha_cap';
-        
+
         const dangerOrder = ['an_toan', 'ha_cap', 'trung_cap', 'cao_cap', 'nguy_hiem', 'cuc_ky_nguy_hiem', 'tu_dia'];
         let baseIndex = dangerOrder.indexOf(baseDanger);
         if (baseIndex === -1) baseIndex = 1;
@@ -567,7 +567,7 @@ export class MapScreen {
         else if (diff > 5) adjustment = -1; // Stronger
         else if (diff < -5) adjustment = 2; // Much weaker
         else if (diff < 0) adjustment = 1; // Weaker (e.g. Mortal in Level 1 area)
-        
+
         // Special logic for Mortals (Realm 0)
         if (playerRealm === 0 && minRealm === 0 && baseIndex < 4) {
             // Even if minRealm is 0, a mortal finds 'ha_cap' to be 'trung_cap'
@@ -584,7 +584,7 @@ export class MapScreen {
 
     async startExploration(locId, resetProgress = true, skipTravel = false) {
         if (!locId) return;
-        
+
         const loc = getLocationById(this.viewedWorldId || state.currentWorldId, locId);
         if (!loc) {
             console.error(`Location not found: ${locId} in world ${state.currentWorldId}`);
@@ -621,7 +621,7 @@ export class MapScreen {
             if (bossEventIdx !== -1) {
                 const bossEvent = state.worldEvents.activeBosses[bossEventIdx];
                 const bossData = BEASTS[bossEvent.bossId];
-                
+
                 if (bossData) {
                     const choice = await state.ui.promptOptions(
                         `ĐẠI YÊU THÚ GIÁNG LÂM`,
@@ -632,7 +632,7 @@ export class MapScreen {
                         `Một con [${bossData.name}] đang chiếm giữ ${loc.name}! Sát khí của nó bao trùm toàn bộ không gian, ngươi không thể thám hiểm bình thường nếu không tiêu diệt nó.`,
                         getAssetUrl(bossData.image) || null
                     );
-                    
+
                     if (choice === 'fight') {
                         // Trigger combat with Boss
                         setTimeout(() => {
@@ -687,9 +687,9 @@ export class MapScreen {
         if (this.btnMove) this.btnMove.style.display = 'none';
 
         state.ui.toggleOverlay(this.viewExplore, true);
-        
+
         gsap.fromTo(this.viewExplore, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
-        
+
         await Preferences.set({ key: 'mortal_quest_map_view', value: 'explore' });
 
         // Đồng bộ tiến độ từ ma trận ô cờ đã giải quyết
@@ -798,7 +798,7 @@ export class MapScreen {
         if (event) {
             const desc = typeof event.description === 'function' ? event.description(state.player) : event.description;
             this.updateEventDisplay(desc, event.icon || '📜');
-            
+
             if (event.type === 'loot') {
                 const resultMsg = await event.result(state.player, window.game);
                 const droppedShi = Math.floor(Math.random() * 10 * state.player.realmId);
@@ -826,7 +826,7 @@ export class MapScreen {
                     const eventKey = event.image ? event.image.replace('events/', '') : '';
                     const eventImage = eventKey ? ASSETS.events[eventKey] : '';
                     const choice = await state.ui.promptOptions(event.name, finalOptions, finalDesc, eventImage);
-                    
+
                     if (choice && event.resolve) {
                         const result = await event.resolve(choice, state.player, window.game);
                         if (result) {
@@ -876,7 +876,7 @@ export class MapScreen {
         if (isSectOrGuild) {
             const gridState = state.player.gridExplorationState;
             const isAtGate = gridState && gridState.playerPos && gridState.playerPos.x === 7 && gridState.playerPos.y === 0;
-            
+
             if (!isAtGate) {
                 this.elLocSpecialActions.innerHTML = `
                     <div class="col-span-2 text-center p-3.5 text-[10px] text-gray-400 font-bold bg-black/40 border border-white/5 rounded-2xl space-y-1.5 shadow-lg">
@@ -908,13 +908,13 @@ export class MapScreen {
         } else if (SECTS[loc.id]) {
             hasSpecial = true;
             const isMember = state.player.sectId === loc.id;
-            
+
             // Check recruitment time: months 1-2 of even-numbered years
             const timeSys = state.systems.time;
             const isEvenYear = timeSys ? (timeSys.getYear() % 2 === 0) : true;
             const isRecruitMonth = timeSys ? (timeSys.getMonth() === 1 || timeSys.getMonth() === 2) : true;
             const isRecruiting = isEvenYear && isRecruitMonth;
-            
+
             if (isMember) {
                 this.elLocSpecialActions.innerHTML = `
                     <button onclick="window.game.openSect()" class="col-span-2 py-3 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
@@ -994,8 +994,8 @@ export class MapScreen {
     }
 
     updateExplorationUI() {
-        if (this.elExploreProgress) this.elExploreProgress.textContent = `${ Math.floor(state.explorationProgress) }% `;
-        if (this.elExploreBar) this.elExploreBar.style.width = `${ state.explorationProgress }% `;
+        if (this.elExploreProgress) this.elExploreProgress.textContent = `${Math.floor(state.explorationProgress)}% `;
+        if (this.elExploreBar) this.elExploreBar.style.width = `${state.explorationProgress}% `;
     }
 
     renderExplore() {
@@ -1004,7 +1004,7 @@ export class MapScreen {
 
         const defaultBg = ASSETS.backgrounds.cultivation;
         const bgUrl = loc.image || ASSETS.backgrounds[loc.id] || defaultBg;
-        
+
         if (this.elExploreBg) {
             this.elExploreBg.style.backgroundImage = `url('${bgUrl}')`;
         }
@@ -1017,9 +1017,9 @@ export class MapScreen {
 
     renderNPCs() {
         if (!this.elExploreNpcList) return;
-        
+
         const npcs = state.systems.npc.npcs.filter(n => n.location === state.currentLocId);
-        
+
         if (npcs.length === 0) {
             this.elExploreNpcList.innerHTML = '';
             return;
@@ -1078,39 +1078,39 @@ export class MapScreen {
         if (isSectOrGuild) {
             theme = 'SECT';
         } else if (
-            idLower.includes('hop_hoan') || idLower.includes('ngu_linh') || 
-            idLower.includes('quy_linh') || idLower.includes('ma_diem') || 
-            idLower.includes('thien_sat') || idLower.includes('thien_huyen') || 
+            idLower.includes('hop_hoan') || idLower.includes('ngu_linh') ||
+            idLower.includes('quy_linh') || idLower.includes('ma_diem') ||
+            idLower.includes('thien_sat') || idLower.includes('thien_huyen') ||
             idLower.includes('ma_dao') || idLower.includes('thien_la') ||
             nameLower.includes('ma đạo') || nameLower.includes('ma tông') || nameLower.includes('quỷ') || nameLower.includes('hắc sát')
         ) {
             theme = 'DEMONIC_SECT';
         } else if (
-            idLower.includes('bien') || idLower.includes('dao') || idLower.includes('giang') || 
-            idLower.includes('ho') || idLower.includes('hai') || idLower.includes('lac_long') || 
-            nameLower.includes('biển') || nameLower.includes('đảo') || nameLower.includes('giang') || 
+            idLower.includes('bien') || idLower.includes('dao') || idLower.includes('giang') ||
+            idLower.includes('ho') || idLower.includes('hai') || idLower.includes('lac_long') ||
+            nameLower.includes('biển') || nameLower.includes('đảo') || nameLower.includes('giang') ||
             nameLower.includes('hồ') || nameLower.includes('sông') || nameLower.includes('hải')
         ) {
             theme = 'SEA_OCEAN';
         } else if (
-            idLower.includes('cam_dia') || idLower.includes('huyet') || idLower.includes('mat_canh') || 
-            idLower.includes('co_mo') || idLower.includes('phong_do') || idLower.includes('tu_dia') || 
-            idLower.includes('tan_tich') || nameLower.includes('cấm địa') || nameLower.includes('mật cảnh') || 
+            idLower.includes('cam_dia') || idLower.includes('huyet') || idLower.includes('mat_canh') ||
+            idLower.includes('co_mo') || idLower.includes('phong_do') || idLower.includes('tu_dia') ||
+            idLower.includes('tan_tich') || nameLower.includes('cấm địa') || nameLower.includes('mật cảnh') ||
             nameLower.includes('tử địa') || nameLower.includes('phong đô') || nameLower.includes('tàn tích') ||
             nameLower.includes('cổ mộ') || nameLower.includes('phần mộ')
         ) {
             theme = 'DUNGEON_FORBIDDEN';
         } else if (
-            idLower.includes('tran') || idLower.includes('thanh') || idLower.includes('phu') || 
+            idLower.includes('tran') || idLower.includes('thanh') || idLower.includes('phu') ||
             idLower.includes('hoi') || idLower.includes('gia_trang') || idLower.includes('mac_phu') ||
-            nameLower.includes('trấn') || nameLower.includes('thành') || nameLower.includes('phủ') || 
+            nameLower.includes('trấn') || nameLower.includes('thành') || nameLower.includes('phủ') ||
             nameLower.includes('thị hội') || nameLower.includes('gia trang') || nameLower.includes('mặc phủ') || nameLower.includes('phố')
         ) {
             theme = 'CITY_TOWN';
         } else if (
-            idLower.includes('son') || idLower.includes('mach') || idLower.includes('lam') || 
-            idLower.includes('rung') || idLower.includes('thao_nguyen') || idLower.includes('coc') || 
-            nameLower.includes('sơn') || nameLower.includes('mạch') || nameLower.includes('lâm') || 
+            idLower.includes('son') || idLower.includes('mach') || idLower.includes('lam') ||
+            idLower.includes('rung') || idLower.includes('thao_nguyen') || idLower.includes('coc') ||
+            nameLower.includes('sơn') || nameLower.includes('mạch') || nameLower.includes('lâm') ||
             nameLower.includes('rừng') || nameLower.includes('thảo nguyên') || nameLower.includes('cốc') || nameLower.includes('núi')
         ) {
             theme = 'FOREST_MOUNTAIN';
@@ -1125,7 +1125,7 @@ export class MapScreen {
                 'river', 'river',                               // 2 Linh thủy đình hồ sen
                 'grass', 'grass', 'grass', 'grass', 'grass', 'grass',
                 'grass', 'grass', 'grass', 'grass',             // 10 Vườn dược thảo dược linh tông môn
-                'qi', 'qi', 'qi', 'qi', 'qi', 'qi', 
+                'qi', 'qi', 'qi', 'qi', 'qi', 'qi',
                 'qi', 'qi', 'qi', 'qi',                         // 10 Mắt Linh Khí tu luyện tĩnh tọa
                 'event', 'event', 'event', 'event', 'event', 'event',
                 'event', 'event', 'event', 'event', 'event', 'event',
@@ -1371,7 +1371,7 @@ export class MapScreen {
                         'npc_event': '👤',
                         'empty': '⬜'
                     };
-                    
+
                     const cellData = {
                         x, y,
                         type,
@@ -1384,7 +1384,7 @@ export class MapScreen {
                     if (type === 'npc_event') {
                         const imgPath = floorNpcs[npcCounter % floorNpcs.length];
                         cellData.npcIdx = NPC_IMAGES.indexOf(imgPath);
-                        
+
                         let thematicName = npcNamesMap[imgPath];
                         if (!thematicName) {
                             if (theme === 'SECT') {
@@ -1479,7 +1479,7 @@ export class MapScreen {
         // Cập nhật tiến độ thám hiểm mật cảnh
         const lastFloorGrid = gridState.floors[gridState.maxFloors];
         const bossCell = lastFloorGrid ? lastFloorGrid[0][7] : null;
-        
+
         if (bossCell && bossCell.status === 'visited') {
             state.explorationProgress = 100;
         } else {
@@ -1492,7 +1492,7 @@ export class MapScreen {
     getHtmlForCell(cell, status) {
         const isVisited = status === 'visited';
         const opacityClass = isVisited ? 'opacity-30' : '';
-        
+
         switch (cell.type) {
             case 'rock':
                 return `<i class="ph ph-cube text-slate-400 text-base md:text-lg ${opacityClass}"></i>`;
@@ -1565,7 +1565,7 @@ export class MapScreen {
                 // Trạng thái đồ họa của ô lưới
                 if (isPlayer) {
                     el.classList.add('grid-cell-player');
-                    
+
                     const player = state.player;
                     const portraitKey = player.avatar || (['female', 'Nữ'].includes(player.gender) ? 'player_female' : 'player_male');
                     const portraitUrl = ASSETS.portraits[portraitKey] || './src/assets/images/players/player_male.webp';
@@ -1773,7 +1773,7 @@ export class MapScreen {
                         }
                         gridState.grid = gridState.floors[gridState.currentFloor];
                         gridState.playerPos = { x: 3, y: 3 }; // Đi vào ở ô xuất phát góc giữa bản đồ
-                        
+
                         // Quét Thần thức ban đầu xung quanh ô mới bước vào
                         for (let ny = 0; ny < size; ny++) {
                             for (let nx = 0; nx < size; nx++) {
@@ -1807,7 +1807,7 @@ export class MapScreen {
                         gridState.currentFloor -= 1;
                         gridState.grid = gridState.floors[gridState.currentFloor];
                         gridState.playerPos = { x: 7, y: 0 }; // Xuất hiện tại đúng ô Cầu thang xuống (7, 0)
-                        
+
                         // Quét Thần thức ban đầu xung quanh ô mới bước vào
                         for (let ny = 0; ny < size; ny++) {
                             for (let nx = 0; nx < size; nx++) {
@@ -1835,7 +1835,7 @@ export class MapScreen {
                 case 'empty': {
                     const loc = getLocationById(this.viewedWorldId || state.currentWorldId, state.currentLocId);
                     const danger = (loc && loc.danger) ? loc.danger : 'ha_cap';
-                    
+
                     const ambushChances = {
                         'an_toan': 0.0,
                         'ha_cap': 0.05,
@@ -1846,11 +1846,11 @@ export class MapScreen {
                         'tu_dia': 0.30
                     };
                     const chance = ambushChances[danger] !== undefined ? ambushChances[danger] : 0.10;
-                    
+
                     if (Math.random() < chance) {
                         const beastIdx = Math.floor(Math.random() * BEAST_IMAGES.length);
                         const overrideImage = getAssetUrl(BEAST_IMAGES[beastIdx]);
-                        
+
                         this.updateEventDisplay(`🚨 [TẬP KÍCH BẤT NGỜ] Không gian chấn động! Một đầu hung thú ẩn nấp trong bóng tối đột ngột lao ra tập kích ngươi!`);
                         setTimeout(() => {
                             window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId, null, overrideImage);
@@ -1876,7 +1876,7 @@ export class MapScreen {
                     if (loc && loc.resources) {
                         loc.resources.forEach(rId => {
                             const item = getItemById(rId);
-                            if (item && (item.type === 'nguyen_lieu' || item.type === 'hat_giong' || item.type === 'linh_khoang' || item.type === 'linh_duoc')) {
+                            if (item && (item.type === 'nguyen_lieu' || item.type === 'linh_chung' || item.type === 'linh_khoang' || item.type === 'linh_duoc')) {
                                 herbDrops.push(item);
                             }
                         });
@@ -1930,7 +1930,7 @@ export class MapScreen {
                     const npcName = cell.npcName || "Cổ nhân di tích";
                     const npcIdx = cell.npcIdx !== undefined ? cell.npcIdx : ((x * 5 + y * 11) % NPC_IMAGES.length);
                     const overrideImage = getAssetUrl(NPC_IMAGES[npcIdx]);
-                    
+
                     this.updateEventDisplay(`👤 [KỲ NGỘ] Ngươi gặp tu sĩ ${npcName} đang tĩnh tọa...`);
                     setTimeout(async () => {
                         const choice = await state.ui.promptOptions(
@@ -1969,13 +1969,13 @@ export class MapScreen {
                                 const targetRealm = Math.max(1, state.player.realmId + Math.floor(Math.random() * 3) - 1);
                                 const npcEnemy = new Enemy(targetRealm, { name: npcName, img: overrideImage, statMult: 1.2, race: 'HUMAN' });
                                 EnemyGenerator.populateLoot(npcEnemy);
-                                
+
                                 // Guaranteed high quality drops for successful robbing
                                 npcEnemy.inventory.push({ id: 'linh_thao_cuc_pham', quantity: 1 + Math.floor(Math.random() * 2) });
                                 if (Math.random() < 0.4) {
                                     npcEnemy.inventory.push({ id: 'hoa_nguyen_dan', quantity: 1 });
                                 }
-                                
+
                                 window.game.startBattle(npcEnemy, null, (win) => {
                                     if (win) {
                                         this.updateEventDisplay(`👤 [GIẾT NGƯỜI ĐOẠT BẢO] ${npcName} đã bị chém giết! Ngươi thu hoạch túi trữ vật và nhận được toàn bộ bí bảo.`);
@@ -2002,7 +2002,7 @@ export class MapScreen {
                             const eventKey = event.image ? event.image.replace('events/', '') : '';
                             const eventImage = eventKey ? ASSETS.events[eventKey] : '';
                             const choice = await state.ui.promptOptions(event.name, finalOptions, finalDesc, eventImage);
-                            
+
                             if (choice && event.resolve) {
                                 const result = await event.resolve(choice, state.player, window.game);
                                 if (result) {
@@ -2030,7 +2030,7 @@ export class MapScreen {
                         const loc = getLocationById(this.viewedWorldId || state.currentWorldId, state.currentLocId);
                         const dangerLvl = Math.min(10, (loc.dangerLevel || 1) + 2);
                         const bossEnemy = EnemyGenerator.generate(dangerLvl);
-                        
+
                         bossEnemy.name = `👑 THỦ LĨNH: ` + bossEnemy.name;
                         bossEnemy.hp = Math.floor(bossEnemy.hp * 1.8);
                         bossEnemy.maxHp = bossEnemy.hp;
@@ -2055,7 +2055,7 @@ export class MapScreen {
 
                                 state.ui.toast(`🎉 Chúc mừng! Hạ gục Boss thành công và thanh lọc toàn bộ mật cảnh!`, 'success');
                                 this.updateEventDisplay(`🎉 MẬT CẢNH KHAI PHÁ VIÊN MÃN!\n\nĐạo hữu đã dẹp yên Cổ Cấm Điện! Nhận thưởng [💎 ${bossTuVi}x Tu vi] và di vật cổ bảo [🎁 1x ${getItemById(itemReward)?.name || 'Cổ Bảo'}].`);
-                                
+
                                 // Giải phóng ma trận cũ để người chơi tạo ma trận mới tiếp tục thám hiểm
                                 state.player.gridExplorationState = null;
                                 if (window.game && window.game.saveGame) window.game.saveGame();

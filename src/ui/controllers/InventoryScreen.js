@@ -18,10 +18,10 @@ export class InventoryScreen {
 
     getTechniqueCategoriesForBook(itemData) {
         if (!itemData) return [];
-        
+
         const categories = [];
         const isManualAction = itemData.type === 'sach_cong_phap' || itemData.effect?.type === EFFECT_TYPES.MO_KHOA_NGHE;
-        const isRecipe = itemData.type === 'don_thuoc' || itemData.type === 'don_phu' || isManualAction;
+        const isRecipe = itemData.type === 'dan_phuong' || itemData.type === 'don_phu' || isManualAction;
         if (isRecipe) {
             categories.push('Bí Pháp');
         }
@@ -30,7 +30,7 @@ export class InventoryScreen {
         if (techId) {
             const tech = getTechniqueById(techId);
             if (tech) {
-                categories.push(tech.type); 
+                categories.push(tech.type);
             }
 
             const secret = getSecretTechniqueById(techId);
@@ -277,7 +277,7 @@ export class InventoryScreen {
                 const finalPricePerUnit = Math.floor(itemData.price * (1 - Math.min(0.25, state.player.vipLevel * 0.05)));
                 const playerLingShi = state.player.lingshi || 0;
                 const maxAffordable = finalPricePerUnit > 0 ? Math.floor(playerLingShi / finalPricePerUnit) : 9999;
-                
+
                 this.elQtyMaxText.textContent = `Kho: ${shopItem.stock} (Đủ mua: ${maxAffordable})`;
 
                 if (currentVal > shopItem.stock) {
@@ -400,7 +400,7 @@ export class InventoryScreen {
 
             const el = document.createElement('div');
             el.className = `p-2 border rounded-lg bg-black/20 flex flex-col items-center justify-between cursor-pointer transition-all border-${qClass}/30 ${state.selectedItemId === item.id ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'} min-h-[72px]`;
-            
+
             const categories = this.getTechniqueCategoriesForBook(itemData);
             const gridCategoryHtml = categories.length > 0
                 ? `<div class="flex flex-wrap gap-0.5 justify-center mt-1 w-full overflow-hidden max-h-[14px] leading-none">${categories.map(cat => `<span class="px-0.5 py-0.2 rounded bg-qi-blue/20 text-[5px] text-qi-blue uppercase font-ancient whitespace-nowrap scale-90 border border-qi-blue/30 leading-none">${cat}</span>`).join('')}</div>`
@@ -524,14 +524,14 @@ export class InventoryScreen {
             'phap_bao_phu_tro': 'Phụ Trợ Pháp Bảo',
             'phap_bao_hon': 'Hồn Đạo Pháp Bảo',
             'nguyen_lieu': 'Linh Vật / Tài Nguyên',
-            'hat_giong': 'Linh Chủng'
+            'linh_chung': 'Linh Chủng'
         };
 
         const mappedQuality = getDisplayQuality(displayQuality, itemData.type);
         const qualitySuffix = (mappedQuality.toLowerCase().includes('khí') || mappedQuality.toLowerCase().includes('bảo') || mappedQuality.toLowerCase().includes('phẩm') || mappedQuality.toLowerCase().includes('giai') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(mappedQuality)) ? '' : ' Phẩm';
-        
+
         let typeLabel = typeNames[itemData.type] || itemData.type;
-        if (itemData.type === 'sach_cong_phap' || itemData.type === 'technique' || itemData.type === 'don_thuoc' || itemData.type === 'don_phu') {
+        if (itemData.type === 'sach_cong_phap' || itemData.type === 'technique' || itemData.type === 'dan_phuong' || itemData.type === 'don_phu') {
             const categories = this.getTechniqueCategoriesForBook(itemData);
             if (categories.length > 0) {
                 typeLabel += ` (${categories.join(', ')})`;
@@ -693,7 +693,7 @@ export class InventoryScreen {
         } else if (itemData.effect && this.elDetailStats) {
             const effect = itemData.effect;
             const effectList = [];
-            
+
             if (!effect.type) {
                 Object.entries(effect).forEach(([key, val]) => {
                     const label = this.getStatLabel(key);
@@ -770,7 +770,7 @@ export class InventoryScreen {
         }
 
         // Show/Hide Quantity Container
-        const isStackable = ['linh_thach', 'dan_duoc', 'nguyen_lieu', 'hat_giong'].includes(itemData.type);
+        const isStackable = ['linh_thach', 'dan_duoc', 'nguyen_lieu', 'linh_chung'].includes(itemData.type);
         const shopItem = state.systems.shop?.getShopInventory().find(i => i.id === id);
         const shopStock = shopItem ? shopItem.stock : 0;
         const showQty = isStackable || (fromShop && shopStock > 1) || (fromSell && playerItem && playerItem.quantity > 1);
@@ -798,13 +798,13 @@ export class InventoryScreen {
         const isSpiritStone = itemData.type === 'linh_thach';
         const isManual = itemData.type === 'sach_cong_phap' && itemData.action;
 
-        this.btnUseItem.classList.toggle('hidden', !(['dan_duoc', 'sach_cong_phap', 'linh_thach', 'trung_linh_thu', 'don_thuoc', 'don_phu'].includes(itemData.type)) || (fromShop && !isManual));
+        this.btnUseItem.classList.toggle('hidden', !(['dan_duoc', 'sach_cong_phap', 'linh_thach', 'trung_linh_thu', 'dan_phuong', 'don_phu'].includes(itemData.type)) || (fromShop && !isManual));
         if (this.btnCrushStone) this.btnCrushStone.classList.toggle('hidden', !isSpiritStone || fromShop || fromSell);
 
         if (isSpiritStone) {
             this.btnUseItem.textContent = 'LUYỆN HÓA';
         } else {
-            this.btnUseItem.textContent = isManual ? 'XEM' : ((itemData.type === 'sach_cong_phap' || itemData.type === 'don_thuoc' || itemData.type === 'don_phu') ? 'LĨNH NGỘ' : (itemData.type === 'trung_linh_thu' ? 'ẤP TRỨNG' : 'SỬ DỤNG'));
+            this.btnUseItem.textContent = isManual ? 'XEM' : ((itemData.type === 'sach_cong_phap' || itemData.type === 'dan_phuong' || itemData.type === 'don_phu') ? 'LĨNH NGỘ' : (itemData.type === 'trung_linh_thu' ? 'ẤP TRỨNG' : 'SỬ DỤNG'));
         }
 
         const mappedSlot = state.player.getEquipSlotForItemType

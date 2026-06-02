@@ -6,17 +6,17 @@ import { getItemById } from '../configs/item-data.js';
  * @returns {string}
  */
 export function getQualityClass(quality) {
-    const map = { 
-        'Phàm Khí': 'pham-khi', 
-        'Pháp Khí': 'phap-khi', 
-        'Linh Khí': 'linh-khi', 
-        'Pháp Bảo': 'phap-bao', 
-        'Cổ Bảo': 'co-bao', 
-        'Linh Bảo': 'linh-bao', 
-        'Thông Thiên Linh Bảo': 'thong-thien', 
+    const map = {
+        'Phàm Khí': 'pham-khi',
+        'Pháp Khí': 'phap-khi',
+        'Linh Khí': 'linh-khi',
+        'Pháp Bảo': 'phap-bao',
+        'Cổ Bảo': 'co-bao',
+        'Linh Bảo': 'linh-bao',
+        'Thông Thiên Linh Bảo': 'thong-thien',
         'Tiên Khí': 'tien-khi',
         'Danh Khí': 'danh-khi',
-        
+
         // Công Pháp (Giai system)
         'Phàm Giai': 'pham-khi',
         'Hoàng Giai': 'phap-khi',
@@ -117,7 +117,7 @@ export function renderGridItem(item, options = {}) {
  * @returns {string}
  */
 export function getDisplayQuality(quality, type) {
-    const isManualOrRecipe = ['sach_cong_phap', 'tuyet_ky', 'don_thuoc', 'don_phu'].includes(type);
+    const isManualOrRecipe = ['sach_cong_phap', 'tuyet_ky', 'dan_phuong', 'don_phu'].includes(type);
     if (!isManualOrRecipe) return quality;
 
     const map = {
