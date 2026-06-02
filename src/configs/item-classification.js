@@ -651,7 +651,8 @@ export const ITEM_CATEGORIES_ENUM = {
             TRAN_AP: 'tran_ap',
             DON_THUAT: 'don_thuat',
             TRIEU_HOI: 'trieu_hoi',
-            TRUYEN_AM: 'truyen_am'
+            TRUYEN_AM: 'truyen_am',
+            PHU_CU: 'phu_cu'
         }
     },
     TRAN_PHAP: {
@@ -732,34 +733,34 @@ export const ITEM_CATEGORIES_ENUM = {
 // Centralized Effect Types Enum
 export const EFFECT_TYPES = {
     // === Học / Mở khóa công thức & nghề ===
-    HOC_CONG_THUC_DAN:       'learn_recipe',
-    HOC_CONG_THUC_REN:       'learn_smithing_recipe',
-    HOC_CONG_THUC_PHU:       'learn_talisman_recipe',
-    HOC_CONG_THUC_KHOI_LOI:  'learn_puppet_recipe',
-    HOC_CONG_THUC_THI:       'learn_corpse_recipe',
-    HOC_TRAN_PHAP:           'learn_formation',
-    HOC_KY_THUAT:            'learn_technique',
-    HOC_BI_THUAT:            'learn_secret',
-    HOC_LINH_THU:            'learn_beast',
-    HOC_NHIEU_CONG_THUC:     'learn_multiple_recipes',
-    MO_KHOA_NGHE:            'unlock_profession',
+    HOC_CONG_THUC_DAN: 'learn_recipe',
+    HOC_CONG_THUC_REN: 'learn_smithing_recipe',
+    HOC_CONG_THUC_PHU: 'learn_talisman_recipe',
+    HOC_CONG_THUC_KHOI_LOI: 'learn_puppet_recipe',
+    HOC_CONG_THUC_THI: 'learn_corpse_recipe',
+    HOC_TRAN_PHAP: 'learn_formation',
+    HOC_KY_THUAT: 'learn_technique',
+    HOC_BI_THUAT: 'learn_secret',
+    HOC_LINH_THU: 'learn_beast',
+    HOC_NHIEU_CONG_THUC: 'learn_multiple_recipes',
+    MO_KHOA_NGHE: 'unlock_profession',
 
     // === Hồi phục / Tu vi ===
-    TANG_TU_VI:              'tu_vi',
-    HOI_PHUC:                'restore',
-    HOI_MAU:                 'heal',
-    TANG_PHAP_LUC:           'mana',
-    TANG_THO_NGUYEN:         'lifespan',
-    MAX_AGE:                 'max_age',
-    HAP_THU_LINH_KHI:        'qi_absorb',
+    TANG_TU_VI: 'tu_vi',
+    HOI_PHUC: 'restore',
+    HOI_MAU: 'heal',
+    TANG_PHAP_LUC: 'mana',
+    TANG_THO_NGUYEN: 'lifespan',
+    MAX_AGE: 'max_age',
+    HAP_THU_LINH_KHI: 'qi_absorb',
 
     // === Buff / Trang bị ===
-    BUFF_TAM_THOI:           'buff',
-    LUYEN_HOA_DI_HOA:        'refine_flame',
-    TRANG_BI_DAN_LU:         'equip_cauldron',
+    BUFF_TAM_THOI: 'buff',
+    LUYEN_HOA_DI_HOA: 'refine_flame',
+    TRANG_BI_DAN_LU: 'equip_cauldron',
 
     // === Đặc biệt ===
-    AP_TRUNG:                'hatch',
-    THUAN_THUC_CONG_PHAP:    'technique_mastery',
-    TANG_CO_HOI_DOT_PHA:     'breakthrough_chance',
+    AP_TRUNG: 'hatch',
+    THUAN_THUC_CONG_PHAP: 'technique_mastery',
+    TANG_CO_HOI_DOT_PHA: 'breakthrough_chance',
 };

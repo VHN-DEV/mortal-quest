@@ -931,7 +931,7 @@ export const ITEMS = {
         id: 'huyen_thiet',
         name: 'Huyền Thiết',
         type: ITEM_TYPES.NGUYEN_LIEU,
-        icon: '🪨',
+        icon: '⬛',
         quality: 'Linh Khí',
         price: 200,
         description: 'Loại sắt đen hấp thu linh khí thiên nhiên, cứng chắc hơn sắt thường nhiều lần. Nguyên liệu cơ bản để rèn đúc pháp khí kiếm đạo.',
@@ -2235,7 +2235,7 @@ export const ITEMS = {
     },
     'chu_sa_muc': {
         id: 'chu_sa_muc', name: 'Chu Sa Mực', type: ITEM_TYPES.NGUYEN_LIEU, icon: '🩸', quality: 'Phàm Khí', price: 20, description: 'Mực chu sa dùng để vẽ phù.', categories: [
-            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: 'phu_cu' }
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.PHU_CU }
         ]
     },
 
@@ -2260,7 +2260,7 @@ export const ITEMS = {
         price: 50,
         description: 'Làm từ gỗ linh mộc, tăng độ ổn định khi vẽ phù.',
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: 'phu_cu' }
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.PHU_CU }
         ]
     },
     'yeu_thu_da_phu': {
@@ -2272,7 +2272,7 @@ export const ITEMS = {
         price: 250,
         description: 'Làm từ da yêu thú, tăng uy lực cho phù công kích.',
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: 'phu_cu' }
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.PHU_CU }
         ]
     },
 
@@ -2284,7 +2284,10 @@ export const ITEMS = {
         icon: '🩸',
         quality: 'Phàm Khí',
         price: 20,
-        description: 'Mực chu sa chứa linh lực loãng, dùng vẽ phù cơ bản.'
+        description: 'Mực chu sa chứa linh lực loãng, dùng vẽ phù cơ bản.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.PHU_CU }
+        ]
     },
     'yeu_huyet_muc': {
         id: 'yeu_huyet_muc',
@@ -2295,7 +2298,7 @@ export const ITEMS = {
         price: 150,
         description: 'Pha trộn từ máu yêu thú, tăng sát thương cho phù lục.',
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: 'phu_cu' }
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.PHU_CU }
         ]
     },
 
@@ -2310,7 +2313,7 @@ export const ITEMS = {
         description: 'Bút vẽ phù làm từ linh trúc, tăng tỷ lệ thành công thêm 5%.',
         stats: { successRate: 0.05 },
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: 'phu_cu' }
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.PHU_CU }
         ]
     },
 
@@ -2691,24 +2694,6 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
         ]
     },
-    'huyen_thiet': {
-        id: 'huyen_thiet',
-        name: 'Huyền Thiết',
-        type: ITEM_TYPES.NGUYEN_LIEU,
-        icon: '⬛',
-        quality: 'Linh Khí',
-        price: 800,
-        description: 'Sắt đen cực nặng và cứng, dùng để rèn vũ khí hạng nặng.'
-    },
-    'tinh_kim': {
-        id: 'tinh_kim',
-        name: 'Tinh Kim',
-        type: ITEM_TYPES.NGUYEN_LIEU,
-        icon: '✨',
-        quality: 'Pháp Bảo',
-        price: 3000,
-        description: 'Vàng tinh khiết chứa linh lực, dẫn linh cực tốt.'
-    },
     'vân_thiết': {
         id: 'vân_thiết',
         name: 'Thiên Ngoại Vẫn Thiết',
@@ -2888,24 +2873,6 @@ export const ITEMS = {
     },
 
     // --- SMITHING MATERIALS (LINH QUẶNG & DỊ KIM) ---
-    'huyen_thiet': {
-        id: 'huyen_thiet',
-        name: 'Huyền Thiết',
-        type: ITEM_TYPES.NGUYEN_LIEU,
-        icon: '🧱',
-        quality: 'Pháp Khí',
-        price: 200,
-        description: 'Quặng sắt nặng chứa linh khí, nguyên liệu cơ bản luyện khí.'
-    },
-    'tinh_kim': {
-        id: 'tinh_kim',
-        name: 'Tinh Kim',
-        type: ITEM_TYPES.NGUYEN_LIEU,
-        icon: '✨',
-        quality: 'Linh Khí',
-        price: 1500,
-        description: 'Kim loại tinh khiết, dẫn linh lực cực tốt.'
-    },
     'thai_duong_than_kim': {
         id: 'thai_duong_than_kim',
         name: 'Thái Dương Thần Kim',
@@ -3581,18 +3548,6 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.PHAP_KHI }
         ]
     },
-    'phong_loi_si': {
-        id: 'phong_loi_si',
-        name: 'Phong Lôi Sí',
-        type: ITEM_TYPES.PHAP_BAO_PHI_HANH,
-        quality: 'Danh Khí',
-        image: 'artifacts/phong-loi-si.svg',
-        description: 'Đôi cánh được luyện từ lông vũ của yêu thú lôi hệ và phong hệ cực hiếm. Tốc độ độn thuật vô song, nhưng yêu cầu người sử dụng phải lĩnh ngộ [[phong_loi_quyet|Phong Lôi Quyết]] hoặc các Lôi Pháp để làm nguồn năng lượng kích hoạt.',
-        price: 2500000,
-        stats: { spd: 500, avoidRate: 0.2 },
-        requireThunder: true,
-        poem: ['Phong Lôi Nhất Động Thiên Địa Biến', 'Sí Vũ Khinh Huy Diệu Cửu Tiêu']
-    },
     'phong_loi_quyet': {
         id: 'phong_loi_quyet',
         name: 'Phong Lôi Quyết',
@@ -3604,18 +3559,6 @@ export const ITEMS = {
         techniqueId: 'phong_loi_quyet',
         categories: [
             { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.TU_LUYEN }
-        ]
-    },
-    'trung_thien_phong_ngan_uynh': {
-        id: 'trung_thien_phong_ngan_uynh',
-        name: 'Trứng Thiên Phong Ngân Uynh',
-        type: ITEM_TYPES.DAN_DUOC,
-        icon: '🐞',
-        quality: 'Pháp Bảo',
-        price: 25000,
-        description: 'Trứng của Thiên Phong Ngân Uynh, loại kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.',
-        categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
         ]
     },
     'linh_thu_dai_so': {
@@ -3653,53 +3596,6 @@ export const ITEMS = {
         categories: [
             { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DEFAULT }
         ]
-    },
-    'trung_phe_kim_trung': {
-        id: 'trung_phe_kim_trung',
-        name: 'Trứng Phệ Kim Trùng',
-        type: ITEM_TYPES.DAN_DUOC,
-        icon: '🥚',
-        quality: 'Linh Bảo',
-        price: 100000,
-        description: 'Trứng của loài kỳ trùng đứng đầu bảng xếp hạng. Cực kỳ hiếm thấy và khó ấp nở.',
-        categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
-        ]
-    },
-    'trung_huyet_ngoc_tri_chu': {
-        id: 'trung_huyet_ngoc_tri_chu',
-        name: 'Trứng Huyết Ngọc Tri Chu',
-        type: ITEM_TYPES.DAN_DUOC,
-        icon: '🥚',
-        quality: 'Pháp Bảo',
-        price: 15000,
-        description: 'Trứng của loài nhện quý hiếm có tơ cực kỳ dẻo dai.',
-        categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
-        ]
-    },
-    'trung_bang_tam': {
-        id: 'trung_bang_tam',
-        name: 'Trứng Băng Tằm',
-        type: ITEM_TYPES.DAN_DUOC,
-        icon: '🥚',
-        quality: 'Linh Khí',
-        price: 5000,
-        description: 'Trứng của loài tằm sinh trưởng trong cực hàn chi địa.',
-        categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
-        ]
-    },
-    'nguyen_tu_cuc_son': {
-        id: 'nguyen_tu_cuc_son',
-        name: 'Nguyên Từ Cực Sơn',
-        type: ITEM_TYPES.PHAP_BAO_THU,
-        quality: 'Tiên Khí',
-        image: 'artifacts/nguyen-tu-cuc-son.svg',
-        description: 'Ngọn núi xám đen chứa đựng lực lượng Nguyên Từ, có thể khắc chế vạn pháp ngũ hành, trấn áp trọng lực. Là một trong 5 thành phần để luyện chế [[nguyen_hop_ngu_cuc_son|Nguyên Hợp Ngũ Cực Sơn]].',
-        price: 1500000,
-        stats: { def: 600, hp: 1500, gravityRes: 0.5 },
-        action: 'combine_ngu_cuc_son'
     },
     'bac_cuc_nguyen_quang_cuc_son': {
         id: 'bac_cuc_nguyen_quang_cuc_son',
@@ -3795,39 +3691,6 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 20000,
         description: 'Túi linh thú cao cấp, có thể chứa được các loại thần thú hoặc kỳ trùng vương cấp. Có tác dụng bảo hộ linh tính và ngăn chặn phản phệ.'
-    },
-    'trung_phe_kim_trung': {
-        id: 'trung_phe_kim_trung',
-        name: 'Trứng Phệ Kim Trùng',
-        type: ITEM_TYPES.TRUNG_LINH_THU,
-        beastId: 'phe_kim_trung',
-        image: 'aberrations/phe-kim-trung.svg',
-        icon: '🥚',
-        quality: 'Linh Khí',
-        price: 5000,
-        description: 'Trứng của Phệ Kim Trùng, một loại kỳ trùng nổi tiếng với khả năng thôn phệ vạn vật, ngay cả pháp bảo cũng khó thoát khỏi hàm răng của chúng.'
-    },
-    'trung_bang_tam': {
-        id: 'trung_bang_tam',
-        name: 'Trứng Băng Tằm',
-        type: ITEM_TYPES.TRUNG_LINH_THU,
-        beastId: 'bang_tam',
-        image: 'aberrations/bang-tam.svg',
-        icon: '🥚',
-        quality: 'Pháp Khí',
-        price: 1500,
-        description: 'Trứng của Băng Tằm, sinh vật sống ở vùng cực hàn. Tơ của chúng là nguyên liệu quý để dệt nên các loại pháp y phòng ngự cực cao.'
-    },
-    'trung_huyet_ngoc_tri_chu': {
-        id: 'trung_huyet_ngoc_tri_chu',
-        name: 'Trứng Huyết Ngọc Tri Chu',
-        type: ITEM_TYPES.TRUNG_LINH_THU,
-        beastId: 'huyet_ngoc_tri_chu',
-        image: 'aberrations/huyet-ngoc-tri-chu.svg',
-        icon: '🥚',
-        quality: 'Pháp Khí',
-        price: 2000,
-        description: 'Trứng của Huyết Ngọc Tri Chu, loại nhện mang huyết mạch cổ xưa, nọc độc vô cùng bạo liệt và tơ nhện dẻo dai khó đứt.'
     },
     'trung_kim_giap_hac': {
         id: 'trung_kim_giap_hac',
@@ -4714,7 +4577,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1500,
         description: 'Đan dược phục hồi khí huyết, nguyên liệu từ long huyết thảo và linh chi, hiệu quả tức thì.',
-        effect: { hp: 1000 }
+        effect: { hp: 1000 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
+        ]
     },
     'tuong_am_dan': {
         id: 'tuong_am_dan',
