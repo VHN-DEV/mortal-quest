@@ -1125,7 +1125,7 @@ export class CombatEngine {
             this.addLog("Chưa mở khóa Khôi Lỗi Thuật!");
             return;
         }
-        const puppet = this.player.inventory.allItems.find(i => i.id === 'khoi_loi_item');
+        const puppet = this.player.inventory.allItems.find(i => i.id === 'khoi_loi');
         if (!puppet) {
             this.addLog("Chưa có khôi lỗi để triệu hồi chiến đấu!");
             return;

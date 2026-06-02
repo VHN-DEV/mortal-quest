@@ -24,7 +24,7 @@ export class CheatSystem {
 
     reset() {
         this.systemId = null; // Stored on Player, synced on init()
-        
+
         // Sign-In System State
         this.signInState = {
             totalDays: 0,
@@ -55,7 +55,7 @@ export class CheatSystem {
     init() {
         if (!this.player) return;
         this.systemId = this.player.cheatSystemId;
-        
+
         const sysConfig = (CREATION_SYSTEMS || []).find(s => s.id === this.systemId);
         if (sysConfig) {
             this.claimStyle = sysConfig.claimStyle || 'direct';
@@ -117,7 +117,7 @@ export class CheatSystem {
         }
 
         const roll = missions[Math.floor(Math.random() * missions.length)];
-        
+
         this.missionState.currentMission = {
             id: roll.id,
             name: roll.name,
@@ -166,7 +166,7 @@ export class CheatSystem {
         if (mission.completed || mission.type !== actionType) return;
 
         mission.current = Math.min(mission.target, mission.current + amount);
-        
+
         if (mission.current >= mission.target) {
             mission.completed = true;
             this.ui.toast(`Hệ Thống: Nhiệm vụ [${mission.name}] đã hoàn thành! Bấm vào để nhận thưởng.`, "success");
@@ -230,13 +230,13 @@ export class CheatSystem {
      */
     generateRewards() {
         const pool = this.getRewardPool();
-        
+
         // Let's roll 3 rewards.
         const rolled = [];
-        
+
         // 1. Linh Thạch is always awarded
         const lingShiGrade = this.player.realmId >= 30 ? 'TRUNG' : 'HA';
-        const lingShiQty = lingShiGrade === 'TRUNG' 
+        const lingShiQty = lingShiGrade === 'TRUNG'
             ? Math.floor(Math.random() * 5) + 2 // 2-6 Trung Phẩm
             : Math.floor(Math.random() * 200) + 100; // 100-300 Hạ Phẩm
 
@@ -253,7 +253,7 @@ export class CheatSystem {
         for (let i = 0; i < 2; i++) {
             const itemRoll = pool[Math.floor(Math.random() * pool.length)];
             const itemData = ITEMS[itemRoll.id];
-            
+
             rolled.push({
                 type: 'item',
                 id: itemRoll.id,
@@ -290,7 +290,7 @@ export class CheatSystem {
         });
 
         this.pendingRewards = null;
-        
+
         // If the day has advanced since the task was rolled, trigger onDayChanged to roll the next daily item immediately
         this.onDayChanged();
     }
@@ -300,7 +300,7 @@ export class CheatSystem {
      */
     chooseReward(index) {
         if (!this.pendingRewards || this.pendingRewards.length === 0) return null;
-        
+
         const chosen = this.pendingRewards[index];
         if (!chosen) return null;
 
@@ -324,7 +324,7 @@ export class CheatSystem {
      */
     getRewardPool() {
         const realmId = this.player.realmId || 0;
-        
+
         // Rơi phần thưởng đa dạng cực kỳ thú vị: đan dược, nguyên liệu chế đồ, công pháp, linh thảo quý
         const basePool = [
             // Đan Dược
@@ -342,7 +342,7 @@ export class CheatSystem {
             { id: 'u_minh_hoa', qty: 1 },
             { id: 'thuy_tinh', qty: 3 },
             { id: 'ma_thach', qty: 2 },
-            
+
             // Hạt giống
             { id: 'hat_giong_thanh_phuc_thao', qty: 3 },
             { id: 'hat_giong_hoa_diem_thao', qty: 1 },
@@ -352,7 +352,7 @@ export class CheatSystem {
             { id: 'dan_phuong_ngung_khi_dan', qty: 1 },
             { id: 'dan_phuong_than_tam_dan', qty: 1 },
             { id: 'ban_ve_thanh_hong_kiem', qty: 1 },
-            { id: 'phu_ve_hoa_cau_phu', qty: 1 },
+            { id: 'phu_van_hoa_cau_phu', qty: 1 },
             { id: 'tran_do_tu_linh_tran', qty: 1 }
         ];
 
@@ -367,8 +367,8 @@ export class CheatSystem {
                 { id: 'dan_phuong_truc_co_dan', qty: 1 },
                 { id: 'dan_phuong_bo_nguyen_dan', qty: 1 },
                 { id: 'ban_ve_bat_quai_kinh', qty: 1 },
-                { id: 'phu_ve_kim_cuong_phu', qty: 1 },
-                { id: 'phu_ve_than_hanh_phu', qty: 1 },
+                { id: 'phu_van_kim_cuong_phu', qty: 1 },
+                { id: 'phu_van_than_hanh_phu', qty: 1 },
                 { id: 'tran_do_ao_anh_tran', qty: 1 },
                 { id: 'cuu_u_luyen_thi_thuat', qty: 1 }
             );
@@ -388,10 +388,10 @@ export class CheatSystem {
                 { id: 'dan_phuong_ngung_anh_dan', qty: 1 },
                 { id: 'ban_ve_phi_kiem_tinh_ha', qty: 1 },
                 { id: 'ban_ve_long_lan_giap', qty: 1 },
-                { id: 'phu_ve_thun_di_phu', qty: 1 },
-                { id: 'phu_ve_thien_loi_phu', qty: 1 },
+                { id: 'phu_van_thun_di_phu', qty: 1 },
+                { id: 'phu_van_thien_loi_phu', qty: 1 },
                 { id: 'tran_do_sat_kiem_tran', qty: 1 },
-                { id: 'dong_giap_thi', qty: 1 }
+                { id: 'bi_phuong_dong_giap_thi', qty: 1 }
             );
         }
 

@@ -52,7 +52,7 @@ export class PuppetSystem {
             else if (qualityRoll > 0.7) { quality = 'Trung Phẩm'; }
 
             // Add Puppet item
-            this.player.inventory.addItem('khoi_loi_item', 1, {
+            this.player.inventory.addItem('khoi_loi', 1, {
                 puppetId: recipe.id,
                 name: recipe.name,
                 quality,
@@ -81,7 +81,7 @@ export class PuppetSystem {
 
     repair(inventoryIndex) {
         const item = this.player.inventory.allItems[inventoryIndex];
-        if (!item || item.id !== 'khoi_loi_item') return { success: false, msg: "Không phải khôi lỗi!" };
+        if (!item || item.id !== 'khoi_loi') return { success: false, msg: "Không phải khôi lỗi!" };
 
         const cost = 100; // Placeholder cost
         if (this.player.lingShi < cost) return { success: false, msg: "Không đủ linh thạch sửa chữa!" };
