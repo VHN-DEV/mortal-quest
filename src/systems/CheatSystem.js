@@ -344,9 +344,9 @@ export class CheatSystem {
             { id: 'ma_thach', qty: 2 },
 
             // Hạt giống
-            { id: 'hat_giong_thanh_phuc_thao', qty: 3 },
-            { id: 'hat_giong_hoa_diem_thao', qty: 1 },
-            { id: 'hat_giong_han_tuy_hoa', qty: 1 },
+            { id: 'linh_chung_thanh_phuc_thao', qty: 3 },
+            { id: 'linh_chung_hoa_diem_thao', qty: 1 },
+            { id: 'linh_chung_han_tuy_hoa', qty: 1 },
 
             // Đan phương / Bản vẽ nhập môn
             { id: 'dan_phuong_ngung_khi_dan', qty: 1 },

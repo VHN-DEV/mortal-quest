@@ -156,16 +156,16 @@ export const SHOPS = {
                 { id: 'tinh_lien_yeu_hoa_seed', stock: 1, minVip: 5 }
             ],
             'linh_dien': [
-                { id: 'hat_giong_thanh_phuc_thao', stock: 100 },
-                { id: 'hat_giong_linh_thao_trung', stock: 50 },
-                { id: 'hat_giong_ngoc_de_hoa', stock: 80 },
-                { id: 'hat_giong_thanh_long_sam', stock: 30 },
-                { id: 'hat_giong_hoa_diem_thao', stock: 20 },
-                { id: 'hat_giong_hoa_duong_chi', stock: 20 },
-                { id: 'hat_giong_han_tuy_hoa', stock: 20 },
-                { id: 'hat_giong_tuyet_oanh_thao', stock: 20 },
-                { id: 'hat_giong_u_minh_hoa', stock: 5, minVip: 1 },
-                { id: 'hat_giong_cuu_tich_chi', stock: 10 }
+                { id: 'linh_chung_thanh_phuc_thao', stock: 100 },
+                { id: 'linh_chung_tu_lam_hoa', stock: 50 },
+                { id: 'linh_chung_ngoc_de_hoa', stock: 80 },
+                { id: 'linh_chung_thanh_long_sam', stock: 30 },
+                { id: 'linh_chung_hoa_diem_thao', stock: 20 },
+                { id: 'linh_chung_hoa_duong_chi', stock: 20 },
+                { id: 'linh_chung_han_tuy_hoa', stock: 20 },
+                { id: 'linh_chung_tuyet_oanh_thao', stock: 20 },
+                { id: 'linh_chung_u_minh_hoa', stock: 5, minVip: 1 },
+                { id: 'linh_chung_cuu_tich_chi', stock: 10 }
             ],
             'ky_trung': [
                 { id: 'trung_phe_kim_trung', stock: 1, minVip: 2 },

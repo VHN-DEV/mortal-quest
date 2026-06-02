@@ -12,23 +12,23 @@ import { ITEM_TYPES, ITEM_CATEGORIES_ENUM, EFFECT_TYPES } from './item-classific
 
 export const ITEMS = {
     // Hạt giống
-    'hat_giong_thanh_phuc_thao': {
-        id: 'hat_giong_thanh_phuc_thao', name: 'Hạt Giống Thanh Phục Thảo', type: ITEM_TYPES.HAT_GIONG, icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Hạt giống Thanh Phục Thảo, loại linh thảo sơ cấp phổ biến nhất ở Nhân giới.', categories: [
+    'linh_chung_thanh_phuc_thao': {
+        id: 'linh_chung_thanh_phuc_thao', name: 'Linh Chủng Thanh Phục Thảo', type: ITEM_TYPES.HAT_GIONG, icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Hạt giống Thanh Phục Thảo, loại linh thảo sơ cấp phổ biến nhất ở Nhân giới.', categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: 'duoi_100_nam' }
         ]
     },
-    'hat_giong_hoa_diem_thao': {
-        id: 'hat_giong_hoa_diem_thao', name: 'Hạt Giống Hỏa Diễm Thảo', type: ITEM_TYPES.HAT_GIONG, icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.', categories: [
+    'linh_chung_hoa_diem_thao': {
+        id: 'linh_chung_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: ITEM_TYPES.HAT_GIONG, icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.', categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: '100_nam' }
         ]
     },
-    'hat_giong_han_tuy_hoa': {
-        id: 'hat_giong_han_tuy_hoa', name: 'Hạt Giống Hàn Tủy Hoa', type: ITEM_TYPES.HAT_GIONG, icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.', categories: [
+    'linh_chung_han_tuy_hoa': {
+        id: 'linh_chung_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: ITEM_TYPES.HAT_GIONG, icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.', categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: '100_nam' }
         ]
     },
-    'hat_giong_u_minh_hoa': {
-        id: 'hat_giong_u_minh_hoa', name: 'Hạt Giống U Minh Hoa', type: ITEM_TYPES.HAT_GIONG, icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.', categories: [
+    'linh_chung_u_minh_hoa': {
+        id: 'linh_chung_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: ITEM_TYPES.HAT_GIONG, icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.', categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: '100_nam' }
         ]
     },
@@ -1557,8 +1557,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.TIEN_KHI }
         ]
     },
-    'hat_giong_linh_thao_trung': {
-        id: 'hat_giong_linh_thao_trung',
+    'linh_chung_tu_lam_hoa': {
+        id: 'linh_chung_tu_lam_hoa',
         name: 'Linh Chủng Tử Lam Hoa',
         type: ITEM_TYPES.HAT_GIONG,
         icon: '🌿',
@@ -1567,19 +1567,6 @@ export const ITEMS = {
         description: 'Hạt giống Tử Lam Hoa, linh thảo trung phẩm có màu tím lam dịu mắt, sinh trưởng tương đối lâu.',
         categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: 'duoi_100_nam' }
-        ]
-    },
-    'hoi_huyet_dan': {
-        id: 'hoi_huyet_dan',
-        name: 'Hồi Huyết Đan',
-        type: ITEM_TYPES.DAN_DUOC,
-        icon: '🧪',
-        quality: 'Phàm Khí',
-        price: 50,
-        description: 'Thuốc cầm máu cơ bản, hồi phục 20% Khí Huyết.',
-        effect: { type: EFFECT_TYPES.HOI_MAU, value: 0.2 },
-        categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.TRI_THUONG }
         ]
     },
 
@@ -4510,7 +4497,7 @@ export const ITEMS = {
         description: 'Đan dược sơ cấp giúp tăng tốc tu luyện, được bán rộng rãi ở các phường thị tu tiên.',
         effect: { tuViSpeed: 0.05 },
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.TU_LUYEN }
         ]
     },
     'tru_co_dan': {
@@ -4523,7 +4510,7 @@ export const ITEMS = {
         description: 'Đan dược giúp tu sĩ ổn định căn cơ, cải thiện tỉ lệ đột phá khi đạt tới nút thắt cảnh giới.',
         effect: { breakthroughRate: 0.03, spirit: 30 },
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.DOT_PHA }
         ]
     },
     'hoi_linh_dan': {
@@ -4536,7 +4523,7 @@ export const ITEMS = {
         description: 'Đan dược phục hồi linh lực nhanh chóng, hương thơm dịu nhẹ, phổ biến trong giới tu sĩ.',
         effect: { mana: 500 },
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.HOI_PHUC }
         ]
     },
     'hoi_huyet_dan': {
@@ -4549,7 +4536,7 @@ export const ITEMS = {
         description: 'Đan dược phục hồi khí huyết, nguyên liệu từ long huyết thảo và linh chi, hiệu quả tức thì.',
         effect: { hp: 1000 },
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.HOI_PHUC }
         ]
     },
     'tuong_am_dan': {
@@ -5282,9 +5269,9 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
         ]
     },
-    'hat_giong_ngoc_de_hoa': {
-        id: 'hat_giong_ngoc_de_hoa',
-        name: 'Hạt Giống Ngọc Đề Hoa',
+    'linh_chung_ngoc_de_hoa': {
+        id: 'linh_chung_ngoc_de_hoa',
+        name: 'Linh Chủng Ngọc Đề Hoa',
         type: ITEM_TYPES.HAT_GIONG,
         icon: '🌱',
         quality: 'Pháp Khí',
@@ -5306,9 +5293,9 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
         ]
     },
-    'hat_giong_thanh_long_sam': {
-        id: 'hat_giong_thanh_long_sam',
-        name: 'Hạt Giống Thanh Long Sâm',
+    'linh_chung_thanh_long_sam': {
+        id: 'linh_chung_thanh_long_sam',
+        name: 'Linh Chủng Thanh Long Sâm',
         type: ITEM_TYPES.HAT_GIONG,
         icon: '🌱',
         quality: 'Linh Khí',
@@ -5330,9 +5317,9 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
         ]
     },
-    'hat_giong_tuyet_oanh_thao': {
-        id: 'hat_giong_tuyet_oanh_thao',
-        name: 'Hạt Giống Tuyết Oánh Thảo',
+    'linh_chung_tuyet_oanh_thao': {
+        id: 'linh_chung_tuyet_oanh_thao',
+        name: 'Linh Chủng Tuyết Oánh Thảo',
         type: ITEM_TYPES.HAT_GIONG,
         icon: '❄️',
         quality: 'Linh Khí',
@@ -5354,9 +5341,9 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DICH, subSubcategory: 'thien_dia' }
         ]
     },
-    'hat_giong_hoa_duong_chi': {
-        id: 'hat_giong_hoa_duong_chi',
-        name: 'Hạt Giống Hỏa Dương Chi',
+    'linh_chung_hoa_duong_chi': {
+        id: 'linh_chung_hoa_duong_chi',
+        name: 'Linh Chủng Hỏa Dương Chi',
         type: ITEM_TYPES.HAT_GIONG,
         icon: '🔥',
         quality: 'Linh Khí',
@@ -5378,9 +5365,9 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
         ]
     },
-    'hat_giong_cuu_tich_chi': {
-        id: 'hat_giong_cuu_tich_chi',
-        name: 'Hạt Giống Cửu Tịch Chi',
+    'linh_chung_cuu_tich_chi': {
+        id: 'linh_chung_cuu_tich_chi',
+        name: 'Linh Chủng Cửu Tịch Chi',
         type: ITEM_TYPES.HAT_GIONG,
         icon: '💀',
         quality: 'Linh Khí',
