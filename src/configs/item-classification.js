@@ -243,7 +243,7 @@ function _classifyItemRaw(item) {
     }
 
     // 2. Dị Hỏa
-    if (type === 'di_hoa' || type === 'flame' || id.startsWith('di_hoa')) {
+    if (type === 'di_hoa' || type === 'flame') {
         return { category: 'ky_vat_di_bao', subcategory: 'di_hoa' };
     }
 
@@ -253,7 +253,7 @@ function _classifyItemRaw(item) {
     }
 
     // 4. Luyện Khí (Bản Vẽ and Đài/Lò/Lư Luyện Khí)
-    if (effect.type === 'learn_smithing_recipe' || id.startsWith('ban_ve_') || type === 'smithing_recipe') {
+    if (type === 'smithing_recipe' || (effect && (effect.type === 'learn_smithing_recipe' || effect.type === 'learn_puppet_recipe'))) {
         return { category: 'luyen_khi', subcategory: 'ban_ve' };
     }
     if (type === 'smithing_tool') {
@@ -261,7 +261,7 @@ function _classifyItemRaw(item) {
     }
 
     // 7. Trận Pháp
-    if (type === 'formation' || effect.type === 'learn_formation' || id.startsWith('tran_do_')) {
+    if (type === 'formation' || (effect && effect.type === 'learn_formation')) {
         let sub = 'tu_linh_tran';
         if (name.includes('Tụ Linh') || id.includes('tu_linh')) {
             sub = 'tu_linh_tran';
@@ -282,7 +282,7 @@ function _classifyItemRaw(item) {
     }
 
     // 8. Khôi Lỗi
-    if (type === 'puppet' || type === 'corpse' || effect.type === 'learn_puppet_recipe' || effect.type === 'learn_corpse_recipe' || id.startsWith('bp_')) {
+    if (type === 'puppet' || type === 'corpse' || (effect && (effect.type === 'learn_puppet_recipe' || effect.type === 'learn_corpse_recipe'))) {
         let sub = 'linh_khoi';
         if (type === 'corpse' || effect.type === 'learn_corpse_recipe' || id.includes('thi_')) {
             sub = 'thi_khoi';
@@ -315,7 +315,7 @@ function _classifyItemRaw(item) {
     }
 
     // 6. Phù Lục (standard talismans)
-    if (type === 'talisman' || type === 'talisman_recipe' || id.startsWith('phu_ve_')) {
+    if (type === 'talisman' || type === 'talisman_recipe') {
         let sub = 'cong_kich';
         if (name.includes('Cầu Phù') || name.includes('Lôi Phù') || name.includes('Công Kích') || id.includes('hoa_cau') || id.includes('thien_loi')) {
             sub = 'cong_kich';
@@ -436,7 +436,7 @@ function _classifyItemRaw(item) {
             }
         } else if (isOre) {
             sub = 'linh_khoang';
-            if (type === 'spirit_stone' || name.includes('Tinh Thạch') || id.includes('tinh_thach') || id.includes('spirit_stone') || id.startsWith('ling_thach_')) {
+            if (type === 'spirit_stone' || name.includes('Tinh Thạch') || id.includes('tinh_thach') || id.includes('spirit_stone')) {
                 subSub = 'tinh_thach';
             } else if (name.includes('Thiết') || name.includes('Kim') || id.includes('thiet') || id.includes('kim')) {
                 subSub = 'kim_loai';
