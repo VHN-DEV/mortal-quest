@@ -87,7 +87,7 @@ export const SHOPS = {
                 { id: 'thien_dao_than_thach', stock: 1, minVip: 5 },
                 { id: 'thanh_lien_hoa_seed', stock: 1, minVip: 3 },
                 { id: 'ngoc_de_hoa', stock: 100 },
-                { id: 'thanh_long_tham', stock: 40 },
+                { id: 'thanh_long_sam', stock: 40 },
                 { id: 'tuyet_oanh_thao', stock: 30 },
                 { id: 'hoa_duong_chi', stock: 25 },
                 { id: 'cuu_tich_chi', stock: 15 },

@@ -52,7 +52,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 1.5,
         survivalFactor: 0.2,
         description: 'Rừng sương mù dày đặc, linh giác bị hạn chế, ẩn chứa nhiều loại linh quả sơ cấp.',
-        resources: ['linh_thao_10y', 'thanh_long_tham', 'tieu_dao_qua', 'hat_giong_thanh_phuc_thao', 'yeu_dan_so'],
+        resources: ['linh_thao_10y', 'thanh_long_sam', 'tieu_dao_qua', 'hat_giong_thanh_phuc_thao', 'yeu_dan_so'],
         eventProbs: { combat: 0.15, loot: 0.15, npc: 0.1, empty: 0.6 }
     },
     {

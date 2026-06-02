@@ -160,7 +160,7 @@ export const ALCHEMY_RECIPES = [
         resultId: 'hoi_linh_dan',
         level: 1,
         materials: [
-            { id: 'thanh_long_tham', quantity: 1 },
+            { id: 'thanh_long_sam', quantity: 1 },
             { id: 'linh_thao_thap', quantity: 1 }
         ],
         baseSuccessRate: 0.85,

@@ -4715,8 +4715,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
         ]
     },
-    'phi_thiên_vân_thi': {
-        id: 'phi_thiên_vân_thi',
+    'phi_thien_van_chi': {
+        id: 'phi_thien_van_chi',
         name: 'Phi Thiên Vân Chi',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '☁️',
@@ -4778,8 +4778,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
         ]
     },
-    'chu_ki_dan': {
-        id: 'chu_ki_dan',
+    'tru_co_dan': {
+        id: 'tru_co_dan',
         name: 'Trú Cơ Đan',
         type: ITEM_TYPES.DAN_DUOC,
         icon: '🔴',
@@ -5501,14 +5501,14 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.LUYEN_DAN.KEY, subcategory: ITEM_CATEGORIES_ENUM.LUYEN_DAN.SUBCATEGORIES.DAN_LU }
         ]
     },
-    'o_minh_si': {
-        id: 'o_minh_si',
+    'o_minh_ty': {
+        id: 'o_minh_ty',
         name: 'Ô Minh Ty',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🕸️',
         quality: 'Linh Khí',
         price: 1500,
-        image: 'items/o_minh_si.webp',
+        image: 'items/o_minh_ty.webp',
         description: 'Sợi tơ đen nhánh dẻo dai sinh ra từ tằm ô minh sống nơi u tối, là vật liệu thượng hạng để luyện chế khôi lỗi cao cấp hoặc dệt hộ giáp.',
         categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
@@ -5577,8 +5577,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: 'duoi_100_nam' }
         ]
     },
-    'thanh_long_tham': {
-        id: 'thanh_long_tham',
+    'thanh_long_sam': {
+        id: 'thanh_long_sam',
         name: 'Thanh Long Sâm',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🐉',

@@ -60,7 +60,7 @@ export const SEEDS = [
     {
         id: 'hat_giong_thanh_long_sam',
         name: 'Linh Chủng Thanh Long Sâm',
-        herbId: 'thanh_long_tham',
+        herbId: 'thanh_long_sam',
         grade: 'LINH',
         baseGrowthTime: 1500, // 25 min
         attributeReq: 'MOC',
