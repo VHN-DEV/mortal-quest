@@ -152,6 +152,14 @@ export const ITEM_CATEGORIES = {
             'linh_khoi': 'Linh Khôi'
         }
     },
+    'luyen_dan': {
+        name: 'Luyện Đan',
+        icon: '💊',
+        subcategories: {
+            'dan_phuong': 'Đan Phương',
+            'dan_lu': 'Đan Lư'
+        }
+    },
     'luyen_khi': {
         name: 'Luyện Khí',
         icon: '⚒️',
@@ -216,10 +224,10 @@ function _classifyItemRaw(item) {
 
     // Check if 'shopCategory' (single override) is defined:
     if (item.shopCategory) {
-        const single = { 
-            category: item.shopCategory, 
-            subcategory: item.shopSubcategory || 'default', 
-            subSubcategory: item.shopSubSubcategory || 'default' 
+        const single = {
+            category: item.shopCategory,
+            subcategory: item.shopSubcategory || 'default',
+            subSubcategory: item.shopSubSubcategory || 'default'
         };
         return {
             ...single,

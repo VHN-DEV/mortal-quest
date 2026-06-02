@@ -874,6 +874,81 @@ export const SECRET_TECHNIQUES = {
             4: { talismanExpBonus: 2.0, talismanSuccess: 1.3, talismanPower: 1.5, twinWrite: 0.2 }
         }
     },
+    'co_quan_linh_ky': {
+        id: 'co_quan_linh_ky',
+        name: 'Cơ Quan Linh Kỹ',
+        type: 'profession',
+        quality: 'Huyền Giai',
+        icon: '📜',
+        description: 'Tăng cường hiểu biết về khôi lỗi thuật. Mỗi tầng giúp nâng cao giáp và oai lực công kích của khôi lỗi.',
+        maxStage: 9,
+        masteryBonuses: {
+            1: { puppetExpBonus: 1.0 },
+            2: { puppetExpBonus: 1.2, puppetSuccess: 1.05 },
+            3: { puppetExpBonus: 1.5, puppetSuccess: 1.15, puppetDuraBonus: 20 },
+            4: { puppetExpBonus: 2.0, puppetSuccess: 1.3, puppetDuraBonus: 50, perfectPuppetRefine: 0.1 }
+        }
+    },
+    'cuu_u_luyen_thi_thuat': {
+        id: 'cuu_u_luyen_thi_thuat',
+        name: 'Cửu U Luyện Thi Thuật',
+        type: 'profession',
+        quality: 'Huyền Giai',
+        icon: '📜',
+        description: 'Tăng cường hiểu biết về luyện thi thuật. Mỗi tầng giúp tăng thực lực thi binh và tỷ lệ luyện hóa thi khôi hoàn mỹ.',
+        maxStage: 9,
+        masteryBonuses: {
+            1: { corpseExpBonus: 1.0 },
+            2: { corpseExpBonus: 1.2, corpseSuccess: 1.05 },
+            3: { corpseExpBonus: 1.5, corpseSuccess: 1.15, corpseDuraBonus: 20 },
+            4: { corpseExpBonus: 2.0, corpseSuccess: 1.3, corpseDuraBonus: 50, perfectCorpseRefine: 0.1 }
+        }
+    },
+    'tran_dao_thien_thu': {
+        id: 'tran_dao_thien_thu',
+        name: 'Trận Đạo Thiên Thư',
+        type: 'profession',
+        quality: 'Huyền Giai',
+        icon: '📜',
+        description: 'Tăng cường hiểu biết về trận pháp. Mỗi tầng giúp tăng uy lực đại trận và giảm tiêu hao linh thạch trì trận.',
+        maxStage: 9,
+        masteryBonuses: {
+            1: { formationExpBonus: 1.0 },
+            2: { formationExpBonus: 1.2, formationSuccess: 1.05 },
+            3: { formationExpBonus: 1.5, formationSuccess: 1.15, formationPower: 1.2 },
+            4: { formationExpBonus: 2.0, formationSuccess: 1.3, formationPower: 1.5, twinFormation: 0.2 }
+        }
+    },
+    'van_thu_ngu_phap': {
+        id: 'van_thu_ngu_phap',
+        name: 'Vạn Thú Ngự Pháp',
+        type: 'profession',
+        quality: 'Huyền Giai',
+        icon: '📜',
+        description: 'Tăng cường hiểu biết về ngự thú thuật. Mỗi tầng giúp tăng lực chiến yêu thú và tỷ lệ thuần phục thần thú.',
+        maxStage: 9,
+        masteryBonuses: {
+            1: { beastExpBonus: 1.0 },
+            2: { beastExpBonus: 1.2, beastSuccess: 1.05 },
+            3: { beastExpBonus: 1.5, beastSuccess: 1.15, beastPower: 1.2 },
+            4: { beastExpBonus: 2.0, beastSuccess: 1.3, beastPower: 1.5, beastEvolutionChance: 0.1 }
+        }
+    },
+    'thien_trung_bi_luc': {
+        id: 'thien_trung_bi_luc',
+        name: 'Thiên Trùng Bí Lục',
+        type: 'profession',
+        quality: 'Huyền Giai',
+        icon: '📜',
+        description: 'Tăng cường hiểu biết về ngự trùng thuật. Mỗi tầng giúp tăng độc lực và số lượng trùng đàn khống chế.',
+        maxStage: 9,
+        masteryBonuses: {
+            1: { insectExpBonus: 1.0 },
+            2: { insectExpBonus: 1.2, insectSuccess: 1.05 },
+            3: { insectExpBonus: 1.5, insectSuccess: 1.15, insectPower: 1.2 },
+            4: { insectExpBonus: 2.0, insectSuccess: 1.3, insectPower: 1.5, twinInsectChance: 0.2 }
+        }
+    },
     'thanh_nguyen_kiem_mang': {
         id: 'thanh_nguyen_kiem_mang',
         name: 'Thanh Nguyên Kiếm Mang',
@@ -1218,6 +1293,11 @@ export const SKILL_MAP = {
     'dan_dao_chan_giai': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
     'luyen_khi_tong_cuong': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
     'thai_thuong_phu_kinh': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'co_quan_linh_ky': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'cuu_u_luyen_thi_thuat': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'tran_dao_thien_thu': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'van_thu_ngu_phap': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'thien_trung_bi_luc': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
 
     // === THẦN THÔNG ===
     'thanh_nguyen_kiem_mang': { category: 'Thần Thông', subCategory: 'Bản Mệnh' },
@@ -1255,8 +1335,11 @@ export const SKILL_MAP = {
 };
 
 export const getSecretTechniqueById = (id) => {
-    const tech = SECRET_TECHNIQUES[id];
-    if (!tech) return null;
+    const rawTech = SECRET_TECHNIQUES[id];
+    if (!rawTech) return null;
+    
+    // Return a shallow copy to prevent mutating the shared global constant directly
+    const tech = { ...rawTech };
     
     // Assign category and subCategory based on SKILL_MAP or dynamic fallback
     if (SKILL_MAP[id]) {
@@ -1271,8 +1354,13 @@ export const getSecretTechniqueById = (id) => {
             'thien_tinh_tong_bi_tich', 'cu_kiem_mon_bi_tich', 'hoa_dao_o_bi_tich'
         ];
 
-        if (id.startsWith('bp_') || id.includes('luyen_dan') || id.includes('luyen_khi') || id.includes('phu_luc') || 
-            id === 'dan_dao_chan_giai' || id === 'luyen_khi_tong_cuong' || id === 'thai_thuong_phu_kinh') {
+        const supportManuals = [
+            'dan_dao_chan_giai', 'luyen_khi_tong_cuong', 'thai_thuong_phu_kinh',
+            'co_quan_linh_ky', 'cuu_u_luyen_thi_thuat', 'tran_dao_thien_thu',
+            'van_thu_ngu_phap', 'thien_trung_bi_luc'
+        ];
+
+        if (supportManuals.includes(id) || id.includes('luyen_dan') || id.includes('luyen_khi') || id.includes('phu_luc')) {
             tech.category = 'Pháp Thuật';
             tech.subCategory = 'Phụ Trợ';
         } else if (id.includes('thuat') || id === 'hoa_cau_thuat' || id === 'thuy_tien_thuat' || id === 'phong_nhan_thuat') {

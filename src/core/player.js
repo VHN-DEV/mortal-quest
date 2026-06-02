@@ -2837,7 +2837,12 @@ export class Player {
     }
 
     addBeastExp(amount) {
-        this.beastExp += amount;
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'van_thu_ngu_phap');
+        const masteryLevel = secret?.masteryLevel || 1;
+        const secretData = getSecretTechniqueById('van_thu_ngu_phap');
+        const bonus = secretData?.masteryBonuses?.[masteryLevel]?.beastExpBonus || 1.0;
+
+        this.beastExp += amount * bonus;
         const nextLevelExp = this.beastLevel * 100 * Math.pow(1.5, this.beastLevel - 1);
         if (this.beastExp >= nextLevelExp) {
             this.beastExp -= nextLevelExp;
@@ -2848,7 +2853,12 @@ export class Player {
     }
 
     addInsectExp(amount) {
-        this.insectExp += amount;
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'thien_trung_bi_luc');
+        const masteryLevel = secret?.masteryLevel || 1;
+        const secretData = getSecretTechniqueById('thien_trung_bi_luc');
+        const bonus = secretData?.masteryBonuses?.[masteryLevel]?.insectExpBonus || 1.0;
+
+        this.insectExp += amount * bonus;
         const nextLevelExp = this.insectLevel * 100 * Math.pow(1.5, this.insectLevel - 1);
         if (this.insectExp >= nextLevelExp) {
             this.insectExp -= nextLevelExp;
@@ -2859,7 +2869,12 @@ export class Player {
     }
 
     addCorpseExp(amount) {
-        this.corpseExp += amount;
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'cuu_u_luyen_thi_thuat');
+        const masteryLevel = secret?.masteryLevel || 1;
+        const secretData = getSecretTechniqueById('cuu_u_luyen_thi_thuat');
+        const bonus = secretData?.masteryBonuses?.[masteryLevel]?.corpseExpBonus || 1.0;
+
+        this.corpseExp += amount * bonus;
         const nextLevelExp = this.corpseLevel * 100 * Math.pow(1.5, this.corpseLevel - 1);
         if (this.corpseExp >= nextLevelExp) {
             this.corpseExp -= nextLevelExp;
@@ -2870,7 +2885,12 @@ export class Player {
     }
 
     addFormationExp(amount) {
-        this.formationExp += amount;
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'tran_dao_thien_thu');
+        const masteryLevel = secret?.masteryLevel || 1;
+        const secretData = getSecretTechniqueById('tran_dao_thien_thu');
+        const bonus = secretData?.masteryBonuses?.[masteryLevel]?.formationExpBonus || 1.0;
+
+        this.formationExp += amount * bonus;
         const nextLevelExp = this.formationLevel * 100 * Math.pow(1.5, this.formationLevel - 1);
         if (this.formationExp >= nextLevelExp) {
             this.formationExp -= nextLevelExp;
@@ -2881,7 +2901,12 @@ export class Player {
     }
 
     addPuppetExp(amount) {
-        this.puppetExp += amount;
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'co_quan_linh_ky');
+        const masteryLevel = secret?.masteryLevel || 1;
+        const secretData = getSecretTechniqueById('co_quan_linh_ky');
+        const bonus = secretData?.masteryBonuses?.[masteryLevel]?.puppetExpBonus || 1.0;
+
+        this.puppetExp += amount * bonus;
         const nextLevelExp = this.puppetLevel * 100 * Math.pow(1.5, this.puppetLevel - 1);
         if (this.puppetExp >= nextLevelExp) {
             this.puppetExp -= nextLevelExp;
