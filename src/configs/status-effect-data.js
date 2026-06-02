@@ -1,18 +1,4 @@
-/**
- * Cấu hình Hệ thống Trạng thái (Status Effects / Buff & Debuff)
- * Phù hợp với thế giới quan "Phàm Nhân Tu Tiên Truyện"
- */
-
-export const STATUS_EFFECT_CATEGORIES = {
-    BUFF: { id: 'BUFF', name: 'Tăng Cường', color: '#10B981' },
-    DEBUFF: { id: 'DEBUFF', name: 'Suy Yếu', color: '#EF4444' },
-    BODY: { id: 'BODY', name: 'Thể Chất', color: '#F59E0B' },
-    SOUL: { id: 'SOUL', name: 'Thần Hồn', color: '#8B5CF6' },
-    QI: { id: 'QI', name: 'Nguyên Khí', color: '#EC4899' },
-    ELEMENTAL: { id: 'ELEMENTAL', name: 'Ngũ Hành', color: '#3B82F6' },
-    CONTROL: { id: 'CONTROL', name: 'Khống Chế', color: '#6B7280' },
-    TRIBULATION: { id: 'TRIBULATION', name: 'Thiên Kiếp', color: '#EF4444' }
-};
+import { STATUS_EFFECT_CATEGORIES } from './game-enums.js';
 
 export const STATUS_EFFECT_TEMPLATES = {
     // --- I. BUFF (TĂNG CƯỜNG) ---

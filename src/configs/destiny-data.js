@@ -1,18 +1,12 @@
+import { ROOT_QUALITIES } from './game-enums.js';
+export { ROOT_QUALITIES };
 import { ELEMENT_TYPES } from './item-classification.js';
 export const ROOT_TYPES = {
     BASIC: [ELEMENT_TYPES.KIM, ELEMENT_TYPES.MOC, ELEMENT_TYPES.THUY, ELEMENT_TYPES.HOA, ELEMENT_TYPES.THO],
     MUTATED: [ELEMENT_TYPES.LOI, ELEMENT_TYPES.BANG, ELEMENT_TYPES.PHONG, ELEMENT_TYPES.DOC, ELEMENT_TYPES.HUYET, ELEMENT_TYPES.YIN, ELEMENT_TYPES.DUONG]
 };
 
-export const ROOT_QUALITIES = {
-    'Tạp': { multiplier: 0.5, color: '#9ca3af' },
-    'Hạ phẩm': { multiplier: 0.8, color: '#4ade80' },
-    'Trung phẩm': { multiplier: 1.2, color: '#3b82f6' },
-    'Thượng phẩm': { multiplier: 1.8, color: '#a855f7' },
-    'Địa': { multiplier: 2.5, color: '#f59e0b' },
-    'Thiên': { multiplier: 4.0, color: '#ec4899' },
-    'Tiên': { multiplier: 7.0, color: '#ef4444' }
-};
+
 
 export const PHYSIQUES = [
     { id: 'dao_the', name: 'Tiên Thiên Đạo Thể', desc: 'Tăng mạnh tốc độ hấp thụ linh khí.', bonus: { tvps: 2.0 } },

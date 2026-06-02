@@ -1,17 +1,15 @@
-/**
- * Hệ thống phẩm cấp và phẩm chất của Pháp Bảo
- */
+import { PHAP_BAO_QUALITIES } from './game-enums.js';
 
 export const ARTIFACT_TIERS = {
-    PHAM_KHI: { id: 'Phàm Khí', name: 'Phàm Khí', requirement: 'Phàm Nhân', color: '#ffffff' },
-    PHAP_KHI: { id: 'Pháp Khí', name: 'Pháp Khí', requirement: 'Luyện Khí', color: '#10b981' },
-    LINH_KHI: { id: 'Linh Khí', name: 'Linh Khí', requirement: 'Trúc Cơ', color: '#3b82f6' },
-    PHAP_BAO: { id: 'Pháp Bảo', name: 'Pháp Bảo', requirement: 'Kết Đan', color: '#8b5cf6' },
-    CO_BAO: { id: 'Cổ Bảo', name: 'Cổ Bảo', requirement: 'Nguyên Anh', color: '#f59e0b' },
-    LINH_BAO: { id: 'Linh Bảo', name: 'Linh Bảo', requirement: 'Hóa Thần', color: '#ef4444' },
-    THONG_THIEN: { id: 'Thông Thiên Linh Bảo', name: 'Thông Thiên Linh Bảo', requirement: 'Luyện Hư', color: '#d4af37' },
-    TIEN_KHI: { id: 'Tiên Khí', name: 'Tiên Khí', requirement: 'Đại Thừa', color: 'rainbow' },
-    DANH_KHI: { id: 'Danh Khí', name: 'Danh Khí', requirement: 'Chân Tiên', color: '#f87171' }
+    PHAM_KHI: { ...PHAP_BAO_QUALITIES.PHAM_KHI, requirement: 'Phàm Nhân' },
+    PHAP_KHI: { ...PHAP_BAO_QUALITIES.PHAP_KHI, requirement: 'Luyện Khí' },
+    LINH_KHI: { ...PHAP_BAO_QUALITIES.LINH_KHI, requirement: 'Trúc Cơ' },
+    PHAP_BAO: { ...PHAP_BAO_QUALITIES.PHAP_BAO, requirement: 'Kết Đan' },
+    CO_BAO: { ...PHAP_BAO_QUALITIES.CO_BAO, requirement: 'Nguyên Anh' },
+    LINH_BAO: { ...PHAP_BAO_QUALITIES.LINH_BAO, requirement: 'Hóa Thần' },
+    THONG_THIEN: { ...PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO, requirement: 'Luyện Hư' },
+    TIEN_KHI: { ...PHAP_BAO_QUALITIES.TIEN_KHI, requirement: 'Đại Thừa' },
+    DANH_KHI: { ...PHAP_BAO_QUALITIES.DANH_KHI, requirement: 'Chân Tiên' }
 };
 
 export const ARTIFACT_QUALITIES = {

@@ -1,3 +1,7 @@
+import { MORALITY_SCALES as MORALITY_SCALES_OBJ, KARMA_TYPES } from './game-enums.js';
+export { KARMA_TYPES };
+export const MORALITY_SCALES = Object.values(MORALITY_SCALES_OBJ);
+
 /**
  * DỮ LIỆU HỆ THỐNG DANH TIẾNG - NHÂN QUẢ - THIỆN ÁC
  */
@@ -11,24 +15,9 @@ export const REPUTATION_TIERS = [
     { id: 'cong_chu', name: 'Thiên Hạ Cộng Chủ', min: 1000000, max: Infinity, bonus: { trading: 0.8, sectInvite: 1.0, encounterLuck: 0.5 } }
 ];
 
-export const MORALITY_SCALES = [
-    { id: 'dai_thien', name: 'Đại Thiện', min: 800, max: 1000, color: '#34d399', description: 'Tâm hoài chúng sinh, được thiên đạo che chở.' },
-    { id: 'thien', name: 'Thiện', min: 300, max: 800, color: '#10b981', description: 'Hành hiệp trượng nghĩa, là tấm gương sáng.' },
-    { id: 'trung_lap', name: 'Trung Lập', min: -300, max: 300, color: '#94a3b8', description: 'Tâm không vướng bận, tùy tâm sở dục.' },
-    { id: 'ac', name: 'Ác', min: -800, max: -300, color: '#f43f5e', description: 'Sát nghiệp quấn thân, người người căm phẫn.' },
-    { id: 'dai_ac', name: 'Đại Ác', min: -1000, max: -800, color: '#e11d48', description: 'Tội ác tày trời, thiên địa không dung.' },
-    { id: 'ma_dau', name: 'Ma Đầu', min: -Infinity, max: -1000, color: '#9f1239', description: 'Tuyệt diệt nhân tính, hóa thân thành ma.' }
-];
 
-export const KARMA_TYPES = {
-    THIEN_DUYEN: { name: 'Thiện Duyên', color: '#10b981' },
-    AC_DUYEN: { name: 'Ác Duyên', color: '#f43f5e' },
-    SU_DO: { name: 'Sư Đồ Nhân Quả', color: '#6366f1' },
-    DAO_LU: { name: 'Đạo Lữ Nhân Quả', color: '#fbcfe8' },
-    HUYET_CUU: { name: 'Huyết Cừu Nhân Quả', color: '#be123c' },
-    TRUYEN_THUA: { name: 'Truyền Thừa Nhân Quả', color: '#fbbf24' },
-    THIEN_DAO: { name: 'Thiên Đạo Nhân Quả', color: '#0ea5e9' }
-};
+
+
 
 export const TITLES = [
     // Chính Đạo

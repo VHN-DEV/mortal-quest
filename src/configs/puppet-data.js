@@ -1,23 +1,6 @@
-export const PUPPET_GRADES = {
-    'PHAM': { id: 'PHAM', name: 'Phàm Cấp', multiplier: 1 },
-    'LINH': { id: 'LINH', name: 'Linh Cấp', multiplier: 2 },
-    'HUYEN': { id: 'HUYEN', name: 'Huyền Cấp', multiplier: 4 },
-    'DIA': { id: 'DIA', name: 'Địa Cấp', multiplier: 8 },
-    'THIEN': { id: 'THIEN', name: 'Thiên Cấp', multiplier: 15 },
-    'THANH': { id: 'THANH', name: 'Thánh Cấp', multiplier: 30 },
-    'TIEN': { id: 'TIEN', name: 'Tiên Cấp', multiplier: 100 }
-};
+import { PUPPET_GRADES, PUPPET_TYPES } from './game-enums.js';
 
-export const PUPPET_TYPES = {
-    'COMBAT': { id: 'COMBAT', name: 'Chiến Đấu', icon: '⚔️' },
-    'GUARD': { id: 'GUARD', name: 'Hộ Vệ', icon: '🛡️' },
-    'ALCHEMY': { id: 'ALCHEMY', name: 'Luyện Đan', icon: '🧪' },
-    'MINING': { id: 'MINING', name: 'Khai Khoáng', icon: '⛏️' },
-    'SCOUT': { id: 'SCOUT', name: 'Trinh Sát', icon: '👁️' },
-    'SMITHING': { id: 'SMITHING', name: 'Luyện Khí', icon: '⚒️' },
-    'FLIGHT': { id: 'FLIGHT', name: 'Phi Hành', icon: '🦅' },
-    'WAR': { id: 'WAR', name: 'Chiến Tranh', icon: '🏯' }
-};
+export { PUPPET_GRADES, PUPPET_TYPES };
 
 export const PUPPET_CORE_TYPES = {
     'SPIRIT_STONE': { id: 'SPIRIT_STONE', name: 'Linh Thạch Lõi', efficiency: 1.0 },

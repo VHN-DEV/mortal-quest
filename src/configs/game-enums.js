@@ -1,7 +1,8 @@
-const createQuality = (id, name, color) => ({
+const createQuality = (id, name, color, extra = {}) => ({
     id,
     name,
     color,
+    ...extra,
     [Symbol.toPrimitive](hint) {
         return this.name;
     },
@@ -151,4 +152,90 @@ export const LINH_THE_RARITIES = {
     TIEN: createQuality('tien', 'Tiên', '#00FFFF'),
     THIEN: createQuality('thien', 'Thiên', '#FF9800'),
     DIA: createQuality('dia', 'Địa', '#9C27B0')
+};
+
+export const STATUS_EFFECT_CATEGORIES = {
+    BUFF: createQuality('BUFF', 'Tăng Cường', '#10B981'),
+    DEBUFF: createQuality('DEBUFF', 'Suy Yếu', '#EF4444'),
+    BODY: createQuality('BODY', 'Thể Chất', '#F59E0B'),
+    SOUL: createQuality('SOUL', 'Thần Hồn', '#8B5CF6'),
+    QI: createQuality('QI', 'Nguyên Khí', '#EC4899'),
+    ELEMENTAL: createQuality('ELEMENTAL', 'Ngũ Hành', '#3B82F6'),
+    CONTROL: createQuality('CONTROL', 'Khống Chế', '#6B7280'),
+    TRIBULATION: createQuality('TRIBULATION', 'Thiên Kiếp', '#EF4444')
+};
+
+export const SPIRIT_STONE_GRADES = {
+    HA: createQuality('HA', 'Hạ Phẩm Linh Thạch', '#4fd1c5', { shortName: 'Hạ', value: 1, multiplier: 1, nextGrade: 'TRUNG', cssClass: 'text-qi-blue' }),
+    TRUNG: createQuality('TRUNG', 'Trung Phẩm Linh Thạch', '#a855f7', { shortName: 'Trung', value: 100, multiplier: 100, nextGrade: 'THUONG', cssClass: 'text-qi-purple' }),
+    THUONG: createQuality('THUONG', 'Thượng Phẩm Linh Thạch', '#f6ad55', { shortName: 'Thượng', value: 10000, multiplier: 10000, nextGrade: 'CUC', cssClass: 'text-cultivation-gold' }),
+    CUC: createQuality('CUC', 'Cực Phẩm Linh Thạch', '#f472b6', { shortName: 'Cực', value: 1000000, multiplier: 1000000, nextGrade: 'TIEN', cssClass: 'text-pink-400' }),
+    TIEN: createQuality('TIEN', 'Tiên Tinh', '#10b981', { shortName: 'Tiên', value: 100000000, multiplier: 100000000, nextGrade: 'HON_DON', cssClass: 'text-emerald-400' }),
+    HON_DON: createQuality('HON_DON', 'Hỗn Độn Tinh', '#6366f1', { shortName: 'Hỗn', value: 10000000000, multiplier: 10000000000, nextGrade: 'HONG_MONG', cssClass: 'text-indigo-400' }),
+    HONG_MONG: createQuality('HONG_MONG', 'Hồng Mông Linh Tinh', '#a855f7', { shortName: 'Hồng', value: 1000000000000, multiplier: 1000000000000, nextGrade: null, cssClass: 'text-purple-500' })
+};
+
+export const SPIRIT_STONE_QUALITIES = {
+    TAP: createQuality('TAP', 'Tạp Chất', '#9ca3af', { multiplier: 0.5 }),
+    BINH_THUONG: createQuality('BINH_THUONG', 'Bình Thường', '#ffffff', { multiplier: 1.0 }),
+    TINH_THUAN: createQuality('TINH_THUAN', 'Tinh Thuần', '#60a5fa', { multiplier: 2.0 }),
+    HOAN_MY: createQuality('HOAN_MY', 'Hoàn Mỹ', '#fbbf24', { multiplier: 5.0 })
+};
+
+export const PUPPET_GRADES = {
+    PHAM: createQuality('PHAM', 'Phàm Cấp', '#9ca3af', { multiplier: 1 }),
+    LINH: createQuality('LINH', 'Linh Cấp', '#2196F3', { multiplier: 2 }),
+    HUYEN: createQuality('HUYEN', 'Huyền Cấp', '#9C27B0', { multiplier: 4 }),
+    DIA: createQuality('DIA', 'Địa Cấp', '#FF9800', { multiplier: 8 }),
+    THIEN: createQuality('THIEN', 'Thiên Cấp', '#F44336', { multiplier: 15 }),
+    THANH: createQuality('THANH', 'Thánh Cấp', '#FF007F', { multiplier: 30 }),
+    TIEN: createQuality('TIEN', 'Tiên Cấp', '#00FFFF', { multiplier: 100 })
+};
+
+export const PUPPET_TYPES = {
+    COMBAT: createQuality('COMBAT', 'Chiến Đấu', '#F44336', { icon: '⚔️' }),
+    GUARD: createQuality('GUARD', 'Hộ Vệ', '#2196F3', { icon: '🛡️' }),
+    ALCHEMY: createQuality('ALCHEMY', 'Luyện Đan', '#4CAF50', { icon: '🧪' }),
+    MINING: createQuality('MINING', 'Khai Khoáng', '#FF9800', { icon: '⛏️' }),
+    SCOUT: createQuality('SCOUT', 'Trinh Sát', '#9C27B0', { icon: '👁️' }),
+    SMITHING: createQuality('SMITHING', 'Luyện Khí', '#795548', { icon: '⚒️' }),
+    FLIGHT: createQuality('FLIGHT', 'Phi Hành', '#00FFFF', { icon: '🦅' }),
+    WAR: createQuality('WAR', 'Chiến Tranh', '#E91E63', { icon: '🏯' })
+};
+
+export const BEAST_TYPES = {
+    LINH_TRUNG: createQuality('LINH_TRUNG', 'Linh Trùng', '#4CAF50'),
+    KY_TRUNG: createQuality('KY_TRUNG', 'Kỳ Trùng', '#9C27B0'),
+    LINH_THU: createQuality('LINH_THU', 'Linh Thú', '#2196F3'),
+    DI_THU: createQuality('DI_THU', 'Dị Thú', '#FF9800'),
+    THAN_THU: createQuality('THAN_THU', 'Thần Thú', '#F44336')
+};
+
+export const ROOT_QUALITIES = {
+    'Tạp': createQuality('tap', 'Tạp', '#9ca3af', { multiplier: 0.5 }),
+    'Hạ phẩm': createQuality('ha_pham', 'Hạ phẩm', '#4ade80', { multiplier: 0.8 }),
+    'Trung phẩm': createQuality('trung_pham', 'Trung phẩm', '#3b82f6', { multiplier: 1.2 }),
+    'Thượng phẩm': createQuality('thuong_pham', 'Thượng phẩm', '#a855f7', { multiplier: 1.8 }),
+    'Địa': createQuality('dia', 'Địa', '#f59e0b', { multiplier: 2.5 }),
+    'Thiên': createQuality('thien', 'Thiên', '#ec4899', { multiplier: 4.0 }),
+    'Tiên': createQuality('tien', 'Tiên', '#ef4444', { multiplier: 7.0 })
+};
+
+export const MORALITY_SCALES = {
+    DAI_THIEN: createQuality('dai_thien', 'Đại Thiện', '#34d399', { min: 800, max: 1000, description: 'Tâm hoài chúng sinh, được thiên đạo che chở.' }),
+    THIEN: createQuality('thien', 'Thiên', '#10b981', { min: 300, max: 800, description: 'Hành hiệp trượng nghĩa, là tấm gương sáng.' }),
+    TRUNG_LAP: createQuality('trung_lap', 'Trung Lập', '#94a3b8', { min: -300, max: 300, description: 'Tâm không vướng bận, tùy tâm sở dục.' }),
+    AC: createQuality('ac', 'Ác', '#f43f5e', { min: -800, max: -300, description: 'Sát nghiệp quấn thân, người người căm phẫn.' }),
+    DAI_AC: createQuality('dai_ac', 'Đại Ác', '#e11d48', { min: -1000, max: -800, description: 'Tội ác tày trời, thiên địa không dung.' }),
+    MA_DAU: createQuality('ma_dau', 'Ma Đầu', '#9f1239', { min: -Infinity, max: -1000, description: 'Tuyệt diệt nhân tính, hóa thân thành ma.' })
+};
+
+export const KARMA_TYPES = {
+    THIEN_DUYEN: createQuality('THIEN_DUYEN', 'Thiện Duyên', '#10b981'),
+    AC_DUYEN: createQuality('AC_DUYEN', 'Ác Duyên', '#f43f5e'),
+    SU_DO: createQuality('SU_DO', 'Sư Đồ Nhân Quả', '#6366f1'),
+    DAO_LU: createQuality('DAO_LU', 'Đạo Lữ Nhân Quả', '#fbcfe8'),
+    HUYET_CUU: createQuality('HUYET_CUU', 'Huyết Cừu Nhân Quả', '#be123c'),
+    TRUYEN_THUA: createQuality('TRUYEN_THUA', 'Truyền Thừa Nhân Quả', '#fbbf24'),
+    THIEN_DAO: createQuality('THIEN_DAO', 'Thiên Đạo Nhân Quả', '#0ea5e9')
 };

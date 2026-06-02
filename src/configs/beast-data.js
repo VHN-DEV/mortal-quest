@@ -1,13 +1,7 @@
 import { LINH_THU_QUALITIES } from './item-classification.js';
-import { BEAST_BLOODLINES } from './game-enums.js';
+import { BEAST_BLOODLINES, BEAST_TYPES } from './game-enums.js';
 
-export const BEAST_TYPES = {
-    LINH_TRUNG: 'Linh Trùng',
-    KY_TRUNG: 'Kỳ Trùng',
-    LINH_THU: 'Linh Thú',
-    DI_THU: 'Dị Thú',
-    THAN_THU: 'Thần Thú'
-};
+export { BEAST_TYPES };
 
 export const BLOODLINES = {
     PHAM: { name: LINH_THU_QUALITIES.PHAM_HUYET, color: '#9ca3af', multiplier: 1.0 },
