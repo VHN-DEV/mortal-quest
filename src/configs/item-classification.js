@@ -177,6 +177,8 @@ export const ITEM_CATEGORIES = {
             'lenh_bai': 'Lệnh Bài',
             'chia_khoa': 'Chìa Khóa Bí Cảnh',
             'di_hoa': 'Dị Hỏa',
+            'linh_thu_dai': 'Linh Thú Đại',
+            'tui_tru_vat': 'Túi Trữ Vật',
             'default': 'Kỳ Vật Khác'
         }
     },
