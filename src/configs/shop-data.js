@@ -18,8 +18,8 @@ export const SHOPS = {
                 { id: 'tieu_dao_qua', stock: 8 }
             ],
             'luyen_dan': [
-                { id: 'pham_lu_item', stock: 10 },
-                { id: 'huyen_lu_item', stock: 1, minVip: 1 },
+                { id: 'pham_lu', stock: 10 },
+                { id: 'huyen_lu', stock: 1, minVip: 1 },
                 { id: 'dia_lu_item', stock: 1, minVip: 3 },
                 { id: 'thien_lu_item', stock: 1, minVip: 5 },
                 { id: 'dan_phuong_hoi_linh_dan', stock: 5 },
@@ -29,7 +29,7 @@ export const SHOPS = {
                 { id: 'dan_phuong_bo_nguyen_dan', stock: 3 }
             ],
             'phap_bao': [
-                { id: 'linh_hoa_item', stock: 10 },
+                { id: 'linh_hoa', stock: 10 },
                 { id: 'phi_kiem_go', stock: 5 },
                 { id: 'ao_bo_so_cap', stock: 5 },
                 { id: 'ngu_phong_phi_chu', stock: 2 },
@@ -85,7 +85,7 @@ export const SHOPS = {
                 { id: 'yeu_dan_so', stock: 20 },
                 { id: 'hoa_tinh_thach', stock: 15 },
                 { id: 'thien_dao_than_thach', stock: 1, minVip: 5 },
-                { id: 'thanh_lien_hoa_seed', stock: 1, minVip: 3 },
+                { id: 'thanh_lien_dia_tam_hoa_seed', stock: 1, minVip: 3 },
                 { id: 'ngoc_de_hoa', stock: 100 },
                 { id: 'thanh_long_sam', stock: 40 },
                 { id: 'tuyet_oanh_thao', stock: 30 },
@@ -105,9 +105,7 @@ export const SHOPS = {
                 { id: 'huyet_don_thuat', stock: 1, minVip: 1 },
                 { id: 'cuu_chuyen_kim_than', stock: 1, minVip: 2 },
                 { id: 'u_minh_huy_ngan', stock: 1, minVip: 2 },
-                { id: 'phong_loi_quyet', stock: 1, minVip: 3 },
-                { id: 'thai_at_kiem_quyet_book', stock: 1, minVip: 5 },
-                { id: 'cuu_u_ma_dien_book', stock: 1, minVip: 5 }
+                { id: 'phong_loi_quyet', stock: 1, minVip: 3 }
             ],
             'tran_phap': [
                 { id: 'tran_do_tu_linh', stock: 5 }
@@ -204,7 +202,7 @@ export const SHOPS = {
                 { id: 'hoa_nguyen_dan', stock: 2, minVip: 1 }
             ],
             'luyen_dan': [
-                { id: 'huyen_lu_item', stock: 5 }
+                { id: 'huyen_lu', stock: 5 }
             ],
             'phap_bao': [
                 { id: 'phi_kiem_thanh_tuyen', stock: 10 },

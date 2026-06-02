@@ -2836,8 +2836,8 @@ export const ITEMS = {
     },
 
     // --- ALCHEMY TOOLS (AS ITEMS) ---
-    'pham_lu_item': {
-        id: 'pham_lu_item',
+    'pham_lu': {
+        id: 'pham_lu',
         name: 'Phàm Lư',
         type: ITEM_TYPES.DAN_DUOC,
         icon: '🏺',
@@ -2849,9 +2849,9 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.LUYEN_DAN.KEY, subcategory: ITEM_CATEGORIES_ENUM.LUYEN_DAN.SUBCATEGORIES.DAN_LU }
         ]
     },
-    'linh_hoa_item': {
-        id: 'linh_hoa_item',
-        name: 'Mồi Lửa: Linh Hỏa',
+    'linh_hoa': {
+        id: 'linh_hoa',
+        name: 'Linh Hỏa',
         type: ITEM_TYPES.DAN_DUOC,
         icon: '🔥',
         quality: 'Phàm Khí',
@@ -2862,8 +2862,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
         ]
     },
-    'huyen_lu_item': {
-        id: 'huyen_lu_item',
+    'huyen_lu': {
+        id: 'huyen_lu',
         name: 'Huyền Thiết Trọng Lư',
         type: ITEM_TYPES.DAN_LU,
         icon: '🏺',
@@ -2875,8 +2875,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.LUYEN_DAN.KEY, subcategory: ITEM_CATEGORIES_ENUM.LUYEN_DAN.SUBCATEGORIES.DAN_LU }
         ]
     },
-    'thanh_lien_hoa_seed': {
-        id: 'thanh_lien_hoa_seed',
+    'thanh_lien_dia_tam_hoa_seed': {
+        id: 'thanh_lien_dia_tam_hoa_seed',
         name: 'Thanh Liên Địa Tâm Hỏa (Chủng)',
         type: ITEM_TYPES.LINH_HOA,
         icon: '🔥',
