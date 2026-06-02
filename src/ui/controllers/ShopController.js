@@ -4,11 +4,13 @@ import { SHOPS } from '../../configs/shop-data.js';
 import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 import { getTechniqueById, getSecretTechniqueById } from '../../configs/technique-data.js';
 import { getDisplayQuality } from '../../utils/ui-utils.js';
+import { ITEM_CATEGORIES, classifyItem } from '../../configs/item-classification.js';
 
 export class ShopController {
     constructor(parentScreen) {
         this.parentScreen = parentScreen;
         this.shopSubFilter = 'all';
+        this.shopSubSubFilter = 'all';
         this.shopQualityFilter = 'all';
         this.shopSearchQuery = '';
         this.shopSortMode = 'default';
@@ -80,30 +82,20 @@ export class ShopController {
         this.renderShopSections();
         this.renderShopSubFilters();
 
-        // Style the tabs
-        if (this.btnShopTabBuy && this.btnShopTabSell) {
-            if (state.views.shop === 'buy') {
-                this.btnShopTabBuy.className = "flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold text-xs";
-                this.btnShopTabSell.className = "flex-grow py-3 text-gray-500 border-b-2 border-transparent text-xs";
-            } else {
-                this.btnShopTabBuy.className = "flex-grow py-3 text-gray-500 border-b-2 border-transparent text-xs";
-                this.btnShopTabSell.className = "flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold text-xs";
-            }
-        }
-
-        if (state.views.shop === 'buy') {
-            this.elShopBuyView.classList.remove('hidden');
-            this.elShopSellView.classList.add('hidden');
-            // Special case: Dịch Vụ section has its own UI
-            if (state.systems.shop && state.systems.shop.currentSection === 'dich_vu') {
-                this.renderShopServices();
-            } else {
-                this.renderShopBuy();
-            }
-        } else {
+        // Toggle Buy vs Sell Views based on Dịch Vụ -> Thanh Lý
+        const section = state.systems.shop?.currentSection;
+        if (section === 'dich_vu' && this.shopSubFilter === 'thanh_ly') {
             this.elShopBuyView.classList.add('hidden');
             this.elShopSellView.classList.remove('hidden');
             this.renderShopSell();
+        } else if (section === 'dich_vu') {
+            this.elShopBuyView.classList.remove('hidden');
+            this.elShopSellView.classList.add('hidden');
+            this.renderShopServices();
+        } else {
+            this.elShopBuyView.classList.remove('hidden');
+            this.elShopSellView.classList.add('hidden');
+            this.renderShopBuy();
         }
     }
 
@@ -111,14 +103,13 @@ export class ShopController {
         if (!this.elShopSectionNav) return;
         const shop = state.systems.shop;
 
-        const categories = [
-            { id: 'dan_duoc', name: 'Đan Dược', icon: '💊' },
-            { id: 'phap_bao', name: 'Trang Bị', icon: '⚔️' },
-            { id: 'cong_phap', name: 'Công Pháp', icon: '📜' },
-            { id: 'bach_nghe', name: 'Bách Nghệ', icon: '⚒️' },
-            { id: 'ky_vat', name: 'Kỳ Vật', icon: '💎' },
-            { id: 'dich_vu', name: 'Dịch Vụ', icon: '🏮' }
-        ];
+        const categories = Object.keys(ITEM_CATEGORIES).map(key => {
+            return {
+                id: key,
+                name: ITEM_CATEGORIES[key].name,
+                icon: ITEM_CATEGORIES[key].icon
+            };
+        });
 
         const currentButtons = this.elShopSectionNav.querySelectorAll('button');
 
@@ -134,6 +125,7 @@ export class ShopController {
                     if (state.systems.shop) {
                         state.systems.shop.currentSection = cat.id;
                         this.shopSubFilter = 'all';
+                        this.shopSubSubFilter = 'all';
                         this.shopQualityFilter = 'all';
                         this.renderShop();
                     }
@@ -162,63 +154,43 @@ export class ShopController {
         const section = shop.currentSection;
         let subFilters = [];
 
-        if (section === 'phap_bao') {
-            subFilters = [
-                { id: 'all', name: 'TẤT CẢ' },
-                { id: 'weapon', name: 'VŨ KHÍ' },
-                { id: 'armor', name: 'GIÁP Y' },
-                { id: 'accessory', name: 'TRANG SỨC' },
-                { id: 'attackArtifact', name: 'CHỦ CHIẾN' },
-                { id: 'defenseArtifact', name: 'HỘ THÂN' },
-                { id: 'flightArtifact', name: 'PHI HÀNH' },
-                { id: 'spaceArtifact', name: 'CÀN KHÔN' },
-                { id: 'formationArtifact', name: 'TRẬN ĐẠO' },
-                { id: 'supportArtifact', name: 'PHỤ TRỢ' },
-                { id: 'soulArtifact', name: 'HỒN ĐẠO' }
-            ];
-        } else if (section === 'cong_phap') {
-            subFilters = [
-                { id: 'all', name: 'TẤT CẢ' },
-                { id: 'Linh Lực', name: 'LINH LỰC' },
-                { id: 'Luyện Thể', name: 'LUYỆN THỂ' },
-                { id: 'Luyện Hồn', name: 'LUYỆN HỒN' },
-                { id: 'Pháp Thuật', name: 'PHÁP THUẬT' },
-                { id: 'Thần Thông', name: 'THẦN THÔNG' },
-                { id: 'Thần Hồn Thuật', name: 'THẦN HỒN' },
-                { id: 'Bí Pháp', name: 'BÍ PHÁP' }
-            ];
-        } else if (section === 'bach_nghe') {
-            subFilters = [
-                { id: 'all', name: 'TẤT CẢ' },
-                { id: 'nguyen_lieu', name: 'NGUYÊN LIỆU' },
-                { id: 'phu_luc', name: 'PHÙ LỤC' },
-                { id: 'tran_phap', name: 'TRẬN PHÁP' },
-                { id: 'luyen_khi', name: 'LUYỆN KHÍ' },
-                { id: 'linh_dien', name: 'LINH ĐIỀN' }
-            ];
-        } else if (section === 'ky_vat') {
-            subFilters = [
-                { id: 'all', name: 'TẤT CẢ' },
-                { id: 'tui_tru_vat', name: 'TRỮ VẬT' },
-                { id: 'ky_trung', name: 'KỲ TRÙNG' },
-                { id: 'linh_thu', name: 'LINH THÚ' }
-            ];
+        const sectionData = ITEM_CATEGORIES[section];
+        if (sectionData && sectionData.subcategories) {
+            if (section === 'dich_vu') {
+                subFilters = Object.keys(sectionData.subcategories).map(subKey => {
+                    return { id: subKey, name: sectionData.subcategories[subKey].toUpperCase() };
+                });
+                if (this.shopSubFilter === 'all') {
+                    this.shopSubFilter = 'thue_phong';
+                }
+            } else {
+                subFilters = [
+                    { id: 'all', name: 'TẤT CẢ' },
+                    ...Object.keys(sectionData.subcategories).map(subKey => {
+                        return { id: subKey, name: sectionData.subcategories[subKey].toUpperCase() };
+                    })
+                ];
+            }
         }
+
+        const elSubFilterRow = document.getElementById('shop-subfilter-row');
+        const elSubSubRow = document.getElementById('shop-subsubfilter-row');
 
         if (this.elShopFiltersWrap) this.elShopFiltersWrap.classList.remove('hidden');
 
         if (subFilters.length === 0) {
             this.elShopSubFilterNav.innerHTML = '';
-            this.elShopSubFilterNav.classList.add('hidden');
+            if (elSubFilterRow) elSubFilterRow.classList.add('hidden');
+            if (elSubSubRow) elSubSubRow.classList.add('hidden');
             return;
         }
 
-        this.elShopSubFilterNav.classList.remove('hidden');
+        if (elSubFilterRow) elSubFilterRow.classList.remove('hidden');
         this.elShopSubFilterNav.innerHTML = subFilters.map(f => {
             const active = this.shopSubFilter === f.id;
             return `
                 <button data-subfilter="${f.id}" 
-                    class="px-3.5 py-1.5 rounded-full text-[8px] font-ancient uppercase tracking-widest transition-all duration-200 shrink-0 border ${active
+                    class="px-2.5 py-1 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all duration-200 shrink-0 border ${active
                     ? 'bg-qi-blue/20 text-qi-blue border-qi-blue/40 shadow-[0_0_8px_rgba(79,209,197,0.2)] font-bold active:scale-95'
                     : 'bg-white/[0.02] text-gray-500 border-white/5 hover:border-white/10 active:scale-98'
                 }">
@@ -230,9 +202,47 @@ export class ShopController {
         this.elShopSubFilterNav.querySelectorAll('button[data-subfilter]').forEach(btn => {
             btn.onclick = () => {
                 this.shopSubFilter = btn.dataset.subfilter;
+                this.shopSubSubFilter = 'all'; // Reset sub-sub-filter on parent change
                 this.renderShop();
             };
         });
+
+        // --- RENDER SECONDARY DOUBLE-LAYER SUB-SUBFILTER FOR NGUYÊN LIỆU ---
+        const elSubSubNav = document.getElementById('shop-subsubfilter-nav');
+        if (section === 'nguyen_lieu' && this.shopSubFilter !== 'all' && sectionData.subSubcategories && sectionData.subSubcategories[this.shopSubFilter]) {
+            if (elSubSubRow) elSubSubRow.classList.remove('hidden');
+            const subSubData = sectionData.subSubcategories[this.shopSubFilter];
+            const subSubFilters = [
+                { id: 'all', name: 'TẤT CẢ CHI TIẾT' },
+                ...Object.keys(subSubData).map(key => {
+                    return { id: key, name: subSubData[key].toUpperCase() };
+                })
+            ];
+
+            if (elSubSubNav) {
+                elSubSubNav.innerHTML = subSubFilters.map(f => {
+                    const active = this.shopSubSubFilter === f.id;
+                    return `
+                        <button data-subsubfilter="${f.id}" 
+                            class="px-2.5 py-1 rounded-lg text-[7.5px] font-ancient uppercase tracking-wider transition-all duration-200 shrink-0 border ${active
+                            ? 'bg-cultivation-gold/20 text-cultivation-gold border-cultivation-gold/40 shadow-[0_0_8px_rgba(212,175,55,0.2)] font-bold active:scale-95'
+                            : 'bg-white/[0.01] text-gray-500 border-white/5 hover:border-white/10 active:scale-98'
+                        }">
+                            ${f.name}
+                        </button>
+                    `;
+                }).join('');
+
+                elSubSubNav.querySelectorAll('button[data-subsubfilter]').forEach(btn => {
+                    btn.onclick = () => {
+                        this.shopSubSubFilter = btn.dataset.subsubfilter;
+                        this.renderShop();
+                    };
+                });
+            }
+        } else {
+            if (elSubSubRow) elSubSubRow.classList.add('hidden');
+        }
     }
 
     renderShopQualityFilters() {
@@ -241,13 +251,18 @@ export class ShopController {
         if (!shop) return;
 
         const section = shop.currentSection;
-        const showQuality = ['phap_bao', 'dan_duoc', 'cong_phap', 'bach_nghe'].includes(section);
+        const elQualityRow = document.getElementById('shop-quality-row');
+
+        const isSellMode = section === 'dich_vu' && this.shopSubFilter === 'thanh_ly';
+        const showQuality = ['phap_bao', 'dan_duoc', 'cong_phap', 'phu_luc', 'tran_phap', 'nguyen_lieu', 'khoi_loi'].includes(section) || isSellMode;
 
         if (!showQuality) {
-            this.elShopQualityFilterNav.classList.add('hidden');
+            if (elQualityRow) elQualityRow.classList.add('hidden');
             this.elShopQualityFilterNav.innerHTML = '';
             return;
         }
+
+        if (elQualityRow) elQualityRow.classList.remove('hidden');
 
         let qualities = [
             { id: 'all', name: 'TẤT CẢ PHẨM' },
@@ -289,13 +304,12 @@ export class ShopController {
             'Danh Khí': 'text-yellow-400 border-yellow-500/20 bg-yellow-500/5 font-bold'
         };
 
-        this.elShopQualityFilterNav.classList.remove('hidden');
         this.elShopQualityFilterNav.innerHTML = qualities.map(q => {
             const active = this.shopQualityFilter === q.id;
             const qColor = qColors[q.id] || 'text-gray-500 border-white/5';
             return `
                 <button data-quality="${q.id}" 
-                    class="px-3.5 py-1.5 rounded-full text-[8px] font-ancient uppercase tracking-widest transition-all duration-200 shrink-0 border ${active
+                    class="px-2.5 py-1 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all duration-200 shrink-0 border ${active
                     ? (q.id === 'all' ? 'bg-cultivation-gold/20 text-cultivation-gold border-cultivation-gold/40 shadow-[0_0_8px_rgba(212,175,55,0.2)] font-bold active:scale-95' : `${qColor.replace('/5', '/20')} border-opacity-60 shadow-[0_0_8px_rgba(255,255,255,0.05)] font-bold active:scale-95`)
                     : 'bg-white/[0.02] text-gray-500 border-white/5 hover:border-white/10 active:scale-98'
                 }">
@@ -326,25 +340,31 @@ export class ShopController {
             });
         }
 
-        // Sub-filter
-        if (this.shopSubFilter !== 'all') {
-            inv = inv.filter(item => {
-                const itemData = getItemById(item.id);
-                if (!itemData) return false;
+        // Classification Filter
+        inv = inv.filter(item => {
+            const itemData = getItemById(item.id);
+            if (!itemData) return false;
 
-                if (shop.currentSection === 'phap_bao') {
-                    return itemData.type === this.shopSubFilter;
-                } else if (shop.currentSection === 'cong_phap') {
-                    const techCategories = this.getTechniqueCategoriesForBook(itemData);
-                    return techCategories.includes(this.shopSubFilter);
-                } else if (['bach_nghe', 'ky_vat'].includes(shop.currentSection)) {
-                    const shopData = SHOPS[shop.currentShopId];
-                    const sectionItems = shopData.sections[this.shopSubFilter] || [];
-                    return sectionItems.some(i => i.id === item.id);
+            const classification = classifyItem(itemData);
+
+            const matches = classification.allClassifications.some(cls => {
+                // 1. Match top-level category
+                if (cls.category !== shop.currentSection) return false;
+
+                // 2. Match subcategory
+                if (this.shopSubFilter !== 'all') {
+                    if (cls.subcategory !== this.shopSubFilter) return false;
+
+                    // 3. Match sub-subcategory (Nguyên Liệu only)
+                    if (shop.currentSection === 'nguyen_lieu' && this.shopSubSubFilter !== 'all') {
+                        if (cls.subSubcategory !== this.shopSubSubFilter) return false;
+                    }
                 }
                 return true;
             });
-        }
+
+            return matches;
+        });
 
         // Quality Filter
         if (this.shopQualityFilter !== 'all') {
@@ -390,10 +410,24 @@ export class ShopController {
                 }
             };
 
-            const categories = this.getTechniqueCategoriesForBook(itemData);
-            const categoryLabels = categories.length > 0
-                ? `<div class="flex flex-wrap gap-1 mt-1">${categories.map(cat => `<span class="px-1.5 py-0.5 rounded bg-qi-blue/10 border border-qi-blue/20 text-[6px] font-ancient uppercase tracking-widest text-qi-blue font-bold shadow-[0_0_4px_rgba(79,209,197,0.1)]">${cat}</span>`).join('')}</div>`
-                : '';
+            // Build immersive dynamic labels
+            const classification = classifyItem(itemData);
+            const labelsHtml = classification.allClassifications.map(cls => {
+                const subName = ITEM_CATEGORIES[cls.category]?.subcategories[cls.subcategory] || '';
+                const subSubName = (cls.category === 'nguyen_lieu' && cls.subSubcategory !== 'default')
+                    ? ITEM_CATEGORIES.nguyen_lieu.subSubcategories[cls.subcategory]?.[cls.subSubcategory] || ''
+                    : '';
+                return `
+                    <span class="px-1.5 py-0.5 rounded bg-qi-blue/10 border border-qi-blue/20 text-[6px] font-ancient uppercase tracking-widest text-qi-blue font-bold shadow-[0_0_4px_rgba(79,209,197,0.1)]">${subName}</span>
+                    ${subSubName ? `<span class="px-1.5 py-0.5 rounded bg-cultivation-gold/10 border border-cultivation-gold/20 text-[6px] font-ancient uppercase tracking-widest text-cultivation-gold font-bold shadow-[0_0_4px_rgba(212,175,55,0.1)]">${subSubName}</span>` : ''}
+                `;
+            }).join('');
+            
+            const categoryLabels = `
+                <div class="flex flex-wrap gap-1 mt-1">
+                    ${labelsHtml}
+                </div>
+            `;
 
             const displayQuality = getDisplayQuality(itemData.quality, itemData.type);
 
@@ -427,7 +461,9 @@ export class ShopController {
             btn.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>TRAO ĐỔI`;
             btn.onclick = (e) => {
                 e.stopPropagation();
-                window.game.buyItem(item.id);
+                if (window.game.screens.inventory) {
+                    window.game.screens.inventory.selectItem(item.id, true);
+                }
             };
 
             btnContainer.appendChild(btn);
@@ -454,65 +490,38 @@ export class ShopController {
             });
         }
 
-        // Category/Section Filter
+        // Classification Filter
         items = items.filter(item => {
             const itemData = getItemById(item.id);
             if (!itemData) return false;
 
-            const typeMap = {
-                'dan_duoc': ['consumable'],
-                'phap_bao': ['weapon', 'armor', 'accessory', 'treasure', 'head', 'necklace', 'shoes', 'attackArtifact', 'defenseArtifact', 'flightArtifact', 'spaceArtifact', 'formationArtifact', 'supportArtifact', 'soulArtifact'],
-                'nguyen_lieu': ['material', 'herb', 'ore', 'wood'],
-                'cong_phap': ['book', 'technique', 'recipe', 'talisman_recipe', 'consumable'],
-                'tran_phap': ['formation'],
-                'phu_luc': ['talisman'],
-                'luyen_khi': ['material', 'smithing_tool'],
-                'tui_tru_vat': ['consumable'],
-                'ky_trung': ['consumable'],
-                'linh_thu': ['supportArtifact']
-            };
-
-            const catMap = {
-                'dan_duoc': ['dan_duoc'],
-                'phap_bao': ['phap_bao'],
-                'cong_phap': ['cong_phap'],
-                'bach_nghe': ['nguyen_lieu', 'phu_luc', 'tran_phap', 'luyen_khi', 'linh_dien'],
-                'ky_vat': ['tui_tru_vat', 'ky_trung', 'linh_thu']
-            };
-
-            const targetSections = catMap[sectionType] || [sectionType];
-            const allowedTypes = targetSections.flatMap(s => typeMap[s] || []);
-
-            if (allowedTypes.length > 0 && !allowedTypes.includes(itemData.type)) return false;
-
-            // Specific filter for merged Công Pháp
-            if (sectionType === 'cong_phap') {
-                if (subFilter !== 'all') {
-                    const techCategories = this.getTechniqueCategoriesForBook(itemData);
-                    if (!techCategories.includes(subFilter)) return false;
-                } else {
-                    const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
-                    const isBook = (itemData.type === 'book' || itemData.type === 'technique') && !isManualAction;
-                    const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
-                    if (!isBook && !isRecipe) return false;
-                }
-            }
-
-            // Sub-filter for Bách Nghệ / Kỳ Vật
-            if (['bach_nghe', 'ky_vat'].includes(sectionType) && subFilter !== 'all') {
-                if (!typeMap[subFilter] || !typeMap[subFilter].includes(itemData.type)) return false;
-            }
-
-            // Sub-filter for Pháp Bảo
-            if (sectionType === 'phap_bao' && subFilter !== 'all' && itemData.type !== subFilter) return false;
-
-            // Specific filter for Túi Trữ Vật
-            if (subFilter === 'tui_tru_vat' && itemData.action !== 'expand_inventory') return false;
-
             // Quality Filter
             if (this.shopQualityFilter !== 'all' && itemData.quality !== this.shopQualityFilter) return false;
 
-            return true;
+            // Special handling for Dịch Vụ -> Thanh Lý Pawn Shop
+            if (sectionType === 'dich_vu' && subFilter === 'thanh_ly') {
+                return itemData.price > 0 && itemData.type !== 'service';
+            }
+
+            const classification = classifyItem(itemData);
+
+            const matches = classification.allClassifications.some(cls => {
+                // 1. Match top-level category
+                if (cls.category !== sectionType) return false;
+
+                // 2. Match subcategory
+                if (subFilter !== 'all') {
+                    if (cls.subcategory !== subFilter) return false;
+
+                    // 3. Match sub-subcategory (Nguyên Liệu only)
+                    if (sectionType === 'nguyen_lieu' && this.shopSubSubFilter !== 'all') {
+                        if (cls.subSubcategory !== this.shopSubSubFilter) return false;
+                    }
+                }
+                return true;
+            });
+
+            return matches;
         });
 
         // Sorting
@@ -562,9 +571,6 @@ export class ShopController {
         });
     }
 
-    /**
-     * Render services section (Dịch Vụ) — Ngộ Đạo Thất rental and more.
-     */
     renderShopServices() {
         if (!this.elShopBuyView) return;
         this.elShopBuyView.innerHTML = '';
@@ -610,7 +616,6 @@ export class ShopController {
         `;
         this.elShopBuyView.appendChild(card);
 
-        // Spacer + hint
         const hint = document.createElement('div');
         hint.className = 'text-center text-[9px] text-gray-600 italic pt-2';
         hint.textContent = '— Thêm dịch vụ sẽ được mở khóa khi cảnh giới tiến bộ —';

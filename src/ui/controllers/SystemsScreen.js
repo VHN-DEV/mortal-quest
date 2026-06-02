@@ -44,8 +44,6 @@ export class SystemsScreen {
         this.elShopSubFilterNav = document.getElementById('shop-subfilter-nav');
         this.elShopQualityFilterNav = document.getElementById('shop-quality-filter-nav');
         this.elShopFiltersWrap = document.getElementById('shop-filters-wrap');
-        this.btnShopTabBuy = document.getElementById('shop-tab-buy');
-        this.btnShopTabSell = document.getElementById('shop-tab-sell');
         this.elShopSearchInput = document.getElementById('shop-search-input');
         this.elShopSortSelect = document.getElementById('shop-sort-select');
 
@@ -89,18 +87,7 @@ export class SystemsScreen {
                 this.renderAlchemy();
             };
         }
-        if (this.btnShopTabBuy) {
-            this.btnShopTabBuy.onclick = () => {
-                state.views.shop = 'buy';
-                this.renderShop();
-            };
-        }
-        if (this.btnShopTabSell) {
-            this.btnShopTabSell.onclick = () => {
-                state.views.shop = 'sell';
-                this.renderShop();
-            };
-        }
+
 
         if (this.elShopSearchInput) {
             this.elShopSearchInput.oninput = (e) => {

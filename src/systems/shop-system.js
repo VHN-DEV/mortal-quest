@@ -10,21 +10,19 @@ export class ShopSystem {
 
     getShopInventory() {
         const shop = SHOPS[this.currentShopId];
+        if (!shop || !shop.sections) return [];
         
-        // Handle Grouped Categories
-        const categories = {
-            'dan_duoc': ['dan_duoc'],
-            'phap_bao': ['phap_bao'],
-            'cong_phap': ['cong_phap', 'bi_tich'],
-            'bach_nghe': ['nguyen_lieu', 'phu_luc', 'tran_phap', 'luyen_khi', 'linh_dien'],
-            'ky_vat': ['tui_tru_vat', 'ky_trung', 'linh_thu']
-        };
-
-        const targetSections = categories[this.currentSection] || [this.currentSection];
         let items = [];
-        targetSections.forEach(sec => {
+        const seen = new Set();
+
+        Object.keys(shop.sections).forEach(sec => {
             if (shop.sections[sec]) {
-                items = [...items, ...shop.sections[sec]];
+                shop.sections[sec].forEach(item => {
+                    if (!seen.has(item.id)) {
+                        seen.add(item.id);
+                        items.push(item);
+                    }
+                });
             }
         });
         return items;

@@ -147,22 +147,48 @@ export class InventoryScreen {
             this.btnQtyMinus.onclick = () => {
                 const val = Math.max(1, (parseInt(this.elQtyInput.value) || 1) - 1);
                 this.elQtyInput.value = val;
+                this.updateDetailQuantity();
             };
         }
 
         if (this.btnQtyPlus) {
             this.btnQtyPlus.onclick = () => {
-                const item = state.player.inventory.allItems.find(i => i.id === state.selectedItemId);
-                if (!item) return;
-                const val = Math.min(item.quantity, (parseInt(this.elQtyInput.value) || 1) + 1);
+                let maxVal = 9999;
+                if (this.detailFromShop) {
+                    const shopItem = state.systems.shop?.getShopInventory().find(i => i.id === state.selectedItemId);
+                    if (shopItem) maxVal = shopItem.stock;
+                } else {
+                    const item = state.player.inventory.allItems.find(i => i.id === state.selectedItemId);
+                    if (item) maxVal = item.quantity;
+                }
+                const val = Math.min(maxVal, (parseInt(this.elQtyInput.value) || 1) + 1);
                 this.elQtyInput.value = val;
+                this.updateDetailQuantity();
             };
         }
 
         if (this.btnQtyMax) {
             this.btnQtyMax.onclick = () => {
-                const item = state.player.inventory.allItems.find(i => i.id === state.selectedItemId);
-                if (item) this.elQtyInput.value = item.quantity;
+                if (this.detailFromShop) {
+                    const shopItem = state.systems.shop?.getShopInventory().find(i => i.id === state.selectedItemId);
+                    if (shopItem) {
+                        const itemData = getItemById(state.selectedItemId);
+                        const finalPrice = Math.floor(itemData.price * (1 - Math.min(0.25, state.player.vipLevel * 0.05)));
+                        const playerLingShi = state.player.lingshi || 0;
+                        const maxAffordable = finalPrice > 0 ? Math.floor(playerLingShi / finalPrice) : 9999;
+                        this.elQtyInput.value = Math.max(1, Math.min(shopItem.stock, maxAffordable));
+                    }
+                } else {
+                    const item = state.player.inventory.allItems.find(i => i.id === state.selectedItemId);
+                    if (item) this.elQtyInput.value = item.quantity;
+                }
+                this.updateDetailQuantity();
+            };
+        }
+
+        if (this.elQtyInput) {
+            this.elQtyInput.oninput = () => {
+                this.updateDetailQuantity();
             };
         }
 
@@ -189,7 +215,8 @@ export class InventoryScreen {
         if (this.btnBuyItem) {
             this.btnBuyItem.onclick = () => {
                 if (state.selectedItemId && state.systems.shop) {
-                    const res = state.systems.shop.buyItem(state.selectedItemId, 1);
+                    const qty = parseInt(this.elQtyInput.value) || 1;
+                    const res = state.systems.shop.buyItem(state.selectedItemId, qty);
                     state.ui.toast(res.msg, res.success ? 'success' : 'error');
                     if (res.success) {
                         state.ui.toggleOverlay(this.elItemDetail, false);
@@ -234,14 +261,62 @@ export class InventoryScreen {
     updateDetailQuantity() {
         if (!state.selectedItemId || !this.elItemDetail || this.elItemDetail.classList.contains('hidden')) return;
 
-        const item = state.player.inventory.allItems.find(i => i.id === state.selectedItemId);
-        if (item && this.elQtyMaxText) {
-            this.elQtyMaxText.textContent = `Tối đa: ${item.quantity}`;
+        const itemData = getItemById(state.selectedItemId);
+        if (!itemData) return;
 
-            // Ensure input doesn't exceed current quantity
-            const currentVal = parseInt(this.elQtyInput.value) || 1;
-            if (currentVal > item.quantity) {
-                this.elQtyInput.value = Math.max(1, item.quantity);
+        let currentVal = parseInt(this.elQtyInput.value) || 1;
+        if (currentVal < 1) {
+            currentVal = 1;
+            this.elQtyInput.value = 1;
+        }
+
+        if (this.detailFromShop) {
+            const shopItem = state.systems.shop?.getShopInventory().find(i => i.id === state.selectedItemId);
+            if (shopItem && this.elQtyMaxText) {
+                const finalPricePerUnit = Math.floor(itemData.price * (1 - Math.min(0.25, state.player.vipLevel * 0.05)));
+                const playerLingShi = state.player.lingshi || 0;
+                const maxAffordable = finalPricePerUnit > 0 ? Math.floor(playerLingShi / finalPricePerUnit) : 9999;
+                
+                this.elQtyMaxText.textContent = `Kho: ${shopItem.stock} (Đủ mua: ${maxAffordable})`;
+
+                if (currentVal > shopItem.stock) {
+                    currentVal = shopItem.stock;
+                    this.elQtyInput.value = Math.max(1, shopItem.stock);
+                }
+
+                // Update total price inside the button!
+                const totalPrice = finalPricePerUnit * currentVal;
+                if (this.btnBuyItem) {
+                    this.btnBuyItem.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>TRAO ĐỔI (${totalPrice.toLocaleString()} LT)`;
+                }
+            }
+        } else if (this.detailFromSell) {
+            const item = state.player.inventory.allItems.find(i => i.id === state.selectedItemId);
+            if (item && this.elQtyMaxText) {
+                this.elQtyMaxText.textContent = `Tối đa: ${item.quantity}`;
+
+                if (currentVal > item.quantity) {
+                    currentVal = item.quantity;
+                    this.elQtyInput.value = Math.max(1, item.quantity);
+                }
+
+                let sellMult = 0.5;
+                if (['material', 'herb', 'ore', 'wood'].includes(itemData.type)) sellMult = 0.3;
+                const finalPricePerUnit = Math.floor(itemData.price * sellMult);
+                const totalPrice = finalPricePerUnit * currentVal;
+                if (this.btnSellItem) {
+                    this.btnSellItem.innerHTML = `<i class="ph ph-handshake mr-1"></i>BÁN (${totalPrice.toLocaleString()} LT)`;
+                }
+            }
+        } else {
+            const item = state.player.inventory.allItems.find(i => i.id === state.selectedItemId);
+            if (item && this.elQtyMaxText) {
+                this.elQtyMaxText.textContent = `Tối đa: ${item.quantity}`;
+
+                if (currentVal > item.quantity) {
+                    currentVal = item.quantity;
+                    this.elQtyInput.value = Math.max(1, item.quantity);
+                }
             }
         }
     }
@@ -408,6 +483,8 @@ export class InventoryScreen {
     }
 
     selectItem(id, fromShop = false, fromSell = false) {
+        this.detailFromShop = fromShop;
+        this.detailFromSell = fromSell;
         state.selectedItemId = id;
         const itemData = getItemById(id);
         if (!itemData) return;
@@ -693,12 +770,13 @@ export class InventoryScreen {
 
         // Show/Hide Quantity Container
         const isStackable = ['spirit_stone', 'consumable', 'material', 'seed'].includes(itemData.type);
+        const shopItem = state.systems.shop?.getShopInventory().find(i => i.id === id);
+        const shopStock = shopItem ? shopItem.stock : 0;
+        const showQty = isStackable || (fromShop && shopStock > 1) || (fromSell && playerItem && playerItem.quantity > 1);
+
         if (this.elQtyContainer) {
-            this.elQtyContainer.classList.toggle('hidden', !isStackable || fromShop);
-            if (isStackable && playerItem && !fromShop) {
-                this.elQtyInput.value = 1;
-                this.updateDetailQuantity();
-            }
+            this.elQtyContainer.classList.toggle('hidden', !showQty);
+            this.elQtyInput.value = 1;
         }
 
         if (fromShop || fromSell) {
@@ -707,14 +785,7 @@ export class InventoryScreen {
             if (this.btnBuyItem) this.btnBuyItem.classList.toggle('hidden', !fromShop);
             if (this.btnSellItem) this.btnSellItem.classList.toggle('hidden', !fromSell);
 
-            if (fromSell && isStackable) {
-                this.elQtyContainer.classList.remove('hidden');
-                if (playerItem) {
-                    this.elQtyInput.value = 1;
-                    this.updateDetailQuantity();
-                }
-            }
-
+            this.updateDetailQuantity();
             state.ui.toggleOverlay(this.elItemDetail, true);
             return;
         } else {

@@ -14,19 +14,28 @@
                 class="text-cultivation-gold">LT:</span> <span id="shop-ling-shi"
                 class="text-white font-mono">100</span></div>
     </div>
-    <div class="flex-none flex border-b border-white/10 bg-black/20"><button id="shop-tab-buy"
-            class="flex-grow py-3 text-cultivation-gold border-b-2 border-cultivation-gold text-xs">TRAO
-            ĐỔI</button><button id="shop-tab-sell" class="flex-grow py-3 text-gray-500 text-xs">GIAO
-            DỊCH</button>
-    </div>
     <div id="shop-section-nav"
         class="flex-none w-full min-w-0 custom-scroll-x border-b border-white/5 bg-black/30">
     </div>
     <div id="shop-filters-wrap"
-        class="flex-none flex flex-col w-full border-b border-white/5 bg-black/20 hidden overflow-hidden">
-        <div class="w-full flex flex-col space-y-0.5 border-b border-white/5 py-1.5 bg-black/30">
-            <div id="shop-subfilter-nav" class="w-full flex items-center overflow-x-auto custom-scrollbar-hidden px-3 space-x-1.5 scroll-smooth"></div>
-            <div id="shop-quality-filter-nav" class="w-full flex items-center overflow-x-auto custom-scrollbar-hidden px-3 space-x-1.5 scroll-smooth"></div>
+        class="flex-none flex flex-col w-full border-b border-white/10 bg-black/40 hidden overflow-hidden">
+        <!-- Filter Rows with stationary labels -->
+        <div class="w-full flex flex-col bg-black/30">
+            <!-- Sub-filter Row (Phân hệ) -->
+            <div id="shop-subfilter-row" class="flex items-center border-b border-white/5 py-1">
+                <span class="shrink-0 text-[8px] font-ancient text-cultivation-gold/80 border-r border-white/5 uppercase tracking-widest w-[65px] text-center font-bold">Phân hệ</span>
+                <div id="shop-subfilter-nav" class="flex-grow flex items-center overflow-x-auto custom-scrollbar-hidden px-2 space-x-1 scroll-smooth"></div>
+            </div>
+            <!-- Sub-sub-filter Row (Chi tiết) -->
+            <div id="shop-subsubfilter-row" class="flex items-center border-b border-white/5 py-1 hidden">
+                <span class="shrink-0 text-[8px] font-ancient text-cultivation-gold/80 border-r border-white/5 uppercase tracking-widest w-[65px] text-center font-bold">Chi tiết</span>
+                <div id="shop-subsubfilter-nav" class="flex-grow flex items-center overflow-x-auto custom-scrollbar-hidden px-2 space-x-1 scroll-smooth"></div>
+            </div>
+            <!-- Quality Row (Phẩm cấp) -->
+            <div id="shop-quality-row" class="flex items-center border-b border-white/5 py-1">
+                <span class="shrink-0 text-[8px] font-ancient text-cultivation-gold/80 border-r border-white/5 uppercase tracking-widest w-[65px] text-center font-bold">Phẩm cấp</span>
+                <div id="shop-quality-filter-nav" class="flex-grow flex items-center overflow-x-auto custom-scrollbar-hidden px-2 space-x-1 scroll-smooth"></div>
+            </div>
         </div>
         <div class="p-2 flex space-x-2 bg-black/10">
             <div class="relative flex-grow">

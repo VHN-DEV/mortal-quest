@@ -10,10 +10,10 @@
 
 export const ITEMS = {
     // Hạt giống
-    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Thanh Phục Thảo', type: 'seed', icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Hạt giống Thanh Phục Thảo, loại linh thảo sơ cấp phổ biến nhất ở Nhân giới.' },
-    'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.' },
-    'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.' },
-    'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.' },
+    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Thanh Phục Thảo', type: 'seed', icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Hạt giống Thanh Phục Thảo, loại linh thảo sơ cấp phổ biến nhất ở Nhân giới.', categories: [{ category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: 'duoi_100_nam' }] },
+    'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
+    'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
+    'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
 
     // Trứng Linh Thú
     'trung_thanh_van_ly': {
@@ -24,7 +24,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Linh Khí',
         price: 5000,
-        description: 'Trứng của Thanh Vân Ly Thú, tỏa ra linh khí thanh khiết của mây trời.'
+        description: 'Trứng của Thanh Vân Ly Thú, tỏa ra linh khí thanh khiết của mây trời.',
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
+        ]
     },
     'trung_huyen_giap_dia_long': {
         id: 'trung_huyen_giap_dia_long',
@@ -34,7 +37,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Địa Cấp',
         price: 15000,
-        description: 'Trứng của Huyền Giáp Địa Long, nặng trịch như đá và bao phủ bởi lớp vỏ đen nhánh cứng cáp.'
+        description: 'Trứng của Huyền Giáp Địa Long, nặng trịch như đá và bao phủ bởi lớp vỏ đen nhánh cứng cáp.',
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
+        ]
     },
     'trung_u_minh_mong_diep': {
         id: 'trung_u_minh_mong_diep',
@@ -44,7 +50,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Linh Khí',
         price: 8000,
-        description: 'Kén của U Minh Mộng Điệp, tỏa ra làn khói ảo ảnh mờ ảo.'
+        description: 'Kén của U Minh Mộng Điệp, tỏa ra làn khói ảo ảnh mờ ảo.',
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
+        ]
     },
 
     // Vật phẩm đặc biệt
@@ -56,7 +65,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1700,
         description: 'Bản danh sách ghi chép về 23 loại Dị Hỏa kỳ dị nhất trong thiên địa. Bấm vào để xem chi tiết.',
-        action: 'open_di_hoa_bang'
+        action: 'open_di_hoa_bang',
+        categories: [
+            { category: 'ky_vat_di_bao', subcategory: 'ngoc_gian' }
+        ]
     },
     'di_loi_bang': {
         id: 'di_loi_bang',
@@ -66,7 +78,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1500,
         description: 'Bản danh sách ghi chép về 10 loại Dị Lôi cường hãn nhất trong thiên địa. Bấm vào để xem chi tiết.',
-        action: 'open_di_loi_bang'
+        action: 'open_di_loi_bang',
+        categories: [
+            { category: 'ky_vat_di_bao', subcategory: 'ngoc_gian' }
+        ]
     },
     'linh_the_luc': {
         id: 'linh_the_luc',
@@ -76,7 +91,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 2000,
         description: 'Bản danh sách ghi chép về 15 loại Linh Thể mạnh mẽ nhất chư thiên. Bấm vào để xem chi tiết.',
-        action: 'open_linh_the_luc'
+        action: 'open_linh_the_luc',
+        categories: [
+            { category: 'ky_vat_di_bao', subcategory: 'ngoc_gian' }
+        ]
     },
     'phap_bao_luc': {
         id: 'phap_bao_luc',
@@ -86,7 +104,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 3000,
         description: 'Bản danh sách ghi chép về các loại pháp bảo, thần khí trong thiên địa, phân loại theo phẩm cấp và công dụng. Bấm vào để xem chi tiết.',
-        action: 'open_phap_bao_luc'
+        action: 'open_phap_bao_luc',
+        categories: [
+            { category: 'ky_vat_di_bao', subcategory: 'ngoc_gian' }
+        ]
     },
     'van_toc_thong_giam': {
         id: 'van_toc_thong_giam',
@@ -96,7 +117,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1500,
         description: 'Cuốn điển tịch cổ ghi chép tường tận về nguồn gốc và đặc điểm của vạn tộc trong thiên địa. Bấm vào để xem chi tiết.',
-        action: 'open_van_toc_thong_giam'
+        action: 'open_van_toc_thong_giam',
+        categories: [
+            { category: 'ky_vat_di_bao', subcategory: 'ngoc_gian' }
+        ]
     },
 
     // --- PROFESSION MANUALS ---
@@ -108,7 +132,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 1000,
         description: 'Sách nhập môn về Luyện Đan, giúp mở khóa nghề Luyện Dược Sư.',
-        effect: { type: 'unlock_profession', profession: 'alchemy' }
+        effect: { type: 'unlock_profession', profession: 'alchemy' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'luyen_khi_tong_cuong': {
         id: 'luyen_khi_tong_cuong',
@@ -118,7 +145,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 1200,
         description: 'Nguyên lý cơ bản về rèn đúc pháp bảo, mở khóa nghề Luyện Khí Sư.',
-        effect: { type: 'unlock_profession', profession: 'smithing' }
+        effect: { type: 'unlock_profession', profession: 'smithing' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'thai_thuong_phu_kinh': {
         id: 'thai_thuong_phu_kinh',
@@ -128,7 +158,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 800,
         description: 'Ghi chép về cách dẫn linh hồn vào phù giấy, mở khóa nghề Phù Sư.',
-        effect: { type: 'unlock_profession', profession: 'talisman' }
+        effect: { type: 'unlock_profession', profession: 'talisman' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'tran_dao_thien_thu': {
         id: 'tran_dao_thien_thu',
@@ -138,7 +171,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 2500,
         description: 'Thiên thư ghi chép về các loại trận pháp, mở khóa nghề Trận Pháp Sư.',
-        effect: { type: 'unlock_profession', profession: 'formation' }
+        effect: { type: 'unlock_profession', profession: 'formation' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'co_quan_linh_ky': {
         id: 'co_quan_linh_ky',
@@ -148,7 +184,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 3000,
         description: 'Bí tịch về cách chế tạo khôi lỗi, mở khóa nghề Khôi Lỗi Sư.',
-        effect: { type: 'unlock_profession', profession: 'puppet' }
+        effect: { type: 'unlock_profession', profession: 'puppet' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'cuu_u_luyen_thi_thuat': {
         id: 'cuu_u_luyen_thi_thuat',
@@ -158,7 +197,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1500,
         description: 'Tà thuật luyện chế xác chết, mở khóa nghề Luyện Thi Sư.',
-        effect: { type: 'unlock_profession', profession: 'corpse' }
+        effect: { type: 'unlock_profession', profession: 'corpse' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'ngu_thu_quyet': {
         id: 'ngu_thu_quyet',
@@ -168,7 +210,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 1500,
         description: 'Bí tịch ghi chép cách thuần phục và điều khiển linh thú, mở khóa nghề Ngự Thú Sư.',
-        effect: { type: 'unlock_profession', profession: 'beast' }
+        effect: { type: 'unlock_profession', profession: 'beast' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'token_merchant': {
         id: 'token_merchant',
@@ -177,7 +222,10 @@ export const ITEMS = {
         icon: '🏷️',
         quality: 'Linh Khí',
         price: 5000,
-        description: 'Lệnh bài của một thương hội lớn, giúp nhận được sự tin tưởng và ưu đãi từ các thương nhân.'
+        description: 'Lệnh bài của một thương hội lớn, giúp nhận được sự tin tưởng và ưu đãi từ các thương nhân.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'dan_giai_doc': {
         id: 'dan_giai_doc',
@@ -186,7 +234,10 @@ export const ITEMS = {
         icon: '💊',
         quality: 'Pháp Khí',
         price: 200,
-        description: 'Đan dược giúp hóa giải các loại độc tố cơ bản và chướng khí.'
+        description: 'Đan dược giúp hóa giải các loại độc tố cơ bản và chướng khí.',
+        categories: [
+            { category: 'dan_duoc', subcategory: 'giai_doc' }
+        ]
     },
     'hoa_nguyen_dan': {
         id: 'hoa_nguyen_dan',
@@ -196,6 +247,9 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 8000,
         description: 'Thần đan trân quý có khả năng trung hòa pháp lực xung đột khi thay đổi công pháp chủ tu, bảo toàn toàn bộ tu vi và đạo cơ. Cực kỳ hiếm thấy, chỉ các Luyện Dược Đại Sư mới có thể chế tác.',
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'bp_tran_phap': {
         id: 'bp_tran_phap',
@@ -204,7 +258,10 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Pháp Khí',
         price: 1000,
-        description: 'Ghi chép về các trận pháp cơ bản, giúp hiểu rõ hơn về cấm chế và trận pháp bảo vệ.'
+        description: 'Ghi chép về các trận pháp cơ bản, giúp hiểu rõ hơn về cấm chế và trận pháp bảo vệ.',
+        categories: [
+            { category: 'khoi_loi', subcategory: 'linh_khoi' }
+        ]
     },
 
     // --- ALCHEMY RECIPE SCROLLS ---
@@ -216,7 +273,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 300,
         description: 'Ghi chép cách luyện chế [[ngung_khi_dan|Ngưng Khí Đan]] từ [[linh_thao_thap|Linh Thảo Thấp Phẩm]].',
-        effect: { type: 'learn_recipe', value: 'ngung_khi_dan' }
+        effect: { type: 'learn_recipe', value: 'ngung_khi_dan' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'dp_than_tam_dan': {
         id: 'dp_than_tam_dan',
@@ -226,7 +286,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 500,
         description: 'Ghi chép cách luyện chế [[thanh_tam_dan|Thanh Tâm Đan]] từ [[linh_thao_10y|Linh Thảo (10 năm)]] và [[chu_sa_muc|Chu Sa Linh Mực]].',
-        effect: { type: 'learn_recipe', value: 'thanh_tam_dan' }
+        effect: { type: 'learn_recipe', value: 'thanh_tam_dan' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'dp_truc_co_dan': {
         id: 'dp_truc_co_dan',
@@ -236,7 +299,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 2000,
         description: 'Ghi chép cách luyện chế [[truc_co_dan|Trúc Cơ Đan]] từ [[linh_thao_100y|Linh Thảo (100 năm)]], [[yeu_dan_so|Yêu Đan Sơ Cấp]] và [[hoa_tinh_thach|Hỏa Tinh Thạch]].',
-        effect: { type: 'learn_recipe', value: 'truc_co_dan' }
+        effect: { type: 'learn_recipe', value: 'truc_co_dan' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'dp_bo_nguyen_dan': {
         id: 'dp_bo_nguyen_dan',
@@ -246,7 +312,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 600,
         description: 'Ghi chép cách luyện chế [[bo_nguyen_dan|Bổ Nguyên Đan]] từ [[linh_thao_10y|Linh Thảo (10 năm)]] và [[yeu_huyet|Yêu Thú Tinh Huyết]].',
-        effect: { type: 'learn_recipe', value: 'bo_nguyen_dan' }
+        effect: { type: 'learn_recipe', value: 'bo_nguyen_dan' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'dp_ngung_anh_dan': {
         id: 'dp_ngung_anh_dan',
@@ -256,7 +325,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 10000,
         description: 'Đan phương luyện chế [[ngung_anh_dan|Ngưng Anh Đan]] từ [[linh_thao_1000y|Linh Thảo (1000 năm)]], [[yeu_dan_trung|Yêu Đan Trung Cấp]] và [[han_ngoc_tuy|Hàn Ngọc Tủy]].',
-        effect: { type: 'learn_recipe', value: 'ngung_anh_dan' }
+        effect: { type: 'learn_recipe', value: 'ngung_anh_dan' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
 
     // --- SMITHING BLUEPRINTS ---
@@ -268,7 +340,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 400,
         description: 'Bản vẽ rèn đúc [[thanh_hong_kiem|Thanh Hồng Kiếm]] từ [[huyen_thiet|Huyền Thiết]].',
-        effect: { type: 'learn_smithing_recipe', value: 'thanh_hong_kiem' }
+        effect: { type: 'learn_smithing_recipe', value: 'thanh_hong_kiem' },
+        categories: [
+            { category: 'luyen_khi', subcategory: 'ban_ve' }
+        ]
     },
     'bv_phi_kiem_tinh_ha': {
         id: 'bv_phi_kiem_tinh_ha',
@@ -278,7 +353,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1500,
         description: 'Bản vẽ rèn đúc [[phi_kiem_tinh_ha|Tinh Hà Phi Kiếm]] từ [[tinh_kim|Tinh Kim]] và [[huyen_thiet|Huyền Thiết]].',
-        effect: { type: 'learn_smithing_recipe', value: 'phi_kiem_tinh_ha' }
+        effect: { type: 'learn_smithing_recipe', value: 'phi_kiem_tinh_ha' },
+        categories: [
+            { category: 'luyen_khi', subcategory: 'ban_ve' }
+        ]
     },
     'bv_long_lan_giap': {
         id: 'bv_long_lan_giap',
@@ -288,7 +366,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 2500,
         description: 'Bản vẽ rèn đúc Long Lân Giáp.',
-        effect: { type: 'learn_smithing_recipe', value: 'long_lan_giap' }
+        effect: { type: 'learn_smithing_recipe', value: 'long_lan_giap' },
+        categories: [
+            { category: 'luyen_khi', subcategory: 'ban_ve' }
+        ]
     },
     'bv_bat_quai_kinh': {
         id: 'bv_bat_quai_kinh',
@@ -298,7 +379,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 800,
         description: 'Bản vẽ rèn đúc Bát Quái Kính.',
-        effect: { type: 'learn_smithing_recipe', value: 'bat_quai_kinh' }
+        effect: { type: 'learn_smithing_recipe', value: 'bat_quai_kinh' },
+        categories: [
+            { category: 'luyen_khi', subcategory: 'ban_ve' }
+        ]
     },
 
     // --- TALISMAN PATTERNS ---
@@ -310,7 +394,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 200,
         description: 'Phù văn cơ bản của hỏa hệ.',
-        effect: { type: 'learn_talisman_recipe', value: 'hoa_cau_phu' }
+        effect: { type: 'learn_talisman_recipe', value: 'hoa_cau_phu' },
+        categories: [
+            { category: 'phu_luc', subcategory: 'cong_kich' }
+        ]
     },
     'pv_kim_cuong_phu': {
         id: 'pv_kim_cuong_phu',
@@ -320,7 +407,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 500,
         description: 'Phù văn tăng phòng ngự.',
-        effect: { type: 'learn_talisman_recipe', value: 'kim_cuong_phu' }
+        effect: { type: 'learn_talisman_recipe', value: 'kim_cuong_phu' },
+        categories: [
+            { category: 'phu_luc', subcategory: 'phong_ngu' }
+        ]
     },
     'pv_than_hanh_phu': {
         id: 'pv_than_hanh_phu',
@@ -330,7 +420,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 400,
         description: 'Phù văn tăng tốc độ di chuyển.',
-        effect: { type: 'learn_talisman_recipe', value: 'than_hanh_phu' }
+        effect: { type: 'learn_talisman_recipe', value: 'than_hanh_phu' },
+        categories: [
+            { category: 'phu_luc', subcategory: 'don_thuat' }
+        ]
     },
     'pv_thun_di_phu': {
         id: 'pv_thun_di_phu',
@@ -340,7 +433,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1500,
         description: 'Phù văn dịch chuyển tức thời.',
-        effect: { type: 'learn_talisman_recipe', value: 'thun_di_phu' }
+        effect: { type: 'learn_talisman_recipe', value: 'thun_di_phu' },
+        categories: [
+            { category: 'phu_luc', subcategory: 'don_thuat' }
+        ]
     },
     'pv_thien_loi_phu': {
         id: 'pv_thien_loi_phu',
@@ -350,7 +446,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 5000,
         description: 'Phù văn dẫn lôi đình chi lực.',
-        effect: { type: 'learn_talisman_recipe', value: 'thien_loi_phu' }
+        effect: { type: 'learn_talisman_recipe', value: 'thien_loi_phu' },
+        categories: [
+            { category: 'phu_luc', subcategory: 'cong_kich' }
+        ]
     },
 
     // --- FORMATION DIAGRAMS ---
@@ -362,7 +461,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 1000,
         description: 'Học cách bố trí Tụ Linh Trận.',
-        effect: { type: 'learn_formation', value: 'tran_do_tu_linh' }
+        effect: { type: 'learn_formation', value: 'tran_do_tu_linh' },
+        categories: [
+            { category: 'tran_phap', subcategory: 'tu_linh_tran' }
+        ]
     },
     'td_ao_anh_tran': {
         id: 'td_ao_anh_tran',
@@ -372,7 +474,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 1500,
         description: 'Học cách bố trí Ảo Ảnh Trận.',
-        effect: { type: 'learn_formation', value: 'tran_do_ao_anh' }
+        effect: { type: 'learn_formation', value: 'tran_do_ao_anh' },
+        categories: [
+            { category: 'tran_phap', subcategory: 'huyen_tran' }
+        ]
     },
     'td_sat_kiem_tran': {
         id: 'td_sat_kiem_tran',
@@ -382,7 +487,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Học cách bố trí Sát Kiếm Trận.',
-        effect: { type: 'learn_formation', value: 'tran_do_sat_kiem' }
+        effect: { type: 'learn_formation', value: 'tran_do_sat_kiem' },
+        categories: [
+            { category: 'tran_phap', subcategory: 'cong_kich_tran' }
+        ]
     },
     'td_ho_tong_dai_tran': {
         id: 'td_ho_tong_dai_tran',
@@ -392,7 +500,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 20000,
         description: 'Học cách bố trí Hộ Tông Đại Trận.',
-        effect: { type: 'learn_formation', value: 'ho_tong_dai_tran' }
+        effect: { type: 'learn_formation', value: 'ho_tong_dai_tran' },
+        categories: [
+            { category: 'tran_phap', subcategory: 'phong_ngu_tran' }
+        ]
     },
 
     // --- PUPPET BLUEPRINTS ---
@@ -404,7 +515,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 1000,
         description: 'Hướng dẫn chế tạo Thiết Giáp Khôi Lỗi.',
-        effect: { type: 'learn_puppet_recipe', value: 'thiet_giap_khoi_loi' }
+        effect: { type: 'learn_puppet_recipe', value: 'thiet_giap_khoi_loi' },
+        categories: [
+            { category: 'luyen_khi', subcategory: 'ban_ve' }
+        ]
     },
     'bv_kiem_khoi': {
         id: 'bv_kiem_khoi',
@@ -414,7 +528,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 3000,
         description: 'Hướng dẫn chế tạo Kiếm Khôi.',
-        effect: { type: 'learn_puppet_recipe', value: 'kiem_khoi' }
+        effect: { type: 'learn_puppet_recipe', value: 'kiem_khoi' },
+        categories: [
+            { category: 'luyen_khi', subcategory: 'ban_ve' }
+        ]
     },
 
     // --- CORPSE REFINING RECIPES ---
@@ -426,7 +543,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 500,
         description: 'Ghi chép cách luyện chế Thi Binh cơ bản.',
-        effect: { type: 'learn_corpse_recipe', value: 'thi_binh' }
+        effect: { type: 'learn_corpse_recipe', value: 'thi_binh' },
+        categories: [
+            { category: 'khoi_loi', subcategory: 'thi_khoi' }
+        ]
     },
     'bp_thi_tuong': {
         id: 'bp_thi_tuong',
@@ -436,7 +556,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 2000,
         description: 'Ghi chép cách luyện chế Thi Tướng hung hãn.',
-        effect: { type: 'learn_corpse_recipe', value: 'thi_tuong' }
+        effect: { type: 'learn_corpse_recipe', value: 'thi_tuong' },
+        categories: [
+            { category: 'khoi_loi', subcategory: 'thi_khoi' }
+        ]
     },
     'bp_dong_giap_thi': {
         id: 'bp_dong_giap_thi',
@@ -446,7 +569,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Ghi chép cách luyện chế Đồng Giáp Thi đao thương bất nhập.',
-        effect: { type: 'learn_corpse_recipe', value: 'dong_giap_thi' }
+        effect: { type: 'learn_corpse_recipe', value: 'dong_giap_thi' },
+        categories: [
+            { category: 'khoi_loi', subcategory: 'thi_khoi' }
+        ]
     },
 
     // Tiêu hao
@@ -458,7 +584,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 1,
         description: 'Đan dược giúp tu sĩ không cần ăn uống, duy trì sinh mệnh khi bế quan (mỗi ngày bế quan tiêu hao 1 viên). Sử dụng riêng lẻ giúp tăng nhẹ tốc độ tu luyện trong 1 giờ.',
-        effect: { type: 'buff', stat: 'tu_vi_speed', value: 1.1, duration: 3600 }
+        effect: { type: 'buff', stat: 'tu_vi_speed', value: 1.1, duration: 3600 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'ngo_dao_tra': {
         id: 'ngo_dao_tra',
@@ -468,7 +597,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 800,
         description: 'Loại trà đặc chế từ linh thảo trăm năm và suối ngộ đạo. Uống vào tâm trí thêm minh mẫn, tốc độ lĩnh ngộ công pháp tăng gấp đôi trong 2 giờ.',
-        effect: { type: 'technique_mastery_buff', value: 2.0, duration: 7200 }
+        effect: { type: 'technique_mastery_buff', value: 2.0, duration: 7200 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'tu_luyen' }
+        ]
     },
     'ngo_dao_dan': {
         id: 'ngo_dao_dan',
@@ -478,7 +610,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 5000,
         description: 'Viên đan chắt lọc từ tinh hoa ngộ tính nghìn năm. Uống vào ngay lập tức lĩnh ngộ được đại đạo thiên địa, tức thì tăng 500 điểm thuần thục cho toàn bộ công pháp đang trang bị.',
-        effect: { type: 'technique_mastery', value: 500 }
+        effect: { type: 'technique_mastery', value: 500 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'tu_luyen' }
+        ]
     },
     'bach_hoa_linh_tuu': {
         id: 'bach_hoa_linh_tuu',
@@ -488,7 +623,10 @@ export const ITEMS = {
         icon: '🍶',
         price: 300,
         description: 'Linh tửu trứ danh chắt lọc từ tinh hoa trăm loài hoa chứa linh khí. Uống vào giúp nâng cao sảng khoái tinh thần, hồi phục ngay lập tức 50 Thể lực.',
-        effect: { type: 'restore', stamina: 50 }
+        effect: { type: 'restore', stamina: 50 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'tich_coc_thao': {
         id: 'tich_coc_thao',
@@ -497,7 +635,10 @@ export const ITEMS = {
         icon: '🌿',
         quality: 'Phàm Khí',
         price: 10,
-        description: 'Loại thảo dược đặc biệt chứa chất dinh dưỡng cực kỳ cô đọng, là nguyên liệu chính luyện chế Tịch Cốc Đan.'
+        description: 'Loại thảo dược đặc biệt chứa chất dinh dưỡng cực kỳ cô đọng, là nguyên liệu chính luyện chế Tịch Cốc Đan.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'linh_coc': {
         id: 'linh_coc',
@@ -506,7 +647,10 @@ export const ITEMS = {
         icon: '🌾',
         quality: 'Phàm Khí',
         price: 5,
-        description: 'Loại linh cốc thường thấy ở Nhân giới, hạt lúa lấp lánh như trân châu tỏa ra linh khí loãng, dùng để bổ sung sinh cơ cho tu sĩ cấp thấp.'
+        description: 'Loại linh cốc thường thấy ở Nhân giới, hạt lúa lấp lánh như trân châu tỏa ra linh khí loãng, dùng để bổ sung sinh cơ cho tu sĩ cấp thấp.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'dp_tich_coc_dan': {
         id: 'dp_tich_coc_dan',
@@ -516,7 +660,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 100,
         description: 'Ghi chép cách luyện chế [[tich_coc_dan|Tịch Cốc Đan]] từ [[tich_coc_thao|Tịch Cốc Thảo]] và [[linh_coc|Phàm Cấp Linh Cốc]].',
-        effect: { type: 'learn_recipe', value: 'tich_coc_dan' }
+        effect: { type: 'learn_recipe', value: 'tich_coc_dan' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'ngung_khi_dan': {
         id: 'ngung_khi_dan',
@@ -526,7 +673,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 150,
         description: 'Gia tăng 500 linh khí ngay lập tức.',
-        effect: { type: 'tu_vi', value: 500 }
+        effect: { type: 'tu_vi', value: 500 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'tu_luyen' }
+        ]
     },
     'linh_thao_thap': {
         id: 'linh_thao_thap',
@@ -535,7 +685,10 @@ export const ITEMS = {
         icon: '🌿',
         quality: 'Phàm Khí',
         price: 20,
-        description: 'Loại linh thảo sơ cấp cực kỳ phổ biến trong Phàm Nhân Tu Tiên. Hàn Lập từng dùng Thanh Phục Thảo để chế luyện lượng lớn Ngưng Khí Đan.'
+        description: 'Loại linh thảo sơ cấp cực kỳ phổ biến trong Phàm Nhân Tu Tiên. Hàn Lập từng dùng Thanh Phục Thảo để chế luyện lượng lớn Ngưng Khí Đan.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'linh_thao_trung': {
         id: 'linh_thao_trung',
@@ -544,7 +697,10 @@ export const ITEMS = {
         icon: '🍃',
         quality: 'Linh Khí',
         price: 100,
-        description: 'Linh thảo trung phẩm có màu tím lam nhạt đặc trưng của phái Lạc Vân Tông, chứa linh lực vững vàng, thích hợp luyện chế đan dược Trúc Cơ.'
+        description: 'Linh thảo trung phẩm có màu tím lam nhạt đặc trưng của phái Lạc Vân Tông, chứa linh lực vững vàng, thích hợp luyện chế đan dược Trúc Cơ.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'hoa_diem_thao': {
         id: 'hoa_diem_thao',
@@ -553,7 +709,10 @@ export const ITEMS = {
         icon: '🔥',
         quality: 'Linh Khí',
         price: 250,
-        description: 'Thảo dược nóng rực, sinh trưởng ở nơi có hỏa khí nồng đậm.'
+        description: 'Thảo dược nóng rực, sinh trưởng ở nơi có hỏa khí nồng đậm.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'han_tuy_hoa': {
         id: 'han_tuy_hoa',
@@ -562,7 +721,10 @@ export const ITEMS = {
         icon: '❄️',
         quality: 'Linh Khí',
         price: 250,
-        description: 'Hoa trắng như tuyết, mang theo hàn khí thấu xương.'
+        description: 'Hoa trắng như tuyết, mang theo hàn khí thấu xương.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_dich', subSubcategory: 'thien_dia' }
+        ]
     },
     'u_minh_hoa': {
         id: 'u_minh_hoa',
@@ -571,7 +733,10 @@ export const ITEMS = {
         icon: '💀',
         quality: 'Linh Khí',
         price: 500,
-        description: 'Hoa mọc nơi âm khí nồng đậm, u tối.'
+        description: 'Hoa mọc nơi âm khí nồng đậm, u tối.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'truc_co_dan': {
         id: 'truc_co_dan',
@@ -581,7 +746,10 @@ export const ITEMS = {
         icon: '💎',
         description: 'Đan dược chí bảo giúp phàm nhân đúc thành đạo cơ. Luyện chế từ Linh Thảo (100 năm), Yêu Đan Sơ Cấp và Hỏa Tinh Thạch.',
         price: 5000,
-        stats: { breakthroughRate: 0.3 }
+        stats: { breakthroughRate: 0.3 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'dot_pha' }
+        ]
     },
     'ket_dan_dan': {
         id: 'ket_dan_dan',
@@ -591,7 +759,10 @@ export const ITEMS = {
         icon: '💊',
         price: 15000,
         description: 'Đan dược quý hiếm giúp tu sĩ ngưng tụ Kim Đan chí thuần, tăng 20% tỷ lệ đột phá Kết Đan.',
-        stats: { breakthroughRate: 0.20 }
+        stats: { breakthroughRate: 0.20 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'dot_pha' }
+        ]
     },
     'nguyen_anh_dan': {
         id: 'nguyen_anh_dan',
@@ -601,7 +772,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 85000,
         description: 'Luyện chế từ tà đan cấp cao, đan dược phụ trợ tối thượng giúp ngưng kết Nguyên Anh, tăng mạnh thần thức và tỉ lệ đột phá Nguyên Anh.',
-        effect: { breakthroughRate: 0.15, spirit: 500 }
+        effect: { breakthroughRate: 0.15, spirit: 500 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'dot_pha' }
+        ]
     },
     'hoa_than_dan': {
         id: 'hoa_than_dan',
@@ -611,7 +785,10 @@ export const ITEMS = {
         icon: '💊',
         price: 150000,
         description: 'Chí tôn đan dược hỗ trợ thần thức thăng hoa, câu thông thiên địa đột phá Hóa Thần cảnh, tăng 10% tỷ lệ đột phá Hóa Thần.',
-        stats: { breakthroughRate: 0.10 }
+        stats: { breakthroughRate: 0.10 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'dot_pha' }
+        ]
     },
     'bo_nguyen_dan': {
         id: 'bo_nguyen_dan',
@@ -621,7 +798,10 @@ export const ITEMS = {
         icon: '🍶',
         price: 450,
         description: 'Đan dược bồi bổ nguyên khí, hồi phục 100 Khí Huyết, 50 Linh Lực và 30 Thể Lực. Kết hợp từ Linh Thảo (10 năm) và Yêu Thú Tinh Huyết.',
-        effect: { type: 'restore', hp: 100, mana: 50, stamina: 30 }
+        effect: { type: 'restore', hp: 100, mana: 50, stamina: 30 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'hoi_phuc' }
+        ]
     },
     'thuy_tinh': {
         id: 'thuy_tinh',
@@ -630,7 +810,10 @@ export const ITEMS = {
         icon: '💠',
         quality: 'Pháp Khí',
         price: 200,
-        description: 'Một loại khoáng thạch chứa thủy tính linh lực.'
+        description: 'Một loại khoáng thạch chứa thủy tính linh lực.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'ma_thach': {
         id: 'ma_thach',
@@ -639,7 +822,10 @@ export const ITEMS = {
         icon: '🌑',
         quality: 'Linh Khí',
         price: 350,
-        description: 'Đá chứa ma khí loãng, dùng cho các loại đan dược đặc thù.'
+        description: 'Đá chứa ma khí loãng, dùng cho các loại đan dược đặc thù.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
 
     // =====================================================================
@@ -654,7 +840,10 @@ export const ITEMS = {
         icon: '🪨',
         quality: 'Linh Khí',
         price: 200,
-        description: 'Loại sắt đen hấp thu linh khí thiên nhiên, cứng chắc hơn sắt thường nhiều lần. Nguyên liệu cơ bản để rèn đúc pháp khí kiếm đạo.'
+        description: 'Loại sắt đen hấp thu linh khí thiên nhiên, cứng chắc hơn sắt thường nhiều lần. Nguyên liệu cơ bản để rèn đúc pháp khí kiếm đạo.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'tinh_kim': {
         id: 'tinh_kim',
@@ -663,7 +852,10 @@ export const ITEMS = {
         icon: '✨',
         quality: 'Pháp Bảo',
         price: 800,
-        description: 'Kim loại quý hiếm tinh luyện từ thiên thạch rơi xuống, chứa đựng thiên địa linh khí cực kỳ dồi dào. Nguyên liệu bậc cao để rèn kiếm pháp bảo hạng nhất.'
+        description: 'Kim loại quý hiếm tinh luyện từ thiên thạch rơi xuống, chứa đựng thiên địa linh khí cực kỳ dồi dào. Nguyên liệu bậc cao để rèn kiếm pháp bảo hạng nhất.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
 
     // --- Thiên Kiếm Tông: kiếm tinh thạch + bản vẽ phi kiếm ---
@@ -675,7 +867,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 500,
         description: 'Viên tinh thạch được Thiên Kiếm Tông kết tinh từ kiếm ý thuần khiết. Sử dụng để tăng ngay 1000 Tu Vi và giúp lĩnh ngộ kiếm đạo thêm sâu sắc.',
-        effect: { type: 'tu_vi', value: 1000 }
+        effect: { type: 'tu_vi', value: 1000 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'phi_kiem_tinh_ha': {
         id: 'phi_kiem_tinh_ha',
@@ -685,7 +880,10 @@ export const ITEMS = {
         icon: '⚔️',
         description: 'Phi kiếm rèn từ Tinh Kim thuần chính, tỏa ra ánh sáng huy hoàng như dải ngân hà, phù hợp với tu sĩ kiếm đạo cấp cao.',
         price: 8000,
-        stats: { atk: 150, spd: 20, pierce: 0.1 }
+        stats: { atk: 150, spd: 20, pierce: 0.1 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'dinh_giai' }
+        ]
     },
     'bv_phi_kiem_tinh_ha': {
         id: 'bv_phi_kiem_tinh_ha',
@@ -707,7 +905,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 400,
         description: 'Túi thần sa đặc chế của Hoàng Phong Cốc, chứa đựng phong hệ linh khí cực đậm đặc. Sử dụng trước trận để tạo lớp phòng ngự cát, giảm 20% sát thương nhận vào trong 1 trận.',
-        effect: { type: 'buff', stat: 'def_pct', value: 0.2, duration: 999 }
+        effect: { type: 'buff', stat: 'def_pct', value: 0.2, duration: 999 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     // --- Cự Kiếm Môn: giáp trọng cương kiện ---
@@ -719,7 +920,10 @@ export const ITEMS = {
         icon: '🛡️',
         description: 'Bộ giáp nặng rèn từ Huyền Thiết, dày dặn như tường thành, đặc trưng của đệ tử Cự Kiếm Môn. Tốc độ giảm nhưng phòng ngự cực kỳ vững chắc.',
         price: 3500,
-        stats: { def: 120, maxHp: 200, spd: -10 }
+        stats: { def: 120, maxHp: 200, spd: -10 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'dinh_giai' }
+        ]
     },
 
     // --- Thiên Khuyết Bảo: đá luyện cương giáp ---
@@ -730,7 +934,10 @@ export const ITEMS = {
         icon: '🪨',
         quality: 'Pháp Khí',
         price: 350,
-        description: 'Đá khoáng cứng như sắt thép, hấp thụ kim hệ linh khí dày đặc. Thiên Khuyết Bảo dùng để gia cố và luyện chế hộ thể cương giáp bậc cao.'
+        description: 'Đá khoáng cứng như sắt thép, hấp thụ kim hệ linh khí dày đặc. Thiên Khuyết Bảo dùng để gia cố và luyện chế hộ thể cương giáp bậc cao.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
 
     // --- Hóa Đao Ổ: linh sa mài đao ---
@@ -742,7 +949,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 450,
         description: 'Linh sa đặc chế của Hóa Đao Ổ, chứa đựng đao kình ngưng tụ nhiều năm. Mài lên vũ khí trước trận chiến, tăng 20% ATK trong toàn bộ 1 trận.',
-        effect: { type: 'buff', stat: 'atk_pct', value: 0.2, duration: 999 }
+        effect: { type: 'buff', stat: 'atk_pct', value: 0.2, duration: 999 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     // --- Thanh Hư Môn: ngọc lộ dưỡng khí ---
@@ -754,7 +964,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 600,
         description: 'Giọt ngọc lộ tinh khiết thu hoạch từ đỉnh núi Thanh Hư vào lúc bình minh, thanh lọc linh mạch. Hồi phục 30% Khí Huyết, 30% Pháp Lực và 50 Thể Lực ngay lập tức.',
-        effect: { type: 'restore', hp: 0.3, mana: 0.3, stamina: 50 }
+        effect: { type: 'restore', hp: 0.3, mana: 0.3, stamina: 50 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'hoi_phuc' }
+        ]
     },
 
     // --- Yểm Nguyệt Tông: đan dược song tu ---
@@ -766,7 +979,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 2000,
         description: 'Đan dược bí truyền của Yểm Nguyệt Tông, điều hòa âm dương linh khí trong kinh mạch. Sử dụng tăng tốc độ tu luyện x1.5 trong 6 giờ và giảm 30% rủi ro tẩu hỏa.',
-        effect: { type: 'buff', stat: 'tuViSpeed', value: 1.5, duration: 21600000 }
+        effect: { type: 'buff', stat: 'tuViSpeed', value: 1.5, duration: 21600000 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'tu_luyen' }
+        ]
     },
 
     // --- Hợp Hoan Tông: mị hương ---
@@ -778,7 +994,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 800,
         description: 'Mị hương dạng lỏng tuyệt mật của Hợp Hoan Tông, tỏa ra ảo khí làm rối loạn tinh thần địch. Dùng trong trận giảm 35% tốc độ tấn công của địch trong 2 lượt.',
-        effect: { type: 'debuff', stat: 'enemy_spd', value: 0.35, duration: 2 }
+        effect: { type: 'debuff', stat: 'enemy_spd', value: 0.35, duration: 2 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     // --- Ma Diễm Môn: đá chứa ma hỏa ---
@@ -789,7 +1008,10 @@ export const ITEMS = {
         icon: '🔥',
         quality: 'Linh Khí',
         price: 500,
-        description: 'Đá khoáng hình thành ở vùng nham thạch sôi sục, chứa đựng ma hỏa tinh chất cực kỳ nóng cháy. Ma Diễm Môn dùng làm nguyên liệu luyện đan ma đạo và nâng cấp pháp bảo hỏa hệ.'
+        description: 'Đá khoáng hình thành ở vùng nham thạch sôi sục, chứa đựng ma hỏa tinh chất cực kỳ nóng cháy. Ma Diễm Môn dùng làm nguyên liệu luyện đan ma đạo và nâng cấp pháp bảo hỏa hệ.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
 
     // --- Thiên Sát Tông: linh phiên sát khí ---
@@ -801,7 +1023,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 700,
         description: 'Thẻ phiên khắc bằng xương người, ngâm trong sát khí ngàn chiến nhiều năm — đặc sản Thiên Sát Tông. Kích hoạt trước trận chiến tăng 25% ATK và 10% Crit Rate trong toàn trận.',
-        effect: { type: 'buff', stat: 'atk_pct', value: 0.25, duration: 999 }
+        effect: { type: 'buff', stat: 'atk_pct', value: 0.25, duration: 999 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     // --- Linh Thú Sơn: ấn linh thú ---
@@ -813,7 +1038,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1200,
         description: 'Ấn tín linh thú bí truyền của Linh Thú Sơn, chứa đựng thú ý khiến mọi linh thú bản năng thần phục. Sử dụng tăng 30% tỷ lệ thành công khi thu phục linh thú trong 24 giờ.',
-        effect: { type: 'buff', stat: 'beastSuccess', value: 0.3, duration: 86400000 }
+        effect: { type: 'buff', stat: 'beastSuccess', value: 0.3, duration: 86400000 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     // --- Huyền Âm Cốc: hàn khí & pháp bảo oan hồn ---
@@ -825,7 +1053,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 800,
         description: 'Tinh hoa hàn khí thấu xương từ sâu đáy Huyền Âm Cốc, ngưng kết thành giọt băng tinh khiết. Sử dụng giúp tăng 1.5x Tốc độ tu luyện thần thức trong 12 giờ, nhưng người dùng sẽ chịu hàn khí xâm thực (Giảm tạm thời 10% Khí Huyết tối đa).',
-        effect: { type: 'buff', stat: 'soulPs', value: 1.5, duration: 43200000, sideEffect: { stat: 'maxHp_pct', value: -0.1 } }
+        effect: { type: 'buff', stat: 'soulPs', value: 1.5, duration: 43200000, sideEffect: { stat: 'maxHp_pct', value: -0.1 } },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'am_hon_phien': {
         id: 'am_hon_phien',
@@ -835,7 +1066,10 @@ export const ITEMS = {
         icon: '🏴',
         description: 'Pháp bảo ma đạo Huyền Âm Cốc, bên trong giam cầm vô số oan hồn tàn ác. Công kích cuồng bạo nhưng ma khí từ oan hồn ăn mòn cơ thể người dùng.',
         price: 3000,
-        stats: { atk: 180, maxHp: -100, spd: 15 }
+        stats: { atk: 180, maxHp: -100, spd: 15 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'dinh_giai' }
+        ]
     },
 
     // --- Lạc Vân Tông: dược thảo & tiên đan bí truyền ---
@@ -846,7 +1080,10 @@ export const ITEMS = {
         icon: '🌱',
         quality: 'Linh Khí',
         price: 350,
-        description: 'Linh thảo đặc thù chỉ mọc ở sườn núi Lạc Vân quanh năm mây phủ, ngậm sương trời tinh khiết. Là nguyên liệu không thể thiếu trong các loại đan dược thượng phẩm của Lạc Vân Tông.'
+        description: 'Linh thảo đặc thù chỉ mọc ở sườn núi Lạc Vân quanh năm mây phủ, ngậm sương trời tinh khiết. Là nguyên liệu không thể thiếu trong các loại đan dược thượng phẩm của Lạc Vân Tông.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'lac_van_tien_dan': {
         id: 'lac_van_tien_dan',
@@ -856,7 +1093,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 5000,
         description: 'Đan dược bí truyền danh tiếng của Lạc Vân Tông, kết hợp từ vạn loại linh thảo thượng phẩm. Khi dùng lập tức hồi phục 100% Khí Huyết và Pháp Lực, đồng thời tăng 10% Tỷ lệ đột phá cảnh giới trong 24 giờ.',
-        effect: { type: 'restore', hp: 1.0, mana: 1.0, breakthroughBuff: 0.1, duration: 86400000 }
+        effect: { type: 'restore', hp: 1.0, mana: 1.0, breakthroughBuff: 0.1, duration: 86400000 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     // --- Thiên Tinh Tông: tinh thạch & trận bàn tinh tú ---
@@ -867,7 +1107,10 @@ export const ITEMS = {
         icon: '☄️',
         quality: 'Linh Khí',
         price: 450,
-        description: 'Khoáng thạch đặc biệt hấp thụ linh quang của ngàn vì tinh tú, tỏa ra ánh sáng lấp lánh lạnh lẽo. Nguyên liệu cốt lõi để Thiên Tinh Tông khắc họa trận bàn tinh tú thượng phẩm.'
+        description: 'Khoáng thạch đặc biệt hấp thụ linh quang của ngàn vì tinh tú, tỏa ra ánh sáng lấp lánh lạnh lẽo. Nguyên liệu cốt lõi để Thiên Tinh Tông khắc họa trận bàn tinh tú thượng phẩm.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'tinh_quang_tran_ban': {
         id: 'tinh_quang_tran_ban',
@@ -877,7 +1120,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1500,
         description: 'Trận bàn chế tác sẵn mang đặc trưng tinh tú của Thiên Tinh Tông. Kích hoạt trước trận đấu để triển khai một trận pháp tinh quang, tăng 25% Né tránh và 15% Thủ trong toàn bộ trận đấu.',
-        effect: { type: 'buff', stats: { dodge: 0.25, def_pct: 0.15 }, duration: 999 }
+        effect: { type: 'buff', stats: { dodge: 0.25, def_pct: 0.15 }, duration: 999 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     // --- Quỷ Linh Môn: cốt liệu & độc đan bá đạo ---
@@ -888,7 +1134,10 @@ export const ITEMS = {
         icon: '🦴',
         quality: 'Linh Khí',
         price: 400,
-        description: 'Xương cốt của tà tu đã trải qua vạn oán hồn quán chú, mang theo quỷ khí đậm đặc thấu tủy. Nguyên liệu ma đạo cốt lõi để Quỷ Linh Môn luyện chế độc đan và quỷ khí trấn môn.'
+        description: 'Xương cốt của tà tu đã trải qua vạn oán hồn quán chú, mang theo quỷ khí đậm đặc thấu tủy. Nguyên liệu ma đạo cốt lõi để Quỷ Linh Môn luyện chế độc đan và quỷ khí trấn môn.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'tuyet_huyet_hac_dan': {
         id: 'tuyet_huyet_hac_dan',
@@ -898,7 +1147,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 1000,
         description: 'Độc đan bá đạo của Quỷ Linh Môn, luyện từ Vạn Hồn Cốt và huyết khí cực âm. Sử dụng trong trận đấu bộc phát 40% Công Kích tức thì, nhưng độc tính khiến người dùng tự mất 5% Khí Huyết mỗi lượt.',
-        effect: { type: 'buff', stat: 'atk_pct', value: 0.4, sideEffect: { type: 'dot', stat: 'hp_pct', value: -0.05 }, duration: 999 }
+        effect: { type: 'buff', stat: 'atk_pct', value: 0.4, sideEffect: { type: 'dot', stat: 'hp_pct', value: -0.05 }, duration: 999 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     // --- Ngự Linh Tông: trùng noãn & hấp huyết trùng ---
@@ -909,7 +1161,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Linh Khí',
         price: 600,
-        description: 'Trứng của một loài kỳ trùng thượng cổ cực hiếm. Lớp vỏ lấp lánh như ngọc bảo, bên trong ẩn chứa kịch độc và linh khí ngự thú dồi dào.'
+        description: 'Trứng của một loài kỳ trùng thượng cổ cực hiếm. Lớp vỏ lấp lánh như ngọc bảo, bên trong ẩn chứa kịch độc và linh khí ngự thú dồi dào.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'tui_hap_huyet_trung': {
         id: 'tui_hap_huyet_trung',
@@ -919,7 +1174,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 850,
         description: 'Túi da bí truyền Ngự Linh Tông tàng trữ hàng ngàn con Hấp Huyết Trùng hung hãn. Ném vào đối thủ để chúng cắn xé liên tục, mỗi lượt hút 10% Khí Huyết của địch hồi cho bản thân trong 3 lượt.',
-        effect: { type: 'debuff', stat: 'lifesteal_dot', value: 0.1, duration: 3 }
+        effect: { type: 'debuff', stat: 'lifesteal_dot', value: 0.1, duration: 3 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     // --- Khôi Âm Tông: u thiết mộc & cốt ấn cường hóa ---
@@ -930,7 +1188,10 @@ export const ITEMS = {
         icon: '🪵',
         quality: 'Linh Khí',
         price: 450,
-        description: 'Gỗ cổ thụ vạn năm ngâm trong U Minh tuyền thủy tối tăm, cứng hơn cả sắt thép nhưng lại nhẹ tựa lông hồng. Nguyên liệu hoàn hảo để chế tạo thân vỏ khôi lỗi cấp cao.'
+        description: 'Gỗ cổ thụ vạn năm ngâm trong U Minh tuyền thủy tối tăm, cứng hơn cả sắt thép nhưng lại nhẹ tựa lông hồng. Nguyên liệu hoàn hảo để chế tạo thân vỏ khôi lỗi cấp cao.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'khoi_loi_cot_an': {
         id: 'khoi_loi_cot_an',
@@ -940,7 +1201,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 900,
         description: 'Bùa ấn Khôi Âm Tông luyện từ xác chết của cường giả, khắc vào huyệt đạo trước trận đấu để cường hóa thân thể tựa khôi lỗi. Giảm 30% sát thương vật lý nhận vào nhưng giảm 20% Tốc độ đánh.',
-        effect: { type: 'buff', stats: { physRes: 0.3, spd_pct: -0.2 }, duration: 999 }
+        effect: { type: 'buff', stats: { physRes: 0.3, spd_pct: -0.2 }, duration: 999 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     'thanh_hong_kiem': {
@@ -952,7 +1216,10 @@ export const ITEMS = {
         icon: '⚔️',
         description: 'Thanh kiếm tỏa ra ánh sáng xanh lục, sắc bén vô cùng.',
         price: 1500,
-        stats: { atk: 50, spd: 5 }
+        stats: { atk: 50, spd: 5 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'dinh_giai' }
+        ]
     },
     'thanh_tam_dan': {
         id: 'thanh_tam_dan',
@@ -962,7 +1229,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 200,
         description: 'Hồi phục 50% Khí Huyết ngay lập tức. Luyện chế từ Linh Thảo (10 năm) và Chu Sa Linh Mực.',
-        effect: { type: 'heal', value: 0.5 }
+        effect: { type: 'heal', value: 0.5 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     // Trang bị
@@ -974,7 +1244,10 @@ export const ITEMS = {
         icon: '🗡️',
         description: 'Kiếm gỗ dành cho đệ tử nhập môn, sát thương không đáng kể.',
         price: 50,
-        stats: { atk: 5 }
+        stats: { atk: 5 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'ao_bo_so_cap': {
         id: 'ao_bo_so_cap',
@@ -984,7 +1257,10 @@ export const ITEMS = {
         icon: '👘',
         description: 'Áo vải thô sơ, chỉ có tác dụng che thân.',
         price: 30,
-        stats: { def: 2 }
+        stats: { def: 2 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'nhan_dong_nat': {
         id: 'nhan_dong_nat',
@@ -994,7 +1270,10 @@ export const ITEMS = {
         icon: '💍',
         description: 'Một chiếc nhẫn bằng đồng cũ kỹ.',
         price: 80,
-        stats: { spd: 1 }
+        stats: { spd: 1 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'tui_tru_vat_so': {
         id: 'tui_tru_vat_so',
@@ -1006,7 +1285,10 @@ export const ITEMS = {
         price: 500,
         description: 'Sử dụng để mở rộng thêm một túi trữ vật mới với 10 ô chứa đồ.',
         action: 'expand_inventory',
-        stats: { slots: 10 }
+        stats: { slots: 10 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'tui_tru_vat_trung': {
         id: 'tui_tru_vat_trung',
@@ -1018,7 +1300,10 @@ export const ITEMS = {
         price: 5000,
         description: 'Sử dụng để mở rộng thêm một túi trữ vật mới với 30 ô chứa đồ.',
         action: 'expand_inventory',
-        stats: { slots: 30 }
+        stats: { slots: 30 },
+        categories: [
+            { category: 'ky_vat_di_bao', subcategory: 'default' }
+        ]
     },
     'tui_tru_vat_cao': {
         id: 'tui_tru_vat_cao',
@@ -1030,7 +1315,10 @@ export const ITEMS = {
         price: 25000,
         description: 'Sử dụng để mở rộng thêm một túi trữ vật mới với 50 ô chứa đồ.',
         action: 'expand_inventory',
-        stats: { slots: 50 }
+        stats: { slots: 50 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'ho_tam_kinh': {
         id: 'ho_tam_kinh',
@@ -1043,7 +1331,10 @@ export const ITEMS = {
         price: 2000,
         stats: { def: 30, hp: 100, costMana: 5 },
         durability: 120,
-        maxDurability: 120
+        maxDurability: 120,
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'linh_thuyen_so': {
         id: 'linh_thuyen_so',
@@ -1056,7 +1347,10 @@ export const ITEMS = {
         price: 3000,
         stats: { spd: 20 },
         durability: 80,
-        maxDurability: 80
+        maxDurability: 80,
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'ngu_phong_phi_chu': {
         id: 'ngu_phong_phi_chu',
@@ -1069,7 +1363,10 @@ export const ITEMS = {
         price: 150000,
         stats: { spd: 80 },
         durability: 200,
-        maxDurability: 200
+        maxDurability: 200,
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+        ]
     },
     'truyen_tong_lenh': {
         id: 'truyen_tong_lenh',
@@ -1080,7 +1377,10 @@ export const ITEMS = {
         icon: '🏅',
         description: 'Tấm lệnh bài làm từ linh thạch cổ xưa phát ra hào quang xám nhạt, che chở tu sĩ trước áp lực xé rách của không gian khi đi qua Truyền Tống Trận.',
         price: 300000,
-        stats: { luck: 15 }
+        stats: { luck: 15 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'pha_khong_phu': {
         id: 'pha_khong_phu',
@@ -1090,7 +1390,10 @@ export const ITEMS = {
         tier: 'PHAP_BAO',
         icon: '📜',
         description: 'Linh phù quý hiếm dùng để phá vỡ chướng ngại không gian, bảo vệ nhục thân khi thăng hoa giới diện hoặc cưỡng ép dịch chuyển xuyên vách ngăn hư không (tiêu hao khi dùng).',
-        price: 50000
+        price: 50000,
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'tu_linh_chau': {
         id: 'tu_linh_chau',
@@ -1103,7 +1406,10 @@ export const ITEMS = {
         price: 5000,
         stats: { tuViSpeed: 1.2 },
         durability: 200,
-        maxDurability: 200
+        maxDurability: 200,
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'tran_ban_so': {
         id: 'tran_ban_so',
@@ -1116,7 +1422,10 @@ export const ITEMS = {
         price: 1200,
         stats: { formationPower: 1.1 },
         durability: 100,
-        maxDurability: 100
+        maxDurability: 100,
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'hon_dang_co': {
         id: 'hon_dang_co',
@@ -1130,7 +1439,10 @@ export const ITEMS = {
         stats: { soulExpSpeed: 1.5, def: 50, soulRepress: 20 },
         durability: 500,
         maxDurability: 500,
-        isRecognized: false
+        isRecognized: false,
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'ban_menh_phi_kiem': {
         id: 'ban_menh_phi_kiem',
@@ -1146,7 +1458,10 @@ export const ITEMS = {
         maxDurability: 1000,
         isLifeBound: true,
         spirit: 0,
-        level: 1
+        level: 1,
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'seed_linh_thao_trung': {
         id: 'seed_linh_thao_trung',
@@ -1155,7 +1470,10 @@ export const ITEMS = {
         icon: '🌿',
         quality: 'Linh Khí',
         price: 25,
-        description: 'Hạt giống Tử Lam Hoa, linh thảo trung phẩm có màu tím lam dịu mắt, sinh trưởng tương đối lâu.'
+        description: 'Hạt giống Tử Lam Hoa, linh thảo trung phẩm có màu tím lam dịu mắt, sinh trưởng tương đối lâu.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: 'duoi_100_nam' }
+        ]
     },
     'hoi_huyet_dan': {
         id: 'hoi_huyet_dan',
@@ -1165,7 +1483,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 50,
         description: 'Thuốc cầm máu cơ bản, hồi phục 20% Khí Huyết.',
-        effect: { type: 'heal', value: 0.2 }
+        effect: { type: 'heal', value: 0.2 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'tri_thuong' }
+        ]
     },
 
     // --- SPIRITUAL STONES ---
@@ -1180,7 +1501,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 1,
         weight: 0.01,
-        description: 'Linh thạch phổ thông nhất, dùng cho giao dịch và tu luyện sơ cấp.'
+        description: 'Linh thạch phổ thông nhất, dùng cho giao dịch và tu luyện sơ cấp.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'ling_thach_trung': {
         id: 'ling_thach_trung',
@@ -1193,7 +1517,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 100,
         weight: 0.02,
-        description: 'Linh khí tinh thuần, 1 viên tương đương 100 Hạ Phẩm.'
+        description: 'Linh khí tinh thuần, 1 viên tương đương 100 Hạ Phẩm.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'ling_thach_thuong': {
         id: 'ling_thach_thuong',
@@ -1206,7 +1533,10 @@ export const ITEMS = {
         quality: 'Cổ Bảo',
         price: 10000,
         weight: 0.05,
-        description: 'Linh lực đậm đặc, dùng trong các giao dịch đấu giá hoặc đột phá.'
+        description: 'Linh lực đậm đặc, dùng trong các giao dịch đấu giá hoặc đột phá.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'ling_thach_cuc': {
         id: 'ling_thach_cuc',
@@ -1219,7 +1549,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 1000000,
         weight: 0.1,
-        description: 'Cực kỳ hiếm thấy, chứa đựng linh lực hóa lỏng vô tận.'
+        description: 'Cực kỳ hiếm thấy, chứa đựng linh lực hóa lỏng vô tận.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'hoa_linh_thach': {
         id: 'hoa_linh_thach',
@@ -1231,7 +1564,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 5,
         weight: 0.01,
-        description: 'Chứa hỏa linh khí, phù hợp cho hỏa tu và luyện đan.'
+        description: 'Chứa hỏa linh khí, phù hợp cho hỏa tu và luyện đan.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'bang_linh_thach': {
         id: 'bang_linh_thach',
@@ -1243,7 +1579,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 5,
         weight: 0.01,
-        description: 'Tỏa ra hàn khí lạnh thấu xương, phù hợp cho băng tu.'
+        description: 'Tỏa ra hàn khí lạnh thấu xương, phù hợp cho băng tu.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'loi_linh_thach': {
         id: 'loi_linh_thach',
@@ -1255,7 +1594,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 8,
         weight: 0.01,
-        description: 'Chứa lôi điện chi lực, cực kỳ bạo liệt.'
+        description: 'Chứa lôi điện chi lực, cực kỳ bạo liệt.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'moc_linh_thach': {
         id: 'moc_linh_thach',
@@ -1267,7 +1609,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 5,
         weight: 0.01,
-        description: 'Chứa sinh mệnh tinh hoa, hỗ trợ hồi phục và trồng trọt.'
+        description: 'Chứa sinh mệnh tinh hoa, hỗ trợ hồi phục và trồng trọt.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'ma_linh_thach': {
         id: 'ma_linh_thach',
@@ -1279,7 +1624,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 10,
         weight: 0.01,
-        description: 'Chứa ma khí loãng, dùng cho ma tu hoặc các tà thuật.'
+        description: 'Chứa ma khí loãng, dùng cho ma tu hoặc các tà thuật.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'kim_linh_thach': {
         id: 'kim_linh_thach',
@@ -1291,7 +1639,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 5,
         weight: 0.01,
-        description: 'Chứa kim hệ linh khí, vô cùng sắc bén và kiên cố.'
+        description: 'Chứa kim hệ linh khí, vô cùng sắc bén và kiên cố.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'tho_linh_thach': {
         id: 'tho_linh_thach',
@@ -1303,7 +1654,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 5,
         weight: 0.01,
-        description: 'Chứa thổ hệ linh khí, trầm ổn và dày nặng.'
+        description: 'Chứa thổ hệ linh khí, trầm ổn và dày nặng.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'tien_tinh': {
         id: 'tien_tinh',
@@ -1315,7 +1669,10 @@ export const ITEMS = {
         quality: 'Tiên Khí',
         price: 100000000,
         weight: 0.2,
-        description: 'Tinh thể ngưng tụ từ Tiên Khí, tài nguyên chiến lược của Tiên Giới.'
+        description: 'Tinh thể ngưng tụ từ Tiên Khí, tài nguyên chiến lược của Tiên Giới.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'hon_don_tinh': {
         id: 'hon_don_tinh',
@@ -1327,7 +1684,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 500000000,
         weight: 0.5,
-        description: 'Chứa đựng Hỗn Độn Khí thuở sơ khai, vô cùng quý giá.'
+        description: 'Chứa đựng Hỗn Độn Khí thuở sơ khai, vô cùng quý giá.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'hong_mong_tinh': {
         id: 'hong_mong_tinh',
@@ -1339,7 +1699,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 2000000000,
         weight: 1.0,
-        description: 'Chí bảo từ thời Hồng Mông, chứa đựng quy tắc của đại đạo.'
+        description: 'Chí bảo từ thời Hồng Mông, chứa đựng quy tắc của đại đạo.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'phe_thach': {
         id: 'phe_thach',
@@ -1349,7 +1712,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 0.1,
         weight: 0.01,
-        description: 'Linh thạch đã bị hút cạn linh khí, chỉ còn là đá vụn.'
+        description: 'Linh thạch đã bị hút cạn linh khí, chỉ còn là đá vụn.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
 
     // --- SPECIAL ENERGY SOURCES ---
@@ -1361,7 +1727,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1000,
         description: 'Tinh thể ngưng tụ từ ma khí đậm đặc, dùng để tăng Ma Khí.',
-        effect: { type: 'qi_absorb', qiType: 'ma_khi', amount: 500, purity: 'TINH_THUAN' }
+        effect: { type: 'qi_absorb', qiType: 'ma_khi', amount: 500, purity: 'TINH_THUAN' },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'tien_ngoc': {
         id: 'tien_ngoc',
@@ -1371,7 +1740,10 @@ export const ITEMS = {
         quality: 'Cổ Bảo',
         price: 50000,
         description: 'Ngọc thạch từ Tiên Giới, chứa đựng Tiên Khí tinh thuần.',
-        effect: { type: 'qi_absorb', qiType: 'tien_khi', amount: 1000, purity: 'CUC_PHAM' }
+        effect: { type: 'qi_absorb', qiType: 'tien_khi', amount: 1000, purity: 'CUC_PHAM' },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'hon_don_tinh_thach': {
         id: 'hon_don_tinh_thach',
@@ -1381,7 +1753,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 500000,
         description: 'Mảnh vỡ từ thuở khai thiên lập địa, chứa Hỗn Độn Khí cực kỳ nguy hiểm.',
-        effect: { type: 'qi_absorb', qiType: 'hon_don_khi', amount: 200, purity: 'DAO' }
+        effect: { type: 'qi_absorb', qiType: 'hon_don_khi', amount: 200, purity: 'DAO' },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'sinh_menh_thach': {
         id: 'sinh_menh_thach',
@@ -1391,7 +1766,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         description: 'Đá quý chứa đựng sinh cơ dồi dào, giúp tăng Sinh Khí.',
-        effect: { type: 'qi_absorb', qiType: 'sinh_khi', amount: 800, purity: 'TINH_THUAN' }
+        effect: { type: 'qi_absorb', qiType: 'sinh_khi', amount: 800, purity: 'TINH_THUAN' },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
 
     // --- DHARMA TREASURES (PHÁP BẢO) ---
@@ -1404,7 +1782,10 @@ export const ITEMS = {
         icon: '🗡️',
         description: 'Phi kiếm cấp thấp, tăng nhẹ công kích và tốc độ.',
         price: 800,
-        stats: { atk: 25, spd: 3 }
+        stats: { atk: 25, spd: 3 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'bat_quai_kinh': {
         id: 'bat_quai_kinh',
@@ -1415,7 +1796,10 @@ export const ITEMS = {
         icon: '🪞',
         description: 'Phòng ngự pháp bảo, tạo lớp chắn linh khí giảm sát thương.',
         price: 2500,
-        stats: { def: 40, resistance: 0.1 }
+        stats: { def: 40, resistance: 0.1 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'dinh_giai' }
+        ]
     },
     'u_minh_chuong': {
         id: 'u_minh_chuong',
@@ -1426,7 +1810,10 @@ export const ITEMS = {
         icon: '🔔',
         description: 'Hồn hệ pháp bảo, tăng mạnh Thần Thức và kháng ảo cảnh.',
         price: 12000,
-        stats: { soul: 150, def: 20 }
+        stats: { soul: 150, def: 20 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+        ]
     },
     'chuong_thien_binh': {
         id: 'chuong_thien_binh',
@@ -1438,7 +1825,10 @@ export const ITEMS = {
         description: 'Chí bảo đệ nhất Tiên giới, có khả năng ngưng tụ linh dịch thiên địa.',
         price: 9999999,
         stats: { tuViSpeed: 2.0, luck: 50 },
-        specialEffect: 'generate_spiritual_liquid'
+        specialEffect: 'generate_spiritual_liquid',
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'hu_thien_dinh': {
         id: 'hu_thien_dinh',
@@ -1450,7 +1840,10 @@ export const ITEMS = {
         image: 'items/hu_thien_dinh.webp',
         description: 'Chí tôn cổ đỉnh ngưng tụ càn khôn bát quái khí, mang lại phòng ngự tuyệt đối cùng khả năng thu nạp linh khí tinh thuần không giới hạn.',
         stats: { spirit: 3000, def: 10000, qiAbsorb: 1200 },
-        poem: ['Hư Thiên Bát Quái Tàng Càn Khôn', 'Cổ Đỉnh Trấn Áp Vạn Sơn Hà']
+        poem: ['Hư Thiên Bát Quái Tàng Càn Khôn', 'Cổ Đỉnh Trấn Áp Vạn Sơn Hà'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'thong_thien' }
+        ]
     },
     'bat_linh_xich': {
         id: 'bat_linh_xich',
@@ -1461,7 +1854,10 @@ export const ITEMS = {
         image: 'artifacts/bat-linh-xich.svg',
         description: 'Pháp bảo hình thước, có khả năng phong ấn linh lực đối phương.',
         price: 300000,
-        stats: { atk: 500, soulRepress: 20 }
+        stats: { atk: 500, soulRepress: 20 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'binh_son_an': {
         id: 'binh_son_an',
@@ -1472,7 +1868,10 @@ export const ITEMS = {
         image: 'artifacts/binh-son-an.svg',
         description: 'Pháp bảo dạng ấn ký, mang theo sức mạnh của vạn quân sơn nhạc.',
         price: 250000,
-        stats: { atk: 800, spd: -10 }
+        stats: { atk: 800, spd: -10 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'phong_loi_si': {
         id: 'phong_loi_si',
@@ -1483,7 +1882,10 @@ export const ITEMS = {
         image: 'artifacts/phong-loi-si.svg',
         description: 'Quạt lông vũ mang theo sức mạnh phong lôi, tăng mạnh tốc độ độn tẩu.',
         price: 400000,
-        stats: { spd: 150, atk: 200 }
+        stats: { spd: 150, atk: 200 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'huyet_sac_phi_phong': {
         id: 'huyet_sac_phi_phong',
@@ -1494,7 +1896,10 @@ export const ITEMS = {
         image: 'artifacts/huyet-sac-phi-phong.svg',
         description: 'Áo choàng máu, tăng khả năng né tránh và phòng ngự.',
         price: 200000,
-        stats: { def: 300, spd: 50 }
+        stats: { def: 300, spd: 50 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'nguyen_tu_cuc_son': {
         id: 'nguyen_tu_cuc_son',
@@ -1505,7 +1910,10 @@ export const ITEMS = {
         image: 'artifacts/nguyen-tu-cuc-son.svg',
         description: 'Ngọn núi chứa đựng nguyên từ thần quang, khắc chế ngũ hành pháp bảo.',
         price: 600000,
-        stats: { atk: 1200, def: 500, pierce: 0.3 }
+        stats: { atk: 1200, def: 500, pierce: 0.3 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'bac_cuc_cuc_son': {
         id: 'bac_cuc_cuc_son',
@@ -1516,7 +1924,10 @@ export const ITEMS = {
         image: 'artifacts/bac-cuc-nguyen-quang-cuc-son.webp',
         description: 'Ngọn núi chứa đựng Bắc Cực Nguyên Quang, đóng băng vạn vật.',
         price: 600000,
-        stats: { atk: 1100, def: 600, iceDmg: 200 }
+        stats: { atk: 1100, def: 600, iceDmg: 200 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'nguyen_hop_ngu_cuc_son': {
         id: 'nguyen_hop_ngu_cuc_son',
@@ -1527,7 +1938,10 @@ export const ITEMS = {
         image: 'artifacts/nguyen-hop-ngu-cuc-son.svg',
         description: 'Sự kết hợp của năm ngọn cực sơn, uy lực chấn động thiên địa.',
         price: 5000000,
-        stats: { atk: 5000, def: 2500, pierce: 0.5, daoVun: 10 }
+        stats: { atk: 5000, def: 2500, pierce: 0.5, daoVun: 10 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'ban_thach_dinh_nguyen_kiem': {
         id: 'ban_thach_dinh_nguyen_kiem',
@@ -1539,7 +1953,10 @@ export const ITEMS = {
         description: 'Thanh kiếm đúc từ tiên thạch vạn năm, mang theo sức mạnh trấn áp bát phương, định ra nguyên khí thiên địa.',
         price: 5000000,
         stats: { atk: 6000, def: 2000, earthDmg: 500 },
-        poem: ['Bàn Thạch Bất Động Định Càn Khôn', 'Định Nguyên Nhất Kiếm Trấn Bát Phương']
+        poem: ['Bàn Thạch Bất Động Định Càn Khôn', 'Định Nguyên Nhất Kiếm Trấn Bát Phương'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'luc_duong_loi_hoa_kiem': {
         id: 'luc_duong_loi_hoa_kiem',
@@ -1551,7 +1968,10 @@ export const ITEMS = {
         description: 'Thanh kiếm chứa đựng sức mạnh của sáu vầng thái dương, kết hợp cùng lôi đình chi lực bạo liệt.',
         price: 5500000,
         stats: { atk: 6500, fireDmg: 800, lightningDmg: 800 },
-        poem: ['Lục Dương Thần Hỏa Phần Thiên Địa', 'Lôi Đình Vạn Quân Phá Hư Không']
+        poem: ['Lục Dương Thần Hỏa Phần Thiên Địa', 'Lôi Đình Vạn Quân Phá Hư Không'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'tu_tuong_bo_de_kiem': {
         id: 'tu_tuong_bo_de_kiem',
@@ -1563,7 +1983,10 @@ export const ITEMS = {
         description: 'Thanh kiếm giác ngộ dưới gốc cây Bồ Đề, hội tụ sức mạnh của Tứ Tượng linh thú.',
         price: 6000000,
         stats: { atk: 7000, critChance: 0.2, critDamage: 0.5 },
-        poem: ['Tứ Tượng Quy Linh Bồ Đề Tọa', 'Kiếm Khí Tung Hoành Ngộ Đạo Chân']
+        poem: ['Tứ Tượng Quy Linh Bồ Đề Tọa', 'Kiếm Khí Tung Hoành Ngộ Đạo Chân'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'tao_hoa_tien_dinh': {
         id: 'tao_hoa_tien_dinh',
@@ -1575,7 +1998,10 @@ export const ITEMS = {
         description: 'Đỉnh quý chứa đựng huyền năng của tạo hóa, có thể luyện chế tiên đan và nghịch chuyển nhân quả.',
         price: 8000000,
         stats: { alchemyBonus: 0.5, luck: 20, qiAbsorb: 2.0 },
-        poem: ['Tạo Hóa Vô Cùng Trong Một Đỉnh', 'Nghịch Chuyển Càn Khôn Hóa Tiên Đan']
+        poem: ['Tạo Hóa Vô Cùng Trong Một Đỉnh', 'Nghịch Chuyển Càn Khôn Hóa Tiên Đan'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'thien_dao_than_thach': {
         id: 'thien_dao_than_thach',
@@ -1587,7 +2013,10 @@ export const ITEMS = {
         description: 'Mảnh vỡ từ Thiên Đạo, chứa đựng quy tắc tối cao của vũ trụ.',
         price: 10000000,
         stats: { breakthroughRate: 0.5, luck: 100 },
-        poem: ['Thiên Đạo Vô Thường Thần Thạch Ấn', 'Quy Tắc Vạn Vật Tại Nhân Tâm']
+        poem: ['Thiên Đạo Vô Thường Thần Thạch Ấn', 'Quy Tắc Vạn Vật Tại Nhân Tâm'],
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'truyen_dao_thanh_gian': {
         id: 'truyen_dao_thanh_gian',
@@ -1599,7 +2028,10 @@ export const ITEMS = {
         description: 'Thánh giản ghi chép truyền thừa của vị tiên nhân thượng cổ, chứa đựng vô số bí pháp.',
         price: 7000000,
         action: 'open_immortal_transmission',
-        poem: ['Thánh Giản Truyền Đạo Khai Thần Thức', 'Vạn Cổ Bí Pháp Hiện Chân Thân']
+        poem: ['Thánh Giản Truyền Đạo Khai Thần Thức', 'Vạn Cổ Bí Pháp Hiện Chân Thân'],
+        categories: [
+            { category: 'ky_vat_di_bao', subcategory: 'ngoc_gian' }
+        ]
     },
     'quan_han_linh_ngoc_bat': {
         id: 'quan_han_linh_ngoc_bat',
@@ -1611,7 +2043,10 @@ export const ITEMS = {
         description: 'Bát ngọc từ Quảng Hàn cung, chứa đựng hàn khí tinh khiết của mặt trăng.',
         price: 4500000,
         stats: { maxHp: 5000, iceDmg: 400, def: 1000 },
-        poem: ['Quảng Hàn Nguyệt Ảnh Ngọc Bát Linh', 'Thanh Lạnh Sương Mai Hóa Vạn Kiếp']
+        poem: ['Quảng Hàn Nguyệt Ảnh Ngọc Bát Linh', 'Thanh Lạnh Sương Mai Hóa Vạn Kiếp'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'that_tinh_ban_nguyet_thinh': {
         id: 'that_tinh_ban_nguyet_thinh',
@@ -1623,7 +2058,10 @@ export const ITEMS = {
         description: 'Bình phong Thất Tinh vây quanh ánh trăng, tạo ra lớp bảo vệ tuyệt đối.',
         price: 5200000,
         stats: { def: 5000, spd: 50, resistance: 0.3 },
-        poem: ['Thất Tinh Vây Nguyệt Trấn Thần Hồn', 'Bạn Nguyệt Thính Trung Ảnh Vô Song']
+        poem: ['Thất Tinh Vây Nguyệt Trấn Thần Hồn', 'Bạn Nguyệt Thính Trung Ảnh Vô Song'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'to_nga_suong_nguyet_luan': {
         id: 'to_nga_suong_nguyet_luan',
@@ -1635,7 +2073,10 @@ export const ITEMS = {
         description: 'Vòng nguyệt luân của Tố Nga tiên tử, mang theo sương giá lạnh lẽo và ánh trăng sắc lẹm.',
         price: 5800000,
         stats: { atk: 6200, spd: 100, iceDmg: 600 },
-        poem: ['Tố Nga Nhất Vũ Nguyệt Luân Khởi', 'Sương Lạnh Thấu Xương Diệt Ma Tâm']
+        poem: ['Tố Nga Nhất Vũ Nguyệt Luân Khởi', 'Sương Lạnh Thấu Xương Diệt Ma Tâm'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'linh_dich': {
         id: 'linh_dich',
@@ -1645,7 +2086,10 @@ export const ITEMS = {
         icon: '🧪',
         description: 'Linh dịch ngưng tụ từ Chưởng Thiên Bình, có khả năng kích phát linh thảo trưởng thành cực nhanh.',
         price: 0,
-        effect: { type: 'garden_boost', value: 1000 } // Rút ngắn 1000 giây hoặc 100%?
+        effect: { type: 'garden_boost', value: 1000 }, // Rút ngắn 1000 giây hoặc 100%?
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'egg_phe_kim_trung': {
         id: 'egg_phe_kim_trung',
@@ -1655,7 +2099,10 @@ export const ITEMS = {
         quality: 'Thông Thiên Linh Bảo',
         image: 'aberrations/phe-kim-trung.svg',
         description: 'Trứng của loài hung trùng thượng cổ, có thể cắn nuốt vạn vật.',
-        price: 50000
+        price: 50000,
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_ky_trung' }
+        ]
     },
     'egg_bang_tam': {
         id: 'egg_bang_tam',
@@ -1665,7 +2112,10 @@ export const ITEMS = {
         quality: 'Tiên Khí',
         image: 'aberrations/bang-tam.svg',
         description: 'Trứng của loài tằm băng vùng cực hàn, nhả tơ chứa hàn khí thấu xương.',
-        price: 20000
+        price: 20000,
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_ky_trung' }
+        ]
     },
     'egg_huyet_ngoc_tri_chu': {
         id: 'egg_huyet_ngoc_tri_chu',
@@ -1675,7 +2125,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         image: 'aberrations/huyet-ngoc-tri-chu.svg',
         description: 'Trứng nhện ngọc máu, có khả năng phun tơ dính và độc tố cực mạnh.',
-        price: 15000
+        price: 15000,
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_ky_trung' }
+        ]
     },
     'tui_tru_vat_trung': {
         id: 'tui_tru_vat_trung',
@@ -1696,7 +2149,10 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Pháp Khí',
         price: 1000,
-        description: 'Trận đồ cơ bản dùng để tụ tập linh khí xung quanh.'
+        description: 'Trận đồ cơ bản dùng để tụ tập linh khí xung quanh.',
+        categories: [
+            { category: 'tran_phap', subcategory: 'tu_linh_tran' }
+        ]
     },
     'tran_do_ao_anh': {
         id: 'tran_do_ao_anh',
@@ -1705,12 +2161,15 @@ export const ITEMS = {
         icon: '🌫️',
         quality: 'Linh Khí',
         price: 4500,
-        description: 'Tạo huyễn cảnh che mắt đối thủ.'
+        description: 'Tạo huyễn cảnh che mắt đối thủ.',
+        categories: [
+            { category: 'tran_phap', subcategory: 'huyen_tran' }
+        ]
     },
 
     // --- TALISMAN PAPERS (GIẤY PHÙ) ---
-    'hoang_chi_phu': { id: 'hoang_chi_phu', name: 'Hoàng Chỉ Phù', type: 'material', icon: '📜', quality: 'Phàm Khí', price: 10, description: 'Giấy phù vàng cơ bản.' },
-    'chu_sa_muc': { id: 'chu_sa_muc', name: 'Chu Sa Mực', type: 'material', icon: '🩸', quality: 'Phàm Khí', price: 20, description: 'Mực chu sa dùng để vẽ phù.' },
+    'hoang_chi_phu': { id: 'hoang_chi_phu', name: 'Hoàng Chỉ Phù', type: 'material', icon: '📜', quality: 'Phàm Khí', price: 10, description: 'Giấy phù vàng cơ bản.', categories: [{ category: 'nguyen_lieu', subcategory: 'thien_tai' }] },
+    'chu_sa_muc': { id: 'chu_sa_muc', name: 'Chu Sa Mực', type: 'material', icon: '🩸', quality: 'Phàm Khí', price: 20, description: 'Mực chu sa dùng để vẽ phù.', categories: [{ category: 'phu_luc', subcategory: 'phu_cu' }] },
 
     // Khôi Lỗi
     'khoi_loi_item': {
@@ -1719,7 +2178,10 @@ export const ITEMS = {
         type: 'puppet',
         icon: '🤖',
         price: 1000,
-        description: 'Một con khôi lỗi cơ quan thuật.'
+        description: 'Một con khôi lỗi cơ quan thuật.',
+        categories: [
+            { category: 'khoi_loi', subcategory: 'linh_khoi' }
+        ]
     },
     'linh_moc_phu': {
         id: 'linh_moc_phu',
@@ -1728,7 +2190,10 @@ export const ITEMS = {
         icon: '🪵',
         quality: 'Pháp Khí',
         price: 50,
-        description: 'Làm từ gỗ linh mộc, tăng độ ổn định khi vẽ phù.'
+        description: 'Làm từ gỗ linh mộc, tăng độ ổn định khi vẽ phù.',
+        categories: [
+            { category: 'phu_luc', subcategory: 'phu_cu' }
+        ]
     },
     'yeu_thu_da_phu': {
         id: 'yeu_thu_da_phu',
@@ -1737,7 +2202,10 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Linh Khí',
         price: 250,
-        description: 'Làm từ da yêu thú, tăng uy lực cho phù công kích.'
+        description: 'Làm từ da yêu thú, tăng uy lực cho phù công kích.',
+        categories: [
+            { category: 'phu_luc', subcategory: 'phu_cu' }
+        ]
     },
 
     // --- SPIRIT INKS (MỰC PHÙ) ---
@@ -1757,7 +2225,10 @@ export const ITEMS = {
         icon: '🧪',
         quality: 'Linh Khí',
         price: 150,
-        description: 'Pha trộn từ máu yêu thú, tăng sát thương cho phù lục.'
+        description: 'Pha trộn từ máu yêu thú, tăng sát thương cho phù lục.',
+        categories: [
+            { category: 'phu_luc', subcategory: 'phu_cu' }
+        ]
     },
 
     // --- TALISMAN PENS (PHÙ BÚT) ---
@@ -1769,7 +2240,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 500,
         description: 'Bút vẽ phù làm từ linh trúc, tăng tỷ lệ thành công thêm 5%.',
-        stats: { successRate: 0.05 }
+        stats: { successRate: 0.05 },
+        categories: [
+            { category: 'phu_luc', subcategory: 'phu_cu' }
+        ]
     },
 
     // --- FINISHED TALISMANS (PHÙ LỤC THÀNH PHẨM) ---
@@ -1781,7 +2255,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 100,
         description: 'Triệu hồi hỏa cầu tấn công, gây sát thương Hỏa.',
-        effect: { type: 'damage', value: 200, element: 'fire' }
+        effect: { type: 'damage', value: 200, element: 'fire' },
+        categories: [
+            { category: 'phu_luc', subcategory: 'cong_kich' }
+        ]
     },
     'kim_cuong_phu': {
         id: 'kim_cuong_phu',
@@ -1791,7 +2268,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 350,
         description: 'Tạo lớp bảo vệ cứng như kim cương, tăng 100 DEF trong 3 lượt.',
-        effect: { type: 'buff', stat: 'def', value: 100, duration: 3 }
+        effect: { type: 'buff', stat: 'def', value: 100, duration: 3 },
+        categories: [
+            { category: 'phu_luc', subcategory: 'phong_ngu' }
+        ]
     },
     'than_hanh_phu': {
         id: 'than_hanh_phu',
@@ -1801,7 +2281,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 200,
         description: 'Tăng tốc độ di chuyển cực nhanh trong thời gian ngắn.',
-        effect: { type: 'utility', speedBoost: 2.0, duration: 60 } // seconds
+        effect: { type: 'utility', speedBoost: 2.0, duration: 60 }, // seconds
+        categories: [
+            { category: 'phu_luc', subcategory: 'don_thuat' }
+        ]
     },
     'thun_di_phu': {
         id: 'thun_di_phu',
@@ -1811,7 +2294,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 2000,
         description: 'Dịch chuyển tức thời thoát khỏi nguy hiểm.',
-        effect: { type: 'escape' }
+        effect: { type: 'escape' },
+        categories: [
+            { category: 'phu_luc', subcategory: 'don_thuat' }
+        ]
     },
 
     // --- PROFESSION SECRETS (BÍ PHÁP MỞ KHÓA NGHỀ NGHIỆP) ---
@@ -1823,7 +2309,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1000,
         effect: { type: 'unlock_profession', profession: 'alchemy', secretId: 'bp_luyen_dan' },
-        description: 'Gia tăng vĩnh viễn tỉ lệ luyện đan thành công.'
+        description: 'Gia tăng vĩnh viễn tỉ lệ luyện đan thành công.',
+        categories: [
+            { category: 'khoi_loi', subcategory: 'linh_khoi' }
+        ]
     },
     'truong_sinh_quyet_book': {
         id: 'truong_sinh_quyet_book',
@@ -1833,7 +2322,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1000,
         description: 'Bí tịch dưỡng sinh cổ xưa, tăng mạnh Thọ Nguyên.',
-        effect: { type: 'lifespan', value: 20 }
+        effect: { type: 'lifespan', value: 20 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'huyet_don_thuat_book': {
         id: 'huyet_don_thuat_book',
@@ -1843,7 +2335,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1500,
         description: 'Ma đạo bí pháp, dùng tinh huyết để độn tẩu cực nhanh.',
-        effect: { type: 'learn_secret', value: 'huyet_don_thuat' }
+        effect: { type: 'learn_secret', value: 'huyet_don_thuat' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'don_thuat' }
+        ]
     },
     'bp_luyen_khi': {
         id: 'bp_luyen_khi',
@@ -1853,7 +2348,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1500,
         effect: { type: 'unlock_profession', profession: 'smithing', secretId: 'bp_luyen_khi' },
-        description: 'Chứa đựng bí quyết tôi luyện kim thạch, rèn đúc thần binh pháp bảo.'
+        description: 'Chứa đựng bí quyết tôi luyện kim thạch, rèn đúc thần binh pháp bảo.',
+        categories: [
+            { category: 'khoi_loi', subcategory: 'linh_khoi' }
+        ]
     },
     'bp_phu_luc': {
         id: 'bp_phu_luc',
@@ -1863,7 +2361,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1000,
         effect: { type: 'unlock_profession', profession: 'talisman', secretId: 'bp_phu_luc' },
-        description: 'Hướng dẫn cách câu thông thiên địa linh lực vào phù văn để tạo ra phù lục.'
+        description: 'Hướng dẫn cách câu thông thiên địa linh lực vào phù văn để tạo ra phù lục.',
+        categories: [
+            { category: 'khoi_loi', subcategory: 'linh_khoi' }
+        ]
     },
     'bp_tran_phap': {
         id: 'bp_tran_phap',
@@ -1883,7 +2384,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1200,
         effect: { type: 'unlock_profession', profession: 'beast', secretId: 'bp_ngu_thu' },
-        description: 'Bí quyết giao tiếp và ký kết khế ước với các loài linh thú.'
+        description: 'Bí quyết giao tiếp và ký kết khế ước với các loài linh thú.',
+        categories: [
+            { category: 'khoi_loi', subcategory: 'linh_khoi' }
+        ]
     },
     'bp_ngu_trung': {
         id: 'bp_ngu_trung',
@@ -1893,7 +2397,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1200,
         effect: { type: 'unlock_profession', profession: 'insect', secretId: 'bp_ngu_trung' },
-        description: 'Cách nuôi dưỡng và điều khiển bầy trùng mang theo kịch độc hoặc năng lực đặc thù.'
+        description: 'Cách nuôi dưỡng và điều khiển bầy trùng mang theo kịch độc hoặc năng lực đặc thù.',
+        categories: [
+            { category: 'khoi_loi', subcategory: 'linh_khoi' }
+        ]
     },
     'bp_khoi_loi': {
         id: 'bp_khoi_loi',
@@ -1903,7 +2410,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 2500,
         effect: { type: 'unlock_profession', profession: 'puppet', secretId: 'bp_khoi_loi' },
-        description: 'Kỹ thuật chế tác cơ quan và truyền linh hồn vào các vật vô tri để tạo ra khôi lỗi.'
+        description: 'Kỹ thuật chế tác cơ quan và truyền linh hồn vào các vật vô tri để tạo ra khôi lỗi.',
+        categories: [
+            { category: 'khoi_loi', subcategory: 'linh_khoi' }
+        ]
     },
     'bp_luyen_thi': {
         id: 'bp_luyen_thi',
@@ -1913,7 +2423,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 3000,
         effect: { type: 'unlock_profession', profession: 'corpse', secretId: 'bp_luyen_thi' },
-        description: 'Tà thuật luyện chế xác chết thành thi khôi, đao thương bất nhập.'
+        description: 'Tà thuật luyện chế xác chết thành thi khôi, đao thương bất nhập.',
+        categories: [
+            { category: 'khoi_loi', subcategory: 'linh_khoi' }
+        ]
     },
 
     // --- TALISMAN TECHNIQUES (BÍ PHÁP) ---
@@ -1924,7 +2437,10 @@ export const ITEMS = {
         icon: '⚡',
         quality: 'Cổ Bảo',
         price: 45000,
-        description: 'Ghi chép cách vẽ Thiên Lôi Phù, uy lực kinh thiên động địa.'
+        description: 'Ghi chép cách vẽ Thiên Lôi Phù, uy lực kinh thiên động địa.',
+        categories: [
+            { category: 'phu_luc', subcategory: 'cong_kich' }
+        ]
     },
 
     // --- ALCHEMY MATERIALS (EXPANDED) ---
@@ -1935,7 +2451,10 @@ export const ITEMS = {
         icon: '🌿',
         quality: 'Pháp Khí',
         price: 80,
-        description: 'Thảo dược có thân màu vàng kim nhạt, sau 10 năm đã tích tụ chút linh khí, là nguyên liệu phụ trợ phổ biến.'
+        description: 'Thảo dược có thân màu vàng kim nhạt, sau 10 năm đã tích tụ chút linh khí, là nguyên liệu phụ trợ phổ biến.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'linh_thao_100y': {
         id: 'linh_thao_100y',
@@ -1944,7 +2463,10 @@ export const ITEMS = {
         icon: '🍃',
         quality: 'Linh Khí',
         price: 500,
-        description: 'Linh dược trăm năm trân quý, một trong ba chủ dược chính để luyện chế Trúc Cơ Đan trong Phàm Nhân Tu Tiên.'
+        description: 'Linh dược trăm năm trân quý, một trong ba chủ dược chính để luyện chế Trúc Cơ Đan trong Phàm Nhân Tu Tiên.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'linh_thao_1000y': {
         id: 'linh_thao_1000y',
@@ -1953,7 +2475,10 @@ export const ITEMS = {
         icon: '🎋',
         quality: 'Pháp Bảo',
         price: 5000,
-        description: 'Linh dược ngàn năm cực kỳ hiếm có, đã bắt đầu thông linh tính, thường dùng để luyện chế đan dược phụ trợ Nguyên Anh đột phá.'
+        description: 'Linh dược ngàn năm cực kỳ hiếm có, đã bắt đầu thông linh tính, thường dùng để luyện chế đan dược phụ trợ Nguyên Anh đột phá.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
 
     // --- MONSTER MATERIALS ---
@@ -1964,7 +2489,10 @@ export const ITEMS = {
         icon: '🟡',
         quality: 'Pháp Khí',
         price: 300,
-        description: 'Nội đan của yêu thú cấp thấp, chứa tinh hoa yêu lực.'
+        description: 'Nội đan của yêu thú cấp thấp, chứa tinh hoa yêu lực.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'yeu_thu', subSubcategory: 'yeu_dan' }
+        ]
     },
     'yeu_dan_trung': {
         id: 'yeu_dan_trung',
@@ -1973,7 +2501,10 @@ export const ITEMS = {
         icon: '🟠',
         quality: 'Linh Khí',
         price: 1500,
-        description: 'Nội đan của yêu thú trung cấp, chứa linh lực dồi dào.'
+        description: 'Nội đan của yêu thú trung cấp, chứa linh lực dồi dào.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'yeu_thu', subSubcategory: 'yeu_dan' }
+        ]
     },
     'ngung_anh_dan': {
         id: 'ngung_anh_dan',
@@ -1983,7 +2514,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 50000,
         description: 'Đan dược hỗ trợ ngưng tụ Nguyên Anh, cực kỳ quý hiếm.',
-        stats: { breakthroughRate: 0.25 }
+        stats: { breakthroughRate: 0.25 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'yeu_huyet': {
         id: 'yeu_huyet',
@@ -1992,7 +2526,10 @@ export const ITEMS = {
         icon: '🩸',
         quality: 'Pháp Khí',
         price: 100,
-        description: 'Máu tươi của yêu thú, dùng trong luyện thể hoặc luyện đan.'
+        description: 'Máu tươi của yêu thú, dùng trong luyện thể hoặc luyện đan.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'yeu_thu', subSubcategory: 'yeu_huyet' }
+        ]
     },
     'xac_yeu_thu': {
         id: 'xac_yeu_thu',
@@ -2001,7 +2538,10 @@ export const ITEMS = {
         icon: '🧟',
         quality: 'Pháp Khí',
         price: 500,
-        description: 'Thân xác hoàn chỉnh của yêu thú, có thể dùng để luyện thi hoặc bán.'
+        description: 'Thân xác hoàn chỉnh của yêu thú, có thể dùng để luyện thi hoặc bán.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'yeu_thu', subSubcategory: 'yeu_giac' }
+        ]
     },
     'xac_tu_si': {
         id: 'xac_tu_si',
@@ -2010,7 +2550,10 @@ export const ITEMS = {
         icon: '💀',
         quality: 'Linh Khí',
         price: 1000,
-        description: 'Thân xác của tu sĩ đã vẫn lạc, chứa đựng linh tính, là vật liệu thượng hạng để luyện thi.'
+        description: 'Thân xác của tu sĩ đã vẫn lạc, chứa đựng linh tính, là vật liệu thượng hạng để luyện thi.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
 
     // --- ORES & MINERALS ---
@@ -2021,7 +2564,10 @@ export const ITEMS = {
         icon: '🌺',
         quality: 'Cổ Bảo',
         price: 50000,
-        description: 'Linh dược vạn năm cực kỳ hiếm thấy ở Nhân giới, tích lũy thiên địa tinh hoa vạn năm, dùng để chế luyện các loại đan dược nghịch thiên độ kiếp.'
+        description: 'Linh dược vạn năm cực kỳ hiếm thấy ở Nhân giới, tích lũy thiên địa tinh hoa vạn năm, dùng để chế luyện các loại đan dược nghịch thiên độ kiếp.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'huyen_thiet': {
         id: 'huyen_thiet',
@@ -2048,7 +2594,10 @@ export const ITEMS = {
         icon: '☄️',
         quality: 'Cổ Bảo',
         price: 25000,
-        description: 'Mảnh vỡ thiên thạch từ ngoài không gian, chứa sức mạnh tinh thần.'
+        description: 'Mảnh vỡ thiên thạch từ ngoài không gian, chứa sức mạnh tinh thần.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'yeu_cot': {
         id: 'yeu_cot',
@@ -2057,7 +2606,10 @@ export const ITEMS = {
         icon: '🦴',
         quality: 'Pháp Khí',
         price: 150,
-        description: 'Xương của yêu thú, dùng làm nguyên liệu chế tác hoặc luyện thi.'
+        description: 'Xương của yêu thú, dùng làm nguyên liệu chế tác hoặc luyện thi.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'yeu_thu', subSubcategory: 'yeu_cot' }
+        ]
     },
     'da_lan_giap': {
         id: 'da_lan_giap',
@@ -2066,7 +2618,10 @@ export const ITEMS = {
         icon: '🛡️',
         quality: 'Linh Khí',
         price: 1200,
-        description: 'Lớp da hoặc vảy của yêu thú phòng ngự cao.'
+        description: 'Lớp da hoặc vảy của yêu thú phòng ngự cao.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'long_huyet_tinh': {
         id: 'long_huyet_tinh',
@@ -2075,7 +2630,10 @@ export const ITEMS = {
         icon: '🩸',
         quality: 'Pháp Bảo',
         price: 10000,
-        description: 'Tinh hoa máu rồng ngưng kết, chứa sức mạnh huyết mạch kinh người.'
+        description: 'Tinh hoa máu rồng ngưng kết, chứa sức mạnh huyết mạch kinh người.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'tien_tinh': {
         id: 'tien_tinh',
@@ -2094,7 +2652,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 1000000,
         description: 'Trứng của sinh vật cổ đại, có thể ấp nở thành linh thú hộ mệnh.',
-        effect: { type: 'hatch' }
+        effect: { type: 'hatch' },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'hoa_tinh_thach': {
         id: 'hoa_tinh_thach',
@@ -2103,7 +2664,10 @@ export const ITEMS = {
         icon: '🔥',
         quality: 'Linh Khí',
         price: 1200,
-        description: 'Khoáng thạch chứa hỏa tính cực mạnh.'
+        description: 'Khoáng thạch chứa hỏa tính cực mạnh.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'han_ngoc_tuy': {
         id: 'han_ngoc_tuy',
@@ -2112,7 +2676,10 @@ export const ITEMS = {
         icon: '❄️',
         quality: 'Pháp Bảo',
         price: 8500,
-        description: 'Tinh túy từ hàn ngọc vạn năm, lạnh thấu xương.'
+        description: 'Tinh túy từ hàn ngọc vạn năm, lạnh thấu xương.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_dich', subSubcategory: 'thien_dia' }
+        ]
     },
 
     // --- ALCHEMY TOOLS (AS ITEMS) ---
@@ -2124,7 +2691,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 100,
         description: 'Đan lư cơ bản cho người mới học luyện đan.',
-        effect: { type: 'equip_cauldron', value: 'pham_lu' }
+        effect: { type: 'equip_cauldron', value: 'pham_lu' },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'linh_hoa_item': {
         id: 'linh_hoa_item',
@@ -2134,7 +2704,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 50,
         description: 'Linh hỏa cấp thấp, đủ để luyện chế đan dược phàm phẩm.',
-        effect: { type: 'refine_flame', value: 'linh_hoa' }
+        effect: { type: 'refine_flame', value: 'linh_hoa' },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'huyen_lu_item': {
         id: 'huyen_lu_item',
@@ -2143,7 +2716,10 @@ export const ITEMS = {
         icon: '🏺',
         quality: 'Linh Khí',
         price: 5000,
-        description: 'Đan lư đúc từ huyền thiết, giúp ổn định hỏa lực.'
+        description: 'Đan lư đúc từ huyền thiết, giúp ổn định hỏa lực.',
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'thanh_lien_hoa_seed': {
         id: 'thanh_lien_hoa_seed',
@@ -2152,7 +2728,10 @@ export const ITEMS = {
         icon: '🔥',
         quality: 'Pháp Bảo',
         price: 50000,
-        description: 'Hỏa chủng của Thanh Liên Địa Tâm Hỏa, có thể luyện hóa thành linh hỏa.'
+        description: 'Hỏa chủng của Thanh Liên Địa Tâm Hỏa, có thể luyện hóa thành linh hỏa.',
+        categories: [
+            { category: 'ky_vat_di_bao', subcategory: 'di_hoa' }
+        ]
     },
 
     // --- TECHNIQUES (CÔNG PHÁP) ---
@@ -2164,7 +2743,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 500,
         description: 'Công pháp cơ bản giúp gia tăng thọ nguyên và thể chất.',
-        techniqueId: 'truong_sinh_quyet'
+        techniqueId: 'truong_sinh_quyet',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'thien_loi_kiem_quyet': {
         id: 'thien_loi_kiem_quyet',
@@ -2173,7 +2755,10 @@ export const ITEMS = {
         icon: '⚡',
         quality: 'Cổ Bảo',
         price: 50000,
-        description: 'Kiếm quyết cấp cao mượn lực thiên lôi, uy lực vô song.'
+        description: 'Kiếm quyết cấp cao mượn lực thiên lôi, uy lực vô song.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'kiem_quyet' }
+        ]
     },
 
     // --- SMITHING MATERIALS (LINH QUẶNG & DỊ KIM) ---
@@ -2202,7 +2787,10 @@ export const ITEMS = {
         icon: '🌞',
         quality: 'Cổ Bảo',
         price: 150000,
-        description: 'Vật liệu chí dương, sinh ra từ lõi mặt trời.'
+        description: 'Vật liệu chí dương, sinh ra từ lõi mặt trời.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
 
     // --- SPIRIT WOOD (LINH MỘC) ---
@@ -2213,7 +2801,10 @@ export const ITEMS = {
         icon: '🪵',
         quality: 'Pháp Bảo',
         price: 12000,
-        description: 'Gỗ cây linh thụ bị sét đánh mà không chết, chứa lôi đình chi lực.'
+        description: 'Gỗ cây linh thụ bị sét đánh mà không chết, chứa lôi đình chi lực.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
 
     // --- SMITHING TOOLS ---
@@ -2224,7 +2815,10 @@ export const ITEMS = {
         icon: '⚒️',
         quality: 'Phàm Khí',
         price: 200,
-        description: 'Bệ rèn thô sơ cho người mới học luyện khí.'
+        description: 'Bệ rèn thô sơ cho người mới học luyện khí.',
+        categories: [
+            { category: 'luyen_khi', subcategory: 'dai_luyen_khi' }
+        ]
     },
     'luyen_khi_dai': {
         id: 'luyen_khi_dai',
@@ -2233,7 +2827,10 @@ export const ITEMS = {
         icon: '⚒️',
         quality: 'Linh Khí',
         price: 3000,
-        description: 'Bệ rèn linh văn chuyên dụng cho luyện khí sư.'
+        description: 'Bệ rèn linh văn chuyên dụng cho luyện khí sư.',
+        categories: [
+            { category: 'luyen_khi', subcategory: 'dai_luyen_khi' }
+        ]
     },
 
     // --- CRAFTABLE EQUIPMENT ---
@@ -2255,7 +2852,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 85000,
         description: 'Giáp làm từ vảy giao long, phòng ngự kinh người. Đúc từ Da Lân Giáp và Yêu Thú Tinh Huyết.',
-        stats: { def: 450, resistance: 0.3 }
+        stats: { def: 450, resistance: 0.3 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+        ]
     },
 
     // --- BEAST & INSECT ITEMS (NEW) ---
@@ -2268,7 +2868,10 @@ export const ITEMS = {
         price: 2000,
         description: 'Một quả trứng hạc tỏa ra linh khí thanh khiết.',
         beastId: 'thanh_van_hac',
-        hatchTime: 300 // 5 minutes
+        hatchTime: 300, // 5 minutes
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
+        ]
     },
     'trung_xich_lang': {
         id: 'trung_xich_lang',
@@ -2279,7 +2882,10 @@ export const ITEMS = {
         price: 3500,
         description: 'Trứng sói lửa, sờ vào thấy ấm nóng.',
         beastId: 'xich_diem_lang',
-        hatchTime: 600
+        hatchTime: 600,
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
+        ]
     },
     'ken_kim_tam': {
         id: 'ken_kim_tam',
@@ -2290,7 +2896,10 @@ export const ITEMS = {
         price: 5000,
         description: 'Kén của Kim Tàm, đang chờ đợi ngày phá kén.',
         beastId: 'kim_tam',
-        hatchTime: 1200
+        hatchTime: 1200,
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
+        ]
     },
     'linh_thu_dan': {
         id: 'linh_thu_dan',
@@ -2301,7 +2910,10 @@ export const ITEMS = {
         price: 100,
         description: 'Đan dược bồi bổ cho linh thú, tăng kinh nghiệm và độ thân mật.',
         expGain: 100,
-        loyaltyGain: 5
+        loyaltyGain: 5,
+        categories: [
+            { category: 'linh_thu', subcategory: 'linh_thu' }
+        ]
     },
     'yeu_nhuc_tuoi': {
         id: 'yeu_nhuc_tuoi',
@@ -2312,7 +2924,10 @@ export const ITEMS = {
         price: 50,
         description: 'Thịt yêu thú tươi sống, linh thú rất thích ăn.',
         expGain: 50,
-        loyaltyGain: 2
+        loyaltyGain: 2,
+        categories: [
+            { category: 'linh_thu', subcategory: 'linh_thu' }
+        ]
     },
     'van_thu_lenh': {
         id: 'van_thu_lenh',
@@ -2322,7 +2937,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 50000,
         description: 'Lệnh bài cổ xưa giúp tăng khả năng thuần phục yêu thú.',
-        stats: { tamingBonus: 0.2 }
+        stats: { tamingBonus: 0.2 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+        ]
     },
 
     // --- BÍ PHÁP NGHỀ NGHIỆP (UNLOCKS) ---
@@ -2334,7 +2952,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Ghi chép tinh túy của đan đạo, dùng để mở khóa nghề Luyện Đan.',
-        effect: { type: 'unlock_profession', profession: 'alchemy' }
+        effect: { type: 'unlock_profession', profession: 'alchemy' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'bi_phap_talisman': {
         id: 'bi_phap_talisman',
@@ -2344,7 +2965,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Chứa đựng bí mật của phù văn, dùng để mở khóa nghề Phù Lục.',
-        effect: { type: 'unlock_profession', profession: 'talisman' }
+        effect: { type: 'unlock_profession', profession: 'talisman' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'bi_phap_smithing': {
         id: 'bi_phap_smithing',
@@ -2354,7 +2978,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Bí tịch rèn đúc pháp bảo, dùng để mở khóa nghề Luyện Khí.',
-        effect: { type: 'unlock_profession', profession: 'smithing' }
+        effect: { type: 'unlock_profession', profession: 'smithing' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'bi_phap_formation': {
         id: 'bi_phap_formation',
@@ -2364,7 +2991,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Giải mã các trận pháp cổ đại, dùng để mở khóa nghề Trận Pháp.',
-        effect: { type: 'unlock_profession', profession: 'formation' }
+        effect: { type: 'unlock_profession', profession: 'formation' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'bi_phap_puppet': {
         id: 'bi_phap_puppet',
@@ -2374,7 +3004,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Bí thuật điều khiển rối, dùng để mở khóa nghề Khôi Lỗi.',
-        effect: { type: 'unlock_profession', profession: 'puppet' }
+        effect: { type: 'unlock_profession', profession: 'puppet' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'bi_phap_corpse': {
         id: 'bi_phap_corpse',
@@ -2384,7 +3017,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Tà thuật luyện chế xác chết, dùng để mở khóa nghề Luyện Thi.',
-        effect: { type: 'unlock_profession', profession: 'corpse' }
+        effect: { type: 'unlock_profession', profession: 'corpse' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'bi_phap_beast': {
         id: 'bi_phap_beast',
@@ -2394,7 +3030,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Tâm pháp dẫn dắt linh thú, dùng để mở khóa nghề Ngự Thú.',
-        effect: { type: 'unlock_profession', profession: 'beast' }
+        effect: { type: 'unlock_profession', profession: 'beast' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'bi_phap_insect': {
         id: 'bi_phap_insect',
@@ -2404,7 +3043,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Kỹ thuật nuôi dưỡng kỳ trùng, dùng để mở khóa nghề Khu Trùng.',
-        effect: { type: 'unlock_profession', profession: 'insect' }
+        effect: { type: 'unlock_profession', profession: 'insect' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     // --- TECHNIQUE BOOKS ---
     'truong_xuan_book': {
@@ -2415,7 +3057,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 300,
         techniqueId: 'truong_xuan_nap_khi_quyet',
-        description: 'Bản sao chép công pháp nhập môn phổ thông được lưu truyền rộng rãi trong Nhân Giới.'
+        description: 'Bản sao chép công pháp nhập môn phổ thông được lưu truyền rộng rãi trong Nhân Giới.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'liet_duong_book': {
         id: 'liet_duong_book',
@@ -2425,7 +3070,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 800,
         techniqueId: 'liet_duong_cong',
-        description: 'Ghi chép phương pháp hấp thu Hỏa linh khí.'
+        description: 'Ghi chép phương pháp hấp thu Hỏa linh khí.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'han_thuy_book': {
         id: 'han_thuy_book',
@@ -2435,7 +3083,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 800,
         techniqueId: 'han_thuy_quyet',
-        description: 'Ghi chép phương pháp hấp thu Thủy linh khí.'
+        description: 'Ghi chép phương pháp hấp thu Thủy linh khí.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'thanh_moc_book': {
         id: 'thanh_moc_book',
@@ -2445,7 +3096,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 800,
         techniqueId: 'thanh_moc_tam_kinh',
-        description: 'Ghi chép phương pháp hấp thu Mộc linh khí.'
+        description: 'Ghi chép phương pháp hấp thu Mộc linh khí.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'canh_kim_book': {
         id: 'canh_kim_book',
@@ -2455,7 +3109,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 800,
         techniqueId: 'canh_kim_quyet',
-        description: 'Ghi chép phương pháp hấp thu Kim linh khí.'
+        description: 'Ghi chép phương pháp hấp thu Kim linh khí.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'hau_tho_book': {
         id: 'hau_tho_book',
@@ -2465,7 +3122,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 800,
         techniqueId: 'hau_tho_cong',
-        description: 'Ghi chép phương pháp hấp thu Thổ linh khí.'
+        description: 'Ghi chép phương pháp hấp thu Thổ linh khí.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'man_nguu_book': {
         id: 'man_nguu_book',
@@ -2475,7 +3135,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 1500,
         techniqueId: 'man_nguu_kinh',
-        description: 'Bí pháp Luyện Thể sơ cấp, rèn luyện cơ bắp.'
+        description: 'Bí pháp Luyện Thể sơ cấp, rèn luyện cơ bắp.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'duong_than_book': {
         id: 'duong_than_book',
@@ -2485,7 +3148,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 2000,
         techniqueId: 'duong_than_quyet',
-        description: 'Bí pháp Thần Thức sơ cấp, rèn luyện linh hồn.'
+        description: 'Bí pháp Thần Thức sơ cấp, rèn luyện linh hồn.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'than_hon' }
+        ]
     },
     'cuu_chuyen_kim_than_book': {
         id: 'cuu_chuyen_kim_than_book',
@@ -2495,7 +3161,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 12000,
         techniqueId: 'cuu_chuyen_kim_than',
-        description: 'Bí pháp Luyện Thể trung cấp cực kỳ quý hiếm.'
+        description: 'Bí pháp Luyện Thể trung cấp cực kỳ quý hiếm.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'luyen_the' }
+        ]
     },
     'u_minh_book': {
         id: 'u_minh_book',
@@ -2505,7 +3174,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 15000,
         techniqueId: 'u_minh_huy_ngan',
-        description: 'Bí pháp Thần Thức trung cấp, tu luyện linh hồn.'
+        description: 'Bí pháp Thần Thức trung cấp, tu luyện linh hồn.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'recipe_than_tam': {
         id: 'recipe_than_tam',
@@ -2515,7 +3187,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 2500,
         description: 'Ghi chép cách luyện chế Thanh Tâm Đan.',
-        effect: { type: 'learn_recipe', value: 'thanh_tam_dan' }
+        effect: { type: 'learn_recipe', value: 'thanh_tam_dan' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'recipe_truc_co': {
         id: 'recipe_truc_co',
@@ -2525,7 +3200,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         description: 'Ghi chép cách luyện chế Trúc Cơ Đan cực kỳ quý giá.',
-        effect: { type: 'learn_recipe', value: 'truc_co_dan' }
+        effect: { type: 'learn_recipe', value: 'truc_co_dan' },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'bp_tinh_ha': {
         id: 'bp_tinh_ha',
@@ -2535,7 +3213,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 8000,
         description: 'Ghi chép phương pháp rèn Tinh Hà Phi Kiếm.',
-        effect: { type: 'learn_smithing_recipe', value: 'phi_kiem_tinh_ha' }
+        effect: { type: 'learn_smithing_recipe', value: 'phi_kiem_tinh_ha' },
+        categories: [
+            { category: 'luyen_khi', subcategory: 'ban_ve' }
+        ]
     },
     'bp_long_lan': {
         id: 'bp_long_lan',
@@ -2545,7 +3226,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 25000,
         description: 'Bản vẽ rèn Long Lân Giáp phòng ngự kinh người.',
-        effect: { type: 'learn_smithing_recipe', value: 'long_lan_giap' }
+        effect: { type: 'learn_smithing_recipe', value: 'long_lan_giap' },
+        categories: [
+            { category: 'luyen_khi', subcategory: 'ban_ve' }
+        ]
     },
     'huyen_lu_item': {
         id: 'huyen_lu_item',
@@ -2564,7 +3248,10 @@ export const ITEMS = {
         icon: '🏺',
         quality: 'Pháp Bảo',
         price: 35000,
-        description: 'Chứa đựng tinh hoa chi lực của địa long, khống hỏa cực tốt.'
+        description: 'Chứa đựng tinh hoa chi lực của địa long, khống hỏa cực tốt.',
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+        ]
     },
     'thien_lu_item': {
         id: 'thien_lu_item',
@@ -2573,7 +3260,10 @@ export const ITEMS = {
         icon: '🏺',
         quality: 'Cổ Bảo',
         price: 150000,
-        description: 'Lò luyện đỉnh cấp, ổn định hỏa lực đến mức hoàn mỹ.'
+        description: 'Lò luyện đỉnh cấp, ổn định hỏa lực đến mức hoàn mỹ.',
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'van_lac_tam_viem_seed': {
         id: 'van_lac_tam_viem_seed',
@@ -2583,7 +3273,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 120000,
         description: 'Hỏa chủng của Vẫn Lạc Tâm Viêm, tăng mạnh hiệu suất luyện đan.',
-        effect: { type: 'refine_flame', value: 'van_lac_tam_viem' }
+        effect: { type: 'refine_flame', value: 'van_lac_tam_viem' },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'tinh_lien_yeu_hoa_seed': {
         id: 'tinh_lien_yeu_hoa_seed',
@@ -2593,7 +3286,10 @@ export const ITEMS = {
         quality: 'Cổ Bảo',
         price: 800000,
         description: 'Yêu hỏa thần bí có khả năng tịnh hóa vạn vật.',
-        effect: { type: 'refine_flame', value: 'tinh_lien_yeu_hoa' }
+        effect: { type: 'refine_flame', value: 'tinh_lien_yeu_hoa' },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     // --- RECIPES ---
     'recipe_ngung_khi': {
@@ -2604,7 +3300,10 @@ export const ITEMS = {
         icon: '📜',
         description: 'Ghi chép cách luyện chế Ngưng Khí Đan.',
         price: 200,
-        recipeId: 'ngung_khi_dan'
+        recipeId: 'ngung_khi_dan',
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'recipe_than_tam': {
         id: 'recipe_than_tam',
@@ -2634,7 +3333,10 @@ export const ITEMS = {
         icon: '⚒️',
         description: 'Bản vẽ rèn đúc Tinh Hà Phi Kiếm.',
         price: 800,
-        recipeId: 'phi_kiem_tinh_ha'
+        recipeId: 'phi_kiem_tinh_ha',
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
     'recipe_long_lan_giap': {
         id: 'recipe_long_lan_giap',
@@ -2644,7 +3346,10 @@ export const ITEMS = {
         icon: '⚒️',
         description: 'Bản vẽ rèn đúc Long Lân Giáp.',
         price: 2500,
-        recipeId: 'long_lan_giap'
+        recipeId: 'long_lan_giap',
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
 
     // --- DANH KHÍ / TIÊN KHÍ / THÔNG THIÊN LINH BẢO (POEM ARTIFACTS) ---
@@ -2657,7 +3362,10 @@ export const ITEMS = {
         description: 'Cây cầm thần bí, tiếng đàn có thể tàng hình sơn hà, tiêu diêu tự tại giữa trời đất.',
         price: 1000000,
         stats: { soulRepress: 100, soulExpSpeed: 2.5, spd: 50 },
-        poem: ['Trần Thế Vô Nhiễm Ẩn Sơn Hà', 'Nhất Khúc Tiêu Giao Thiên Địa Gian']
+        poem: ['Trần Thế Vô Nhiễm Ẩn Sơn Hà', 'Nhất Khúc Tiêu Giao Thiên Địa Gian'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'van_tinh_nho_quan': {
         id: 'van_tinh_nho_quan',
@@ -2668,7 +3376,10 @@ export const ITEMS = {
         description: 'Mũ nho sĩ chứa đựng tinh túy của văn chương, hạo nhiên chính khí trấn áp tà ma.',
         price: 800000,
         stats: { def: 200, comprehension: 20, luck: 15 },
-        poem: ['Nho Quán Nhất Tinh Diệu Thiên Địa', 'Hạo Nhiên Chính Khí Đãng Càn Khôn']
+        poem: ['Nho Quán Nhất Tinh Diệu Thiên Địa', 'Hạo Nhiên Chính Khí Đãng Càn Khôn'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'that_thai_huyen_nghien': {
         id: 'that_thai_huyen_nghien',
@@ -2679,7 +3390,10 @@ export const ITEMS = {
         description: 'Nghiên mực bảy màu, một điểm có thể định hình sơn hà, ghi chép thiên đạo.',
         price: 1500000,
         stats: { tuViSpeed: 3.0, daoVun: 50, luck: 30 },
-        poem: ['Thất Thái Lưu Quang Thư Thiên Đạo', 'Huyền Nghiên Nhất Điểm Định Sơn Hà']
+        poem: ['Thất Thái Lưu Quang Thư Thiên Đạo', 'Huyền Nghiên Nhất Điểm Định Sơn Hà'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'te_hon_toa': {
         id: 'te_hon_toa',
@@ -2690,7 +3404,10 @@ export const ITEMS = {
         description: 'Xiềng xích tế hồn, nhiếp lấy phách của vạn vật, khóa chặt u minh.',
         price: 1200000,
         stats: { atk: 300, soulPierce: 0.5, lifeSteal: 0.2 },
-        poem: ['Tuế Hồn Nhiếp Phách Tỏa U Minh', 'Dị Kỷ Thương Địch Xá Kỳ Thủy']
+        poem: ['Tuế Hồn Nhiếp Phách Tỏa U Minh', 'Dị Kỷ Thương Địch Xá Kỳ Thủy'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'luyen_phong_thach': {
         id: 'luyen_phong_thach',
@@ -2701,7 +3418,10 @@ export const ITEMS = {
         description: 'Viên đá luyện từ cuồng phong, bách luyện thành binh, trảm phá càn khôn.',
         price: 900000,
         stats: { atk: 250, pierce: 0.4, spd: 80 },
-        poem: ['Thiên Ma Bách Lệ Xuất Thần Binh', 'Càn Khôn Nhất Trảm Thùy Khả Đáng']
+        poem: ['Thiên Ma Bách Lệ Xuất Thần Binh', 'Càn Khôn Nhất Trảm Thùy Khả Đáng'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'kim_than_xa_loi': {
         id: 'kim_than_xa_loi',
@@ -2712,7 +3432,10 @@ export const ITEMS = {
         description: 'Hạt xá lợi kim thân, vạn pháp bất xâm, trấn giữ tâm ma.',
         price: 2000000,
         stats: { def: 500, hp: 2000, stability: 50 },
-        poem: ['Kim Thân Hộ Thể Trấn Yêu Tà', 'Vạn Pháp Bất Xâm Xá Lợi Tâm']
+        poem: ['Kim Thân Hộ Thể Trấn Yêu Tà', 'Vạn Pháp Bất Xâm Xá Lợi Tâm'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'duong_kiem_ho': {
         id: 'duong_kiem_ho',
@@ -2723,7 +3446,10 @@ export const ITEMS = {
         description: 'Bầu rượu dưỡng kiếm, tàng chứa kiếm tiên, phong mang thấu càn khôn.',
         price: 1300000,
         stats: { atk: 150, critRate: 0.2, critDmg: 0.5 },
-        poem: ['Phong Mang Nhất Hiện Hàn Cửu Châu', 'Càn Khôn Hồ Trung Tàn Kiếm Tiên']
+        poem: ['Phong Mang Nhất Hiện Hàn Cửu Châu', 'Càn Khôn Hồ Trung Tàn Kiếm Tiên'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'cuu_mach_linh_cham': {
         id: 'cuu_mach_linh_cham',
@@ -2734,7 +3460,10 @@ export const ITEMS = {
         description: 'Châm thần chín mạch, nghịch chuyển âm dương, hồi thiên tục mệnh.',
         price: 1100000,
         stats: { atk: 120, lifeSteal: 0.5, hp: 500 },
-        poem: ['Linh Châm Cửu Chuyển Hoán Âm Dương', 'Nhất Niệm Hồi Thiên Tục Mệnh Nguyên']
+        poem: ['Linh Châm Cửu Chuyển Hoán Âm Dương', 'Nhất Niệm Hồi Thiên Tục Mệnh Nguyên'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'co_luyen_lung': {
         id: 'co_luyen_lung',
@@ -2745,7 +3474,10 @@ export const ITEMS = {
         description: 'Lồng nuôi cổ trùng cổ xưa, thực nhật nguyệt, chứa vạn độc thiên trùng.',
         price: 950000,
         stats: { atk: 100, murderQi: 30, poisonRes: 0.8 },
-        poem: ['Cổ Luyện Nhất Thành Thực Nhật Nguyệt', 'Vạn Độc Thiên Trùng Dưỡng Lung Trung']
+        poem: ['Cổ Luyện Nhất Thành Thực Nhật Nguyệt', 'Vạn Độc Thiên Trùng Dưỡng Lung Trung'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'chan_vu_nho_quan_ta': {
         id: 'chan_vu_nho_quan_ta',
@@ -2755,7 +3487,10 @@ export const ITEMS = {
         image: 'artifacts/chan_vu_nho_quan_ta.webp',
         description: 'Mũ Chân Vũ phía bên trái, chứa đựng một phần thần uy của Chân Vũ Đại Đế.',
         price: 425000,
-        stats: { def: 100, hp: 300 }
+        stats: { def: 100, hp: 300 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'linh_bao' }
+        ]
     },
     'chan_vu_nho_quan_huu': {
         id: 'chan_vu_nho_quan_huu',
@@ -2765,7 +3500,10 @@ export const ITEMS = {
         image: 'artifacts/chan_vu_nho_quan_huu.webp',
         description: 'Mũ Chân Vũ phía bên phải, chứa đựng một phần thần uy của Chân Vũ Đại Đế.',
         price: 425000,
-        stats: { def: 100, hp: 300 }
+        stats: { def: 100, hp: 300 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'linh_bao' }
+        ]
     },
     'chan_vu_nho_quan': {
         id: 'chan_vu_nho_quan',
@@ -2776,7 +3514,10 @@ export const ITEMS = {
         description: 'Bản hoàn thiện của Chân Vũ Nho Quán, thập diện mai phục cũng bất cụ, chiến bát hoang.',
         price: 1700000,
         stats: { def: 500, hp: 2000, stability: 40 },
-        poem: ['Thập Diện Mai Phục Hồn Bất Cụ', 'Chân Vũ Tại Thân Chiến Bát Hoang']
+        poem: ['Thập Diện Mai Phục Hồn Bất Cụ', 'Chân Vũ Tại Thân Chiến Bát Hoang'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'bo_thien_lang': {
         id: 'bo_thien_lang',
@@ -2787,7 +3528,10 @@ export const ITEMS = {
         description: 'Dải lụa bước lên trời, tùy phong khởi vũ, đạp vân tiêu. Cùng cấp với [[phong_loi_si|Phong Lôi Sí]].',
         price: 1800000,
         stats: { spd: 150, luck: 20, tuViSpeed: 1.5 },
-        poem: ['Lăng Vũ Cửu Thiên Tùy Phong Khởi', 'Cước Đạp Vân Tiêu Lộng Thái Hà']
+        poem: ['Lăng Vũ Cửu Thiên Tùy Phong Khởi', 'Cước Đạp Vân Tiêu Lộng Thái Hà'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'phong_loi_si': {
         id: 'phong_loi_si',
@@ -2809,7 +3553,10 @@ export const ITEMS = {
         icon: '📜',
         description: 'Bí tịch ghi chép lại tâm pháp Phong Lôi Quyết hiếm gặp, giúp tu sĩ sở hữu linh lực cuồng bạo của Lôi và tốc độ của Phong.',
         price: 500000,
-        techniqueId: 'phong_loi_quyet'
+        techniqueId: 'phong_loi_quyet',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'trung_thien_phong_ngan_uynh': {
         id: 'trung_thien_phong_ngan_uynh',
@@ -2818,7 +3565,10 @@ export const ITEMS = {
         icon: '🐞',
         quality: 'Pháp Bảo',
         price: 25000,
-        description: 'Trứng của Thiên Phong Ngân Uynh, loại kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.'
+        description: 'Trứng của Thiên Phong Ngân Uynh, loại kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.',
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'linh_thu_dai_so': {
         id: 'linh_thu_dai_so',
@@ -2827,7 +3577,10 @@ export const ITEMS = {
         icon: '👜',
         quality: 'Pháp Khí',
         price: 500,
-        description: 'Túi chuyên dụng để chứa linh thú và kỳ trùng sơ cấp. Có thể chứa tối đa 3 con.'
+        description: 'Túi chuyên dụng để chứa linh thú và kỳ trùng sơ cấp. Có thể chứa tối đa 3 con.',
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_khi' }
+        ]
     },
     'linh_thu_dai_trung': {
         id: 'linh_thu_dai_trung',
@@ -2836,7 +3589,10 @@ export const ITEMS = {
         icon: '👜',
         quality: 'Linh Khí',
         price: 2500,
-        description: 'Túi chứa linh thú trung cấp, được gia trì không gian trận pháp. Có thể chứa tối đa 10 con.'
+        description: 'Túi chứa linh thú trung cấp, được gia trì không gian trận pháp. Có thể chứa tối đa 10 con.',
+        categories: [
+            { category: 'phap_bao', subcategory: 'dinh_giai' }
+        ]
     },
     'linh_thu_dai_cao': {
         id: 'linh_thu_dai_cao',
@@ -2845,7 +3601,10 @@ export const ITEMS = {
         icon: '👜',
         quality: 'Pháp Bảo',
         price: 15000,
-        description: 'Túi chứa linh thú cao cấp, bên trong có linh khí nồng đậm giúp linh thú phát triển. Có thể chứa tối đa 50 con.'
+        description: 'Túi chứa linh thú cao cấp, bên trong có linh khí nồng đậm giúp linh thú phát triển. Có thể chứa tối đa 50 con.',
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+        ]
     },
     'trung_phe_kim_trung': {
         id: 'trung_phe_kim_trung',
@@ -2854,7 +3613,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Linh Bảo',
         price: 100000,
-        description: 'Trứng của loài kỳ trùng đứng đầu bảng xếp hạng. Cực kỳ hiếm thấy và khó ấp nở.'
+        description: 'Trứng của loài kỳ trùng đứng đầu bảng xếp hạng. Cực kỳ hiếm thấy và khó ấp nở.',
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'trung_huyet_ngoc_tri_chu': {
         id: 'trung_huyet_ngoc_tri_chu',
@@ -2863,7 +3625,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Pháp Bảo',
         price: 15000,
-        description: 'Trứng của loài nhện quý hiếm có tơ cực kỳ dẻo dai.'
+        description: 'Trứng của loài nhện quý hiếm có tơ cực kỳ dẻo dai.',
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'trung_bang_tam': {
         id: 'trung_bang_tam',
@@ -2872,7 +3637,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Linh Khí',
         price: 5000,
-        description: 'Trứng của loài tằm sinh trưởng trong cực hàn chi địa.'
+        description: 'Trứng của loài tằm sinh trưởng trong cực hàn chi địa.',
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'nguyen_tu_cuc_son': {
         id: 'nguyen_tu_cuc_son',
@@ -2894,7 +3662,10 @@ export const ITEMS = {
         description: 'Ngọn núi kết tinh từ Bắc Cực Nguyên Quang, ánh sáng xuyên thấu vạn vật. Là một trong 5 thành phần để luyện chế [[nguyen_hop_ngu_cuc_son|Nguyên Hợp Ngũ Cực Sơn]].',
         price: 1500000,
         stats: { atk: 600, pierce: 0.5 },
-        action: 'combine_ngu_cuc_son'
+        action: 'combine_ngu_cuc_son',
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'hao_am_han_phach_cuc_son': {
         id: 'hao_am_han_phach_cuc_son',
@@ -2905,7 +3676,10 @@ export const ITEMS = {
         description: 'Ngọn núi chứa đựng cực hạn hàn khí, đông cứng thần hồn. Là một trong 5 thành phần để luyện chế [[nguyen_hop_ngu_cuc_son|Nguyên Hợp Ngũ Cực Sơn]].',
         price: 1500000,
         stats: { def: 400, iceDmg: 200, soulRepress: 0.3 },
-        action: 'combine_ngu_cuc_son'
+        action: 'combine_ngu_cuc_son',
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'thai_at_thanh_quang_cuc_son': {
         id: 'thai_at_thanh_quang_cuc_son',
@@ -2916,7 +3690,10 @@ export const ITEMS = {
         description: 'Ngọn núi tỏa ra Thái Ất Thanh Quang, vô cùng sắc bén. Là một trong 5 thành phần để luyện chế [[nguyen_hop_ngu_cuc_son|Nguyên Hợp Ngũ Cực Sơn]].',
         price: 1500000,
         stats: { atk: 500, spd: 100 },
-        action: 'combine_ngu_cuc_son'
+        action: 'combine_ngu_cuc_son',
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'am_duong_dai_ngu_hanh_cuc_son': {
         id: 'am_duong_dai_ngu_hanh_cuc_son',
@@ -2927,7 +3704,10 @@ export const ITEMS = {
         description: 'Ngọn núi dung hợp Âm Dương và Ngũ Hành, cân bằng linh khí. Là một trong 5 thành phần để luyện chế [[nguyen_hop_ngu_cuc_son|Nguyên Hợp Ngũ Cực Sơn]].',
         price: 1500000,
         stats: { allRes: 0.2, tuViSpeed: 2.0 },
-        action: 'combine_ngu_cuc_son'
+        action: 'combine_ngu_cuc_son',
+        categories: [
+            { category: 'phap_bao', subcategory: 'tien_khi' }
+        ]
     },
     'nguyen_hop_ngu_cuc_son': {
         id: 'nguyen_hop_ngu_cuc_son',
@@ -3010,7 +3790,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Pháp Khí',
         price: 3000,
-        description: 'Trứng của Kim Giáp Hạc, loài linh hạc có lớp lông cứng như kim loại, tốc độ bay cực nhanh và rất trung thành.'
+        description: 'Trứng của Kim Giáp Hạc, loài linh hạc có lớp lông cứng như kim loại, tốc độ bay cực nhanh và rất trung thành.',
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
+        ]
     },
     'egg_huyen_diem_nga': {
         id: 'egg_huyen_diem_nga',
@@ -3021,7 +3804,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Pháp Khí',
         price: 1500,
-        description: 'Trứng của Huyền Diệm Nga, loài bướm đêm mang hỏa tính, có khả năng phun ra hỏa độc gây ảo giác.'
+        description: 'Trứng của Huyền Diệm Nga, loài bướm đêm mang hỏa tính, có khả năng phun ra hỏa độc gây ảo giác.',
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_ky_trung' }
+        ]
     },
     'egg_loi_bang': {
         id: 'egg_loi_bang',
@@ -3032,7 +3818,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Linh Khí',
         price: 8000,
-        description: 'Trứng của Lôi Bằng, loài chim khổng lồ mang theo sức mạnh lôi đình, khi trưởng thành có thể sải cánh vạn dặm.'
+        description: 'Trứng của Lôi Bằng, loài chim khổng lồ mang theo sức mạnh lôi đình, khi trưởng thành có thể sải cánh vạn dặm.',
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
+        ]
     },
     'egg_thien_phong_ngan_uynh': {
         id: 'egg_thien_phong_ngan_uynh',
@@ -3042,7 +3831,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Pháp Bảo',
         price: 25000,
-        description: 'Trứng của Thiên Phong Ngân Uynh, loại kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.'
+        description: 'Trứng của Thiên Phong Ngân Uynh, loại kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.',
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_ky_trung' }
+        ]
     },
     'item_thien_kiem_tong_t': {
         id: 'item_thien_kiem_tong_t',
@@ -3052,7 +3844,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'thien_kiem_tong_cong_phap',
-        description: 'Bản sách cổ ghi chép công pháp tối cao của Thiên Kiếm Tông. Lực công kích và tốc độ bộc phát sắc bén.'
+        description: 'Bản sách cổ ghi chép công pháp tối cao của Thiên Kiếm Tông. Lực công kích và tốc độ bộc phát sắc bén.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'kiem_quyet' }
+        ]
     },
     'item_thien_kiem_tong_s': {
         id: 'item_thien_kiem_tong_s',
@@ -3062,7 +3857,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'thien_kiem_tong_bi_tich',
-        description: 'Mật cuộn khắc ghi bí pháp kiếm đạo tối cao của Thiên Kiếm Tông, triệu gọi cự đại kiếm trận càn quét quần hùng.'
+        description: 'Mật cuộn khắc ghi bí pháp kiếm đạo tối cao của Thiên Kiếm Tông, triệu gọi cự đại kiếm trận càn quét quần hùng.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'kiem_quyet' }
+        ]
     },
     'item_hoang_phong_coc_t': {
         id: 'item_hoang_phong_coc_t',
@@ -3072,7 +3870,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'hoang_phong_coc_cong_phap',
-        description: 'Bản cổ thư ghi chép Hoàng Phong Thần Sa Quyết độc quyền của Hoàng Phong Cốc, điều khiển cuồng sa bảo vệ bản tôn.'
+        description: 'Bản cổ thư ghi chép Hoàng Phong Thần Sa Quyết độc quyền của Hoàng Phong Cốc, điều khiển cuồng sa bảo vệ bản tôn.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_hoang_phong_coc_s': {
         id: 'item_hoang_phong_coc_s',
@@ -3082,7 +3883,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'hoang_phong_coc_bi_tich',
-        description: 'Cuộn bí kíp ghi chép pháp thuật cát bụi Hoàng Phong Thần Sa quấn nhiễu phong tỏa linh hồn và làm choáng đối thủ.'
+        description: 'Cuộn bí kíp ghi chép pháp thuật cát bụi Hoàng Phong Thần Sa quấn nhiễu phong tỏa linh hồn và làm choáng đối thủ.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_huyen_am_coc_t': {
         id: 'item_huyen_am_coc_t',
@@ -3092,7 +3896,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'huyen_am_coc_cong_phap',
-        description: 'U minh tà thư Huyền Âm Cốc, tu luyện tích lũy u minh khí cực thịnh bồi bổ sinh lực.'
+        description: 'U minh tà thư Huyền Âm Cốc, tu luyện tích lũy u minh khí cực thịnh bồi bổ sinh lực.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_huyen_am_coc_s': {
         id: 'item_huyen_am_coc_s',
@@ -3102,7 +3909,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'huyen_am_coc_bi_tich',
-        description: 'Bí kíp âm sát quỷ trảo truyền kỳ của Huyền Âm Cốc, hấp thụ huyết tinh sinh mệnh kẻ địch để hồi phục Khí Huyết.'
+        description: 'Bí kíp âm sát quỷ trảo truyền kỳ của Huyền Âm Cốc, hấp thụ huyết tinh sinh mệnh kẻ địch để hồi phục Khí Huyết.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_yem_nguyet_tong_t': {
         id: 'item_yem_nguyet_tong_t',
@@ -3112,7 +3922,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'yem_nguyet_tong_cong_phap',
-        description: 'Kỳ thư điều hòa âm dương nổi danh đệ nhất của Yểm Nguyệt Tông, tăng tốc tu vi vùn vụt.'
+        description: 'Kỳ thư điều hòa âm dương nổi danh đệ nhất của Yểm Nguyệt Tông, tăng tốc tu vi vùn vụt.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_yem_nguyet_tong_s': {
         id: 'item_yem_nguyet_tong_s',
@@ -3122,7 +3935,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'yem_nguyet_tong_bi_tich',
-        description: 'Bản mật tịch chứa đựng ảo thuật Nguyệt Minh phong bế thức thần đối phương trong 1 lượt.'
+        description: 'Bản mật tịch chứa đựng ảo thuật Nguyệt Minh phong bế thức thần đối phương trong 1 lượt.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_lac_van_tong_t': {
         id: 'item_lac_van_tong_t',
@@ -3132,7 +3948,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'lac_van_tong_cong_phap',
-        description: 'Phương pháp ngự kiếm kết trận Lạc Vân Tông, mộc linh hộ thể dồi dào sinh cơ.'
+        description: 'Phương pháp ngự kiếm kết trận Lạc Vân Tông, mộc linh hộ thể dồi dào sinh cơ.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_lac_van_tong_s': {
         id: 'item_lac_van_tong_s',
@@ -3142,7 +3961,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'lac_van_tong_bi_tich',
-        description: 'Tuyệt diệu quang sát pháp nhắm thẳng vào linh thể kẻ thù, phá sạch phòng ngự giáp sắt.'
+        description: 'Tuyệt diệu quang sát pháp nhắm thẳng vào linh thể kẻ thù, phá sạch phòng ngự giáp sắt.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_thien_tinh_tong_t': {
         id: 'item_thien_tinh_tong_t',
@@ -3152,7 +3974,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'thien_tinh_tong_cong_phap',
-        description: 'Tuyệt kỹ trận pháp bảo vệ sơn môn danh bất hư truyền của Thiên Tinh Tông, tăng mạnh phòng thủ trận đạo.'
+        description: 'Tuyệt kỹ trận pháp bảo vệ sơn môn danh bất hư truyền của Thiên Tinh Tông, tăng mạnh phòng thủ trận đạo.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_thien_tinh_tong_s': {
         id: 'item_thien_tinh_tong_s',
@@ -3162,7 +3987,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'thien_tinh_tong_bi_tich',
-        description: 'Phương pháp bố trận kết thuẫn hấp thụ toàn bộ oanh kích bằng 35% máu tối đa.'
+        description: 'Phương pháp bố trận kết thuẫn hấp thụ toàn bộ oanh kích bằng 35% máu tối đa.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_linh_thu_son_t': {
         id: 'item_linh_thu_son_t',
@@ -3172,7 +4000,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'linh_thu_son_cong_phap',
-        description: 'Tâm pháp cộng sinh cùng linh thú hoang dã Linh Thú Sơn, cường tráng khí huyết.'
+        description: 'Tâm pháp cộng sinh cùng linh thú hoang dã Linh Thú Sơn, cường tráng khí huyết.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_linh_thu_son_s': {
         id: 'item_linh_thu_son_s',
@@ -3182,7 +4013,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'linh_thu_son_bi_tich',
-        description: 'Bí thuật kích hoạt ma thú linh huyết, tăng vọt công lực vật lý và hồi huyết tức thời.'
+        description: 'Bí thuật kích hoạt ma thú linh huyết, tăng vọt công lực vật lý và hồi huyết tức thời.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_thanh_hu_mon_t': {
         id: 'item_thanh_hu_mon_t',
@@ -3192,7 +4026,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'thanh_hu_mon_cong_phap',
-        description: 'Mật điên tiên đạo dưỡng thần của Thanh Hư Môn, khí tức thanh khiết dồi dào mana.'
+        description: 'Mật điên tiên đạo dưỡng thần của Thanh Hư Môn, khí tức thanh khiết dồi dào mana.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_thanh_hu_mon_s': {
         id: 'item_thanh_hu_mon_s',
@@ -3202,7 +4039,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'thanh_hu_mon_bi_tich',
-        description: 'Thuật pháp hồi linh đỉnh cấp, bổ sung 25% tối đa máu lẫn linh lực cho bản tôn.'
+        description: 'Thuật pháp hồi linh đỉnh cấp, bổ sung 25% tối đa máu lẫn linh lực cho bản tôn.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_cu_kiem_mon_t': {
         id: 'item_cu_kiem_mon_t',
@@ -3212,7 +4052,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'cu_kiem_mon_cong_phap',
-        description: 'Rèn luyện cơ bắp tráng nhục thể Cự Kiếm Môn, gia tăng cực thịnh công kích và giáp cốt.'
+        description: 'Rèn luyện cơ bắp tráng nhục thể Cự Kiếm Môn, gia tăng cực thịnh công kích và giáp cốt.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'kiem_quyet' }
+        ]
     },
     'item_cu_kiem_mon_s': {
         id: 'item_cu_kiem_mon_s',
@@ -3222,7 +4065,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'cu_kiem_mon_bi_tich',
-        description: 'Cuộn trọng kiếm thiên pháp, chém xuống sát thương cực đại và cơ hội bạo kích chí mạng cực cao.'
+        description: 'Cuộn trọng kiếm thiên pháp, chém xuống sát thương cực đại và cơ hội bạo kích chí mạng cực cao.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'kiem_quyet' }
+        ]
     },
     'item_hoa_dao_o_t': {
         id: 'item_hoa_dao_o_t',
@@ -3232,7 +4078,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'hoa_dao_o_cong_phap',
-        description: 'Bộ đao pháp tối cao Hóa Đao Ổ, đao thế cuồng phong chém rách linh lực địch thủ.'
+        description: 'Bộ đao pháp tối cao Hóa Đao Ổ, đao thế cuồng phong chém rách linh lực địch thủ.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_hoa_dao_o_s': {
         id: 'item_hoa_dao_o_s',
@@ -3242,7 +4091,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'hoa_dao_o_bi_tich',
-        description: 'Bí điển vung đao xé gió Hóa Đao Ổ, gây sát thương khổng lồ kèm vết rách chảy máu kinh mạch đối phương.'
+        description: 'Bí điển vung đao xé gió Hóa Đao Ổ, gây sát thương khổng lồ kèm vết rách chảy máu kinh mạch đối phương.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_thien_khuyet_bao_t': {
         id: 'item_thien_khuyet_bao_t',
@@ -3252,7 +4104,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'thien_khuyet_bao_cong_phap',
-        description: 'Tuyệt đỉnh hộ thể cương khí Thiên Khuyết Bảo, tạo thành lũy phòng ngự bất khả xâm phạm.'
+        description: 'Tuyệt đỉnh hộ thể cương khí Thiên Khuyết Bảo, tạo thành lũy phòng ngự bất khả xâm phạm.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_thien_khuyet_bao_s': {
         id: 'item_thien_khuyet_bao_s',
@@ -3262,7 +4117,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'thien_khuyet_bao_bi_tich',
-        description: 'Cuộn bí thuật hóa giáp vàng kiên cố bao bọc cơ thể, tăng mạnh 50% phòng ngự toàn diện.'
+        description: 'Cuộn bí thuật hóa giáp vàng kiên cố bao bọc cơ thể, tăng mạnh 50% phòng ngự toàn diện.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_quy_linh_mon_t': {
         id: 'item_quy_linh_mon_t',
@@ -3272,7 +4130,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'quy_linh_mon_cong_phap',
-        description: 'Bản sao tà học Quỷ Linh Môn, tăng oai lực công kích ma thuật cùng độc đạo thăng cấp nhanh.'
+        description: 'Bản sao tà học Quỷ Linh Môn, tăng oai lực công kích ma thuật cùng độc đạo thăng cấp nhanh.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_quy_linh_mon_s': {
         id: 'item_quy_linh_mon_s',
@@ -3282,7 +4143,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'quy_linh_mon_bi_tich',
-        description: 'Sai khiến vạn linh âm quỷ cắn xé kinh mạch kẻ thù, rút máu và găm sâu độc tố ăn mòn.'
+        description: 'Sai khiến vạn linh âm quỷ cắn xé kinh mạch kẻ thù, rút máu và găm sâu độc tố ăn mòn.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_hop_hoan_tong_t': {
         id: 'item_hop_hoan_tong_t',
@@ -3292,7 +4156,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'hop_hoan_tong_cong_phap',
-        description: 'Kỳ thư đoạt tinh phách điên cuồng bậc nhất của Hợp Hoan Tông, đúc tinh nguyên và tốc độ.'
+        description: 'Kỳ thư đoạt tinh phách điên cuồng bậc nhất của Hợp Hoan Tông, đúc tinh nguyên và tốc độ.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_hop_hoan_tong_s': {
         id: 'item_hop_hoan_tong_s',
@@ -3302,7 +4169,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'hop_hoan_tong_bi_tich',
-        description: 'Hương mị mê hoặc tinh thần chúng sinh, suy giảm nặng nề tốc độ đối phương.'
+        description: 'Hương mị mê hoặc tinh thần chúng sinh, suy giảm nặng nề tốc độ đối phương.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_ma_diem_mon_t': {
         id: 'item_ma_diem_mon_t',
@@ -3312,7 +4182,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'ma_diem_mon_cong_phap',
-        description: 'Hỏa ma bí pháp thiêu rụi kinh mạch Ma Diễm Môn, công kích cực đoan vô song.'
+        description: 'Hỏa ma bí pháp thiêu rụi kinh mạch Ma Diễm Môn, công kích cực đoan vô song.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_ma_diem_mon_s': {
         id: 'item_ma_diem_mon_s',
@@ -3322,7 +4195,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'ma_diem_mon_bi_tich',
-        description: 'Triệu hồi dung nham u minh nóng cháy, bộc phá sát thương thiêu đốt rực rỡ.'
+        description: 'Triệu hồi dung nham u minh nóng cháy, bộc phá sát thương thiêu đốt rực rỡ.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_thien_sat_tong_t': {
         id: 'item_thien_sat_tong_t',
@@ -3332,7 +4208,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'thien_sat_tong_cong_phap',
-        description: 'Huyết ma bá công Thiên Sát Tông, lấy huyết hóa ma sát tăng vọt sức mạnh cuồng bạo.'
+        description: 'Huyết ma bá công Thiên Sát Tông, lấy huyết hóa ma sát tăng vọt sức mạnh cuồng bạo.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_thien_sat_tong_s': {
         id: 'item_thien_sat_tong_s',
@@ -3342,7 +4221,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'thien_sat_tong_bi_tich',
-        description: 'Cuộn bí kíp bọc nhiếp ma sát cuồng nộ, gia tăng mạnh mẽ 30% công kích vật lý.'
+        description: 'Cuộn bí kíp bọc nhiếp ma sát cuồng nộ, gia tăng mạnh mẽ 30% công kích vật lý.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_ngu_linh_tong_t': {
         id: 'item_ngu_linh_tong_t',
@@ -3352,7 +4234,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'ngu_linh_tong_cong_phap',
-        description: 'Bí thuật ngự trùng dưỡng độc côn độc môn Ngự Linh Tông, gia tăng máu sinh dồi dào.'
+        description: 'Bí thuật ngự trùng dưỡng độc côn độc môn Ngự Linh Tông, gia tăng máu sinh dồi dào.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_ngu_linh_tong_s': {
         id: 'item_ngu_linh_tong_s',
@@ -3362,7 +4247,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'ngu_linh_tong_bi_tich',
-        description: 'Thả bầy trùng độc phệ linh cắn nuốt oanh tạc giáp phòng ngự đối phương.'
+        description: 'Thả bầy trùng độc phệ linh cắn nuốt oanh tạc giáp phòng ngự đối phương.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_khoi_am_tong_t': {
         id: 'item_khoi_am_tong_t',
@@ -3372,7 +4260,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 10000,
         techniqueId: 'khoi_am_tong_cong_phap',
-        description: 'U Linh khôi lỗi thuật pháp Khôi Âm Tông, tích lũy u minh âm khí luyện xác vững chắc.'
+        description: 'U Linh khôi lỗi thuật pháp Khôi Âm Tông, tích lũy u minh âm khí luyện xác vững chắc.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'item_khoi_am_tong_s': {
         id: 'item_khoi_am_tong_s',
@@ -3382,7 +4273,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         secretId: 'khoi_am_tong_bi_tich',
-        description: 'Tuyệt kỹ sai sử khôi lỗi tự bộc sát thương cực đoan xé tan giáp cốt địch thủ và gây choáng.'
+        description: 'Tuyệt kỹ sai sử khôi lỗi tự bộc sát thương cực đoan xé tan giáp cốt địch thủ và gây choáng.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'ban_long_bang_ngoc_nghien': {
         id: 'ban_long_bang_ngoc_nghien',
@@ -3393,7 +4287,10 @@ export const ITEMS = {
         price: 80000,
         description: 'Nghiễn mực cổ được chạm khắc hình rồng cuộn, bên trong ngưng tụ băng ngọc vạn năm. Khi mài mực, hàn khí tỏa ra có thể đóng băng thần thức kẻ địch.',
         stats: { spirit: 800, def: 200, maxMana: 500 },
-        poem: ['Bàn Long Ngọc Nghiễn Hàn Sương Mặc', 'Nhất Bút Phong Ba Định Càn Khôn']
+        poem: ['Bàn Long Ngọc Nghiễn Hàn Sương Mặc', 'Nhất Bút Phong Ba Định Càn Khôn'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'linh_bao' }
+        ]
     },
     'giac_tien_bich_ngoc_cam': {
         id: 'giac_tien_bich_ngoc_cam',
@@ -3404,7 +4301,10 @@ export const ITEMS = {
         price: 120000,
         description: 'Cây đàn cổ bằng bích ngọc, tương truyền do tiên nhân để lại. Âm thanh phát ra có thể an định tâm thần, tăng tốc tu luyện và mê hoặc yêu thú.',
         stats: { spirit: 600, tuViSpeed: 0.15, qiAbsorb: 200 },
-        poem: ['Bích Ngọc Cầm Thanh Nhập Cửu Tiêu', 'Giác Tiên Nhất Khúc Vạn Ma Tiêu']
+        poem: ['Bích Ngọc Cầm Thanh Nhập Cửu Tiêu', 'Giác Tiên Nhất Khúc Vạn Ma Tiêu'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'linh_bao' }
+        ]
     },
     'huyen_kim_long_tu_kiem': {
         id: 'huyen_kim_long_tu_kiem',
@@ -3415,7 +4315,10 @@ export const ITEMS = {
         price: 200000,
         description: 'Kiếm cổ được rèn từ huyền kim, thân kiếm khắc long văn phát sáng tử quang. Một khi rút kiếm, long khí cuồn cuộn, kiếm khí xuyên phá vạn pháp.',
         stats: { atk: 5000, spd: 300, critChance: 0.15, critDamage: 0.5 },
-        poem: ['Huyền Kim Tử Khí Xung Tiêu Hán', 'Long Tử Nhất Kiếm Phá Thiên Hà']
+        poem: ['Huyền Kim Tử Khí Xung Tiêu Hán', 'Long Tử Nhất Kiếm Phá Thiên Hà'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'thong_thien' }
+        ]
     },
     'kim_o_ly_hoa_phien': {
         id: 'kim_o_ly_hoa_phien',
@@ -3426,7 +4329,10 @@ export const ITEMS = {
         price: 90000,
         description: 'Quạt phiến cổ được đúc từ lông vũ Kim Ô (quạ vàng thần thoại). Phất một cái có thể triệu hồi ly hỏa thiêu đốt vạn vật trong phạm vi rộng.',
         stats: { atk: 3500, maxMana: 300 },
-        poem: ['Kim Ô Phiến Động Ly Hỏa Sinh', 'Thiên Địa Hồng Lô Luyện Quần Ma']
+        poem: ['Kim Ô Phiến Động Ly Hỏa Sinh', 'Thiên Địa Hồng Lô Luyện Quần Ma'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'ly_ho_hieu_tien_lenh': {
         id: 'ly_ho_hieu_tien_lenh',
@@ -3437,7 +4343,10 @@ export const ITEMS = {
         price: 100000,
         description: 'Lệnh bài cổ có hình ly hồ (cáo lửa), có thể triệu hoán ảo ảnh ly hồ hỗ trợ tác chiến và bày binh bố trận cực kỳ linh hoạt.',
         stats: { spirit: 500, atk: 1500, spd: 200 },
-        poem: ['Ly Hồ Hiệu Lệnh Triệu Ảo Binh', 'Tiên Đạo Trận Pháp Trấn Quần Yêu']
+        poem: ['Ly Hồ Hiệu Lệnh Triệu Ảo Binh', 'Tiên Đạo Trận Pháp Trấn Quần Yêu'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'linh_bao' }
+        ]
     },
     'moc_long_phap_bao': {
         id: 'moc_long_phap_bao',
@@ -3448,7 +4357,10 @@ export const ITEMS = {
         price: 85000,
         description: 'Tượng mộc long cổ xưa, được chạm khắc từ thân cây thần mộc vạn năm. Có thể triệu hoán mộc long hộ thể, tăng cường phòng ngự và hồi phục sinh lực.',
         stats: { def: 2000, maxHp: 3000, lifespan: 100 },
-        poem: ['Thần Mộc Hóa Long Trấn Bát Phương', 'Vạn Niên Cổ Thụ Hộ Thương Sinh']
+        poem: ['Thần Mộc Hóa Long Trấn Bát Phương', 'Vạn Niên Cổ Thụ Hộ Thương Sinh'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'ngoc_long_tuyen': {
         id: 'ngoc_long_tuyen',
@@ -3459,7 +4371,10 @@ export const ITEMS = {
         price: 150000,
         description: 'Suối rồng ngọc thu nhỏ trong không gian riêng, có thể mở ra một tiểu thế giới chứa đầy linh khí thuần khiết, hỗ trợ tu luyện và bảo quản linh vật.',
         stats: { qiAbsorb: 500, tuViSpeed: 0.2, slots: 30 },
-        poem: ['Ngọc Long Tuyền Dũng Linh Khí Sinh', 'Nhất Phương Tiểu Thế Giới Tàng Thiên']
+        poem: ['Ngọc Long Tuyền Dũng Linh Khí Sinh', 'Nhất Phương Tiểu Thế Giới Tàng Thiên'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'linh_bao' }
+        ]
     },
     'thien_dao_bi': {
         id: 'thien_dao_bi',
@@ -3470,7 +4385,10 @@ export const ITEMS = {
         price: 250000,
         description: 'Bia đá cổ khắc thiên đạo chân lý, chứa đựng ngộ tính của tiền bối đại năng. Ai đọc được sẽ ngộ ra thiên đạo, thần thức tăng vọt.',
         stats: { spirit: 2000, breakthroughRate: 0.1, tuViSpeed: 0.25 },
-        poem: ['Thiên Đạo Bi Văn Hàm Chân Lý', 'Đại Đạo Vô Hình Khả Ngộ Tâm']
+        poem: ['Thiên Đạo Bi Văn Hàm Chân Lý', 'Đại Đạo Vô Hình Khả Ngộ Tâm'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'thong_thien' }
+        ]
     },
     'tinh_hoa_nguyet_dai': {
         id: 'tinh_hoa_nguyet_dai',
@@ -3481,7 +4399,10 @@ export const ITEMS = {
         price: 95000,
         description: 'Đài nguyệt cổ ngưng tụ tinh hoa nhật nguyệt, có thể bay lượn tự do trên không trung. Ánh sáng tinh hoa bao phủ giúp tăng tốc phi hành.',
         stats: { spd: 500, def: 500, luck: 50 },
-        poem: ['Tinh Hoa Nguyệt Đài Phiêu Diêu Du', 'Nhật Nguyệt Tinh Quang Chiếu Cửu Châu']
+        poem: ['Tinh Hoa Nguyệt Đài Phiêu Diêu Du', 'Nhật Nguyệt Tinh Quang Chiếu Cửu Châu'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'van_thuy_luu_ly_binh': {
         id: 'van_thuy_luu_ly_binh',
@@ -3492,7 +4413,10 @@ export const ITEMS = {
         price: 130000,
         description: 'Bình lưu ly chứa vạn thủy, có thể hấp thu mọi công kích thủy hệ và phản hồi lại kẻ địch. Nước trong bình có tác dụng tịnh hóa tà khí.',
         stats: { def: 3000, maxHp: 2000, maxMana: 800 },
-        poem: ['Vạn Thủy Lưu Ly Tịnh Thiên Địa', 'Nhất Bình Thu Tận Vạn Hà Triều']
+        poem: ['Vạn Thủy Lưu Ly Tịnh Thiên Địa', 'Nhất Bình Thu Tận Vạn Hà Triều'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'linh_bao' }
+        ]
     },
     'egg_giao_long': {
         id: 'egg_giao_long',
@@ -3502,7 +4426,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Thông Thiên Linh Bảo',
         price: 50000,
-        description: 'Trứng của Giao Long thượng cổ, vỏ trứng phủ vảy rồng phát ra thủy khí cuồn cuộn, vô cùng quý hiếm.'
+        description: 'Trứng của Giao Long thượng cổ, vỏ trứng phủ vảy rồng phát ra thủy khí cuồn cuộn, vô cùng quý hiếm.',
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
+        ]
     },
     'egg_hac_xa': {
         id: 'egg_hac_xa',
@@ -3512,7 +4439,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Linh Khí',
         price: 15000,
-        description: 'Trứng của Hắc Xà vạn năm, vỏ trứng đen bóng như hắc ngọc, tỏa ra kịch độc nhẹ.'
+        description: 'Trứng của Hắc Xà vạn năm, vỏ trứng đen bóng như hắc ngọc, tỏa ra kịch độc nhẹ.',
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_ky_trung' }
+        ]
     },
     'egg_hoa_viem': {
         id: 'egg_hoa_viem',
@@ -3522,7 +4452,10 @@ export const ITEMS = {
         icon: '🔥',
         quality: 'Linh Khí',
         price: 12000,
-        description: 'Trứng của Hỏa Viêm Thú, ấm nóng như hòn than, liên tục tỏa ra hỏa diễm nhỏ.'
+        description: 'Trứng của Hỏa Viêm Thú, ấm nóng như hòn than, liên tục tỏa ra hỏa diễm nhỏ.',
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
+        ]
     },
     'co_dai': {
         id: 'co_dai',
@@ -3531,7 +4464,10 @@ export const ITEMS = {
         icon: '🌱',
         quality: 'Phàm Khí',
         price: 1,
-        description: 'Cỏ dại mọc ven đường, không có linh khí.'
+        description: 'Cỏ dại mọc ven đường, không có linh khí.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'linh_chi_tien_cao': {
         id: 'linh_chi_tien_cao',
@@ -3541,7 +4477,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 3000,
         description: 'Linh chi ngàn năm mọc trên vách núi hiểm trở, hàm chứa tinh khí đất trời, uống vào thần thức thanh minh.',
-        effect: { spirit: 50, maxMana: 200 }
+        effect: { spirit: 50, maxMana: 200 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'thien_sam': {
         id: 'thien_sam',
@@ -3551,7 +4490,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 50000,
         description: 'Nhân sâm trời đất tích tụ linh khí vạn năm, hình người hoàn chỉnh, uống vào cải tạo cân cốt.',
-        effect: { maxHp: 2000, maxMana: 1000, spirit: 200 }
+        effect: { maxHp: 2000, maxMana: 1000, spirit: 200 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'han_ngoc_thach': {
         id: 'han_ngoc_thach',
@@ -3560,7 +4502,10 @@ export const ITEMS = {
         icon: '💎',
         quality: 'Linh Khí',
         price: 8000,
-        description: 'Đá ngọc hàn băng kết tinh từ đỉnh tuyết sơn, linh khí băng hệ cực thuần, nguyên liệu luyện đan thượng hạng.'
+        description: 'Đá ngọc hàn băng kết tinh từ đỉnh tuyết sơn, linh khí băng hệ cực thuần, nguyên liệu luyện đan thượng hạng.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'hoa_am_quan': {
         id: 'hoa_am_quan',
@@ -3570,7 +4515,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Loài hoa hiếm gặp chỉ nở vào đêm hỏa diễm, cánh hoa phát nhiệt, ăn vào tăng cường hỏa linh căn.',
-        effect: { atk: 100, fireRes: 0.05 }
+        effect: { atk: 100, fireRes: 0.05 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'long_huyet_thao': {
         id: 'long_huyet_thao',
@@ -3579,7 +4527,10 @@ export const ITEMS = {
         icon: '🌱',
         quality: 'Linh Khí',
         price: 6000,
-        description: 'Cỏ đỏ thẫm mọc nơi long mạch, trong thân cỏ chứa long huyết ngưng kết, nguyên liệu luyện đan bổ huyết.'
+        description: 'Cỏ đỏ thẫm mọc nơi long mạch, trong thân cỏ chứa long huyết ngưng kết, nguyên liệu luyện đan bổ huyết.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'thien_tuyet_lien': {
         id: 'thien_tuyet_lien',
@@ -3589,7 +4540,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 30000,
         description: 'Hoa sen tuyết trắng mọc giữa băng hồ, lạnh buốt xương tủy, thanh lọc kinh mạch cực hiệu.',
-        effect: { maxMana: 800, spirit: 100, poisonRes: 0.1 }
+        effect: { maxMana: 800, spirit: 100, poisonRes: 0.1 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'ngu_sac_linh_thach': {
         id: 'ngu_sac_linh_thach',
@@ -3598,7 +4552,10 @@ export const ITEMS = {
         icon: '🪨',
         quality: 'Pháp Bảo',
         price: 40000,
-        description: 'Đá linh phát ra năm sắc quang, hội tụ ngũ hành tinh khí, nguyên liệu quan trọng để luyện pháp bảo ngũ hành.'
+        description: 'Đá linh phát ra năm sắc quang, hội tụ ngũ hành tinh khí, nguyên liệu quan trọng để luyện pháp bảo ngũ hành.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'kim_tinh_thach': {
         id: 'kim_tinh_thach',
@@ -3607,7 +4564,10 @@ export const ITEMS = {
         icon: '✨',
         quality: 'Linh Khí',
         price: 10000,
-        description: 'Thiên thạch rơi xuống trần gian, cứng như thép vạn năm, kim khí vô cùng thuần chính, thích hợp luyện kiếm pháp bảo.'
+        description: 'Thiên thạch rơi xuống trần gian, cứng như thép vạn năm, kim khí vô cùng thuần chính, thích hợp luyện kiếm pháp bảo.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'phi_thiên_vân_thi': {
         id: 'phi_thiên_vân_thi',
@@ -3616,7 +4576,10 @@ export const ITEMS = {
         icon: '☁️',
         quality: 'Linh Khí',
         price: 4500,
-        description: 'Cành cây mộc hệ mọc trên đỉnh mây, nhẹ như vân khí, nguyên liệu chế tạo phi hành pháp bảo.'
+        description: 'Cành cây mộc hệ mọc trên đỉnh mây, nhẹ như vân khí, nguyên liệu chế tạo phi hành pháp bảo.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'thien_long_nha': {
         id: 'thien_long_nha',
@@ -3625,7 +4588,10 @@ export const ITEMS = {
         icon: '🦷',
         quality: 'Linh Bảo',
         price: 80000,
-        description: 'Nanh rồng trời đổ xuống, kiên cứng vô song, chứa đựng long uy, nguyên liệu luyện vũ khí thần cấp.'
+        description: 'Nanh rồng trời đổ xuống, kiên cứng vô song, chứa đựng long uy, nguyên liệu luyện vũ khí thần cấp.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'bich_hue_linh_can': {
         id: 'bich_hue_linh_can',
@@ -3635,7 +4601,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 60000,
         description: 'Củ hoa huệ bích ngọc tàng chứa linh căn, ăn vào có cơ hội thức tỉnh Linh Căn ẩn tàng.',
-        effect: { spiritRoot: 1, spirit: 500 }
+        effect: { spiritRoot: 1, spirit: 500 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'tuyet_sam_linh_nhi': {
         id: 'tuyet_sam_linh_nhi',
@@ -3645,7 +4614,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 35000,
         description: 'Nhân sâm tuyết có đôi mắt linh quang, đã khai mở ý thức sơ khai, tăng mạnh thần thức người dùng.',
-        effect: { spirit: 300, breakthroughRate: 0.05 }
+        effect: { spirit: 300, breakthroughRate: 0.05 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'tu_vi_dan': {
         id: 'tu_vi_dan',
@@ -3655,7 +4627,10 @@ export const ITEMS = {
         quality: 'Phàm Khí',
         price: 500,
         description: 'Đan dược sơ cấp giúp tăng tốc tu luyện, được bán rộng rãi ở các phường thị tu tiên.',
-        effect: { tuViSpeed: 0.05 }
+        effect: { tuViSpeed: 0.05 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'chu_ki_dan': {
         id: 'chu_ki_dan',
@@ -3665,7 +4640,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 2000,
         description: 'Đan dược giúp tu sĩ ổn định căn cơ, cải thiện tỉ lệ đột phá khi đạt tới nút thắt cảnh giới.',
-        effect: { breakthroughRate: 0.03, spirit: 30 }
+        effect: { breakthroughRate: 0.03, spirit: 30 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'hoi_linh_dan': {
         id: 'hoi_linh_dan',
@@ -3675,7 +4653,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1500,
         description: 'Đan dược phục hồi linh lực nhanh chóng, hương thơm dịu nhẹ, phổ biến trong giới tu sĩ.',
-        effect: { mana: 500 }
+        effect: { mana: 500 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'hoi_huyet_dan': {
         id: 'hoi_huyet_dan',
@@ -3695,7 +4676,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 10000,
         description: 'Đan dược cấp trung tăng cường thần thức, giúp tu sĩ cảm nhận linh khí rõ ràng hơn.',
-        effect: { spirit: 200, maxMana: 500 }
+        effect: { spirit: 200, maxMana: 500 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'bach_nien_dan': {
         id: 'bach_nien_dan',
@@ -3705,7 +4689,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         description: 'Đan dược luyện từ bách thảo trăm năm, dùng một viên kéo dài thọ mạng trăm năm.',
-        effect: { lifespan: 100 }
+        effect: { lifespan: 100 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'phan_hon_dan': {
         id: 'phan_hon_dan',
@@ -3715,7 +4702,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 50000,
         description: 'Đan dược hiếm có thể cứu sống người hấp hối, khí tức mãnh liệt hồi phục toàn bộ sinh lực.',
-        effect: { hp: 9999, mana: 9999 }
+        effect: { hp: 9999, mana: 9999 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'ngoc_thanh_dan': {
         id: 'ngoc_thanh_dan',
@@ -3725,7 +4715,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 45000,
         description: 'Đan dược cấp cao thanh lọc kinh mạch, phá tan tà độc, tăng vĩnh viễn linh lực căn bản.',
-        effect: { maxMana: 2000, spirit: 300 }
+        effect: { maxMana: 2000, spirit: 300 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'cap_lieu_dan': {
         id: 'cap_lieu_dan',
@@ -3735,7 +4728,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 8000,
         description: 'Đan dược chữa thương tức thì, dùng trong chiến đấu phục hồi lượng lớn khí huyết.',
-        effect: { hp: 3000 }
+        effect: { hp: 3000 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'luyen_the_dan': {
         id: 'luyen_the_dan',
@@ -3745,7 +4741,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Đan dược rèn luyện thể phách, uống vào cảm thấy toàn thân nóng rực, cơ bắp cứng chắc hơn.',
-        effect: { maxHp: 1000, def: 50 }
+        effect: { maxHp: 1000, def: 50 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'luyen_the' }
+        ]
     },
     'cat_tuong_dan': {
         id: 'cat_tuong_dan',
@@ -3755,7 +4754,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 3000,
         description: 'Đan dược khai vận may mắn, dùng trước khi lên đường mạo hiểm giúp tăng vận khí.',
-        effect: { luck: 20 }
+        effect: { luck: 20 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'bao_luc_dan': {
         id: 'bao_luc_dan',
@@ -3765,7 +4767,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 4000,
         description: 'Đan dược tạm thời kích thích thể phách, tăng mạnh công lực trong thời gian ngắn nhưng sau đó suy yếu.',
-        effect: { atk: 200 }
+        effect: { atk: 200 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'thanh_linh_dan': {
         id: 'thanh_linh_dan',
@@ -3775,7 +4780,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 25000,
         description: 'Đan dược thuần hóa linh căn, tăng vĩnh viễn tốc độ hấp thụ linh khí của tu sĩ.',
-        effect: { tuViSpeed: 0.2, qiAbsorb: 300 }
+        effect: { tuViSpeed: 0.2, qiAbsorb: 300 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'tieu_hoan_dan': {
         id: 'tieu_hoan_dan',
@@ -3785,7 +4793,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 20000,
         description: 'Đan dược đẳng cấp, có thể hồi phục đồng thời khí huyết và linh lực, dành cho tu sĩ Trúc Cơ trở lên.',
-        effect: { hp: 2000, mana: 2000, spirit: 100 }
+        effect: { hp: 2000, mana: 2000, spirit: 100 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'dai_huan_dan': {
         id: 'dai_huan_dan',
@@ -3795,7 +4806,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 80000,
         description: 'Đan dược huyền thoại, tương truyền có thể phục hồi tử mạng. Hồi phục toàn bộ trạng thái.',
-        effect: { hp: 5000, mana: 5000, spirit: 500 }
+        effect: { hp: 5000, mana: 5000, spirit: 500 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'nhat_duong_chi_thu': {
         id: 'nhat_duong_chi_thu',
@@ -3805,7 +4819,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 80000,
         techniqueId: 'nhat_duong_cong_phap',
-        description: 'Thiên thư tu luyện theo nhật tinh, mỗi bình minh hấp thu dương khí, uy lực hỏa hệ tăng vọt.'
+        description: 'Thiên thư tu luyện theo nhật tinh, mỗi bình minh hấp thu dương khí, uy lực hỏa hệ tăng vọt.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'am_linh_bi_kinh': {
         id: 'am_linh_bi_kinh',
@@ -3815,7 +4832,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 90000,
         techniqueId: 'am_linh_cong_phap',
-        description: 'Âm hệ bí pháp tối thượng, luyện âm khí hóa kiếm diệt thần hồn kẻ địch.'
+        description: 'Âm hệ bí pháp tối thượng, luyện âm khí hóa kiếm diệt thần hồn kẻ địch.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'hoa_van_thu': {
         id: 'hoa_van_thu',
@@ -3825,7 +4845,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 20000,
         techniqueId: 'hoa_van_cong_phap',
-        description: 'Pháp quyết hóa vân độn thuật, lướt mây phi thiên cực nhanh, tốc độ độn thân phi thường.'
+        description: 'Pháp quyết hóa vân độn thuật, lướt mây phi thiên cực nhanh, tốc độ độn thân phi thường.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'luc_hop_bi_dien': {
         id: 'luc_hop_bi_dien',
@@ -3835,7 +4858,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 100000,
         secretId: 'luc_hop_bi_tich',
-        description: 'Bí điển hợp nhất lục hợp chi lực, một chiêu bao trùm thiên địa bát phương, vạn địch nan đương.'
+        description: 'Bí điển hợp nhất lục hợp chi lực, một chiêu bao trùm thiên địa bát phương, vạn địch nan đương.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'van_kiem_bi_thu': {
         id: 'van_kiem_bi_thu',
@@ -3845,7 +4871,10 @@ export const ITEMS = {
         quality: 'Cổ Bảo',
         price: 200000,
         secretId: 'van_kiem_bi_tich',
-        description: 'Cuộn bí thư kiếm đạo đỉnh cao, triệu hoán vạn kiếm cùng lúc, tạo thành kiếm trận khóa chết đối phương.'
+        description: 'Cuộn bí thư kiếm đạo đỉnh cao, triệu hoán vạn kiếm cùng lúc, tạo thành kiếm trận khóa chết đối phương.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'kiem_quyet' }
+        ]
     },
     'bat_quai_chan_kinh': {
         id: 'bat_quai_chan_kinh',
@@ -3855,7 +4884,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 75000,
         techniqueId: 'bat_quai_cong_phap',
-        description: 'Kinh sách tu luyện theo bát quái, dung hợp âm dương lưỡng nghi, phòng thủ và công kích toàn diện.'
+        description: 'Kinh sách tu luyện theo bát quái, dung hợp âm dương lưỡng nghi, phòng thủ và công kích toàn diện.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'tam_muoi_chan_hoa': {
         id: 'tam_muoi_chan_hoa',
@@ -3865,7 +4897,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 85000,
         secretId: 'tam_muoi_bi_tich',
-        description: 'Bí tịch luyện Tam Muội Chân Hỏa thiêu vạn vật, thậm chí có thể đốt cháy cả linh hồn đối thủ.'
+        description: 'Bí tịch luyện Tam Muội Chân Hỏa thiêu vạn vật, thậm chí có thể đốt cháy cả linh hồn đối thủ.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'truong_sinh_quyet': {
         id: 'truong_sinh_quyet',
@@ -3885,7 +4920,10 @@ export const ITEMS = {
         quality: 'Thông Thiên Linh Bảo',
         price: 500000,
         secretId: 'than_thong_bi_tich',
-        description: 'Tuyệt thế bí điển chứa ba mươi sáu phép thần thông biến hóa, ngộ được một phép đã vô địch cõi trần.'
+        description: 'Tuyệt thế bí điển chứa ba mươi sáu phép thần thông biến hóa, ngộ được một phép đã vô địch cõi trần.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'than_thong' }
+        ]
     },
     'cu_que_linh_cam': {
         id: 'cu_que_linh_cam',
@@ -3895,7 +4933,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 70000,
         description: 'Đàn lớn bằng gỗ quế thần, âm thanh vang xa ngàn dặm, mỗi nốt nhạc chứa linh khí có thể trị thương và tấn công.',
-        stats: { spirit: 800, atk: 500, tuViSpeed: 0.1 }
+        stats: { spirit: 800, atk: 500, tuViSpeed: 0.1 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'linh_bao' }
+        ]
     },
     'nhi_nghi_linh_nguyen': {
         id: 'nhi_nghi_linh_nguyen',
@@ -3905,7 +4946,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 110000,
         description: 'Đài âm dương lưỡng nghi, cân bằng âm dương khí trong cơ thể, gia tăng toàn diện sức chiến đấu.',
-        stats: { atk: 800, def: 800, spirit: 400, maxHp: 1500 }
+        stats: { atk: 800, def: 800, spirit: 400, maxHp: 1500 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'linh_bao' }
+        ]
     },
     'luyen_ma_kinh_tram': {
         id: 'luyen_ma_kinh_tram',
@@ -3915,7 +4959,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 40000,
         description: 'Trầm hương đặc biệt luyện từ ma khí và hương mộc, đốt lên khói trầm có thể ngộ độc và làm mê hoặc kẻ địch.',
-        stats: { atk: 2000, poisonAtk: 300, spirit: 200 }
+        stats: { atk: 2000, poisonAtk: 300, spirit: 200 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+        ]
     },
     'that_tinh_bao_giam': {
         id: 'that_tinh_bao_giam',
@@ -3925,7 +4972,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 120000,
         description: 'Gương thần bảy sao có thể phản chiếu công kích của địch, đồng thời chiếu rõ ảo thuật và tàng hình.',
-        stats: { def: 3000, spirit: 600, reflect: 0.2 }
+        stats: { def: 3000, spirit: 600, reflect: 0.2 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'linh_bao' }
+        ]
     },
     'thien_nham_linh_tho': {
         id: 'thien_nham_linh_tho',
@@ -3935,7 +4985,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 55000,
         description: 'Ấn pháp bảo rèn từ đất linh thiêng đỉnh Thiên Nham, đóng ấn trận pháp cực hiệu, ổn định kết giới.',
-        stats: { def: 1500, spirit: 700, stability: 50 }
+        stats: { def: 1500, spirit: 700, stability: 50 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+        ]
     },
     'bach_linh_hoa_lo': {
         id: 'bach_linh_hoa_lo',
@@ -3945,7 +4998,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 65000,
         description: 'Lò luyện đan pháp bảo đúc từ bách kim linh thổ, nhiệt độ đạt đến mức luyện hóa mọi loại linh thảo.',
-        stats: { craftingBonus: 0.2, alchemy: 50 }
+        stats: { craftingBonus: 0.2, alchemy: 50 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+        ]
     },
     'van_linh_phu_bai': {
         id: 'van_linh_phu_bai',
@@ -3955,7 +5011,10 @@ export const ITEMS = {
         quality: 'Cổ Bảo',
         price: 180000,
         description: 'Bộ bài phù lệnh ghi chép vạn loại linh phù, mỗi lá bài triển khai một loại pháp thuật khác nhau.',
-        stats: { spirit: 1500, atk: 2000, luck: 80 }
+        stats: { spirit: 1500, atk: 2000, luck: 80 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'huyen_thien_kinh_lun': {
         id: 'huyen_thien_kinh_lun',
@@ -3965,7 +5024,10 @@ export const ITEMS = {
         quality: 'Thông Thiên Linh Bảo',
         price: 350000,
         description: 'Pháp bảo không gian cực phẩm, bên trong chứa một tiểu thiên địa hoàn chỉnh với linh mạch và linh khí dồi dào.',
-        stats: { slots: 100, tuViSpeed: 0.3, qiAbsorb: 800 }
+        stats: { slots: 100, tuViSpeed: 0.3, qiAbsorb: 800 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'thong_thien' }
+        ]
     },
     'tinh_van_linh_the': {
         id: 'tinh_van_linh_the',
@@ -3975,7 +5037,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 160000,
         description: 'Khôi giáp đúc từ tinh vân thạch, nhẹ nhàng như mây nhưng cứng chắc hơn mọi loại kim loại, bảo vệ toàn diện.',
-        stats: { def: 5000, maxHp: 4000, spd: 100 }
+        stats: { def: 5000, maxHp: 4000, spd: 100 },
+        categories: [
+            { category: 'phap_bao', subcategory: 'linh_bao' }
+        ]
     },
     'song_long_bao_ta': {
         id: 'song_long_bao_ta',
@@ -3986,7 +5051,10 @@ export const ITEMS = {
         price: 220000,
         description: 'Tháp pháp bảo hình đôi rồng quấn quanh, phóng ra song long hỏa lôi kép, sát thương kinh thiên động địa.',
         stats: { atk: 6000, critChance: 0.2, critDamage: 0.8 },
-        poem: ['Song Long Quán Nhật Phá Thiên Thương', 'Nhất Tháp Phi Lôi Vạn Ma Hoàng']
+        poem: ['Song Long Quán Nhật Phá Thiên Thương', 'Nhất Tháp Phi Lôi Vạn Ma Hoàng'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'van_nien_linh_nhu': {
         id: 'van_nien_linh_nhu',
@@ -3996,7 +5064,10 @@ export const ITEMS = {
         quality: 'Cổ Bảo',
         price: 60000,
         description: 'Linh dịch ngàn năm tích tụ trong khe đá vạn thạch, ẩn chứa linh khí tinh thuần chí cực, uống vào lập tức khôi phục toàn bộ pháp lực.',
-        effect: { mana: 99999 }
+        effect: { mana: 99999 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'cuu_diep_chi': {
         id: 'cuu_diep_chi',
@@ -4006,7 +5077,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 40000,
         description: 'Linh chi chín lá hấp thu tinh hoa nhật nguyệt cực kỳ quý hiếm, ăn vào gia tăng vĩnh viễn tốc độ tu luyện và thần thức.',
-        effect: { tuViSpeed: 0.1, spirit: 100 }
+        effect: { tuViSpeed: 0.1, spirit: 100 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'bang_tuy_chi': {
         id: 'bang_tuy_chi',
@@ -4016,7 +5090,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 75000,
         description: 'Linh chi sinh trưởng nơi vạn năm băng tuyền, hàn khí thấu cốt, dùng để tăng vọt thần thức và băng hệ kháng tính.',
-        effect: { spirit: 250, coldRes: 0.08 }
+        effect: { spirit: 250, coldRes: 0.08 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'khay_loi_moc': {
         id: 'khay_loi_moc',
@@ -4026,7 +5103,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 45000,
         description: 'Thần mộc hấp thu thiên lôi vạn năm không hủy, dùng để tẩy tủy ngọc cốt, nâng cao vĩnh viễn lôi kháng và phòng ngự.',
-        effect: { def: 150, thunderRes: 0.1 }
+        effect: { def: 150, thunderRes: 0.1 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'thien_linh_qua': {
         id: 'thien_linh_qua',
@@ -4036,7 +5116,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 80000,
         description: 'Thánh quả ngàn năm mới chín một lần, tụ hợp thiên địa linh khí tinh túy nhất, dùng để tăng vĩnh viễn linh lực hấp thu và khí vận.',
-        effect: { qiAbsorb: 500, luck: 15 }
+        effect: { qiAbsorb: 500, luck: 15 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'ngung_oanh_dan': {
         id: 'ngung_oanh_dan',
@@ -4046,7 +5129,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 1200,
         description: 'Thượng phẩm đan dược của tu sĩ Luyện Khí Kỳ, hỗ trợ đột phá cảnh giới nhỏ và gia tăng nhẹ tốc độ tu luyện.',
-        effect: { tuViSpeed: 0.08 }
+        effect: { tuViSpeed: 0.08 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'hang_tran_dan': {
         id: 'hang_tran_dan',
@@ -4056,7 +5142,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 15000,
         description: 'Bảo đan tuyệt tích giúp tu sĩ Trúc Cơ ngưng tụ linh khí hóa thành kim đan, tăng vọt thần thức và tỉ lệ đột phá Kết Đan.',
-        effect: { breakthroughRate: 0.10, spirit: 100 }
+        effect: { breakthroughRate: 0.10, spirit: 100 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'ti_ta_dan': {
         id: 'ti_ta_dan',
@@ -4066,7 +5155,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 18000,
         description: 'Đan dược trừ tà tịch ma, bảo vệ tâm mạch, tăng cường thần thức và suy giảm tâm ma cực mạnh.',
-        effect: { spirit: 150, heartDemon: -30 }
+        effect: { spirit: 150, heartDemon: -30 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'dinh_than_dan': {
         id: 'dinh_than_dan',
@@ -4076,7 +5168,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 22000,
         description: 'An định thần hồn, gia tăng vĩnh viễn thần thức cùng với độ ổn định kinh mạch khi tu luyện.',
-        effect: { spirit: 350, stability: 30 }
+        effect: { spirit: 350, stability: 30 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'thanh_truc_phong_van_kiem': {
         id: 'thanh_truc_phong_van_kiem',
@@ -4088,7 +5183,10 @@ export const ITEMS = {
         image: 'items/thanh_truc_phong_van_kiem.webp',
         description: 'Thanh kiếm chí bảo rèn từ Thiên Tinh Thần Tre cùng linh tơ ong vàng, uy lực kiếm khí cuồng bạo xé rách vạn pháp.',
         stats: { atk: 12000, spd: 500, critChance: 0.25, swordDmg: 1.35 },
-        poem: ['Thanh Trúc Thần Phong Đan Tiêu Nhạc', 'Vạn Kiếm Quy Tông Luyện Vạn Ma']
+        poem: ['Thanh Trúc Thần Phong Đan Tiêu Nhạc', 'Vạn Kiếm Quy Tông Luyện Vạn Ma'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'thong_thien' }
+        ]
     },
     'phong_loi_phien': {
         id: 'phong_loi_phien',
@@ -4099,7 +5197,10 @@ export const ITEMS = {
         price: 160000,
         description: 'Chiếc quạt cổ đúc từ cánh thần điểu, một lần vung quạt dẫn động phong lôi tàn phá vạn dặm.',
         stats: { atk: 8000, spd: 300, thunderDmg: 1.25 },
-        poem: ['Phong Lôi Nhất Phất Thiên Địa Động', 'Vạn Kiếp Cuồng Lôi Thiêu Cực Ma']
+        poem: ['Phong Lôi Nhất Phất Thiên Địa Động', 'Vạn Kiếp Cuồng Lôi Thiêu Cực Ma'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'co_bao' }
+        ]
     },
     'than_hoang_giap': {
         id: 'than_hoang_giap',
@@ -4110,7 +5211,10 @@ export const ITEMS = {
         price: 350000,
         description: 'Hộ thân giáp y đúc từ kim hỏa thần tủy cực kỳ kiên cố, đem lại sinh lực dồi dào cùng phòng ngự bất phàm.',
         stats: { def: 12000, maxHp: 15000, damageReduction: 0.25 },
-        poem: ['Thần Hoàng Chiến Giáp Hộ Nguyên Thần', 'Linh Quang Vạn Trượng Kính Thiên Binh']
+        poem: ['Thần Hoàng Chiến Giáp Hộ Nguyên Thần', 'Linh Quang Vạn Trượng Kính Thiên Binh'],
+        categories: [
+            { category: 'phap_bao', subcategory: 'thong_thien' }
+        ]
     },
     'thiet_moc_bach_nien': {
         id: 'thiet_moc_bach_nien',
@@ -4119,7 +5223,10 @@ export const ITEMS = {
         icon: '🪵',
         quality: 'Linh Khí',
         price: 1000,
-        description: 'Thân gỗ của Thiết Mộc thụ thọ mệnh vài trăm năm, cứng chắc như sắt thép. Vật liệu chính để luyện khôi lỗi thời kỳ Trúc Cơ của Hàn Lập.'
+        description: 'Thân gỗ của Thiết Mộc thụ thọ mệnh vài trăm năm, cứng chắc như sắt thép. Vật liệu chính để luyện khôi lỗi thời kỳ Trúc Cơ của Hàn Lập.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'thiet_moc_van_nam': {
         id: 'thiet_moc_van_nam',
@@ -4128,7 +5235,10 @@ export const ITEMS = {
         icon: '🪵',
         quality: 'Cổ Bảo',
         price: 8000,
-        description: 'Thiết Mộc linh thụ tích lũy linh lực vạn năm cực kỳ trân quý, dẻo dai và dẫn linh tính tuyệt hảo. Vật liệu để luyện khôi lỗi Nguyên Anh kỳ.'
+        description: 'Thiết Mộc linh thụ tích lũy linh lực vạn năm cực kỳ trân quý, dẻo dai và dẫn linh tính tuyệt hảo. Vật liệu để luyện khôi lỗi Nguyên Anh kỳ.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'hoa_linh_thach_trung': {
         id: 'hoa_linh_thach_trung',
@@ -4140,7 +5250,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 500,
         weight: 0.02,
-        description: 'Linh thạch trung giai thuộc tính Hỏa tinh thuần, chứa hỏa nguyên lực dồi dào. Dùng làm lõi năng lượng cho Cự Hổ Khôi Lỗi.'
+        description: 'Linh thạch trung giai thuộc tính Hỏa tinh thuần, chứa hỏa nguyên lực dồi dào. Dùng làm lõi năng lượng cho Cự Hổ Khôi Lỗi.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'tinh_thach' }
+        ]
     },
     'dai_dien_quyet': {
         id: 'dai_dien_quyet',
@@ -4150,7 +5263,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 8000,
         techniqueId: 'dai_dien_quyet',
-        description: 'Bí thuật do tổ sư khai phái của Thiên Trúc Giáo Đại Diễn Thần Quân tự sáng tạo, chuyên dùng để tăng cường thần thức và tu luyện phân thần thuật. Là công pháp bắt buộc để điều khiển nhiều khôi lỗi.'
+        description: 'Bí thuật do tổ sư khai phái của Thiên Trúc Giáo Đại Diễn Thần Quân tự sáng tạo, chuyên dùng để tăng cường thần thức và tu luyện phân thần thuật. Là công pháp bắt buộc để điều khiển nhiều khôi lỗi.',
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'khoi_loi_chan_giai': {
         id: 'khoi_loi_chan_giai',
@@ -4167,7 +5283,10 @@ export const ITEMS = {
                 { type: 'learn_puppet_recipe', value: 'thanh_vien_khoi_loi' },
                 { type: 'learn_puppet_recipe', value: 'cu_ho_khoi_loi' }
             ]
-        }
+        },
+        categories: [
+            { category: 'cong_phap', subcategory: 'tu_luyen' }
+        ]
     },
     'bv_thanh_vien_khoi_loi': {
         id: 'bv_thanh_vien_khoi_loi',
@@ -4177,7 +5296,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Hướng dẫn chế tạo Thanh Viên Khôi Lỗi Trúc Cơ cấp từ Thiết Mộc Trăm Năm.',
-        effect: { type: 'learn_puppet_recipe', value: 'thanh_vien_khoi_loi' }
+        effect: { type: 'learn_puppet_recipe', value: 'thanh_vien_khoi_loi' },
+        categories: [
+            { category: 'luyen_khi', subcategory: 'ban_ve' }
+        ]
     },
     'bv_cu_ho_khoi_loi': {
         id: 'bv_cu_ho_khoi_loi',
@@ -4187,7 +5309,10 @@ export const ITEMS = {
         quality: 'Cổ Bảo',
         price: 15000,
         description: 'Hướng dẫn chế tạo Cự Hổ Khôi Lỗi khổng lồ bắn ra cột sáng cực mạnh.',
-        effect: { type: 'learn_puppet_recipe', value: 'cu_ho_khoi_loi' }
+        effect: { type: 'learn_puppet_recipe', value: 'cu_ho_khoi_loi' },
+        categories: [
+            { category: 'luyen_khi', subcategory: 'ban_ve' }
+        ]
     },
     'hu_tien_lenh': {
         id: 'hu_tien_lenh',
@@ -4197,7 +5322,10 @@ export const ITEMS = {
         quality: 'Linh Bảo',
         price: 80000,
         image: 'items/hu_tien_lenh.webp',
-        description: 'Tấm lệnh bài cổ xưa tỏa ra dao động không gian huyền ảo, là chìa khóa mở lối vào Hư Thiên Điện chứa Hư Thiên Đỉnh.'
+        description: 'Tấm lệnh bài cổ xưa tỏa ra dao động không gian huyền ảo, là chìa khóa mở lối vào Hư Thiên Điện chứa Hư Thiên Đỉnh.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'truyen_tin_hac': {
         id: 'truyen_tin_hac',
@@ -4208,7 +5336,10 @@ export const ITEMS = {
         price: 150,
         image: 'items/truyen_tin_hac.webp',
         description: 'Linh hạc gấp từ phù giấy chứa một luồng ý niệm, chuyên dùng để truyền tin tức giữa các tu sĩ cách xa vạn dặm. Sử dụng hồi phục ngay lập tức 10 Thể lực.',
-        effect: { type: 'restore', stamina: 10 }
+        effect: { type: 'restore', stamina: 10 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'phuong_hoa_lu_item': {
         id: 'phuong_hoa_lu_item',
@@ -4218,7 +5349,10 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 75000,
         image: 'items/phuong_hoa_lu.webp',
-        description: 'Lò luyện đan thượng cấp khắc hình phượng hoàng lửa sinh động như thật, có thể bảo toàn dược tính của linh thảo tuyệt đối.'
+        description: 'Lò luyện đan thượng cấp khắc hình phượng hoàng lửa sinh động như thật, có thể bảo toàn dược tính của linh thảo tuyệt đối.',
+        categories: [
+            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+        ]
     },
     'o_minh_si': {
         id: 'o_minh_si',
@@ -4228,7 +5362,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1500,
         image: 'items/o_minh_si.webp',
-        description: 'Sợi tơ đen nhánh dẻo dai sinh ra từ tằm ô minh sống nơi u tối, là vật liệu thượng hạng để luyện chế khôi lỗi cao cấp hoặc dệt hộ giáp.'
+        description: 'Sợi tơ đen nhánh dẻo dai sinh ra từ tằm ô minh sống nơi u tối, là vật liệu thượng hạng để luyện chế khôi lỗi cao cấp hoặc dệt hộ giáp.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'trung_hac_thiet_loi_thu': {
         id: 'trung_hac_thiet_loi_thu',
@@ -4238,7 +5375,10 @@ export const ITEMS = {
         icon: '🥚',
         quality: 'Thiên Cấp',
         price: 25000,
-        description: 'Trứng của Hắc Thiết Lôi Thú thượng cổ, bao quanh bởi những tia lôi điện đen kịt lách tách kêu gào.'
+        description: 'Trứng của Hắc Thiết Lôi Thú thượng cổ, bao quanh bởi những tia lôi điện đen kịt lách tách kêu gào.',
+        categories: [
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
+        ]
     },
 
     // --- BỔ SUNG CÁC LINH THẢO & LINH DƯỢC & HẠT GIỐNG MỚI (PHÀM NHÂN TU TIÊN LORE) ---
@@ -4249,7 +5389,10 @@ export const ITEMS = {
         icon: '🌙',
         quality: 'Pháp Bảo',
         price: 1500,
-        description: 'Tử Nguyệt Thảo, một loại linh thảo cao cấp hiếm gặp ở Nhân giới, hình dáng giống như vầng trăng khuyết màu tím phát ra ánh sáng lung linh.'
+        description: 'Tử Nguyệt Thảo, một loại linh thảo cao cấp hiếm gặp ở Nhân giới, hình dáng giống như vầng trăng khuyết màu tím phát ra ánh sáng lung linh.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'seed_ngoc_de_hoa': {
         id: 'seed_ngoc_de_hoa',
@@ -4258,7 +5401,10 @@ export const ITEMS = {
         icon: '🌱',
         quality: 'Pháp Khí',
         price: 30,
-        description: 'Hạt giống của Ngọc Đề Hoa, loại thảo dược cấp thấp có dược tính cực kỳ ôn hòa, dễ trồng.'
+        description: 'Hạt giống của Ngọc Đề Hoa, loại thảo dược cấp thấp có dược tính cực kỳ ôn hòa, dễ trồng.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: 'duoi_100_nam' }
+        ]
     },
     'ngoc_de_hoa': {
         id: 'ngoc_de_hoa',
@@ -4267,7 +5413,10 @@ export const ITEMS = {
         icon: '🌸',
         quality: 'Pháp Khí',
         price: 100,
-        description: 'Ngọc Đề Hoa, đóa hoa trắng ngần như ngọc, có tác dụng điều hòa tính nhiệt trong lò luyện đan, ổn định hỏa hầu.'
+        description: 'Ngọc Đề Hoa, đóa hoa trắng ngần như ngọc, có tác dụng điều hòa tính nhiệt trong lò luyện đan, ổn định hỏa hầu.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'seed_thanh_long_tham': {
         id: 'seed_thanh_long_tham',
@@ -4276,7 +5425,10 @@ export const ITEMS = {
         icon: '🌱',
         quality: 'Linh Khí',
         price: 120,
-        description: 'Linh chủng của Thanh Long Sâm, đòi hỏi linh điền dồi dào sinh cơ (Mộc thuộc tính).'
+        description: 'Linh chủng của Thanh Long Sâm, đòi hỏi linh điền dồi dào sinh cơ (Mộc thuộc tính).',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: 'duoi_100_nam' }
+        ]
     },
     'thanh_long_tham': {
         id: 'thanh_long_tham',
@@ -4285,7 +5437,10 @@ export const ITEMS = {
         icon: '🐉',
         quality: 'Linh Khí',
         price: 450,
-        description: 'Thanh Long Sâm, củ nhân sâm có hình thù giống như rồng xanh uốn lượn, chứa mộc thuộc tính linh khí vô cùng tinh thuần.'
+        description: 'Thanh Long Sâm, củ nhân sâm có hình thù giống như rồng xanh uốn lượn, chứa mộc thuộc tính linh khí vô cùng tinh thuần.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'seed_tuyet_oanh_thao': {
         id: 'seed_tuyet_oanh_thao',
@@ -4294,7 +5449,10 @@ export const ITEMS = {
         icon: '❄️',
         quality: 'Linh Khí',
         price: 150,
-        description: 'Linh chủng của Tuyết Oánh Thảo, chỉ có thể nảy mầm và sinh trưởng nơi linh điền cực hàn (Băng thuộc tính).'
+        description: 'Linh chủng của Tuyết Oánh Thảo, chỉ có thể nảy mầm và sinh trưởng nơi linh điền cực hàn (Băng thuộc tính).',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: 'duoi_100_nam' }
+        ]
     },
     'tuyet_oanh_thao': {
         id: 'tuyet_oanh_thao',
@@ -4303,7 +5461,10 @@ export const ITEMS = {
         icon: '❄️',
         quality: 'Linh Khí',
         price: 500,
-        description: 'Tuyết Oánh Thảo, loài linh cỏ mọc trên vách núi tuyết vạn năm, lấp lánh như sương tuyết, có tác dụng thanh tẩy kinh mạch, xua tan đan độc.'
+        description: 'Tuyết Oánh Thảo, loài linh cỏ mọc trên vách núi tuyết vạn năm, lấp lánh như sương tuyết, có tác dụng thanh tẩy kinh mạch, xua tan đan độc.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_dich', subSubcategory: 'thien_dia' }
+        ]
     },
     'seed_hoa_duong_chi': {
         id: 'seed_hoa_duong_chi',
@@ -4312,7 +5473,10 @@ export const ITEMS = {
         icon: '🔥',
         quality: 'Linh Khí',
         price: 180,
-        description: 'Linh chủng của Hỏa Dương Chi, cần gieo trồng ở linh điền nóng bỏng hỏa khí (Hỏa thuộc tính).'
+        description: 'Linh chủng của Hỏa Dương Chi, cần gieo trồng ở linh điền nóng bỏng hỏa khí (Hỏa thuộc tính).',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: 'duoi_100_nam' }
+        ]
     },
     'hoa_duong_chi': {
         id: 'hoa_duong_chi',
@@ -4321,7 +5485,10 @@ export const ITEMS = {
         icon: '🍄',
         quality: 'Linh Khí',
         price: 600,
-        description: 'Hỏa Dương Chi, loại nấm linh chi rực đỏ như than hồng, chứa đựng lượng lớn nhiệt năng và hỏa linh lực dồi dào.'
+        description: 'Hỏa Dương Chi, loại nấm linh chi rực đỏ như than hồng, chứa đựng lượng lớn nhiệt năng và hỏa linh lực dồi dào.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'seed_cuu_tich_chi': {
         id: 'seed_cuu_tich_chi',
@@ -4330,7 +5497,10 @@ export const ITEMS = {
         icon: '💀',
         quality: 'Linh Khí',
         price: 250,
-        description: 'Linh chủng của Cửu Tịch Chi, chỉ nảy mầm trong âm khí dày đặc (Âm Minh thuộc tính).'
+        description: 'Linh chủng của Cửu Tịch Chi, chỉ nảy mầm trong âm khí dày đặc (Âm Minh thuộc tính).',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: 'duoi_100_nam' }
+        ]
     },
     'cuu_tich_chi': {
         id: 'cuu_tich_chi',
@@ -4339,7 +5509,10 @@ export const ITEMS = {
         icon: '🪨',
         quality: 'Linh Khí',
         price: 800,
-        description: 'Cửu Tịch Chi, nấm linh chi đen mọc trong những hang động âm u sâu dưới lòng đất, tích lũy dồi dào u minh âm khí.'
+        description: 'Cửu Tịch Chi, nấm linh chi đen mọc trong những hang động âm u sâu dưới lòng đất, tích lũy dồi dào u minh âm khí.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'tieu_dao_qua': {
         id: 'tieu_dao_qua',
@@ -4349,7 +5522,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 350,
         description: 'Tiêu Dao Quả, quả linh ngọt lành ngậm đầy thiên địa tinh hoa. Khi ăn giúp tu sĩ lập tức phục hồi 40 điểm Thể Lực và gia tăng nhẹ tốc độ tu luyện trong 1 giờ.',
-        effect: { type: 'restore', stamina: 40, buff: { stat: 'tu_vi_speed', value: 1.15, duration: 3600 } }
+        effect: { type: 'restore', stamina: 40, buff: { stat: 'tu_vi_speed', value: 1.15, duration: 3600 } },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'tang_tho' }
+        ]
     },
     'huyet_lien_hoa': {
         id: 'huyet_lien_hoa',
@@ -4358,7 +5534,10 @@ export const ITEMS = {
         icon: '🪷',
         quality: 'Pháp Bảo',
         price: 2000,
-        description: 'Huyết Liên Hoa, đóa sen đỏ thẫm sinh trưởng nơi đầm lầy đẫm huyết khí của đại yêu thú, chứa sinh cơ lực lượng vô cùng cuồng bạo.'
+        description: 'Huyết Liên Hoa, đóa sen đỏ thẫm sinh trưởng nơi đầm lầy đẫm huyết khí của đại yêu thú, chứa sinh cơ lực lượng vô cùng cuồng bạo.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'that_tinh_thao': {
         id: 'that_tinh_thao',
@@ -4367,7 +5546,10 @@ export const ITEMS = {
         icon: '🌿',
         quality: 'Pháp Bảo',
         price: 2200,
-        description: 'Thất Tinh Thảo, loại cỏ linh thảo có bảy chiếc lá sắp xếp tựa như chòm sao Bắc Đẩu, chuyên hấp thụ tinh quang tinh hoa ban đêm để nuôi dưỡng thần thức.'
+        description: 'Thất Tinh Thảo, loại cỏ linh thảo có bảy chiếc lá sắp xếp tựa như chòm sao Bắc Đẩu, chuyên hấp thụ tinh quang tinh hoa ban đêm để nuôi dưỡng thần thức.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'thien_tai' }
+        ]
     },
     'ngoc_de_dan': {
         id: 'ngoc_de_dan',
@@ -4377,7 +5559,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 450,
         description: 'Ngọc Đề Đan, viên linh đan sơ cấp dược tính vô cùng ôn hòa. Khi sử dụng trước khi đột phá, giúp gia tăng 5% tỷ lệ đột phá thành công ở Luyện Khí cảnh.',
-        stats: { breakthroughRate: 0.05 }
+        stats: { breakthroughRate: 0.05 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'hoa_duong_dan': {
         id: 'hoa_duong_dan',
@@ -4387,7 +5572,10 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 1800,
         description: 'Hỏa Dương Đan, viên linh đan rực lửa giúp tu sĩ kích phát kinh mạch hỏa hệ. Sử dụng gia tăng 15% hỏa thuộc tính sát thương trong 3 trận đấu tiếp theo.',
-        effect: { type: 'buff', stat: 'fire_dmg_pct', value: 0.15, duration: 3 }
+        effect: { type: 'buff', stat: 'fire_dmg_pct', value: 0.15, duration: 3 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'khac' }
+        ]
     },
     'hoi_linh_dan': {
         id: 'hoi_linh_dan',
