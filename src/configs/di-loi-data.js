@@ -1,3 +1,4 @@
+import { DI_LOI_QUALITIES } from './item-classification.js';
 /**
  * DỮ LIỆU DỊ LÔI BẢNG (10 LOẠI DỊ LÔI)
  */
@@ -11,7 +12,7 @@ export const DI_LOI_DATA = [
         description: "Hủy diệt thiên địa, mang lực lượng khai thiên lập địa. Là thủy tổ của vạn lôi, có thể phá vỡ mọi quy luật không gian và thời gian.",
         origin: "Hỗn độn sơ khai",
         special: "Lực lượng khai thiên, hủy diệt vạn vật chỉ trong một ý niệm.",
-        rarity: "Tổ Lôi"
+        rarity: DI_LOI_QUALITIES.TO_LOI
     },
     {
         rank: 2,
@@ -21,7 +22,7 @@ export const DI_LOI_DATA = [
         description: "Ngọn lôi mang theo ý chí của thiên đạo, chuyên dùng để trừng phạt những kẻ nghịch thiên. Có khả năng triệu hoán thiên kiếp diện rộng.",
         origin: "Thiên đạo ý chí",
         special: "Triệu hoán thiên kiếp, uy áp thiên đạo áp chế mọi sinh linh.",
-        rarity: "Đạo Lôi"
+        rarity: DI_LOI_QUALITIES.DAO_LOI
     },
     {
         rank: 3,
@@ -31,7 +32,7 @@ export const DI_LOI_DATA = [
         description: "Loại lôi điện có khả năng xuyên thấu không gian, trực tiếp công kích vào thần hồn của đối phương mà không bị cản trở bởi phòng ngự vật lý.",
         origin: "Hư không vô tận",
         special: "Xuyên thấu không gian, công kích thần hồn tuyệt đối.",
-        rarity: "Đạo Lôi"
+        rarity: DI_LOI_QUALITIES.DAO_LOI
     },
     {
         rank: 4,
@@ -41,7 +42,7 @@ export const DI_LOI_DATA = [
         description: "Lôi điện mang theo sức mạnh của mặt trời cổ đại, là sự kết hợp hoàn hảo giữa lôi và hỏa thuộc tính.",
         origin: "Thái dương tinh hoa",
         special: "Lôi hỏa song thuộc tính, thiêu rụi và tê liệt mục tiêu đồng thời.",
-        rarity: "Tiên"
+        rarity: DI_LOI_QUALITIES.TIEN_LOI
     },
     {
         rank: 5,
@@ -51,7 +52,7 @@ export const DI_LOI_DATA = [
         description: "Âm lôi sinh ra từ nơi sâu nhất của Cửu U địa phủ, mang theo hơi thở của cái chết và sự lạnh lẽo thấu xương.",
         origin: "Cửu U địa phủ",
         special: "Ăn mòn sinh mệnh, đóng băng linh hồn.",
-        rarity: "Tiên"
+        rarity: DI_LOI_QUALITIES.TIEN_LOI
     },
     {
         rank: 6,
@@ -61,7 +62,7 @@ export const DI_LOI_DATA = [
         description: "Ngọn lôi hiếm hoi mang theo sinh cơ mãnh liệt của Mộc thuộc tính, vừa có khả năng chữa lành vừa có khả năng diệt sát tàn khốc.",
         origin: "Tiên thiên mộc tinh",
         special: "Sinh cơ phục hồi và diệt sát tàn khốc song hành.",
-        rarity: "Tiên"
+        rarity: DI_LOI_QUALITIES.TIEN_LOI
     },
     {
         rank: 7,
@@ -71,7 +72,7 @@ export const DI_LOI_DATA = [
         description: "Lôi điện mang theo hàn khí cực âm từ vùng Bắc Minh hoang dã, có thể đóng băng vạn vật ngay lập tức khi va chạm.",
         origin: "Bắc Minh hàn cực",
         special: "Lôi mang hàn khí cực âm, đông cứng cả linh lực.",
-        rarity: "Thiên Lôi"
+        rarity: DI_LOI_QUALITIES.THIEN_LOI
     },
     {
         rank: 8,
@@ -81,7 +82,7 @@ export const DI_LOI_DATA = [
         description: "Chí tôn lôi điện của Ma đạo, mang theo sự tàn bạo và ý chí hủy diệt điên cuồng.",
         origin: "Ma vực thẳm sâu",
         special: "Gia tăng sát thương ma đạo, phá hủy tâm trí.",
-        rarity: "Thiên Lôi"
+        rarity: DI_LOI_QUALITIES.THIEN_LOI
     },
     {
         rank: 9,
@@ -91,7 +92,7 @@ export const DI_LOI_DATA = [
         description: "Ngọn lôi đại diện cho công lý và sự chính trực, là khắc tinh lớn nhất của mọi loài tà ma ngoại đạo.",
         origin: "Chính khí thiên địa",
         special: "Khắc chế tà ma tuyệt đối, gia tăng sát thương lên yêu ma.",
-        rarity: "Địa Lôi"
+        rarity: DI_LOI_QUALITIES.DIA_LOI
     },
     {
         rank: 10,
@@ -101,7 +102,7 @@ export const DI_LOI_DATA = [
         description: "Thiên lôi mang theo nhiệt lượng của dung nham, nổ tung với sức mạnh tàn phá cực kỳ khủng khiếp.",
         origin: "Tâm núi lửa cổ",
         special: "Sát thương diện rộng, nhiệt lượng cực cao.",
-        rarity: "Địa Lôi"
+        rarity: DI_LOI_QUALITIES.DIA_LOI
     }
 ];
 

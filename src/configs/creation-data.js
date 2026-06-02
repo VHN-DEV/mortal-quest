@@ -1,3 +1,5 @@
+import { ELEMENT_TYPES } from './item-classification.js';
+
 export const CREATION_CONFIG = {
     BASE_POINTS: 150,
     MAX_ADVANTAGES: 5,
@@ -139,74 +141,74 @@ export const SECONDARY_TALENTS = {
 };
 
 export const ROOT_ELEMENTS = {
-    'Kim': {
-        id: 'Kim', name: 'Kim', color: '#ffd700', icon: '⚔️',
+    [ELEMENT_TYPES.KIM]: {
+        id: ELEMENT_TYPES.KIM, name: 'Kim', color: '#ffd700', icon: '⚔️',
         orientation: 'Công kích, Sắc bén',
         bonus: { atk: 50, critRate: 0.05, armorPen: 0.1 }
     },
-    'Mộc': {
-        id: 'Mộc', name: 'Mộc', color: '#4ade80', icon: '🌿',
+    [ELEMENT_TYPES.MOC]: {
+        id: ELEMENT_TYPES.MOC, name: 'Mộc', color: '#4ade80', icon: '🌿',
         orientation: 'Sinh mệnh, Hồi phục',
         bonus: { maxHp: 200, hpRegen: 10, poisonRes: 0.2 }
     },
-    'Thủy': {
-        id: 'Thủy', name: 'Thủy', color: '#3b82f6', icon: '💧',
+    [ELEMENT_TYPES.THUY]: {
+        id: ELEMENT_TYPES.THUY, name: 'Thủy', color: '#3b82f6', icon: '💧',
         orientation: 'Mềm dẻo, Khống chế',
         bonus: { maxMana: 300, avoidRate: 0.05, crowdControl: 0.1 }
     },
-    'Hỏa': {
-        id: 'Hỏa', name: 'Hỏa', color: '#f87171', icon: '🔥',
+    [ELEMENT_TYPES.HOA]: {
+        id: ELEMENT_TYPES.HOA, name: 'Hỏa', color: '#f87171', icon: '🔥',
         orientation: 'Bộc phát, Hủy diệt',
         bonus: { skillDmg: 0.15, fireDmg: 1.5, spd: 20 }
     },
-    'Thổ': {
-        id: 'Thổ', name: 'Thổ', color: '#a855f7', icon: '⛰️',
+    [ELEMENT_TYPES.THO]: {
+        id: ELEMENT_TYPES.THO, name: 'Thổ', color: '#a855f7', icon: '⛰️',
         orientation: 'Phòng ngự, Ổn định',
         bonus: { def: 40, maxHp: 300, statusRes: 0.15 }
     }
 };
 
 export const SPECIAL_ELEMENTS = {
-    'Lôi': {
-        id: 'Lôi', name: 'Lôi', color: '#fbbf24', icon: '⚡',
+    [ELEMENT_TYPES.LOI]: {
+        id: ELEMENT_TYPES.LOI, name: 'Lôi', color: '#fbbf24', icon: '⚡',
         orientation: 'Tốc độ, Bạo phát',
         origin: 'Dung hợp Kim & Thủy',
-        baseElements: ['Kim', 'Thủy'],
+        baseElements: [ELEMENT_TYPES.KIM, ELEMENT_TYPES.THUY],
         bonus: { spd: 50, critRate: 0.1, thunderDmg: 2.5 }
     },
-    'Băng': {
-        id: 'Băng', name: 'Băng', color: '#60a5fa', icon: '❄️',
+    [ELEMENT_TYPES.BANG]: {
+        id: ELEMENT_TYPES.BANG, name: 'Băng', color: '#60a5fa', icon: '❄️',
         orientation: 'Đóng băng, Khống chế',
         origin: 'Dị biến từ Thủy',
-        baseElements: ['Thủy'],
+        baseElements: [ELEMENT_TYPES.THUY],
         bonus: { def: 60, waterDmg: 2.0, iceControl: 0.2 }
     },
-    'Phong': {
-        id: 'Phong', name: 'Phong', color: '#94a3b8', icon: '🌪️',
+    [ELEMENT_TYPES.PHONG]: {
+        id: ELEMENT_TYPES.PHONG, name: 'Phong', color: '#94a3b8', icon: '🌪️',
         orientation: 'Né tránh, Ám sát',
         origin: 'Dung hợp Mộc & Thổ',
-        baseElements: ['Mộc', 'Thổ'],
+        baseElements: [ELEMENT_TYPES.MOC, ELEMENT_TYPES.THO],
         bonus: { avoidRate: 0.15, spd: 80, critDmg: 0.3 }
     },
-    'Độc': {
-        id: 'Độc', name: 'Độc', color: '#c084fc', icon: '☠️',
+    [ELEMENT_TYPES.DOC]: {
+        id: ELEMENT_TYPES.DOC, name: 'Độc', color: '#c084fc', icon: '☠️',
         orientation: 'Nguyền rủa, Hấp thụ',
         origin: 'Dị biến từ Mộc',
-        baseElements: ['Mộc'],
+        baseElements: [ELEMENT_TYPES.MOC],
         bonus: { poisonDmg: 2.0, lifesteal: 0.1, dotDmg: 0.2 }
     },
-    'Quang': {
-        id: 'Quang', name: 'Quang', color: '#fffbeb', icon: '☀️',
+    [ELEMENT_TYPES.QUANG]: {
+        id: ELEMENT_TYPES.QUANG, name: 'Quang', color: '#fffbeb', icon: '☀️',
         orientation: 'Trị liệu, Tịnh hóa',
         origin: 'Dị biến cực hiếm',
-        baseElements: ['Kim', 'Hỏa'],
+        baseElements: [ELEMENT_TYPES.KIM, ELEMENT_TYPES.HOA],
         bonus: { maxHp: 500, avoidRate: 0.1, allRes: 0.15 }
     },
-    'Ám': {
-        id: 'Ám', name: 'Ám', color: '#a855f7', icon: '🌙',
+    [ELEMENT_TYPES.AM]: {
+        id: ELEMENT_TYPES.AM, name: 'Ám', color: '#a855f7', icon: '🌙',
         orientation: 'Thôn phệ, Nguyền rủa',
         origin: 'Dị biến cực hiếm',
-        baseElements: ['Thủy', 'Thổ'],
+        baseElements: [ELEMENT_TYPES.THUY, ELEMENT_TYPES.THO],
         bonus: { lifesteal: 0.2, critRate: 0.1, critDmg: 0.2 }
     }
 };

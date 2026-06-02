@@ -818,6 +818,26 @@ export const LINH_THU_QUALITIES = {
     THAN_HUYET: 'Thần Huyết'
 };
 
+export const ELEMENT_TYPES = {
+    KIM: 'Kim',
+    MOC: 'Mộc',
+    THUY: 'Thủy',
+    HOA: 'Hỏa',
+    THO: 'Thổ',
+    LOI: 'Lôi',
+    BANG: 'Băng',
+    PHONG: 'Phong',
+    DOC: 'Độc',
+    QUANG: 'Quang',
+    AM: 'Ám',
+    YIN: 'Âm',
+    HUYET: 'Huyết',
+    DUONG: 'Dương',
+    THAI_AM: 'Thái Âm',
+    NEUTRAL: 'Neutral',
+    TAP: 'Tạp'
+};
+
 export const QUALITY_TYPES = DAN_DUOC_QUALITIES;
 
 

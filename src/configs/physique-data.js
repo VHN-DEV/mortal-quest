@@ -2,6 +2,8 @@
  * Hệ thống Thể Chất (Physique Data)
  */
 
+import { ELEMENT_TYPES } from './item-classification.js';
+
 export const PHYSIQUE_GRADES = {
     'PHAM': { id: 1, name: 'Phàm Thể', color: '#9ca3af', multiplier: 1.0 },
     'LINH': { id: 2, name: 'Linh Thể', color: '#4ade80', multiplier: 1.5 },
@@ -51,7 +53,7 @@ export const PHYSIQUES = {
         name: 'Hỏa Linh Thể',
         category: 'LINH',
         grade: 'LINH',
-        element: 'Hỏa',
+        element: ELEMENT_TYPES.HOA,
         desc: 'Tăng hấp thu linh khí hỏa hệ, phù hợp công pháp hỏa.',
         bonus: { tvps: 1.5, fireDmg: 0.2 },
         evolution: 'cuu_duong_linh_the'
@@ -61,7 +63,7 @@ export const PHYSIQUES = {
         name: 'Thủy Linh Thể',
         category: 'LINH',
         grade: 'LINH',
-        element: 'Thủy',
+        element: ELEMENT_TYPES.THUY,
         desc: 'Tăng hấp thu linh khí thủy hệ.',
         bonus: { tvps: 1.5, waterDmg: 0.2 }
     },
@@ -70,7 +72,7 @@ export const PHYSIQUES = {
         name: 'Lôi Linh Thể',
         category: 'LINH',
         grade: 'LINH',
-        element: 'Lôi',
+        element: ELEMENT_TYPES.LOI,
         desc: 'Sở hữu linh căn lôi bẩm sinh, sát thương lôi cực mạnh.',
         bonus: { tvps: 1.8, thunderDmg: 0.3 }
     },
@@ -127,7 +129,7 @@ export const PHYSIQUES = {
         name: 'Thái Dương Thánh Thể',
         category: 'THANH',
         grade: 'THANH',
-        element: 'Dương',
+        element: ELEMENT_TYPES.DUONG,
         desc: 'Mang trong mình sức mạnh của mặt trời.',
         bonus: { tvps: 4.0, fireDmg: 1.0, qiAbsorb: 1.5 },
         phenomenon: 'Đại Nhật Lâm Không'
@@ -239,7 +241,7 @@ export const PHYSIQUES = {
         name: 'Thái Âm Tiên Thể',
         category: 'LINH',
         grade: 'TIEN',
-        element: 'Thái Âm',
+        element: ELEMENT_TYPES.THAI_AM,
         desc: 'Cực âm chi chủ, đông cứng vạn pháp.',
         bonus: { waterDmg: 3.0, tvps: 6.0, spd: 150 },
         phenomenon: 'Thái Âm Nguyệt Lạnh'
@@ -258,7 +260,7 @@ export const PHYSIQUES = {
         name: 'Thiên Lôi Chi Thể',
         category: 'LINH',
         grade: 'BAO',
-        element: 'Lôi',
+        element: ELEMENT_TYPES.LOI,
         desc: 'Lôi phạt hóa thân, điều khiển thiên kiếp.',
         bonus: { thunderDmg: 2.5, tvps: 3.0, atk: 200 },
         phenomenon: 'Lôi Đình Vạn Quân'

@@ -1,6 +1,7 @@
+import { ELEMENT_TYPES } from './item-classification.js';
 export const ROOT_TYPES = {
-    BASIC: ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'],
-    MUTATED: ['Lôi', 'Băng', 'Phong', 'Độc', 'Huyết', 'Âm', 'Dương']
+    BASIC: [ELEMENT_TYPES.KIM, ELEMENT_TYPES.MOC, ELEMENT_TYPES.THUY, ELEMENT_TYPES.HOA, ELEMENT_TYPES.THO],
+    MUTATED: [ELEMENT_TYPES.LOI, ELEMENT_TYPES.BANG, ELEMENT_TYPES.PHONG, ELEMENT_TYPES.DOC, ELEMENT_TYPES.HUYET, ELEMENT_TYPES.YIN, ELEMENT_TYPES.DUONG]
 };
 
 export const ROOT_QUALITIES = {

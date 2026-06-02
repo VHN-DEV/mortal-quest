@@ -2,6 +2,8 @@
  * DỮ LIỆU HỆ THỐNG LUYỆN ĐAN
  */
 
+import { PHAP_BAO_QUALITIES } from './item-classification.js';
+
 export const ALCHEMY_LEVELS = [
     { level: 1, name: "Nhất Phẩm Luyện Dược Sư", bonusRate: 0.05 },
     { level: 2, name: "Nhị Phẩm Luyện Dược Sư", bonusRate: 0.10 },
@@ -20,7 +22,7 @@ export const CAULDRONS = {
     'pham_lu': {
         id: 'pham_lu',
         name: 'Phàm Cấp Đan Lư',
-        quality: 'Phàm Khí',
+        quality: PHAP_BAO_QUALITIES.PHAM_KHI,
         successBonus: 0,
         qualityBonus: 0,
         stability: 0.5,
@@ -31,7 +33,7 @@ export const CAULDRONS = {
     'huyen_lu': {
         id: 'huyen_lu',
         name: 'Huyền Thiết Trọng Lư',
-        quality: 'Linh Khí',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
         successBonus: 0.05,
         qualityBonus: 0.1,
         stability: 0.7,
@@ -42,7 +44,7 @@ export const CAULDRONS = {
     'dia_lu': {
         id: 'dia_lu',
         name: 'Địa Long Phần Thiên Lư',
-        quality: 'Cổ Bảo',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
         successBonus: 0.15,
         qualityBonus: 0.2,
         stability: 0.85,
@@ -53,7 +55,7 @@ export const CAULDRONS = {
     'phuong_hoa_lu': {
         id: 'phuong_hoa_lu',
         name: 'Phượng Hỏa Lư',
-        quality: 'Pháp Bảo',
+        quality: PHAP_BAO_QUALITIES.PHAP_BAO,
         successBonus: 0.25,
         qualityBonus: 0.3,
         stability: 0.9,
@@ -64,7 +66,7 @@ export const CAULDRONS = {
     'thien_lu': {
         id: 'thien_lu',
         name: 'Thiên Cực Thái Hư Lư',
-        quality: 'Linh Bảo',
+        quality: PHAP_BAO_QUALITIES.LINH_BAO,
         successBonus: 0.3,
         qualityBonus: 0.4,
         stability: 0.95,
