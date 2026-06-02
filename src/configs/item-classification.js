@@ -164,8 +164,8 @@ export const ITEM_CATEGORIES = {
         name: 'Luyện Khí',
         icon: '⚒️',
         subcategories: {
-            'ban_ve': 'Bản Vẽ Thiết Kế',
-            'dai_luyen_khi': 'Đài Luyện Khí'
+            'ban_ve_thiet_ke': 'Bản Vẽ Thiết Kế',
+            'de_luyen_khi': 'Đế Luyện Khí'
         }
     },
     'ky_vat_di_bao': {
@@ -243,39 +243,39 @@ function _classifyItemRaw(item) {
     }
 
     // 1b. Danh sách kỳ vật / Điển tịch ghi chép (Ngọc Giản)
-    if (item.action && item.action.startsWith('open_')) {
+    if (type === ITEM_TYPES.NGOC_GIAN) {
         return { category: 'ky_vat_di_bao', subcategory: 'ngoc_gian' };
     }
 
     // 1c. Linh Thú Đại (Túi chứa Linh Thú)
-    if (type === 'artifact') {
-        return { category: 'ky_vat_di_bao', subcategory: 'default' };
+    if (type === ITEM_TYPES.LINH_THU_DAI) {
+        return { category: 'ky_vat_di_bao', subcategory: 'linh_thu_dai' };
     }
 
     // 2. Dị Hỏa
-    if (type === ITEM_TYPES.DI_HOA || type === ITEM_TYPES.FLAME) {
+    if (type === ITEM_TYPES.DI_HOA) {
         return { category: 'ky_vat_di_bao', subcategory: 'di_hoa' };
     }
 
     // 3. Phù Lục tools (Bút, Mực, Giấy)
-    if (type === ITEM_TYPES.TALISMAN_PEN || type === ITEM_TYPES.TALISMAN_INK || type === ITEM_TYPES.TALISMAN_PAPER) {
+    if (type === ITEM_TYPES.BUT_VE_PHU || type === ITEM_TYPES.MUC_VE_PHU || type === ITEM_TYPES.GIAY_VE_PHU) {
         return { category: 'phu_luc', subcategory: 'phu_cu' };
     }
 
     // 3b. Luyện Đan (Đan Phương và Đan Lư)
-    if (type === ITEM_TYPES.CAULDRON) {
+    if (type === ITEM_TYPES.DAN_LU) {
         return { category: 'luyen_dan', subcategory: 'dan_lu' };
     }
-    if (type === ITEM_TYPES.RECIPE) {
+    if (type === ITEM_TYPES.DAN_PHUONG) {
         return { category: 'luyen_dan', subcategory: 'dan_phuong' };
     }
 
     // 4. Luyện Khí (Bản Vẽ and Đài/Lò/Lư Luyện Khí)
-    if (type === ITEM_TYPES.SMITHING_RECIPE || (effect && (effect.type === EFFECT_TYPES.HOC_CONG_THUC_REN || effect.type === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI))) {
-        return { category: 'luyen_khi', subcategory: 'ban_ve' };
+    if (type === ITEM_TYPES.BAN_VE_THIET_KE) {
+        return { category: 'luyen_khi', subcategory: 'ban_ve_thiet_ke' };
     }
-    if (type === ITEM_TYPES.SMITHING_TOOL) {
-        return { category: 'luyen_khi', subcategory: 'dai_luyen_khi' };
+    if (type === ITEM_TYPES.DE_LUYEN_KHI) {
+        return { category: 'luyen_khi', subcategory: 'de_luyen_khi' };
     }
 
     // 7. Trận Pháp
@@ -608,6 +608,7 @@ export const ITEM_TYPES = {
     LINH_DUOC: 'linh_duoc',
     LINH_KHOANG: 'linh_khoang',
     LINH_MOC: 'linh_moc',
+    NGOC_GIAN: 'ngoc_gian',
 };
 
 // Centralized Item Categories Enum mapping Category -> Subcategory
@@ -715,8 +716,8 @@ export const ITEM_CATEGORIES_ENUM = {
     LUYEN_KHI: {
         KEY: 'luyen_khi',
         SUBCATEGORIES: {
-            BAN_VE: 'ban_ve',
-            DAI_LUYEN_KHI: 'dai_luyen_khi'
+            BAN_VE: 'ban_ve_thiet_ke',
+            DE_LUYEN_KHI: 'de_luyen_khi'
         }
     },
     KY_VAT_DI_BAO: {

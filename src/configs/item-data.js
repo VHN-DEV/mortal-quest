@@ -2894,7 +2894,7 @@ export const ITEMS = {
         price: 200,
         description: 'Bệ rèn thô sơ cho người mới học luyện khí.',
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.LUYEN_KHI.KEY, subcategory: ITEM_CATEGORIES_ENUM.LUYEN_KHI.SUBCATEGORIES.DAI_LUYEN_KHI }
+            { category: ITEM_CATEGORIES_ENUM.LUYEN_KHI.KEY, subcategory: ITEM_CATEGORIES_ENUM.LUYEN_KHI.SUBCATEGORIES.DE_LUYEN_KHI }
         ]
     },
     'luyen_khi_dai': {
@@ -2906,7 +2906,7 @@ export const ITEMS = {
         price: 3000,
         description: 'Bệ rèn linh văn chuyên dụng cho luyện khí sư.',
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.LUYEN_KHI.KEY, subcategory: ITEM_CATEGORIES_ENUM.LUYEN_KHI.SUBCATEGORIES.DAI_LUYEN_KHI }
+            { category: ITEM_CATEGORIES_ENUM.LUYEN_KHI.KEY, subcategory: ITEM_CATEGORIES_ENUM.LUYEN_KHI.SUBCATEGORIES.DE_LUYEN_KHI }
         ]
     },
 
