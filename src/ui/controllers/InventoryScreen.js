@@ -19,7 +19,7 @@ export class InventoryScreen {
         if (!itemData) return [];
         
         const categories = [];
-        const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
+        const isManualAction = itemData.type === 'book' || itemData.effect?.type === 'unlock_profession';
         const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
         if (isRecipe) {
             categories.push('Bí Pháp');
@@ -115,7 +115,7 @@ export class InventoryScreen {
             this.btnUseItem.onclick = () => {
                 const qty = parseInt(this.elQtyInput.value) || 1;
                 const itemData = getItemById(state.selectedItemId);
-                const isManual = itemData && itemData.action && itemData.action.startsWith('open_');
+                const isManual = itemData && itemData.type === 'book' && itemData.action;
 
                 if (state.selectedItemId && state.player.inventory.useItem(state.selectedItemId, qty)) {
                     if (isManual) {
@@ -795,7 +795,7 @@ export class InventoryScreen {
         }
 
         const isSpiritStone = itemData.type === 'spirit_stone';
-        const isManual = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc'));
+        const isManual = itemData.type === 'book' && itemData.action;
 
         this.btnUseItem.classList.toggle('hidden', !(['consumable', 'book', 'spirit_stone', 'beast_egg', 'recipe', 'talisman_recipe'].includes(itemData.type)) || (fromShop && !isManual));
         if (this.btnCrushStone) this.btnCrushStone.classList.toggle('hidden', !isSpiritStone || fromShop || fromSell);

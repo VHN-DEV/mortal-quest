@@ -37,7 +37,7 @@ export class ShopController {
         if (!itemData) return [];
 
         const categories = [];
-        const isManualAction = itemData.action && (itemData.action.startsWith('open_') || itemData.action.includes('linh_the_luc') || itemData.effect?.type === 'unlock_profession');
+        const isManualAction = itemData.type === 'book' || itemData.effect?.type === 'unlock_profession';
         const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
         if (isRecipe) {
             categories.push('Bí Pháp');
