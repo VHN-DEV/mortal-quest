@@ -2834,10 +2834,10 @@ export const ITEMS = {
     },
     'thanh_lien_dia_tam_hoa_seed': {
         id: 'thanh_lien_dia_tam_hoa_seed',
-        name: 'Thanh Liên Địa Tâm Hỏa (Chủng)',
+        name: 'Thanh Liên Địa Tâm Hỏa',
         type: ITEM_TYPES.LINH_HOA,
         icon: '🔥',
-        quality: 'Pháp Bảo',
+        quality: 'Dị Hỏa',
         price: 50000,
         description: 'Hỏa chủng của Thanh Liên Địa Tâm Hỏa, có thể luyện hóa thành linh hỏa.',
         categories: [
