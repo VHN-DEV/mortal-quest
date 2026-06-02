@@ -2102,28 +2102,28 @@ export const ITEMS = {
     'thien_dao_than_thach': {
         id: 'thien_dao_than_thach',
         name: 'Thiên Đạo Thần Thạch',
-        type: ITEM_TYPES.NGUYEN_LIEU,
+        type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
         quality: 'Tiên Khí',
         tier: 'TIEN_KHI',
         image: 'artifacts/thien_dao_than_thach.webp',
         description: 'Mảnh vỡ từ Thiên Đạo, chứa đựng quy tắc tối cao của vũ trụ.',
         price: 10000000,
-        stats: { breakthroughRate: 0.5, luck: 100 },
+        stats: { breakthroughRate: 0.01, luck: 10 },
         poem: ['Thiên Đạo Vô Thường Thần Thạch Ấn', 'Quy Tắc Vạn Vật Tại Nhân Tâm'],
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.TIEN_KHI }
         ]
     },
     'truyen_dao_thanh_gian': {
         id: 'truyen_dao_thanh_gian',
         name: 'Truyền Đạo Thánh Giản',
-        type: ITEM_TYPES.SACH_CONG_PHAP,
+        type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
         quality: 'Tiên Khí',
         tier: 'TIEN_KHI',
         image: 'artifacts/truye_dao_thanh_gian.webp',
         description: 'Thánh giản ghi chép truyền thừa của vị tiên nhân thượng cổ, chứa đựng vô số bí pháp.',
         price: 7000000,
-        action: 'open_immortal_transmission',
+        stats: { breakthroughRate: 0.01, luck: 10 },
         poem: ['Thánh Giản Truyền Đạo Khai Thần Thức', 'Vạn Cổ Bí Pháp Hiện Chân Thân'],
         categories: [
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.TIEN_KHI }
