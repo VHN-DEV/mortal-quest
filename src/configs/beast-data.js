@@ -1,14 +1,5 @@
 import { LINH_THU_QUALITIES } from './item-classification.js';
-
-export const BEAST_BLOODLINES = {
-    PHAM: 'PHAM',
-    LINH: 'LINH',
-    DIA: 'DIA',
-    THIEN: 'THIEN',
-    THANH: 'THANH',
-    TIEN: 'TIEN',
-    THAN: 'THAN'
-};
+import { BEAST_BLOODLINES } from './game-enums.js';
 
 export const BEAST_TYPES = {
     LINH_TRUNG: 'Linh Trùng',

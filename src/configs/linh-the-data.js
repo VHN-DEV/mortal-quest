@@ -2,13 +2,7 @@
  * DỮ LIỆU CHƯ THIÊN LINH THỂ LỤC (15 LOẠI LINH THỂ)
  */
 
-export const LINH_THE_RARITIES = {
-    THAN_THOAI: 'Thần Thoại',
-    THAN: 'Thần',
-    TIEN: 'Tiên',
-    THIEN: 'Thiên',
-    DIA: 'Địa'
-};
+import { LINH_THE_RARITIES } from './game-enums.js';
 
 export const LINH_THE_DATA = [
     {

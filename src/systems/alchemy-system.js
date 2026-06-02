@@ -1,6 +1,6 @@
 import { getRecipeById, getCauldronById, getFlameById, ALCHEMY_TECHNIQUES, getAlchemyLevelInfo } from '../configs/alchemy-data.js';
+import { DAN_DUOC_QUALITIES } from '../configs/item-classification.js';
 import { getItemById } from '../configs/item-data.js';
-import { QUALITY_TYPES } from '../configs/item-classification.js';
 
 
 export class AlchemySystem {
@@ -46,25 +46,27 @@ export class AlchemySystem {
         // Add some randomness
         qualityScore += (Math.random() * 0.4 - 0.2);
 
-        let quality = QUALITY_TYPES.PHAM_PHAM;
+        let quality = DAN_DUOC_QUALITIES.PHAM;
         let danVeins = 0;
         let poisonValue = 10;
         let isDanLinh = false;
 
-        if (qualityScore > 2.5) { 
-            quality = QUALITY_TYPES.TIEN_PHAM; 
+        if (qualityScore > 2.8) { 
+            quality = DAN_DUOC_QUALITIES.TIEN_DAN; 
             danVeins = 12; 
             poisonValue = 0; 
             isDanLinh = Math.random() < 0.1; // 10% chance for Dan Linh if score is very high
         }
-        else if (qualityScore > 2.0) { quality = QUALITY_TYPES.HOAN_MY; danVeins = 9; poisonValue = 0; }
-        else if (qualityScore > 1.6) { quality = QUALITY_TYPES.CUC_PHAM; danVeins = 6; poisonValue = 2; }
-        else if (qualityScore > 1.2) { quality = QUALITY_TYPES.THUONG_PHAM; danVeins = 3; poisonValue = 5; }
-        else if (qualityScore > 0.8) { quality = QUALITY_TYPES.TRUNG_PHAM; danVeins = 1; poisonValue = 8; }
+        else if (qualityScore > 2.4) { quality = DAN_DUOC_QUALITIES.DAN_BAO; danVeins = 9; poisonValue = 0; }
+        else if (qualityScore > 2.0) { quality = DAN_DUOC_QUALITIES.DAN_VAN; danVeins = 7; poisonValue = 1; }
+        else if (qualityScore > 1.6) { quality = DAN_DUOC_QUALITIES.CUC_PHAM; danVeins = 6; poisonValue = 2; }
+        else if (qualityScore > 1.2) { quality = DAN_DUOC_QUALITIES.THUONG_PHAM; danVeins = 3; poisonValue = 5; }
+        else if (qualityScore > 0.8) { quality = DAN_DUOC_QUALITIES.TRUNG_PHAM; danVeins = 1; poisonValue = 8; }
+        else if (qualityScore > 0.4) { quality = DAN_DUOC_QUALITIES.HA_PHAM; danVeins = 0; poisonValue = 9; }
 
         // Dan Tribulation (for level 5+ dan or High quality)
         let hasTribulation = false;
-        if (recipe.level >= 5 || quality === QUALITY_TYPES.HOAN_MY || quality === QUALITY_TYPES.TIEN_PHAM) {
+        if (recipe.level >= 5 || quality === DAN_DUOC_QUALITIES.DAN_BAO || quality === DAN_DUOC_QUALITIES.TIEN_DAN || quality === DAN_DUOC_QUALITIES.DAN_VAN) {
             hasTribulation = Math.random() < 0.3; // Increased chance
         }
 
@@ -76,7 +78,7 @@ export class AlchemySystem {
             isDanLinh,
             hasTribulation,
             resultId: recipe.resultId,
-            msg: `Luyện đan thành công! Thu được [${quality}] ${getItemById(recipe.resultId)?.name || 'Đan dược'}.${isDanLinh ? ' KHỞI SINH ĐAN LINH!' : ''}`
+            msg: `Luyện đan thành công! Thu được [${quality.name}] ${getItemById(recipe.resultId)?.name || 'Đan dược'}.${isDanLinh ? ' KHỞI SINH ĐAN LINH!' : ''}`
         };
     }
 

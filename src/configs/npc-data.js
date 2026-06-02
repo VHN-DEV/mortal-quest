@@ -1,4 +1,5 @@
 import { ASSETS } from './asset-data.js';
+import { NPC_PERSONALITIES_KEYS, NPC_GOALS_KEYS } from './game-enums.js';
 
 export const NPC_PERSONALITIES = {
     'lanh_lung': { id: 'lanh_lung', name: 'Lạnh lùng', desc: 'Ít nói, khó gần, nhưng hành động dứt khoát.' },
@@ -18,26 +19,6 @@ export const NPC_GOALS = {
     'tim_truyen_thua': { id: 'tim_truyen_thua', name: 'Tìm truyền thừa', desc: 'Khám phá bí cảnh, tìm kiếm di sản cổ đại.' },
     'chan_hung_tong_mon': { id: 'chan_hung_tong_mon', name: 'Chấn hưng tông môn', desc: 'Làm rạng danh tông môn của mình.' },
     'tim_dao_lu': { id: 'tim_dao_lu', name: 'Tìm đạo lữ', desc: 'Mong muốn tìm được người cùng tu hành.' }
-};
-
-export const NPC_PERSONALITIES_KEYS = {
-    LANH_LUNG: 'lanh_lung',
-    CHINH_TRUC: 'chinh_truc',
-    THAM_LAM: 'tham_lam',
-    KIEU_NGAO: 'kieu_ngao',
-    DIEN_CUONG: 'dien_cuong',
-    DA_NGHI: 'da_nghi',
-    TRUNG_THANH: 'trung_thanh',
-    HOA_NHA: 'hoa_nha',
-    QUY_QUYET: 'quy_quyet'
-};
-
-export const NPC_GOALS_KEYS = {
-    BAO_THU: 'bao_thu',
-    THANH_TIEN: 'thanh_tien',
-    TIM_TRUYEN_THUA: 'tim_truyen_thua',
-    CHAN_HUNG_TON_MON: 'chan_hung_tong_mon',
-    TIM_DAO_LU: 'tim_dao_lu'
 };
 
 export const NPC_RELATIONSHIP_LEVELS = [

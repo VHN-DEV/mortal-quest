@@ -6,6 +6,11 @@ import { getItemById } from '../configs/item-data.js';
  * @returns {string}
  */
 export function getQualityClass(quality) {
+    let qKey = quality;
+    if (quality && typeof quality === 'object') {
+        qKey = quality.id || '';
+    }
+
     const map = {
         'Phàm Khí': 'pham-khi',
         'Pháp Khí': 'phap-khi',
@@ -39,10 +44,28 @@ export function getQualityClass(quality) {
         'Đạo Hỏa': 'danh-khi', 'Đạo Lôi': 'danh-khi',
         'Hồng Mông Tổ Hỏa': 'danh-khi', 'Tổ Lôi': 'danh-khi',
 
+        // Dan duoc strings & ids
+        'pham': 'pham',
+        'Phàm Phẩm': 'pham',
+        'ha_pham': 'hoang',
+        'Hạ Phẩm': 'hoang',
+        'trung_pham': 'huyen',
+        'Trung Phẩm': 'huyen',
+        'thuong_pham': 'dia',
+        'Thượng Phẩm': 'dia',
+        'cuc_pham': 'thien',
+        'Cực Phẩm': 'thien',
+        'dan_van': 'linh-bao',
+        'Đan Văn': 'linh-bao',
+        'dan_bao': 'than',
+        'Đan Bảo': 'than',
+        'tien_dan': 'tien',
+        'Tiên Đan': 'tien',
+
         // Compatibility
-        'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
+        'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien', 'Tiên Phẩm': 'tien'
     };
-    return map[quality] || 'pham';
+    return map[qKey] || map[quality] || 'pham';
 }
 
 /**
@@ -65,6 +88,7 @@ export function renderItemCard(item, options = {}) {
     } = options;
 
     const qClass = getQualityClass(item.quality);
+    const displayQual = (item.quality && typeof item.quality === 'object') ? item.quality.name : item.quality;
 
     return `
         <div class="flex items-center justify-between p-3 bg-black/40 border border-gray-800 rounded-xl hover:border-${qClass} transition-all">
@@ -73,7 +97,7 @@ export function renderItemCard(item, options = {}) {
                 <div>
                     <div class="text-sm font-bold text-white">${item.name}</div>
                     <div class="text-[9px] font-bold quality-${qClass}">
-                        ${item.quality}${(item.quality.toLowerCase().includes('khí') || item.quality.toLowerCase().includes('bảo') || item.quality.toLowerCase().includes('phẩm') || item.quality.toLowerCase().includes('giai') || item.quality.toLowerCase().includes('hỏa') || item.quality.toLowerCase().includes('lôi') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(item.quality)) ? '' : ' phẩm'} 
+                        ${displayQual}${(displayQual.toLowerCase().includes('khí') || displayQual.toLowerCase().includes('bảo') || displayQual.toLowerCase().includes('phẩm') || displayQual.toLowerCase().includes('giai') || displayQual.toLowerCase().includes('hỏa') || displayQual.toLowerCase().includes('lôi') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(displayQual)) ? '' : ' phẩm'} 
                         ${showStock ? `| Kho: ${stock}` : ''}
                         ${showQuantity ? `| x${quantity}` : ''}
                     </div>
@@ -117,6 +141,9 @@ export function renderGridItem(item, options = {}) {
  * @returns {string}
  */
 export function getDisplayQuality(quality, type) {
+    if (quality && typeof quality === 'object') {
+        return quality.name || '';
+    }
     const isManualOrRecipe = ['sach_cong_phap', 'tuyet_ky', 'dan_phuong', 'don_phu'].includes(type);
     if (!isManualOrRecipe) return quality;
 

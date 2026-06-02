@@ -749,96 +749,16 @@ export const ITEM_CATEGORIES_ENUM = {
 };
 
 // Centralized Item Qualities Enums
-export const PHAP_BAO_QUALITIES = {
-    PHAM_KHI: 'Phàm Khí',
-    PHAP_KHI: 'Pháp Khí',
-    LINH_KHI: 'Linh Khí',
-    PHAP_BAO: 'Pháp Bảo',
-    CO_BAO: 'Cổ Bảo',
-    LINH_BAO: 'Linh Bảo',
-    THONG_THIEN_LINH_BAO: 'Thông Thiên Linh Bảo',
-    HUYEN_THIEN_CHI_BAO: 'Huyền Thiên Chi Bảo',
-    TIEN_KHI: 'Tiên Khí',
-    DANH_KHI: 'Danh Khí'
-};
-
-export const DAN_DUOC_QUALITIES = {
-    PHAM_PHAM: 'Phàm Phẩm',
-    HA_PHAM: 'Hạ Phẩm',
-    TRUNG_PHAM: 'Trung Phẩm',
-    THUONG_PHAM: 'Thượng Phẩm',
-    CUC_PHAM: 'Cực Phẩm',
-    HOAN_MY: 'Hoàn Mỹ',
-    TIEN_PHAM: 'Tiên Phẩm'
-};
-
-export const CONG_PHAP_QUALITIES = {
-    PHAM_GIAI: 'Phàm Giai',
-    HOANG_GIAI: 'Hoàng Giai',
-    HUYEN_GIAI: 'Huyền Giai',
-    DIA_GIAI: 'Địa Giai',
-    THIEN_GIAI: 'Thiên Giai',
-    LINH_GIAI: 'Linh Giai',
-    THANH_GIAI: 'Thánh Giai',
-    TIEN_GIAI: 'Tiên Giai',
-    DE_GIAI: 'Đế Giai',
-    DAO_GIAI: 'Đạo Giai'
-};
-
-export const DI_HOA_QUALITIES = {
-    DI_HOA: 'Dị Hỏa',
-    PHAM_HOA: 'Phàm Hỏa',
-    LINH_HOA: 'Linh Hỏa',
-    DIA_HOA: 'Địa Hỏa',
-    THIEN_HOA: 'Thiên Hỏa',
-    THANH_HOA: 'Thánh Hỏa',
-    TIEN_HOA: 'Tiên Hỏa',
-    DAO_HOA: 'Đạo Hỏa',
-    HONG_MONG_TO_HOA: 'Hồng Mông Tổ Hỏa'
-};
-
-export const DI_LOI_QUALITIES = {
-    PHAM_LOI: 'Phàm Lôi',
-    LINH_LOI: 'Linh Lôi',
-    DIA_LOI: 'Địa Lôi',
-    THIEN_LOI: 'Thiên Lôi',
-    THANH_LOI: 'Thánh Lôi',
-    TIEN_LOI: 'Tiên Lôi',
-    DAO_LOI: 'Đạo Lôi',
-    TO_LOI: 'Tổ Lôi'
-};
-
-export const LINH_THU_QUALITIES = {
-    PHAM_HUYET: 'Phàm Huyết',
-    LINH_CAP: 'Linh Cấp',
-    DIA_CAP: 'Địa Cấp',
-    THIEN_CAP: 'Thiên Cấp',
-    THANH_HUYET: 'Thánh Huyết',
-    TIEN_HUYET: 'Tiên Huyết',
-    THAN_HUYET: 'Thần Huyết'
-};
-
-export const ELEMENT_TYPES = {
-    KIM: 'Kim',
-    MOC: 'Mộc',
-    THUY: 'Thủy',
-    HOA: 'Hỏa',
-    THO: 'Thổ',
-    LOI: 'Lôi',
-    BANG: 'Băng',
-    PHONG: 'Phong',
-    DOC: 'Độc',
-    QUANG: 'Quang',
-    AM: 'Ám',
-    YIN: 'Âm',
-    HUYET: 'Huyết',
-    DUONG: 'Dương',
-    THAI_AM: 'Thái Âm',
-    NEUTRAL: 'Neutral',
-    TAP: 'Tạp'
-};
-
-export const QUALITY_TYPES = DAN_DUOC_QUALITIES;
+export {
+    PHAP_BAO_QUALITIES,
+    DAN_DUOC_QUALITIES,
+    CONG_PHAP_QUALITIES,
+    DI_HOA_QUALITIES,
+    DI_LOI_QUALITIES,
+    LINH_THU_QUALITIES,
+    ELEMENT_TYPES,
+    QUALITY_TYPES
+} from './game-enums.js';
 
 
 // Centralized Effect Types Enum
