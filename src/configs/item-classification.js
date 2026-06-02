@@ -535,6 +535,12 @@ function _classifyItemRaw(item) {
         sub = 'chia_khoa';
     } else if (name.includes('Ngọc Giản') || id.includes('ngoc_gian')) {
         sub = 'ngoc_gian';
+    } else if (name.includes('Di Hỏa') || id.includes('di_hoa')) {
+        sub = 'di_hoa';
+    } else if (name.includes('Linh Thú Đại') || id.includes('linh_thu_dai')) {
+        sub = 'linh_thu_dai';
+    } else if (name.includes('Túi Trữ Vật') || id.includes('tui_tru_vat')) {
+        sub = 'tui_tru_vat';
     }
 
     return { category: 'ky_vat_di_bao', subcategory: sub };
@@ -586,6 +592,7 @@ export const ITEM_TYPES = {
     THI_KHOI: 'thi_khoi',
     LINH_HOA: 'linh_hoa',
     TUI_TRU_VAT: 'tui_tru_vat',
+    LINH_THU_DAI: 'linh_thu_dai',
     BAN_DO: 'ban_do',
     DICH_VU: 'dich_vu',
     DI_HOA: 'di_hoa',

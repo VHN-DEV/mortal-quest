@@ -1372,9 +1372,9 @@ export const ITEMS = {
     'linh_hu_tui': {
         id: 'linh_hu_tui',
         name: 'Linh Hư Túi',
-        type: ITEM_TYPES.DAN_DUOC,
+        type: ITEM_TYPES.TUI_TRU_VAT,
         icon: '🎒',
-        quality: 'Túi Trữ Vật',
+        quality: 'Linh Khí',
         price: 500,
         description: 'Sử dụng để mở rộng thêm một linh không trữ vật mới với 10 ô chứa đồ. Bện từ tơ lụa linh mộc sơ cấp.',
         action: 'expand_inventory',
@@ -1386,9 +1386,9 @@ export const ITEMS = {
     'can_khon_tui': {
         id: 'can_khon_tui',
         name: 'Càn Khôn Túi',
-        type: ITEM_TYPES.DAN_DUOC,
+        type: ITEM_TYPES.TUI_TRU_VAT,
         icon: '🎒',
-        quality: 'Túi Trữ Vật',
+        quality: 'Linh Khí',
         price: 5000,
         description: 'Sử dụng để mở rộng thêm một càn khôn không gian mới với 30 ô chứa đồ. Chế tác từ da thú yêu thú trung cấp.',
         action: 'expand_inventory',
@@ -1400,9 +1400,9 @@ export const ITEMS = {
     'thao_thiet_can_khon_dai': {
         id: 'thao_thiet_can_khon_dai',
         name: 'Thao Thiết Càn Khôn Đại',
-        type: ITEM_TYPES.DAN_DUOC,
+        type: ITEM_TYPES.TUI_TRU_VAT,
         icon: '🎒',
-        quality: 'Túi Trữ Vật',
+        quality: 'Linh Khí',
         price: 25000,
         description: 'Sử dụng để mở rộng thêm một dị bảo không gian cực đại với 50 ô chứa đồ. Ẩn chứa da của thần thú Thao Thiết thượng cổ.',
         action: 'expand_inventory',
@@ -3561,9 +3561,9 @@ export const ITEMS = {
     'ngu_thu_nang': {
         id: 'ngu_thu_nang',
         name: 'Ngự Thú Nang',
-        type: 'artifact',
+        type: ITEM_TYPES.LINH_THU_DAI,
         icon: '👜',
-        quality: 'Linh Thú Đại',
+        quality: 'Linh Khí',
         price: 500,
         description: 'Túi chuyên dụng để chứa linh thú và kỳ trùng sơ cấp. Có thể chứa tối đa 3 con.',
         categories: [
@@ -3573,9 +3573,9 @@ export const ITEMS = {
     'thien_linh_nang': {
         id: 'thien_linh_nang',
         name: 'Thiên Linh Thú Đại',
-        type: 'artifact',
+        type: ITEM_TYPES.LINH_THU_DAI,
         icon: '👜',
-        quality: 'Linh Thú Đại',
+        quality: 'Linh Khí',
         price: 2500,
         description: 'Túi chứa linh thú trung cấp, được gia trì không gian trận pháp. Có thể chứa tối đa 10 con.',
         categories: [
@@ -3585,9 +3585,9 @@ export const ITEMS = {
     'can_khon_thu_gioi': {
         id: 'can_khon_thu_gioi',
         name: 'Càn Khôn Thú Giới',
-        type: 'artifact',
+        type: ITEM_TYPES.LINH_THU_DAI,
         icon: '👜',
-        quality: 'Linh Thú Đại',
+        quality: 'Linh Khí',
         price: 15000,
         description: 'Túi chứa linh thú cao cấp, bên trong có linh khí nồng đậm giúp linh thú phát triển. Có thể chứa tối đa 50 con.',
         categories: [
