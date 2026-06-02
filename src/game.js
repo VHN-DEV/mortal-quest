@@ -1825,7 +1825,15 @@ export class Game {
         if (state.systems.shop) {
             state.views.shop = view || 'buy';
             if (shopId) state.systems.shop.currentShopId = shopId;
-            if (section) state.systems.shop.currentSection = section;
+            // Reset về tab đầu tiên mỗi khi mở shop (trừ khi chỉ định section cụ thể)
+            state.systems.shop.currentSection = section || 'cong_phap';
+            // Reset bộ lọc con về trạng thái mặc định
+            if (this.screens.systems?.shopController) {
+                this.screens.systems.shopController.shopSubFilter = 'all';
+                this.screens.systems.shopController.shopSubSubFilter = 'all';
+                this.screens.systems.shopController.shopQualityFilter = 'all';
+                this.screens.systems.shopController.shopSearchQuery = '';
+            }
             state.ui.toggleOverlay(document.getElementById('shop-overlay'), true);
             if (this.screens.systems) this.screens.systems.renderShop();
         }
