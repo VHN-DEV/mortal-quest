@@ -553,3 +553,178 @@ export function classifyItem(item) {
     }
     return raw;
 }
+
+// Centralized Item Types Enum
+export const ITEM_TYPES = {
+    CONSUMABLE: 'consumable',
+    MATERIAL: 'material',
+    WEAPON: 'weapon',
+    ARMOR: 'armor',
+    ACCESSORY: 'accessory',
+    TREASURE: 'treasure',
+    HEAD: 'head',
+    NECKLACE: 'necklace',
+    SHOES: 'shoes',
+    ATTACK_ARTIFACT: 'attackArtifact',
+    DEFENSE_ARTIFACT: 'defenseArtifact',
+    FLIGHT_ARTIFACT: 'flightArtifact',
+    SPACE_ARTIFACT: 'spaceArtifact',
+    FORMATION_ARTIFACT: 'formationArtifact',
+    SUPPORT_ARTIFACT: 'supportArtifact',
+    SOUL_ARTIFACT: 'soulArtifact',
+    CAULDRON: 'cauldron',
+    CRAFTING_ARTIFACT: 'craftingArtifact',
+    SEED: 'seed',
+    HERB: 'herb',
+    ORE: 'ore',
+    WOOD: 'wood',
+    SPIRIT_STONE: 'spirit_stone',
+    TALISMAN: 'talisman',
+    TALISMAN_RECIPE: 'talisman_recipe',
+    TALISMAN_PEN: 'talisman_pen',
+    TALISMAN_INK: 'talisman_ink',
+    TALISMAN_PAPER: 'talisman_paper',
+    BOOK: 'book',
+    TECHNIQUE: 'technique',
+    RECIPE: 'recipe',
+    SMITHING_RECIPE: 'smithing_recipe',
+    SMITHING_TOOL: 'smithing_tool',
+    FORMATION: 'formation',
+    PUPPET: 'puppet',
+    CORPSE: 'corpse',
+    BEAST_EGG: 'beast_egg',
+    BEAST_FOOD: 'beast_food',
+    SERVICE: 'service',
+    DI_HOA: 'di_hoa',
+    FLAME: 'flame',
+    STORAGE: 'storage',
+    MAP: 'map'
+};
+
+// Centralized Item Categories Enum mapping Category -> Subcategory
+export const ITEM_CATEGORIES_ENUM = {
+    CONG_PHAP: {
+        KEY: 'cong_phap',
+        SUBCATEGORIES: {
+            TU_LUYEN: 'tu_luyen',
+            LUYEN_THE: 'luyen_the',
+            THAN_HON: 'than_hon',
+            BI_THUAT: 'bi_thuat',
+            THAN_THONG: 'than_thong',
+            DON_THUAT: 'don_thuat',
+            KIEM_QUYET: 'kiem_quyet',
+            MA_CONG: 'ma_cong'
+        }
+    },
+    PHAP_BAO: {
+        KEY: 'phap_bao',
+        SUBCATEGORIES: {
+            PHAP_KHI: 'phap_khi',
+            DINH_GIAI: 'dinh_giai',
+            PHU_BAO: 'phu_bao',
+            PHAP_BAO_SUB: 'phap_bao_sub',
+            CO_BAO: 'co_bao',
+            LINH_BAO: 'linh_bao',
+            THONG_THIEN: 'thong_thien',
+            HUYEN_THIEN: 'huyen_thien',
+            TIEN_KHI: 'tien_khi'
+        }
+    },
+    DAN_DUOC: {
+        KEY: 'dan_duoc',
+        SUBCATEGORIES: {
+            TU_LUYEN: 'tu_luyen',
+            DOT_PHA: 'dot_pha',
+            HOI_PHUC: 'hoi_phuc',
+            TRI_THUONG: 'tri_thuong',
+            GIAI_DOC: 'giai_doc',
+            LUYEN_THE: 'luyen_the',
+            TANG_THO: 'tang_tho',
+            KHAC: 'khac'
+        }
+    },
+    PHU_LUC: {
+        KEY: 'phu_luc',
+        SUBCATEGORIES: {
+            CONG_KICH: 'cong_kich',
+            PHONG_NGU: 'phong_ngu',
+            TRAN_AP: 'tran_ap',
+            DON_THUAT: 'don_thuat',
+            TRIEU_HOI: 'trieu_hoi',
+            TRUYEN_AM: 'truyen_am'
+        }
+    },
+    TRAN_PHAP: {
+        KEY: 'tran_phap',
+        SUBCATEGORIES: {
+            CONG_KICH_TRAN: 'cong_kich_tran',
+            PHONG_NGU_TRAN: 'phong_ngu_tran',
+            TU_LINH_TRAN: 'tu_linh_tran',
+            KHON_TRAN: 'khon_tran',
+            HUYEN_TRAN: 'huyen_tran',
+            TRUYEN_TONG_TRAN: 'truyen_tong_tran',
+            CAM_CHE: 'cam_che'
+        }
+    },
+    NGUYEN_LIEU: {
+        KEY: 'nguyen_lieu',
+        SUBCATEGORIES: {
+            LINH_DUOC: 'linh_duoc',
+            LINH_MOC: 'linh_moc',
+            LINH_KHOANG: 'linh_khoang',
+            LINH_DICH: 'linh_dich',
+            YEU_THU: 'yeu_thu',
+            LUYEN_THE: 'luyen_the',
+            DUONG_HON: 'duong_hon',
+            THIEN_TAI: 'thien_tai'
+        }
+    },
+    LINH_THU: {
+        KEY: 'linh_thu',
+        SUBCATEGORIES: {
+            TRUNG_LINH_THU: 'trung_linh_thu',
+            TRUNG_KY_TRUNG: 'trung_ky_trung',
+            LINH_THU: 'linh_thu',
+            KY_TRUNG: 'ky_trung'
+        }
+    },
+    KHOI_LOI: {
+        KEY: 'khoi_loi',
+        SUBCATEGORIES: {
+            THI_KHOI: 'thi_khoi',
+            LINH_KHOI: 'linh_khoi'
+        }
+    },
+    LUYEN_DAN: {
+        KEY: 'luyen_dan',
+        SUBCATEGORIES: {
+            DAN_PHUONG: 'dan_phuong',
+            DAN_LU: 'dan_lu'
+        }
+    },
+    LUYEN_KHI: {
+        KEY: 'luyen_khi',
+        SUBCATEGORIES: {
+            BAN_VE: 'ban_ve',
+            DAI_LUYEN_KHI: 'dai_luyen_khi'
+        }
+    },
+    KY_VAT_DI_BAO: {
+        KEY: 'ky_vat_di_bao',
+        SUBCATEGORIES: {
+            NGOC_GIAN: 'ngoc_gian',
+            BAN_DO: 'ban_do',
+            LENH_BAI: 'lenh_bai',
+            CHIA_KHOA: 'chia_khoa',
+            DI_HOA: 'di_hoa',
+            DEFAULT: 'default'
+        }
+    },
+    DICH_VU: {
+        KEY: 'dich_vu',
+        SUBCATEGORIES: {
+            THUE_PHONG: 'thue_phong',
+            THANH_LY: 'thanh_ly'
+        }
+    }
+};
