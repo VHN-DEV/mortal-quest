@@ -828,8 +828,8 @@ export const SECRET_TECHNIQUES = {
         }
     },
     // --- PROFESSION MASTERY SECRETS ---
-    'bp_luyen_dan': {
-        id: 'bp_luyen_dan',
+    'dan_dao_chan_giai': {
+        id: 'dan_dao_chan_giai',
         name: 'Đan Đạo Chân Giải',
         type: 'profession',
         quality: 'Huyền Giai',
@@ -844,8 +844,8 @@ export const SECRET_TECHNIQUES = {
             4: { alchemyExpBonus: 2.0, alchemySuccess: 1.3, doubleDanChance: 0.25, autoPurify: true }
         }
     },
-    'bp_luyen_khi': {
-        id: 'bp_luyen_khi',
+    'luyen_khi_tong_cuong': {
+        id: 'luyen_khi_tong_cuong',
         name: 'Luyện Khí Tổng Cương',
         type: 'profession',
         quality: 'Huyền Giai',
@@ -859,8 +859,8 @@ export const SECRET_TECHNIQUES = {
             4: { smithingExpBonus: 2.0, smithingSuccess: 1.3, artifactDuraBonus: 50, perfectRefine: 0.1 }
         }
     },
-    'bp_phu_luc': {
-        id: 'bp_phu_luc',
+    'thai_thuong_phu_kinh': {
+        id: 'thai_thuong_phu_kinh',
         name: 'Thái Thượng Phù Kinh',
         type: 'profession',
         quality: 'Huyền Giai',
@@ -1215,13 +1215,12 @@ export const SKILL_MAP = {
     'phong_nhan_thuat': { category: 'Pháp Thuật', subCategory: 'Công Kích' },
     'thien_loi_kich': { category: 'Pháp Thuật', subCategory: 'Khống Chế' },
     'huyet_don_thuat': { category: 'Pháp Thuật', subCategory: 'Độn Thuật' },
-    'bp_luyen_dan': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
-    'bp_luyen_khi': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
-    'bp_phu_luc': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'dan_dao_chan_giai': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'luyen_khi_tong_cuong': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'thai_thuong_phu_kinh': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
 
     // === THẦN THÔNG ===
     'thanh_nguyen_kiem_mang': { category: 'Thần Thông', subCategory: 'Bản Mệnh' },
-    'bp_thanh_nguyen_kiem_mang': { category: 'Thần Thông', subCategory: 'Bản Mệnh' },
     'ho_the_kiem_don': { category: 'Thần Thông', subCategory: 'Bản Mệnh' },
     'bach_nhap_kiem_tran': { category: 'Thần Thông', subCategory: 'Đại Thần Thông' },
     'minh_vuong_kim_than': { category: 'Thần Thông', subCategory: 'Huyết Mạch' },
@@ -1272,7 +1271,8 @@ export const getSecretTechniqueById = (id) => {
             'thien_tinh_tong_bi_tich', 'cu_kiem_mon_bi_tich', 'hoa_dao_o_bi_tich'
         ];
 
-        if (id.startsWith('bp_') || id.includes('luyen_dan') || id.includes('luyen_khi') || id.includes('phu_luc')) {
+        if (id.startsWith('bp_') || id.includes('luyen_dan') || id.includes('luyen_khi') || id.includes('phu_luc') || 
+            id === 'dan_dao_chan_giai' || id === 'luyen_khi_tong_cuong' || id === 'thai_thuong_phu_kinh') {
             tech.category = 'Pháp Thuật';
             tech.subCategory = 'Phụ Trợ';
         } else if (id.includes('thuat') || id === 'hoa_cau_thuat' || id === 'thuy_tien_thuat' || id === 'phong_nhan_thuat') {

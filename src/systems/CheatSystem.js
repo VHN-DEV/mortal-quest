@@ -370,7 +370,7 @@ export class CheatSystem {
                 { id: 'phu_ve_kim_cuong_phu', qty: 1 },
                 { id: 'phu_ve_than_hanh_phu', qty: 1 },
                 { id: 'tran_do_ao_anh_tran', qty: 1 },
-                { id: 'bp_thi_binh', qty: 1 }
+                { id: 'cuu_u_luyen_thi_thuat', qty: 1 }
             );
         }
 
@@ -391,7 +391,7 @@ export class CheatSystem {
                 { id: 'phu_ve_thun_di_phu', qty: 1 },
                 { id: 'phu_ve_thien_loi_phu', qty: 1 },
                 { id: 'tran_do_sat_kiem_tran', qty: 1 },
-                { id: 'bp_thi_tuong', qty: 1 }
+                { id: 'dong_giap_thi', qty: 1 }
             );
         }
 

@@ -125,12 +125,23 @@ describe('Inventory class', () => {
   it('should support using book and recipe items with effects', () => {
     const mockPlayer = {
       unlockedProfessions: [],
+      knownRecipes: [],
       unlockProfession(id) {
         if (!this.unlockedProfessions.includes(id)) {
           this.unlockedProfessions.push(id);
           return true;
         }
         return false;
+      },
+      startComprehendingTechnique(id, isSecret) {
+        if (id === 'dan_dao_chan_giai') {
+          this.unlockProfession('alchemy');
+          return { success: true, msg: 'Comprehended' };
+        }
+        return { success: false, msg: 'Failed' };
+      },
+      calculateStats() {
+        // Mock method
       }
     };
     const inv = new Inventory(mockPlayer);
@@ -144,5 +155,156 @@ describe('Inventory class', () => {
     expect(success).toBe(true);
     expect(inv.getItemQuantity('dan_dao_chan_giai')).toBe(0);
     expect(mockPlayer.unlockedProfessions).toContain('alchemy');
+    expect(mockPlayer.knownRecipes).toContain('tich_coc_dan');
+    expect(mockPlayer.knownRecipes).toContain('ngung_khi_dan');
+  });
+
+  it('should support using cuu_u_luyen_thi_thuat to unlock profession and learn basic recipes', () => {
+    const mockPlayer = {
+      unlockedProfessions: [],
+      knownCorpseRecipes: [],
+      unlockProfession(id) {
+        if (!this.unlockedProfessions.includes(id)) {
+          this.unlockedProfessions.push(id);
+          return true;
+        }
+        return false;
+      }
+    };
+    const inv = new Inventory(mockPlayer);
+    
+    inv.addItem('cuu_u_luyen_thi_thuat', 1);
+    const success = inv.useItem('cuu_u_luyen_thi_thuat', 1);
+    expect(success).toBe(true);
+    expect(mockPlayer.unlockedProfessions).toContain('corpse');
+    expect(mockPlayer.knownCorpseRecipes).toContain('thi_binh');
+    expect(mockPlayer.knownCorpseRecipes).toContain('thi_tuong');
+  });
+
+  it('should support using luyen_khi_tong_cuong to unlock profession and learn basic recipes', () => {
+    const mockPlayer = {
+      unlockedProfessions: [],
+      knownSmithingRecipes: [],
+      unlockProfession(id) {
+        if (!this.unlockedProfessions.includes(id)) {
+          this.unlockedProfessions.push(id);
+          return true;
+        }
+        return false;
+      }
+    };
+    const inv = new Inventory(mockPlayer);
+    
+    inv.addItem('luyen_khi_tong_cuong', 1);
+    const success = inv.useItem('luyen_khi_tong_cuong', 1);
+    expect(success).toBe(true);
+    expect(mockPlayer.unlockedProfessions).toContain('smithing');
+    expect(mockPlayer.knownSmithingRecipes).toContain('thanh_hong_kiem');
+    expect(mockPlayer.knownSmithingRecipes).toContain('upgrade_bag_so');
+  });
+
+  it('should support using thai_thuong_phu_kinh to unlock profession and learn basic recipes', () => {
+    const mockPlayer = {
+      unlockedProfessions: [],
+      knownTalismanRecipes: [],
+      unlockProfession(id) {
+        if (!this.unlockedProfessions.includes(id)) {
+          this.unlockedProfessions.push(id);
+          return true;
+        }
+        return false;
+      }
+    };
+    const inv = new Inventory(mockPlayer);
+    
+    inv.addItem('thai_thuong_phu_kinh', 1);
+    const success = inv.useItem('thai_thuong_phu_kinh', 1);
+    expect(success).toBe(true);
+    expect(mockPlayer.unlockedProfessions).toContain('talisman');
+    expect(mockPlayer.knownTalismanRecipes).toContain('hoa_cau_phu');
+  });
+
+  it('should support using co_quan_linh_ky to unlock profession and learn basic recipes', () => {
+    const mockPlayer = {
+      unlockedProfessions: [],
+      knownPuppetRecipes: [],
+      unlockProfession(id) {
+        if (!this.unlockedProfessions.includes(id)) {
+          this.unlockedProfessions.push(id);
+          return true;
+        }
+        return false;
+      }
+    };
+    const inv = new Inventory(mockPlayer);
+    
+    inv.addItem('co_quan_linh_ky', 1);
+    const success = inv.useItem('co_quan_linh_ky', 1);
+    expect(success).toBe(true);
+    expect(mockPlayer.unlockedProfessions).toContain('puppet');
+    expect(mockPlayer.knownPuppetRecipes).toContain('thiet_giap_khoi_loi');
+  });
+
+  it('should support using tran_dao_thien_thu to unlock profession and learn basic recipes', () => {
+    const mockPlayer = {
+      unlockedProfessions: [],
+      knownFormations: [],
+      unlockProfession(id) {
+        if (!this.unlockedProfessions.includes(id)) {
+          this.unlockedProfessions.push(id);
+          return true;
+        }
+        return false;
+      }
+    };
+    const inv = new Inventory(mockPlayer);
+    
+    inv.addItem('tran_dao_thien_thu', 1);
+    const success = inv.useItem('tran_dao_thien_thu', 1);
+    expect(success).toBe(true);
+    expect(mockPlayer.unlockedProfessions).toContain('formation');
+    expect(mockPlayer.knownFormations).toContain('tran_do_tu_linh');
+  });
+
+  it('should support using van_thu_ngu_phap to unlock profession and learn basic recipes', () => {
+    const mockPlayer = {
+      unlockedProfessions: [],
+      beasts: [],
+      unlockProfession(id) {
+        if (!this.unlockedProfessions.includes(id)) {
+          this.unlockedProfessions.push(id);
+          return true;
+        }
+        return false;
+      }
+    };
+    const inv = new Inventory(mockPlayer);
+    
+    inv.addItem('van_thu_ngu_phap', 1);
+    const success = inv.useItem('van_thu_ngu_phap', 1);
+    expect(success).toBe(true);
+    expect(mockPlayer.unlockedProfessions).toContain('beast');
+    expect(mockPlayer.beasts.some(b => b.id === 'thanh_van_hac')).toBe(true);
+  });
+
+  it('should support using thien_trung_bi_luc to unlock profession and learn basic recipes', () => {
+    const mockPlayer = {
+      unlockedProfessions: [],
+      beasts: [],
+      unlockProfession(id) {
+        if (!this.unlockedProfessions.includes(id)) {
+          this.unlockedProfessions.push(id);
+          return true;
+        }
+        return false;
+      }
+    };
+    const inv = new Inventory(mockPlayer);
+    
+    inv.addItem('thien_trung_bi_luc', 1);
+    const success = inv.useItem('thien_trung_bi_luc', 1);
+    expect(success).toBe(true);
+    expect(mockPlayer.unlockedProfessions).toContain('insect');
+    expect(mockPlayer.beasts.some(b => b.id === 'phe_linh_trung')).toBe(true);
   });
 });

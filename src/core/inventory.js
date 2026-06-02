@@ -1,5 +1,6 @@
 import { getItemById } from '../configs/item-data.js';
 import { state } from '../state.js';
+import { BEASTS } from '../configs/beast-data.js';
 
 export class Inventory {
     constructor(player) {
@@ -615,6 +616,25 @@ export class Inventory {
         } else if (effect.type === 'learn_formation') {
             if (!this.player.knownFormations.includes(effect.value)) {
                 this.player.knownFormations.push(effect.value);
+            }
+        } else if (effect.type === 'learn_beast') {
+            const beastData = BEASTS[effect.value];
+            if (beastData && this.player.beasts) {
+                const alreadyHas = this.player.beasts.some(b => b.id === effect.value);
+                if (!alreadyHas) {
+                    const newBeast = {
+                        id: beastData.id,
+                        uniqueId: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
+                        name: beastData.name,
+                        level: 1,
+                        exp: 0,
+                        loyalty: 50,
+                        bloodline: beastData.bloodline,
+                        bornAt: Date.now(),
+                        stats: { ...beastData.baseStats }
+                    };
+                    this.player.beasts.push(newBeast);
+                }
             }
         } else if (effect.type === 'learn_multiple_recipes') {
             if (Array.isArray(effect.value)) {

@@ -2789,9 +2789,9 @@ export class Player {
     }
 
     addAlchemyExp(amount) {
-        const secret = this.learnedSecretTechniques.find(s => s.id === 'bp_luyen_dan');
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'dan_dao_chan_giai');
         const masteryLevel = secret?.masteryLevel || 1;
-        const secretData = getSecretTechniqueById('bp_luyen_dan');
+        const secretData = getSecretTechniqueById('dan_dao_chan_giai');
         const bonus = secretData?.masteryBonuses?.[masteryLevel]?.alchemyExpBonus || 1.0;
         
         this.alchemyExp += amount * bonus;
@@ -2805,9 +2805,9 @@ export class Player {
     }
 
     addTalismanExp(amount) {
-        const secret = this.learnedSecretTechniques.find(s => s.id === 'bp_phu_luc');
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'thai_thuong_phu_kinh');
         const masteryLevel = secret?.masteryLevel || 1;
-        const secretData = getSecretTechniqueById('bp_phu_luc');
+        const secretData = getSecretTechniqueById('thai_thuong_phu_kinh');
         const bonus = secretData?.masteryBonuses?.[masteryLevel]?.talismanExpBonus || 1.0;
 
         this.talismanExp += amount * bonus;
@@ -2821,9 +2821,9 @@ export class Player {
     }
 
     addSmithingExp(amount) {
-        const secret = this.learnedSecretTechniques.find(s => s.id === 'bp_luyen_khi');
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'luyen_khi_tong_cuong');
         const masteryLevel = secret?.masteryLevel || 1;
-        const secretData = getSecretTechniqueById('bp_luyen_khi');
+        const secretData = getSecretTechniqueById('luyen_khi_tong_cuong');
         const bonus = secretData?.masteryBonuses?.[masteryLevel]?.smithingExpBonus || 1.0;
 
         this.smithingExp += amount * bonus;

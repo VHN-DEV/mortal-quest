@@ -1301,7 +1301,7 @@ export class CombatEngine {
         }
 
         let ignoreDefPct = secretData.effects?.ignoreDef || 0;
-        if (secretId === 'thanh_nguyen_kiem_mang' || secretId === 'bp_thanh_nguyen_kiem_mang') {
+        if (secretId === 'thanh_nguyen_kiem_mang') {
             ignoreDefPct = 0.9;
         } else if (secretId.includes('thien_kiem_tong_bi_tich')) {
             ignoreDefPct = 0.5;

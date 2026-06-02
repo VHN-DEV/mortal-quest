@@ -84,7 +84,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 4.5,
         survivalFactor: 0.8,
         description: 'Dãy hang động nơi các tu sĩ cổ đại từng cư ngụ, ẩn chứa nhiều tàn hồn và pháp bảo.',
-        resources: ['ling_thach_trung', 'bp_luyen_dan', 'bp_phu_luc'],
+        resources: ['ling_thach_trung', 'dan_dao_chan_giai', 'thai_thuong_phu_kinh'],
         eventProbs: { combat: 0.25, loot: 0.4, npc: 0.05, empty: 0.3 }
     },
  
@@ -156,7 +156,7 @@ export const MOUNTAIN_BOSSES = [
         def: 2000,
         icon: '👻',
         description: 'Một vị đại năng thời thượng cổ còn sót lại ý chí, canh giữ di tích.',
-        rewards: ['bp_tran_phap', 'ling_thach_thuong']
+        rewards: ['tran_dao_thien_thu', 'ling_thach_thuong']
     },
     {
         id: 'boss_noi_son',

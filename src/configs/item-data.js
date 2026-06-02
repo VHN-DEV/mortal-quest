@@ -131,8 +131,15 @@ export const ITEMS = {
         icon: '📔',
         quality: 'Pháp Khí',
         price: 1000,
-        description: 'Sách nhập môn về Luyện Đan, giúp mở khóa nghề Luyện Dược Sư.',
-        effect: { type: 'unlock_profession', profession: 'alchemy' },
+        description: 'Sách nhập môn về Luyện Đan, giúp mở khóa nghề Luyện Dược Sư và truyền thụ cách luyện chế Tịch Cốc Đan, Ngưng Khí Đan.',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'alchemy', secretId: 'dan_dao_chan_giai' },
+                { type: 'learn_recipe', value: 'tich_coc_dan' },
+                { type: 'learn_recipe', value: 'ngung_khi_dan' }
+            ]
+        },
         categories: [
             { category: 'cong_phap', subcategory: 'bi_thuat' }
         ]
@@ -183,8 +190,14 @@ export const ITEMS = {
         icon: '📔',
         quality: 'Linh Khí',
         price: 3000,
-        description: 'Bí tịch về cách chế tạo khôi lỗi, mở khóa nghề Khôi Lỗi Sư.',
-        effect: { type: 'unlock_profession', profession: 'puppet' },
+        description: 'Bí tịch về cách chế tạo khôi lỗi, mở khóa nghề Khôi Lỗi Sư và truyền thụ bản vẽ Thiết Giáp Khôi Lỗi.',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'puppet', secretId: 'co_quan_linh_ky' },
+                { type: 'learn_puppet_recipe', value: 'thiet_giap_khoi_loi' }
+            ]
+        },
         categories: [
             { category: 'cong_phap', subcategory: 'bi_thuat' }
         ]
@@ -196,8 +209,15 @@ export const ITEMS = {
         icon: '💀',
         quality: 'Linh Khí',
         price: 1500,
-        description: 'Tà thuật luyện chế xác chết, mở khóa nghề Luyện Thi Sư.',
-        effect: { type: 'unlock_profession', profession: 'corpse' },
+        description: 'Tà thuật luyện chế xác chết, mở khóa nghề Luyện Thi Sư và truyền thụ cách luyện chế Thi Binh, Thi Tướng.',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'corpse', secretId: 'cuu_u_luyen_thi_thuat' },
+                { type: 'learn_corpse_recipe', value: 'thi_binh' },
+                { type: 'learn_corpse_recipe', value: 'thi_tuong' }
+            ]
+        },
         categories: [
             { category: 'cong_phap', subcategory: 'bi_thuat' }
         ]
@@ -251,8 +271,8 @@ export const ITEMS = {
             { category: 'dan_duoc', subcategory: 'khac' }
         ]
     },
-    'bp_tran_phap': {
-        id: 'bp_tran_phap',
+    'tran_phap_bi_tich': {
+        id: 'tran_phap_bi_tich',
         name: 'Trận Pháp Bí Tịch',
         type: 'book',
         icon: '📜',
@@ -535,8 +555,8 @@ export const ITEMS = {
     },
 
     // --- CORPSE REFINING RECIPES ---
-    'bp_thi_binh': {
-        id: 'bp_thi_binh',
+    'thi_binh': {
+        id: 'thi_binh',
         name: 'Bí Phương: Luyện Chế Thi Binh',
         type: 'recipe',
         icon: '📜',
@@ -548,8 +568,8 @@ export const ITEMS = {
             { category: 'khoi_loi', subcategory: 'thi_khoi' }
         ]
     },
-    'bp_thi_tuong': {
-        id: 'bp_thi_tuong',
+    'thi_tuong': {
+        id: 'thi_tuong',
         name: 'Bí Phương: Luyện Chế Thi Tướng',
         type: 'recipe',
         icon: '📜',
@@ -561,8 +581,8 @@ export const ITEMS = {
             { category: 'khoi_loi', subcategory: 'thi_khoi' }
         ]
     },
-    'bp_dong_giap_thi': {
-        id: 'bp_dong_giap_thi',
+    'dong_giap_thi': {
+        id: 'dong_giap_thi',
         name: 'Bí Phương: Luyện Chế Đồng Giáp Thi',
         type: 'recipe',
         icon: '📜',
@@ -2292,15 +2312,22 @@ export const ITEMS = {
     },
 
     // --- PROFESSION SECRETS (BÍ PHÁP MỞ KHÓA NGHỀ NGHIỆP) ---
-    'bp_luyen_dan': {
-        id: 'bp_luyen_dan',
+    'dan_dao_chan_giai': {
+        id: 'dan_dao_chan_giai',
         name: 'Đan Đạo Chân Giải',
         type: 'consumable',
         icon: '📜',
         quality: 'Linh Khí',
         price: 1000,
-        effect: { type: 'unlock_profession', profession: 'alchemy', secretId: 'bp_luyen_dan' },
-        description: 'Gia tăng vĩnh viễn tỉ lệ luyện đan thành công.',
+        description: 'Bí tịch truyền thừa Luyện Đan, giúp mở khóa nghề Luyện Dược Sư và truyền thụ cách luyện chế Tịch Cốc Đan, Ngưng Khí Đan.',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'alchemy', secretId: 'dan_dao_chan_giai' },
+                { type: 'learn_recipe', value: 'tich_coc_dan' },
+                { type: 'learn_recipe', value: 'ngung_khi_dan' }
+            ]
+        },
         categories: [
             { category: 'khoi_loi', subcategory: 'linh_khoi' }
         ]
@@ -2331,90 +2358,137 @@ export const ITEMS = {
             { category: 'cong_phap', subcategory: 'don_thuat' }
         ]
     },
-    'bp_luyen_khi': {
-        id: 'bp_luyen_khi',
+    'luyen_khi_tong_cuong': {
+        id: 'luyen_khi_tong_cuong',
         name: 'Luyện Khí Tổng Cương',
         type: 'consumable',
         icon: '📜',
         quality: 'Linh Khí',
         price: 1500,
-        effect: { type: 'unlock_profession', profession: 'smithing', secretId: 'bp_luyen_khi' },
-        description: 'Chứa đựng bí quyết tôi luyện kim thạch, rèn đúc thần binh pháp bảo.',
+        description: 'Chứa đựng bí quyết tôi luyện kim thạch, rèn đúc thần binh pháp bảo. Mở khóa nghề Luyện Khí Sư và truyền thụ bản vẽ Thanh Hồng Kiếm, Nâng Cấp Túi Trữ Vật (Sơ).',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'smithing', secretId: 'luyen_khi_tong_cuong' },
+                { type: 'learn_smithing_recipe', value: 'thanh_hong_kiem' },
+                { type: 'learn_smithing_recipe', value: 'upgrade_bag_so' }
+            ]
+        },
         categories: [
             { category: 'khoi_loi', subcategory: 'linh_khoi' }
         ]
     },
-    'bp_phu_luc': {
-        id: 'bp_phu_luc',
+    'thai_thuong_phu_kinh': {
+        id: 'thai_thuong_phu_kinh',
         name: 'Thái Thượng Phù Kinh',
         type: 'consumable',
         icon: '📜',
         quality: 'Linh Khí',
         price: 1000,
-        effect: { type: 'unlock_profession', profession: 'talisman', secretId: 'bp_phu_luc' },
-        description: 'Hướng dẫn cách câu thông thiên địa linh lực vào phù văn để tạo ra phù lục.',
+        description: 'Hướng dẫn cách câu thông thiên địa linh lực vào phù văn để tạo ra phù lục. Mở khóa nghề Phù Sư và truyền thụ cách vẽ Hỏa Cầu Phù.',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'talisman', secretId: 'thai_thuong_phu_kinh' },
+                { type: 'learn_talisman_recipe', value: 'hoa_cau_phu' }
+            ]
+        },
         categories: [
             { category: 'khoi_loi', subcategory: 'linh_khoi' }
         ]
     },
-    'bp_tran_phap': {
-        id: 'bp_tran_phap',
+    'tran_dao_thien_thu': {
+        id: 'tran_dao_thien_thu',
         name: 'Trận Đạo Thiên Thư',
         type: 'consumable',
         icon: '📜',
         quality: 'Linh Khí',
         price: 2000,
-        effect: { type: 'unlock_profession', profession: 'formation', secretId: 'bp_tran_phap' },
-        description: 'Kiến thức về trận đồ, mắt trận và cách bố trí linh thạch để trấn giữ hoặc công kích.'
+        description: 'Kiến thức về trận đồ, mắt trận và cách bố trí linh thạch để trấn giữ hoặc công kích. Mở khóa nghề Trận Pháp Sư và truyền thụ cách bố trí Tụ Linh Trận.',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'formation', secretId: 'tran_dao_thien_thu' },
+                { type: 'learn_formation', value: 'tran_do_tu_linh' }
+            ]
+        },
+        categories: [
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
+        ]
     },
-    'bp_ngu_thu': {
-        id: 'bp_ngu_thu',
+    'van_thu_ngu_phap': {
+        id: 'van_thu_ngu_phap',
         name: 'Vạn Thú Ngự Pháp',
         type: 'consumable',
         icon: '📜',
         quality: 'Linh Khí',
         price: 1200,
-        effect: { type: 'unlock_profession', profession: 'beast', secretId: 'bp_ngu_thu' },
-        description: 'Bí quyết giao tiếp và ký kết khế ước với các loài linh thú.',
+        description: 'Bí quyết giao tiếp và ký kết khế ước với các loài linh thú. Mở khóa nghề Ngự Thú Sư và truyền thụ khế ước linh thú Thanh Vân Hạc.',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'beast', secretId: 'van_thu_ngu_phap' },
+                { type: 'learn_beast', value: 'thanh_van_hac' }
+            ]
+        },
         categories: [
-            { category: 'khoi_loi', subcategory: 'linh_khoi' }
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
         ]
     },
-    'bp_ngu_trung': {
-        id: 'bp_ngu_trung',
+    'thien_trung_bi_luc': {
+        id: 'thien_trung_bi_luc',
         name: 'Thiên Trùng Bí Lục',
         type: 'consumable',
         icon: '📜',
         quality: 'Linh Khí',
         price: 1200,
-        effect: { type: 'unlock_profession', profession: 'insect', secretId: 'bp_ngu_trung' },
-        description: 'Cách nuôi dưỡng và điều khiển bầy trùng mang theo kịch độc hoặc năng lực đặc thù.',
+        description: 'Cách nuôi dưỡng và điều khiển bầy trùng mang theo kịch độc hoặc năng lực đặc thù. Mở khóa nghề Khu Trùng Sư và ban thưởng kỳ trùng Phệ Linh Trùng.',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'insect', secretId: 'thien_trung_bi_luc' },
+                { type: 'learn_beast', value: 'phe_linh_trung' }
+            ]
+        },
         categories: [
-            { category: 'khoi_loi', subcategory: 'linh_khoi' }
+            { category: 'cong_phap', subcategory: 'bi_thuat' }
         ]
     },
-    'bp_khoi_loi': {
-        id: 'bp_khoi_loi',
+    'co_quan_linh_ky': {
+        id: 'co_quan_linh_ky',
         name: 'Cơ Quan Linh Kỹ',
         type: 'consumable',
         icon: '📜',
         quality: 'Linh Khí',
         price: 2500,
-        effect: { type: 'unlock_profession', profession: 'puppet', secretId: 'bp_khoi_loi' },
-        description: 'Kỹ thuật chế tác cơ quan và truyền linh hồn vào các vật vô tri để tạo ra khôi lỗi.',
+        description: 'Kỹ thuật chế tác cơ quan và truyền linh hồn vào các vật vô tri để tạo ra khôi lỗi. Mở khóa nghề Khôi Lỗi Sư và truyền thụ bản vẽ Thiết Giáp Khôi Lỗi.',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'puppet', secretId: 'co_quan_linh_ky' },
+                { type: 'learn_puppet_recipe', value: 'thiet_giap_khoi_loi' }
+            ]
+        },
         categories: [
             { category: 'khoi_loi', subcategory: 'linh_khoi' }
         ]
     },
-    'bp_luyen_thi': {
-        id: 'bp_luyen_thi',
+    'cuu_u_luyen_thi_thuat': {
+        id: 'cuu_u_luyen_thi_thuat',
         name: 'Cửu U Luyện Thi Thuật',
         type: 'consumable',
         icon: '📜',
         quality: 'Linh Khí',
         price: 3000,
-        effect: { type: 'unlock_profession', profession: 'corpse', secretId: 'bp_luyen_thi' },
-        description: 'Tà thuật luyện chế xác chết thành thi khôi, đao thương bất nhập.',
+        description: 'Tà thuật luyện chế xác chết thành thi khôi, mở khóa nghề Luyện Thi Sư và truyền thụ cách luyện chế Thi Binh, Thi Tướng.',
+        effect: {
+            type: 'learn_multiple_recipes',
+            value: [
+                { type: 'unlock_profession', profession: 'corpse', secretId: 'cuu_u_luyen_thi_thuat' },
+                { type: 'learn_corpse_recipe', value: 'thi_binh' },
+                { type: 'learn_corpse_recipe', value: 'thi_tuong' }
+            ]
+        },
         categories: [
             { category: 'khoi_loi', subcategory: 'linh_khoi' }
         ]
@@ -3196,8 +3270,8 @@ export const ITEMS = {
             { category: 'cong_phap', subcategory: 'bi_thuat' }
         ]
     },
-    'bp_tinh_ha': {
-        id: 'bp_tinh_ha',
+    'ban_ve_phi_kiem_tinh_ha': {
+        id: 'ban_ve_phi_kiem_tinh_ha',
         name: 'Bản Vẽ Tinh Hà Phi Kiếm',
         type: 'consumable',
         icon: '📜',
@@ -3209,8 +3283,8 @@ export const ITEMS = {
             { category: 'luyen_khi', subcategory: 'ban_ve' }
         ]
     },
-    'bp_long_lan': {
-        id: 'bp_long_lan',
+    'ban_ve_long_lan_giap': {
+        id: 'ban_ve_long_lan_giap',
         name: 'Bản Vẽ Long Lân Giáp',
         type: 'consumable',
         icon: '📜',

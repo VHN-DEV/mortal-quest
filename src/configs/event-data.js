@@ -207,9 +207,9 @@ export const EVENTS = [
                 }
             } else if (choice === 'study') {
                 const soulReq = 3000 + (player.realmId * 50);
-                const hasFormationManual = player.inventory.hasItem('bp_tran_phap', 1);
+                const hasFormationManual = player.inventory.hasItem('tran_phap_bi_tich', 1);
                 if (player.stats.soul > (hasFormationManual ? soulReq * 0.7 : soulReq)) {
-                    await rewardItem(player, game, 'bp_tran_phap', 1);
+                    await rewardItem(player, game, 'tran_phap_bi_tich', 1);
                     return { msg: 'Thần niệm nhạy bén (và kiến thức trận pháp) giúp ngươi tìm ra điểm yếu. Ngươi thu hoạch được một cuốn Trận Pháp Cơ Bản.' };
                 } else {
                     return { msg: 'Thần niệm của ngươi chưa đủ mạnh để nhìn thấu quy luật phức tạp của cấm chế này.' };
@@ -267,7 +267,7 @@ export const EVENTS = [
                 }
             } else if (choice === 'study') {
                 if (player.stats.soul > 5000) {
-                    await rewardItem(player, game, 'bp_tran_phap', 1);
+                    await rewardItem(player, game, 'tran_phap_bi_tich', 1);
                     return { msg: 'Ngươi nhìn thấu trận nhãn và hóa giải nó một cách nhẹ nhàng. Tìm thấy một cuốn Trận Pháp Tàn Quyển.' };
                 } else {
                     return { msg: 'Trận pháp quá phức tạp, ngươi không thể tìm ra kẽ hở.' };
@@ -627,7 +627,7 @@ export const EVENTS = [
         resolve: async (choice, player, game) => {
             if (choice === 'solve') {
                 if (player.stats.soul > 4500) {
-                    await rewardItem(player, game, 'bp_tran_phap', 2);
+                    await rewardItem(player, game, 'tran_phap_bi_tich', 2);
                     return { msg: 'Trí tuệ của ngươi đã chinh phục trận pháp! Thu được 2 cuốn bí kíp Trận Pháp.' };
                 } else {
                     return { msg: 'Quy luật quá phức tạp, ngươi càng nhìn càng thấy chóng mặt.' };
@@ -715,7 +715,7 @@ export const EVENTS = [
         resolve: async (choice, player, game) => {
             if (choice === 'listen') {
                 player.karma += 30;
-                await rewardItem(player, game, 'bp_luyen_dan', 1);
+                await rewardItem(player, game, 'dan_dao_chan_giai', 1);
                 return { msg: `Ông ta mỉm cười${player.realmId >= 22 ? ', nhận ra ngươi là một mầm non đầy hứa hẹn' : ''}, truyền lại cho ngươi tâm đắc cả đời về Luyện Đan rồi thanh thản ra đi.` };
             } else if (choice === 'kill') {
                 player.karma -= 200;
