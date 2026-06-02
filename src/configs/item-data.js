@@ -1287,7 +1287,7 @@ export const ITEMS = {
         action: 'expand_inventory',
         stats: { slots: 10 },
         categories: [
-            { category: 'dan_duoc', subcategory: 'khac' }
+            { category: 'ky_vat_di_bao', subcategory: 'default' }
         ]
     },
     'tui_tru_vat_trung': {
@@ -1317,7 +1317,7 @@ export const ITEMS = {
         action: 'expand_inventory',
         stats: { slots: 50 },
         categories: [
-            { category: 'dan_duoc', subcategory: 'khac' }
+            { category: 'ky_vat_di_bao', subcategory: 'default' }
         ]
     },
     'ho_tam_kinh': {
@@ -2030,7 +2030,8 @@ export const ITEMS = {
         action: 'open_immortal_transmission',
         poem: ['Thánh Giản Truyền Đạo Khai Thần Thức', 'Vạn Cổ Bí Pháp Hiện Chân Thân'],
         categories: [
-            { category: 'ky_vat_di_bao', subcategory: 'ngoc_gian' }
+            { category: 'book', subcategory: 'ngoc_gian' },
+            { category: 'phap_bao', subcategory: 'tien_khi' }
         ]
     },
     'quan_han_linh_ngoc_bat': {
@@ -2129,16 +2130,6 @@ export const ITEMS = {
         categories: [
             { category: 'linh_thu', subcategory: 'trung_ky_trung' }
         ]
-    },
-    'tui_tru_vat_trung': {
-        id: 'tui_tru_vat_trung',
-        name: 'Túi Trữ Vật (Trung)',
-        type: 'bag',
-        icon: '🎒',
-        quality: 'Linh Khí',
-        price: 2500,
-        description: 'Mở rộng thêm 20 ô chứa đồ.',
-        stats: { slots: 20 }
     },
 
     // --- FORMATIONS (TRẬN PHÁP) ---
@@ -3579,7 +3570,7 @@ export const ITEMS = {
         price: 500,
         description: 'Túi chuyên dụng để chứa linh thú và kỳ trùng sơ cấp. Có thể chứa tối đa 3 con.',
         categories: [
-            { category: 'phap_bao', subcategory: 'phap_khi' }
+            { category: 'ky_vat_di_bao', subcategory: 'default' }
         ]
     },
     'linh_thu_dai_trung': {
@@ -3591,7 +3582,7 @@ export const ITEMS = {
         price: 2500,
         description: 'Túi chứa linh thú trung cấp, được gia trì không gian trận pháp. Có thể chứa tối đa 10 con.',
         categories: [
-            { category: 'phap_bao', subcategory: 'dinh_giai' }
+            { category: 'ky_vat_di_bao', subcategory: 'default' }
         ]
     },
     'linh_thu_dai_cao': {
@@ -3603,7 +3594,7 @@ export const ITEMS = {
         price: 15000,
         description: 'Túi chứa linh thú cao cấp, bên trong có linh khí nồng đậm giúp linh thú phát triển. Có thể chứa tối đa 50 con.',
         categories: [
-            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+            { category: 'ky_vat_di_bao', subcategory: 'default' }
         ]
     },
     'trung_phe_kim_trung': {
