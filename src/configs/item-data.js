@@ -1931,10 +1931,9 @@ export const ITEMS = {
         id: 'hu_thien_dinh',
         name: 'Hư Thiên Đỉnh',
         type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
-        icon: '🏺',
         quality: 'Thông Thiên Linh Bảo',
         price: 400000,
-        image: 'items/hu_thien_dinh.webp',
+        image: 'artifacts/hu_thien_dinh.webp',
         description: 'Chí tôn cổ đỉnh ngưng tụ càn khôn bát quái khí, mang lại phòng ngự tuyệt đối cùng khả năng thu nạp linh khí tinh thuần không giới hạn.',
         stats: { spirit: 3000, def: 10000, qiAbsorb: 1200 },
         poem: ['Hư Thiên Bát Quái Tàng Càn Khôn', 'Cổ Đỉnh Trấn Áp Vạn Sơn Hà'],
@@ -2127,8 +2126,7 @@ export const ITEMS = {
         action: 'open_immortal_transmission',
         poem: ['Thánh Giản Truyền Đạo Khai Thần Thức', 'Vạn Cổ Bí Pháp Hiện Chân Thân'],
         categories: [
-            { category: 'book', subcategory: 'ngoc_gian' },
-            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: 'tien_khi' }
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.TIEN_KHI }
         ]
     },
     'quan_han_linh_ngoc_bat': {
@@ -2226,32 +2224,6 @@ export const ITEMS = {
         price: 15000,
         categories: [
             { category: ITEM_CATEGORIES_ENUM.LINH_THU.KEY, subcategory: ITEM_CATEGORIES_ENUM.LINH_THU.SUBCATEGORIES.TRUNG_KY_TRUNG }
-        ]
-    },
-
-    // --- FORMATIONS (TRẬN PHÁP) ---
-    'tran_do_tu_linh': {
-        id: 'tran_do_tu_linh',
-        name: 'Tụ Linh Trận Đồ',
-        type: ITEM_TYPES.TRAN_PHAP,
-        icon: '📜',
-        quality: 'Pháp Khí',
-        price: 1000,
-        description: 'Trận đồ cơ bản dùng để tụ tập linh khí xung quanh.',
-        categories: [
-            { category: ITEM_CATEGORIES_ENUM.TRAN_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.TRAN_PHAP.SUBCATEGORIES.TU_LINH_TRAN }
-        ]
-    },
-    'tran_do_ao_anh': {
-        id: 'tran_do_ao_anh',
-        name: 'Ảo Ảnh Trận Đồ',
-        type: ITEM_TYPES.TRAN_PHAP,
-        icon: '🌫️',
-        quality: 'Linh Khí',
-        price: 4500,
-        description: 'Tạo huyễn cảnh che mắt đối thủ.',
-        categories: [
-            { category: ITEM_CATEGORIES_ENUM.TRAN_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.TRAN_PHAP.SUBCATEGORIES.HUYEN_TRAN }
         ]
     },
 

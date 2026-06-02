@@ -5,7 +5,7 @@ export class FormationSystem {
         this.player = player;
         this.ui = ui;
         this.formations = {
-            'tran_do_tu_linh': {
+            'tran_do_tu_linh_tran': {
                 name: 'Tụ Linh Trận',
                 level: 1,
                 effect: { tuViMult: 1.5 },
@@ -14,7 +14,7 @@ export class FormationSystem {
                 manaCost: 20,
                 baseSuccessRate: 0.9
             },
-            'tran_do_ao_anh': {
+            'tran_do_ao_anh_tran': {
                 name: 'Ảo Ảnh Trận',
                 level: 2,
                 effect: { evasion: 0.2 },
@@ -23,7 +23,7 @@ export class FormationSystem {
                 manaCost: 50,
                 baseSuccessRate: 0.75
             },
-            'tran_do_sat_kiem': {
+            'tran_do_sat_kiem_tran': {
                 name: 'Sát Kiếm Trận',
                 level: 3,
                 effect: { atkBonus: 100 },
@@ -32,7 +32,7 @@ export class FormationSystem {
                 manaCost: 100,
                 baseSuccessRate: 0.6
             },
-            'ho_tong_dai_tran': {
+            'tran_do_ho_tong_dai_tran': {
                 name: 'Hộ Tông Đại Trận',
                 level: 5,
                 effect: { defMult: 2.0 },
@@ -100,7 +100,7 @@ export class FormationSystem {
         for (let i = this.player.activeFormations.length - 1; i >= 0; i--) {
             const active = this.player.activeFormations[i];
             const formation = this.formations[active.id];
-            
+
             const totalCost = Math.ceil(formation.costPerTick * minutes);
             if (!this.player.spendLingShi(totalCost)) {
                 this.player.activeFormations.splice(i, 1);
