@@ -1374,14 +1374,13 @@ export const ITEMS = {
         name: 'Linh Hư Túi',
         type: ITEM_TYPES.DAN_DUOC,
         icon: '🎒',
-        quality: 'Pháp Khí',
-        tier: 'PHAP_KHI',
+        quality: 'Túi Trữ Vật',
         price: 500,
         description: 'Sử dụng để mở rộng thêm một linh không trữ vật mới với 10 ô chứa đồ. Bện từ tơ lụa linh mộc sơ cấp.',
         action: 'expand_inventory',
         stats: { slots: 10 },
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DEFAULT }
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.TUI_TRU_VAT }
         ]
     },
     'can_khon_tui': {
@@ -1389,14 +1388,13 @@ export const ITEMS = {
         name: 'Càn Khôn Túi',
         type: ITEM_TYPES.DAN_DUOC,
         icon: '🎒',
-        quality: 'Linh Khí',
-        tier: 'LINH_KHI',
+        quality: 'Túi Trữ Vật',
         price: 5000,
         description: 'Sử dụng để mở rộng thêm một càn khôn không gian mới với 30 ô chứa đồ. Chế tác từ da thú yêu thú trung cấp.',
         action: 'expand_inventory',
         stats: { slots: 30 },
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DEFAULT }
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.TUI_TRU_VAT }
         ]
     },
     'thao_thiet_can_khon_dai': {
@@ -1404,14 +1402,13 @@ export const ITEMS = {
         name: 'Thao Thiết Càn Khôn Đại',
         type: ITEM_TYPES.DAN_DUOC,
         icon: '🎒',
-        quality: 'Pháp Bảo',
-        tier: 'PHAP_BAO',
+        quality: 'Túi Trữ Vật',
         price: 25000,
         description: 'Sử dụng để mở rộng thêm một dị bảo không gian cực đại với 50 ô chứa đồ. Ẩn chứa da của thần thú Thao Thiết thượng cổ.',
         action: 'expand_inventory',
         stats: { slots: 50 },
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DEFAULT }
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.TUI_TRU_VAT }
         ]
     },
     'ho_tam_kinh': {
@@ -3561,40 +3558,40 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.TU_LUYEN }
         ]
     },
-    'linh_thu_dai_so': {
-        id: 'linh_thu_dai_so',
-        name: 'Linh Thú Đại (Sơ)',
+    'ngu_thu_nang': {
+        id: 'ngu_thu_nang',
+        name: 'Ngự Thú Nang',
         type: 'artifact',
         icon: '👜',
-        quality: 'Pháp Khí',
+        quality: 'Linh Thú Đại',
         price: 500,
         description: 'Túi chuyên dụng để chứa linh thú và kỳ trùng sơ cấp. Có thể chứa tối đa 3 con.',
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DEFAULT }
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.LINH_THU_DAI }
         ]
     },
-    'linh_thu_dai_trung': {
-        id: 'linh_thu_dai_trung',
-        name: 'Linh Thú Đại (Trung)',
+    'thien_linh_nang': {
+        id: 'thien_linh_nang',
+        name: 'Thiên Linh Thú Đại',
         type: 'artifact',
         icon: '👜',
-        quality: 'Linh Khí',
+        quality: 'Linh Thú Đại',
         price: 2500,
         description: 'Túi chứa linh thú trung cấp, được gia trì không gian trận pháp. Có thể chứa tối đa 10 con.',
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DEFAULT }
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.LINH_THU_DAI }
         ]
     },
-    'linh_thu_dai_cao': {
-        id: 'linh_thu_dai_cao',
-        name: 'Linh Thú Đại (Cao)',
+    'can_khon_thu_gioi': {
+        id: 'can_khon_thu_gioi',
+        name: 'Càn Khôn Thú Giới',
         type: 'artifact',
         icon: '👜',
-        quality: 'Pháp Bảo',
+        quality: 'Linh Thú Đại',
         price: 15000,
         description: 'Túi chứa linh thú cao cấp, bên trong có linh khí nồng đậm giúp linh thú phát triển. Có thể chứa tối đa 50 con.',
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DEFAULT }
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.LINH_THU_DAI }
         ]
     },
     'bac_cuc_nguyen_quang_cuc_son': {
@@ -3664,33 +3661,6 @@ export const ITEMS = {
         stats: { atk: 3000, def: 2000, hp: 5000, pierce: 0.8, allRes: 0.5 },
         action: 'separate_ngu_cuc_son',
         poem: ['Ngũ Sơn Hợp Nhất Trấn Càn Khôn', 'Vạn Pháp Quy Nguyên Hóa Hư Không']
-    },
-    'linh_thu_dai_so': {
-        id: 'linh_thu_dai_so',
-        name: 'Linh Thú Đại (Sơ)',
-        type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
-        icon: '👜',
-        quality: 'Pháp Khí',
-        price: 1000,
-        description: 'Túi chuyên dụng dùng để chứa và nuôi dưỡng linh thú, kỳ trùng cấp thấp. Không gian bên trong ổn định, giúp linh thú nghỉ ngơi hồi phục.'
-    },
-    'linh_thu_dai_trung': {
-        id: 'linh_thu_dai_trung',
-        name: 'Linh Thú Đại (Trung)',
-        type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
-        icon: '👜',
-        quality: 'Linh Khí',
-        price: 5000,
-        description: 'Túi linh thú cấp trung, có thể chứa được các loại linh thú có linh tính cao hơn. Linh khí bên trong dồi dào, hỗ trợ linh thú thăng cấp.'
-    },
-    'linh_thu_dai_cao': {
-        id: 'linh_thu_dai_cao',
-        name: 'Linh Thú Đại (Cao)',
-        type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
-        icon: '👜',
-        quality: 'Pháp Bảo',
-        price: 20000,
-        description: 'Túi linh thú cao cấp, có thể chứa được các loại thần thú hoặc kỳ trùng vương cấp. Có tác dụng bảo hộ linh tính và ngăn chặn phản phệ.'
     },
     'trung_kim_giap_hac': {
         id: 'trung_kim_giap_hac',

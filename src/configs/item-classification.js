@@ -718,6 +718,8 @@ export const ITEM_CATEGORIES_ENUM = {
             LENH_BAI: 'lenh_bai',
             CHIA_KHOA: 'chia_khoa',
             DI_HOA: 'di_hoa',
+            TUI_TRU_VAT: 'tui_tru_vat',
+            LINH_THU_DAI: 'linh_thu_dai',
             DEFAULT: 'default'
         }
     },
