@@ -263,7 +263,7 @@ export class EnemyGenerator {
 
         // 4. Random drops (Storage bag logic)
         if (Math.random() < 0.2) {
-            const possibleItems = ['seed_linh_thao', 'linh_thao_thap', 'ngung_khi_dan', 'tich_coc_dan', 'kim_cuong_phu'];
+            const possibleItems = ['hat_giong_thanh_phuc_thao', 'linh_thao_thap', 'ngung_khi_dan', 'tich_coc_dan', 'kim_cuong_phu'];
             const randomItem = possibleItems[Math.floor(Math.random() * possibleItems.length)];
             enemy.inventory.push({ id: randomItem, quantity: 1 });
         }

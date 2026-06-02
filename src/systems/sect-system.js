@@ -11,7 +11,7 @@ const MISSION_TIERS = {
         levelName: 'Phàm Giai',
         collectTargets: [
             { id: 'linh_thao_thap', name: 'Linh Thảo Thấp Phẩm', quantityRange: [5, 10] },
-            { id: 'seed_linh_thao', name: 'Linh Chủng Linh Thảo', quantityRange: [3, 8] }
+            { id: 'hat_giong_thanh_phuc_thao', name: 'Linh Chủng Linh Thảo', quantityRange: [3, 8] }
         ],
         killLocations: [
             { id: 'thanh_nguu_tran', name: 'Thanh Ngưu Trấn' },

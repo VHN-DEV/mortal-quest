@@ -10,10 +10,10 @@
 
 export const ITEMS = {
     // Hạt giống
-    'seed_linh_thao': { id: 'seed_linh_thao', name: 'Linh Chủng Thanh Phục Thảo', type: 'seed', icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Hạt giống Thanh Phục Thảo, loại linh thảo sơ cấp phổ biến nhất ở Nhân giới.', categories: [{ category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: 'duoi_100_nam' }] },
-    'seed_hoa_diem_thao': { id: 'seed_hoa_diem_thao', name: 'Linh Chủng Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
-    'seed_han_tuy_hoa': { id: 'seed_han_tuy_hoa', name: 'Linh Chủng Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
-    'seed_u_minh_hoa': { id: 'seed_u_minh_hoa', name: 'Linh Chủng U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
+    'hat_giong_thanh_phuc_thao': { id: 'hat_giong_thanh_phuc_thao', name: 'Hạt Giống Thanh Phục Thảo', type: 'seed', icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Hạt giống Thanh Phục Thảo, loại linh thảo sơ cấp phổ biến nhất ở Nhân giới.', categories: [{ category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: 'duoi_100_nam' }] },
+    'hat_giong_hoa_diem_thao': { id: 'hat_giong_hoa_diem_thao', name: 'Hạt Giống Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
+    'hat_giong_han_tuy_hoa': { id: 'hat_giong_han_tuy_hoa', name: 'Hạt Giống Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
+    'hat_giong_u_minh_hoa': { id: 'hat_giong_u_minh_hoa', name: 'Hạt Giống U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
 
     // Trứng Linh Thú
     'trung_thanh_van_ly': {
@@ -265,9 +265,9 @@ export const ITEMS = {
     },
 
     // --- ALCHEMY RECIPE SCROLLS ---
-    'dp_ngung_khi_dan': {
-        id: 'dp_ngung_khi_dan',
-        name: 'Đan Phương: Ngưng Khí Đan',
+    'dan_phuong_ngung_khi_dan': {
+        id: 'dan_phuong_ngung_khi_dan',
+        name: 'Đan Phương Ngưng Khí Đan',
         type: 'recipe',
         icon: '📜',
         quality: 'Pháp Khí',
@@ -278,8 +278,8 @@ export const ITEMS = {
             { category: 'cong_phap', subcategory: 'bi_thuat' }
         ]
     },
-    'dp_than_tam_dan': {
-        id: 'dp_than_tam_dan',
+    'dan_phuong_than_tam_dan': {
+        id: 'dan_phuong_than_tam_dan',
         name: 'Đan Phương: Thanh Tâm Đan',
         type: 'recipe',
         icon: '📜',
@@ -291,9 +291,9 @@ export const ITEMS = {
             { category: 'cong_phap', subcategory: 'bi_thuat' }
         ]
     },
-    'dp_truc_co_dan': {
-        id: 'dp_truc_co_dan',
-        name: 'Đan Phương: Trúc Cơ Đan',
+    'dan_phuong_truc_co_dan': {
+        id: 'dan_phuong_truc_co_dan',
+        name: 'Đan Phương Trúc Cơ Đan',
         type: 'recipe',
         icon: '📜',
         quality: 'Linh Khí',
@@ -304,9 +304,9 @@ export const ITEMS = {
             { category: 'cong_phap', subcategory: 'bi_thuat' }
         ]
     },
-    'dp_bo_nguyen_dan': {
-        id: 'dp_bo_nguyen_dan',
-        name: 'Đan Phương: Bổ Nguyên Đan',
+    'dan_phuong_bo_nguyen_dan': {
+        id: 'dan_phuong_bo_nguyen_dan',
+        name: 'Đan Phương Bổ Nguyên Đan',
         type: 'recipe',
         icon: '📜',
         quality: 'Pháp Khí',
@@ -317,9 +317,9 @@ export const ITEMS = {
             { category: 'cong_phap', subcategory: 'bi_thuat' }
         ]
     },
-    'dp_ngung_anh_dan': {
-        id: 'dp_ngung_anh_dan',
-        name: 'Đan Phương: Ngưng Anh Đan',
+    'dan_phuong_ngung_anh_dan': {
+        id: 'dan_phuong_ngung_anh_dan',
+        name: 'Đan Phương Ngưng Anh Đan',
         type: 'recipe',
         icon: '📜',
         quality: 'Pháp Bảo',
@@ -332,9 +332,9 @@ export const ITEMS = {
     },
 
     // --- SMITHING BLUEPRINTS ---
-    'bv_thanh_hong_kiem': {
-        id: 'bv_thanh_hong_kiem',
-        name: 'Bản Vẽ: Thanh Hồng Kiếm',
+    'ban_ve_thanh_hong_kiem': {
+        id: 'ban_ve_thanh_hong_kiem',
+        name: 'Bản Vẽ Thanh Hồng Kiếm',
         type: 'recipe',
         icon: '📜',
         quality: 'Pháp Khí',
@@ -345,9 +345,9 @@ export const ITEMS = {
             { category: 'luyen_khi', subcategory: 'ban_ve' }
         ]
     },
-    'bv_phi_kiem_tinh_ha': {
-        id: 'bv_phi_kiem_tinh_ha',
-        name: 'Bản Vẽ: Tinh Hà Phi Kiếm',
+    'ban_ve_phi_kiem_tinh_ha': {
+        id: 'ban_ve_phi_kiem_tinh_ha',
+        name: 'Bản Vẽ Tinh Hà Phi Kiếm',
         type: 'recipe',
         icon: '📜',
         quality: 'Linh Khí',
@@ -358,9 +358,9 @@ export const ITEMS = {
             { category: 'luyen_khi', subcategory: 'ban_ve' }
         ]
     },
-    'bv_long_lan_giap': {
-        id: 'bv_long_lan_giap',
-        name: 'Bản Vẽ: Long Lân Giáp',
+    'ban_ve_long_lan_giap': {
+        id: 'ban_ve_long_lan_giap',
+        name: 'Bản Vẽ Long Lân Giáp',
         type: 'recipe',
         icon: '📜',
         quality: 'Linh Khí',
@@ -371,9 +371,9 @@ export const ITEMS = {
             { category: 'luyen_khi', subcategory: 'ban_ve' }
         ]
     },
-    'bv_bat_quai_kinh': {
-        id: 'bv_bat_quai_kinh',
-        name: 'Bản Vẽ: Bát Quái Kính',
+    'ban_ve_bat_quai_kinh': {
+        id: 'ban_ve_bat_quai_kinh',
+        name: 'Bản Vẽ Bát Quái Kính',
         type: 'recipe',
         icon: '📜',
         quality: 'Pháp Khí',
@@ -386,8 +386,8 @@ export const ITEMS = {
     },
 
     // --- TALISMAN PATTERNS ---
-    'pv_hoa_cau_phu': {
-        id: 'pv_hoa_cau_phu',
+    'phu_ve_hoa_cau_phu': {
+        id: 'phu_ve_hoa_cau_phu',
         name: 'Phù Văn: Hỏa Cầu Phù',
         type: 'talisman_recipe',
         icon: '📜',
@@ -399,8 +399,8 @@ export const ITEMS = {
             { category: 'phu_luc', subcategory: 'cong_kich' }
         ]
     },
-    'pv_kim_cuong_phu': {
-        id: 'pv_kim_cuong_phu',
+    'phu_ve_kim_cuong_phu': {
+        id: 'phu_ve_kim_cuong_phu',
         name: 'Phù Văn: Kim Cương Phù',
         type: 'talisman_recipe',
         icon: '📜',
@@ -412,8 +412,8 @@ export const ITEMS = {
             { category: 'phu_luc', subcategory: 'phong_ngu' }
         ]
     },
-    'pv_than_hanh_phu': {
-        id: 'pv_than_hanh_phu',
+    'phu_ve_than_hanh_phu': {
+        id: 'phu_ve_than_hanh_phu',
         name: 'Phù Văn: Thần Hành Phù',
         type: 'talisman_recipe',
         icon: '📜',
@@ -425,8 +425,8 @@ export const ITEMS = {
             { category: 'phu_luc', subcategory: 'don_thuat' }
         ]
     },
-    'pv_thun_di_phu': {
-        id: 'pv_thun_di_phu',
+    'phu_ve_thun_di_phu': {
+        id: 'phu_ve_thun_di_phu',
         name: 'Phù Văn: Thuấn Di Phù',
         type: 'talisman_recipe',
         icon: '📜',
@@ -438,8 +438,8 @@ export const ITEMS = {
             { category: 'phu_luc', subcategory: 'don_thuat' }
         ]
     },
-    'pv_thien_loi_phu': {
-        id: 'pv_thien_loi_phu',
+    'phu_ve_thien_loi_phu': {
+        id: 'phu_ve_thien_loi_phu',
         name: 'Phù Văn: Thiên Lôi Phù',
         type: 'talisman_recipe',
         icon: '📜',
@@ -453,9 +453,9 @@ export const ITEMS = {
     },
 
     // --- FORMATION DIAGRAMS ---
-    'td_tu_linh_tran': {
-        id: 'td_tu_linh_tran',
-        name: 'Trận Đồ: Tụ Linh Trận',
+    'tran_do_tu_linh_tran': {
+        id: 'tran_do_tu_linh_tran',
+        name: 'Trận Đồ Tụ Linh Trận',
         type: 'recipe',
         icon: '📜',
         quality: 'Pháp Khí',
@@ -466,9 +466,9 @@ export const ITEMS = {
             { category: 'tran_phap', subcategory: 'tu_linh_tran' }
         ]
     },
-    'td_ao_anh_tran': {
-        id: 'td_ao_anh_tran',
-        name: 'Trận Đồ: Ảo Ảnh Trận',
+    'tran_do_ao_anh_tran': {
+        id: 'tran_do_ao_anh_tran',
+        name: 'Trận Đồ Ảo Ảnh Trận',
         type: 'recipe',
         icon: '📜',
         quality: 'Pháp Khí',
@@ -479,9 +479,9 @@ export const ITEMS = {
             { category: 'tran_phap', subcategory: 'huyen_tran' }
         ]
     },
-    'td_sat_kiem_tran': {
-        id: 'td_sat_kiem_tran',
-        name: 'Trận Đồ: Sát Kiếm Trận',
+    'tran_do_sat_kiem_tran': {
+        id: 'tran_do_sat_kiem_tran',
+        name: 'Trận Đồ Sát Kiếm Trận',
         type: 'recipe',
         icon: '📜',
         quality: 'Linh Khí',
@@ -492,9 +492,9 @@ export const ITEMS = {
             { category: 'tran_phap', subcategory: 'cong_kich_tran' }
         ]
     },
-    'td_ho_tong_dai_tran': {
-        id: 'td_ho_tong_dai_tran',
-        name: 'Trận Đồ: Hộ Tông Đại Trận',
+    'tran_do_ho_tong_dai_tran': {
+        id: 'tran_do_ho_tong_dai_tran',
+        name: 'Trận Đồ Hộ Tông Đại Trận',
         type: 'recipe',
         icon: '📜',
         quality: 'Pháp Bảo',
@@ -507,9 +507,9 @@ export const ITEMS = {
     },
 
     // --- PUPPET BLUEPRINTS ---
-    'bv_thiet_giap_khoi_loi': {
-        id: 'bv_thiet_giap_khoi_loi',
-        name: 'Bản Vẽ: Thiết Giáp Khôi Lỗi',
+    'ban_ve_thiet_giap_khoi_loi': {
+        id: 'ban_ve_thiet_giap_khoi_loi',
+        name: 'Bản Vẽ Thiết Giáp Khôi Lỗi',
         type: 'recipe',
         icon: '📜',
         quality: 'Pháp Khí',
@@ -520,9 +520,9 @@ export const ITEMS = {
             { category: 'luyen_khi', subcategory: 'ban_ve' }
         ]
     },
-    'bv_kiem_khoi': {
-        id: 'bv_kiem_khoi',
-        name: 'Bản Vẽ: Kiếm Khôi',
+    'ban_ve_kiem_khoi': {
+        id: 'ban_ve_kiem_khoi',
+        name: 'Bản Vẽ Kiếm Khôi',
         type: 'recipe',
         icon: '📜',
         quality: 'Linh Khí',
@@ -652,8 +652,8 @@ export const ITEMS = {
             { category: 'nguyen_lieu', subcategory: 'thien_tai' }
         ]
     },
-    'dp_tich_coc_dan': {
-        id: 'dp_tich_coc_dan',
+    'dan_phuong_tich_coc_dan': {
+        id: 'dan_phuong_tich_coc_dan',
         name: 'Đan Phương: Tịch Cốc Đan',
         type: 'recipe',
         icon: '📜',
@@ -885,9 +885,9 @@ export const ITEMS = {
             { category: 'phap_bao', subcategory: 'dinh_giai' }
         ]
     },
-    'bv_phi_kiem_tinh_ha': {
-        id: 'bv_phi_kiem_tinh_ha',
-        name: 'Bản Vẽ: Tinh Hà Phi Kiếm',
+    'ban_ve_phi_kiem_tinh_ha': {
+        id: 'ban_ve_phi_kiem_tinh_ha',
+        name: 'Bản Vẽ Tinh Hà Phi Kiếm',
         type: 'recipe',
         icon: '📜',
         quality: 'Linh Khí',
@@ -1463,8 +1463,8 @@ export const ITEMS = {
             { category: 'phap_bao', subcategory: 'tien_khi' }
         ]
     },
-    'seed_linh_thao_trung': {
-        id: 'seed_linh_thao_trung',
+    'hat_giong_linh_thao_trung': {
+        id: 'hat_giong_linh_thao_trung',
         name: 'Linh Chủng Tử Lam Hoa',
         type: 'seed',
         icon: '🌿',
@@ -2091,8 +2091,8 @@ export const ITEMS = {
             { category: 'dan_duoc', subcategory: 'khac' }
         ]
     },
-    'egg_phe_kim_trung': {
-        id: 'egg_phe_kim_trung',
+    'trung_phe_kim_trung': {
+        id: 'trung_phe_kim_trung',
         name: 'Trứng Phệ Kim Trùng',
         type: 'beast_egg',
         beastId: 'phe_kim_trung',
@@ -2104,8 +2104,8 @@ export const ITEMS = {
             { category: 'linh_thu', subcategory: 'trung_ky_trung' }
         ]
     },
-    'egg_bang_tam': {
-        id: 'egg_bang_tam',
+    'trung_bang_tam': {
+        id: 'trung_bang_tam',
         name: 'Trứng Băng Tàm',
         type: 'beast_egg',
         beastId: 'bang_tam',
@@ -2117,8 +2117,8 @@ export const ITEMS = {
             { category: 'linh_thu', subcategory: 'trung_ky_trung' }
         ]
     },
-    'egg_huyet_ngoc_tri_chu': {
-        id: 'egg_huyet_ngoc_tri_chu',
+    'trung_huyet_ngoc_tri_chu': {
+        id: 'trung_huyet_ngoc_tri_chu',
         name: 'Trứng Huyết Ngọc Tri Chu',
         type: 'beast_egg',
         beastId: 'huyet_ngoc_tri_chu',
@@ -3194,7 +3194,7 @@ export const ITEMS = {
     },
     'recipe_truc_co': {
         id: 'recipe_truc_co',
-        name: 'Đan Phương: Trúc Cơ Đan',
+        name: 'Đan Phương Trúc Cơ Đan',
         type: 'consumable',
         icon: '📜',
         quality: 'Pháp Bảo',
@@ -3207,7 +3207,7 @@ export const ITEMS = {
     },
     'bp_tinh_ha': {
         id: 'bp_tinh_ha',
-        name: 'Bản Vẽ: Tinh Hà Phi Kiếm',
+        name: 'Bản Vẽ Tinh Hà Phi Kiếm',
         type: 'consumable',
         icon: '📜',
         quality: 'Linh Khí',
@@ -3220,7 +3220,7 @@ export const ITEMS = {
     },
     'bp_long_lan': {
         id: 'bp_long_lan',
-        name: 'Bản Vẽ: Long Lân Giáp',
+        name: 'Bản Vẽ Long Lân Giáp',
         type: 'consumable',
         icon: '📜',
         quality: 'Pháp Bảo',
@@ -3632,7 +3632,7 @@ export const ITEMS = {
     },
     'trung_bang_tam': {
         id: 'trung_bang_tam',
-        name: 'Trứng Băng Tằm Thiên Niên',
+        name: 'Trứng Băng Tằm',
         type: 'consumable',
         icon: '🥚',
         quality: 'Linh Khí',
@@ -3748,8 +3748,8 @@ export const ITEMS = {
         price: 20000,
         description: 'Túi linh thú cao cấp, có thể chứa được các loại thần thú hoặc kỳ trùng vương cấp. Có tác dụng bảo hộ linh tính và ngăn chặn phản phệ.'
     },
-    'egg_phe_kim_trung': {
-        id: 'egg_phe_kim_trung',
+    'trung_phe_kim_trung': {
+        id: 'trung_phe_kim_trung',
         name: 'Trứng Phệ Kim Trùng',
         type: 'beast_egg',
         beastId: 'phe_kim_trung',
@@ -3759,8 +3759,8 @@ export const ITEMS = {
         price: 5000,
         description: 'Trứng của Phệ Kim Trùng, một loại kỳ trùng nổi tiếng với khả năng thôn phệ vạn vật, ngay cả pháp bảo cũng khó thoát khỏi hàm răng của chúng.'
     },
-    'egg_bang_tam': {
-        id: 'egg_bang_tam',
+    'trung_bang_tam': {
+        id: 'trung_bang_tam',
         name: 'Trứng Băng Tằm',
         type: 'beast_egg',
         beastId: 'bang_tam',
@@ -3770,8 +3770,8 @@ export const ITEMS = {
         price: 1500,
         description: 'Trứng của Băng Tằm, sinh vật sống ở vùng cực hàn. Tơ của chúng là nguyên liệu quý để dệt nên các loại pháp y phòng ngự cực cao.'
     },
-    'egg_huyet_ngoc_tri_chu': {
-        id: 'egg_huyet_ngoc_tri_chu',
+    'trung_huyet_ngoc_tri_chu': {
+        id: 'trung_huyet_ngoc_tri_chu',
         name: 'Trứng Huyết Ngọc Tri Chu',
         type: 'beast_egg',
         beastId: 'huyet_ngoc_tri_chu',
@@ -3781,8 +3781,8 @@ export const ITEMS = {
         price: 2000,
         description: 'Trứng của Huyết Ngọc Tri Chu, loại nhện mang huyết mạch cổ xưa, nọc độc vô cùng bạo liệt và tơ nhện dẻo dai khó đứt.'
     },
-    'egg_kim_giap_hac': {
-        id: 'egg_kim_giap_hac',
+    'trung_kim_giap_hac': {
+        id: 'trung_kim_giap_hac',
         name: 'Trứng Kim Giáp Hạc',
         type: 'beast_egg',
         beastId: 'kim_giap_hac',
@@ -3795,8 +3795,8 @@ export const ITEMS = {
             { category: 'linh_thu', subcategory: 'trung_linh_thu' }
         ]
     },
-    'egg_huyen_diem_nga': {
-        id: 'egg_huyen_diem_nga',
+    'trung_huyen_diem_nga': {
+        id: 'trung_huyen_diem_nga',
         name: 'Trứng Huyền Diệm Nga',
         type: 'beast_egg',
         beastId: 'huyen_diem_nga',
@@ -3809,8 +3809,8 @@ export const ITEMS = {
             { category: 'linh_thu', subcategory: 'trung_ky_trung' }
         ]
     },
-    'egg_loi_bang': {
-        id: 'egg_loi_bang',
+    'trung_loi_bang': {
+        id: 'trung_loi_bang',
         name: 'Trứng Lôi Bằng',
         type: 'beast_egg',
         beastId: 'loi_bang',
@@ -3823,8 +3823,8 @@ export const ITEMS = {
             { category: 'linh_thu', subcategory: 'trung_linh_thu' }
         ]
     },
-    'egg_thien_phong_ngan_uynh': {
-        id: 'egg_thien_phong_ngan_uynh',
+    'trung_thien_phong_ngan_uynh': {
+        id: 'trung_thien_phong_ngan_uynh',
         name: 'Trứng Thiên Phong Ngân Uynh',
         type: 'beast_egg',
         beastId: 'thien_phong_ngan_uynh',
@@ -4418,8 +4418,8 @@ export const ITEMS = {
             { category: 'phap_bao', subcategory: 'linh_bao' }
         ]
     },
-    'egg_giao_long': {
-        id: 'egg_giao_long',
+    'trung_giao_long': {
+        id: 'trung_giao_long',
         name: 'Trứng Giao Long',
         type: 'beast_egg',
         beastId: 'giao_long',
@@ -4431,8 +4431,8 @@ export const ITEMS = {
             { category: 'linh_thu', subcategory: 'trung_linh_thu' }
         ]
     },
-    'egg_hac_xa': {
-        id: 'egg_hac_xa',
+    'trung_hac_xa': {
+        id: 'trung_hac_xa',
         name: 'Trứng Hắc Xà',
         type: 'beast_egg',
         beastId: 'hac_xa',
@@ -4444,9 +4444,9 @@ export const ITEMS = {
             { category: 'linh_thu', subcategory: 'trung_ky_trung' }
         ]
     },
-    'egg_hoa_viem': {
-        id: 'egg_hoa_viem',
-        name: 'Trứng Hỏa Viêm Thú',
+    'trung_hoa_viem': {
+        id: 'trung_hoa_viem',
+        name: 'Trứng Hỏa Viêm',
         type: 'beast_egg',
         beastId: 'hoa_viem',
         icon: '🔥',
@@ -5288,9 +5288,9 @@ export const ITEMS = {
             { category: 'cong_phap', subcategory: 'tu_luyen' }
         ]
     },
-    'bv_thanh_vien_khoi_loi': {
-        id: 'bv_thanh_vien_khoi_loi',
-        name: 'Bản Vẽ: Thanh Viên Khôi Lỗi',
+    'ban_ve_thanh_vien_khoi_loi': {
+        id: 'ban_ve_thanh_vien_khoi_loi',
+        name: 'Bản Vẽ Thanh Viên Khôi Lỗi',
         type: 'recipe',
         icon: '📜',
         quality: 'Linh Khí',
@@ -5301,9 +5301,9 @@ export const ITEMS = {
             { category: 'luyen_khi', subcategory: 'ban_ve' }
         ]
     },
-    'bv_cu_ho_khoi_loi': {
-        id: 'bv_cu_ho_khoi_loi',
-        name: 'Bản Vẽ: Cự Hổ Khôi Lỗi',
+    'ban_ve_cu_ho_khoi_loi': {
+        id: 'ban_ve_cu_ho_khoi_loi',
+        name: 'Bản Vẽ Cự Hổ Khôi Lỗi',
         type: 'recipe',
         icon: '📜',
         quality: 'Cổ Bảo',
@@ -5394,9 +5394,9 @@ export const ITEMS = {
             { category: 'nguyen_lieu', subcategory: 'thien_tai' }
         ]
     },
-    'seed_ngoc_de_hoa': {
-        id: 'seed_ngoc_de_hoa',
-        name: 'Linh Chủng Ngọc Đề Hoa',
+    'hat_giong_ngoc_de_hoa': {
+        id: 'hat_giong_ngoc_de_hoa',
+        name: 'Hạt Giống Ngọc Đề Hoa',
         type: 'seed',
         icon: '🌱',
         quality: 'Pháp Khí',
@@ -5418,9 +5418,9 @@ export const ITEMS = {
             { category: 'nguyen_lieu', subcategory: 'thien_tai' }
         ]
     },
-    'seed_thanh_long_tham': {
-        id: 'seed_thanh_long_tham',
-        name: 'Linh Chủng Thanh Long Sâm',
+    'hat_giong_thanh_long_sam': {
+        id: 'hat_giong_thanh_long_sam',
+        name: 'Hạt Giống Thanh Long Sâm',
         type: 'seed',
         icon: '🌱',
         quality: 'Linh Khí',
@@ -5442,9 +5442,9 @@ export const ITEMS = {
             { category: 'nguyen_lieu', subcategory: 'thien_tai' }
         ]
     },
-    'seed_tuyet_oanh_thao': {
-        id: 'seed_tuyet_oanh_thao',
-        name: 'Linh Chủng Tuyết Oánh Thảo',
+    'hat_giong_tuyet_oanh_thao': {
+        id: 'hat_giong_tuyet_oanh_thao',
+        name: 'Hạt Giống Tuyết Oánh Thảo',
         type: 'seed',
         icon: '❄️',
         quality: 'Linh Khí',
@@ -5466,9 +5466,9 @@ export const ITEMS = {
             { category: 'nguyen_lieu', subcategory: 'linh_dich', subSubcategory: 'thien_dia' }
         ]
     },
-    'seed_hoa_duong_chi': {
-        id: 'seed_hoa_duong_chi',
-        name: 'Linh Chủng Hỏa Dương Chi',
+    'hat_giong_hoa_duong_chi': {
+        id: 'hat_giong_hoa_duong_chi',
+        name: 'Hạt Giống Hỏa Dương Chi',
         type: 'seed',
         icon: '🔥',
         quality: 'Linh Khí',
@@ -5490,9 +5490,9 @@ export const ITEMS = {
             { category: 'nguyen_lieu', subcategory: 'thien_tai' }
         ]
     },
-    'seed_cuu_tich_chi': {
-        id: 'seed_cuu_tich_chi',
-        name: 'Linh Chủng Cửu Tịch Chi',
+    'hat_giong_cuu_tich_chi': {
+        id: 'hat_giong_cuu_tich_chi',
+        name: 'Hạt Giống Cửu Tịch Chi',
         type: 'seed',
         icon: '💀',
         quality: 'Linh Khí',

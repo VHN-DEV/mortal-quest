@@ -2385,7 +2385,7 @@ export class Game {
     }
 
     showPlantMenu(index) {
-        const seeds = state.player.inventory.allItems.filter(i => i.id.startsWith('seed_'));
+        const seeds = state.player.inventory.allItems.filter(i => i.id.startsWith('hat_giong_'));
         const menu = document.getElementById('garden-menu-content');
         const title = document.getElementById('garden-menu-title');
         const subtitle = document.getElementById('garden-menu-subtitle');

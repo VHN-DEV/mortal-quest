@@ -31,7 +31,7 @@ export const HERB_AGE_MILESTONES = [
 
 export const SEEDS = [
     {
-        id: 'seed_linh_thao',
+        id: 'hat_giong_thanh_phuc_thao',
         name: 'Linh Chủng Thanh Phục Thảo',
         herbId: 'linh_thao_thap',
         grade: 'PHAM',
@@ -40,7 +40,7 @@ export const SEEDS = [
         description: 'Linh thảo sơ cấp Thanh Phục Thảo, cực kỳ dễ trồng.'
     },
     {
-        id: 'seed_linh_thao_trung',
+        id: 'hat_giong_linh_thao_trung',
         name: 'Linh Chủng Tử Lam Hoa',
         herbId: 'linh_thao_trung',
         grade: 'LINH',
@@ -49,7 +49,7 @@ export const SEEDS = [
         description: 'Linh hoa trung cấp Tử Lam Hoa màu tím nhạt, phát triển ổn định.'
     },
     {
-        id: 'seed_ngoc_de_hoa',
+        id: 'hat_giong_ngoc_de_hoa',
         name: 'Linh Chủng Ngọc Đề Hoa',
         herbId: 'ngoc_de_hoa',
         grade: 'PHAM',
@@ -58,7 +58,7 @@ export const SEEDS = [
         description: 'Ngọc Đề Hoa có tính ôn hòa, dễ trồng nơi phàm điền.'
     },
     {
-        id: 'seed_thanh_long_tham',
+        id: 'hat_giong_thanh_long_sam',
         name: 'Linh Chủng Thanh Long Sâm',
         herbId: 'thanh_long_tham',
         grade: 'LINH',
@@ -67,7 +67,7 @@ export const SEEDS = [
         description: 'Thanh Long Sâm đòi hỏi mộc thuộc tính linh khí tràn trề.'
     },
     {
-        id: 'seed_hoa_diem_thao',
+        id: 'hat_giong_hoa_diem_thao',
         name: 'Linh Chủng Hỏa Diễm Thảo',
         herbId: 'hoa_diem_thao',
         grade: 'LINH',
@@ -76,7 +76,7 @@ export const SEEDS = [
         description: 'Linh thảo thuộc tính hỏa, cần linh điền rực cháy.'
     },
     {
-        id: 'seed_hoa_duong_chi',
+        id: 'hat_giong_hoa_duong_chi',
         name: 'Linh Chủng Hỏa Dương Chi',
         herbId: 'hoa_duong_chi',
         grade: 'LINH',
@@ -85,7 +85,7 @@ export const SEEDS = [
         description: 'Nấm hỏa thuộc tính cực mạnh, cần linh điền hỏa thuộc tính cao nhiệt.'
     },
     {
-        id: 'seed_han_tuy_hoa',
+        id: 'hat_giong_han_tuy_hoa',
         name: 'Linh Chủng Hàn Tủy Hoa',
         herbId: 'han_tuy_hoa',
         grade: 'LINH',
@@ -94,7 +94,7 @@ export const SEEDS = [
         description: 'Linh hoa sinh trưởng nơi cực hàn.'
     },
     {
-        id: 'seed_tuyet_oanh_thao',
+        id: 'hat_giong_tuyet_oanh_thao',
         name: 'Linh Chủng Tuyết Oánh Thảo',
         herbId: 'tuyet_oanh_thao',
         grade: 'LINH',
@@ -103,7 +103,7 @@ export const SEEDS = [
         description: 'Linh thảo tuyết trắng tinh khiết, sinh trưởng ở nơi giá buốt cực độ.'
     },
     {
-        id: 'seed_u_minh_hoa',
+        id: 'hat_giong_u_minh_hoa',
         name: 'Linh Chủng U Minh Hoa',
         herbId: 'u_minh_hoa',
         grade: 'HUYEN',
@@ -112,7 +112,7 @@ export const SEEDS = [
         description: 'Hấp thụ tử khí để sinh trưởng.'
     },
     {
-        id: 'seed_cuu_tich_chi',
+        id: 'hat_giong_cuu_tich_chi',
         name: 'Linh Chủng Cửu Tịch Chi',
         herbId: 'cuu_tich_chi',
         grade: 'HUYEN',

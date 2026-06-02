@@ -344,16 +344,16 @@ export class CheatSystem {
             { id: 'ma_thach', qty: 2 },
             
             // Hạt giống
-            { id: 'seed_linh_thao', qty: 3 },
-            { id: 'seed_hoa_diem_thao', qty: 1 },
-            { id: 'seed_han_tuy_hoa', qty: 1 },
+            { id: 'hat_giong_thanh_phuc_thao', qty: 3 },
+            { id: 'hat_giong_hoa_diem_thao', qty: 1 },
+            { id: 'hat_giong_han_tuy_hoa', qty: 1 },
 
             // Đan phương / Bản vẽ nhập môn
-            { id: 'dp_ngung_khi_dan', qty: 1 },
-            { id: 'dp_than_tam_dan', qty: 1 },
-            { id: 'bv_thanh_hong_kiem', qty: 1 },
-            { id: 'pv_hoa_cau_phu', qty: 1 },
-            { id: 'td_tu_linh_tran', qty: 1 }
+            { id: 'dan_phuong_ngung_khi_dan', qty: 1 },
+            { id: 'dan_phuong_than_tam_dan', qty: 1 },
+            { id: 'ban_ve_thanh_hong_kiem', qty: 1 },
+            { id: 'phu_ve_hoa_cau_phu', qty: 1 },
+            { id: 'tran_do_tu_linh_tran', qty: 1 }
         ];
 
         // Mid-tier additions (Realm 10+)
@@ -364,12 +364,12 @@ export class CheatSystem {
                 { id: 'ho_tam_kinh', qty: 1 },
                 { id: 'linh_thuyen_so', qty: 1 },
                 { id: 'tran_ban_so', qty: 1 },
-                { id: 'dp_truc_co_dan', qty: 1 },
-                { id: 'dp_bo_nguyen_dan', qty: 1 },
-                { id: 'bv_bat_quai_kinh', qty: 1 },
-                { id: 'pv_kim_cuong_phu', qty: 1 },
-                { id: 'pv_than_hanh_phu', qty: 1 },
-                { id: 'td_ao_anh_tran', qty: 1 },
+                { id: 'dan_phuong_truc_co_dan', qty: 1 },
+                { id: 'dan_phuong_bo_nguyen_dan', qty: 1 },
+                { id: 'ban_ve_bat_quai_kinh', qty: 1 },
+                { id: 'phu_ve_kim_cuong_phu', qty: 1 },
+                { id: 'phu_ve_than_hanh_phu', qty: 1 },
+                { id: 'tran_do_ao_anh_tran', qty: 1 },
                 { id: 'bp_thi_binh', qty: 1 }
             );
         }
@@ -385,12 +385,12 @@ export class CheatSystem {
                 { id: 'di_loi_bang', qty: 1 },
                 { id: 'linh_the_luc', qty: 1 },
                 { id: 'phap_bao_luc', qty: 1 },
-                { id: 'dp_ngung_anh_dan', qty: 1 },
-                { id: 'bv_phi_kiem_tinh_ha', qty: 1 },
-                { id: 'bv_long_lan_giap', qty: 1 },
-                { id: 'pv_thun_di_phu', qty: 1 },
-                { id: 'pv_thien_loi_phu', qty: 1 },
-                { id: 'td_sat_kiem_tran', qty: 1 },
+                { id: 'dan_phuong_ngung_anh_dan', qty: 1 },
+                { id: 'ban_ve_phi_kiem_tinh_ha', qty: 1 },
+                { id: 'ban_ve_long_lan_giap', qty: 1 },
+                { id: 'phu_ve_thun_di_phu', qty: 1 },
+                { id: 'phu_ve_thien_loi_phu', qty: 1 },
+                { id: 'tran_do_sat_kiem_tran', qty: 1 },
                 { id: 'bp_thi_tuong', qty: 1 }
             );
         }

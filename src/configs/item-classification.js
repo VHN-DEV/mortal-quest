@@ -253,7 +253,7 @@ function _classifyItemRaw(item) {
     }
 
     // 4. Luyện Khí (Bản Vẽ and Đài/Lò/Lư Luyện Khí)
-    if (effect.type === 'learn_smithing_recipe' || id.startsWith('bv_') || type === 'smithing_recipe') {
+    if (effect.type === 'learn_smithing_recipe' || id.startsWith('ban_ve_') || type === 'smithing_recipe') {
         return { category: 'luyen_khi', subcategory: 'ban_ve' };
     }
     if (type === 'smithing_tool') {
@@ -261,7 +261,7 @@ function _classifyItemRaw(item) {
     }
 
     // 7. Trận Pháp
-    if (type === 'formation' || effect.type === 'learn_formation' || id.startsWith('td_')) {
+    if (type === 'formation' || effect.type === 'learn_formation' || id.startsWith('tran_do_')) {
         let sub = 'tu_linh_tran';
         if (name.includes('Tụ Linh') || id.includes('tu_linh')) {
             sub = 'tu_linh_tran';
@@ -315,7 +315,7 @@ function _classifyItemRaw(item) {
     }
 
     // 6. Phù Lục (standard talismans)
-    if (type === 'talisman' || type === 'talisman_recipe' || id.startsWith('pv_')) {
+    if (type === 'talisman' || type === 'talisman_recipe' || id.startsWith('phu_ve_')) {
         let sub = 'cong_kich';
         if (name.includes('Cầu Phù') || name.includes('Lôi Phù') || name.includes('Công Kích') || id.includes('hoa_cau') || id.includes('thien_loi')) {
             sub = 'cong_kich';
