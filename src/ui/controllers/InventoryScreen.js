@@ -1,5 +1,6 @@
 import { state } from '../../state.js';
 import { getItemById, ITEMS } from '../../configs/item-data.js';
+import { EFFECT_TYPES } from '../../configs/item-classification.js';
 import { getAssetUrl } from '../../configs/asset-data.js';
 import { getItemConnections } from '../../utils/item-connections.js';
 import { getTechniqueById, getSecretTechniqueById } from '../../configs/technique-data.js';
@@ -19,7 +20,7 @@ export class InventoryScreen {
         if (!itemData) return [];
         
         const categories = [];
-        const isManualAction = itemData.type === 'sach_cong_phap' || itemData.effect?.type === 'unlock_profession';
+        const isManualAction = itemData.type === 'sach_cong_phap' || itemData.effect?.type === EFFECT_TYPES.MO_KHOA_NGHE;
         const isRecipe = itemData.type === 'don_thuoc' || itemData.type === 'don_phu' || isManualAction;
         if (isRecipe) {
             categories.push('Bí Pháp');
@@ -708,11 +709,11 @@ export class InventoryScreen {
                     }
                     effectList.push({ label, val: valStr });
                 });
-            } else if (effect.type === 'tu_vi') {
+            } else if (effect.type === EFFECT_TYPES.TANG_TU_VI) {
                 effectList.push({ label: 'Tăng tu vi', val: `+${effect.value}` });
-            } else if (effect.type === 'breakthrough_chance') {
+            } else if (effect.type === EFFECT_TYPES.TANG_CO_HOI_DOT_PHA) {
                 effectList.push({ label: 'Tỷ lệ đột phá', val: `+${Math.round(effect.value * 100)}%` });
-            } else if (effect.type === 'restore') {
+            } else if (effect.type === EFFECT_TYPES.HOI_PHUC) {
                 if (effect.hp) {
                     const hpStr = effect.hp < 1.0 ? `+${Math.round(effect.hp * 100)}% Khí Huyết` : `+${effect.hp} Khí Huyết`;
                     effectList.push({ label: 'Hồi phục', val: hpStr });
@@ -721,7 +722,7 @@ export class InventoryScreen {
                     const manaStr = effect.mana < 1.0 ? `+${Math.round(effect.mana * 100)}% Pháp Lực` : `+${effect.mana} Pháp Lực`;
                     effectList.push({ label: 'Hồi phục', val: manaStr });
                 }
-            } else if (effect.type === 'buff') {
+            } else if (effect.type === EFFECT_TYPES.BUFF_TAM_THOI) {
                 const statLabels = {
                     'tu_vi_speed': 'Tốc độ tu vi',
                     'tuViSpeed': 'Tốc độ tu vi',
@@ -745,7 +746,7 @@ export class InventoryScreen {
                 }
             } else if (effect.type && effect.type.startsWith('learn_')) {
                 effectList.push({ label: 'Học công thức', val: 'Mở khóa công thức chế tạo mới' });
-            } else if (effect.type === 'unlock_profession') {
+            } else if (effect.type === EFFECT_TYPES.MO_KHOA_NGHE) {
                 const profNames = {
                     alchemy: 'Luyện Đan',
                     smithing: 'Luyện Khí',
@@ -756,7 +757,7 @@ export class InventoryScreen {
                     beast: 'Ngự Thú'
                 };
                 effectList.push({ label: 'Mở khóa nghề', val: profNames[effect.profession] || effect.profession });
-            } else if (effect.type === 'technique_mastery') {
+            } else if (effect.type === EFFECT_TYPES.THUAN_THUC_CONG_PHAP) {
                 effectList.push({ label: 'Ngộ tính công pháp', val: `+${effect.value} điểm` });
             }
 

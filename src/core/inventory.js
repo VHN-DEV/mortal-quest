@@ -1,4 +1,5 @@
 import { getItemById } from '../configs/item-data.js';
+import { EFFECT_TYPES } from '../configs/item-classification.js';
 import { state } from '../state.js';
 import { BEASTS } from '../configs/beast-data.js';
 
@@ -561,29 +562,29 @@ export class Inventory {
             }
         }
 
-        if (effect.type === 'tu_vi') {
+        if (effect.type === EFFECT_TYPES.TANG_TU_VI) {
             this.player.tuVi += Math.round(effect.value * multiplier);
-        } else if (effect.type === 'heal') {
+        } else if (effect.type === EFFECT_TYPES.HOI_MAU) {
             const healAmount = Math.floor(this.player.maxHp * effect.value * multiplier);
             this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmount);
-        } else if (effect.type === 'lifespan' || effect.type === 'max_age') {
+        } else if (effect.type === EFFECT_TYPES.TANG_THO_NGUYEN || effect.type === EFFECT_TYPES.MAX_AGE) {
             const addedVal = Math.round(effect.value * multiplier);
             this.player.permanentLifespanBonus = (this.player.permanentLifespanBonus || 0) + addedVal;
             this.player.calculateStats();
             state.ui.toast(`Thọ nguyên tăng thêm ${addedVal} năm!`, "success");
-        } else if (effect.type === 'mana') {
+        } else if (effect.type === EFFECT_TYPES.TANG_PHAP_LUC) {
             const manaAmount = Math.floor(this.player.maxMana * effect.value * multiplier);
             this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaAmount);
-        } else if (effect.type === 'learn_technique') {
+        } else if (effect.type === EFFECT_TYPES.HOC_KY_THUAT) {
             this.player.learnTechnique(effect.value);
-        } else if (effect.type === 'learn_secret') {
+        } else if (effect.type === EFFECT_TYPES.HOC_BI_THUAT) {
             this.player.learnSecretTechnique(effect.value);
-        } else if (effect.type === 'qi_absorb') {
+        } else if (effect.type === EFFECT_TYPES.HAP_THU_LINH_KHI) {
             const es = window.energySystem || (this.player.energySystem);
             if (es) {
                 es.absorbQi(effect.qiType, effect.amount * multiplier, effect.purity || 'TINH_THUAN');
             }
-        } else if (effect.type === 'restore') {
+        } else if (effect.type === EFFECT_TYPES.HOI_PHUC) {
             if (effect.hp) {
                 this.player.hp = Math.min(this.player.maxHp, this.player.hp + Math.round(effect.hp * multiplier));
             }
@@ -593,31 +594,31 @@ export class Inventory {
             if (effect.stamina) {
                 this.player.stamina = Math.min(this.player.maxStamina, this.player.stamina + Math.round(effect.stamina * multiplier));
             }
-        } else if (effect.type === 'learn_recipe') {
+        } else if (effect.type === EFFECT_TYPES.HOC_CONG_THUC_DAN) {
             if (!this.player.knownRecipes.includes(effect.value)) {
                 this.player.knownRecipes.push(effect.value);
             }
-        } else if (effect.type === 'learn_smithing_recipe') {
+        } else if (effect.type === EFFECT_TYPES.HOC_CONG_THUC_REN) {
             if (!this.player.knownSmithingRecipes.includes(effect.value)) {
                 this.player.knownSmithingRecipes.push(effect.value);
             }
-        } else if (effect.type === 'learn_talisman_recipe') {
+        } else if (effect.type === EFFECT_TYPES.HOC_CONG_THUC_PHU) {
             if (!this.player.knownTalismanRecipes.includes(effect.value)) {
                 this.player.knownTalismanRecipes.push(effect.value);
             }
-        } else if (effect.type === 'learn_puppet_recipe') {
+        } else if (effect.type === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI) {
             if (!this.player.knownPuppetRecipes.includes(effect.value)) {
                 this.player.knownPuppetRecipes.push(effect.value);
             }
-        } else if (effect.type === 'learn_corpse_recipe') {
+        } else if (effect.type === EFFECT_TYPES.HOC_CONG_THUC_THI) {
             if (!this.player.knownCorpseRecipes.includes(effect.value)) {
                 this.player.knownCorpseRecipes.push(effect.value);
             }
-        } else if (effect.type === 'learn_formation') {
+        } else if (effect.type === EFFECT_TYPES.HOC_TRAN_PHAP) {
             if (!this.player.knownFormations.includes(effect.value)) {
                 this.player.knownFormations.push(effect.value);
             }
-        } else if (effect.type === 'learn_beast') {
+        } else if (effect.type === EFFECT_TYPES.HOC_LINH_THU) {
             const beastData = BEASTS[effect.value];
             if (beastData && this.player.beasts) {
                 const alreadyHas = this.player.beasts.some(b => b.id === effect.value);
@@ -636,28 +637,28 @@ export class Inventory {
                     this.player.beasts.push(newBeast);
                 }
             }
-        } else if (effect.type === 'learn_multiple_recipes') {
+        } else if (effect.type === EFFECT_TYPES.HOC_NHIEU_CONG_THUC) {
             if (Array.isArray(effect.value)) {
                 effect.value.forEach(subEffect => this.applyEffect(subEffect, multiplier));
             }
-        } else if (effect.type === 'refine_flame') {
+        } else if (effect.type === EFFECT_TYPES.LUYEN_HOA_DI_HOA) {
             if (!this.player.ownedFlames.includes(effect.value)) {
                 this.player.ownedFlames.push(effect.value);
                 this.player.currentFlame = effect.value;
             }
-        } else if (effect.type === 'equip_cauldron') {
+        } else if (effect.type === EFFECT_TYPES.TRANG_BI_DAN_LU) {
             if (!this.player.ownedCauldrons.includes(effect.value)) {
                 this.player.ownedCauldrons.push(effect.value);
                 this.player.currentCauldron = effect.value;
             }
-        } else if (effect.type === 'buff') {
+        } else if (effect.type === EFFECT_TYPES.BUFF_TAM_THOI) {
             this.player.addBuff({
                 id: effect.id || 'temp_buff',
                 stat: effect.stat,
                 value: effect.value * multiplier,
                 duration: (effect.duration || 3600) * 1000
             });
-        } else if (effect.type === 'unlock_profession') {
+        } else if (effect.type === EFFECT_TYPES.MO_KHOA_NGHE) {
             if (this.player.unlockProfession(effect.profession)) {
                 state.ui.toast(`Chúc mừng! Ngươi đã lĩnh hội bí pháp và mở khóa nghề ${effect.profession === 'alchemy' ? 'Luyện Đan' :
                     effect.profession === 'talisman' ? 'Phù Lục' :

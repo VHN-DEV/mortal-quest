@@ -269,7 +269,7 @@ function _classifyItemRaw(item) {
     }
 
     // 4. Luyện Khí (Bản Vẽ and Đài/Lò/Lư Luyện Khí)
-    if (type === ITEM_TYPES.SMITHING_RECIPE || (effect && (effect.type === 'learn_smithing_recipe' || effect.type === 'learn_puppet_recipe'))) {
+    if (type === ITEM_TYPES.SMITHING_RECIPE || (effect && (effect.type === EFFECT_TYPES.HOC_CONG_THUC_REN || effect.type === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI))) {
         return { category: 'luyen_khi', subcategory: 'ban_ve' };
     }
     if (type === ITEM_TYPES.SMITHING_TOOL) {
@@ -277,7 +277,7 @@ function _classifyItemRaw(item) {
     }
 
     // 7. Trận Pháp
-    if (type === ITEM_TYPES.FORMATION || (effect && effect.type === 'learn_formation')) {
+    if (type === ITEM_TYPES.FORMATION || (effect && effect.type === EFFECT_TYPES.HOC_TRAN_PHAP)) {
         let sub = 'tu_linh_tran';
         if (name.includes('Tụ Linh') || id.includes('tu_linh')) {
             sub = 'tu_linh_tran';
@@ -298,17 +298,17 @@ function _classifyItemRaw(item) {
     }
 
     // 8. Khôi Lỗi
-    if (type === ITEM_TYPES.PUPPET || type === ITEM_TYPES.CORPSE || (effect && (effect.type === 'learn_puppet_recipe' || effect.type === 'learn_corpse_recipe'))) {
+    if (type === ITEM_TYPES.PUPPET || type === ITEM_TYPES.CORPSE || (effect && (effect.type === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI || effect.type === EFFECT_TYPES.HOC_CONG_THUC_THI))) {
         let sub = 'linh_khoi';
-        if (type === ITEM_TYPES.CORPSE || effect.type === 'learn_corpse_recipe' || id.includes('thi_')) {
+        if (type === ITEM_TYPES.CORPSE || effect.type === EFFECT_TYPES.HOC_CONG_THUC_THI || id.includes('thi_')) {
             sub = 'thi_khoi';
         }
         return { category: 'khoi_loi', subcategory: sub };
     }
 
     // 5. Công Pháp
-    const isBook = type === ITEM_TYPES.BOOK || type === ITEM_TYPES.TECHNIQUE || type === ITEM_TYPES.RECIPE || effect.type === 'learn_secret' || effect.type === 'learn_technique' || effect.type === 'learn_alchemy_recipe';
-    const isManual = effect.type === 'unlock_profession';
+    const isBook = type === ITEM_TYPES.BOOK || type === ITEM_TYPES.TECHNIQUE || type === ITEM_TYPES.RECIPE || effect.type === EFFECT_TYPES.HOC_BI_THUAT || effect.type === EFFECT_TYPES.HOC_KY_THUAT || effect.type === 'learn_alchemy_recipe';
+    const isManual = effect.type === EFFECT_TYPES.MO_KHOA_NGHE;
 
     if (isBook || isManual) {
         let sub = 'tu_luyen';
@@ -727,4 +727,39 @@ export const ITEM_CATEGORIES_ENUM = {
             THANH_LY: 'thanh_ly'
         }
     }
+};
+
+// Centralized Effect Types Enum
+export const EFFECT_TYPES = {
+    // === Học / Mở khóa công thức & nghề ===
+    HOC_CONG_THUC_DAN:       'learn_recipe',
+    HOC_CONG_THUC_REN:       'learn_smithing_recipe',
+    HOC_CONG_THUC_PHU:       'learn_talisman_recipe',
+    HOC_CONG_THUC_KHOI_LOI:  'learn_puppet_recipe',
+    HOC_CONG_THUC_THI:       'learn_corpse_recipe',
+    HOC_TRAN_PHAP:           'learn_formation',
+    HOC_KY_THUAT:            'learn_technique',
+    HOC_BI_THUAT:            'learn_secret',
+    HOC_LINH_THU:            'learn_beast',
+    HOC_NHIEU_CONG_THUC:     'learn_multiple_recipes',
+    MO_KHOA_NGHE:            'unlock_profession',
+
+    // === Hồi phục / Tu vi ===
+    TANG_TU_VI:              'tu_vi',
+    HOI_PHUC:                'restore',
+    HOI_MAU:                 'heal',
+    TANG_PHAP_LUC:           'mana',
+    TANG_THO_NGUYEN:         'lifespan',
+    MAX_AGE:                 'max_age',
+    HAP_THU_LINH_KHI:        'qi_absorb',
+
+    // === Buff / Trang bị ===
+    BUFF_TAM_THOI:           'buff',
+    LUYEN_HOA_DI_HOA:        'refine_flame',
+    TRANG_BI_DAN_LU:         'equip_cauldron',
+
+    // === Đặc biệt ===
+    AP_TRUNG:                'hatch',
+    THUAN_THUC_CONG_PHAP:    'technique_mastery',
+    TANG_CO_HOI_DOT_PHA:     'breakthrough_chance',
 };

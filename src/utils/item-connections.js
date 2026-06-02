@@ -4,6 +4,7 @@ import { SMITHING_RECIPES } from '../configs/smithing-data.js';
 import { TALISMAN_RECIPES } from '../configs/talisman-data.js';
 import { PUPPET_RECIPES } from '../configs/puppet-data.js';
 import { ITEMS } from '../configs/item-data.js';
+import { EFFECT_TYPES } from '../configs/item-classification.js';
 
 /**
  * Tìm các liên kết giữa các vật phẩm (Nguyên liệu -> Sản phẩm, Sản phẩm -> Nguyên liệu, Hạt giống -> Linh thảo, v.v.)
@@ -142,7 +143,7 @@ export function getItemConnections(itemId) {
     }
 
     // 8. Nếu là Vật phẩm mở khóa nghề nghiệp
-    if (item.effect && item.effect.type === 'unlock_profession') {
+    if (item.effect && item.effect.type === EFFECT_TYPES.MO_KHOA_NGHE) {
         connections.unlocksProfession = item.effect.profession;
     }
 
