@@ -13,7 +13,7 @@ export class ShopController {
         this.shopSubSubFilter = 'all';
         this.shopQualityFilter = 'all';
         this.shopSearchQuery = '';
-        this.shopSortMode = 'default';
+        this.shopSortMode = 'name-asc';
     }
 
     get elShopLingShi() { return this.parentScreen.elShopLingShi; }
@@ -61,6 +61,9 @@ export class ShopController {
 
     renderShop() {
         if (!state.player) return;
+        if (this.elShopSortSelect) {
+            this.elShopSortSelect.value = this.shopSortMode;
+        }
         this.elShopLingShi.innerHTML = state.player.getFormattedLingShi();
 
         // Update VIP display
@@ -375,21 +378,52 @@ export class ShopController {
         }
 
         // Sorting
-        if (this.shopSortMode !== 'default') {
-            inv.sort((a, b) => {
-                const dataA = getItemById(a.id);
-                const dataB = getItemById(b.id);
-                if (!dataA || !dataB) return 0;
+        inv.sort((a, b) => {
+            const dataA = getItemById(a.id);
+            const dataB = getItemById(b.id);
 
-                if (this.shopSortMode === 'price-asc') return dataA.price - dataB.price;
-                if (this.shopSortMode === 'price-desc') return dataB.price - dataA.price;
-                if (this.shopSortMode === 'quality') {
-                    const qOrder = ['Phàm Khí', 'Pháp Khí', 'Linh Khí', 'Pháp Bảo', 'Cổ Bảo', 'Linh Bảo', 'Thông Thiên Linh Bảo', 'Tiên Khí', 'Danh Khí', 'Hạ phẩm', 'Trung phẩm', 'Thượng phẩm', 'Cực phẩm', 'Hoàn Mỹ'];
-                    return qOrder.indexOf(dataB.quality) - qOrder.indexOf(dataA.quality);
+            if (!dataA || !dataB) return 0;
+
+            switch (this.shopSortMode) {
+
+                case 'name-asc':
+                    return dataA.name.localeCompare(dataB.name, 'vi');
+
+                case 'name-desc':
+                    return dataB.name.localeCompare(dataA.name, 'vi');
+
+                case 'price-asc':
+                    return dataA.price - dataB.price;
+
+                case 'price-desc':
+                    return dataB.price - dataA.price;
+
+                case 'quality': {
+                    const qOrder = [
+                        'Phàm Khí',
+                        'Pháp Khí',
+                        'Linh Khí',
+                        'Pháp Bảo',
+                        'Cổ Bảo',
+                        'Linh Bảo',
+                        'Thông Thiên Linh Bảo',
+                        'Tiên Khí',
+                        'Danh Khí',
+                        'Hạ phẩm',
+                        'Trung phẩm',
+                        'Thượng phẩm',
+                        'Cực phẩm',
+                        'Hoàn Mỹ'
+                    ];
+
+                    return qOrder.indexOf(dataB.quality)
+                        - qOrder.indexOf(dataA.quality);
                 }
-                return 0;
-            });
-        }
+
+                default:
+                    return dataA.name.localeCompare(dataB.name, 'vi');
+            }
+        });
 
         if (inv.length === 0) {
             this.elShopBuyView.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Không tìm thấy bảo vật phù hợp...</div>';
@@ -422,7 +456,7 @@ export class ShopController {
                     ${subSubName ? `<span class="px-1.5 py-0.5 rounded bg-cultivation-gold/10 border border-cultivation-gold/20 text-[6px] font-ancient uppercase tracking-widest text-cultivation-gold font-bold shadow-[0_0_4px_rgba(212,175,55,0.1)]">${subSubName}</span>` : ''}
                 `;
             }).join('');
-            
+
             const categoryLabels = `
                 <div class="flex flex-wrap gap-1 mt-1">
                     ${labelsHtml}
@@ -525,21 +559,52 @@ export class ShopController {
         });
 
         // Sorting
-        if (this.shopSortMode !== 'default') {
-            items.sort((a, b) => {
-                const dataA = getItemById(a.id);
-                const dataB = getItemById(b.id);
-                if (!dataA || !dataB) return 0;
+        items.sort((a, b) => {
+            const dataA = getItemById(a.id);
+            const dataB = getItemById(b.id);
 
-                if (this.shopSortMode === 'price-asc') return dataA.price - dataB.price;
-                if (this.shopSortMode === 'price-desc') return dataB.price - dataA.price;
-                if (this.shopSortMode === 'quality') {
-                    const qOrder = ['Phàm Khí', 'Pháp Khí', 'Linh Khí', 'Pháp Bảo', 'Cổ Bảo', 'Linh Bảo', 'Thông Thiên Linh Bảo', 'Tiên Khí', 'Danh Khí', 'Hạ phẩm', 'Trung phẩm', 'Thượng phẩm', 'Cực phẩm', 'Hoàn Mỹ'];
-                    return qOrder.indexOf(dataB.quality) - qOrder.indexOf(dataA.quality);
+            if (!dataA || !dataB) return 0;
+
+            switch (this.shopSortMode) {
+
+                case 'name-asc':
+                    return dataA.name.localeCompare(dataB.name, 'vi');
+
+                case 'name-desc':
+                    return dataB.name.localeCompare(dataA.name, 'vi');
+
+                case 'price-asc':
+                    return dataA.price - dataB.price;
+
+                case 'price-desc':
+                    return dataB.price - dataA.price;
+
+                case 'quality': {
+                    const qOrder = [
+                        'Phàm Khí',
+                        'Pháp Khí',
+                        'Linh Khí',
+                        'Pháp Bảo',
+                        'Cổ Bảo',
+                        'Linh Bảo',
+                        'Thông Thiên Linh Bảo',
+                        'Tiên Khí',
+                        'Danh Khí',
+                        'Hạ phẩm',
+                        'Trung phẩm',
+                        'Thượng phẩm',
+                        'Cực phẩm',
+                        'Hoàn Mỹ'
+                    ];
+
+                    return qOrder.indexOf(dataB.quality)
+                        - qOrder.indexOf(dataA.quality);
                 }
-                return 0;
-            });
-        }
+
+                default:
+                    return dataA.name.localeCompare(dataB.name, 'vi');
+            }
+        });
 
         if (items.length === 0) {
             this.elShopSellGrid.innerHTML = '<div class="col-span-4 text-center py-10 text-gray-600 italic text-xs">Không có bảo vật nào để giao dịch...</div>';

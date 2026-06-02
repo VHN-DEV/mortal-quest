@@ -14,8 +14,7 @@
                 class="text-cultivation-gold">LT:</span> <span id="shop-ling-shi"
                 class="text-white font-mono">100</span></div>
     </div>
-    <div id="shop-section-nav"
-        class="flex-none w-full min-w-0 custom-scroll-x border-b border-white/5 bg-black/30">
+    <div id="shop-section-nav" class="flex-none w-full min-w-0 custom-scroll-x border-b border-white/5 bg-black/30">
     </div>
     <div id="shop-filters-wrap"
         class="flex-none flex flex-col w-full border-b border-white/10 bg-black/40 hidden overflow-hidden">
@@ -23,31 +22,44 @@
         <div class="w-full flex flex-col bg-black/30">
             <!-- Sub-filter Row (Phân hệ) -->
             <div id="shop-subfilter-row" class="flex items-center border-b border-white/5 py-1">
-                <span class="shrink-0 text-[8px] font-ancient text-cultivation-gold/80 border-r border-white/5 uppercase tracking-widest w-[65px] text-center font-bold">Phân hệ</span>
-                <div id="shop-subfilter-nav" class="flex-grow flex items-center overflow-x-auto custom-scrollbar-hidden px-2 space-x-1 scroll-smooth"></div>
+                <span
+                    class="shrink-0 text-[8px] font-ancient text-cultivation-gold/80 border-r border-white/5 uppercase tracking-widest w-[65px] text-center font-bold">Phân
+                    hệ</span>
+                <div id="shop-subfilter-nav"
+                    class="flex-grow flex items-center overflow-x-auto custom-scrollbar-hidden px-2 space-x-1 scroll-smooth">
+                </div>
             </div>
             <!-- Sub-sub-filter Row (Chi tiết) -->
             <div id="shop-subsubfilter-row" class="flex items-center border-b border-white/5 py-1 hidden">
-                <span class="shrink-0 text-[8px] font-ancient text-cultivation-gold/80 border-r border-white/5 uppercase tracking-widest w-[65px] text-center font-bold">Chi tiết</span>
-                <div id="shop-subsubfilter-nav" class="flex-grow flex items-center overflow-x-auto custom-scrollbar-hidden px-2 space-x-1 scroll-smooth"></div>
+                <span
+                    class="shrink-0 text-[8px] font-ancient text-cultivation-gold/80 border-r border-white/5 uppercase tracking-widest w-[65px] text-center font-bold">Chi
+                    tiết</span>
+                <div id="shop-subsubfilter-nav"
+                    class="flex-grow flex items-center overflow-x-auto custom-scrollbar-hidden px-2 space-x-1 scroll-smooth">
+                </div>
             </div>
             <!-- Quality Row (Phẩm cấp) -->
             <div id="shop-quality-row" class="flex items-center border-b border-white/5 py-1">
-                <span class="shrink-0 text-[8px] font-ancient text-cultivation-gold/80 border-r border-white/5 uppercase tracking-widest w-[65px] text-center font-bold">Phẩm cấp</span>
-                <div id="shop-quality-filter-nav" class="flex-grow flex items-center overflow-x-auto custom-scrollbar-hidden px-2 space-x-1 scroll-smooth"></div>
+                <span
+                    class="shrink-0 text-[8px] font-ancient text-cultivation-gold/80 border-r border-white/5 uppercase tracking-widest w-[65px] text-center font-bold">Phẩm
+                    cấp</span>
+                <div id="shop-quality-filter-nav"
+                    class="flex-grow flex items-center overflow-x-auto custom-scrollbar-hidden px-2 space-x-1 scroll-smooth">
+                </div>
             </div>
         </div>
         <div class="p-2 flex space-x-2 bg-black/10">
             <div class="relative flex-grow">
                 <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
-                <input id="shop-search-input" type="text" placeholder="Tìm kiếm bảo vật..." 
+                <input id="shop-search-input" type="text" placeholder="Tìm kiếm bảo vật..."
                     class="w-full bg-black/40 text-white border border-white/10 rounded-xl pl-9 pr-4 py-2 text-[10px] outline-none focus:border-cultivation-gold/50 transition-all">
             </div>
-            <select id="shop-sort-select" 
+            <select id="shop-sort-select"
                 class="bg-black/40 text-gray-400 border border-white/10 rounded-xl px-3 py-2 text-[10px] outline-none focus:border-cultivation-gold/50 transition-all cursor-pointer">
-                <option value="default">Sắp xếp: Mặc định</option>
-                <option value="price-asc">Giá: Thấp -> Cao</option>
-                <option value="price-desc">Giá: Cao -> Thấp</option>
+                <option value="name-asc">Tên: A - Z</option>
+                <option value="name-desc">Tên: Z - A</option>
+                <option value="price-asc">Giá: Thấp - Cao</option>
+                <option value="price-desc">Giá: Cao - Thấp</option>
                 <option value="quality">Phẩm chất</option>
             </select>
         </div>
