@@ -380,7 +380,7 @@ export class CombatEngine {
         if (this.enemy.hp < this.enemy.maxHp * 0.3) {
             const pillIndex = (this.enemy.inventory || []).findIndex(i => {
                 const data = getItemById(i.id);
-                return data?.type === 'consumable' && data.effect?.type === 'heal';
+                return data?.type === 'dan_duoc' && data.effect?.type === 'heal';
             });
             if (pillIndex !== -1 && Math.random() < 0.7) {
                 const pill = this.enemy.inventory[pillIndex];
@@ -683,7 +683,7 @@ export class CombatEngine {
             case 'escape':
                 this.playerEscape();
                 break;
-            case 'spirit_stone':
+            case 'linh_thach':
                 this.playerCrushStone();
                 break;
             case 'sword-intent':
@@ -1022,7 +1022,7 @@ export class CombatEngine {
     playerUsePotion() {
         const potion = this.player.inventory.allItems.find(i => {
             const d = getItemById(i.id);
-            return d?.type === 'consumable' && (d.effect?.type === 'heal' || d.effect?.type === 'mana');
+            return d?.type === 'dan_duoc' && (d.effect?.type === 'heal' || d.effect?.type === 'mana');
         });
         if (!potion) {
             this.addLog("Không có đan dược hồi phục để sử dụng!");
@@ -1065,7 +1065,7 @@ export class CombatEngine {
     }
 
     playerCrushStone() {
-        const stone = this.player.inventory.allItems.find(i => getItemById(i.id)?.type === 'spirit_stone');
+        const stone = this.player.inventory.allItems.find(i => getItemById(i.id)?.type === 'linh_thach');
         if (!stone) {
             this.addLog("Không có linh thạch để bóp nát!");
             return;

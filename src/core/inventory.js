@@ -94,7 +94,7 @@ export class Inventory {
         const itemInInv = allItems.find(i => i.id === itemId);
         if (!itemInInv || itemInInv.quantity < quantity) return false;
 
-        if (itemData.type === 'consumable' && itemData.effect) {
+        if (itemData.type === 'dan_duoc' && itemData.effect) {
             const isPill = itemId.endsWith('_dan') || (itemData.name && itemData.name.includes('Đan'));
             if (isPill) {
                 // Daily Pill Absorption Limit Check
@@ -214,7 +214,7 @@ export class Inventory {
                 this.removeItem(itemId, quantity);
                 return true;
             }
-        } else if (itemData.type === 'book' && itemData.techniqueId) {
+        } else if (itemData.type === 'sach_cong_phap' && itemData.techniqueId) {
             const res = this.player.startComprehendingTechnique(itemData.techniqueId, false);
             if (res.success) {
                 this.removeItem(itemId, 1);
@@ -224,7 +224,7 @@ export class Inventory {
                 state.ui.toast(res.msg, 'warning');
                 return false;
             }
-        } else if (itemData.type === 'book' && itemData.secretId) {
+        } else if (itemData.type === 'sach_cong_phap' && itemData.secretId) {
             const res = this.player.startComprehendingTechnique(itemData.secretId, true);
             if (res.success) {
                 this.removeItem(itemId, 1);
@@ -234,13 +234,13 @@ export class Inventory {
                 state.ui.toast(res.msg, 'warning');
                 return false;
             }
-        } else if (itemData.effect && (itemData.type === 'book' || itemData.type === 'recipe' || itemData.type === 'talisman_recipe')) {
+        } else if (itemData.effect && (itemData.type === 'sach_cong_phap' || itemData.type === 'don_thuoc' || itemData.type === 'don_phu')) {
             for (let i = 0; i < quantity; i++) {
                 this.applyEffect(itemData.effect);
             }
             this.removeItem(itemId, quantity);
             return true;
-        } else if (itemData.type === 'spirit_stone') {
+        } else if (itemData.type === 'linh_thach') {
             const ss = state.systems.spiritStone;
             if (ss) {
                 const res = ss.absorb(itemId, quantity);
@@ -302,7 +302,7 @@ export class Inventory {
                 state.ui.toast("Đã phân tách Nguyên Hợp Ngũ Cực Sơn thành 5 ngọn núi đơn lẻ.", "success");
                 return true;
             }
-        } else if (itemData.type === 'beast_egg') {
+        } else if (itemData.type === 'trung_linh_thu') {
             if (state.systems.beast) {
                 const res = state.systems.beast.hatch(itemId);
                 if (res.success) {

@@ -51,7 +51,7 @@ export class TreasureScreen {
         if (this.btnNourish) {
             this.btnNourish.onclick = () => {
                 // Simplified: Nourish using generic materials in inventory
-                const materials = state.player.inventory.allItems.filter(i => getItemById(i.id).type === 'material');
+                const materials = state.player.inventory.allItems.filter(i => getItemById(i.id).type === 'nguyen_lieu');
                 if (materials.length === 0) {
                     state.ui.toast("Không có vật liệu phù hợp để nuôi dưỡng!", "error");
                     return;

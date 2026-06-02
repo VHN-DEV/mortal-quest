@@ -2342,7 +2342,7 @@ export class Game {
         if (state.player) {
             const stones = state.player.inventory.allItems.filter(i => {
                 const data = getItemById(i.id);
-                return data && data.type === 'spirit_stone';
+                return data && data.type === 'linh_thach';
             });
             if (stones.length === 0) {
                 state.ui.toast('Ngươi không có Linh Thạch để bóp nát!', 'error');
@@ -2353,7 +2353,7 @@ export class Game {
             if (res.success) {
                 state.ui.toast(res.msg, 'success');
                 if (state.currentCombat && state.currentCombat.engine) {
-                    state.currentCombat.engine.doAction('spirit_stone');
+                    state.currentCombat.engine.doAction('linh_thach');
                 }
             } else {
                 state.ui.toast(res.msg, 'error');

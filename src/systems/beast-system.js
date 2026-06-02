@@ -9,7 +9,7 @@ export class BeastSystem {
 
     hatch(eggId) {
         const item = getItemById(eggId);
-        if (!item || item.type !== 'beast_egg') return { success: false, msg: 'Đây không phải trứng linh thú!' };
+        if (!item || item.type !== 'trung_linh_thu') return { success: false, msg: 'Đây không phải trứng linh thú!' };
 
         if (!this.player.inventory.hasItem(eggId)) return { success: false, msg: 'Bạn không có trứng này!' };
 

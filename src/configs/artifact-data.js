@@ -23,13 +23,13 @@ export const ARTIFACT_QUALITIES = {
 };
 
 export const ARTIFACT_TYPES = {
-    ATTACK: 'attackArtifact',   // Pháp bảo chủ chiến
-    DEFENSE: 'defenseArtifact', // Pháp bảo hộ thân
-    FLIGHT: 'flightArtifact',   // Phi hành pháp bảo
-    SPACE: 'spaceArtifact',     // Không gian pháp bảo
-    FORMATION: 'formationArtifact', // Trận đạo pháp bảo
-    SUPPORT: 'supportArtifact', // Phụ trợ pháp bảo
-    SOUL: 'soulArtifact'        // Hồn đạo pháp bảo
+    ATTACK: 'phap_bao_cong',   // Pháp bảo chủ chiến
+    DEFENSE: 'phap_bao_thu', // Pháp bảo hộ thân
+    FLIGHT: 'phap_bao_phi_hanh',   // Phi hành pháp bảo
+    SPACE: 'phap_bao_khong_gian',     // Không gian pháp bảo
+    FORMATION: 'phap_bao_tran', // Trận đạo pháp bảo
+    SUPPORT: 'phap_bao_phu_tro', // Phụ trợ pháp bảo
+    SOUL: 'phap_bao_hon'        // Hồn đạo pháp bảo
 };
 
 // Các chỉ số của Pháp Bảo

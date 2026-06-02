@@ -30,13 +30,13 @@ export class PhapBaoLucScreen {
             'head': 'Mão/Đỉnh',
             'shoes': 'Hài/Bộ',
             'necklace': 'Anh Lạc',
-            'spaceArtifact': 'Không Gian',
-            'defenseArtifact': 'Hộ Thân',
-            'flightArtifact': 'Phi Hành',
-            'supportArtifact': 'Phụ Trợ',
-            'formationArtifact': 'Trận Đạo',
-            'soulArtifact': 'Hồn Đạo',
-            'attackArtifact': 'Chủ Chiến'
+            'phap_bao_khong_gian': 'Không Gian',
+            'phap_bao_thu': 'Hộ Thân',
+            'phap_bao_phi_hanh': 'Phi Hành',
+            'phap_bao_phu_tro': 'Phụ Trợ',
+            'phap_bao_tran': 'Trận Đạo',
+            'phap_bao_hon': 'Hồn Đạo',
+            'phap_bao_cong': 'Chủ Chiến'
         };
     }
 

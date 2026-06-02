@@ -369,7 +369,7 @@ export class CraftingController {
         // Hatch View
         if (viewHatch && state.views.beast === 'hatch') {
             viewHatch.innerHTML = '';
-            const eggs = state.player.inventory.allItems.filter(i => getItemById(i.id).type === 'beast_egg');
+            const eggs = state.player.inventory.allItems.filter(i => getItemById(i.id).type === 'trung_linh_thu');
             if (eggs.length === 0) {
                 viewHatch.innerHTML = '<div class="text-center py-10 text-gray-600 italic">Ngươi không có trứng linh thú nào...</div>';
             } else {

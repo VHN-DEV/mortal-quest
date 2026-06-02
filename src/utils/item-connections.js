@@ -117,7 +117,7 @@ export function getItemConnections(itemId) {
     });
 
     // 7. Nếu là Đan phương/Bản vẽ (Recipe Scroll)
-    if (item.type === 'recipe' && item.effect && item.effect.value) {
+    if (item.type === 'don_thuoc' && item.effect && item.effect.value) {
         const targetId = item.effect.value;
         // Check if it's alchemy, smithing, talisman or puppet
         if (ALCHEMY_RECIPES.some(r => r.id === targetId)) {
@@ -132,12 +132,12 @@ export function getItemConnections(itemId) {
     }
 
     // 6. Nếu là Sách kỹ năng (Book)
-    if (item.type === 'book' && item.techniqueId) {
+    if (item.type === 'sach_cong_phap' && item.techniqueId) {
         connections.teaches = item.techniqueId;
     }
 
     // 7. Nếu là Trứng linh thú (Beast Egg)
-    if (item.type === 'beast_egg' && item.beastId) {
+    if (item.type === 'trung_linh_thu' && item.beastId) {
         connections.hatchesTo = item.beastId;
     }
 

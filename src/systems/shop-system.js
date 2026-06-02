@@ -86,13 +86,13 @@ export class ShopSystem {
         }
 
         // Prevent selling Spirit Stones (currency)
-        if (itemData.type === 'spirit_stone') {
+        if (itemData.type === 'linh_thach') {
             return { success: false, msg: 'Linh Thạch là vật phẩm trao đổi, không thể bán ngược lại cho tiệm!' };
         }
 
         // Sell price: 30% for materials, 50% for others
         let multiplier = 0.5;
-        if (['material', 'herb', 'ore', 'wood'].includes(itemData.type)) multiplier = 0.3;
+        if (['nguyen_lieu', 'linh_duoc', 'linh_khoang', 'linh_moc'].includes(itemData.type)) multiplier = 0.3;
         
         const sellPrice = Math.floor(itemData.price * multiplier) * quantity;
         

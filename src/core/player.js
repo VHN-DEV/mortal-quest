@@ -1,6 +1,7 @@
 import { getRealmById, RACE_DATA, HUMAN_REALMS, BODY_REALMS, SOUL_REALMS, SWORD_PATH_REALMS, SOUL_PATH_REALMS, DEMON_REALMS, GHOST_REALMS, SPIRIT_BEAST_REALMS, BUDDHIST_REALMS, CONFUCIAN_REALMS, getSubRealmsOfCurrent } from '../configs/realm-data.js';
 import { Inventory } from './inventory.js';
 import { state } from '../state.js';
+import { ITEM_TYPES } from '../configs/item-classification.js';
 import { getItemById } from '../configs/item-data.js';
 import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_QUALITIES, MASTERY_LEVELS } from '../configs/technique-data.js';
 import { getPhysiqueById, getPhysiqueAwakenBonus, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../configs/physique-data.js';
@@ -90,13 +91,13 @@ export class Player {
             accessory: null,
             shoes: null,
             // Artifacts
-            attackArtifact: null,   // Pháp bảo chủ chiến
-            defenseArtifact: null,  // Pháp bảo hộ thân
-            flightArtifact: null,   // Phi hành pháp bảo
-            spaceArtifact: null,    // Không gian pháp bảo
-            formationArtifact: null, // Trận đạo pháp bảo
-            supportArtifact: null,  // Phụ trợ pháp bảo
-            soulArtifact: null      // Hồn đạo pháp bảo
+            phap_bao_cong: null,   // Pháp bảo chủ chiến
+            phap_bao_thu: null,  // Pháp bảo hộ thân
+            phap_bao_phi_hanh: null,   // Phi hành pháp bảo
+            phap_bao_khong_gian: null,    // Không gian pháp bảo
+            phap_bao_tran: null, // Trận đạo pháp bảo
+            phap_bao_phu_tro: null,  // Phụ trợ pháp bảo
+            phap_bao_hon: null      // Hồn đạo pháp bảo
         };
         
         this.inventory = new Inventory(this);
@@ -2670,7 +2671,7 @@ export class Player {
         }
 
         // Specialized Profession Tools
-        if (item.type === 'cauldron') {
+        if (item.type === ITEM_TYPES.CAULDRON) {
             if (this.currentCauldron) {
                 const oldItem = getItemById(this.currentCauldron);
                 if (oldItem) this.inventory.addItem(this.currentCauldron, 1);
@@ -2680,7 +2681,7 @@ export class Player {
             this.inventory.removeItem(itemId, 1);
             return true;
         }
-        if (item.type === 'talisman_pen') {
+        if (item.type === ITEM_TYPES.BUT_VE_PHU) {
             if (this.currentTalismanPen) {
                 const oldItem = getItemById(this.currentTalismanPen);
                 if (oldItem) this.inventory.addItem(this.currentTalismanPen, 1);
@@ -2690,7 +2691,7 @@ export class Player {
             this.inventory.removeItem(itemId, 1);
             return true;
         }
-        if (item.type === 'smithing_tool') {
+        if (item.type === ITEM_TYPES.DE_LUYEN_KHI) {
             if (this.smithingTool) {
                 const oldItem = getItemById(this.smithingTool);
                 if (oldItem) this.inventory.addItem(this.smithingTool, 1);
@@ -2918,7 +2919,7 @@ export class Player {
 
     useItem(itemId) {
         const item = getItemById(itemId);
-        if (!item || item.type !== 'consumable') return { success: false, msg: "Vật phẩm không thể sử dụng!" };
+        if (!item || item.type !== ITEM_TYPES.DAN_DUOC) return { success: false, msg: "Vật phẩm không thể sử dụng!" };
 
         if (!this.inventory.hasItem(itemId, 1)) return { success: false, msg: "Không đủ vật phẩm!" };
 
@@ -4162,9 +4163,9 @@ export class Player {
         if (data.equipment) {
             const defaultEquipment = { 
                 head: null, necklace: null, weapon: null, armor: null, accessory: null, 
-                attackArtifact: null, defenseArtifact: null, flightArtifact: null, 
-                spaceArtifact: null, formationArtifact: null, supportArtifact: null, 
-                soulArtifact: null, shoes: null 
+                phap_bao_cong: null, phap_bao_thu: null, phap_bao_phi_hanh: null, 
+                phap_bao_khong_gian: null, phap_bao_tran: null, phap_bao_phu_tro: null, 
+                phap_bao_hon: null, shoes: null 
             };
             this.equipment = { ...defaultEquipment, ...data.equipment };
         }

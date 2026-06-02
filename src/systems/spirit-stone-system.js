@@ -77,7 +77,7 @@ export class SpiritStoneSystem {
      */
     absorb(itemId, count = 1) {
         const item = getItemById(itemId);
-        if (!item || item.type !== 'spirit_stone') return { success: false, msg: "Vật phẩm không phải linh thạch." };
+        if (!item || item.type !== 'linh_thach') return { success: false, msg: "Vật phẩm không phải linh thạch." };
 
         if (!this.player.inventory.hasItem(itemId, count)) return { success: false, msg: "Không đủ linh thạch." };
 
@@ -131,7 +131,7 @@ export class SpiritStoneSystem {
      */
     crushStone(itemId, count = 1) {
         const item = getItemById(itemId);
-        if (!item || item.type !== 'spirit_stone') return { success: false, msg: "Không thể bóp nát vật phẩm này." };
+        if (!item || item.type !== 'linh_thach') return { success: false, msg: "Không thể bóp nát vật phẩm này." };
 
         if (!this.player.inventory.hasItem(itemId, count)) return { success: false, msg: "Không đủ linh thạch." };
 

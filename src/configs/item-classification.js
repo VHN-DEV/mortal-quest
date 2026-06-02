@@ -236,7 +236,7 @@ function _classifyItemRaw(item) {
     }
 
     // 1. Dịch Vụ
-    if (type === 'service' || id === 'ngo_dao_that') {
+    if (type === ITEM_TYPES.SERVICE || id === 'ngo_dao_that') {
         return { category: 'dich_vu', subcategory: 'thue_phong' };
     }
 
@@ -251,33 +251,33 @@ function _classifyItemRaw(item) {
     }
 
     // 2. Dị Hỏa
-    if (type === 'di_hoa' || type === 'flame') {
+    if (type === ITEM_TYPES.DI_HOA || type === ITEM_TYPES.FLAME) {
         return { category: 'ky_vat_di_bao', subcategory: 'di_hoa' };
     }
 
     // 3. Phù Lục tools (Bút, Mực, Giấy)
-    if (type === 'talisman_pen' || type === 'talisman_ink' || type === 'talisman_paper') {
+    if (type === ITEM_TYPES.TALISMAN_PEN || type === ITEM_TYPES.TALISMAN_INK || type === ITEM_TYPES.TALISMAN_PAPER) {
         return { category: 'phu_luc', subcategory: 'phu_cu' };
     }
 
     // 3b. Luyện Đan (Đan Phương và Đan Lư)
-    if (type === 'cauldron') {
+    if (type === ITEM_TYPES.CAULDRON) {
         return { category: 'luyen_dan', subcategory: 'dan_lu' };
     }
-    if (type === 'recipe') {
+    if (type === ITEM_TYPES.RECIPE) {
         return { category: 'luyen_dan', subcategory: 'dan_phuong' };
     }
 
     // 4. Luyện Khí (Bản Vẽ and Đài/Lò/Lư Luyện Khí)
-    if (type === 'smithing_recipe' || (effect && (effect.type === 'learn_smithing_recipe' || effect.type === 'learn_puppet_recipe'))) {
+    if (type === ITEM_TYPES.SMITHING_RECIPE || (effect && (effect.type === 'learn_smithing_recipe' || effect.type === 'learn_puppet_recipe'))) {
         return { category: 'luyen_khi', subcategory: 'ban_ve' };
     }
-    if (type === 'smithing_tool') {
+    if (type === ITEM_TYPES.SMITHING_TOOL) {
         return { category: 'luyen_khi', subcategory: 'dai_luyen_khi' };
     }
 
     // 7. Trận Pháp
-    if (type === 'formation' || (effect && effect.type === 'learn_formation')) {
+    if (type === ITEM_TYPES.FORMATION || (effect && effect.type === 'learn_formation')) {
         let sub = 'tu_linh_tran';
         if (name.includes('Tụ Linh') || id.includes('tu_linh')) {
             sub = 'tu_linh_tran';
@@ -298,16 +298,16 @@ function _classifyItemRaw(item) {
     }
 
     // 8. Khôi Lỗi
-    if (type === 'puppet' || type === 'corpse' || (effect && (effect.type === 'learn_puppet_recipe' || effect.type === 'learn_corpse_recipe'))) {
+    if (type === ITEM_TYPES.PUPPET || type === ITEM_TYPES.CORPSE || (effect && (effect.type === 'learn_puppet_recipe' || effect.type === 'learn_corpse_recipe'))) {
         let sub = 'linh_khoi';
-        if (type === 'corpse' || effect.type === 'learn_corpse_recipe' || id.includes('thi_')) {
+        if (type === ITEM_TYPES.CORPSE || effect.type === 'learn_corpse_recipe' || id.includes('thi_')) {
             sub = 'thi_khoi';
         }
         return { category: 'khoi_loi', subcategory: sub };
     }
 
     // 5. Công Pháp
-    const isBook = type === 'book' || type === 'technique' || type === 'recipe' || effect.type === 'learn_secret' || effect.type === 'learn_technique' || effect.type === 'learn_alchemy_recipe';
+    const isBook = type === ITEM_TYPES.BOOK || type === ITEM_TYPES.TECHNIQUE || type === ITEM_TYPES.RECIPE || effect.type === 'learn_secret' || effect.type === 'learn_technique' || effect.type === 'learn_alchemy_recipe';
     const isManual = effect.type === 'unlock_profession';
 
     if (isBook || isManual) {
@@ -316,7 +316,7 @@ function _classifyItemRaw(item) {
             sub = 'luyen_the';
         } else if (name.includes('Thần Hồn') || name.includes('Luyện Hồn') || id.includes('duong_than')) {
             sub = 'than_hon';
-        } else if (name.includes('Bí Thuật') || id.includes('bi_thuat') || type === 'recipe' || isManual) {
+        } else if (name.includes('Bí Thuật') || id.includes('bi_thuat') || type === ITEM_TYPES.RECIPE || isManual) {
             sub = 'bi_thuat';
         } else if (name.includes('Thần Thông') || id.includes('than_thong')) {
             sub = 'than_thong';
@@ -331,7 +331,7 @@ function _classifyItemRaw(item) {
     }
 
     // 6. Phù Lục (standard talismans)
-    if (type === 'talisman' || type === 'talisman_recipe') {
+    if (type === ITEM_TYPES.TALISMAN || type === ITEM_TYPES.TALISMAN_RECIPE) {
         let sub = 'cong_kich';
         if (name.includes('Cầu Phù') || name.includes('Lôi Phù') || name.includes('Công Kích') || id.includes('hoa_cau') || id.includes('thien_loi')) {
             sub = 'cong_kich';
@@ -350,9 +350,9 @@ function _classifyItemRaw(item) {
     }
 
     // 9. Linh Thú
-    if (type === 'beast_egg' || type === 'beast_food') {
+    if (type === ITEM_TYPES.BEAST_EGG || type === ITEM_TYPES.BEAST_FOOD) {
         let sub = 'linh_thu';
-        const isEgg = type === 'beast_egg';
+        const isEgg = type === ITEM_TYPES.BEAST_EGG;
         const isKyTrung = id.includes('ky_trung') || id.includes('phe_kim') || id.includes('bang_tam') || id.includes('tri_chu') || id.includes('hac_xa') || id.includes('nga') || id.includes('uynh');
 
         if (isEgg) {
@@ -364,7 +364,7 @@ function _classifyItemRaw(item) {
     }
 
     // 10. Đan Dược
-    if (type === 'consumable') {
+    if (type === ITEM_TYPES.CONSUMABLE) {
         let sub = 'khac';
         if (name.includes('Trúc Cơ') || name.includes('Kết Đan') || name.includes('Nguyên Anh') || name.includes('Hóa Thần') || name.includes('Đột Phá') || id.includes('breakthrough')) {
             sub = 'dot_pha';
@@ -385,7 +385,7 @@ function _classifyItemRaw(item) {
     }
 
     // 11. Pháp Bảo
-    const isEquipment = ['weapon', 'armor', 'accessory', 'treasure', 'head', 'necklace', 'shoes', 'attackArtifact', 'defenseArtifact', 'flightArtifact', 'spaceArtifact', 'formationArtifact', 'supportArtifact', 'soulArtifact', 'cauldron', 'craftingArtifact'].includes(type);
+    const isEquipment = [ITEM_TYPES.WEAPON, ITEM_TYPES.ARMOR, ITEM_TYPES.ACCESSORY, ITEM_TYPES.TREASURE, ITEM_TYPES.HEAD, ITEM_TYPES.NECKLACE, ITEM_TYPES.SHOES, ITEM_TYPES.ATTACK_ARTIFACT, ITEM_TYPES.DEFENSE_ARTIFACT, ITEM_TYPES.FLIGHT_ARTIFACT, ITEM_TYPES.SPACE_ARTIFACT, ITEM_TYPES.FORMATION_ARTIFACT, ITEM_TYPES.SUPPORT_ARTIFACT, ITEM_TYPES.SOUL_ARTIFACT, ITEM_TYPES.CAULDRON, ITEM_TYPES.CRAFTING_ARTIFACT].includes(type);
     if (isEquipment) {
         let sub = 'phap_khi';
         if (name.includes('Phù Bảo') || id.includes('phu_bao')) {
@@ -413,14 +413,14 @@ function _classifyItemRaw(item) {
     }
 
     // 12. Nguyên Liệu
-    const isMaterial = ['material', 'herb', 'ore', 'wood', 'seed', 'spirit_stone'].includes(type);
+    const isMaterial = [ITEM_TYPES.MATERIAL, ITEM_TYPES.HERB, ITEM_TYPES.ORE, ITEM_TYPES.WOOD, ITEM_TYPES.SEED, ITEM_TYPES.SPIRIT_STONE].includes(type);
     if (isMaterial) {
         let sub = 'thien_tai';
         let subSub = 'default';
 
-        const isHerb = type === 'herb' || type === 'seed';
-        const isWood = type === 'wood';
-        const isOre = type === 'ore' || type === 'spirit_stone';
+        const isHerb = type === ITEM_TYPES.HERB || type === ITEM_TYPES.SEED;
+        const isWood = type === ITEM_TYPES.WOOD;
+        const isOre = type === ITEM_TYPES.ORE || type === ITEM_TYPES.SPIRIT_STONE;
         const isLiquid = id.includes('dich') || id.includes('tuy') || name.includes('Dịch') || name.includes('Tủy');
         const isYeuThu = id.includes('yeu_') || id.includes('yeu_dan') || id.includes('yeu_huyet') || id.includes('yeu_cot') || name.includes('Yêu');
 
@@ -452,7 +452,7 @@ function _classifyItemRaw(item) {
             }
         } else if (isOre) {
             sub = 'linh_khoang';
-            if (type === 'spirit_stone' || name.includes('Tinh Thạch') || id.includes('tinh_thach') || id.includes('spirit_stone')) {
+            if (type === ITEM_TYPES.SPIRIT_STONE || name.includes('Tinh Thạch') || id.includes('tinh_thach') || id.includes('spirit_stone')) {
                 subSub = 'tinh_thach';
             } else if (name.includes('Thiết') || name.includes('Kim') || id.includes('thiet') || id.includes('kim')) {
                 subSub = 'kim_loai';
@@ -525,9 +525,9 @@ function _classifyItemRaw(item) {
 
     // 13. Kỳ Vật Dị Bảo (including fallback and former Tạp Vật)
     let sub = 'default';
-    if (type === 'storage' || id.includes('tui_tru_vat') || id.includes('tru_vat') || id.includes('merchant') || id.includes('token_merchant')) {
+    if (type === ITEM_TYPES.STORAGE || id.includes('tui_tru_vat') || id.includes('tru_vat') || id.includes('merchant') || id.includes('token_merchant')) {
         sub = 'default';
-    } else if (type === 'map' || name.includes('Bản Đồ') || id.includes('ban_do')) {
+    } else if (type === ITEM_TYPES.MAP || name.includes('Bản Đồ') || id.includes('ban_do')) {
         sub = 'ban_do';
     } else if (name.includes('Lệnh Bài') || name.includes('Lệnh') || id.includes('lenh_bai') || id.includes('lenh')) {
         sub = 'lenh_bai';
@@ -556,49 +556,49 @@ export function classifyItem(item) {
 
 // Centralized Item Types Enum
 export const ITEM_TYPES = {
-    CONSUMABLE: 'consumable',
-    MATERIAL: 'material',
-    WEAPON: 'weapon',
-    ARMOR: 'armor',
-    ACCESSORY: 'accessory',
-    TREASURE: 'treasure',
-    HEAD: 'head',
-    NECKLACE: 'necklace',
-    SHOES: 'shoes',
-    ATTACK_ARTIFACT: 'attackArtifact',
-    DEFENSE_ARTIFACT: 'defenseArtifact',
-    FLIGHT_ARTIFACT: 'flightArtifact',
-    SPACE_ARTIFACT: 'spaceArtifact',
-    FORMATION_ARTIFACT: 'formationArtifact',
-    SUPPORT_ARTIFACT: 'supportArtifact',
-    SOUL_ARTIFACT: 'soulArtifact',
-    CAULDRON: 'cauldron',
-    CRAFTING_ARTIFACT: 'craftingArtifact',
-    SEED: 'seed',
-    HERB: 'herb',
-    ORE: 'ore',
-    WOOD: 'wood',
-    SPIRIT_STONE: 'spirit_stone',
-    TALISMAN: 'talisman',
-    TALISMAN_RECIPE: 'talisman_recipe',
-    TALISMAN_PEN: 'talisman_pen',
-    TALISMAN_INK: 'talisman_ink',
-    TALISMAN_PAPER: 'talisman_paper',
-    BOOK: 'book',
-    TECHNIQUE: 'technique',
-    RECIPE: 'recipe',
-    SMITHING_RECIPE: 'smithing_recipe',
-    SMITHING_TOOL: 'smithing_tool',
-    FORMATION: 'formation',
-    PUPPET: 'puppet',
-    CORPSE: 'corpse',
-    BEAST_EGG: 'beast_egg',
-    BEAST_FOOD: 'beast_food',
-    SERVICE: 'service',
+    DAN_DUOC: 'dan_duoc',
+    NGUYEN_LIEU: 'nguyen_lieu',
+    HAT_GIONG: 'hat_giong',
+    LINH_THACH: 'linh_thach',
+    TRUNG_LINH_THU: 'trung_linh_thu',
+    THUC_AN_LINH_THU: 'thuc_an_linh_thu',
+    PHU_LUC: 'phu_luc',
+    DON_PHU: 'don_phu',
+    BUT_VE_PHU: 'but_ve_phu',
+    MUC_VE_PHU: 'muc_ve_phu',
+    GIAY_VE_PHU: 'giay_ve_phu',
+    SACH_CONG_PHAP: 'sach_cong_phap',
+    TUYET_KY: 'tuyet_ky',
+    DON_THUOC: 'don_thuoc',
+    BAN_VE_THIET_KE: 'ban_ve_thiet_ke',
+    DE_LUYEN_KHI: 'de_luyen_khi',
+    DAN_LU: 'dan_lu',
+    KHI_BO: 'khi_bo',
+    PHAP_BAO_CONG: 'phap_bao_cong',
+    PHAP_BAO_THU: 'phap_bao_thu',
+    PHAP_BAO_PHI_HANH: 'phap_bao_phi_hanh',
+    PHAP_BAO_KHONG_GIAN: 'phap_bao_khong_gian',
+    PHAP_BAO_TRAN: 'phap_bao_tran',
+    PHAP_BAO_PHU_TRO: 'phap_bao_phu_tro',
+    PHAP_BAO_HON: 'phap_bao_hon',
+    TRAN_PHAP: 'tran_phap',
+    KHOI_LOI: 'khoi_loi',
+    THI_KHOI: 'thi_khoi',
+    LINH_HOA: 'linh_hoa',
+    TUI_TRU_VAT: 'tui_tru_vat',
+    BAN_DO: 'ban_do',
+    DICH_VU: 'dich_vu',
     DI_HOA: 'di_hoa',
-    FLAME: 'flame',
-    STORAGE: 'storage',
-    MAP: 'map'
+    VU_KHI: 'vu_khi',
+    GIAP_BAO: 'giap_bao',
+    TRANG_SUC: 'trang_suc',
+    BAO_VAT: 'bao_vat',
+    NON_MAO: 'non_mao',
+    DAY_CHUYEN: 'day_chuyen',
+    GIAY_HAI: 'giay_hai',
+    LINH_DUOC: 'linh_duoc',
+    LINH_KHOANG: 'linh_khoang',
+    LINH_MOC: 'linh_moc',
 };
 
 // Centralized Item Categories Enum mapping Category -> Subcategory

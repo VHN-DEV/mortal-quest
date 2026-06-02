@@ -117,7 +117,7 @@ export function renderGridItem(item, options = {}) {
  * @returns {string}
  */
 export function getDisplayQuality(quality, type) {
-    const isManualOrRecipe = ['book', 'technique', 'recipe', 'talisman_recipe'].includes(type);
+    const isManualOrRecipe = ['sach_cong_phap', 'tuyet_ky', 'don_thuoc', 'don_phu'].includes(type);
     if (!isManualOrRecipe) return quality;
 
     const map = {

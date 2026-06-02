@@ -19,8 +19,8 @@ export class InventoryScreen {
         if (!itemData) return [];
         
         const categories = [];
-        const isManualAction = itemData.type === 'book' || itemData.effect?.type === 'unlock_profession';
-        const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
+        const isManualAction = itemData.type === 'sach_cong_phap' || itemData.effect?.type === 'unlock_profession';
+        const isRecipe = itemData.type === 'don_thuoc' || itemData.type === 'don_phu' || isManualAction;
         if (isRecipe) {
             categories.push('Bí Pháp');
         }
@@ -115,7 +115,7 @@ export class InventoryScreen {
             this.btnUseItem.onclick = () => {
                 const qty = parseInt(this.elQtyInput.value) || 1;
                 const itemData = getItemById(state.selectedItemId);
-                const isManual = itemData && itemData.type === 'book' && itemData.action;
+                const isManual = itemData && itemData.type === 'sach_cong_phap' && itemData.action;
 
                 if (state.selectedItemId && state.player.inventory.useItem(state.selectedItemId, qty)) {
                     if (isManual) {
@@ -301,7 +301,7 @@ export class InventoryScreen {
                 }
 
                 let sellMult = 0.5;
-                if (['material', 'herb', 'ore', 'wood'].includes(itemData.type)) sellMult = 0.3;
+                if (['nguyen_lieu', 'linh_duoc', 'linh_khoang', 'linh_moc'].includes(itemData.type)) sellMult = 0.3;
                 const finalPricePerUnit = Math.floor(itemData.price * sellMult);
                 const totalPrice = finalPricePerUnit * currentVal;
                 if (this.btnSellItem) {
@@ -468,12 +468,12 @@ export class InventoryScreen {
                     head: 'ph-crown',
                     shoes: 'ph-sneaker',
                     necklace: 'ph-diamond',
-                    attackArtifact: 'ph-sword',
-                    defenseArtifact: 'ph-shield',
-                    flightArtifact: 'ph-wind',
-                    spaceArtifact: 'ph-backpack',
+                    phap_bao_cong: 'ph-sword',
+                    phap_bao_thu: 'ph-shield',
+                    phap_bao_phi_hanh: 'ph-wind',
+                    phap_bao_khong_gian: 'ph-backpack',
                     formationArtifact: 'ph-circles-three',
-                    supportArtifact: 'ph-sparkle',
+                    phap_bao_phu_tro: 'ph-sparkle',
                     soulArtifact: 'ph-ghost'
                 };
                 slot.innerHTML = `<i class="ph ${icons[type] || 'ph-question'} text-gray-400"></i>`;
@@ -506,31 +506,31 @@ export class InventoryScreen {
         }
 
         const typeNames = {
-            'spirit_stone': 'Linh Thạch',
-            'consumable': 'Linh Đan / Thánh Quả',
-            'book': 'Công Pháp / Thần Thông',
+            'linh_thach': 'Linh Thạch',
+            'dan_duoc': 'Linh Đan / Thánh Quả',
+            'sach_cong_phap': 'Công Pháp / Thần Thông',
             'weapon': 'Pháp Bảo / Thần Binh',
             'armor': 'Pháp Y / Bảo Giáp',
             'accessory': 'Linh Sức / Trang Sức',
             'treasure': 'Thiên Tài Địa Bảo',
             'formation': 'Trận Đồ',
             'puppet': 'Cơ Quan / Khôi Lỗi',
-            'attackArtifact': 'Pháp Bảo Chủ Chiến',
-            'defenseArtifact': 'Pháp Bảo Hộ Thân',
-            'flightArtifact': 'Phi Hành Pháp Bảo',
+            'phap_bao_cong': 'Pháp Bảo Chủ Chiến',
+            'phap_bao_thu': 'Pháp Bảo Hộ Thân',
+            'phap_bao_phi_hanh': 'Phi Hành Pháp Bảo',
             'spaceArtifact': 'Càn Khôn Pháp Bảo',
-            'formationArtifact': 'Trận Đạo Pháp Bảo',
-            'supportArtifact': 'Phụ Trợ Pháp Bảo',
-            'soulArtifact': 'Hồn Đạo Pháp Bảo',
-            'material': 'Linh Vật / Tài Nguyên',
-            'seed': 'Linh Chủng'
+            'phap_bao_tran': 'Trận Đạo Pháp Bảo',
+            'phap_bao_phu_tro': 'Phụ Trợ Pháp Bảo',
+            'phap_bao_hon': 'Hồn Đạo Pháp Bảo',
+            'nguyen_lieu': 'Linh Vật / Tài Nguyên',
+            'hat_giong': 'Linh Chủng'
         };
 
         const mappedQuality = getDisplayQuality(displayQuality, itemData.type);
         const qualitySuffix = (mappedQuality.toLowerCase().includes('khí') || mappedQuality.toLowerCase().includes('bảo') || mappedQuality.toLowerCase().includes('phẩm') || mappedQuality.toLowerCase().includes('giai') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(mappedQuality)) ? '' : ' Phẩm';
         
         let typeLabel = typeNames[itemData.type] || itemData.type;
-        if (itemData.type === 'book' || itemData.type === 'technique' || itemData.type === 'recipe' || itemData.type === 'talisman_recipe') {
+        if (itemData.type === 'sach_cong_phap' || itemData.type === 'technique' || itemData.type === 'don_thuoc' || itemData.type === 'don_phu') {
             const categories = this.getTechniqueCategoriesForBook(itemData);
             if (categories.length > 0) {
                 typeLabel += ` (${categories.join(', ')})`;
@@ -606,7 +606,7 @@ export class InventoryScreen {
                 statEl.innerHTML = `<span>${this.getStatLabel(key)}</span><span class="text-qi-blue font-mono">+${val}</span>`;
                 this.elDetailStats.appendChild(statEl);
             });
-        } else if ((itemData.type === 'book' || itemData.type === 'technique') && itemData.techniqueId && this.elDetailStats) {
+        } else if ((itemData.type === 'sach_cong_phap' || itemData.type === 'technique') && itemData.techniqueId && this.elDetailStats) {
             const tech = getTechniqueById(itemData.techniqueId) || getSecretTechniqueById(itemData.techniqueId);
             if (tech) {
                 // Add basic tech properties
@@ -769,7 +769,7 @@ export class InventoryScreen {
         }
 
         // Show/Hide Quantity Container
-        const isStackable = ['spirit_stone', 'consumable', 'material', 'seed'].includes(itemData.type);
+        const isStackable = ['linh_thach', 'dan_duoc', 'nguyen_lieu', 'hat_giong'].includes(itemData.type);
         const shopItem = state.systems.shop?.getShopInventory().find(i => i.id === id);
         const shopStock = shopItem ? shopItem.stock : 0;
         const showQty = isStackable || (fromShop && shopStock > 1) || (fromSell && playerItem && playerItem.quantity > 1);
@@ -794,16 +794,16 @@ export class InventoryScreen {
             if (this.btnCrushStone) this.btnCrushStone.classList.add('hidden');
         }
 
-        const isSpiritStone = itemData.type === 'spirit_stone';
-        const isManual = itemData.type === 'book' && itemData.action;
+        const isSpiritStone = itemData.type === 'linh_thach';
+        const isManual = itemData.type === 'sach_cong_phap' && itemData.action;
 
-        this.btnUseItem.classList.toggle('hidden', !(['consumable', 'book', 'spirit_stone', 'beast_egg', 'recipe', 'talisman_recipe'].includes(itemData.type)) || (fromShop && !isManual));
+        this.btnUseItem.classList.toggle('hidden', !(['dan_duoc', 'sach_cong_phap', 'linh_thach', 'trung_linh_thu', 'don_thuoc', 'don_phu'].includes(itemData.type)) || (fromShop && !isManual));
         if (this.btnCrushStone) this.btnCrushStone.classList.toggle('hidden', !isSpiritStone || fromShop || fromSell);
 
         if (isSpiritStone) {
             this.btnUseItem.textContent = 'LUYỆN HÓA';
         } else {
-            this.btnUseItem.textContent = isManual ? 'XEM' : ((itemData.type === 'book' || itemData.type === 'recipe' || itemData.type === 'talisman_recipe') ? 'LĨNH NGỘ' : (itemData.type === 'beast_egg' ? 'ẤP TRỨNG' : 'SỬ DỤNG'));
+            this.btnUseItem.textContent = isManual ? 'XEM' : ((itemData.type === 'sach_cong_phap' || itemData.type === 'don_thuoc' || itemData.type === 'don_phu') ? 'LĨNH NGỘ' : (itemData.type === 'trung_linh_thu' ? 'ẤP TRỨNG' : 'SỬ DỤNG'));
         }
 
         const mappedSlot = state.player.getEquipSlotForItemType

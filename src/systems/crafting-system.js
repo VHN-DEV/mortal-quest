@@ -4,7 +4,7 @@ export const CRAFTING_RECIPES = [
     {
         id: 'craft_thanh_hong_kiem',
         name: 'Thanh Hồng Kiếm',
-        type: 'weapon',
+        type: 'phap_bao_cong',
         resultId: 'thanh_hong_kiem',
         materials: [
             { id: 'linh_thao_thap', quantity: 10 },

@@ -304,7 +304,7 @@ export const ASSETS = {
         ha_pham_linh_thach: getAssetUrl('items/ha_pham_linh_thach'),
         trung_pham_linh_thach: getAssetUrl('items/trung-pham-linh-thach'),
         thuong_pham_linh_thach: getAssetUrl('items/thuong-pham-linh-thach'),
-    }, 'items', 'spirit_stone'),
+    }, 'items', 'linh_thach'),
 
     // Công pháp bí tịch
     techniques: createAssetProxy({

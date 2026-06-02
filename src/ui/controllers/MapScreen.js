@@ -1876,7 +1876,7 @@ export class MapScreen {
                     if (loc && loc.resources) {
                         loc.resources.forEach(rId => {
                             const item = getItemById(rId);
-                            if (item && (item.type === 'material' || item.type === 'seed' || item.type === 'ore' || item.type === 'herb')) {
+                            if (item && (item.type === 'nguyen_lieu' || item.type === 'hat_giong' || item.type === 'linh_khoang' || item.type === 'linh_duoc')) {
                                 herbDrops.push(item);
                             }
                         });

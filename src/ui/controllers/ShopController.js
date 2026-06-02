@@ -37,8 +37,8 @@ export class ShopController {
         if (!itemData) return [];
 
         const categories = [];
-        const isManualAction = itemData.type === 'book' || itemData.effect?.type === 'unlock_profession';
-        const isRecipe = itemData.type === 'recipe' || itemData.type === 'talisman_recipe' || isManualAction;
+        const isManualAction = itemData.type === 'sach_cong_phap' || itemData.effect?.type === 'unlock_profession';
+        const isRecipe = itemData.type === 'don_thuoc' || itemData.type === 'don_phu' || isManualAction;
         if (isRecipe) {
             categories.push('Bí Pháp');
         }
@@ -553,7 +553,7 @@ export class ShopController {
             const qClass = this.getQualityClass(itemData.quality);
 
             let sellMult = 0.5;
-            if (['material', 'herb', 'ore', 'wood'].includes(itemData.type)) sellMult = 0.3;
+            if (['nguyen_lieu', 'linh_duoc', 'linh_khoang', 'linh_moc'].includes(itemData.type)) sellMult = 0.3;
 
             const el = document.createElement('div');
             el.className = `p-2 border border-gray-800 rounded-lg bg-black/20 flex flex-col items-center cursor-pointer hover:border-${qClass} transition-colors duration-200 active:scale-95`;
