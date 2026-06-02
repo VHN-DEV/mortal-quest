@@ -360,7 +360,7 @@ export class CheatSystem {
         if (realmId >= 10) {
             basePool.push(
                 { id: 'truc_co_dan', qty: 1 },
-                { id: 'tui_tru_vat_trung', qty: 1 },
+                { id: 'can_khon_tui', qty: 1 },
                 { id: 'ho_tam_kinh', qty: 1 },
                 { id: 'linh_thuyen_so', qty: 1 },
                 { id: 'tran_ban_so', qty: 1 },
@@ -378,7 +378,7 @@ export class CheatSystem {
         if (realmId >= 30) {
             basePool.push(
                 { id: 'tu_linh_chau', qty: 1 },
-                { id: 'tui_tru_vat_cao', qty: 1 },
+                { id: 'thao_thiet_can_khon_dai', qty: 1 },
                 { id: 'trung_thanh_van_ly', qty: 1 },
                 { id: 'trung_u_minh_mong_diep', qty: 1 },
                 { id: 'di_hoa_bang', qty: 1 },

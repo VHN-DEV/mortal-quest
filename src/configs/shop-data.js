@@ -185,9 +185,9 @@ export const SHOPS = {
                 { id: 'trung_hoa_viem', stock: 3, minVip: 1 }
             ],
             'tui_tru_vat': [
-                { id: 'tui_tru_vat_so', stock: 5 },
-                { id: 'tui_tru_vat_trung', stock: 2, minVip: 1 },
-                { id: 'tui_tru_vat_cao', stock: 1, minVip: 3 }
+                { id: 'linh_hu_tui', stock: 5 },
+                { id: 'can_khon_tui', stock: 2, minVip: 1 },
+                { id: 'thao_thiet_can_khon_dai', stock: 1, minVip: 3 }
             ]
         }
     },
@@ -249,9 +249,9 @@ export const SHOPS = {
                 { id: 'trung_hoa_viem', stock: 5 }
             ],
             'tui_tru_vat': [
-                { id: 'tui_tru_vat_so', stock: 10 },
-                { id: 'tui_tru_vat_trung', stock: 5 },
-                { id: 'tui_tru_vat_cao', stock: 2, minVip: 1 }
+                { id: 'linh_hu_tui', stock: 10 },
+                { id: 'can_khon_tui', stock: 5 },
+                { id: 'thao_thiet_can_khon_dai', stock: 2, minVip: 1 }
             ]
         }
     }

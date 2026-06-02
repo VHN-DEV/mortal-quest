@@ -52,9 +52,9 @@ export const SMITHING_RECIPES = {
         manaCost: 50,
         expGain: 300
     },
-    'upgrade_bag_so': {
-        id: 'upgrade_bag_so',
-        name: 'Nâng Cấp Túi Trữ Vật (Sơ)',
+    'luyen_che_linh_hu_tui': {
+        id: 'luyen_che_linh_hu_tui',
+        name: 'Luyện Chế Linh Hư Túi',
         level: 1,
         materials: [
             { id: 'huyen_thiet', quantity: 10 },
@@ -68,9 +68,9 @@ export const SMITHING_RECIPES = {
         extraSlots: 5,
         icon: '🎒'
     },
-    'upgrade_bag_trung': {
-        id: 'upgrade_bag_trung',
-        name: 'Nâng Cấp Túi Trữ Vật (Trung)',
+    'luyen_che_can_khon_tui': {
+        id: 'luyen_che_can_khon_tui',
+        name: 'Luyện Chế Càn Khôn Túi',
         level: 3,
         materials: [
             { id: 'tinh_kim', quantity: 5 },

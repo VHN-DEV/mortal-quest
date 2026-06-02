@@ -1295,45 +1295,45 @@ export const ITEMS = {
             { category: 'phap_bao', subcategory: 'phap_khi' }
         ]
     },
-    'tui_tru_vat_so': {
-        id: 'tui_tru_vat_so',
-        name: 'Túi Trữ Vật (Sơ)',
+    'linh_hu_tui': {
+        id: 'linh_hu_tui',
+        name: 'Linh Hư Túi',
         type: 'consumable',
         icon: '🎒',
         quality: 'Pháp Khí',
         tier: 'PHAP_KHI',
         price: 500,
-        description: 'Sử dụng để mở rộng thêm một túi trữ vật mới với 10 ô chứa đồ.',
+        description: 'Sử dụng để mở rộng thêm một linh không trữ vật mới với 10 ô chứa đồ. Bện từ tơ lụa linh mộc sơ cấp.',
         action: 'expand_inventory',
         stats: { slots: 10 },
         categories: [
             { category: 'ky_vat_di_bao', subcategory: 'default' }
         ]
     },
-    'tui_tru_vat_trung': {
-        id: 'tui_tru_vat_trung',
-        name: 'Túi Trữ Vật (Trung)',
+    'can_khon_tui': {
+        id: 'can_khon_tui',
+        name: 'Càn Khôn Túi',
         type: 'consumable',
         icon: '🎒',
         quality: 'Linh Khí',
         tier: 'LINH_KHI',
         price: 5000,
-        description: 'Sử dụng để mở rộng thêm một túi trữ vật mới với 30 ô chứa đồ.',
+        description: 'Sử dụng để mở rộng thêm một càn khôn không gian mới với 30 ô chứa đồ. Chế tác từ da thú yêu thú trung cấp.',
         action: 'expand_inventory',
         stats: { slots: 30 },
         categories: [
             { category: 'ky_vat_di_bao', subcategory: 'default' }
         ]
     },
-    'tui_tru_vat_cao': {
-        id: 'tui_tru_vat_cao',
-        name: 'Túi Trữ Vật (Cao)',
+    'thao_thiet_can_khon_dai': {
+        id: 'thao_thiet_can_khon_dai',
+        name: 'Thao Thiết Càn Khôn Đại',
         type: 'consumable',
         icon: '🎒',
         quality: 'Pháp Bảo',
         tier: 'PHAP_BAO',
         price: 25000,
-        description: 'Sử dụng để mở rộng thêm một túi trữ vật mới với 50 ô chứa đồ.',
+        description: 'Sử dụng để mở rộng thêm một dị bảo không gian cực đại với 50 ô chứa đồ. Ẩn chứa da của thần thú Thao Thiết thượng cổ.',
         action: 'expand_inventory',
         stats: { slots: 50 },
         categories: [
@@ -2365,13 +2365,13 @@ export const ITEMS = {
         icon: '📜',
         quality: 'Linh Khí',
         price: 1500,
-        description: 'Chứa đựng bí quyết tôi luyện kim thạch, rèn đúc thần binh pháp bảo. Mở khóa nghề Luyện Khí Sư và truyền thụ bản vẽ Thanh Hồng Kiếm, Nâng Cấp Túi Trữ Vật (Sơ).',
+        description: 'Chứa đựng bí quyết tôi luyện kim thạch, rèn đúc thần binh pháp bảo. Mở khóa nghề Luyện Khí Sư và truyền thụ bản vẽ Thanh Hồng Kiếm, Luyện Chế Linh Hư Túi.',
         effect: {
             type: 'learn_multiple_recipes',
             value: [
                 { type: 'unlock_profession', profession: 'smithing', secretId: 'luyen_khi_tong_cuong' },
                 { type: 'learn_smithing_recipe', value: 'thanh_hong_kiem' },
-                { type: 'learn_smithing_recipe', value: 'upgrade_bag_so' }
+                { type: 'learn_smithing_recipe', value: 'luyen_che_linh_hu_tui' }
             ]
         },
         categories: [

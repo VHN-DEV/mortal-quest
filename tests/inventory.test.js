@@ -200,7 +200,7 @@ describe('Inventory class', () => {
     expect(success).toBe(true);
     expect(mockPlayer.unlockedProfessions).toContain('smithing');
     expect(mockPlayer.knownSmithingRecipes).toContain('thanh_hong_kiem');
-    expect(mockPlayer.knownSmithingRecipes).toContain('upgrade_bag_so');
+    expect(mockPlayer.knownSmithingRecipes).toContain('luyen_che_linh_hu_tui');
   });
 
   it('should support using thai_thuong_phu_kinh to unlock profession and learn basic recipes', () => {
