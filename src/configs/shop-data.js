@@ -17,8 +17,18 @@ export const SHOPS = {
                 { id: 'hoi_linh_dan', stock: 30 },
                 { id: 'tieu_dao_qua', stock: 8 }
             ],
-            'phap_bao': [
+            'luyen_dan': [
                 { id: 'pham_lu_item', stock: 10 },
+                { id: 'huyen_lu_item', stock: 1, minVip: 1 },
+                { id: 'dia_lu_item', stock: 1, minVip: 3 },
+                { id: 'thien_lu_item', stock: 1, minVip: 5 },
+                { id: 'dan_phuong_hoi_linh_dan', stock: 5 },
+                { id: 'dan_phuong_ngoc_de_dan', stock: 2 },
+                { id: 'dan_phuong_than_tam_dan', stock: 2 },
+                { id: 'dan_phuong_truc_co_dan', stock: 1, minVip: 2 },
+                { id: 'dan_phuong_bo_nguyen_dan', stock: 3 }
+            ],
+            'phap_bao': [
                 { id: 'linh_hoa_item', stock: 10 },
                 { id: 'phi_kiem_go', stock: 5 },
                 { id: 'ao_bo_so_cap', stock: 5 },
@@ -31,9 +41,6 @@ export const SHOPS = {
                 { id: 'bat_linh_xich', stock: 1, minVip: 2 },
                 { id: 'binh_son_an', stock: 1, minVip: 2 },
                 { id: 'phong_loi_si', stock: 1, minVip: 4 },
-                { id: 'huyen_lu_item', stock: 1, minVip: 1 },
-                { id: 'dia_lu_item', stock: 1, minVip: 3 },
-                { id: 'thien_lu_item', stock: 1, minVip: 5 },
                 { id: 'vo_dinh_tieu_dao_cam', stock: 1, minVip: 5 },
                 { id: 'van_tinh_nho_quan', stock: 1, minVip: 5 },
                 { id: 'that_thai_huyen_nghien', stock: 1, minVip: 5 },
@@ -132,11 +139,6 @@ export const SHOPS = {
                 { id: 'tran_dao_thien_thu', stock: 1 },
                 { id: 'co_quan_linh_ky', stock: 1 },
                 { id: 'cuu_u_luyen_thi_thuat', stock: 1 },
-                { id: 'dan_phuong_hoi_linh_dan', stock: 5 },
-                { id: 'dan_phuong_ngoc_de_dan', stock: 2 },
-                { id: 'dan_phuong_than_tam_dan', stock: 2 },
-                { id: 'dan_phuong_truc_co_dan', stock: 1, minVip: 2 },
-                { id: 'dan_phuong_bo_nguyen_dan', stock: 3 },
                 { id: 'ban_ve_bat_quai_kinh', stock: 1 },
                 { id: 'ban_ve_phi_kiem_tinh_ha', stock: 1, minVip: 1 },
                 { id: 'ban_ve_long_lan_giap', stock: 1, minVip: 2 },
@@ -201,10 +203,12 @@ export const SHOPS = {
                 { id: 'truc_co_dan', stock: 5 },
                 { id: 'hoa_nguyen_dan', stock: 2, minVip: 1 }
             ],
+            'luyen_dan': [
+                { id: 'huyen_lu_item', stock: 5 }
+            ],
             'phap_bao': [
                 { id: 'phi_kiem_thanh_tuyen', stock: 10 },
                 { id: 'bat_quai_kinh', stock: 5 },
-                { id: 'huyen_lu_item', stock: 5 },
                 { id: 'tao_hoa_tien_dinh', stock: 1, minVip: 5 },
                 { id: 'huyen_kim_long_tu_kiem', stock: 1, minVip: 5 },
                 { id: 'thien_dao_bi', stock: 1, minVip: 5 },

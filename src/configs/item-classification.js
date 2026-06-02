@@ -260,6 +260,14 @@ function _classifyItemRaw(item) {
         return { category: 'phu_luc', subcategory: 'phu_cu' };
     }
 
+    // 3b. Luyện Đan (Đan Phương và Đan Lư)
+    if (type === 'cauldron') {
+        return { category: 'luyen_dan', subcategory: 'dan_lu' };
+    }
+    if (type === 'recipe') {
+        return { category: 'luyen_dan', subcategory: 'dan_phuong' };
+    }
+
     // 4. Luyện Khí (Bản Vẽ and Đài/Lò/Lư Luyện Khí)
     if (type === 'smithing_recipe' || (effect && (effect.type === 'learn_smithing_recipe' || effect.type === 'learn_puppet_recipe'))) {
         return { category: 'luyen_khi', subcategory: 'ban_ve' };

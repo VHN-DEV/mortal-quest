@@ -11,9 +11,9 @@
 export const ITEMS = {
     // Hạt giống
     'hat_giong_thanh_phuc_thao': { id: 'hat_giong_thanh_phuc_thao', name: 'Hạt Giống Thanh Phục Thảo', type: 'seed', icon: '🌱', quality: 'Phàm Khí', price: 10, description: 'Hạt giống Thanh Phục Thảo, loại linh thảo sơ cấp phổ biến nhất ở Nhân giới.', categories: [{ category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: 'duoi_100_nam' }] },
-    'hat_giong_hoa_diem_thao': { id: 'hat_giong_hoa_diem_thao', name: 'Hạt Giống Hỏa Diễm Thảo', type: 'consumable', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
-    'hat_giong_han_tuy_hoa': { id: 'hat_giong_han_tuy_hoa', name: 'Hạt Giống Hàn Tủy Hoa', type: 'consumable', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
-    'hat_giong_u_minh_hoa': { id: 'hat_giong_u_minh_hoa', name: 'Hạt Giống U Minh Hoa', type: 'consumable', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.', categories: [{ category: 'dan_duoc', subcategory: 'khac' }] },
+    'hat_giong_hoa_diem_thao': { id: 'hat_giong_hoa_diem_thao', name: 'Hạt Giống Hỏa Diễm Thảo', type: 'seed', icon: '🔥', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hỏa Diễm Thảo.', categories: [{ category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: '100_nam' }] },
+    'hat_giong_han_tuy_hoa': { id: 'hat_giong_han_tuy_hoa', name: 'Hạt Giống Hàn Tủy Hoa', type: 'seed', icon: '❄️', quality: 'Linh Khí', price: 150, description: 'Linh chủng của Hàn Tủy Hoa.', categories: [{ category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: '100_nam' }] },
+    'hat_giong_u_minh_hoa': { id: 'hat_giong_u_minh_hoa', name: 'Hạt Giống U Minh Hoa', type: 'seed', icon: '💀', quality: 'Linh Khí', price: 300, description: 'Linh chủng của U Minh Hoa.', categories: [{ category: 'nguyen_lieu', subcategory: 'linh_duoc', subSubcategory: '100_nam' }] },
 
     // Trứng Linh Thú
     'trung_thanh_van_ly': {
@@ -295,7 +295,33 @@ export const ITEMS = {
         description: 'Ghi chép cách luyện chế [[ngung_khi_dan|Ngưng Khí Đan]] từ [[linh_thao_thap|Linh Thảo Thấp Phẩm]].',
         effect: { type: 'learn_recipe', value: 'ngung_khi_dan' },
         categories: [
-            { category: 'cong_phap', subcategory: 'bi_thuat' }
+            { category: 'luyen_dan', subcategory: 'dan_phuong' }
+        ]
+    },
+    'dan_phuong_hoi_linh_dan': {
+        id: 'dan_phuong_hoi_linh_dan',
+        name: 'Đan Phương Hồi Linh Đan',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Pháp Khí',
+        price: 300,
+        description: 'Ghi chép cách luyện chế [[hoi_linh_dan|Hồi Linh Đan]] từ [[thanh_long_tham|Thanh Long Sâm]] và [[linh_thao_thap|Linh Thảo Thấp Phẩm]].',
+        effect: { type: 'learn_recipe', value: 'hoi_linh_dan' },
+        categories: [
+            { category: 'luyen_dan', subcategory: 'dan_phuong' }
+        ]
+    },
+    'dan_phuong_ngoc_de_dan': {
+        id: 'dan_phuong_ngoc_de_dan',
+        name: 'Đan Phương Ngọc Đề Đan',
+        type: 'recipe',
+        icon: '📜',
+        quality: 'Pháp Khí',
+        price: 450,
+        description: 'Ghi chép cách luyện chế [[ngoc_de_dan|Ngọc Đề Đan]] từ [[ngoc_de_hoa|Ngọc Đề Hoa]] và [[linh_thao_10y|Linh Thảo (10 năm)]].',
+        effect: { type: 'learn_recipe', value: 'ngoc_de_dan' },
+        categories: [
+            { category: 'luyen_dan', subcategory: 'dan_phuong' }
         ]
     },
     'dan_phuong_than_tam_dan': {
@@ -308,7 +334,7 @@ export const ITEMS = {
         description: 'Ghi chép cách luyện chế [[thanh_tam_dan|Thanh Tâm Đan]] từ [[linh_thao_10y|Linh Thảo (10 năm)]] và [[chu_sa_muc|Chu Sa Linh Mực]].',
         effect: { type: 'learn_recipe', value: 'thanh_tam_dan' },
         categories: [
-            { category: 'cong_phap', subcategory: 'bi_thuat' }
+            { category: 'luyen_dan', subcategory: 'dan_phuong' }
         ]
     },
     'dan_phuong_truc_co_dan': {
@@ -321,7 +347,7 @@ export const ITEMS = {
         description: 'Ghi chép cách luyện chế [[truc_co_dan|Trúc Cơ Đan]] từ [[linh_thao_100y|Linh Thảo (100 năm)]], [[yeu_dan_so|Yêu Đan Sơ Cấp]] và [[hoa_tinh_thach|Hỏa Tinh Thạch]].',
         effect: { type: 'learn_recipe', value: 'truc_co_dan' },
         categories: [
-            { category: 'cong_phap', subcategory: 'bi_thuat' }
+            { category: 'luyen_dan', subcategory: 'dan_phuong' }
         ]
     },
     'dan_phuong_bo_nguyen_dan': {
@@ -334,7 +360,7 @@ export const ITEMS = {
         description: 'Ghi chép cách luyện chế [[bo_nguyen_dan|Bổ Nguyên Đan]] từ [[linh_thao_10y|Linh Thảo (10 năm)]] và [[yeu_huyet|Yêu Thú Tinh Huyết]].',
         effect: { type: 'learn_recipe', value: 'bo_nguyen_dan' },
         categories: [
-            { category: 'cong_phap', subcategory: 'bi_thuat' }
+            { category: 'luyen_dan', subcategory: 'dan_phuong' }
         ]
     },
     'dan_phuong_ngung_anh_dan': {
@@ -347,7 +373,7 @@ export const ITEMS = {
         description: 'Đan phương luyện chế [[ngung_anh_dan|Ngưng Anh Đan]] từ [[linh_thao_1000y|Linh Thảo (1000 năm)]], [[yeu_dan_trung|Yêu Đan Trung Cấp]] và [[han_ngoc_tuy|Hàn Ngọc Tủy]].',
         effect: { type: 'learn_recipe', value: 'ngung_anh_dan' },
         categories: [
-            { category: 'cong_phap', subcategory: 'bi_thuat' }
+            { category: 'luyen_dan', subcategory: 'dan_phuong' }
         ]
     },
 
@@ -682,7 +708,7 @@ export const ITEMS = {
         description: 'Ghi chép cách luyện chế [[tich_coc_dan|Tịch Cốc Đan]] từ [[tich_coc_thao|Tịch Cốc Thảo]] và [[linh_coc|Phàm Cấp Linh Cốc]].',
         effect: { type: 'learn_recipe', value: 'tich_coc_dan' },
         categories: [
-            { category: 'cong_phap', subcategory: 'bi_thuat' }
+            { category: 'luyen_dan', subcategory: 'dan_phuong' }
         ]
     },
     'ngung_khi_dan': {
@@ -2707,19 +2733,22 @@ export const ITEMS = {
         icon: '💎',
         quality: 'Cổ Bảo',
         price: 100000,
-        description: 'Tinh thể kết tinh từ Tiên khí, chỉ có ở những nơi tiên phàm giao giới.'
+        description: 'Tinh thể kết tinh từ Tiên khí, chỉ có ở những nơi tiên phàm giao giới.',
+        categories: [
+            { category: 'nguyen_lieu', subcategory: 'linh_khoang', subSubcategory: 'di_khoang' }
+        ]
     },
     'trung_than_thu': {
         id: 'trung_than_thu',
         name: 'Trứng Thần Thú',
-        type: 'consumable',
+        type: 'beast_egg',
         icon: '🥚',
         quality: 'Linh Bảo',
         price: 1000000,
         description: 'Trứng của sinh vật cổ đại, có thể ấp nở thành linh thú hộ mệnh.',
         effect: { type: 'hatch' },
         categories: [
-            { category: 'dan_duoc', subcategory: 'khac' }
+            { category: 'linh_thu', subcategory: 'trung_linh_thu' }
         ]
     },
     'hoa_tinh_thach': {
@@ -2758,7 +2787,7 @@ export const ITEMS = {
         description: 'Đan lư cơ bản cho người mới học luyện đan.',
         effect: { type: 'equip_cauldron', value: 'pham_lu' },
         categories: [
-            { category: 'dan_duoc', subcategory: 'khac' }
+            { category: 'luyen_dan', subcategory: 'dan_lu' }
         ]
     },
     'linh_hoa_item': {
@@ -2771,7 +2800,7 @@ export const ITEMS = {
         description: 'Linh hỏa cấp thấp, đủ để luyện chế đan dược phàm phẩm.',
         effect: { type: 'refine_flame', value: 'linh_hoa' },
         categories: [
-            { category: 'dan_duoc', subcategory: 'khac' }
+            { category: 'ky_vat_di_bao', subcategory: 'di_hoa' }
         ]
     },
     'huyen_lu_item': {
@@ -2782,8 +2811,9 @@ export const ITEMS = {
         quality: 'Linh Khí',
         price: 5000,
         description: 'Đan lư đúc từ huyền thiết, giúp ổn định hỏa lực.',
+        effect: { type: 'equip_cauldron', value: 'huyen_lu' },
         categories: [
-            { category: 'phap_bao', subcategory: 'phap_khi' }
+            { category: 'luyen_dan', subcategory: 'dan_lu' }
         ]
     },
     'thanh_lien_hoa_seed': {
@@ -3296,16 +3326,6 @@ export const ITEMS = {
             { category: 'luyen_khi', subcategory: 'ban_ve' }
         ]
     },
-    'huyen_lu_item': {
-        id: 'huyen_lu_item',
-        name: 'Huyền Thiết Lư',
-        type: 'cauldron',
-        icon: '🏺',
-        quality: 'Pháp Khí',
-        price: 5000,
-        description: 'Đan lư rèn từ huyền thiết, dẫn hỏa ổn định.',
-        stats: { alchemyBonus: 0.1 }
-    },
     'dia_lu_item': {
         id: 'dia_lu_item',
         name: 'Địa Long Phần Thiên Lư',
@@ -3314,8 +3334,9 @@ export const ITEMS = {
         quality: 'Pháp Bảo',
         price: 35000,
         description: 'Chứa đựng tinh hoa chi lực của địa long, khống hỏa cực tốt.',
+        effect: { type: 'equip_cauldron', value: 'dia_lu' },
         categories: [
-            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+            { category: 'luyen_dan', subcategory: 'dan_lu' }
         ]
     },
     'thien_lu_item': {
@@ -3326,8 +3347,9 @@ export const ITEMS = {
         quality: 'Cổ Bảo',
         price: 150000,
         description: 'Lò luyện đỉnh cấp, ổn định hỏa lực đến mức hoàn mỹ.',
+        effect: { type: 'equip_cauldron', value: 'thien_lu' },
         categories: [
-            { category: 'phap_bao', subcategory: 'co_bao' }
+            { category: 'luyen_dan', subcategory: 'dan_lu' }
         ]
     },
     'van_lac_tam_viem_seed': {
@@ -5415,8 +5437,9 @@ export const ITEMS = {
         price: 75000,
         image: 'items/phuong_hoa_lu.webp',
         description: 'Lò luyện đan thượng cấp khắc hình phượng hoàng lửa sinh động như thật, có thể bảo toàn dược tính của linh thảo tuyệt đối.',
+        effect: { type: 'equip_cauldron', value: 'phuong_hoa_lu' },
         categories: [
-            { category: 'phap_bao', subcategory: 'phap_bao_sub' }
+            { category: 'luyen_dan', subcategory: 'dan_lu' }
         ]
     },
     'o_minh_si': {
@@ -5589,7 +5612,7 @@ export const ITEMS = {
         description: 'Tiêu Dao Quả, quả linh ngọt lành ngậm đầy thiên địa tinh hoa. Khi ăn giúp tu sĩ lập tức phục hồi 40 điểm Thể Lực và gia tăng nhẹ tốc độ tu luyện trong 1 giờ.',
         effect: { type: 'restore', stamina: 40, buff: { stat: 'tu_vi_speed', value: 1.15, duration: 3600 } },
         categories: [
-            { category: 'dan_duoc', subcategory: 'tang_tho' }
+            { category: 'dan_duoc', subcategory: 'tu_luyen' }
         ]
     },
     'huyet_lien_hoa': {
@@ -5626,7 +5649,7 @@ export const ITEMS = {
         description: 'Ngọc Đề Đan, viên linh đan sơ cấp dược tính vô cùng ôn hòa. Khi sử dụng trước khi đột phá, giúp gia tăng 5% tỷ lệ đột phá thành công ở Luyện Khí cảnh.',
         stats: { breakthroughRate: 0.05 },
         categories: [
-            { category: 'dan_duoc', subcategory: 'khac' }
+            { category: 'dan_duoc', subcategory: 'dot_pha' }
         ]
     },
     'hoa_duong_dan': {
@@ -5650,7 +5673,10 @@ export const ITEMS = {
         quality: 'Pháp Khí',
         price: 300,
         description: 'Hồi Linh Đan, đan dược phổ thông giúp hồi phục nhanh chóng 80 điểm Linh Lực ngay lập tức.',
-        effect: { type: 'restore', mana: 80 }
+        effect: { type: 'restore', mana: 80 },
+        categories: [
+            { category: 'dan_duoc', subcategory: 'hoi_phuc' }
+        ]
     }
 };
 
