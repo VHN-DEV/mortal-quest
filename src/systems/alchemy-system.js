@@ -1,5 +1,7 @@
 import { getRecipeById, getCauldronById, getFlameById, ALCHEMY_TECHNIQUES, getAlchemyLevelInfo } from '../configs/alchemy-data.js';
 import { getItemById } from '../configs/item-data.js';
+import { QUALITY_TYPES } from '../configs/item-classification.js';
+
 
 export class AlchemySystem {
     constructor(player, ui) {
@@ -44,25 +46,25 @@ export class AlchemySystem {
         // Add some randomness
         qualityScore += (Math.random() * 0.4 - 0.2);
 
-        let quality = 'Phàm Phẩm';
+        let quality = QUALITY_TYPES.PHAM_PHAM;
         let danVeins = 0;
         let poisonValue = 10;
         let isDanLinh = false;
 
         if (qualityScore > 2.5) { 
-            quality = 'Tiên Phẩm'; 
+            quality = QUALITY_TYPES.TIEN_PHAM; 
             danVeins = 12; 
             poisonValue = 0; 
             isDanLinh = Math.random() < 0.1; // 10% chance for Dan Linh if score is very high
         }
-        else if (qualityScore > 2.0) { quality = 'Hoàn Mỹ'; danVeins = 9; poisonValue = 0; }
-        else if (qualityScore > 1.6) { quality = 'Cực Phẩm'; danVeins = 6; poisonValue = 2; }
-        else if (qualityScore > 1.2) { quality = 'Thượng Phẩm'; danVeins = 3; poisonValue = 5; }
-        else if (qualityScore > 0.8) { quality = 'Trung Phẩm'; danVeins = 1; poisonValue = 8; }
+        else if (qualityScore > 2.0) { quality = QUALITY_TYPES.HOAN_MY; danVeins = 9; poisonValue = 0; }
+        else if (qualityScore > 1.6) { quality = QUALITY_TYPES.CUC_PHAM; danVeins = 6; poisonValue = 2; }
+        else if (qualityScore > 1.2) { quality = QUALITY_TYPES.THUONG_PHAM; danVeins = 3; poisonValue = 5; }
+        else if (qualityScore > 0.8) { quality = QUALITY_TYPES.TRUNG_PHAM; danVeins = 1; poisonValue = 8; }
 
         // Dan Tribulation (for level 5+ dan or High quality)
         let hasTribulation = false;
-        if (recipe.level >= 5 || quality === 'Hoàn Mỹ' || quality === 'Tiên Phẩm') {
+        if (recipe.level >= 5 || quality === QUALITY_TYPES.HOAN_MY || quality === QUALITY_TYPES.TIEN_PHAM) {
             hasTribulation = Math.random() < 0.3; // Increased chance
         }
 

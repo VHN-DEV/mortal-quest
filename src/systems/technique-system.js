@@ -121,7 +121,9 @@ export class TechniqueSystem {
 
         for (const mutation of techData.mutations) {
             // Kiểm tra điều kiện (thường là linh căn)
-            const rootMatches = this.player.spiritualRoot && this.player.spiritualRoot.type.includes(mutation.condition);
+            const rootMatches = this.player.spiritualRoot && 
+                ((this.player.spiritualRoot.elements && this.player.spiritualRoot.elements.includes(mutation.condition)) || 
+                 this.player.spiritualRoot.type.includes(mutation.condition));
             
             if (rootMatches && Math.random() < mutation.chance) {
                 const newTechData = getTechniqueById(mutation.id);
@@ -271,15 +273,15 @@ export class TechniqueSystem {
                 const rootType = this.player.spiritualRoot.type;
                 if (techData.compatibility[rootType]) {
                     attributeMult = techData.compatibility[rootType];
-                } else if (rootType.includes('Tạp') && techData.compatibility['Tạp']) {
+                } else if ((this.player.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && techData.compatibility['Tạp']) {
                     attributeMult = techData.compatibility['Tạp'];
-                } else if (rootType === 'Thiên Linh Căn' || this.player.spiritualRoot.id === 'thien_linh_can') {
+                } else if (this.player.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5;
                 }
             } else if (techData.element) {
                 const rootId = this.player.spiritualRoot.id || '';
-                if (this.player.spiritualRoot.type === 'Thiên Linh Căn' || rootId === 'thien_linh_can' || 
-                    this.player.spiritualRoot.type.includes(techData.element)) {
+                if (rootId === 'thien_linh_can' || 
+                    (this.player.spiritualRoot.elements && this.player.spiritualRoot.elements.includes(techData.element))) {
                     attributeMult = 1.5;
                 }
             }

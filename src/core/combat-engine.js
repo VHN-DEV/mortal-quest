@@ -2,6 +2,8 @@ import { getTechniqueById, getSecretTechniqueById } from '../configs/technique-d
 import { getFlameById } from '../configs/alchemy-data.js';
 import { getItemById } from '../configs/item-data.js';
 import { getStatusEffectById, STATUS_EFFECT_TEMPLATES } from '../configs/status-effect-data.js';
+import { QUALITY_TYPES } from '../configs/item-classification.js';
+
 
 export class CombatEngine {
     constructor(player, enemy, onUpdate, onEnd, ambushType = null, environment = 'NORMAL') {
@@ -1130,7 +1132,7 @@ export class CombatEngine {
             this.addLog("Chưa có khôi lỗi để triệu hồi chiến đấu!");
             return;
         }
-        const qualityBonus = puppet.metadata?.quality === 'Tiên Phẩm' ? 1.5 : puppet.metadata?.quality === 'Hoàn Mỹ' ? 1.3 : 1.0;
+        const qualityBonus = puppet.metadata?.quality === QUALITY_TYPES.TIEN_PHAM ? 1.5 : puppet.metadata?.quality === QUALITY_TYPES.HOAN_MY ? 1.3 : 1.0;
         const dmg = Math.max(1, Math.floor(this.player.atk * 0.9 * qualityBonus + (this.player.puppetLevel || 1) * 15));
         this.enemy.hp -= dmg;
         this.addLog(`Khôi lỗi xuất trận, cơ quan liên kích gây ${dmg} sát thương!`);
@@ -1316,9 +1318,9 @@ export class CombatEngine {
             // Ignored defense scales with stage (+3% per stage)
             ignoreDefPct = Math.max(ignoreDefPct, 0.10 + (playerSecret?.stage || 1) * 0.03);
             // Spiritual root compatibility boost (+15% defense ignore for matching or Thiên Linh Căn)
-            const pRootType = this.player.spiritualRoot?.type || '';
             const pRootId = this.player.spiritualRoot?.id || '';
-            if (pRootId === 'thien_linh_can' || pRootType === 'Thiên Linh Căn' || (secretData.element && pRootType.includes(secretData.element))) {
+            const pRootElements = this.player.spiritualRoot?.elements || [];
+            if (pRootId === 'thien_linh_can' || (secretData.element && pRootElements.includes(secretData.element))) {
                 ignoreDefPct = Math.min(1.0, ignoreDefPct + 0.15);
                 this.addLog(`✨ Linh căn tương hợp kích phát Thần Thông dị động, gia tăng xuyên thấu hộ giáp đối địch!`);
             }

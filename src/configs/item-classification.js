@@ -748,6 +748,17 @@ export const ITEM_CATEGORIES_ENUM = {
     }
 };
 
+// Centralized Item Qualities Enum
+export const QUALITY_TYPES = {
+    PHAM_PHAM: 'Phàm Phẩm',
+    HA_PHAM: 'Hạ Phẩm',
+    TRUNG_PHAM: 'Trung Phẩm',
+    THUONG_PHAM: 'Thượng Phẩm',
+    CUC_PHAM: 'Cực Phẩm',
+    HOAN_MY: 'Hoàn Mỹ',
+    TIEN_PHAM: 'Tiên Phẩm'
+};
+
 // Centralized Effect Types Enum
 export const EFFECT_TYPES = {
     // === Học / Mở khóa công thức & nghề ===

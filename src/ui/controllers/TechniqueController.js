@@ -56,15 +56,15 @@ export class TechniqueController {
                 const rootType = state.player.spiritualRoot.type;
                 if (data.compatibility[rootType]) {
                     attributeMult = data.compatibility[rootType];
-                } else if (rootType.includes('Tạp') && data.compatibility['Tạp']) {
+                } else if ((state.player.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && data.compatibility['Tạp']) {
                     attributeMult = data.compatibility['Tạp'];
-                } else if (rootType === 'Thiên Linh Căn' || state.player.spiritualRoot.id === 'thien_linh_can') {
+                } else if (state.player.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5;
                 }
             } else if (data.element) {
                 const rootId = state.player.spiritualRoot.id || '';
-                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' || rootId === 'thien_linh_can' ||
-                    state.player.spiritualRoot.type.includes(data.element)) {
+                if (rootId === 'thien_linh_can' ||
+                    (state.player.spiritualRoot.elements && state.player.spiritualRoot.elements.includes(data.element))) {
                     attributeMult = 1.5;
                 }
             }
@@ -140,15 +140,15 @@ export class TechniqueController {
                 const rootType = state.player.spiritualRoot.type;
                 if (data.compatibility[rootType]) {
                     attributeMult = data.compatibility[rootType];
-                } else if (rootType.includes('Tạp') && data.compatibility['Tạp']) {
+                } else if ((state.player.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && data.compatibility['Tạp']) {
                     attributeMult = data.compatibility['Tạp'];
-                } else if (rootType === 'Thiên Linh Căn' || state.player.spiritualRoot.id === 'thien_linh_can') {
+                } else if (state.player.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5;
                 }
             } else if (data.element) {
                 const rootId = state.player.spiritualRoot.id || '';
-                if (state.player.spiritualRoot.type === 'Thiên Linh Căn' || rootId === 'thien_linh_can' ||
-                    state.player.spiritualRoot.type.includes(data.element)) {
+                if (rootId === 'thien_linh_can' ||
+                    (state.player.spiritualRoot.elements && state.player.spiritualRoot.elements.includes(data.element))) {
                     attributeMult = 1.5;
                 }
             }
@@ -543,9 +543,10 @@ export class TechniqueController {
                     
                     let cat = '';
                     let subCat = '';
-                    if (data.type === 'Độn Thuật') { cat = 'Pháp Thuật'; subCat = 'Độn Thuật'; }
-                    else if (data.type === 'Phụ Trợ') { cat = 'Pháp Thuật'; subCat = 'Phụ Trợ'; }
-                    else if (data.type === 'Song Tu') { cat = 'Bí Pháp'; subCat = 'Phụ Trợ'; }
+                    const dType = getTechniqueTypeSlug(data.type);
+                    if (dType === 'don_thuat') { cat = 'Pháp Thuật'; subCat = 'Độn Thuật'; }
+                    else if (dType === 'phu_tro') { cat = 'Pháp Thuật'; subCat = 'Phụ Trợ'; }
+                    else if (dType === 'song_tu') { cat = 'Bí Pháp'; subCat = 'Phụ Trợ'; }
                     else return;
 
                     let matchMain = false;

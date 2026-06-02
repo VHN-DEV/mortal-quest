@@ -1433,7 +1433,7 @@ export class Player {
             const rootElements = (this.spiritualRoot && this.spiritualRoot.elements) ? this.spiritualRoot.elements : [];
             if (rootElements.includes(rawName)) {
                 elementMult = 1.5;
-            } else if (this.spiritualRoot && this.spiritualRoot.name && this.spiritualRoot.name.includes(rawName)) {
+            } else if (this.spiritualRoot && this.spiritualRoot.type && this.spiritualRoot.type.includes(rawName)) {
                 // Fallback: name-based check for compatibility
                 elementMult = 1.5;
             }
@@ -2561,16 +2561,16 @@ export class Player {
                 // Check for exact match or generic "Mixed" (Tạp) root
                 if (techData.compatibility[rootType]) {
                     attributeMult = techData.compatibility[rootType];
-                } else if (rootType.includes('Tạp') && techData.compatibility['Tạp']) {
+                } else if ((this.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && techData.compatibility['Tạp']) {
                     attributeMult = techData.compatibility['Tạp'];
-                } else if (rootType === 'Thiên Linh Căn' || this.spiritualRoot.id === 'thien_linh_can') {
+                } else if (this.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5; // Heaven Root gets 1.5x bonus for everything
                 }
             } else if (techData.element) {
                 // Legacy element match (50% bonus if technique matches spiritual root element)
                 const rootId = this.spiritualRoot.id || '';
-                if (this.spiritualRoot.type === 'Thiên Linh Căn' || rootId === 'thien_linh_can' || 
-                    this.spiritualRoot.type.includes(techData.element)) {
+                if (rootId === 'thien_linh_can' || 
+                    (this.spiritualRoot.elements && this.spiritualRoot.elements.includes(techData.element))) {
                     attributeMult = 1.5;
                 }
             }
@@ -3202,7 +3202,7 @@ export class Player {
         
         if (this.spiritualRoot) {
             if (techElement === 'Neutral') {
-                if (this.spiritualRoot.type.includes('Thiên Linh Căn') || this.spiritualRoot.type.includes('Ngũ Hành')) {
+                if (this.spiritualRoot.id === 'thien_linh_can' || this.spiritualRoot.id === 'ngu_hanh_linh_can') {
                     rootMult = 1.2;
                     rootBonusText = 'Ngũ Hành/Thiên Linh (+20%)';
                 }
@@ -3217,13 +3217,13 @@ export class Player {
                 }
                 
                 if (elPct > 0) {
-                    if (this.spiritualRoot.type.includes('Thiên Linh Căn')) {
+                    if (this.spiritualRoot.id === 'thien_linh_can') {
                         rootMult = 2.5;
                         rootBonusText = 'Thiên Linh Căn Thuần Khiết (+150%)';
-                    } else if (this.spiritualRoot.type.includes('Dị Linh Căn')) {
+                    } else if (this.spiritualRoot.id === 'di_linh_can') {
                         rootMult = 2.2;
                         rootBonusText = 'Dị Linh Căn Biến Dị (+120%)';
-                    } else if (this.spiritualRoot.type.includes('Ngũ Hành Linh Căn')) {
+                    } else if (this.spiritualRoot.id === 'ngu_hanh_linh_can') {
                         rootMult = 1.5;
                         rootBonusText = 'Ngũ Hành Hòa Hợp (+50%)';
                     } else {
