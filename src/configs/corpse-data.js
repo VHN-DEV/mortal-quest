@@ -8,8 +8,8 @@ export const CORPSE_TYPES = {
         name: 'Thi Binh',
         level: 1,
         materials: [
-            { id: 'yeu_huyet', quantity: 5 },
-            { id: 'ma_thach', quantity: 1 }
+            { id: 'yeu_thu_tinh_huyet', quantity: 5 },
+            { id: 'ma_thach_ha_pham', quantity: 1 }
         ],
         stats: { atk: 50, def: 100, hp: 500 },
         description: 'Xác chết được luyện chế sơ cấp, cử động chậm chạp nhưng da dày thịt béo.'
@@ -19,8 +19,8 @@ export const CORPSE_TYPES = {
         name: 'Thi Tướng',
         level: 2,
         materials: [
-            { id: 'yeu_huyet', quantity: 20 },
-            { id: 'ma_thach', quantity: 5 },
+            { id: 'yeu_thu_tinh_huyet', quantity: 20 },
+            { id: 'ma_thach_ha_pham', quantity: 5 },
             { id: 'huyen_thiet', quantity: 2 }
         ],
         stats: { atk: 150, def: 300, hp: 1500 },
@@ -31,8 +31,8 @@ export const CORPSE_TYPES = {
         name: 'Đồng Giáp Thi',
         level: 3,
         materials: [
-            { id: 'yeu_huyet', quantity: 50 },
-            { id: 'ma_thach', quantity: 15 },
+            { id: 'yeu_thu_tinh_huyet', quantity: 50 },
+            { id: 'ma_thach_ha_pham', quantity: 15 },
             { id: 'huyen_thiet', quantity: 10 }
         ],
         stats: { atk: 400, def: 800, hp: 4000 },

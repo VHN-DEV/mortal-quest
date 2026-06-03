@@ -10,7 +10,7 @@ const MISSION_TIERS = {
     0: {
         levelName: 'Phàm Giai',
         collectTargets: [
-            { id: 'linh_thao_thap', name: 'Linh Thảo Thấp Phẩm', quantityRange: [5, 10] },
+            { id: 'thanh_phuc_thao', name: 'Linh Thảo Thấp Phẩm', quantityRange: [5, 10] },
             { id: 'hat_giong_thanh_phuc_thao', name: 'Linh Chủng Linh Thảo', quantityRange: [3, 8] }
         ],
         killLocations: [
@@ -30,8 +30,8 @@ const MISSION_TIERS = {
     1: {
         levelName: 'Linh Giai',
         collectTargets: [
-            { id: 'linh_thao_trung', name: 'Linh Thảo Trung Phẩm', quantityRange: [4, 8] },
-            { id: 'linh_thao_10y', name: 'Linh Thảo 10 năm', quantityRange: [3, 6] }
+            { id: 'tu_lam_hoa', name: 'Linh Thảo Trung Phẩm', quantityRange: [4, 8] },
+            { id: 'thap_nien_hoang_tinh_thao', name: 'Linh Thảo 10 năm', quantityRange: [3, 6] }
         ],
         killLocations: [
             { id: 'thai_nhac_son_mach', name: 'Thái Nhạc Sơn Mạch' },
@@ -50,7 +50,7 @@ const MISSION_TIERS = {
     2: {
         levelName: 'Huyền Giai',
         collectTargets: [
-            { id: 'linh_thao_100y', name: 'Linh Thảo 100 năm', quantityRange: [3, 5] },
+            { id: 'bach_nien_uan_co_thao', name: 'Linh Thảo 100 năm', quantityRange: [3, 5] },
             { id: 'hoa_diem_thao', name: 'Hỏa Diễm Thảo', quantityRange: [2, 4] }
         ],
         killLocations: [
@@ -73,7 +73,7 @@ const MISSION_TIERS = {
     3: {
         levelName: 'Địa Giai',
         collectTargets: [
-            { id: 'linh_thao_1000y', name: 'Linh Thảo 1000 năm', quantityRange: [2, 4] },
+            { id: 'thien_nien_cuu_khuc_linh_sam', name: 'Linh Thảo 1000 năm', quantityRange: [2, 4] },
             { id: 'u_minh_hoa', name: 'U Minh Hoa', quantityRange: [2, 3] }
         ],
         killLocations: [
@@ -97,7 +97,7 @@ const MISSION_TIERS = {
     4: {
         levelName: 'Thiên Giai',
         collectTargets: [
-            { id: 'linh_thao_van_nam', name: 'Linh Thảo Vạn Năm', quantityRange: [1, 2] },
+            { id: 'van_nien_huyet_linh_chi', name: 'Linh Thảo Vạn Năm', quantityRange: [1, 2] },
             { id: 'tien_tinh', name: 'Tiên Tinh', quantityRange: [2, 4] }
         ],
         killLocations: [

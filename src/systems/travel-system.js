@@ -93,11 +93,11 @@ export class TravelSystem {
                 const hasTalisman = this.player.inventory && (
                     this.player.inventory.hasItem('pha_khong_phu') ||
                     this.player.inventory.hasItem('thuan_di_phu') ||
-                    this.player.inventory.hasItem('truyen_tong_lenh')
+                    this.player.inventory.hasItem('thuong_co_truyen_tong_lenh')
                 );
                 const hasBoat = this.player.inventory && (
                     this.player.inventory.hasItem('ngu_phong_phi_chu') ||
-                    this.player.inventory.hasItem('linh_thuyen_so')
+                    this.player.inventory.hasItem('thanh_phong_linh_chu')
                 );
 
                 if (!atTeleport && !hasTalisman && !hasBoat) {
@@ -162,7 +162,7 @@ export class TravelSystem {
             }
 
             // Yêu cầu vật phẩm dịch chuyển
-            const hasToken = this.player.inventory?.allItems?.some(i => i.id === 'truyen_tong_lenh');
+            const hasToken = this.player.inventory?.allItems?.some(i => i.id === 'thuong_co_truyen_tong_lenh');
             const hasTalisman = this.player.inventory?.allItems?.some(i => i.id === 'pha_khong_phu');
 
             if (!hasToken && !hasTalisman) {

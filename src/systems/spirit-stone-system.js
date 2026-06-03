@@ -112,7 +112,7 @@ export class SpiritStoneSystem {
                 this.player.inventory.removeItem(itemId, count);
                 // Tạo phế thạch (chỉ cấp thấp mới để lại phế thạch, cấp cao hóa hư không)
                 if (['HA', 'TRUNG'].includes(item.grade)) {
-                    this.player.inventory.addItem('phe_thach', count);
+                    this.player.inventory.addItem('phe_linh_thach', count);
                 }
                 
                 this.ui?.toast(`Hấp thụ ${count} viên ${item.name}, nhận ${Math.floor(result.gain)} linh khí.`, 'success');
@@ -143,7 +143,7 @@ export class SpiritStoneSystem {
         this.player.inventory.removeItem(itemId, count);
         
         if (['HA', 'TRUNG'].includes(item.grade)) {
-            this.player.inventory.addItem('phe_thach', count);
+            this.player.inventory.addItem('phe_linh_thach', count);
         }
 
         this.ui?.toast(`Bóp nát ${count} viên ${item.name}, hồi phục ${manaGain} Linh Lực!`, 'success');
@@ -174,7 +174,7 @@ export class SpiritStoneSystem {
                 provided += stonesToUse * energyPerStone;
                 this.player.inventory.removeItem(itemId, stonesToUse);
                 if (['HA', 'TRUNG'].includes(gradeId)) {
-                    this.player.inventory.addItem('phe_thach', stonesToUse);
+                    this.player.inventory.addItem('phe_linh_thach', stonesToUse);
                 }
 
                 if (provided >= requiredEnergy) break;
@@ -186,14 +186,14 @@ export class SpiritStoneSystem {
 
     getItemIdByGrade(gradeId) {
         switch (gradeId) {
-            case 'HA': return 'ling_thach_ha';
-            case 'TRUNG': return 'ling_thach_trung';
-            case 'THUONG': return 'ling_thach_thuong';
-            case 'CUC': return 'ling_thach_cuc';
+            case 'HA': return 'ha_pham_linh_thach';
+            case 'TRUNG': return 'trung_pham_linh_thach';
+            case 'THUONG': return 'thuong_pham_linh_thach';
+            case 'CUC': return 'cuc_pham_linh_thach';
             case 'TIEN': return 'tien_tinh';
             case 'HON_DON': return 'hon_don_tinh';
-            case 'HONG_MONG': return 'hong_mong_tinh';
-            default: return 'ling_thach_ha';
+            case 'HONG_MONG': return 'hong_mong_linh_tinh';
+            default: return 'ha_pham_linh_thach';
         }
     }
 

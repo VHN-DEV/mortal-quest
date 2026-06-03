@@ -316,7 +316,7 @@ export const ASSETS = {
         hau_tho_cong: getAssetUrl('items/techniques/hau_tho_cong'),
         man_nguu_kinh: getAssetUrl('items/techniques/man_nguu_kinh'),
         duong_than_quyet: getAssetUrl('items/techniques/duong_than_quyet'),
-        truong_sinh_quyet: getAssetUrl('items/techniques/truong_sinh_quyet'),
+        truong_sinh_quyet_bi_tich: getAssetUrl('items/techniques/truong_sinh_quyet_bi_tich'),
         cuu_chuyen_kim_than: getAssetUrl('items/techniques/cuu_chuyen_kim_than'),
         u_minh_huy_ngan: getAssetUrl('items/techniques/u_minh_huy_ngan'),
         thanh_moc_truong_sinh_quyet: getAssetUrl('items/techniques/thanh_moc_truong_sinh_quyet'),

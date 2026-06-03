@@ -42,7 +42,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 1.0,
         survivalFactor: 0.1,
         description: 'Vùng ngoài cùng, linh khí loãng, nơi tập trung nhiều thảo dược bậc thấp và yêu thú sơ khai.',
-        resources: ['linh_thao_thap', 'ngoc_de_hoa', 'ling_thach_ha', 'yeu_huyet'],
+        resources: ['thanh_phuc_thao', 'ngoc_de_hoa', 'ha_pham_linh_thach', 'yeu_thu_tinh_huyet'],
         eventProbs: { combat: 0.1, loot: 0.1, npc: 0.2, empty: 0.6 }
     },
     {
@@ -52,7 +52,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 1.5,
         survivalFactor: 0.2,
         description: 'Rừng sương mù dày đặc, linh giác bị hạn chế, ẩn chứa nhiều loại linh quả sơ cấp.',
-        resources: ['linh_thao_10y', 'thanh_long_sam', 'tieu_dao_qua', 'hat_giong_thanh_phuc_thao', 'yeu_dan_so'],
+        resources: ['thap_nien_hoang_tinh_thao', 'thanh_long_sam', 'tieu_dao_qua', 'hat_giong_thanh_phuc_thao', 'ha_pham_yeu_dan'],
         eventProbs: { combat: 0.15, loot: 0.15, npc: 0.1, empty: 0.6 }
     },
     {
@@ -62,7 +62,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 2.2,
         survivalFactor: 0.35,
         description: 'Hệ thống hang động ẩm ướt, nơi cư ngụ của các loài yêu trùng và khoáng thạch hiếm.',
-        resources: ['thuy_tinh', 'ma_thach', 'linh_thao_100y', 'cuu_tich_chi'],
+        resources: ['thuy_tinh_linh_khoang', 'ma_thach_ha_pham', 'bach_nien_uan_co_thao', 'cuu_tich_chi'],
         eventProbs: { combat: 0.2, loot: 0.2, npc: 0.05, empty: 0.55 }
     },
  
@@ -74,7 +74,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 3.5,
         survivalFactor: 0.6,
         description: 'Đỉnh núi quanh năm sấm chớp và gió lốc, linh khí bắt đầu trở nên cuồng bạo.',
-        resources: ['loi_linh_thach', 'yeu_dan_trung', 'linh_thao_100y', 'that_tinh_thao'],
+        resources: ['loi_linh_thach', 'trung_pham_yeu_dan', 'bach_nien_uan_co_thao', 'that_tinh_thao'],
         eventProbs: { combat: 0.3, loot: 0.2, npc: 0.02, empty: 0.48 }
     },
     {
@@ -84,7 +84,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 4.5,
         survivalFactor: 0.8,
         description: 'Dãy hang động nơi các tu sĩ cổ đại từng cư ngụ, ẩn chứa nhiều tàn hồn và pháp bảo.',
-        resources: ['ling_thach_trung', 'dan_dao_chan_giai', 'thai_thuong_phu_kinh'],
+        resources: ['trung_pham_linh_thach', 'dan_dao_chan_giai', 'thai_thuong_phu_kinh'],
         eventProbs: { combat: 0.25, loot: 0.4, npc: 0.05, empty: 0.3 }
     },
  
@@ -96,7 +96,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 6.0,
         survivalFactor: 1.2,
         description: 'Thung lũng bị nguyền rủa, linh khí mang theo sát ý cực mạnh.',
-        resources: ['linh_thao_1000y', 'huyet_lien_hoa', 'hoa_duong_chi', 'ma_tinh', 'yeu_dan_cao'],
+        resources: ['thien_nien_cuu_khuc_linh_sam', 'huyet_lien_hoa', 'hoa_duong_chi', 'ma_tinh', 'yeu_dan_cao'],
         eventProbs: { combat: 0.4, loot: 0.2, npc: 0.1, empty: 0.3 }
     },
     {
@@ -106,7 +106,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 8.0,
         survivalFactor: 1.8,
         description: 'Nơi không gian vỡ vụn, thường xuyên xuất hiện không gian loạn lưu.',
-        resources: ['hon_don_tinh_thach', 'linh_thao_van_nam', 'tien_ngoc'],
+        resources: ['hon_don_tinh_thach', 'van_nien_huyet_linh_chi', 'tien_ngoc'],
         eventProbs: { combat: 0.5, loot: 0.3, npc: 0.05, empty: 0.15 }
     },
 
@@ -118,7 +118,7 @@ export const MOUNTAIN_LAYERS = [
         difficulty: 12.0,
         survivalFactor: 3.0,
         description: 'Vực sâu vạn trượng, nơi tụ hội của long mạch chi lực.',
-        resources: ['long_huyet_tinh', 'than_thú_trung', 'tien_tinh', 'tu_tuong_bo_de_kiem', 'quan_han_linh_ngoc_bat'],
+        resources: ['long_huyet_tinh', 'than_thú_trung', 'tien_tinh', 'tu_tuong_bo_de_kiem', 'quang_han_linh_ngoc_bat'],
         eventProbs: { combat: 0.6, loot: 0.2, npc: 0.05, empty: 0.15 }
     },
     {
@@ -144,7 +144,7 @@ export const MOUNTAIN_BOSSES = [
         def: 500,
         icon: '🐺',
         description: 'Chúa tể vùng Ngoại Sơn, nọc độc có thể ăn mòn linh lực.',
-        rewards: ['yeu_dan_trung', 'linh_thao_100y']
+        rewards: ['trung_pham_yeu_dan', 'bach_nien_uan_co_thao']
     },
     {
         id: 'boss_trung_son',
@@ -156,7 +156,7 @@ export const MOUNTAIN_BOSSES = [
         def: 2000,
         icon: '👻',
         description: 'Một vị đại năng thời thượng cổ còn sót lại ý chí, canh giữ di tích.',
-        rewards: ['tran_dao_thien_thu', 'ling_thach_thuong']
+        rewards: ['tran_dao_thien_thu', 'thuong_pham_linh_thach']
     },
     {
         id: 'boss_noi_son',
@@ -168,7 +168,7 @@ export const MOUNTAIN_BOSSES = [
         def: 8000,
         icon: '🐲',
         description: 'Hóa hình đại yêu, thống lĩnh vạn thú vùng Nội Sơn.',
-        rewards: ['tien_ngoc', 'linh_thao_van_nam']
+        rewards: ['tien_ngoc', 'van_nien_huyet_linh_chi']
     },
     {
         id: 'boss_cam_khu',
@@ -349,10 +349,10 @@ export const MOUNTAIN_EVENTS = [
                         msg: `Yêu thú bảo hộ ${guardianId.replace(/_/g, ' ')} xuất hiện! Ngươi phải chiến đấu để giành lấy linh thảo!`, 
                         type: 'combat_then_loot', 
                         enemyId: guardianId,
-                        loot: 'linh_thao_cao' 
+                        loot: 'tu_nguyet_thao' 
                     };
                 } else {
-                    player.inventory.addItem('linh_thao_cao', 1);
+                    player.inventory.addItem('tu_nguyet_thao', 1);
                     return { msg: player.realmId >= 26 ? 'Ngươi thản nhiên hái linh thảo, yêu thú bảo hộ sợ hãi bỏ chạy.' : 'Ngươi đã hái được linh dược thành công mà không đánh động yêu thú.' };
                 }
             }
@@ -373,7 +373,7 @@ export const MOUNTAIN_EVENTS = [
             if (choice === 'enter') {
                 const rand = Math.random();
                 if (rand < 0.3) {
-                    const eggs = ['trung_thanh_van_ly', 'trung_huyen_giap_dia_long', 'trung_u_minh_mong_diep'];
+                    const eggs = ['thanh_van_ly_thu_linh_noan', 'huyen_giap_dia_long_linh_noan', 'u_minh_mong_diep_linh_noan'];
                     const eggId = eggs[Math.floor(Math.random() * eggs.length)];
                     player.inventory.addItem(eggId, 1);
                     return { msg: `Vận khí cực tốt! Ngươi đã tìm thấy một quả ${game.configs.items[eggId].name} bị bỏ lại!` };

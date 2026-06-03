@@ -231,19 +231,19 @@ export class BattleScreen {
         const count = 1 + Math.floor(enemy.realmId / 10);
         
         // 1. Yêu Đan (100%)
-        const danId = enemy.realmId >= 40 ? 'yeu_dan_trung' : 'yeu_dan_so';
+        const danId = enemy.realmId >= 40 ? 'trung_pham_yeu_dan' : 'ha_pham_yeu_dan';
         state.player.inventory.addItem(danId, 1);
-        drops.push(`[1x ${danId === 'yeu_dan_trung' ? 'Yêu Đan Trung Cấp' : 'Yêu Đan Sơ Cấp'}]`);
+        drops.push(`[1x ${danId === 'trung_pham_yeu_dan' ? 'Trung Phẩm Yêu Đan' : 'Hạ Phẩm Yêu Đan'}]`);
 
         // 2. Yêu Huyết
         if (Math.random() < 0.7) {
-            state.player.inventory.addItem('yeu_huyet', count);
+            state.player.inventory.addItem('yeu_thu_tinh_huyet', count);
             drops.push(`[${count}x Yêu Thú Tinh Huyết]`);
         }
 
         // 3. Yêu Cốt
         if (Math.random() < 0.5) {
-            state.player.inventory.addItem('yeu_cot', count);
+            state.player.inventory.addItem('yeu_thu_cot', count);
             drops.push(`[${count}x Yêu Thú Cốt]`);
         }
 

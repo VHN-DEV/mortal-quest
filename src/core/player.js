@@ -325,10 +325,10 @@ export class Player {
         if (!this.inventory) return 0;
         let total = 0;
         const mappings = {
-            'ling_thach_ha': 1,
-            'ling_thach_trung': 100,
-            'ling_thach_thuong': 10000,
-            'ling_thach_cuc': 1000000
+            'ha_pham_linh_thach': 1,
+            'trung_pham_linh_thach': 100,
+            'thuong_pham_linh_thach': 10000,
+            'cuc_pham_linh_thach': 1000000
         };
         
         this.inventory.allItems.forEach(item => {
@@ -341,10 +341,10 @@ export class Player {
 
     getFormattedLingShi() {
         const counts = {
-            'ling_thach_ha': 0,
-            'ling_thach_trung': 0,
-            'ling_thach_thuong': 0,
-            'ling_thach_cuc': 0
+            'ha_pham_linh_thach': 0,
+            'trung_pham_linh_thach': 0,
+            'thuong_pham_linh_thach': 0,
+            'cuc_pham_linh_thach': 0
         };
 
         if (this.inventory) {
@@ -356,10 +356,10 @@ export class Player {
         }
 
         let res = [];
-        if (counts['ling_thach_cuc'] > 0) res.push(`<span class="grade-cuc">${counts['ling_thach_cuc']} Cực</span>`);
-        if (counts['ling_thach_thuong'] > 0) res.push(`<span class="grade-thuong">${counts['ling_thach_thuong']} Thượng</span>`);
-        if (counts['ling_thach_trung'] > 0) res.push(`<span class="grade-trung">${counts['ling_thach_trung']} Trung</span>`);
-        if (counts['ling_thach_ha'] > 0 || res.length === 0) res.push(`<span class="grade-ha">${counts['ling_thach_ha']} Hạ</span>`);
+        if (counts['cuc_pham_linh_thach'] > 0) res.push(`<span class="grade-cuc">${counts['cuc_pham_linh_thach']} Cực</span>`);
+        if (counts['thuong_pham_linh_thach'] > 0) res.push(`<span class="grade-thuong">${counts['thuong_pham_linh_thach']} Thượng</span>`);
+        if (counts['trung_pham_linh_thach'] > 0) res.push(`<span class="grade-trung">${counts['trung_pham_linh_thach']} Trung</span>`);
+        if (counts['ha_pham_linh_thach'] > 0 || res.length === 0) res.push(`<span class="grade-ha">${counts['ha_pham_linh_thach']} Hạ</span>`);
         
         return res.join(' ');
     }
@@ -370,10 +370,10 @@ export class Player {
         let remaining = amount;
         const priority = this.spiritStoneSettings?.autoUsePriority || ['HA', 'TRUNG', 'THUONG'];
         const mappings = {
-            'HA': { id: 'ling_thach_ha', val: 1 },
-            'TRUNG': { id: 'ling_thach_trung', val: 100 },
-            'THUONG': { id: 'ling_thach_thuong', val: 10000 },
-            'CUC': { id: 'ling_thach_cuc', val: 1000000 }
+            'HA': { id: 'ha_pham_linh_thach', val: 1 },
+            'TRUNG': { id: 'trung_pham_linh_thach', val: 100 },
+            'THUONG': { id: 'thuong_pham_linh_thach', val: 10000 },
+            'CUC': { id: 'cuc_pham_linh_thach', val: 1000000 }
         };
 
         for (const gradeId of priority) {
@@ -413,7 +413,7 @@ export class Player {
 
     addLingShi(amount) {
         if (amount <= 0) return;
-        this.inventory.addItem('ling_thach_ha', amount);
+        this.inventory.addItem('ha_pham_linh_thach', amount);
     }
 
     addTuVi(amount) {
@@ -445,10 +445,10 @@ export class Player {
         if (!item || item.type !== 'spirit_stone') return { success: false, msg: "Vật phẩm không phải linh thạch." };
 
         const mappings = {
-            'ling_thach_ha': { gain: 50, msg: "Hấp thu linh khí từ Hạ Phẩm Linh Thạch." },
-            'ling_thach_trung': { gain: 5000, msg: "Luyện hóa Trung Phẩm Linh Thạch, linh lực tràn đầy!" },
-            'ling_thach_thuong': { gain: 500000, msg: "Thượng Phẩm Linh Thạch tan chảy, tu vi tăng mạnh!" },
-            'ling_thach_cuc': { gain: 50000000, msg: "Cực Phẩm Linh Thạch! Đại đạo chí giản, tu vi tiến triển cực nhanh!" }
+            'ha_pham_linh_thach': { gain: 50, msg: "Hấp thu linh khí từ Hạ Phẩm Linh Thạch." },
+            'trung_pham_linh_thach': { gain: 5000, msg: "Luyện hóa Trung Phẩm Linh Thạch, linh lực tràn đầy!" },
+            'thuong_pham_linh_thach': { gain: 500000, msg: "Thượng Phẩm Linh Thạch tan chảy, tu vi tăng mạnh!" },
+            'cuc_pham_linh_thach': { gain: 50000000, msg: "Cực Phẩm Linh Thạch! Đại đạo chí giản, tu vi tiến triển cực nhanh!" }
         };
 
         const config = mappings[itemId];

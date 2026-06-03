@@ -27,15 +27,15 @@ describe('Inventory class', () => {
   it('should add item and stack quantity if same metadata', () => {
     const inv = new Inventory({});
     
-    const added1 = inv.addItem('ling_thach_ha', 5);
+    const added1 = inv.addItem('ha_pham_linh_thach', 5);
     expect(added1).toBe(true);
     expect(inv.allItems.length).toBe(1);
-    expect(inv.getItemQuantity('ling_thach_ha')).toBe(5);
+    expect(inv.getItemQuantity('ha_pham_linh_thach')).toBe(5);
     
-    const added2 = inv.addItem('ling_thach_ha', 10);
+    const added2 = inv.addItem('ha_pham_linh_thach', 10);
     expect(added2).toBe(true);
     expect(inv.allItems.length).toBe(1); // Stays at 1 stack
-    expect(inv.getItemQuantity('ling_thach_ha')).toBe(15);
+    expect(inv.getItemQuantity('ha_pham_linh_thach')).toBe(15);
   });
 
   it('should NOT stack items if metadata is different', () => {
@@ -95,7 +95,7 @@ describe('Inventory class', () => {
     const inv = new Inventory({});
     inv.addBag('Túi Phụ', 10, 'bag_phu');
     
-    inv.addItem('co_dai', 5);
+    inv.addItem('tap_thao', 5);
     
     // Transfer from Bag 0 (first bag) to Bag 1 (second bag)
     const result = inv.transferItem(0, 0, 1);
@@ -103,7 +103,7 @@ describe('Inventory class', () => {
     
     expect(inv.bags[0].items.length).toBe(0);
     expect(inv.bags[1].items.length).toBe(1);
-    expect(inv.bags[1].items[0].id).toBe('co_dai');
+    expect(inv.bags[1].items[0].id).toBe('tap_thao');
     expect(inv.bags[1].items[0].quantity).toBe(5);
   });
 

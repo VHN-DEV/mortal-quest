@@ -7,7 +7,7 @@ export const CRAFTING_RECIPES = [
         type: 'phap_bao_cong',
         resultId: 'thanh_hong_kiem',
         materials: [
-            { id: 'linh_thao_thap', quantity: 10 },
+            { id: 'thanh_phuc_thao', quantity: 10 },
             { id: 'phi_kiem_go', quantity: 1 }
         ],
         successRate: 0.7,

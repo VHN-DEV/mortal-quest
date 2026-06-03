@@ -18,7 +18,7 @@ export const PUPPET_RECIPES = [
         description: 'Khôi lỗi chống chịu cơ bản, đúc từ huyền thiết.',
         materials: [
             { id: 'huyen_thiet', quantity: 10 },
-            { id: 'ling_thach_ha', quantity: 5 }
+            { id: 'ha_pham_linh_thach', quantity: 5 }
         ],
         stats: { hp: 500, def: 50, atk: 20 },
         skillLevel: 1
@@ -32,7 +32,7 @@ export const PUPPET_RECIPES = [
         materials: [
             { id: 'tinh_kim', quantity: 5 },
             { id: 'huyen_thiet', quantity: 5 },
-            { id: 'ling_thach_ha', quantity: 10 }
+            { id: 'ha_pham_linh_thach', quantity: 10 }
         ],
         stats: { hp: 300, def: 20, atk: 60, spd: 30 },
         skillLevel: 3
@@ -44,8 +44,8 @@ export const PUPPET_RECIPES = [
         grade: 'LINH',
         description: 'Khôi lỗi tinh xảo hình vượn xanh, là khôi lỗi Trúc Cơ mà Hàn Lập sử dụng nhiều nhất.',
         materials: [
-            { id: 'thiet_moc_bach_nien', quantity: 10 },
-            { id: 'ling_thach_trung', quantity: 5 }
+            { id: 'bach_nien_thiet_moc', quantity: 10 },
+            { id: 'trung_pham_linh_thach', quantity: 5 }
         ],
         stats: { hp: 1500, def: 120, atk: 220, spd: 80 },
         skillLevel: 5
@@ -57,9 +57,9 @@ export const PUPPET_RECIPES = [
         grade: 'HUYEN',
         description: 'Con hổ khôi lỗi khổng lồ cao năm sáu trượng, há miệng bắn ra cột sáng trắng khổng lồ tiêu hao Hỏa Linh Thạch.',
         materials: [
-            { id: 'thiet_moc_bach_nien', quantity: 30 },
+            { id: 'bach_nien_thiet_moc', quantity: 30 },
             { id: 'huyen_thiet', quantity: 20 },
-            { id: 'hoa_linh_thach_trung', quantity: 5 }
+            { id: 'hoa_linh_thach_trung_giai', quantity: 5 }
         ],
         stats: { hp: 5000, def: 400, atk: 1200, spd: 15 },
         skillLevel: 8

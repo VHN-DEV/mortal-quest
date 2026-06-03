@@ -45,7 +45,7 @@ export const EVENTS = [
         type: 'loot',
         description: 'Một gốc Linh Thảo đang tỏa hương thơm ngào ngạt giữa vách đá.',
         result: async (player, game) => {
-            await rewardItem(player, game, 'linh_thao_thap', 2);
+            await rewardItem(player, game, 'thanh_phuc_thao', 2);
             return 'Ngươi hái được 2x Linh Thảo (Thấp)!';
         }
     },
@@ -174,9 +174,9 @@ export const EVENTS = [
                 const dangerChance = player.realmId < 14 ? 0.8 : 0.4; // Easier for Bamboo Building (Trúc Cơ) and above
                 if (Math.random() < dangerChance) {
                     game.ui.toast("Yêu thú bảo hộ xuất hiện! Ngươi phải chiến đấu để giành lấy linh dược.", "warning");
-                    return { type: 'combat_then_loot', loot: 'linh_thao_cao' };
+                    return { type: 'combat_then_loot', loot: 'tu_nguyet_thao' };
                 } else {
-                    await rewardItem(player, game, 'linh_thao_cao', 1);
+                    await rewardItem(player, game, 'tu_nguyet_thao', 1);
                     return { msg: 'May mắn thay! Nhờ cảnh giới thâm hậu (hoặc may mắn), ngươi đã hái được linh dược mà không kinh động đến yêu thú.' };
                 }
             }
@@ -299,7 +299,7 @@ export const EVENTS = [
             return opts;
         },
         resolve: async (choice, player, game) => {
-            const hasMerchantToken = player.inventory.hasItem('token_merchant', 1);
+            const hasMerchantToken = player.inventory.hasItem('thuong_nhan_lenh', 1);
             if (choice === 'help') {
                 game.ui.toast("Ngươi ra tay đánh đuổi bọn cướp!", "success");
                 player.karma += 20;
@@ -369,7 +369,7 @@ export const EVENTS = [
                 const success = player.stats.atk > 3000 || player.realmId >= 14;
                 if (success) {
                     player.addLingShi(3000);
-                    await rewardItem(player, game, 'yeu_dan_trung', 1);
+                    await rewardItem(player, game, 'trung_pham_yeu_dan', 1);
                     return { msg: 'Sự giúp sức của ngươi giúp đoàn săn nhanh chóng hạ gục yêu thú. Họ cung kính dâng lên phần chia lớn nhất.' };
                 } else {
                     player.hp -= 300;
@@ -385,7 +385,7 @@ export const EVENTS = [
                 }
             } else if (choice === 'rob') {
                 player.karma -= 40;
-                await rewardItem(player, game, 'yeu_dan_trung', 2);
+                await rewardItem(player, game, 'trung_pham_yeu_dan', 2);
                 player.addLingShi(5000);
                 return { msg: 'Ngươi ra tay bá đạo, một chiêu kết liễu yêu thú và lấy đi toàn bộ. Nhóm tán tu tức giận nhưng không dám ho một tiếng.' };
             }
@@ -404,10 +404,10 @@ export const EVENTS = [
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'fight') {
-                return { type: 'combat_then_loot', loot: 'linh_thao_cao', msg: 'Không nói nhiều, thực lực là trên hết!' };
+                return { type: 'combat_then_loot', loot: 'tu_nguyet_thao', msg: 'Không nói nhiều, thực lực là trên hết!' };
             } else if (choice === 'trade') {
                 if (player.stats.soul > 2000) {
-                    await rewardItem(player, game, 'linh_thao_trung', 1);
+                    await rewardItem(player, game, 'tu_lam_hoa', 1);
                     return { msg: 'Ngươi dùng miệng lưỡi (và thần niệm áp chế) khiến đối phương chấp nhận chia cho ngươi một nửa.' };
                 } else {
                     return { msg: 'Đối phương không thèm thương lượng, đuổi ngươi đi.' };
@@ -467,7 +467,7 @@ export const EVENTS = [
                 player.karma -= 100;
                 const atkGain = 200 + (player.realmId * 10);
                 player.stats.atk += atkGain;
-                await rewardItem(player, game, 'ma_thach', 10);
+                await rewardItem(player, game, 'ma_thach_ha_pham', 10);
                 return { msg: `Ngươi nhận lấy ma công, thực lực tăng mạnh (Công kích +${atkGain}) nhưng ma tính cũng theo đó mà tăng lên!` };
             } else if (choice === 'purify') {
                 const soulReq = 5000 + (player.realmId * 100);
@@ -529,7 +529,7 @@ export const EVENTS = [
                     return { msg: 'Linh khí quá bạo liệt, kinh mạch của ngươi không chịu nổi áp lực, bị thương nặng!' };
                 }
             } else if (choice === 'take') {
-                await rewardItem(player, game, 'linh_dich', 5);
+                await rewardItem(player, game, 'linh_dich_chuong_thien_binh', 5);
                 return { msg: 'Ngươi lấy được 5 lọ Linh Dịch tinh khiết.' };
             }
             return null;
@@ -570,7 +570,7 @@ export const EVENTS = [
         ],
         resolve: async (choice, player, game) => {
             if (choice === 'harvest') {
-                await rewardItem(player, game, 'linh_thao_trung', 3);
+                await rewardItem(player, game, 'tu_lam_hoa', 3);
                 return { msg: 'Ngươi hái được một ít linh thảo trung phẩm còn sót lại.' };
             } else if (choice === 'search') {
                 if (player.luck > 80) {
@@ -666,7 +666,7 @@ export const EVENTS = [
         resolve: async (choice, player, game) => {
             if (choice === 'accept') {
                 if (player.lingShi < 5000) return { msg: 'Ngươi không đủ linh thạch để đặt cược!' };
-                return { type: 'combat_then_loot', loot: 'ling_thach_thuong', msg: 'Hảo! Hãy xem thực lực của ngươi đến đâu!' };
+                return { type: 'combat_then_loot', loot: 'thuong_pham_linh_thach', msg: 'Hảo! Hãy xem thực lực của ngươi đến đâu!' };
             } else if (choice === 'refuse') {
                 player.karma -= 2;
                 return { msg: 'Ngươi lẳng lặng đi qua, mặc cho hắn cười nhạo sau lưng.' };
@@ -694,7 +694,7 @@ export const EVENTS = [
         resolve: async (choice, player, game) => {
             if (choice === 'help') {
                 player.karma += 50;
-                await rewardItem(player, game, 'linh_thao_cao', 1);
+                await rewardItem(player, game, 'tu_nguyet_thao', 1);
                 return { msg: 'Ngươi ra tay đánh đuổi hắc y nhân. Nàng tặng ngươi một gốc linh thảo và hứa sẽ báo đáp sau.' };
             } else if (choice === 'watch') {
                 player.karma -= 20;
@@ -834,8 +834,8 @@ export const EVENTS = [
                 return { msg: 'Ngươi giải cứu nó. Linh thú cúi đầu cảm ơn rồi biến mất vào rừng sâu.' };
             } else if (choice === 'kill') {
                 player.karma -= 50;
-                await rewardItem(player, game, 'yeu_dan_so', 1);
-                return { msg: 'Ngươi lạnh lùng ra tay. Nhận được một viên Yêu Đan Sơ Cấp.' };
+                await rewardItem(player, game, 'ha_pham_yeu_dan', 1);
+                return { msg: 'Ngươi lạnh lùng ra tay. Nhận được một viên Hạ Phẩm Yêu Đan.' };
             }
             return null;
         }

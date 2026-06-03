@@ -57,7 +57,7 @@ export const GUILD_MISSIONS = [
         targetId: 'bo_nguyen_dan',
         quantity: 1,
         minQuality: 'Thượng Phẩm',
-        rewards: { lingShi: 1200, reputation: 50, items: ['ma_thach'] }
+        rewards: { lingShi: 1200, reputation: 50, items: ['ma_thach_ha_pham'] }
     }
 ];
 

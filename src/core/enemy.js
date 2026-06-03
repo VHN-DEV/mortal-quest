@@ -225,13 +225,13 @@ export class EnemyGenerator {
         
         // 1. Basic Loot (Common for all)
         if (Math.random() < 0.8) {
-            enemy.inventory.push({ id: 'ling_thach_ha', quantity: Math.floor(Math.random() * 50 * enemy.realmId) });
+            enemy.inventory.push({ id: 'ha_pham_linh_thach', quantity: Math.floor(Math.random() * 50 * enemy.realmId) });
         }
 
         // 2. Race Specific Loot
         if (enemy.race === 'SPIRIT_BEAST') {
-            enemy.inventory.push({ id: 'yeu_dan_so', quantity: 1 });
-            if (Math.random() < 0.3) enemy.inventory.push({ id: 'yeu_huyet', quantity: 1 });
+            enemy.inventory.push({ id: 'ha_pham_yeu_dan', quantity: 1 });
+            if (Math.random() < 0.3) enemy.inventory.push({ id: 'yeu_thu_tinh_huyet', quantity: 1 });
         }
 
         // 3. Humanoid Equipment & Skills
@@ -239,7 +239,7 @@ export class EnemyGenerator {
             // Randomly equip items based on realm
             if (enemy.realmId >= 1) {
                 enemy.equipment.weapon = { id: 'phi_kiem_go', name: 'Phi Kiếm Gỗ', stats: { atk: 10 + enemy.realmId * 5 } };
-                enemy.equipment.armor = { id: 'ao_bo_so_cap', name: 'Áo Vải Tu Sĩ', stats: { def: 5 + enemy.realmId * 3 } };
+                enemy.equipment.armor = { id: 'tho_bo_pham_y', name: 'Áo Vải Tu Sĩ', stats: { def: 5 + enemy.realmId * 3 } };
             }
             if (enemy.realmId >= 10) {
                 enemy.equipment.weapon = { id: 'thanh_hong_kiem', name: 'Thanh Hồng Kiếm', stats: { atk: 50 + enemy.realmId * 10 } };
@@ -263,7 +263,7 @@ export class EnemyGenerator {
 
         // 4. Random drops (Storage bag logic)
         if (Math.random() < 0.2) {
-            const possibleItems = ['hat_giong_thanh_phuc_thao', 'linh_thao_thap', 'ngung_khi_dan', 'tich_coc_dan', 'kim_cuong_phu'];
+            const possibleItems = ['hat_giong_thanh_phuc_thao', 'thanh_phuc_thao', 'ngung_khi_dan', 'tich_coc_dan', 'kim_cuong_phu'];
             const randomItem = possibleItems[Math.floor(Math.random() * possibleItems.length)];
             enemy.inventory.push({ id: randomItem, quantity: 1 });
         }

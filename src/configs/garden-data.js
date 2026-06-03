@@ -33,7 +33,7 @@ export const SEEDS = [
     {
         id: 'linh_chung_thanh_phuc_thao',
         name: 'Linh Chủng Thanh Phục Thảo',
-        herbId: 'linh_thao_thap',
+        herbId: 'thanh_phuc_thao',
         grade: 'PHAM',
         baseGrowthTime: 300, // 5 min for 10-year stage
         attributeReq: 'NORMAL',
@@ -42,7 +42,7 @@ export const SEEDS = [
     {
         id: 'linh_chung_tu_lam_hoa',
         name: 'Linh Chủng Tử Lam Hoa',
-        herbId: 'linh_thao_trung',
+        herbId: 'tu_lam_hoa',
         grade: 'LINH',
         baseGrowthTime: 900, // 15 min
         attributeReq: 'NORMAL',

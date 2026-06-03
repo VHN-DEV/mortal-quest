@@ -21,9 +21,9 @@ describe('PNTT Dynamic Item Effects', () => {
     player.mana = 500;
 
     const inventory = player.inventory;
-    inventory.addItem('linh_chi_tien_cao', 1);
+    inventory.addItem('linh_chi_tien_thao', 1);
 
-    const used = inventory.useItem('linh_chi_tien_cao', 1);
+    const used = inventory.useItem('linh_chi_tien_thao', 1);
     expect(used).toBe(true);
 
     // Assert stats are permanently increased

@@ -159,11 +159,11 @@ export class GardenSystem {
         const plot = this.player.gardenPlots[plotIndex];
         if (!plot || plot.status !== 'growing') return { success: false, msg: 'Ô đất này đang trống!' };
 
-        if (!this.player.inventory.hasItem('linh_dich')) {
+        if (!this.player.inventory.hasItem('linh_dich_chuong_thien_binh')) {
             return { success: false, msg: 'Ngươi không có Linh Dịch!' };
         }
 
-        this.player.inventory.removeItem('linh_dich', 1);
+        this.player.inventory.removeItem('linh_dich_chuong_thien_binh', 1);
         
         // Tăng mạnh tuổi thọ linh thảo (Ví dụ: +100 năm ngay lập tức)
         plot.age += 100;

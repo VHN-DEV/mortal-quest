@@ -158,7 +158,7 @@ export class TreasureSystem {
             data.progress += delta;
             if (data.progress >= 300) {
                 data.progress -= 300;
-                this.player.inventory.addItem('linh_dich', 1);
+                this.player.inventory.addItem('linh_dich_chuong_thien_binh', 1);
                 if (this.ui) this.ui.toast("Chưởng Thiên Bình đã ngưng tụ được 1 giọt Linh Dịch!", "success");
             }
         }

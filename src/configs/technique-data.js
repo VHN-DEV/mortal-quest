@@ -264,8 +264,8 @@ export const TECHNIQUES = {
         effects: { tvps: 2.0, thunderDmg: 1.5, dodge: 0.1 },
         compatibility: { [ELEMENT_TYPES.LOI]: 1.5, [ELEMENT_TYPES.PHONG]: 1.3, 'Thiên Linh Căn': 1.5 }
     },
-    'truong_sinh_quyet': {
-        id: 'truong_sinh_quyet',
+    'truong_sinh_quyet_bi_tich': {
+        id: 'truong_sinh_quyet_bi_tich',
         name: 'Trường Sinh Quyết',
         type: 'Linh Lực',
         element: ELEMENT_TYPES.MOC,

@@ -5,7 +5,7 @@ export const TALISMAN_RECIPES = {
         level: 1,
         materials: [
             { id: 'hoang_chi_phu', quantity: 1 },
-            { id: 'chu_sa_muc', quantity: 1 }
+            { id: 'chu_sa_linh_muc', quantity: 1 }
         ],
         baseSuccessRate: 0.8,
         staminaCost: 5,
@@ -17,8 +17,8 @@ export const TALISMAN_RECIPES = {
         name: 'Kim Cương Phù',
         level: 2,
         materials: [
-            { id: 'linh_moc_phu', quantity: 1 },
-            { id: 'chu_sa_muc', quantity: 1 }
+            { id: 'linh_moc_phu_chi', quantity: 1 },
+            { id: 'chu_sa_linh_muc', quantity: 1 }
         ],
         baseSuccessRate: 0.65,
         staminaCost: 10,
@@ -30,8 +30,8 @@ export const TALISMAN_RECIPES = {
         name: 'Thần Hành Phù',
         level: 2,
         materials: [
-            { id: 'linh_moc_phu', quantity: 1 },
-            { id: 'chu_sa_muc', quantity: 1 }
+            { id: 'linh_moc_phu_chi', quantity: 1 },
+            { id: 'chu_sa_linh_muc', quantity: 1 }
         ],
         baseSuccessRate: 0.7,
         staminaCost: 8,

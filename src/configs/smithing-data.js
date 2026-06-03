@@ -1,12 +1,12 @@
 export const SMITHING_RECIPES = {
-    'phi_kiem_tinh_ha': {
-        id: 'phi_kiem_tinh_ha',
+    'tinh_ha_phi_kiem': {
+        id: 'tinh_ha_phi_kiem',
         name: 'Tinh Hà Phi Kiếm',
         level: 2,
         materials: [
             { id: 'tinh_kim', quantity: 10 },
             { id: 'huyen_thiet', quantity: 20 },
-            { id: 'yeu_dan_so', quantity: 2 }
+            { id: 'ha_pham_yeu_dan', quantity: 2 }
         ],
         baseSuccessRate: 0.6,
         staminaCost: 50,
@@ -19,7 +19,7 @@ export const SMITHING_RECIPES = {
         level: 3,
         materials: [
             { id: 'huyen_thiet', quantity: 50 },
-            { id: 'yeu_huyet', quantity: 10 },
+            { id: 'yeu_thu_tinh_huyet', quantity: 10 },
             { id: 'tinh_kim', quantity: 5 }
         ],
         baseSuccessRate: 0.4,
@@ -45,7 +45,7 @@ export const SMITHING_RECIPES = {
         level: 2,
         materials: [
             { id: 'tinh_kim', quantity: 5 },
-            { id: 'thuy_tinh', quantity: 2 }
+            { id: 'thuy_tinh_linh_khoang', quantity: 2 }
         ],
         baseSuccessRate: 0.65,
         staminaCost: 40,
@@ -58,7 +58,7 @@ export const SMITHING_RECIPES = {
         level: 1,
         materials: [
             { id: 'huyen_thiet', quantity: 10 },
-            { id: 'yeu_huyet', quantity: 2 }
+            { id: 'yeu_thu_tinh_huyet', quantity: 2 }
         ],
         baseSuccessRate: 0.8,
         staminaCost: 30,
@@ -74,7 +74,7 @@ export const SMITHING_RECIPES = {
         level: 3,
         materials: [
             { id: 'tinh_kim', quantity: 5 },
-            { id: 'thuy_tinh', quantity: 10 }
+            { id: 'thuy_tinh_linh_khoang', quantity: 10 }
         ],
         baseSuccessRate: 0.5,
         staminaCost: 80,

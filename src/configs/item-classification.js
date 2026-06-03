@@ -74,7 +74,7 @@ export const ITEM_CATEGORIES = {
             'linh_duoc': 'Linh Dược',
             'linh_moc': 'Linh Mộc',
             'linh_khoang': 'Linh Khoáng',
-            'linh_dich': 'Linh Dịch',
+            'linh_dich_chuong_thien_binh': 'Linh Dịch',
             'yeu_thu': 'Yêu Thú Tài Liệu',
             'luyen_the': 'Luyện Thể Tài Liệu',
             'duong_hon': 'Dưỡng Hồn Tài Liệu',
@@ -100,15 +100,15 @@ export const ITEM_CATEGORIES = {
                 'ngoc_thach': 'Ngọc Thạch',
                 'di_khoang': 'Dị Khoáng'
             },
-            'linh_dich': {
+            'linh_dich_chuong_thien_binh': {
                 'luyen_the': 'Luyện Thể',
                 'duong_hon': 'Dưỡng Hồn',
                 'tu_luyen': 'Tu Luyện',
                 'thien_dia': 'Thiên Địa Linh Dịch'
             },
             'yeu_thu': {
-                'yeu_cot': 'Yêu Cốt',
-                'yeu_huyet': 'Yêu Huyết',
+                'yeu_thu_cot': 'Yêu Cốt',
+                'yeu_thu_tinh_huyet': 'Yêu Huyết',
                 'yeu_dan': 'Yêu Đan',
                 'da_long': 'Da Lông',
                 'gan': 'Gân',
@@ -118,7 +118,7 @@ export const ITEM_CATEGORIES = {
             },
             'luyen_the': {
                 'chan_linh_huyet': 'Chân Linh Huyết',
-                'yeu_huyet': 'Yêu Huyết',
+                'yeu_thu_tinh_huyet': 'Yêu Huyết',
                 'linh_cot': 'Linh Cốt',
                 'luyen_the_linh_qua': 'Luyện Thể Linh Quả'
             },
@@ -435,7 +435,7 @@ function _classifyItemRaw(item) {
         const isWood = type === ITEM_TYPES.LINH_MOC;
         const isOre = type === ITEM_TYPES.LINH_KHOANG || type === ITEM_TYPES.LINH_THACH;
         const isLiquid = id.includes('dich') || id.includes('tuy');
-        const isYeuThu = id.includes('yeu_') || id.includes('yeu_dan') || id.includes('yeu_huyet') || id.includes('yeu_cot');
+        const isYeuThu = id.includes('yeu_') || id.includes('yeu_dan') || id.includes('yeu_thu_tinh_huyet') || id.includes('yeu_thu_cot');
 
         if (isHerb) {
             sub = 'linh_duoc';
@@ -475,7 +475,7 @@ function _classifyItemRaw(item) {
                 subSub = 'di_khoang';
             }
         } else if (isLiquid) {
-            sub = 'linh_dich';
+            sub = 'linh_dich_chuong_thien_binh';
             if (id.includes('luyen_the')) {
                 subSub = 'luyen_the';
             } else if (id.includes('duong_hon')) {
@@ -488,9 +488,9 @@ function _classifyItemRaw(item) {
         } else if (isYeuThu) {
             sub = 'yeu_thu';
             if (id.includes('cot')) {
-                subSub = 'yeu_cot';
+                subSub = 'yeu_thu_cot';
             } else if (id.includes('huyet')) {
-                subSub = 'yeu_huyet';
+                subSub = 'yeu_thu_tinh_huyet';
             } else if (id.includes('dan')) {
                 subSub = 'yeu_dan';
             } else if (id.includes('da') || id.includes('long')) {
@@ -509,7 +509,7 @@ function _classifyItemRaw(item) {
             if (id.includes('chan_linh')) {
                 subSub = 'chan_linh_huyet';
             } else if (id.includes('huyet')) {
-                subSub = 'yeu_huyet';
+                subSub = 'yeu_thu_tinh_huyet';
             } else if (id.includes('cot')) {
                 subSub = 'linh_cot';
             } else {
@@ -542,7 +542,7 @@ function _classifyItemRaw(item) {
         sub = 'tui_tru_vat';
     } else if (type === ITEM_TYPES.BAN_DO || id.includes('ban_do')) {
         sub = 'ban_do';
-    } else if (id.includes('lenh_bai') || id.includes('lenh') || id.includes('merchant') || id.includes('token_merchant')) {
+    } else if (id.includes('lenh_bai') || id.includes('lenh') || id.includes('merchant') || id.includes('thuong_nhan_lenh')) {
         sub = 'lenh_bai';
     } else if (id.includes('chia_khoa') || id.includes('key')) {
         sub = 'chia_khoa';
@@ -692,7 +692,7 @@ export const ITEM_CATEGORIES_ENUM = {
             LINH_DUOC: 'linh_duoc',
             LINH_MOC: 'linh_moc',
             LINH_KHOANG: 'linh_khoang',
-            LINH_DICH: 'linh_dich',
+            LINH_DICH: 'linh_dich_chuong_thien_binh',
             YEU_THU: 'yeu_thu',
             LUYEN_THE: 'luyen_the',
             DUONG_HON: 'duong_hon',

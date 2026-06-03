@@ -3122,7 +3122,7 @@ export class Game {
                 if (state.player.inventory.hasItem(otherPartId)) {
                     state.player.inventory.removeItem(itemId, 1);
                     state.player.inventory.removeItem(otherPartId, 1);
-                    return this.receiveItem('chan_vu_nho_quan', 1, {}, "Chân Vũ Nho Quán đã hoàn thiện!");
+                    return this.receiveItem('chan_vu_nho_quan_hoan_thien', 1, {}, "Chân Vũ Nho Quán đã hoàn thiện!");
                 }
             }
 

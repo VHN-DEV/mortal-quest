@@ -58,7 +58,7 @@ export const SECTS = {
             { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
             { id: 'tinh_kim', price: 400, type: 'contribution', minRankScore: 1 },
             { id: 'ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
-            { id: 'ban_ve_phi_kiem_tinh_ha', price: 1200, type: 'contribution', minRankScore: 1 },
+            { id: 'ban_ve_tinh_ha_phi_kiem', price: 1200, type: 'contribution', minRankScore: 1 },
             { id: 'thien_kiem_tong_bi_tich', name: 'Kiếm Thuật: Vạn Kiếm Quy Tông', price: 8000, type: 'contribution', minRankScore: 2, isTech: true },
             { id: 'nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
             { id: 'hoa_than_dan', price: 25000, type: 'contribution', minRankScore: 3 }
@@ -84,7 +84,7 @@ export const SECTS = {
         },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
-            { id: 'hoang_phong_sa_tui', price: 250, type: 'contribution', minRankScore: 0 },
+            { id: 'hoang_phong_than_sa_tui', price: 250, type: 'contribution', minRankScore: 0 },
             { id: 'hoang_phong_coc_cong_phap', name: 'Hoàng Phong Thần Sa Quyết', price: 600, type: 'contribution', minRankScore: 0, isTech: true },
             { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
             { id: 'phu_van_kim_cuong_phu', price: 300, type: 'contribution', minRankScore: 0 },
@@ -115,7 +115,7 @@ export const SECTS = {
             'dong_phu': { name: 'Hàn Đàm', icon: '🧊', desc: 'Băng đàm lạnh lẽo thấu xương, tu luyện ma công tiến triển cực nhanh.' }
         },
         libraryItems: [
-            { id: 'ma_thach', price: 100, type: 'contribution', minRankScore: 0 },
+            { id: 'ma_thach_ha_pham', price: 100, type: 'contribution', minRankScore: 0 },
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'huyen_am_han_tuy', price: 400, type: 'contribution', minRankScore: 0 },
             { id: 'huyen_am_coc_cong_phap', name: 'Huyền Âm Chân Kinh', price: 800, type: 'contribution', minRankScore: 0, isTech: true },
@@ -123,7 +123,7 @@ export const SECTS = {
             { id: 'cuu_u_luyen_thi_thuat', price: 400, type: 'contribution', minRankScore: 0 },
             { id: 'u_minh_hoa', price: 300, type: 'contribution', minRankScore: 1 },
             { id: 'ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
-            { id: 'bi_phuong_dong_giap_thi', price: 1800, type: 'contribution', minRankScore: 1 },
+            { id: 'bi_phuong_luyen_che_dong_giap_thi', price: 1800, type: 'contribution', minRankScore: 1 },
             { id: 'am_hon_phien', price: 2500, type: 'contribution', minRankScore: 1 },
             { id: 'huyen_am_coc_bi_tich', name: 'Bí Thuật: Huyền Âm Quỷ Trảo', price: 8000, type: 'contribution', minRankScore: 2, isTech: true },
             { id: 'nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
@@ -189,7 +189,7 @@ export const SECTS = {
             { id: 'dan_phuong_ngoc_de_dan', price: 250, type: 'contribution', minRankScore: 0 },
             { id: 'lac_van_tong_cong_phap', name: 'Lạc Vân Kiếm Trận Biện', price: 800, type: 'contribution', minRankScore: 0, isTech: true },
             { id: 'truc_co_dan', price: 150, type: 'contribution', minRankScore: 0 },
-            { id: 'dan_phuong_than_tam_dan', price: 350, type: 'contribution', minRankScore: 0 },
+            { id: 'dan_phuong_thanh_tam_dan', price: 350, type: 'contribution', minRankScore: 0 },
             { id: 'thanh_tam_dan', price: 100, type: 'contribution', minRankScore: 0 },
             { id: 'dan_dao_chan_giai', name: 'Đan Đạo Chân Giải', price: 1000, type: 'contribution', minRankScore: 0, isTech: true },
             { id: 'dan_phuong_truc_co_dan', price: 1000, type: 'contribution', minRankScore: 1 },
@@ -225,7 +225,7 @@ export const SECTS = {
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'tinh_than_thach', price: 300, type: 'contribution', minRankScore: 0 },
-            { id: 'tran_ban_so', price: 300, type: 'contribution', minRankScore: 0 },
+            { id: 'khoi_linh_tran_ban', price: 300, type: 'contribution', minRankScore: 0 },
             { id: 'thien_tinh_tong_cong_phap', name: 'Thiên Tinh Trận Pháp Quyết', price: 600, type: 'contribution', minRankScore: 0, isTech: true },
             { id: 'tran_do_tu_linh_tran', price: 500, type: 'contribution', minRankScore: 0 },
             { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
@@ -261,11 +261,11 @@ export const SECTS = {
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'ngu_thu_quyet', price: 400, type: 'contribution', minRankScore: 0 },
-            { id: 'linh_thu_ung_hieu', price: 700, type: 'contribution', minRankScore: 0 },
+            { id: 'linh_thu_ung_hieu_an', price: 700, type: 'contribution', minRankScore: 0 },
             { id: 'linh_thu_son_cong_phap', name: 'Linh Thú Vạn Thú Quyết', price: 600, type: 'contribution', minRankScore: 0, isTech: true },
             { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
-            { id: 'trung_thanh_van_ly', price: 3000, type: 'contribution', minRankScore: 1 },
-            { id: 'trung_huyen_giap_dia_long', price: 5000, type: 'contribution', minRankScore: 1 },
+            { id: 'thanh_van_ly_thu_linh_noan', price: 3000, type: 'contribution', minRankScore: 1 },
+            { id: 'huyen_giap_dia_long_linh_noan', price: 5000, type: 'contribution', minRankScore: 1 },
             { id: 'ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
             { id: 'linh_thu_son_bi_tich', name: 'Bí Thuật: Thú Huyết Cuồng Bạo', price: 7500, type: 'contribution', minRankScore: 2, isTech: true },
             { id: 'nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
@@ -294,7 +294,7 @@ export const SECTS = {
         },
         libraryItems: [
             { id: 'ngung_khi_dan', price: 40, type: 'contribution', minRankScore: 0 },
-            { id: 'thanh_hu_linh_no', price: 350, type: 'contribution', minRankScore: 0 },
+            { id: 'thanh_hu_ngoc_lo', price: 350, type: 'contribution', minRankScore: 0 },
             { id: 'thanh_hu_mon_cong_phap', name: 'Thanh Hư Đạo Nguyên Kinh', price: 600, type: 'contribution', minRankScore: 0, isTech: true },
             { id: 'truc_co_dan', price: 180, type: 'contribution', minRankScore: 0 },
             { id: 'dan_dao_chan_giai', name: 'Đan Đạo Chân Giải', price: 1000, type: 'contribution', minRankScore: 0, isTech: true },
@@ -423,7 +423,7 @@ export const SECTS = {
             'dong_phu': { name: 'Vạn Hồn Phiên', desc: 'Bế quan trong không gian của cự đại quỷ phiên, thu thập lệ khí.' }
         },
         libraryItems: [
-            { id: 'ma_thach', price: 80, type: 'contribution', minRankScore: 0 },
+            { id: 'ma_thach_ha_pham', price: 80, type: 'contribution', minRankScore: 0 },
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'van_hon_cot', price: 300, type: 'contribution', minRankScore: 0 },
             { id: 'quy_linh_mon_cong_phap', name: 'Quỷ Âm Huyền Pháp', price: 800, type: 'contribution', minRankScore: 0, isTech: true },
@@ -431,7 +431,7 @@ export const SECTS = {
             { id: 'cuu_u_luyen_thi_thuat', price: 400, type: 'contribution', minRankScore: 0 },
             { id: 'tuyet_huyet_hac_dan', price: 700, type: 'contribution', minRankScore: 1 },
             { id: 'ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
-            { id: 'bi_phuong_dong_giap_thi', price: 1800, type: 'contribution', minRankScore: 1 },
+            { id: 'bi_phuong_luyen_che_dong_giap_thi', price: 1800, type: 'contribution', minRankScore: 1 },
             { id: 'quy_linh_mon_bi_tich', name: 'Bí Thuật: Vạn Quỷ Cắn Xé', price: 8000, type: 'contribution', minRankScore: 2, isTech: true },
             { id: 'nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
             { id: 'thien_dao_than_thach', price: 4500, type: 'contribution', minRankScore: 2 },
@@ -523,7 +523,7 @@ export const SECTS = {
             'dong_phu': { name: 'Sát Tâm Quan', desc: 'Bế quan trong oán khí ngập trời, tìm sự tĩnh lặng trong cuồng bạo.' }
         },
         libraryItems: [
-            { id: 'ma_thach', price: 100, type: 'contribution', minRankScore: 0 },
+            { id: 'ma_thach_ha_pham', price: 100, type: 'contribution', minRankScore: 0 },
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'sat_khi_linh_phien', price: 400, type: 'contribution', minRankScore: 0 },
             { id: 'thien_sat_tong_cong_phap', name: 'Thiên Sát Ma Quyết', price: 800, type: 'contribution', minRankScore: 0, isTech: true },
@@ -561,7 +561,7 @@ export const SECTS = {
             { id: 'ngu_linh_tong_cong_phap', name: 'Vạn Côn Ngự Trùng Thuật', price: 800, type: 'contribution', minRankScore: 0, isTech: true },
             { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
             { id: 'tui_hap_huyet_trung', price: 600, type: 'contribution', minRankScore: 1 },
-            { id: 'trung_u_minh_mong_diep', price: 6000, type: 'contribution', minRankScore: 1 },
+            { id: 'u_minh_mong_diep_linh_noan', price: 6000, type: 'contribution', minRankScore: 1 },
             { id: 'ket_dan_dan', price: 1500, type: 'contribution', minRankScore: 1 },
             { id: 'ngu_linh_tong_bi_tich', name: 'Bí Thuật: Phệ Linh Ma Trùng', price: 8000, type: 'contribution', minRankScore: 2, isTech: true },
             { id: 'nguyen_anh_dan', price: 8000, type: 'contribution', minRankScore: 2 },
@@ -589,7 +589,7 @@ export const SECTS = {
             'dong_phu': { name: 'U Minh Động Phủ', desc: 'Bế quan cùng khôi lỗi trong không gian tối tăm lạnh lẽo.' }
         },
         libraryItems: [
-            { id: 'ma_thach', price: 100, type: 'contribution', minRankScore: 0 },
+            { id: 'ma_thach_ha_pham', price: 100, type: 'contribution', minRankScore: 0 },
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'u_thiet_linh_moc', price: 350, type: 'contribution', minRankScore: 0 },
             { id: 'khoi_am_tong_cong_phap', name: 'Khôi Lỗi U Minh Kinh', price: 800, type: 'contribution', minRankScore: 0, isTech: true },

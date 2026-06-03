@@ -367,11 +367,11 @@ export class MapScreen {
                         const hasTalisman = state.player.inventory && (
                             state.player.inventory.hasItem('pha_khong_phu') ||
                             state.player.inventory.hasItem('thuan_di_phu') ||
-                            state.player.inventory.hasItem('truyen_tong_lenh')
+                            state.player.inventory.hasItem('thuong_co_truyen_tong_lenh')
                         );
                         const hasBoat = state.player.inventory && (
                             state.player.inventory.hasItem('ngu_phong_phi_chu') ||
-                            state.player.inventory.hasItem('linh_thuyen_so')
+                            state.player.inventory.hasItem('thanh_phong_linh_chu')
                         );
 
                         if (!atTeleport && !hasTalisman && !hasBoat) {
@@ -1883,14 +1883,14 @@ export class MapScreen {
                     }
 
                     const isWeed = Math.random() < 0.75;
-                    let rewardId = 'co_dai';
+                    let rewardId = 'tap_thao';
                     let qty = 1;
 
                     if (!isWeed) {
                         if (herbDrops.length > 0) {
                             rewardId = herbDrops[Math.floor(Math.random() * herbDrops.length)].id;
                         } else {
-                            rewardId = 'linh_thao_thap';
+                            rewardId = 'thanh_phuc_thao';
                         }
                         qty = 1 + Math.floor(Math.random() * 2);
                     } else {

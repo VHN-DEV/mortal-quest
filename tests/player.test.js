@@ -42,7 +42,7 @@ describe('Player class', () => {
       expect(player.lingShi).toBe(100);
       
       // Add 2 Trung Phẩm Linh Thạch (1 Trung = 100)
-      player.inventory.addItem('ling_thach_trung', 2);
+      player.inventory.addItem('trung_pham_linh_thach', 2);
       // Total should be 100 (Hạ) + 2 * 100 (Trung) = 300
       expect(player.lingShi).toBe(300);
     });
@@ -51,7 +51,7 @@ describe('Player class', () => {
       const player = new Player();
       
       // Add 1 Trung Phẩm Linh Thạch (value = 100)
-      player.inventory.addItem('ling_thach_trung', 1);
+      player.inventory.addItem('trung_pham_linh_thach', 1);
       expect(player.lingShi).toBe(100);
       
       // Spend 30. It should consume 1 Trung and give back 70 Hạ.
@@ -59,8 +59,8 @@ describe('Player class', () => {
       expect(success).toBe(true);
       expect(player.lingShi).toBe(70);
       
-      expect(player.inventory.getItemQuantity('ling_thach_trung')).toBe(0);
-      expect(player.inventory.getItemQuantity('ling_thach_ha')).toBe(70);
+      expect(player.inventory.getItemQuantity('trung_pham_linh_thach')).toBe(0);
+      expect(player.inventory.getItemQuantity('ha_pham_linh_thach')).toBe(70);
     });
 
     it('should return false when spending more Linh Thạch than available', () => {

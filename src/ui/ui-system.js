@@ -1416,11 +1416,11 @@ export class UISystem {
                                 const hasTalisman = state.player?.inventory && (
                                     state.player.inventory.hasItem('pha_khong_phu') ||
                                     state.player.inventory.hasItem('thuan_di_phu') ||
-                                    state.player.inventory.hasItem('truyen_tong_lenh')
+                                    state.player.inventory.hasItem('thuong_co_truyen_tong_lenh')
                                 );
                                 const hasBoat = state.player?.inventory && (
                                     state.player.inventory.hasItem('ngu_phong_phi_chu') ||
-                                    state.player.inventory.hasItem('linh_thuyen_so')
+                                    state.player.inventory.hasItem('thanh_phong_linh_chu')
                                 );
                                 if (!atTeleport && !hasTalisman && !hasBoat) {
                                     isLocked = true;

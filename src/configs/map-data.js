@@ -4720,7 +4720,7 @@ export const getTravelRoute = (fromLocId, toLocId) => {
         baseDistance = 50000;
         baseDanger = 'tu_dia';
         terrain = 'khong_gian_loan_luu';
-        requirements = { item: 'truyen_tong_lenh' }; // Need ancient array to cross worlds
+        requirements = { item: 'thuong_co_truyen_tong_lenh' }; // Need ancient array to cross worlds
     } else if (fromLoc.regionId !== toLoc.regionId) {
         baseDistance = 5000;
         baseDanger = 'nguy_hiem';

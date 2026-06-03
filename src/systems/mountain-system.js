@@ -207,7 +207,7 @@ export class MountainSystem {
     async handleTreasureEvent(event, fateBias) {
         const jackpot = Math.random() < (0.1 + fateBias);
         const resources = MOUNTAIN_LAYERS.find(l => l.id === this.currentLayer)?.resources || [];
-        const itemId = resources[Math.floor(Math.random() * resources.length)] || 'ling_thach_ha';
+        const itemId = resources[Math.floor(Math.random() * resources.length)] || 'ha_pham_linh_thach';
         
         if (jackpot) {
             await window.game.receiveItem(itemId, 3);

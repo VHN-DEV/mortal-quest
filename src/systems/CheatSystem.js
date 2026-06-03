@@ -243,7 +243,7 @@ export class CheatSystem {
 
         rolled.push({
             type: 'lingshi',
-            id: lingShiGrade === 'TRUNG' ? 'ling_thach_trung' : 'ling_thach_ha',
+            id: lingShiGrade === 'TRUNG' ? 'trung_pham_linh_thach' : 'ha_pham_linh_thach',
             qty: lingShiQty,
             name: `${lingShiQty} ${lingShiGrade === 'TRUNG' ? 'Trung Phẩm' : 'Hạ Phẩm'} Linh Thạch`,
             icon: lingShiGrade === 'TRUNG' ? '💠' : '💎',
@@ -336,13 +336,13 @@ export class CheatSystem {
             { id: 'tich_coc_dan', qty: 2 },
 
             // Linh thảo & Nguyên liệu
-            { id: 'linh_thao_thap', qty: 5 },
-            { id: 'linh_thao_trung', qty: 3 },
+            { id: 'thanh_phuc_thao', qty: 5 },
+            { id: 'tu_lam_hoa', qty: 3 },
             { id: 'hoa_diem_thao', qty: 2 },
             { id: 'han_tuy_hoa', qty: 2 },
             { id: 'u_minh_hoa', qty: 1 },
-            { id: 'thuy_tinh', qty: 3 },
-            { id: 'ma_thach', qty: 2 },
+            { id: 'thuy_tinh_linh_khoang', qty: 3 },
+            { id: 'ma_thach_ha_pham', qty: 2 },
 
             // Hạt giống
             { id: 'linh_chung_thanh_phuc_thao', qty: 3 },
@@ -351,7 +351,7 @@ export class CheatSystem {
 
             // Đan phương / Bản vẽ nhập môn
             { id: 'dan_phuong_ngung_khi_dan', qty: 1 },
-            { id: 'dan_phuong_than_tam_dan', qty: 1 },
+            { id: 'dan_phuong_thanh_tam_dan', qty: 1 },
             { id: 'ban_ve_thanh_hong_kiem', qty: 1 },
             { id: 'phu_van_hoa_cau_phu', qty: 1 },
             { id: 'tran_do_tu_linh_tran', qty: 1 }
@@ -363,8 +363,8 @@ export class CheatSystem {
                 { id: 'truc_co_dan', qty: 1 },
                 { id: 'can_khon_tui', qty: 1 },
                 { id: 'ho_tam_kinh', qty: 1 },
-                { id: 'linh_thuyen_so', qty: 1 },
-                { id: 'tran_ban_so', qty: 1 },
+                { id: 'thanh_phong_linh_chu', qty: 1 },
+                { id: 'khoi_linh_tran_ban', qty: 1 },
                 { id: 'dan_phuong_truc_co_dan', qty: 1 },
                 { id: 'dan_phuong_bo_nguyen_dan', qty: 1 },
                 { id: 'ban_ve_bat_quai_kinh', qty: 1 },
@@ -380,19 +380,19 @@ export class CheatSystem {
             basePool.push(
                 { id: 'tu_linh_chau', qty: 1 },
                 { id: 'thao_thiet_can_khon_dai', qty: 1 },
-                { id: 'trung_thanh_van_ly', qty: 1 },
-                { id: 'trung_u_minh_mong_diep', qty: 1 },
+                { id: 'thanh_van_ly_thu_linh_noan', qty: 1 },
+                { id: 'u_minh_mong_diep_linh_noan', qty: 1 },
                 { id: 'di_hoa_bang', qty: 1 },
                 { id: 'di_loi_bang', qty: 1 },
-                { id: 'linh_the_luc', qty: 1 },
-                { id: 'phap_bao_luc', qty: 1 },
+                { id: 'chu_thien_linh_the_luc', qty: 1 },
+                { id: 'van_bao_luc', qty: 1 },
                 { id: 'dan_phuong_ngung_anh_dan', qty: 1 },
-                { id: 'ban_ve_phi_kiem_tinh_ha', qty: 1 },
+                { id: 'ban_ve_tinh_ha_phi_kiem', qty: 1 },
                 { id: 'ban_ve_long_lan_giap', qty: 1 },
                 { id: 'phu_van_thuan_di_phu', qty: 1 },
                 { id: 'phu_van_thien_loi_phu', qty: 1 },
                 { id: 'tran_do_sat_kiem_tran', qty: 1 },
-                { id: 'bi_phuong_dong_giap_thi', qty: 1 }
+                { id: 'bi_phuong_luyen_che_dong_giap_thi', qty: 1 }
             );
         }
 

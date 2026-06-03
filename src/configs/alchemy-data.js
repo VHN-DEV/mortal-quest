@@ -41,8 +41,8 @@ export const CAULDRONS = {
         outputBonus: 1,
         description: 'Được đúc từ huyền thiết, có độ ổn định và khả năng tụ nhiệt khá cao.'
     },
-    'dia_lu': {
-        id: 'dia_lu',
+    'dia_long_phan_thien_lu': {
+        id: 'dia_long_phan_thien_lu',
         name: 'Địa Long Phần Thiên Lư',
         quality: PHAP_BAO_QUALITIES.CO_BAO,
         successBonus: 0.15,
@@ -63,8 +63,8 @@ export const CAULDRONS = {
         outputBonus: 3,
         description: 'Lò luyện cổ xưa khắc họa phượng hoàng thần điểu, lửa phượng giúp tăng nhanh tốc độ luyện đan và sản lượng đan dược cực tốt.'
     },
-    'thien_lu': {
-        id: 'thien_lu',
+    'thien_cuc_thai_hu_lu': {
+        id: 'thien_cuc_thai_hu_lu',
         name: 'Thiên Cực Thái Hư Lư',
         quality: PHAP_BAO_QUALITIES.LINH_BAO,
         successBonus: 0.3,
@@ -137,7 +137,7 @@ export const ALCHEMY_RECIPES = [
         level: 1,
         materials: [
             { id: 'tich_coc_thao', quantity: 2 },
-            { id: 'linh_coc', quantity: 3 }
+            { id: 'tran_chau_linh_coc', quantity: 3 }
         ],
         baseSuccessRate: 0.9,
         time: 2,
@@ -150,7 +150,7 @@ export const ALCHEMY_RECIPES = [
         resultId: 'ngung_khi_dan',
         level: 1,
         materials: [
-            { id: 'linh_thao_thap', quantity: 3 }
+            { id: 'thanh_phuc_thao', quantity: 3 }
         ],
         baseSuccessRate: 0.8,
         time: 5,
@@ -163,7 +163,7 @@ export const ALCHEMY_RECIPES = [
         level: 1,
         materials: [
             { id: 'thanh_long_sam', quantity: 1 },
-            { id: 'linh_thao_thap', quantity: 1 }
+            { id: 'thanh_phuc_thao', quantity: 1 }
         ],
         baseSuccessRate: 0.85,
         time: 6,
@@ -176,7 +176,7 @@ export const ALCHEMY_RECIPES = [
         level: 2,
         materials: [
             { id: 'ngoc_de_hoa', quantity: 2 },
-            { id: 'linh_thao_10y', quantity: 1 }
+            { id: 'thap_nien_hoang_tinh_thao', quantity: 1 }
         ],
         baseSuccessRate: 0.75,
         time: 12,
@@ -188,12 +188,12 @@ export const ALCHEMY_RECIPES = [
         resultId: 'thanh_tam_dan',
         level: 2,
         materials: [
-            { id: 'linh_thao_10y', quantity: 2 },
-            { id: 'chu_sa_muc', quantity: 1 }
+            { id: 'thap_nien_hoang_tinh_thao', quantity: 2 },
+            { id: 'chu_sa_linh_muc', quantity: 1 }
         ],
         baseSuccessRate: 0.7,
         time: 15,
-        description: 'Dùng Hoàng Tinh Thảo (10 năm) bồi dưỡng tinh thần, giúp bình ổn tâm lực, hồi phục 50% Khí Huyết.'
+        description: 'Dùng Thập Niên Hoàng Tinh Thảo bồi dưỡng tinh thần, giúp bình ổn tâm lực, hồi phục 50% Khí Huyết.'
     },
     {
         id: 'bo_nguyen_dan',
@@ -201,12 +201,12 @@ export const ALCHEMY_RECIPES = [
         resultId: 'bo_nguyen_dan',
         level: 2,
         materials: [
-            { id: 'linh_thao_10y', quantity: 3 },
-            { id: 'yeu_huyet', quantity: 1 }
+            { id: 'thap_nien_hoang_tinh_thao', quantity: 3 },
+            { id: 'yeu_thu_tinh_huyet', quantity: 1 }
         ],
         baseSuccessRate: 0.65,
         time: 20,
-        description: 'Sử dụng Hoàng Tinh Thảo (10 năm) bồi bổ nguyên khí, nhanh chóng hồi phục Khí Huyết và Linh Lực.'
+        description: 'Sử dụng Thập Niên Hoàng Tinh Thảo bồi bổ nguyên khí, nhanh chóng hồi phục Khí Huyết và Linh Lực.'
     },
     {
         id: 'truc_co_dan',
@@ -214,8 +214,8 @@ export const ALCHEMY_RECIPES = [
         resultId: 'truc_co_dan',
         level: 3,
         materials: [
-            { id: 'linh_thao_100y', quantity: 1 },
-            { id: 'yeu_dan_so', quantity: 1 },
+            { id: 'bach_nien_uan_co_thao', quantity: 1 },
+            { id: 'ha_pham_yeu_dan', quantity: 1 },
             { id: 'hoa_tinh_thach', quantity: 1 }
         ],
         baseSuccessRate: 0.45,
@@ -229,7 +229,7 @@ export const ALCHEMY_RECIPES = [
         level: 3,
         materials: [
             { id: 'hoa_duong_chi', quantity: 1 },
-            { id: 'yeu_dan_so', quantity: 1 }
+            { id: 'ha_pham_yeu_dan', quantity: 1 }
         ],
         baseSuccessRate: 0.55,
         time: 30,
@@ -241,13 +241,13 @@ export const ALCHEMY_RECIPES = [
         resultId: 'ngung_anh_dan',
         level: 5,
         materials: [
-            { id: 'linh_thao_1000y', quantity: 1 },
-            { id: 'yeu_dan_trung', quantity: 1 },
+            { id: 'thien_nien_cuu_khuc_linh_sam', quantity: 1 },
+            { id: 'trung_pham_yeu_dan', quantity: 1 },
             { id: 'han_ngoc_tuy', quantity: 1 }
         ],
         baseSuccessRate: 0.3,
         time: 180,
-        description: 'Sử dụng Cửu Khúc Linh Sâm (1000 năm) thông linh làm chủ dược, giúp hỗ trợ tu sĩ phá phôi hóa anh ngưng tụ Nguyên Anh cực kỳ nghịch thiên.'
+        description: 'Sử dụng Thiên Niên Cửu Khúc Linh Sâm thông linh làm chủ dược, giúp hỗ trợ tu sĩ phá phôi hóa anh ngưng tụ Nguyên Anh cực kỳ nghịch thiên.'
     }
 ];
 

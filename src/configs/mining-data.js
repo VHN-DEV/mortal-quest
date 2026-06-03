@@ -3,10 +3,10 @@
  */
 
 export const MINING_NODE_GRADES = {
-    'HA': { id: 'HA', name: 'Hạ Cấp Linh Mạch', baseProduction: 10, items: ['ling_thach_ha', 'kim_linh_thach', 'tho_linh_thach'], danger: 0.1 },
-    'TRUNG': { id: 'TRUNG', name: 'Trung Cấp Linh Mạch', baseProduction: 50, items: ['ling_thach_trung', 'hoa_linh_thach', 'bang_linh_thach'], danger: 0.3 },
-    'CAO': { id: 'CAO', name: 'Cao Cấp Linh Mạch', baseProduction: 200, items: ['ling_thach_thuong', 'loi_linh_thach', 'moc_linh_thach'], danger: 0.5 },
-    'CUC': { id: 'CUC', name: 'Cực Phẩm Linh Mạch', baseProduction: 1000, items: ['ling_thach_cuc', 'ma_linh_thach'], danger: 0.8 },
+    'HA': { id: 'HA', name: 'Hạ Cấp Linh Mạch', baseProduction: 10, items: ['ha_pham_linh_thach', 'kim_linh_thach', 'tho_linh_thach'], danger: 0.1 },
+    'TRUNG': { id: 'TRUNG', name: 'Trung Cấp Linh Mạch', baseProduction: 50, items: ['trung_pham_linh_thach', 'hoa_linh_thach', 'bang_linh_thach'], danger: 0.3 },
+    'CAO': { id: 'CAO', name: 'Cao Cấp Linh Mạch', baseProduction: 200, items: ['thuong_pham_linh_thach', 'loi_linh_thach', 'moc_linh_thach'], danger: 0.5 },
+    'CUC': { id: 'CUC', name: 'Cực Phẩm Linh Mạch', baseProduction: 1000, items: ['cuc_pham_linh_thach', 'ma_linh_thach'], danger: 0.8 },
     'TIEN': { id: 'TIEN', name: 'Tiên Linh Mạch', baseProduction: 5000, items: ['tien_tinh'], danger: 1.0 }
 };
 
