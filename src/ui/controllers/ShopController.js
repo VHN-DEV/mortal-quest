@@ -9,7 +9,9 @@ import {
     PHAP_BAO_QUALITIES,
     CONG_PHAP_QUALITIES,
     ROOT_QUALITIES,
-    DAN_DUOC_QUALITIES
+    DAN_DUOC_QUALITIES,
+    compareQuality,
+    getQualitySortOrder
 } from '../../configs/game-enums.js';
 
 export class ShopController {
@@ -353,8 +355,7 @@ export class ShopController {
             inv = inv.filter(item => {
                 const itemData = getItemById(item.id);
                 if (!itemData) return false;
-                const qName = typeof itemData.quality === 'object' ? itemData.quality.name : itemData.quality;
-                return qName === this.shopQualityFilter;
+                return compareQuality(itemData.quality, this.shopQualityFilter);
             });
         }
 
@@ -380,15 +381,7 @@ export class ShopController {
                     return dataB.price - dataA.price;
 
                 case 'quality': {
-                    const getQualName = (q) => (typeof q === 'object' ? (q.name || '') : String(q)).toLowerCase();
-                    const qOrder = [
-                        ...Object.values(PHAP_BAO_QUALITIES).map(q => q.name.toLowerCase()),
-                        ...Object.values(ROOT_QUALITIES).map(q => q.name.toLowerCase()),
-                        ...Object.values(DAN_DUOC_QUALITIES).map(q => q.name.toLowerCase())
-                    ];
-
-                    return qOrder.indexOf(getQualName(dataB.quality))
-                        - qOrder.indexOf(getQualName(dataA.quality));
+                    return getQualitySortOrder(dataB.quality) - getQualitySortOrder(dataA.quality);
                 }
 
                 default:
@@ -501,7 +494,7 @@ export class ShopController {
             if (!itemData) return false;
 
             // Quality Filter
-            if (this.shopQualityFilter !== 'all' && itemData.quality !== this.shopQualityFilter) return false;
+            if (this.shopQualityFilter !== 'all' && !compareQuality(itemData.quality, this.shopQualityFilter)) return false;
 
             // Special handling for Dịch Vụ -> Thanh Lý Pawn Shop
             if (sectionType === 'dich_vu' && subFilter === 'thanh_ly') {
@@ -551,15 +544,7 @@ export class ShopController {
                     return dataB.price - dataA.price;
 
                 case 'quality': {
-                    const getQualName = (q) => (typeof q === 'object' ? (q.name || '') : String(q)).toLowerCase();
-                    const qOrder = [
-                        ...Object.values(PHAP_BAO_QUALITIES).map(q => q.name.toLowerCase()),
-                        ...Object.values(ROOT_QUALITIES).map(q => q.name.toLowerCase()),
-                        ...Object.values(DAN_DUOC_QUALITIES).map(q => q.name.toLowerCase())
-                    ];
-
-                    return qOrder.indexOf(getQualName(dataB.quality))
-                        - qOrder.indexOf(getQualName(dataA.quality));
+                    return getQualitySortOrder(dataB.quality) - getQualitySortOrder(dataA.quality);
                 }
 
                 default:

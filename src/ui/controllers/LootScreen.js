@@ -1,6 +1,6 @@
 import { state } from '../../state.js';
 import { getItemById } from '../../configs/item-data.js';
-import { PHAP_BAO_QUALITIES } from '../../configs/game-enums.js';
+import { getQualityObject } from '../../configs/game-enums.js';
 
 /**
  * Màn hình Loot đồ (PUBG style)
@@ -199,20 +199,12 @@ export class LootScreen {
     }
 
     getQualityColor(quality) {
-        if (!quality) return 'bg-white/10';
-        if (typeof quality === 'object') {
-            return quality.bgClass || 'bg-white/10';
-        }
-        const qObj = Object.values(PHAP_BAO_QUALITIES).find(q => q.name === quality || q.id === quality);
+        const qObj = getQualityObject(quality);
         return qObj?.bgClass || 'bg-white/10';
     }
 
     getQualityClass(quality) {
-        if (!quality) return '';
-        if (typeof quality === 'object') {
-            return quality.glowClass || '';
-        }
-        const qObj = Object.values(PHAP_BAO_QUALITIES).find(q => q.name === quality || q.id === quality);
+        const qObj = getQualityObject(quality);
         return qObj?.glowClass || '';
     }
 

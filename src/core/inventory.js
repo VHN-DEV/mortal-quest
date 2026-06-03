@@ -1,4 +1,5 @@
 import { getItemById } from '../configs/item-data.js';
+import { getQualitySortOrder } from '../configs/game-enums.js';
 import { EFFECT_TYPES } from '../configs/item-classification.js';
 import { state } from '../state.js';
 import { BEASTS } from '../configs/beast-data.js';
@@ -702,18 +703,14 @@ export class Inventory {
     }
 
     sortItems() {
-        const qualityMap = {
-            'Phàm Khí': 1, 'Pháp Khí': 2, 'Linh Khí': 3, 'Pháp Bảo': 4, 'Cổ Bảo': 5, 'Linh Bảo': 6, 'Thông Thiên Linh Bảo': 7, 'Tiên Khí': 8, 'Danh Khí': 9
-        };
-
         this.bags.forEach(bag => {
             bag.items.sort((a, b) => {
                 const itemA = getItemById(a.id);
                 const itemB = getItemById(b.id);
                 if (!itemA || !itemB) return 0;
                 if (itemA.type !== itemB.type) return itemA.type.localeCompare(itemB.type);
-                const qA = qualityMap[itemA.quality] || 0;
-                const qB = qualityMap[itemB.quality] || 0;
+                const qA = getQualitySortOrder(itemA.quality);
+                const qB = getQualitySortOrder(itemB.quality);
                 if (qA !== qB) return qB - qA;
                 return itemA.name.localeCompare(itemB.name);
             });

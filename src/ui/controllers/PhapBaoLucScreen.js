@@ -1,7 +1,14 @@
 import { ITEMS } from '../../configs/item-data.js';
 import { state } from '../../state.js';
 import { getAssetUrl } from '../../configs/asset-data.js';
-import { PHAP_BAO_QUALITIES, ITEM_TYPES_METADATA, GAME_STATS } from '../../configs/game-enums.js';
+import { 
+    PHAP_BAO_QUALITIES, 
+    ITEM_TYPES_METADATA, 
+    GAME_STATS,
+    getQualitySortOrder,
+    getQualityObject,
+    getQualityName
+} from '../../configs/game-enums.js';
 
 /**
  * Màn hình hiển thị Vạn Bảo Lục - Danh sách các pháp bảo trong game.
@@ -11,8 +18,6 @@ export class PhapBaoLucScreen {
     constructor() {
         this.initElements();
         this.initEvents();
-        
-        this.qualityOrder = Object.values(PHAP_BAO_QUALITIES).map(q => q.name);
     }
 
     initElements() {
@@ -128,11 +133,7 @@ export class PhapBaoLucScreen {
     }
 
     getQualityColor(quality) {
-        if (!quality) return '#ffffff';
-        if (typeof quality === 'object') {
-            return quality.color || '#ffffff';
-        }
-        const qObj = Object.values(PHAP_BAO_QUALITIES).find(q => q.name === quality || q.id === quality);
+        const qObj = getQualityObject(quality);
         return qObj?.color || '#ffffff';
     }
 
@@ -158,9 +159,7 @@ export class PhapBaoLucScreen {
 
             const items = grouped[type];
             items.sort((a, b) => {
-                const qa = this.qualityOrder.indexOf(typeof a.quality === 'object' ? a.quality.name : a.quality);
-                const qb = this.qualityOrder.indexOf(typeof b.quality === 'object' ? b.quality.name : b.quality);
-                return qb - qa;
+                return getQualitySortOrder(b.quality) - getQualitySortOrder(a.quality);
             });
 
             items.forEach(item => {

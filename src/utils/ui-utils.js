@@ -10,23 +10,33 @@ import {
     SPIRIT_STONE_QUALITIES,
     PUPPET_GRADES,
     BEAST_BLOODLINES,
-    LINH_THE_RARITIES
+    LINH_THE_RARITIES,
+    getQualityName
 } from '../configs/game-enums.js';
 
-// Combine all quality lists for dynamic lookup
-const ALL_QUALITIES = [
-    ...Object.values(PHAP_BAO_QUALITIES),
-    ...Object.values(DAN_DUOC_QUALITIES),
-    ...Object.values(CONG_PHAP_QUALITIES),
-    ...Object.values(DI_HOA_QUALITIES),
-    ...Object.values(DI_LOI_QUALITIES),
-    ...Object.values(LINH_THU_QUALITIES),
-    ...Object.values(ROOT_QUALITIES),
-    ...Object.values(SPIRIT_STONE_QUALITIES),
-    ...Object.values(PUPPET_GRADES),
-    ...Object.values(BEAST_BLOODLINES),
-    ...Object.values(LINH_THE_RARITIES)
-];
+// Populate Map of all qualities for O(1) performance lookup
+const ALL_QUALITIES_MAP = new Map();
+[
+    PHAP_BAO_QUALITIES,
+    DAN_DUOC_QUALITIES,
+    CONG_PHAP_QUALITIES,
+    DI_HOA_QUALITIES,
+    DI_LOI_QUALITIES,
+    LINH_THU_QUALITIES,
+    ROOT_QUALITIES,
+    SPIRIT_STONE_QUALITIES,
+    PUPPET_GRADES,
+    BEAST_BLOODLINES,
+    LINH_THE_RARITIES
+].forEach(group => {
+    Object.values(group).forEach(q => {
+        if (q.id) ALL_QUALITIES_MAP.set(q.id, q);
+        if (q.name) {
+            ALL_QUALITIES_MAP.set(q.name, q);
+            ALL_QUALITIES_MAP.set(q.name.toLowerCase(), q);
+        }
+    });
+});
 
 /**
  * Returns the CSS class for a given item quality.
@@ -43,12 +53,7 @@ export function getQualityClass(quality) {
     const qStr = String(quality);
     if (qStr === 'Tiên Phẩm') return 'tien';
 
-    // Dynamic search in enums
-    const qObj = ALL_QUALITIES.find(q => 
-        q.id === quality || 
-        q.name === quality || 
-        q.name.toLowerCase() === qStr.toLowerCase()
-    );
+    const qObj = ALL_QUALITIES_MAP.get(quality) || ALL_QUALITIES_MAP.get(qStr.toLowerCase());
     if (qObj && qObj.cssClass) {
         return qObj.cssClass;
     }
@@ -76,7 +81,7 @@ export function renderItemCard(item, options = {}) {
     } = options;
 
     const qClass = getQualityClass(item.quality);
-    const displayQual = (item.quality && typeof item.quality === 'object') ? item.quality.name : item.quality;
+    const displayQual = getQualityName(item.quality);
 
     return `
         <div class="flex items-center justify-between p-3 bg-black/40 border border-gray-800 rounded-xl hover:border-${qClass} transition-all">
@@ -115,7 +120,7 @@ export function renderGridItem(item, options = {}) {
     return `
         <div class="p-2 border rounded-lg bg-black/20 flex flex-col items-center cursor-pointer transition-all border-${qClass}/30 ${isSelected ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'}"
              onclick="${onClick}">
-            <div class="text-2xl mb-1">${item.icon}</div>
+             <div class="text-2xl mb-1">${item.icon}</div>
             ${quantity > 0 ? `<div class="text-[9px] text-gray-400">x${quantity}</div>` : ''}
             ${showPrice ? `<div class="text-[8px] text-cultivation-gold mt-1">${price} LT</div>` : ''}
         </div>
@@ -130,7 +135,7 @@ export function renderGridItem(item, options = {}) {
  */
 export function getDisplayQuality(quality, type) {
     if (!quality) return '';
-    const qName = typeof quality === 'object' ? (quality.name || '') : String(quality);
+    const qName = getQualityName(quality);
     const isManualOrRecipe = ['sach_cong_phap', 'tuyet_ky', 'dan_phuong', 'don_phu'].includes(type);
     if (!isManualOrRecipe) return qName;
 
@@ -147,4 +152,3 @@ export function getDisplayQuality(quality, type) {
     };
     return map[qName] || qName;
 }
-
