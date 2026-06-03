@@ -92,14 +92,95 @@ export class UISystem {
      * @param {number} duration milliseconds
      */
     toast(message, type = 'info', duration = 5000) {
+        // 1. Check if we should stack this with an existing active toast
         const existing = Array.from(this.notifContainer.children).find(
-            child => child.dataset.message === message
+            child => child.dataset.baseMessage === message && child.dataset.type === type
         );
-        if (existing) return;
 
+        if (existing) {
+            // Increment count
+            const count = parseInt(existing.dataset.count || 1) + 1;
+            existing.dataset.count = count;
+
+            // Update text content with a badge for count
+            const msgSpan = existing.querySelector('.toast-message-text');
+            if (msgSpan) {
+                msgSpan.innerHTML = `${message} <span class="ml-1.5 px-1.5 py-0.5 text-[9px] bg-white/20 text-white rounded font-mono font-bold inline-block animate-bounce-subtle">x${count}</span>`;
+            }
+
+            // Reset progress bar animation
+            const progress = existing.querySelector('.toast-progress');
+            if (progress) {
+                // To restart CSS animation, we trigger a reflow
+                progress.style.animation = 'none';
+                void progress.offsetHeight;
+                progress.style.animation = null;
+                progress.style.animationDuration = `${duration}ms`;
+            }
+
+            // Reset the auto-remove delayed call
+            if (this._toastTimers && this._toastTimers.has(existing)) {
+                this._toastTimers.get(existing).kill();
+            }
+
+            // Pulse animation to show it stacked
+            gsap.fromTo(existing,
+                { scale: 1 },
+                { scale: 1.03, duration: 0.1, yoyo: true, repeat: 1, ease: "power1.out" }
+            );
+
+            // Re-schedule close
+            const closeToast = () => {
+                gsap.to(existing, {
+                    y: -20,
+                    opacity: 0,
+                    duration: 0.4,
+                    ease: "power2.in",
+                    onComplete: () => {
+                        existing.remove();
+                        if (this._toastTimers) this._toastTimers.delete(existing);
+                    }
+                });
+            };
+
+            if (!this._toastTimers) this._toastTimers = new Map();
+            const newTimer = gsap.delayedCall(duration / 1000, () => {
+                if (existing.parentElement) closeToast();
+            });
+            this._toastTimers.set(existing, newTimer);
+
+            // Play SFX (throttled to avoid machine-gun effect)
+            if (type === 'success') {
+                const now = Date.now();
+                if (!this._lastSuccessSfxTime || now - this._lastSuccessSfxTime > 400) {
+                    audioManager.playSfx('success');
+                    this._lastSuccessSfxTime = now;
+                }
+            }
+            return;
+        }
+
+        // 2. Limit the number of concurrently visible toasts to prevent lag & clutter
+        const MAX_VISIBLE_TOASTS = 3;
+        const currentToasts = Array.from(this.notifContainer.children);
+        if (currentToasts.length >= MAX_VISIBLE_TOASTS) {
+            // Dismiss the oldest active toast immediately
+            const oldest = currentToasts[0];
+            // Kill its timer and remove it
+            if (this._toastTimers && this._toastTimers.has(oldest)) {
+                this._toastTimers.get(oldest).kill();
+                this._toastTimers.delete(oldest);
+            }
+            // Remove immediately to prevent DOM bloat and sync issues
+            oldest.remove();
+        }
+
+        // 3. Create the new toast
         const toast = document.createElement('div');
-        toast.dataset.message = message;
+        toast.dataset.baseMessage = message;
+        toast.dataset.message = message; // Keep for backward compatibility if other scripts query it
         toast.dataset.type = type;
+        toast.dataset.count = 1;
         toast.className = `w-full p-4 bg-cultivation-dark/95 border-l-4 rounded-r-xl shadow-2xl relative overflow-hidden transform pointer-events-auto flex items-center space-x-3 opacity-0`;
 
         const colors = {
@@ -121,7 +202,7 @@ export class UISystem {
             <i class="ph ${icons[type] || icons.info} text-xl flex-shrink-0"></i>
             <div class="flex-grow flex flex-col min-w-0">
                 <span class="text-[9px] font-bold text-white/40 uppercase tracking-widest">${type}</span>
-                <span class="text-xs font-bold text-white font-ancient leading-tight break-words">${message}</span>
+                <span class="toast-message-text text-xs font-bold text-white font-ancient leading-tight break-words">${message}</span>
             </div>
             <button class="toast-close p-1 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0">
                 <i class="ph ph-x text-sm"></i>
@@ -136,7 +217,10 @@ export class UISystem {
                 opacity: 0,
                 duration: 0.4,
                 ease: "power2.in",
-                onComplete: () => toast.remove()
+                onComplete: () => {
+                    toast.remove();
+                    if (this._toastTimers) this._toastTimers.delete(toast);
+                }
             });
         };
 
@@ -154,12 +238,18 @@ export class UISystem {
         );
 
         // Auto remove after duration
-        gsap.delayedCall(duration / 1000, () => {
+        if (!this._toastTimers) this._toastTimers = new Map();
+        const timer = gsap.delayedCall(duration / 1000, () => {
             if (toast.parentElement) closeToast();
         });
+        this._toastTimers.set(toast, timer);
 
         if (type === 'success') {
-            audioManager.playSfx('success');
+            const now = Date.now();
+            if (!this._lastSuccessSfxTime || now - this._lastSuccessSfxTime > 400) {
+                audioManager.playSfx('success');
+                this._lastSuccessSfxTime = now;
+            }
         }
     }
 
