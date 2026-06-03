@@ -1,5 +1,6 @@
 import { SPIRIT_STONE_GRADES, SPIRIT_STONE_QUALITIES, SPIRIT_STONE_ATTRIBUTES, CONVERSION_RATE } from '../configs/spirit-stone-data.js';
 import { getItemById } from '../configs/item-data.js';
+import { state } from '../state.js';
 
 /**
  * Hệ thống Quản lý Linh Thạch (Spirit Stone System)
@@ -93,7 +94,8 @@ export class SpiritStoneSystem {
         let attrBonus = 1.0;
         if (item.attribute !== 'NORMAL') {
             const playerRoot = this.player.spiritRoot || []; // Giả sử player có mảng linh căn
-            if (playerRoot.includes(item.attribute)) {
+            const vnAttrName = attr?.name;
+            if (vnAttrName && playerRoot.includes(vnAttrName)) {
                 attrBonus = 1.5; // Tăng 50% hiệu quả nếu đúng thuộc tính
             } else if (item.attribute === 'DEMON' && this.player.path === 'MA') {
                 attrBonus = 2.0;

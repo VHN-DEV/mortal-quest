@@ -340,6 +340,14 @@ export class Player {
         this.thoiGianSoulVienMan = 0;    // Số phút game-time đã ở trạng thái Soul Viên Mãn
     }
 
+    get spiritRoot() {
+        return this.spiritualRoot ? (this.spiritualRoot.elements || []) : [];
+    }
+
+    set spiritRoot(val) {
+        // No-op to remain synchronized with spiritualRoot.elements
+    }
+
     get lingShi() {
         if (!this.inventory) return 0;
         let total = 0;
