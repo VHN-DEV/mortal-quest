@@ -6,7 +6,7 @@ import { logger } from '../utils/logger.js';
 import { getAssetUrl } from '../configs/asset-data.js';
 import { getItemById } from '../configs/item-data.js';
 import { findLocationName, DANGER_LEVELS, getWorlds, getLocationById } from '../configs/map-data.js';
-import { getDisplayQuality } from '../utils/ui-utils.js';
+import { getDisplayQuality, getQualityClass } from '../utils/ui-utils.js';
 import { getRealmById } from '../configs/realm-data.js';
 
 export class UISystem {
@@ -979,7 +979,7 @@ export class UISystem {
                     <div class="relative w-32 h-32 mb-8 group">
                         <div class="loot-item-glow absolute inset-[-40px] rounded-full blur-3xl opacity-60" style="background: radial-gradient(circle, ${config.color} 0%, transparent 70%)"></div>
                         <img src="${item.image}" class="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_${config.color}]">
-                        <div class="absolute inset-0 border-2 border-${item.quality.toLowerCase()} rounded-2xl opacity-20 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="absolute inset-0 border-2 border-${this.getQualityClass(item.quality)} rounded-2xl opacity-20 group-hover:opacity-100 transition-opacity"></div>
                     </div>
                     <div class="text-center space-y-2">
                         <h3 class="text-4xl font-charm text-glow tracking-wider mb-2 ${config.rainbow ? 'quality-tien-khi' : ''}" style="color: ${config.rainbow ? 'transparent' : config.color}; text-shadow: 0 0 20px ${config.rainbow ? '#ffffff66' : config.color + '66'}">${item.name}</h3>
@@ -1246,12 +1246,7 @@ export class UISystem {
     }
 
     getQualityClass(quality) {
-        const map = {
-            'Phàm Khí': 'pham-khi', 'Pháp Khí': 'phap-khi', 'Linh Khí': 'linh-khi', 'Pháp Bảo': 'phap-bao',
-            'Cổ Bảo': 'co-bao', 'Linh Bảo': 'linh-bao', 'Thông Thiên Linh Bảo': 'thong-thien', 'Tiên Khí': 'tien-khi', 'Danh Khí': 'danh-khi',
-            'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
-        };
-        return map[quality] || 'pham';
+        return getQualityClass(quality);
     }
 
     getStatLabel(statKey) {

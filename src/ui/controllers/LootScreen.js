@@ -1,5 +1,6 @@
 import { state } from '../../state.js';
 import { getItemById } from '../../configs/item-data.js';
+import { PHAP_BAO_QUALITIES } from '../../configs/game-enums.js';
 
 /**
  * Màn hình Loot đồ (PUBG style)
@@ -198,28 +199,21 @@ export class LootScreen {
     }
 
     getQualityColor(quality) {
-        const colors = {
-            'Phàm Khí': 'bg-gray-400',
-            'Pháp Khí': 'bg-green-500',
-            'Linh Khí': 'bg-blue-500',
-            'Pháp Bảo': 'bg-purple-500',
-            'Cổ Bảo': 'bg-orange-500',
-            'Linh Bảo': 'bg-red-500',
-            'Thông Thiên Linh Bảo': 'bg-cultivation-gold',
-            'Tiên Khí': 'bg-cyan-400'
-        };
-        return colors[quality] || 'bg-white/10';
+        if (!quality) return 'bg-white/10';
+        if (typeof quality === 'object') {
+            return quality.bgClass || 'bg-white/10';
+        }
+        const qObj = Object.values(PHAP_BAO_QUALITIES).find(q => q.name === quality || q.id === quality);
+        return qObj?.bgClass || 'bg-white/10';
     }
 
     getQualityClass(quality) {
-        const classes = {
-            'Pháp Bảo': 'quality-purple-500',
-            'Cổ Bảo': 'quality-orange-500',
-            'Linh Bảo': 'quality-red-500',
-            'Thông Thiên Linh Bảo': 'quality-cultivation-gold',
-            'Tiên Khí': 'quality-cyan-400'
-        };
-        return classes[quality] || '';
+        if (!quality) return '';
+        if (typeof quality === 'object') {
+            return quality.glowClass || '';
+        }
+        const qObj = Object.values(PHAP_BAO_QUALITIES).find(q => q.name === quality || q.id === quality);
+        return qObj?.glowClass || '';
     }
 
     close() {

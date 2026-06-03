@@ -5,6 +5,7 @@ import { SectController } from './SectController.js';
 import { CraftingController } from './CraftingController.js';
 import { MountainController } from './MountainController.js';
 import { TechniqueController } from './TechniqueController.js';
+import { getQualityClass } from '../../utils/ui-utils.js';
 
 /**
  * Quản lý giao diện của các hệ thống phụ thông qua các Sub-Controllers (Delegates)
@@ -153,15 +154,7 @@ export class SystemsScreen {
     }
 
     getQualityClass(quality) {
-        if (!quality) return 'common';
-        const q = quality.toLowerCase();
-        if (q.includes('phàm') || q.includes('hạ')) return 'common';
-        if (q.includes('pháp') || q.includes('trung')) return 'uncommon';
-        if (q.includes('linh') || q.includes('thượng') || q.includes('danh')) return 'rare';
-        if (q.includes('bảo') || q.includes('cực')) return 'epic';
-        if (q.includes('cổ') || q.includes('hoàn mỹ')) return 'legendary';
-        if (q.includes('tiên')) return 'mythic';
-        return 'common';
+        return getQualityClass(quality);
     }
 
     // --- ALCHEMY ---

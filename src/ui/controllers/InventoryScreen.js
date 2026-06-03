@@ -5,7 +5,7 @@ import { getAssetUrl } from '../../configs/asset-data.js';
 import { getItemConnections } from '../../utils/item-connections.js';
 import { getTechniqueById, getSecretTechniqueById } from '../../configs/technique-data.js';
 import { BEASTS } from '../../configs/beast-data.js';
-import { getDisplayQuality } from '../../utils/ui-utils.js';
+import { getDisplayQuality, getQualityClass } from '../../utils/ui-utils.js';
 
 /**
  * Quản lý giao diện túi đồ và trang bị.
@@ -943,12 +943,7 @@ export class InventoryScreen {
     }
 
     getQualityClass(quality) {
-        const map = {
-            'Phàm Khí': 'pham-khi', 'Pháp Khí': 'phap-khi', 'Linh Khí': 'linh-khi', 'Pháp Bảo': 'phap-bao',
-            'Cổ Bảo': 'co-bao', 'Linh Bảo': 'linh-bao', 'Thông Thiên Linh Bảo': 'thong-thien', 'Tiên Khí': 'tien-khi', 'Danh Khí': 'danh-khi',
-            'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien'
-        };
-        return map[quality] || 'pham';
+        return getQualityClass(quality);
     }
 
     linkifyDescription(text, currentItemId) {

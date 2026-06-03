@@ -1,116 +1,59 @@
 import { getItemById } from '../configs/item-data.js';
+import {
+    PHAP_BAO_QUALITIES,
+    DAN_DUOC_QUALITIES,
+    CONG_PHAP_QUALITIES,
+    DI_HOA_QUALITIES,
+    DI_LOI_QUALITIES,
+    LINH_THU_QUALITIES,
+    ROOT_QUALITIES,
+    SPIRIT_STONE_QUALITIES,
+    PUPPET_GRADES,
+    BEAST_BLOODLINES,
+    LINH_THE_RARITIES
+} from '../configs/game-enums.js';
+
+// Combine all quality lists for dynamic lookup
+const ALL_QUALITIES = [
+    ...Object.values(PHAP_BAO_QUALITIES),
+    ...Object.values(DAN_DUOC_QUALITIES),
+    ...Object.values(CONG_PHAP_QUALITIES),
+    ...Object.values(DI_HOA_QUALITIES),
+    ...Object.values(DI_LOI_QUALITIES),
+    ...Object.values(LINH_THU_QUALITIES),
+    ...Object.values(ROOT_QUALITIES),
+    ...Object.values(SPIRIT_STONE_QUALITIES),
+    ...Object.values(PUPPET_GRADES),
+    ...Object.values(BEAST_BLOODLINES),
+    ...Object.values(LINH_THE_RARITIES)
+];
 
 /**
  * Returns the CSS class for a given item quality.
- * @param {string} quality 
+ * @param {string|object} quality 
  * @returns {string}
  */
 export function getQualityClass(quality) {
-    let qKey = quality;
-    if (quality && typeof quality === 'object') {
-        qKey = quality.id || '';
+    if (!quality) return 'pham';
+    
+    if (typeof quality === 'object') {
+        return quality.cssClass || 'pham';
     }
 
-    const map = {
-        'Phàm Khí': 'pham-khi',
-        'Pháp Khí': 'phap-khi',
-        'Linh Khí': 'linh-khi',
-        'Pháp Bảo': 'phap-bao',
-        'Cổ Bảo': 'co-bao',
-        'Linh Bảo': 'linh-bao',
-        'Thông Thiên Linh Bảo': 'thong-thien',
-        'Tiên Khí': 'tien-khi',
-        'Danh Khí': 'danh-khi',
+    const qStr = String(quality);
+    if (qStr === 'Tiên Phẩm') return 'tien';
 
-        // Object ID mappings for Pháp Bảo
-        'pham_khi': 'pham-khi',
-        'phap_khi': 'phap-khi',
-        'linh_khi': 'linh-khi',
-        'phap_bao': 'phap-bao',
-        'co_bao': 'co-bao',
-        'linh_bao': 'linh-bao',
-        'thong_thien': 'thong-thien',
-        'huyen_thien': 'danh-khi',
-        'tien_khi': 'tien-khi',
-        'danh_khi': 'danh-khi',
+    // Dynamic search in enums
+    const qObj = ALL_QUALITIES.find(q => 
+        q.id === quality || 
+        q.name === quality || 
+        q.name.toLowerCase() === qStr.toLowerCase()
+    );
+    if (qObj && qObj.cssClass) {
+        return qObj.cssClass;
+    }
 
-        // Công Pháp (Giai system)
-        'Phàm Giai': 'pham-khi',
-        'Hoàng Giai': 'phap-khi',
-        'Huyền Giai': 'linh-khi',
-        'Địa Giai': 'phap-bao',
-        'Thiên Giai': 'co-bao',
-        'Linh Giai': 'linh-bao',
-        'Thánh Giai': 'thong-thien',
-        'Tiên Giai': 'tien-khi',
-        'Đế Giai': 'danh-khi',
-        'Đạo Giai': 'danh-khi',
-
-        // Object ID mappings for Công Pháp
-        'pham_giai': 'pham-khi',
-        'hoang_giai': 'phap-khi',
-        'huyen_giai': 'linh-khi',
-        'dia_giai': 'phap-bao',
-        'thien_giai': 'co-bao',
-        'linh_giai': 'linh-bao',
-        'thanh_giai': 'thong-thien',
-        'tien_giai': 'tien-khi',
-        'de_giai': 'danh-khi',
-        'dao_giai': 'danh-khi',
-
-        // Dị Hỏa / Dị Lôi
-        'Phàm Hỏa': 'pham-khi', 'Phàm Lôi': 'pham-khi',
-        'Linh Hỏa': 'linh-khi', 'Linh Lôi': 'linh-khi',
-        'Địa Hỏa': 'phap-bao', 'Địa Lôi': 'phap-bao',
-        'Thiên Hỏa': 'co-bao', 'Thiên Lôi': 'co-bao',
-        'Thánh Hỏa': 'thong-thien', 'Thánh Lôi': 'thong-thien',
-        'Tiên Hỏa': 'tien-khi', 'Tiên Lôi': 'tien-khi',
-        'Đạo Hỏa': 'danh-khi', 'Đạo Lôi': 'danh-khi',
-        'Hồng Mông Tổ Hỏa': 'danh-khi', 'Tổ Lôi': 'danh-khi',
-
-        // Object ID mappings for Dị Hỏa / Dị Lôi
-        'di_hoa': 'co-bao',
-        'pham_hoa': 'pham-khi', 'pham_loi': 'pham-khi',
-        'linh_hoa': 'linh-khi', 'linh_loi': 'linh-khi',
-        'dia_hoa': 'phap-bao', 'dia_loi': 'phap-bao',
-        'thien_hoa': 'co-bao', 'thien_loi': 'co-bao',
-        'thanh_hoa': 'thong-thien', 'thanh_loi': 'thong-thien',
-        'tien_hoa': 'tien-khi', 'tien_loi': 'tien-khi',
-        'tien': 'tien-khi',
-        'dao_hoa': 'danh-khi', 'dao_loi': 'danh-khi',
-        'hong_mong': 'danh-khi', 'to_loi': 'danh-khi',
-
-        // Linh Thú Huyết Mạch
-        'pham_huyet': 'pham-khi',
-        'linh_cap': 'linh-khi',
-        'dia_cap': 'phap-bao',
-        'thien_cap': 'co-bao',
-        'thanh_huyet': 'thong-thien',
-        'tien_huyet': 'tien-khi',
-        'than_huyet': 'danh-khi',
-
-        // Dan duoc strings & ids
-        'pham': 'pham',
-        'Phàm Phẩm': 'pham',
-        'ha_pham': 'hoang',
-        'Hạ Phẩm': 'hoang',
-        'trung_pham': 'huyen',
-        'Trung Phẩm': 'huyen',
-        'thuong_pham': 'dia',
-        'Thượng Phẩm': 'dia',
-        'cuc_pham': 'thien',
-        'Cực Phẩm': 'thien',
-        'dan_van': 'linh-bao',
-        'Đan Văn': 'linh-bao',
-        'dan_bao': 'than',
-        'Đan Bảo': 'than',
-        'tien_dan': 'tien',
-        'Tiên Đan': 'tien',
-
-        // Compatibility
-        'Hạ phẩm': 'pham', 'Trung phẩm': 'hoang', 'Thượng phẩm': 'huyen', 'Cực phẩm': 'dia', 'Hoàn Mỹ': 'thien', 'Tiên Phẩm': 'tien'
-    };
-    return map[qKey] || map[quality] || 'pham';
+    return 'pham';
 }
 
 /**
@@ -186,23 +129,22 @@ export function renderGridItem(item, options = {}) {
  * @returns {string}
  */
 export function getDisplayQuality(quality, type) {
-    if (quality && typeof quality === 'object') {
-        return quality.name || '';
-    }
+    if (!quality) return '';
+    const qName = typeof quality === 'object' ? (quality.name || '') : String(quality);
     const isManualOrRecipe = ['sach_cong_phap', 'tuyet_ky', 'dan_phuong', 'don_phu'].includes(type);
-    if (!isManualOrRecipe) return quality;
+    if (!isManualOrRecipe) return qName;
 
     const map = {
-        'Phàm Khí': 'Phàm Giai',
-        'Pháp Khí': 'Hoàng Giai',
-        'Linh Khí': 'Huyền Giai',
-        'Pháp Bảo': 'Địa Giai',
-        'Cổ Bảo': 'Thiên Giai',
-        'Linh Bảo': 'Linh Giai',
-        'Thông Thiên Linh Bảo': 'Thánh Giai',
-        'Tiên Khí': 'Tiên Giai',
-        'Danh Khí': 'Đế Giai'
+        [PHAP_BAO_QUALITIES.PHAM_KHI.name]: CONG_PHAP_QUALITIES.PHAM_GIAI.name,
+        [PHAP_BAO_QUALITIES.PHAP_KHI.name]: CONG_PHAP_QUALITIES.HOANG_GIAI.name,
+        [PHAP_BAO_QUALITIES.LINH_KHI.name]: CONG_PHAP_QUALITIES.HUYEN_GIAI.name,
+        [PHAP_BAO_QUALITIES.PHAP_BAO.name]: CONG_PHAP_QUALITIES.DIA_GIAI.name,
+        [PHAP_BAO_QUALITIES.CO_BAO.name]: CONG_PHAP_QUALITIES.THIEN_GIAI.name,
+        [PHAP_BAO_QUALITIES.LINH_BAO.name]: CONG_PHAP_QUALITIES.LINH_GIAI.name,
+        [PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO.name]: CONG_PHAP_QUALITIES.THANH_GIAI.name,
+        [PHAP_BAO_QUALITIES.TIEN_KHI.name]: CONG_PHAP_QUALITIES.TIEN_GIAI.name,
+        [PHAP_BAO_QUALITIES.DANH_KHI.name]: CONG_PHAP_QUALITIES.DE_GIAI.name
     };
-    return map[quality] || quality;
+    return map[qName] || qName;
 }
 
