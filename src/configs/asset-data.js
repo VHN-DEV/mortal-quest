@@ -298,12 +298,12 @@ export const ASSETS = {
 
     // Vật phẩm
     items: createAssetProxy({
-        spirit_stone: getAssetUrl('items/spirit_stone'),
-        healing_pill: getAssetUrl('items/healing_pill'),
-        cuc_pham_linh_thach: getAssetUrl('items/cuc-pham-linh-thach'),
-        ha_pham_linh_thach: getAssetUrl('items/ha_pham_linh_thach'),
-        trung_pham_linh_thach: getAssetUrl('items/trung-pham-linh-thach'),
-        thuong_pham_linh_thach: getAssetUrl('items/thuong-pham-linh-thach'),
+        spirit_stone: getAssetUrl('items/ores/spirit_stone'),
+        healing_pill: getAssetUrl('items/pills/healing_pill'),
+        cuc_pham_linh_thach: getAssetUrl('items/ores/cuc_pham_linh_thach'),
+        ha_pham_linh_thach: getAssetUrl('items/ores/ha_pham_linh_thach'),
+        trung_pham_linh_thach: getAssetUrl('items/ores/trung_pham_linh_thach'),
+        thuong_pham_linh_thach: getAssetUrl('items/ores/thuong_pham_linh_thach'),
     }, 'items', 'linh_thach'),
 
     // Công pháp bí tịch

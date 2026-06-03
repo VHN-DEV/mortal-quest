@@ -732,6 +732,7 @@ export const ITEMS = {
     'tich_coc_thao': {
         id: 'tich_coc_thao',
         name: 'Tịch Cốc Thảo',
+        image: 'items/herbs/tich_coc_thao',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🌿',
         quality: PHAP_BAO_QUALITIES.PHAM_KHI,
@@ -744,6 +745,7 @@ export const ITEMS = {
     'linh_coc': {
         id: 'linh_coc',
         name: 'Trân Châu Linh Cốc',
+        image: 'items/herbs/linh_coc',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🌾',
         quality: PHAP_BAO_QUALITIES.PHAM_KHI,
@@ -783,6 +785,7 @@ export const ITEMS = {
     'linh_thao_thap': {
         id: 'linh_thao_thap',
         name: 'Thanh Phục Thảo',
+        image: 'items/herbs/linh_thao_thap',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🌿',
         quality: PHAP_BAO_QUALITIES.PHAM_KHI,
@@ -795,6 +798,7 @@ export const ITEMS = {
     'linh_thao_trung': {
         id: 'linh_thao_trung',
         name: 'Tử Lam Hoa',
+        image: 'items/herbs/linh_thao_trung',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🍃',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -833,6 +837,7 @@ export const ITEMS = {
     'u_minh_hoa': {
         id: 'u_minh_hoa',
         name: 'U Minh Hoa',
+        image: 'items/herbs/u_minh_hoa',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '💀',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -1590,7 +1595,7 @@ export const ITEMS = {
         type: ITEM_TYPES.LINH_THACH,
         grade: 'HA',
         attribute: 'NORMAL',
-        image: 'items/ha_pham_linh_thach',
+        image: 'items/ores/ha_pham_linh_thach',
         icon: '💎',
         quality: PHAP_BAO_QUALITIES.PHAM_KHI,
         price: 1,
@@ -1606,7 +1611,7 @@ export const ITEMS = {
         type: ITEM_TYPES.LINH_THACH,
         grade: 'TRUNG',
         attribute: 'NORMAL',
-        image: 'items/trung_pham_linh_thach',
+        image: 'items/ores/trung_pham_linh_thach',
         icon: '💠',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
         price: 100,
@@ -1622,7 +1627,7 @@ export const ITEMS = {
         type: ITEM_TYPES.LINH_THACH,
         grade: 'THUONG',
         attribute: 'NORMAL',
-        image: 'items/thuong_pham_linh_thach',
+        image: 'items/ores/thuong_pham_linh_thach',
         icon: '🔮',
         quality: PHAP_BAO_QUALITIES.CO_BAO,
         price: 10000,
@@ -1638,7 +1643,7 @@ export const ITEMS = {
         type: ITEM_TYPES.LINH_THACH,
         grade: 'CUC',
         attribute: 'NORMAL',
-        image: 'items/cuc_pham_linh_thach',
+        image: 'items/ores/cuc_pham_linh_thach',
         icon: '🌌',
         quality: PHAP_BAO_QUALITIES.LINH_BAO,
         price: 1000000,
@@ -2579,6 +2584,7 @@ export const ITEMS = {
     'linh_thao_10y': {
         id: 'linh_thao_10y',
         name: 'Hoàng Tinh Thảo (10 năm)',
+        image: 'items/herbs/linh_thao_10y',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🌿',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
@@ -2591,6 +2597,7 @@ export const ITEMS = {
     'linh_thao_100y': {
         id: 'linh_thao_100y',
         name: 'Uẩn Cổ Thảo (100 năm)',
+        image: 'items/herbs/linh_thao_100y',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🍃',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -2603,6 +2610,7 @@ export const ITEMS = {
     'linh_thao_1000y': {
         id: 'linh_thao_1000y',
         name: 'Cửu Khúc Linh Sâm (1000 năm)',
+        image: 'items/herbs/linh_thao_1000y',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🎋',
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
@@ -2692,6 +2700,7 @@ export const ITEMS = {
     'linh_thao_van_nam': {
         id: 'linh_thao_van_nam',
         name: 'Vạn Niên Huyết Linh Chi',
+        image: 'items/herbs/linh_thao_van_nam',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🌺',
         quality: PHAP_BAO_QUALITIES.CO_BAO,
@@ -3715,8 +3724,7 @@ export const ITEMS = {
         name: 'Trứng Lôi Bằng',
         type: ITEM_TYPES.TRUNG_LINH_THU,
         beastId: 'loi_bang',
-        image: 'aberrations/loi-bang.svg',
-        icon: '🥚',
+                icon: '🥚',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
         price: 8000,
         description: 'Trứng của Lôi Bằng, loài chim khổng lồ mang theo sức mạnh lôi đình, khi trưởng thành có thể sải cánh vạn dặm.',
@@ -5097,7 +5105,7 @@ export const ITEMS = {
         icon: '🎋',
         quality: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO,
         price: 300000,
-        image: 'items/thanh_truc_phong_van_kiem.webp',
+        image: 'artifacts/thanh_truc_phong_van_kiem',
         description: 'Thanh kiếm chí bảo rèn từ Thiên Tinh Thần Tre cùng linh tơ ong vàng, uy lực kiếm khí cuồng bạo xé rách vạn pháp.',
         stats: { atk: 12000, spd: 500, critRate: 0.25, swordDmg: 1.35 },
         poem: ['Thanh Trúc Thần Phong Đan Tiêu Nhạc', 'Vạn Kiếm Quy Tông Luyện Vạn Ma'],
@@ -5239,7 +5247,7 @@ export const ITEMS = {
         icon: '🔑',
         quality: PHAP_BAO_QUALITIES.LINH_BAO,
         price: 80000,
-        image: 'items/hu_tien_lenh.webp',
+        image: 'items/equipments/hu_tien_lenh',
         description: 'Tấm lệnh bài cổ xưa tỏa ra dao động không gian huyền ảo, là chìa khóa mở lối vào Hư Thiên Điện chứa Hư Thiên Đỉnh.',
         categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
@@ -5252,7 +5260,7 @@ export const ITEMS = {
         icon: '🕊️',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
         price: 150,
-        image: 'items/truyen_tin_hac.webp',
+        image: 'items/talismans/truyen_tin_hac',
         description: 'Linh hạc gấp từ phù giấy chứa một luồng ý niệm, chuyên dùng để truyền tin tức giữa các tu sĩ cách xa vạn dặm. Sử dụng hồi phục ngay lập tức 10 Thể lực.',
         effect: { type: EFFECT_TYPES.HOI_PHUC, stamina: 10 },
         categories: [
@@ -5280,7 +5288,7 @@ export const ITEMS = {
         icon: '🕸️',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
         price: 1500,
-        image: 'items/o_minh_ty.webp',
+        image: 'items/herbs/o_minh_ty',
         description: 'Sợi tơ đen nhánh dẻo dai sinh ra từ tằm ô minh sống nơi u tối, là vật liệu thượng hạng để luyện chế khôi lỗi cao cấp hoặc dệt hộ giáp.',
         categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
