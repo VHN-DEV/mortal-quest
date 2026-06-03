@@ -8,7 +8,8 @@ import { ITEM_CATEGORIES, classifyItem } from '../../configs/item-classification
 import {
     PHAP_BAO_QUALITIES,
     CONG_PHAP_QUALITIES,
-    ROOT_QUALITIES
+    ROOT_QUALITIES,
+    DAN_DUOC_QUALITIES
 } from '../../configs/game-enums.js';
 
 export class ShopController {
@@ -272,49 +273,22 @@ export class ShopController {
 
         if (elQualityRow) elQualityRow.classList.remove('hidden');
 
-        let qualities = [
-            { id: 'all', name: 'TẤT CẢ PHẨM' },
-            { id: PHAP_BAO_QUALITIES.PHAM_KHI.name, name: 'PHÀM KHÍ' },
-            { id: PHAP_BAO_QUALITIES.PHAP_KHI.name, name: 'PHÁP KHÍ' },
-            { id: PHAP_BAO_QUALITIES.LINH_KHI.name, name: 'LINH KHÍ' },
-            { id: PHAP_BAO_QUALITIES.PHAP_BAO.name, name: 'PHÁP BẢO' },
-            { id: PHAP_BAO_QUALITIES.CO_BAO.name, name: 'CỔ BẢO' },
-            { id: PHAP_BAO_QUALITIES.LINH_BAO.name, name: 'LINH BẢO' },
-            { id: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO.name, name: 'THÔNG THIÊN' },
-            { id: PHAP_BAO_QUALITIES.TIEN_KHI.name, name: 'TIÊN KHÍ' },
-            { id: PHAP_BAO_QUALITIES.DANH_KHI.name, name: 'DANH KHÍ' }
+        const qualities = [
+            { id: 'all', name: 'TẤT CẢ PHẨM', filterClass: 'text-gray-500 border-white/5' },
+            ...Object.values(PHAP_BAO_QUALITIES).map(qObj => {
+                const displayName = getDisplayQuality(qObj, section === 'cong_phap' ? 'sach_cong_phap' : 'default');
+                const finalName = displayName === 'Thông Thiên Linh Bảo' ? 'Thông Thiên' : displayName;
+                return {
+                    id: qObj.name,
+                    name: finalName.toUpperCase(),
+                    filterClass: qObj.filterClass || 'text-gray-500 border-white/5'
+                };
+            })
         ];
-
-        if (section === 'cong_phap') {
-            qualities = [
-                { id: 'all', name: 'TẤT CẢ PHẨM' },
-                { id: PHAP_BAO_QUALITIES.PHAM_KHI.name, name: CONG_PHAP_QUALITIES.PHAM_GIAI.name.toUpperCase() },
-                { id: PHAP_BAO_QUALITIES.PHAP_KHI.name, name: CONG_PHAP_QUALITIES.HOANG_GIAI.name.toUpperCase() },
-                { id: PHAP_BAO_QUALITIES.LINH_KHI.name, name: CONG_PHAP_QUALITIES.HUYEN_GIAI.name.toUpperCase() },
-                { id: PHAP_BAO_QUALITIES.PHAP_BAO.name, name: CONG_PHAP_QUALITIES.DIA_GIAI.name.toUpperCase() },
-                { id: PHAP_BAO_QUALITIES.CO_BAO.name, name: CONG_PHAP_QUALITIES.THIEN_GIAI.name.toUpperCase() },
-                { id: PHAP_BAO_QUALITIES.LINH_BAO.name, name: CONG_PHAP_QUALITIES.LINH_GIAI.name.toUpperCase() },
-                { id: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO.name, name: CONG_PHAP_QUALITIES.THANH_GIAI.name.toUpperCase() },
-                { id: PHAP_BAO_QUALITIES.TIEN_KHI.name, name: CONG_PHAP_QUALITIES.TIEN_GIAI.name.toUpperCase() },
-                { id: PHAP_BAO_QUALITIES.DANH_KHI.name, name: CONG_PHAP_QUALITIES.DE_GIAI.name.toUpperCase() }
-            ];
-        }
-
-        const qColors = {
-            [PHAP_BAO_QUALITIES.PHAM_KHI.name]: 'text-gray-400 border-gray-500/20 bg-gray-500/5',
-            [PHAP_BAO_QUALITIES.PHAP_KHI.name]: 'text-green-400 border-green-500/20 bg-green-500/5',
-            [PHAP_BAO_QUALITIES.LINH_KHI.name]: 'text-qi-blue border-qi-blue/20 bg-qi-blue/5',
-            [PHAP_BAO_QUALITIES.PHAP_BAO.name]: 'text-purple-400 border-purple-500/20 bg-purple-500/5',
-            [PHAP_BAO_QUALITIES.CO_BAO.name]: 'text-orange-400 border-orange-500/20 bg-orange-500/5',
-            [PHAP_BAO_QUALITIES.LINH_BAO.name]: 'text-red-400 border-red-500/20 bg-red-500/5',
-            [PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO.name]: 'text-cultivation-gold border-cultivation-gold/20 bg-cultivation-gold/5 font-bold shimmer-gold',
-            [PHAP_BAO_QUALITIES.TIEN_KHI.name]: 'text-pink-400 border-pink-500/20 bg-pink-500/5',
-            [PHAP_BAO_QUALITIES.DANH_KHI.name]: 'text-yellow-400 border-yellow-500/20 bg-yellow-500/5 font-bold'
-        };
 
         this.elShopQualityFilterNav.innerHTML = qualities.map(q => {
             const active = this.shopQualityFilter === q.id;
-            const qColor = qColors[q.id] || 'text-gray-500 border-white/5';
+            const qColor = q.filterClass;
             return `
                 <button data-quality="${q.id}" 
                     class="px-2.5 py-1 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all duration-200 shrink-0 border ${active
@@ -406,10 +380,11 @@ export class ShopController {
                     return dataB.price - dataA.price;
 
                 case 'quality': {
-                    const getQualName = (q) => typeof q === 'object' ? (q.name || '') : String(q);
+                    const getQualName = (q) => (typeof q === 'object' ? (q.name || '') : String(q)).toLowerCase();
                     const qOrder = [
-                        ...Object.values(PHAP_BAO_QUALITIES).map(q => q.name),
-                        ...Object.values(ROOT_QUALITIES).map(q => q.name)
+                        ...Object.values(PHAP_BAO_QUALITIES).map(q => q.name.toLowerCase()),
+                        ...Object.values(ROOT_QUALITIES).map(q => q.name.toLowerCase()),
+                        ...Object.values(DAN_DUOC_QUALITIES).map(q => q.name.toLowerCase())
                     ];
 
                     return qOrder.indexOf(getQualName(dataB.quality))
@@ -576,12 +551,11 @@ export class ShopController {
                     return dataB.price - dataA.price;
 
                 case 'quality': {
-                    const getQualName = (q) => typeof q === 'object' ? (q.name || '') : String(q);
+                    const getQualName = (q) => (typeof q === 'object' ? (q.name || '') : String(q)).toLowerCase();
                     const qOrder = [
-                        ...Object.values(PHAP_BAO_QUALITIES).map(q => q.name),
-                        ...Object.values(ROOT_QUALITIES).map(q => q.name),
-                        'Cực phẩm',
-                        'Hoàn Mỹ'
+                        ...Object.values(PHAP_BAO_QUALITIES).map(q => q.name.toLowerCase()),
+                        ...Object.values(ROOT_QUALITIES).map(q => q.name.toLowerCase()),
+                        ...Object.values(DAN_DUOC_QUALITIES).map(q => q.name.toLowerCase())
                     ];
 
                     return qOrder.indexOf(getQualName(dataB.quality))

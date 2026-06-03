@@ -15,16 +15,16 @@ const createQuality = (id, name, color, extra = {}) => ({
 });
 
 export const PHAP_BAO_QUALITIES = {
-    PHAM_KHI: createQuality('pham_khi', 'Phàm Khí', '#9E9E9E', { cssClass: 'pham-khi', bgClass: 'bg-gray-400', glowClass: '' }),
-    PHAP_KHI: createQuality('phap_khi', 'Pháp Khí', '#4CAF50', { cssClass: 'phap-khi', bgClass: 'bg-green-500', glowClass: '' }),
-    LINH_KHI: createQuality('linh_khi', 'Linh Khí', '#2196F3', { cssClass: 'linh-khi', bgClass: 'bg-blue-500', glowClass: '' }),
-    PHAP_BAO: createQuality('phap_bao', 'Pháp Bảo', '#9C27B0', { cssClass: 'phap-bao', bgClass: 'bg-purple-500', glowClass: 'quality-purple-500' }),
-    CO_BAO: createQuality('co_bao', 'Cổ Bảo', '#FF9800', { cssClass: 'co-bao', bgClass: 'bg-orange-500', glowClass: 'quality-orange-500' }),
-    LINH_BAO: createQuality('linh_bao', 'Linh Bảo', '#F44336', { cssClass: 'linh-bao', bgClass: 'bg-red-500', glowClass: 'quality-red-500' }),
-    THONG_THIEN_LINH_BAO: createQuality('thong_thien', 'Thông Thiên Linh Bảo', '#FF007F', { cssClass: 'thong-thien', bgClass: 'bg-cultivation-gold', glowClass: 'quality-cultivation-gold' }),
-    HUYEN_THIEN_CHI_BAO: createQuality('huyen_thien', 'Huyền Thiên Chi Bảo', '#9400D3', { cssClass: 'danh-khi', bgClass: 'bg-purple-900', glowClass: '' }),
-    TIEN_KHI: createQuality('tien_khi', 'Tiên Khí', '#00FFFF', { cssClass: 'tien-khi', bgClass: 'bg-cyan-400', glowClass: 'quality-cyan-400' }),
-    DANH_KHI: createQuality('danh_khi', 'Danh Khí', '#FFD700', { cssClass: 'danh-khi', bgClass: 'bg-yellow-500', glowClass: '' })
+    PHAM_KHI: createQuality('pham_khi', 'Phàm Khí', '#9E9E9E', { cssClass: 'pham-khi', bgClass: 'bg-gray-400', glowClass: '', filterClass: 'text-gray-400 border-gray-500/20 bg-gray-500/5' }),
+    PHAP_KHI: createQuality('phap_khi', 'Pháp Khí', '#4CAF50', { cssClass: 'phap-khi', bgClass: 'bg-green-500', glowClass: '', filterClass: 'text-green-400 border-green-500/20 bg-green-500/5' }),
+    LINH_KHI: createQuality('linh_khi', 'Linh Khí', '#2196F3', { cssClass: 'linh-khi', bgClass: 'bg-blue-500', glowClass: '', filterClass: 'text-qi-blue border-qi-blue/20 bg-qi-blue/5' }),
+    PHAP_BAO: createQuality('phap_bao', 'Pháp Bảo', '#9C27B0', { cssClass: 'phap-bao', bgClass: 'bg-purple-500', glowClass: 'quality-purple-500', filterClass: 'text-purple-400 border-purple-500/20 bg-purple-500/5' }),
+    CO_BAO: createQuality('co_bao', 'Cổ Bảo', '#FF9800', { cssClass: 'co-bao', bgClass: 'bg-orange-500', glowClass: 'quality-orange-500', filterClass: 'text-orange-400 border-orange-500/20 bg-orange-500/5' }),
+    LINH_BAO: createQuality('linh_bao', 'Linh Bảo', '#F44336', { cssClass: 'linh-bao', bgClass: 'bg-red-500', glowClass: 'quality-red-500', filterClass: 'text-red-400 border-red-500/20 bg-red-500/5' }),
+    THONG_THIEN_LINH_BAO: createQuality('thong_thien', 'Thông Thiên Linh Bảo', '#FF007F', { cssClass: 'thong-thien', bgClass: 'bg-cultivation-gold', glowClass: 'quality-cultivation-gold', filterClass: 'text-cultivation-gold border-cultivation-gold/20 bg-cultivation-gold/5 font-bold shimmer-gold' }),
+    HUYEN_THIEN_CHI_BAO: createQuality('huyen_thien', 'Huyền Thiên Chi Bảo', '#9400D3', { cssClass: 'danh-khi', bgClass: 'bg-purple-900', glowClass: '', filterClass: 'text-purple-300 border-purple-900/30 bg-purple-950/25 font-bold' }),
+    TIEN_KHI: createQuality('tien_khi', 'Tiên Khí', '#00FFFF', { cssClass: 'tien-khi', bgClass: 'bg-cyan-400', glowClass: 'quality-cyan-400', filterClass: 'text-pink-400 border-pink-500/20 bg-pink-500/5' }),
+    DANH_KHI: createQuality('danh_khi', 'Danh Khí', '#FFD700', { cssClass: 'danh-khi', bgClass: 'bg-yellow-500', glowClass: '', filterClass: 'text-yellow-400 border-yellow-500/20 bg-yellow-500/5 font-bold' })
 };
 
 export const DAN_DUOC_QUALITIES = {
