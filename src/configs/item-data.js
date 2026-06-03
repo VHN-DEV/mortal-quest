@@ -678,7 +678,7 @@ export const ITEMS = {
         quality: PHAP_BAO_QUALITIES.PHAM_KHI,
         price: 1,
         description: 'Đan dược giúp tu sĩ không cần ăn uống, duy trì sinh mệnh khi bế quan (mỗi ngày bế quan tiêu hao 1 viên). Sử dụng riêng lẻ giúp tăng nhẹ tốc độ tu luyện trong 1 giờ.',
-        effect: { type: EFFECT_TYPES.BUFF_TAM_THOI, stat: 'tu_vi_speed', value: 1.1, duration: 3600 },
+        effect: { type: EFFECT_TYPES.BUFF_TAM_THOI, stat: 'tuViSpeed', value: 1.1, duration: 3600 },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
         ]
@@ -5397,7 +5397,7 @@ export const ITEMS = {
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
         price: 350,
         description: 'Tiêu Dao Quả, quả linh ngọt lành ngậm đầy thiên địa tinh hoa. Khi ăn giúp tu sĩ lập tức phục hồi 40 điểm Thể Lực và gia tăng nhẹ tốc độ tu luyện trong 1 giờ.',
-        effect: { type: EFFECT_TYPES.HOI_PHUC, stamina: 40, buff: { stat: 'tu_vi_speed', value: 1.15, duration: 3600 } },
+        effect: { type: EFFECT_TYPES.HOI_PHUC, stamina: 40, buff: { stat: 'tuViSpeed', value: 1.15, duration: 3600 } },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.TU_LUYEN }
         ]

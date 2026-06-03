@@ -704,7 +704,6 @@ export class InventoryScreen {
                 }
             } else if (effect.type === EFFECT_TYPES.BUFF_TAM_THOI) {
                 const statLabels = {
-                    'tu_vi_speed': 'Tốc độ tu vi',
                     'tuViSpeed': 'Tốc độ tu vi',
                     'soulPs': 'Tốc độ thần thức',
                     'def_pct': 'Phòng thủ',
