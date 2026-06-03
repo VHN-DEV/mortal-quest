@@ -15,6 +15,7 @@ import { SEEDS } from './configs/garden-data.js';
 import { SECTS, getSectById } from './configs/sect-data.js';
 import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS, CREATION_SYSTEMS } from './configs/creation-data.js';
 import { PHYSIQUES } from './configs/physique-data.js';
+import { GAME_STATS } from './configs/game-enums.js';
 import { TITLES } from './configs/fate-data.js';
 import { NPCScreen } from './ui/controllers/NPCScreen.js';
 
@@ -880,42 +881,6 @@ window.renderTimeHUD = () => {
     }
 };
 
-const CREATION_BONUS_LABELS = {
-    atk: 'Công',
-    def: 'Thủ',
-    maxHp: 'Sinh lực',
-    spd: 'Tốc',
-    mana: 'Mana',
-    luck: 'Khí vận',
-    karma: 'Nghiệp',
-    tvps: 'Tu vi/s',
-    alchemySuccess: 'Tỉ lệ luyện đan',
-    bodyExpSpeed: 'Tốc độ nhục thân',
-    soulExpSpeed: 'Tốc độ thần thức',
-    qiAbsorb: 'Hấp thu linh khí',
-    critRate: 'Bạo kích',
-    critDmg: 'ST Bạo kích',
-    lifeSteal: 'Hút máu',
-    pierce: 'Xuyên thấu',
-    soulPierce: 'Xuyên hồn',
-    daoVun: 'Đạo vận',
-    murderQi: 'Sát khí',
-    fireDmg: 'ST Hỏa',
-    waterDmg: 'ST Thủy',
-    thunderDmg: 'ST Lôi',
-    maxAge: 'Thọ nguyên',
-    spdPercent: 'Tốc độ (%)',
-    avoidRate: 'Né tránh',
-    maxMana: 'Mana tối đa',
-    techniqueMastery: 'Lĩnh ngộ công pháp',
-    breakthroughChance: 'Tỉ lệ đột phá',
-    comprehension: 'Ngộ tính',
-    daoTam: 'Đạo tâm',
-    divineSense: 'Thần thức',
-    physique: 'Căn cốt',
-    allRes: 'Kháng Tất Cả'
-};
-
 const formatCreationBonus = (bonus = {}) => {
     const normalized = { ...bonus, ...(bonus.stats || {}) };
     delete normalized.stats;
@@ -929,7 +894,7 @@ const formatCreationBonus = (bonus = {}) => {
     return Object.entries(normalized)
         .map(([key, value]) => {
             if (typeof value !== 'number') return null;
-            const label = CREATION_BONUS_LABELS[key] || key;
+            const label = GAME_STATS[key]?.name || key;
 
             if (multiplierStats.includes(key) || key === 'techniqueMastery' || key === 'breakthroughChance') {
                 let percent;

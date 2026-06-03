@@ -1,5 +1,6 @@
 import { CREATION_RACES } from '../../configs/creation-data.js';
 import { state } from '../../state.js';
+import { GAME_STATS, RACE_VISUALS } from '../../configs/game-enums.js';
 
 /**
  * Màn hình hiển thị Vạn Tộc Thông Giám - Danh sách các chủng tộc trong game.
@@ -77,37 +78,15 @@ export class ChungTocLucScreen {
     }
 
     getRaceIcon(id) {
-        const icons = {
-            'HUMAN': '👨‍👩‍👧‍👦',
-            'DEMON': '👿',
-            'SPIRIT_BEAST': '🦊',
-            'DRAGON': '🐲'
-        };
-        return icons[id] || '👤';
+        return RACE_VISUALS[id]?.icon || '👤';
     }
 
     getRaceColor(id) {
-        const colors = {
-            'HUMAN': '#60a5fa',
-            'DEMON': '#ef4444',
-            'SPIRIT_BEAST': '#34d399',
-            'DRAGON': '#fbbf24'
-        };
-        return colors[id] || '#ffffff';
+        return RACE_VISUALS[id]?.color || '#ffffff';
     }
 
     translateStat(stat) {
-        const statsMap = {
-            'tvps': 'Tốc Độ Tu Luyện',
-            'soulExpSpeed': 'Tốc Độ Thần Thức',
-            'atk': 'Công Kích',
-            'def': 'Phòng Thủ',
-            'karma': 'Khí Vận/Nghiệp Lực',
-            'maxAge': 'Thọ Nguyên Thêm',
-            'maxHp': 'Khí Huyết Tăng',
-            'allRes': 'Kháng Tất Cả'
-        };
-        return statsMap[stat] || stat;
+        return GAME_STATS[stat]?.name || stat;
     }
 
     isPercentage(stat) {

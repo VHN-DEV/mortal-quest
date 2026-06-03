@@ -7,7 +7,7 @@ import { getAssetUrl } from '../configs/asset-data.js';
 import { getItemById } from '../configs/item-data.js';
 import { findLocationName, DANGER_LEVELS, getWorlds, getLocationById } from '../configs/map-data.js';
 import { getDisplayQuality, getQualityClass } from '../utils/ui-utils.js';
-import { PHAP_BAO_QUALITIES } from '../configs/game-enums.js';
+import { PHAP_BAO_QUALITIES, GAME_STATS } from '../configs/game-enums.js';
 import { getRealmById } from '../configs/realm-data.js';
 
 export class UISystem {
@@ -1252,12 +1252,7 @@ export class UISystem {
     }
 
     getStatLabel(statKey) {
-        const map = {
-            atk: 'Công', def: 'Thủ', spd: 'Tốc', maxHp: 'Sinh lực', maxMana: 'Pháp lực', mana: 'Pháp lực',
-            luck: 'Khí vận', critChance: 'Tỉ lệ bạo kích', critDamage: 'Sát thương bạo kích', karma: 'Nhân quả',
-            lifespan: 'Thọ nguyên', qiAbsorb: 'Hấp thụ Linh khí', alchemyBonus: 'Tỉ lệ Luyện đan'
-        };
-        return map[statKey] || statKey;
+        return GAME_STATS[statKey]?.name || statKey;
     }
 
     // --- Travel System UI Methods ---

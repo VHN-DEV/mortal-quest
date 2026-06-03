@@ -6,6 +6,7 @@ import { RACE_DATA } from '../../configs/realm-data.js';
 import { TITLES } from '../../configs/fate-data.js';
 import { getGenderLabel } from '../../configs/display-mappers.js';
 import { CULTIVATION_PATHS } from '../../configs/cultivation-paths.js';
+import { ELEMENT_TYPES, STATUS_EFFECT_CATEGORIES } from '../../configs/game-enums.js';
 
 /**
  * Quản lý giao diện chỉ số nhân vật, cảnh giới và các thông tin liên quan.
@@ -326,31 +327,21 @@ export class CharacterScreen {
             const root = state.player.spiritualRoot;
             const rarityName = root.rarityName || 'Phàm';
             
-            const ELEMENT_STYLES = {
-                'Kim': { color: '#fcd34d', bg: 'rgba(252, 211, 77, 0.1)', border: 'rgba(252, 211, 77, 0.25)', shadow: 'rgba(252, 211, 77, 0.15)' },
-                'Mộc': { color: '#4ade80', bg: 'rgba(74, 222, 128, 0.1)', border: 'rgba(74, 222, 128, 0.25)', shadow: 'rgba(74, 222, 128, 0.15)' },
-                'Thủy': { color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)', border: 'rgba(59, 130, 246, 0.25)', shadow: 'rgba(59, 130, 246, 0.15)' },
-                'Hỏa': { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.25)', shadow: 'rgba(239, 68, 68, 0.15)' },
-                'Thổ': { color: '#d97706', bg: 'rgba(217, 119, 6, 0.1)', border: 'rgba(217, 119, 6, 0.25)', shadow: 'rgba(217, 119, 6, 0.15)' },
-                'Lôi': { color: '#a855f7', bg: 'rgba(168, 85, 247, 0.1)', border: 'rgba(168, 85, 247, 0.25)', shadow: 'rgba(168, 85, 247, 0.15)' },
-                'Băng': { color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.1)', border: 'rgba(6, 182, 212, 0.25)', shadow: 'rgba(6, 182, 212, 0.15)' },
-                'Phong': { color: '#94a3b8', bg: 'rgba(148, 163, 184, 0.1)', border: 'rgba(148, 163, 184, 0.25)', shadow: 'rgba(148, 163, 184, 0.15)' },
-                'Độc': { color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)', border: 'rgba(16, 185, 129, 0.25)', shadow: 'rgba(16, 185, 129, 0.15)' }
-            };
-
             const defaultStyle = { color: '#ffffff', bg: 'rgba(255, 255, 255, 0.05)', border: 'rgba(255, 255, 255, 0.15)', shadow: 'transparent' };
 
             let elementsText = '';
             if (root.proportions) {
                 elementsText = Object.entries(root.proportions)
                     .map(([el, pct]) => {
-                        const style = ELEMENT_STYLES[el] || defaultStyle;
+                        const elEnum = Object.values(ELEMENT_TYPES).find(e => e.name === el);
+                        const style = elEnum ? { color: elEnum.color, bg: elEnum.bg, border: elEnum.border, shadow: elEnum.shadow } : defaultStyle;
                         return `<span class="px-2 py-0.5 rounded-full border text-[7.5px] font-bold tracking-wide transition-all hover:scale-105 shadow-sm whitespace-nowrap" style="color: ${style.color}; background-color: ${style.bg}; border-color: ${style.border}; box-shadow: 0 0 4px ${style.shadow}">${el} ${pct}%</span>`;
                     })
                     .join('');
             } else if (root.elements) {
                 elementsText = root.elements.map(el => {
-                    const style = ELEMENT_STYLES[el] || defaultStyle;
+                    const elEnum = Object.values(ELEMENT_TYPES).find(e => e.name === el);
+                    const style = elEnum ? { color: elEnum.color, bg: elEnum.bg, border: elEnum.border, shadow: elEnum.shadow } : defaultStyle;
                     return `<span class="px-2 py-0.5 rounded-full border text-[7.5px] font-bold tracking-wide transition-all hover:scale-105 shadow-sm whitespace-nowrap" style="color: ${style.color}; background-color: ${style.bg}; border-color: ${style.border}; box-shadow: 0 0 4px ${style.shadow}">${el}</span>`;
                 }).join('');
             }
@@ -562,20 +553,15 @@ export class CharacterScreen {
 
         this.elCharStatusPanel.classList.remove('hidden');
 
-        const THEME_MAP = {
-            'Buff': { border: 'border-cyan-500/30', bg: 'bg-cyan-500/10', text: 'text-cyan-400', shadow: 'shadow-[0_0_8px_rgba(6,182,212,0.2)]' },
-            'Debuff': { border: 'border-red-500/30', bg: 'bg-red-500/10', text: 'text-red-400', shadow: 'shadow-[0_0_8px_rgba(239,68,68,0.2)]' },
-            'Thể Chất': { border: 'border-yellow-600/30', bg: 'bg-yellow-600/10', text: 'text-yellow-500', shadow: 'shadow-[0_0_8px_rgba(217,119,6,0.2)]' },
-            'Thần Hồn': { border: 'border-purple-500/30', bg: 'bg-purple-500/10', text: 'text-purple-400', shadow: 'shadow-[0_0_8px_rgba(168,85,247,0.2)]' },
-            'Nguyên Khí': { border: 'border-orange-500/30', bg: 'bg-orange-500/10', text: 'text-orange-400', shadow: 'shadow-[0_0_8px_rgba(249,115,22,0.2)]' },
-            'Ngũ Hành': { border: 'border-green-500/30', bg: 'bg-green-500/10', text: 'text-green-400', shadow: 'shadow-[0_0_8px_rgba(34,197,94,0.2)]' },
-            'Đặc Thù': { border: 'border-amber-500/30', bg: 'bg-amber-500/10', text: 'text-amber-400', shadow: 'shadow-[0_0_8px_rgba(245,158,11,0.2)]' },
-            'Thiên Kiếp': { border: 'border-purple-600/40 bg-purple-950/20 text-purple-300 animate-pulse border-double', shadow: 'shadow-[0_0_12px_rgba(147,51,234,0.4)]' }
-        };
-
         const now = Date.now();
         this.elCharStatusList.innerHTML = buffs.map(b => {
-            const theme = THEME_MAP[b.category] || { border: 'border-white/10', bg: 'bg-white/5', text: 'text-white', shadow: 'none' };
+            const catEnum = STATUS_EFFECT_CATEGORIES[b.category] || Object.values(STATUS_EFFECT_CATEGORIES).find(c => c.name === b.category);
+            const theme = catEnum ? {
+                border: catEnum.borderClass || '',
+                bg: catEnum.bgClass || '',
+                text: catEnum.textClass || '',
+                shadow: catEnum.shadowClass || ''
+            } : { border: 'border-white/10', bg: 'bg-white/5', text: 'text-white', shadow: 'none' };
             const stacksLabel = b.stacks > 1 ? `<span class="ml-1 px-1 bg-black/60 rounded text-[7px] text-white font-bold font-mono">x${b.stacks}</span>` : '';
             
             let durLabel = 'Vô Hạn';
@@ -585,7 +571,7 @@ export class CharacterScreen {
                 durLabel = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
             }
 
-            let details = `[Trạng Thái: ${b.name}]\nPhân Loại: ${b.category} (${b.type === 'buff' ? 'Cát Lợi' : 'Bất Lợi'})\n`;
+            let details = `[Trạng Thái: ${b.name}]\nPhân Loại: ${catEnum?.name || b.category} (${b.type === 'buff' ? 'Cát Lợi' : 'Bất Lợi'})\n`;
             details += `Hiệu quả: ${b.desc}\n`;
             if (b.effects) {
                 details += `Thuộc tính tăng/giảm:\n`;

@@ -1,7 +1,7 @@
 import { ITEMS } from '../../configs/item-data.js';
 import { state } from '../../state.js';
 import { getAssetUrl } from '../../configs/asset-data.js';
-import { PHAP_BAO_QUALITIES } from '../../configs/game-enums.js';
+import { PHAP_BAO_QUALITIES, ITEM_TYPES_METADATA, GAME_STATS } from '../../configs/game-enums.js';
 
 /**
  * Màn hình hiển thị Vạn Bảo Lục - Danh sách các pháp bảo trong game.
@@ -13,22 +13,6 @@ export class PhapBaoLucScreen {
         this.initEvents();
         
         this.qualityOrder = Object.values(PHAP_BAO_QUALITIES).map(q => q.name);
-
-        this.typeNames = {
-            'weapon': 'Binh Khí',
-            'armor': 'Phòng Giáp',
-            'accessory': 'Trang Sức',
-            'head': 'Mão/Đỉnh',
-            'shoes': 'Hài/Bộ',
-            'necklace': 'Anh Lạc',
-            'phap_bao_khong_gian': 'Không Gian',
-            'phap_bao_thu': 'Hộ Thân',
-            'phap_bao_phi_hanh': 'Phi Hành',
-            'phap_bao_phu_tro': 'Phụ Trợ',
-            'phap_bao_tran': 'Trận Đạo',
-            'phap_bao_hon': 'Hồn Đạo',
-            'phap_bao_cong': 'Chủ Chiến'
-        };
     }
 
     initElements() {
@@ -95,7 +79,7 @@ export class PhapBaoLucScreen {
         this.elDetailName.textContent = item.name;
         this.elDetailName.style.color = 'white';
         
-        this.elDetailType.textContent = this.typeNames[item.type] || item.type;
+        this.elDetailType.textContent = ITEM_TYPES_METADATA[item.type]?.name || item.type;
         
         // Render Description with Quick Links
         this.renderDescription(item.description);
@@ -140,23 +124,7 @@ export class PhapBaoLucScreen {
     }
 
     translateStat(stat) {
-        const statsMap = {
-            'atk': 'Công Kích',
-            'def': 'Phòng Thủ',
-            'spd': 'Tốc Độ',
-            'hp': 'Khí Huyết',
-            'mana': 'Linh Lực',
-            'tuViSpeed': 'Tốc Độ Tu Luyện',
-            'soulExpSpeed': 'Tốc Độ Thần Thức',
-            'critRate': 'Tỷ Lệ Bạo Kích',
-            'pierce': 'Xuyên Thấu',
-            'slots': 'Ô Chứa Đồ',
-            'formationPower': 'Trận Pháp Uy Lực',
-            'soulRepress': 'Thần Hồn Áp Chế',
-            'costMana': 'Tiêu Hao Linh Lực',
-            'dodge': 'Né Tránh'
-        };
-        return statsMap[stat] || stat;
+        return GAME_STATS[stat]?.name || stat;
     }
 
     getQualityColor(quality) {
@@ -172,19 +140,20 @@ export class PhapBaoLucScreen {
         if (this.cachedElements) return;
         this.cachedElements = [];
 
-        const equipment = Object.values(ITEMS).filter(item => this.typeNames[item.type]);
+        const equipmentKeys = ['head', 'necklace', 'weapon', 'armor', 'accessory', 'shoes', 'phap_bao_khong_gian', 'phap_bao_thu', 'phap_bao_phi_hanh', 'phap_bao_phu_tro', 'phap_bao_tran', 'phap_bao_hon', 'phap_bao_cong'];
+        const equipment = Object.values(ITEMS).filter(item => equipmentKeys.includes(item.type));
         const grouped = {};
         equipment.forEach(item => {
             if (!grouped[item.type]) grouped[item.type] = [];
             grouped[item.type].push(item);
         });
 
-        const sortedTypes = Object.keys(this.typeNames).filter(type => grouped[type]);
+        const sortedTypes = equipmentKeys.filter(type => grouped[type]);
 
         sortedTypes.forEach(type => {
             const typeHeader = document.createElement('div');
             typeHeader.className = 'text-[10px] font-ancient text-gray-500 uppercase tracking-[0.3em] mt-6 mb-2 border-l-2 border-gray-700 pl-3';
-            typeHeader.textContent = this.typeNames[type];
+            typeHeader.textContent = ITEM_TYPES_METADATA[type]?.name || type;
             this.cachedElements.push(typeHeader);
 
             const items = grouped[type];

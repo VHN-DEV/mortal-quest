@@ -6,6 +6,7 @@ import { getItemConnections } from '../../utils/item-connections.js';
 import { getTechniqueById, getSecretTechniqueById } from '../../configs/technique-data.js';
 import { BEASTS } from '../../configs/beast-data.js';
 import { getDisplayQuality, getQualityClass } from '../../utils/ui-utils.js';
+import { ITEM_TYPES_METADATA, GAME_STATS } from '../../configs/game-enums.js';
 
 /**
  * Quản lý giao diện túi đồ và trang bị.
@@ -506,31 +507,10 @@ export class InventoryScreen {
             this.elDetailName.className = `text-xl font-bold text-white font-charm mb-1 quality-${qClass}`;
         }
 
-        const typeNames = {
-            'linh_thach': 'Linh Thạch',
-            'dan_duoc': 'Linh Đan / Thánh Quả',
-            'sach_cong_phap': 'Công Pháp / Thần Thông',
-            'weapon': 'Pháp Bảo / Thần Binh',
-            'armor': 'Pháp Y / Bảo Giáp',
-            'accessory': 'Linh Sức / Trang Sức',
-            'treasure': 'Thiên Tài Địa Bảo',
-            'formation': 'Trận Đồ',
-            'puppet': 'Cơ Quan / Khôi Lỗi',
-            'phap_bao_cong': 'Pháp Bảo Chủ Chiến',
-            'phap_bao_thu': 'Pháp Bảo Hộ Thân',
-            'phap_bao_phi_hanh': 'Phi Hành Pháp Bảo',
-            'spaceArtifact': 'Càn Khôn Pháp Bảo',
-            'phap_bao_tran': 'Trận Đạo Pháp Bảo',
-            'phap_bao_phu_tro': 'Phụ Trợ Pháp Bảo',
-            'phap_bao_hon': 'Hồn Đạo Pháp Bảo',
-            'nguyen_lieu': 'Linh Vật / Tài Nguyên',
-            'linh_chung': 'Linh Chủng'
-        };
-
         const mappedQuality = getDisplayQuality(displayQuality, itemData.type);
         const qualitySuffix = (mappedQuality.toLowerCase().includes('khí') || mappedQuality.toLowerCase().includes('bảo') || mappedQuality.toLowerCase().includes('phẩm') || mappedQuality.toLowerCase().includes('giai') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(mappedQuality)) ? '' : ' Phẩm';
 
-        let typeLabel = typeNames[itemData.type] || itemData.type;
+        let typeLabel = ITEM_TYPES_METADATA[itemData.type]?.alternativeName || ITEM_TYPES_METADATA[itemData.type]?.name || itemData.type;
         if (itemData.type === 'sach_cong_phap' || itemData.type === 'technique' || itemData.type === 'dan_phuong' || itemData.type === 'don_phu') {
             const categories = this.getTechniqueCategoriesForBook(itemData);
             if (categories.length > 0) {
@@ -905,17 +885,7 @@ export class InventoryScreen {
     }
 
     getStatLabel(statKey) {
-        const map = {
-            atk: 'Công', def: 'Thủ', spd: 'Tốc', maxHp: 'Sinh lực', maxMana: 'Pháp lực', mana: 'Pháp lực',
-            luck: 'Khí vận', critChance: 'Tỉ lệ bạo kích', critDamage: 'Sát thương bạo kích', karma: 'Nhân quả',
-            lifespan: 'Thọ nguyên', life_span: 'Thọ nguyên', qiAbsorb: 'Hấp thụ Linh khí', qi_absorb: 'Hấp thụ Linh khí',
-            alchemyBonus: 'Tỉ lệ Luyện đan', alchemy_success: 'Tỉ lệ Luyện đan', smithingBonus: 'Tỉ lệ Luyện khí',
-            smithing_success: 'Tỉ lệ Luyện khí', tu_vi_speed: 'Tốc độ Tu luyện', tuViSpeed: 'Tốc độ Tu luyện',
-            spirit: 'Thần thức', slots: 'Ô chứa đồ', breakthroughRate: 'Tỉ lệ Đột phá', breakthrough_rate: 'Tỉ lệ Đột phá',
-            coldRes: 'Băng kháng', thunderRes: 'Lôi kháng', fireRes: 'Hỏa kháng', poisonRes: 'Độc kháng',
-            spiritRoot: 'Cải tạo Linh Căn', stamina: 'Thể lực', hp: 'Khí huyết'
-        };
-        return map[statKey] || statKey;
+        return GAME_STATS[statKey]?.name || statKey;
     }
 
     buildEquipPreview(itemData, mappedSlot) {
