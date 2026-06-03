@@ -252,7 +252,7 @@ export const PHYSIQUES = {
         category: 'BAO',
         grade: 'BAO',
         desc: 'Hành giả không gian, vạn pháp bất khả chạm.',
-        bonus: { spd: 300, spdPercent: 0.5, avoidRate: 0.3 },
+        bonus: { spd: 300, spdPercent: 0.5, dodge: 0.3 },
         phenomenon: 'Hư Không Thúy Bộ'
     },
     'thien_loi_the': {

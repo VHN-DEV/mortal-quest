@@ -133,7 +133,7 @@ export class Player {
             qiAbsorb: 0,
             luck: 0,
             spirit: 0,
-            breakthroughRate: 0
+            breakthroughChance: 0
         };
         this.physique = {
             id: 'binh_thuong',
@@ -275,7 +275,6 @@ export class Player {
             armorPen: 0,
             hpRegen: 0,
             poisonRes: 0,
-            avoidRate: 0,
             crowdControl: 0,
             skillDmg: 1.0,
             statusRes: 0,
@@ -1631,8 +1630,8 @@ export class Player {
         // Status effect breakthrough modifications
         if (this.buffs) {
             this.buffs.forEach(b => {
-                if (b.effects && b.effects.breakthrough_rate) {
-                    baseRate += b.effects.breakthrough_rate * 100 * (b.stacks || 1);
+                if (b.effects && b.effects.breakthroughChance) {
+                    baseRate += b.effects.breakthroughChance * 100 * (b.stacks || 1);
                 }
             });
         }
@@ -2323,7 +2322,7 @@ export class Player {
                     else if (b.stat === 'spd') this.spd *= b.value;
                     else if (b.stat === 'maxHp') this.maxHp *= b.value;
                     else if (b.stat === 'maxMana') this.maxMana *= b.value;
-                    else if (b.stat === 'tu_vi_speed') this.tuViPerSecond *= b.value;
+                    else if (b.stat === 'tuViSpeed') this.tuViPerSecond *= b.value;
                     else if (b.stat === 'body_speed') this.bodyExpPerSecond *= b.value;
                     else if (b.stat === 'soul_speed') this.soulExpPerSecond *= b.value;
                     return;
@@ -2339,7 +2338,7 @@ export class Player {
                         else if (statKey === 'spd') this.spd = Math.max(1, this.spd * mult);
                         else if (statKey === 'maxHp') this.maxHp = Math.max(1, this.maxHp * mult);
                         else if (statKey === 'maxMana') this.maxMana = Math.max(1, this.maxMana * mult);
-                        else if (statKey === 'tu_vi_speed') this.tuViPerSecond = Math.max(0, this.tuViPerSecond * mult);
+                        else if (statKey === 'tuViSpeed') this.tuViPerSecond = Math.max(0, this.tuViPerSecond * mult);
                         else if (statKey === 'body_speed') this.bodyExpPerSecond = Math.max(0, this.bodyExpPerSecond * mult);
                         else if (statKey === 'soul_speed') this.soulExpPerSecond = Math.max(0, this.soulExpPerSecond * mult);
                         else if (statKey === 'hp_regen') this.hpRegenMult = Math.max(0, this.hpRegenMult * mult);

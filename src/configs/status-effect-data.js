@@ -69,7 +69,7 @@ export const STATUS_EFFECT_TEMPLATES = {
         isCureable: false,
         effects: {
             heart_demon_res: 0.3,
-            breakthrough_rate: 0.2
+            breakthroughChance: 0.2
         }
     },
     kim_cang_ho_the: {
@@ -186,7 +186,7 @@ export const STATUS_EFFECT_TEMPLATES = {
         isCureable: true,
         effects: {
             mana_regen: -0.5,
-            tu_vi_speed: -0.3
+            tuViSpeed: -0.3
         }
     },
     chan_nguyen_hon_loan: {
@@ -348,7 +348,7 @@ export const STATUS_EFFECT_TEMPLATES = {
         combatTurns: 999,
         isCureable: true,
         effects: {
-            breakthrough_rate: -0.3
+            breakthroughChance: -0.3
         }
     },
     nguyen_khi_dai_thuong: {
@@ -557,7 +557,7 @@ export const STATUS_EFFECT_TEMPLATES = {
         combatTurns: 999,
         isCureable: true,
         effects: {
-            breakthrough_rate: -0.2,
+            breakthroughChance: -0.2,
             stability: -0.3
         }
     },
@@ -576,7 +576,7 @@ export const STATUS_EFFECT_TEMPLATES = {
             atk: -0.2,
             def: -0.2,
             spd: -0.2,
-            tu_vi_speed: -0.2
+            tuViSpeed: -0.2
         }
     },
     chan_nguyen_bao_dong: {
@@ -624,7 +624,7 @@ export const STATUS_EFFECT_TEMPLATES = {
         isCureable: false,
         effects: {
             atk: -0.15,
-            tu_vi_speed: -0.10
+            tuViSpeed: -0.10
         }
     },
     khi_huyet_bao_dong: {
@@ -658,7 +658,7 @@ export const STATUS_EFFECT_TEMPLATES = {
             divine_sense: -0.2,
             dodge: -0.15,
             miss_chance: 0.1,
-            breakthrough_rate: -0.15
+            breakthroughChance: -0.15
         }
     }
 };

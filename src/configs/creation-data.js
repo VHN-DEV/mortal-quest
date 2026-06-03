@@ -154,7 +154,7 @@ export const ROOT_ELEMENTS = {
     [ELEMENT_TYPES.THUY]: {
         id: ELEMENT_TYPES.THUY, name: 'Thủy', color: '#3b82f6', icon: '💧',
         orientation: 'Mềm dẻo, Khống chế',
-        bonus: { maxMana: 300, avoidRate: 0.05, crowdControl: 0.1 }
+        bonus: { maxMana: 300, dodge: 0.05, crowdControl: 0.1 }
     },
     [ELEMENT_TYPES.HOA]: {
         id: ELEMENT_TYPES.HOA, name: 'Hỏa', color: '#f87171', icon: '🔥',
@@ -188,7 +188,7 @@ export const SPECIAL_ELEMENTS = {
         orientation: 'Né tránh, Ám sát',
         origin: 'Dung hợp Mộc & Thổ',
         baseElements: [ELEMENT_TYPES.MOC, ELEMENT_TYPES.THO],
-        bonus: { avoidRate: 0.15, spd: 80, critDmg: 0.3 }
+        bonus: { dodge: 0.15, spd: 80, critDmg: 0.3 }
     },
     [ELEMENT_TYPES.DOC]: {
         id: ELEMENT_TYPES.DOC, name: 'Độc', color: '#c084fc', icon: '☠️',
@@ -202,7 +202,7 @@ export const SPECIAL_ELEMENTS = {
         orientation: 'Trị liệu, Tịnh hóa',
         origin: 'Dị biến cực hiếm',
         baseElements: [ELEMENT_TYPES.KIM, ELEMENT_TYPES.HOA],
-        bonus: { maxHp: 500, avoidRate: 0.1, allRes: 0.15 }
+        bonus: { maxHp: 500, dodge: 0.1, allRes: 0.15 }
     },
     [ELEMENT_TYPES.AM]: {
         id: ELEMENT_TYPES.AM, name: 'Ám', color: '#a855f7', icon: '🌙',
@@ -232,7 +232,7 @@ export const CREATION_PHYSIQUES = {
     'thon_thien_the': { id: 'thon_thien_the', name: 'Thôn Thiên Thể', cost: 180, desc: 'Thôn phệ vạn vật để cường hóa bản thân.', bonus: { qiAbsorb: 15.0, tvps: 5.0 } },
     'tu_la_huyet_the': { id: 'tu_la_huyet_the', name: 'Tu La Huyết Thể', cost: 180, desc: 'Sát lục thành đạo, chiến lực cực cao.', bonus: { atk: 1000, murderQi: 500 } },
     'thai_am_tien_the': { id: 'thai_am_tien_the', name: 'Thái Âm Tiên Thể', cost: 150, desc: 'Cực âm chi chủ, đông cứng vạn pháp.', bonus: { waterDmg: 3.0, spd: 150 } },
-    'hu_khong_the': { id: 'hu_khong_the', name: 'Hư Không Thể', cost: 120, desc: 'Hành giả không gian, vạn pháp bất khả chạm.', bonus: { spd: 300, avoidRate: 0.3 } },
+    'hu_khong_the': { id: 'hu_khong_the', name: 'Hư Không Thể', cost: 120, desc: 'Hành giả không gian, vạn pháp bất khả chạm.', bonus: { spd: 300, dodge: 0.3 } },
     'thien_loi_the': { id: 'thien_loi_the', name: 'Thiên Lôi Chi Thể', cost: 100, desc: 'Lôi phạt hóa thân, điều khiển thiên kiếp.', bonus: { thunderDmg: 2.5, tvps: 3.0 } },
     'hoa_linh_the': { id: 'hoa_linh_the', name: 'Hỏa Linh Thể', cost: 30, desc: 'Tăng mạnh hấp thu linh khí hỏa hệ.', bonus: { fireDmg: 1.2 } },
     'thuy_linh_the': { id: 'thuy_linh_the', name: 'Thủy Linh Thể', cost: 30, desc: 'Tăng mạnh hấp thu linh khí thủy hệ.', bonus: { waterDmg: 1.2 } },

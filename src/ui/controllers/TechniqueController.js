@@ -97,7 +97,7 @@ export class TechniqueController {
             // Apply buffs
             if (state.player.buffs) {
                 state.player.buffs.forEach(b => {
-                    if (b.stat === 'tu_vi_speed') finalTvps *= b.value;
+                    if (b.stat === 'tuViSpeed') finalTvps *= b.value;
                 });
             }
 

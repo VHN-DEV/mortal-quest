@@ -35,7 +35,7 @@ export const TITLES = [
     { id: 'thuong_dao_cu', name: 'Thương Đạo Cự Phách', repMin: 50000, bonus: { trading: 0.8, lingshiGain: 1.2 } },
 
     // Đặc Biệt / Truyền Thuyết
-    { id: 'thu_nguyen_du_hanh_gia', name: 'Thứ Nguyên Du Hành Giả', repMin: 100000, bonus: { spd: 1.25, avoidRate: 0.1, luck: 30 } },
+    { id: 'thu_nguyen_du_hanh_gia', name: 'Thứ Nguyên Du Hành Giả', repMin: 100000, bonus: { spd: 1.25, dodge: 0.1, luck: 30 } },
     { id: 'hoi_quy_gia', name: 'Hồi Quy Giả', repMin: 80000, bonus: { tuViSpeed: 1.2, luck: 40, critRate: 0.05 } },
     { id: 'chuyen_sinh_gia', name: 'Chuyển Sinh Giả', repMin: 50000, bonus: { soulExpSpeed: 1.25, techniqueMastery: 1.2, luck: 25 } }
 ];

@@ -641,7 +641,7 @@ export class InventoryScreen {
                                 devRiskReduce: 'Giảm nguy cơ tẩu hỏa',
                                 healing: 'Hiệu quả trị liệu',
                                 dodge: 'Tỷ lệ né tránh',
-                                critChance: 'Tỷ lệ bạo kích',
+                                critRate: 'Tỷ lệ bạo kích',
                                 cooldownReduction: 'Giảm thời gian hồi'
                             };
                             label = effectLabels[key] || key;
@@ -678,7 +678,7 @@ export class InventoryScreen {
                 Object.entries(effect).forEach(([key, val]) => {
                     const label = this.getStatLabel(key);
                     let valStr = '';
-                    if (key === 'tuViSpeed' || key === 'breakthroughRate' || key.endsWith('Res')) {
+                    if (key === 'tuViSpeed' || key === 'breakthroughChance' || key.endsWith('Res')) {
                         valStr = `+${Math.round(val * 100)}%`;
                     } else if (key === 'qiAbsorb') {
                         valStr = `+${Math.round(val)}`;

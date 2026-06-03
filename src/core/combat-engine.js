@@ -1295,11 +1295,11 @@ export class CombatEngine {
 
         const suppression = this.calculateRealmSuppression(this.player, this.enemy);
         const damageMult = masteryBonus?.damageMult || secretData.effects?.damageMult || 1.0;
-        let critChance = masteryBonus?.critChance || secretData.effects?.critChance || 0;
+        let critRate = masteryBonus?.critRate || secretData.effects?.critRate || 0;
 
-        // [CATEGORY SPECIFIC BONUS] Bí Pháp: +15% crit chance bonus due to unstable burst power
+        // [CATEGORY SPECIFIC BONUS] Bí Pháp: +15% crit rate bonus due to unstable burst power
         if (secretData.category === 'Bí Pháp') {
-            critChance += 0.15;
+            critRate += 0.15;
         }
 
         let ignoreDefPct = secretData.effects?.ignoreDef || 0;
@@ -1334,7 +1334,7 @@ export class CombatEngine {
             damage = Math.floor(damage * 0.7);
         }
 
-        if (Math.random() < critChance) {
+        if (Math.random() < critRate) {
             damage = Math.floor(damage * 2.0);
             this.addLog(`⚡ Bí pháp bạo kích!`);
         }

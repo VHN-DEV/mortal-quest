@@ -449,9 +449,9 @@ export class Inventory {
                 msgParts.push(`Thọ nguyên +${addedAge} năm`);
                 processed = true;
             }
-            if (effect.breakthroughRate) {
-                this.player.permanentBreakthroughBonus = (this.player.permanentBreakthroughBonus || 0) + effect.breakthroughRate * multiplier;
-                msgParts.push(`Tỷ lệ đột phá vĩnh viễn +${Math.round(effect.breakthroughRate * 100 * multiplier)}%`);
+            if (effect.breakthroughChance) {
+                this.player.permanentBreakthroughBonus = (this.player.permanentBreakthroughBonus || 0) + effect.breakthroughChance * multiplier;
+                msgParts.push(`Tỷ lệ đột phá vĩnh viễn +${Math.round(effect.breakthroughChance * 100 * multiplier)}%`);
                 processed = true;
             }
 

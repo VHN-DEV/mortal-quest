@@ -840,7 +840,7 @@ export const ITEMS = {
         icon: '💎',
         description: 'Đan dược chí bảo giúp phàm nhân đúc thành đạo cơ. Luyện chế từ Linh Thảo (100 năm), Yêu Đan Sơ Cấp và Hỏa Tinh Thạch.',
         price: 5000,
-        stats: { breakthroughRate: 0.3 },
+        stats: { breakthroughChance: 0.3 },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.DOT_PHA }
         ]
@@ -853,7 +853,7 @@ export const ITEMS = {
         icon: '💊',
         price: 15000,
         description: 'Đan dược quý hiếm giúp tu sĩ ngưng tụ Kim Đan chí thuần, tăng 20% tỷ lệ đột phá Kết Đan.',
-        stats: { breakthroughRate: 0.20 },
+        stats: { breakthroughChance: 0.20 },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.DOT_PHA }
         ]
@@ -866,7 +866,7 @@ export const ITEMS = {
         quality: PHAP_BAO_QUALITIES.LINH_BAO,
         price: 85000,
         description: 'Luyện chế từ tà đan cấp cao, đan dược phụ trợ tối thượng giúp ngưng kết Nguyên Anh, tăng mạnh thần thức và tỉ lệ đột phá Nguyên Anh.',
-        effect: { breakthroughRate: 0.15, spirit: 500 },
+        effect: { breakthroughChance: 0.15, spirit: 500 },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.DOT_PHA }
         ]
@@ -879,7 +879,7 @@ export const ITEMS = {
         icon: '💊',
         price: 150000,
         description: 'Chí tôn đan dược hỗ trợ thần thức thăng hoa, câu thông thiên địa đột phá Hóa Thần cảnh, tăng 10% tỷ lệ đột phá Hóa Thần.',
-        stats: { breakthroughRate: 0.10 },
+        stats: { breakthroughChance: 0.10 },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.DOT_PHA }
         ]
@@ -2062,7 +2062,7 @@ export const ITEMS = {
         image: 'artifacts/tu_tuong_bo_de_kiem.webp',
         description: 'Thanh kiếm giác ngộ dưới gốc cây Bồ Đề, hội tụ sức mạnh của Tứ Tượng linh thú.',
         price: 6000000,
-        stats: { atk: 7000, critChance: 0.2, critDamage: 0.5 },
+        stats: { atk: 7000, critRate: 0.2, critDmg: 0.5 },
         poem: ['Tứ Tượng Quy Linh Bồ Đề Tọa', 'Kiếm Khí Tung Hoành Ngộ Đạo Chân'],
         categories: [
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.TIEN_KHI }
@@ -2092,7 +2092,7 @@ export const ITEMS = {
         image: 'artifacts/thien_dao_than_thach.webp',
         description: 'Mảnh vỡ từ Thiên Đạo, chứa đựng quy tắc tối cao của vũ trụ.',
         price: 10000000,
-        stats: { breakthroughRate: 0.01, luck: 10 },
+        stats: { breakthroughChance: 0.01, luck: 10 },
         poem: ['Thiên Đạo Vô Thường Thần Thạch Ấn', 'Quy Tắc Vạn Vật Tại Nhân Tâm'],
         categories: [
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.TIEN_KHI }
@@ -2107,7 +2107,7 @@ export const ITEMS = {
         image: 'artifacts/truye_dao_thanh_gian.webp',
         description: 'Thánh giản ghi chép truyền thừa của vị tiên nhân thượng cổ, chứa đựng vô số bí pháp.',
         price: 7000000,
-        stats: { breakthroughRate: 0.01, luck: 10 },
+        stats: { breakthroughChance: 0.01, luck: 10 },
         poem: ['Thánh Giản Truyền Đạo Khai Thần Thức', 'Vạn Cổ Bí Pháp Hiện Chân Thân'],
         categories: [
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.TIEN_KHI }
@@ -2623,7 +2623,7 @@ export const ITEMS = {
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
         price: 50000,
         description: 'Đan dược hỗ trợ ngưng tụ Nguyên Anh, cực kỳ quý hiếm.',
-        stats: { breakthroughRate: 0.25 },
+        stats: { breakthroughChance: 0.25 },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
         ]
@@ -4182,7 +4182,7 @@ export const ITEMS = {
         quality: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO,
         price: 200000,
         description: 'Kiếm cổ được rèn từ huyền kim, thân kiếm khắc long văn phát sáng tử quang. Một khi rút kiếm, long khí cuồn cuộn, kiếm khí xuyên phá vạn pháp.',
-        stats: { atk: 5000, spd: 300, critChance: 0.15, critDamage: 0.5 },
+        stats: { atk: 5000, spd: 300, critRate: 0.15, critDmg: 0.5 },
         poem: ['Huyền Kim Tử Khí Xung Tiêu Hán', 'Long Tử Nhất Kiếm Phá Thiên Hà'],
         categories: [
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.THONG_THIEN }
@@ -4252,7 +4252,7 @@ export const ITEMS = {
         quality: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO,
         price: 250000,
         description: 'Bia đá cổ khắc thiên đạo chân lý, chứa đựng ngộ tính của tiền bối đại năng. Ai đọc được sẽ ngộ ra thiên đạo, thần thức tăng vọt.',
-        stats: { spirit: 2000, breakthroughRate: 0.1, tuViSpeed: 0.25 },
+        stats: { spirit: 2000, breakthroughChance: 0.1, tuViSpeed: 0.25 },
         poem: ['Thiên Đạo Bi Văn Hàm Chân Lý', 'Đại Đạo Vô Hình Khả Ngộ Tâm'],
         categories: [
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.THONG_THIEN }
@@ -4482,7 +4482,7 @@ export const ITEMS = {
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
         price: 35000,
         description: 'Nhân sâm tuyết có đôi mắt linh quang, đã khai mở ý thức sơ khai, tăng mạnh thần thức người dùng.',
-        effect: { spirit: 300, breakthroughRate: 0.05 },
+        effect: { spirit: 300, breakthroughChance: 0.05 },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
         ]
@@ -4508,7 +4508,7 @@ export const ITEMS = {
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
         price: 2000,
         description: 'Đan dược giúp tu sĩ ổn định căn cơ, cải thiện tỉ lệ đột phá khi đạt tới nút thắt cảnh giới.',
-        effect: { breakthroughRate: 0.03, spirit: 30 },
+        effect: { breakthroughChance: 0.03, spirit: 30 },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.DOT_PHA }
         ]
@@ -4924,7 +4924,7 @@ export const ITEMS = {
         quality: PHAP_BAO_QUALITIES.CO_BAO,
         price: 220000,
         description: 'Tháp pháp bảo hình đôi rồng quấn quanh, phóng ra song long hỏa lôi kép, sát thương kinh thiên động địa.',
-        stats: { atk: 6000, critChance: 0.2, critDamage: 0.8 },
+        stats: { atk: 6000, critRate: 0.2, critDmg: 0.8 },
         poem: ['Song Long Quán Nhật Phá Thiên Thương', 'Nhất Tháp Phi Lôi Vạn Ma Hoàng'],
         categories: [
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.CO_BAO }
@@ -5016,7 +5016,7 @@ export const ITEMS = {
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
         price: 15000,
         description: 'Bảo đan tuyệt tích giúp tu sĩ Trúc Cơ ngưng tụ linh khí hóa thành kim đan, tăng vọt thần thức và tỉ lệ đột phá Kết Đan.',
-        effect: { breakthroughRate: 0.10, spirit: 100 },
+        effect: { breakthroughChance: 0.10, spirit: 100 },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
         ]
@@ -5056,7 +5056,7 @@ export const ITEMS = {
         price: 300000,
         image: 'items/thanh_truc_phong_van_kiem.webp',
         description: 'Thanh kiếm chí bảo rèn từ Thiên Tinh Thần Tre cùng linh tơ ong vàng, uy lực kiếm khí cuồng bạo xé rách vạn pháp.',
-        stats: { atk: 12000, spd: 500, critChance: 0.25, swordDmg: 1.35 },
+        stats: { atk: 12000, spd: 500, critRate: 0.25, swordDmg: 1.35 },
         poem: ['Thanh Trúc Thần Phong Đan Tiêu Nhạc', 'Vạn Kiếm Quy Tông Luyện Vạn Ma'],
         categories: [
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.THONG_THIEN }
@@ -5434,7 +5434,7 @@ export const ITEMS = {
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
         price: 450,
         description: 'Ngọc Đề Đan, viên linh đan sơ cấp dược tính vô cùng ôn hòa. Khi sử dụng trước khi đột phá, giúp gia tăng 5% tỷ lệ đột phá thành công ở Luyện Khí cảnh.',
-        stats: { breakthroughRate: 0.05 },
+        stats: { breakthroughChance: 0.05 },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.DOT_PHA }
         ]

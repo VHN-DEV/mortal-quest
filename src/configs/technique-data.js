@@ -96,7 +96,7 @@ export const TECHNIQUES = {
             1: { tvps: 1.3 },
             2: { tvps: 1.8, fireDmg: 1.3 },
             3: { tvps: 2.8, fireDmg: 1.5, atk: 1.1 },
-            4: { tvps: 4.5, fireDmg: 2.0, atk: 1.25, critChance: 0.1 }
+            4: { tvps: 4.5, fireDmg: 2.0, atk: 1.25, critRate: 0.1 }
         }
     },
     'han_thuy_quyet': {
@@ -390,7 +390,7 @@ export const TECHNIQUES = {
         maxStage: 9,
         stageLabel: 'Tầng',
         stats: { atk: 180, spd: 30 },
-        effects: { tvps: 2.2, critChance: 0.1, swordDmg: 1.25 }
+        effects: { tvps: 2.2, critRate: 0.1, swordDmg: 1.25 }
     },
     'hoang_phong_coc_cong_phap': {
         id: 'hoang_phong_coc_cong_phap',
@@ -498,7 +498,7 @@ export const TECHNIQUES = {
         maxStage: 9,
         stageLabel: 'Tầng',
         stats: { atk: 180, spd: 35 },
-        effects: { tvps: 1.8, fireDmg: 1.25, critChance: 0.05 }
+        effects: { tvps: 1.8, fireDmg: 1.25, critRate: 0.05 }
     },
     'thien_khuyet_bao_cong_phap': {
         id: 'thien_khuyet_bao_cong_phap',
@@ -558,7 +558,7 @@ export const TECHNIQUES = {
         maxStage: 9,
         stageLabel: 'Tầng',
         stats: { atk: 200, def: 100 },
-        effects: { tvps: 2.0, critChance: 0.08, phyDmg: 1.25 }
+        effects: { tvps: 2.0, critRate: 0.08, phyDmg: 1.25 }
     },
     'ngu_linh_tong_cong_phap': {
         id: 'ngu_linh_tong_cong_phap',
@@ -594,7 +594,7 @@ export const TECHNIQUES = {
         maxStage: 12,
         stageLabel: 'Tầng',
         stats: { atk: 450, spd: 80, mana: 300 },
-        effects: { tvps: 3.5, swordDmg: 1.5, critChance: 0.15, ignoreDef: 0.2 }
+        effects: { tvps: 3.5, swordDmg: 1.5, critRate: 0.15, ignoreDef: 0.2 }
     },
     'cuu_u_ma_dien': {
         id: 'cuu_u_ma_dien',
@@ -804,12 +804,12 @@ export const SECRET_TECHNIQUES = {
         description: 'Kỹ thuật ám sát lạnh lùng, nhắm vào điểm yếu đối phương.',
         costs: { mana: 30 },
         cooldown: 4,
-        effects: { damageMult: 2.5, critChance: 0.3 },
+        effects: { damageMult: 2.5, critRate: 0.3 },
         masteryBonuses: {
             1: { damageMult: 2.5 },
-            2: { damageMult: 3.5, critChance: 0.35 },
-            3: { damageMult: 5.0, critChance: 0.45 },
-            4: { damageMult: 8.0, critChance: 0.6, ignoreDef: 0.2 }
+            2: { damageMult: 3.5, critRate: 0.35 },
+            3: { damageMult: 5.0, critRate: 0.45 },
+            4: { damageMult: 8.0, critRate: 0.6, ignoreDef: 0.2 }
         }
     },
     'thien_loi_kich': {
@@ -825,8 +825,8 @@ export const SECRET_TECHNIQUES = {
         masteryBonuses: {
             1: { damageMult: 5.0 },
             2: { damageMult: 7.0, costMana: 80 },
-            3: { damageMult: 10.0, stun: true, critChance: 0.2 },
-            4: { damageMult: 15.0, stun: true, critChance: 0.35, ignoreDef: 0.3 }
+            3: { damageMult: 10.0, stun: true, critRate: 0.2 },
+            4: { damageMult: 15.0, stun: true, critRate: 0.35, ignoreDef: 0.3 }
         }
     },
     // --- PROFESSION MASTERY SECRETS ---
@@ -982,7 +982,7 @@ export const SECRET_TECHNIQUES = {
         description: 'Triệu hồi hàng trăm phi kiếm tụ hợp thành kiếm trận bao vây chém giết kẻ địch.',
         costs: { mana: 150 },
         cooldown: 12,
-        effects: { damageMult: 7.5, critChance: 0.4 }
+        effects: { damageMult: 7.5, critRate: 0.4 }
     },
     'dai_dien_than_niem': {
         id: 'dai_dien_than_niem',
@@ -1048,7 +1048,7 @@ export const SECRET_TECHNIQUES = {
         description: 'Triệu hoán ma thần hư ảnh nhập thể, tăng bạo kích và sát thương cực độ.',
         costs: { hp: 20, mana: 80 },
         cooldown: 15,
-        effects: { atkMult: 1.8, critChance: 0.3 }
+        effects: { atkMult: 1.8, critRate: 0.3 }
     },
     'van_doc_kiem_khi': {
         id: 'van_doc_kiem_khi',
@@ -1191,7 +1191,7 @@ export const SECRET_TECHNIQUES = {
         description: 'Trọng kiếm giáng hạ hủy thiên diệt địa, sát thương cực cao với 50% cơ hội chí mạng.',
         costs: { mana: 100 },
         cooldown: 6,
-        effects: { damageMult: 5.0, critChance: 0.5 }
+        effects: { damageMult: 5.0, critRate: 0.5 }
     },
     'hoa_dao_o_bi_tich': {
         id: 'hoa_dao_o_bi_tich',
