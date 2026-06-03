@@ -3,6 +3,7 @@ import { getFlameById } from '../configs/alchemy-data.js';
 import { getItemById } from '../configs/item-data.js';
 import { getStatusEffectById, STATUS_EFFECT_TEMPLATES } from '../configs/status-effect-data.js';
 import { QUALITY_TYPES } from '../configs/item-classification.js';
+import { COMBAT_STANCES, COMBAT_EVENTS } from '../configs/game-enums.js';
 
 
 export class CombatEngine {
@@ -34,6 +35,21 @@ export class CombatEngine {
         this.enemy.buffs = this.enemy.buffs || [];
         this.turnOrder = [];
         this.calculateTurnOrder();
+        
+        // --- Module 1: Chiến Thế (Combat Stance) ---
+        this.playerStance = 'NONE';
+        
+        // --- Module 2: Thiên Địa Dị Biến (Combat Events) ---
+        this.combatEventTurnCounter = 0;
+        this.activeCombatEvents = new Set();  // IDs of currently active event bonuses
+        
+        // --- Module 3: Đạo Tâm / Tâm Ma snapshot ---
+        this.combatHeartDemon = Math.min(100, player.heartDemon || 0);
+        this.combatDaoTam = Math.max(0, player.daoTam || 50);
+        
+        // --- Module 4: Bản Mệnh Pháp Bảo durability within combat ---
+        const equippedArtifactId = player.equipment?.phap_bao_cong || player.lifeBoundTreasureId;
+        this.artifactCombatDurability = equippedArtifactId ? 10 : 0;
     }
 
     getEnemyMultiplier(statKey) {
@@ -637,6 +653,42 @@ export class CombatEngine {
                 this.addLog(`✨ Linh khí bình ổn, trạng thái chấn thương tẩu hỏa đã tiêu tán.`);
             }
         }
+
+        // --- Module 1: THIỀN ĐỊNH THẾ Mana Regen per turn ---
+        if (this.playerStance === 'DINH' && this.turn === 0) {
+            const manaRegen = Math.floor(this.player.maxMana * (COMBAT_STANCES.DINH.manaRegen || 0.05));
+            this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaRegen);
+            this.addLog(`🧘 [Thiền Định Thế] Nội tâm bình lặng, Linh Lực hồi +${manaRegen}.`);
+        }
+
+        // --- Module 2: Tâm Ma Bạo Phát check (Module 3 mechanic triggered here) ---
+        if (this.turn === 0 && this.combatHeartDemon > 50 && this.playerStance !== 'DINH') {
+            if (Math.random() < 0.15) {
+                this.addLog(`⚠️ <span class="text-red-500 font-ancient font-bold">TÂM MA BẠO PHÁT!</span> Nội tâm hoảng loạn, ngươi mất kiểm soát lượt này!`);
+                // Lose this turn: forced random outcome
+                const roll = Math.random();
+                if (roll < 0.4) {
+                    // Miss turn entirely
+                    this.addLog(`Tâm thần mơ hồ, ngươi đứng yên không làm gì được.`);
+                } else if (roll < 0.7) {
+                    // Attack self
+                    const selfDmg = Math.floor(this.player.atk * 0.3);
+                    this.player.hp = Math.max(1, this.player.hp - selfDmg);
+                    this.addLog(`Ma ý chi phối, ngươi tự dưa chương vào chính mình, bị -${selfDmg} khí huyết!`);
+                    this.onUpdate('damage', { target: 'player', value: selfDmg, crit: false, actionType: 'tam_ma' });
+                } else {
+                    // Buff enemy
+                    this.enemy.atk = Math.floor(this.enemy.atk * 1.1);
+                    this.addLog(`Tâm ma phát độc, vô tình tiết lộ sơ hở, kẻ địch công kích tăng 10% lượt này!`);
+                }
+                this.onUpdate('combat-event', { id: 'TAM_MA_BAO_PHAT', name: 'Tâm Ma Bạo Phát', icon: '⚠️', color: '#be123c' });
+                this.endPlayerTurn();
+                return;
+            }
+        }
+
+        // --- Module 2: Thiên Địa Dị Biến check every turn ---
+        this.checkCombatEvents();
     }
 
     // Actions
@@ -694,6 +746,15 @@ export class CombatEngine {
             case 'soul-repress':
                 this.playerSoulRepress();
                 break;
+            case 'stance':
+                this.playerSetStance(payload);
+                break;
+            case 'meditate':
+                this.playerMeditate();
+                break;
+            case 'artifact':
+                this.playerArtifactAttack();
+                break;
         }
     }
 
@@ -734,11 +795,20 @@ export class CombatEngine {
         
         const eDr = this.enemy.advancedStats?.damageReduction || 0;
         const eAllRes = this.enemy.advancedStats?.allRes || 0;
-        let damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression * racialBonus * envBonus * elementalMult * (1 - eDr) * (1 - eAllRes)));
+        // --- Module 1: Chiến Thế ATK multiplier ---
+        const stanceConfig = COMBAT_STANCES[this.playerStance] || COMBAT_STANCES.NONE;
+        const stanceAtkMult = stanceConfig.atkMult || 1.0;
+
+        let damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression * racialBonus * envBonus * elementalMult * (1 - eDr) * (1 - eAllRes) * stanceAtkMult));
 
         // Instability debuff reduces physical attack damage by 30%
         if (this.status.player.instability > 0) {
             damage = Math.floor(damage * 0.7);
+        }
+
+        // --- Module 2: Sát Khí Tụ Tập event bonus (+10%) ---
+        if (this.activeCombatEvents.has('SAT_KHI_TU_TAP')) {
+            damage = Math.floor(damage * 1.1);
         }
 
         // Divine Sense (Perception) Accuracy/Crit
@@ -781,7 +851,9 @@ export class CombatEngine {
     }
 
     playerSwordIntent() {
-        const costMana = 40;
+        // --- Module 1: SAT stance mana discount ---
+        const stanceConf = COMBAT_STANCES[this.playerStance] || COMBAT_STANCES.NONE;
+        const costMana = Math.floor(40 * (stanceConf.manaCostMult || 1.0));
         if (this.player.mana < costMana) {
             this.addLog("Linh lực không đủ để ngưng tụ Kiếm Ý!");
             return;
@@ -791,7 +863,12 @@ export class CombatEngine {
         this.addLog("<span class='text-qi-blue font-ancient'>Kiếm Ý xung thiên!</span> Ngươi nhân kiếm hợp nhất, chém ra một kiếm tuyệt diệt.");
         
         const suppression = this.calculateRealmSuppression(this.player, this.enemy);
-        const damage = Math.floor(this.player.atk * 2.5 * suppression);
+        // --- Module 1: SAT stance sword-intent bonus (+15%) for sword path ---
+        let swordIntentMult = 2.5;
+        if (this.playerStance === 'SAT' && (this.player.specializedPaths?.sword?.realmId || 0) > 0) {
+            swordIntentMult = 2.5 * (1 + (COMBAT_STANCES.SAT.pathBonus?.bonus?.swordIntentDmg || 0));
+        }
+        const damage = Math.floor(this.player.atk * swordIntentMult * suppression);
         
         // Sword Intent ignores 80% defense
         const effectiveEnemyDef = Math.floor(this.enemy.def * 0.2); 
@@ -1578,7 +1655,24 @@ export class CombatEngine {
             }
         }
 
+        // --- Module 3: Đạo Tâm Hộ Thể — 25% block incoming hit when daoTam > 70 ---
+        if (this.combatDaoTam > 70 && Math.random() < 0.25) {
+            this.addLog(`✨ <span class="text-cyan-400 font-bold">Đạo Tâm Hộ Thể!</span> Đạo tâm kiến định như bàn thạch, đòn đánh của ${this.enemy.name} bị hóa giải hoàn toàn!`);
+            this.onUpdate('damage', { target: 'player', value: 0, crit: false, actionType: 'dao_tam_block' });
+            this.turn = 0;
+            this.nextTurn();
+            return;
+        }
+
         this.player.hp -= finalPlayerDamage;
+        
+        // --- Module 1: Hộ Thân Thế mana regen on taking a hit ---
+        if (this.playerStance === 'THU' && finalPlayerDamage > 0) {
+            const stanceConf = COMBAT_STANCES.THU;
+            const manaGain = Math.floor(this.player.maxMana * stanceConf.manaRegen);
+            this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
+            if (manaGain > 0) this.addLog(`🛡️ [Hộ Thân Thế] Linh lực phản hồi +${manaGain}.`);
+        }
         this.addLog(attackMsg);
         this.onUpdate('damage', { target: 'player', value: finalPlayerDamage, crit, actionType: 'attack' });
 
@@ -1624,6 +1718,186 @@ export class CombatEngine {
         });
 
         this.player.calculateStats();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MODULE 1: Chiến Thế (Combat Stance)
+    // ─────────────────────────────────────────────────────────────────────────
+    playerSetStance(stanceId) {
+        if (!COMBAT_STANCES[stanceId]) return;
+        if (this.playerStance === stanceId) {
+            // Toggle off to NONE if already active
+            this.playerStance = 'NONE';
+            this.addLog(`Cười nhạt một tiếng, ngươi rút khỏi chiến thế, trở về trạng thái vô thế tự nhiên.`);
+        } else {
+            this.playerStance = stanceId;
+            const conf = COMBAT_STANCES[stanceId];
+            this.addLog(`<span class="font-ancient" style="color:${conf.color}">[${conf.icon} ${conf.name}]</span> Ngươi thần tâm chấn động, khai động chiến thế!`);
+        }
+        // Stance switching does NOT cost a turn — just emits a UI refresh
+        this.onUpdate('stance', { stance: this.playerStance });
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MODULE 2: Thiên Địa Dị Biến (Combat Events)
+    // ─────────────────────────────────────────────────────────────────────────
+    checkCombatEvents() {
+        this.combatEventTurnCounter++;
+        for (const [key, eventDef] of Object.entries(COMBAT_EVENTS)) {
+            // Check interval
+            if (this.combatEventTurnCounter % eventDef.checkInterval !== 0) continue;
+            // Check condition
+            if (!eventDef.condition(this)) continue;
+            // Roll chance
+            if (Math.random() > eventDef.chancePerCheck) continue;
+            // Apply event
+            this.applyEvent(key, eventDef);
+        }
+    }
+
+    applyEvent(key, eventDef) {
+        this.addLog(`<span class="${eventDef.logColor} font-ancient font-bold">${eventDef.icon} [ĐạI ĐẠO Dị BIẾ́N] ${eventDef.name}!</span> ${eventDef.desc}`);
+        this.onUpdate('combat-event', { id: key, name: eventDef.name, icon: eventDef.icon, color: eventDef.color });
+
+        switch (key) {
+            case 'LINH_KHI_BAO_DONG': {
+                // Random: buff or debuff to player (50/50)
+                if (Math.random() < 0.5) {
+                    const manaGain = Math.floor(this.player.maxMana * 0.1);
+                    this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
+                    this.addLog(`🌀 Linh khí khuếch tán giúp ngươi hồi phục +${manaGain} Linh Lực.`);
+                } else {
+                    const hpLoss = Math.floor(this.player.maxHp * 0.04);
+                    this.player.hp = Math.max(1, this.player.hp - hpLoss);
+                    this.addLog(`🌀 Linh khí bạo loạn thâm nhập kinh mạch, ngươi mất -${hpLoss} khí huyết.`);
+                    this.onUpdate('damage', { target: 'player', value: hpLoss, crit: false, actionType: 'event' });
+                }
+                break;
+            }
+            case 'THIEN_LOI_HOI_KICH': {
+                const leiDmg = Math.floor(this.player.atk * 1.2);
+                this.enemy.hp = Math.max(0, this.enemy.hp - leiDmg);
+                this.addLog(`⚡ Thiên lôi giáng xuống, đánh bổ trợ thêm <span class="text-yellow-300 font-bold">${leiDmg}</span> sát thương!`);
+                this.onUpdate('damage', { target: 'enemy', value: leiDmg, crit: true, actionType: 'event' });
+                break;
+            }
+            case 'TAM_MA_TA_AP': {
+                // Lose 5% HP but gain Tam Ma buff: next skill +20% dmg
+                const hpLoss = Math.floor(this.player.maxHp * 0.05);
+                this.player.hp = Math.max(1, this.player.hp - hpLoss);
+                this.status.player.tamMaBuff = 1; // Lasts 1 turn
+                this.addLog(`🩸 Tâm ma trỗi dậy, mất -${hpLoss} khí huyết nhưng pháp lực đột ngột bạo tăng! (Lượt tới: Bí Pháp +20%)`);
+                this.onUpdate('damage', { target: 'player', value: hpLoss, crit: false, actionType: 'event' });
+                break;
+            }
+            case 'LINH_KHI_TRIEU': {
+                const manaGain = Math.floor(this.player.maxMana * 0.08);
+                this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
+                this.addLog(`🌿 Linh khí triều dâng, hồi phục +${manaGain} Linh Lực.`);
+                break;
+            }
+            case 'SAT_KHI_TU_TAP': {
+                // Mark active — damage bonus applied in playerAttack
+                this.activeCombatEvents.add('SAT_KHI_TU_TAP');
+                this.addLog(`⚔️ Sát khí nhất tần! Mọi đòn tấn công +10% trong lượt này.`);
+                break;
+            }
+        }
+        // Clear turn-based active events after 1 turn
+        if (key === 'SAT_KHI_TU_TAP') {
+            setTimeout(() => this.activeCombatEvents.delete('SAT_KHI_TU_TAP'), 100);
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MODULE 3: Luyện Tâm (Meditate)
+    // ─────────────────────────────────────────────────────────────────────────
+    playerMeditate() {
+        // Calm the heart demon, regen some mana, sacrifice the turn
+        const heartDemonReduce = 5;
+        const manaGain = Math.floor(this.player.maxMana * 0.08);
+
+        this.combatHeartDemon = Math.max(0, this.combatHeartDemon - heartDemonReduce);
+        this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
+        
+        this.addLog(`🧘 <span class="text-purple-400 font-ancient">Luyện Tâm!</span> Ngươi thu tâm thần, hóa giải Tâm Ma (-${heartDemonReduce}), hồi Lính Lực +${manaGain}.`);
+        this.onUpdate('damage', { target: 'player', value: 0, crit: false, actionType: 'meditate' });
+        
+        this.endPlayerTurn();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MODULE 4: Bản Mệnh Pháp Bảo Tấn Công
+    // ─────────────────────────────────────────────────────────────────────────
+    playerArtifactAttack() {
+        const artifactId = this.player.equipment?.phap_bao_cong || this.player.lifeBoundTreasureId;
+        if (!artifactId) {
+            this.addLog('Ngươi không có Pháp Bảo chủ chiến nào có thể triệu hồi!');
+            return;
+        }
+        if (this.artifactCombatDurability <= 0) {
+            this.addLog(`⚠️ Pháp bảo đã cạn linh lực trong chiến đấu, không thể tiếp tục thẩm nhập!`);
+            return;
+        }
+        // Check recognized
+        if (!(this.player.recognizedItems || []).includes(artifactId)) {
+            this.addLog(`Pháp Bảo chưa được nhận chủ, không thể điều khiển linh hoạt trong chiến!`);
+            return;
+        }
+
+        const item = getItemById(artifactId);
+        if (!item) return;
+
+        this.artifactCombatDurability--;
+
+        const itemName = item.name || 'Pháp Bảo';
+        const stats = item.stats || {};
+        const meta = this.player.equipmentMetadata?.phap_bao_cong || { level: 1 };
+        const levelMult = 1 + (meta.level - 1) * 0.1; // +10% per level
+
+        // Base artifact damage: atk bonus from item stats + player atk contribution
+        const atkBonus = stats.atk || 0;
+        const piercePct = stats.pierce || 0;
+        const lifeStealPct = stats.lifeSteal || 0;
+
+        const suppression = this.calculateRealmSuppression(this.player, this.enemy);
+        const effectiveDef = Math.max(1, Math.floor(this.enemy.def * (1 - piercePct) * this.getEnemyMultiplier('def')));
+        let dmg = Math.max(5, Math.floor((this.player.atk * 0.5 + atkBonus) * suppression * levelMult) - Math.floor(effectiveDef / 2));
+
+        // Tier bonuses for high-grade artifacts
+        const quality = item.quality?.name || item.quality || '';
+        let tierEffect = '';
+        if (quality === 'Cổ Bảo' || quality === 'co_bao') {
+            // Cổ Bảo: 20% stun chance
+            if (Math.random() < 0.2) {
+                this.status.enemy.stun = Math.max(this.status.enemy.stun || 0, 1);
+                tierEffect = ' <span class="text-yellow-400">[Cổ Bảo Uy Năng: CHOÁNG VÁNG!]</span>';
+            }
+        } else if (quality === 'Linh Bảo' || quality === 'linh_bao') {
+            // Linh Bảo: DOT burn 2 turns
+            this.status.enemy.burn = Math.max(this.status.enemy.burn || 0, 2);
+            this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower || 0, dmg * 0.2);
+            tierEffect = ' <span class="text-orange-400">[Linh Bảo Pháp Lực: THIÊU ĐỐT!]</span>';
+        }
+
+        this.enemy.hp -= dmg;
+        this.addLog(`💙 <span class="text-qi-blue font-ancient">${itemName}</span> xunhỏ lầy lộng, chiến oanh phát, gây <span class="text-qi-blue font-bold">${dmg}</span> sát thương!${tierEffect}`);
+        this.addLog(`  Dư linh lực chiến đấu còn: ${this.artifactCombatDurability} lần.`);
+        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false, actionType: 'artifact' });
+
+        // Life steal
+        if (lifeStealPct > 0) {
+            const heal = Math.floor(dmg * lifeStealPct);
+            this.player.hp = Math.min(this.player.maxHp, this.player.hp + heal);
+            this.addLog(`Pháp bảo hút thu địch sinh mệnh, hồi phục +${heal} khí huyết.`);
+        }
+
+        if (this.enemy.hp <= 0) {
+            this.enemy.hp = 0;
+            this.win();
+        } else {
+            this.endPlayerTurn();
+        }
     }
 
     win() {

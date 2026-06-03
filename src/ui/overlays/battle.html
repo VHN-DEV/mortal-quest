@@ -54,6 +54,9 @@
                 </div>
             </div>
 
+            <!-- Combat Event Flash Banner -->
+            <div id="combat-event-banner" class="hidden w-full max-w-sm mx-auto py-1 px-3 rounded-full text-center text-[9px] font-ancient font-bold animate-pulse border border-white/10 mb-1"></div>
+
             <!-- Duel Divider -->
             <div class="flex items-center space-x-4 w-full max-w-sm opacity-50 py-1">
                 <div class="h-[2px] flex-1 bg-gradient-to-r from-transparent via-qi-blue/30 to-transparent"></div>
@@ -79,6 +82,15 @@
                             <div class="flex items-center justify-between text-[8px] text-gray-400 font-mono">
                                 <span id="player-hp-text" class="text-qi-jade font-bold">HP 100/100</span>
                                 <span id="player-mana-text" class="text-qi-blue font-bold">MP 100/100</span>
+                            </div>
+                            <!-- Module 3: Dao/Heart Demon Indicators -->
+                            <div id="player-daoheart-row" class="hidden flex items-center gap-1 mt-0.5">
+                                <div id="player-tam-ma-indicator" class="hidden items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-rose-950/60 border border-rose-500/30 text-[7px] text-rose-400 font-bold">
+                                    <span>👹</span><span id="player-tam-ma-val">0</span>
+                                </div>
+                                <div id="player-dao-tam-indicator" class="hidden items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-[7px] text-cyan-400 font-bold">
+                                    <span>✨</span><span id="player-dao-tam-val">0</span>
+                                </div>
                             </div>
                         </div>
                         <div class="space-y-1">
@@ -118,6 +130,13 @@
             </div>
 
             <div class="relative bg-white/[0.03] rounded-2xl border border-white/10 p-2 backdrop-blur-sm shadow-xl">
+                <!-- Module 1: Stance Selector -->
+                <div id="battle-stance-bar" class="flex space-x-1 mb-2">
+                    <button id="btn-stance-none" data-stance="NONE" class="stance-btn flex-1 py-0.5 rounded-lg text-[7px] font-ancient border border-white/10 text-gray-500 hover:border-white/30 hover:text-white transition-all duration-200" title="Vô Thế (Tự nhiên)">⚬ VÔ</button>
+                    <button id="btn-stance-sat" data-stance="SAT" class="stance-btn flex-1 py-0.5 rounded-lg text-[7px] font-ancient border border-red-500/20 text-red-400/60 hover:border-red-500/50 hover:text-red-400 transition-all duration-200" title="Công Sát Thế: ATK +30%, DEF -30%">⚔️ SÁT</button>
+                    <button id="btn-stance-thu" data-stance="THU" class="stance-btn flex-1 py-0.5 rounded-lg text-[7px] font-ancient border border-blue-500/20 text-blue-400/60 hover:border-blue-500/50 hover:text-blue-400 transition-all duration-200" title="Hộ Thân Thế: DEF +40%, ATK -20%">🛡️ THỦ</button>
+                    <button id="btn-stance-dinh" data-stance="DINH" class="stance-btn flex-1 py-0.5 rounded-lg text-[7px] font-ancient border border-purple-500/20 text-purple-400/60 hover:border-purple-500/50 hover:text-purple-400 transition-all duration-200" title="Thiền Định Thế: Hồi Linh Lực +5%/lượt">🧘 ĐỊNH</button>
+                </div>
                 <!-- Combat Tabs -->
                 <div id="battle-tabs"
                     class="flex space-x-1.5 overflow-x-auto custom-scrollbar-hidden pb-2 mb-2 border-b border-white/5">
@@ -147,6 +166,11 @@
                             <i class="ph ph-flame"></i>
                             <span>Kiếm Ý</span>
                         </button>
+                        <!-- Module 4: Bản Mệnh Pháp Bảo attack button -->
+                        <button id="btn-artifact" class="battle-action-btn-new hidden col-span-2" style="background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.15)); border-color: rgba(59,130,246,0.3);">
+                            <i class="ph ph-diamond"></i>
+                            <span id="btn-artifact-label">Pháp Bảo</span>
+                        </button>
                     </div>
 
                     <!-- Tab: THUẬT -->
@@ -174,6 +198,11 @@
                         <button id="btn-dodge" class="battle-action-btn-new">
                             <i class="ph ph-sneaker"></i>
                             <span>Thân Pháp</span>
+                        </button>
+                        <!-- Module 3: Luyện Tâm button -->
+                        <button id="btn-meditate" class="battle-action-btn-new col-span-2" style="background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(79,209,197,0.1)); border-color: rgba(168,85,247,0.3);">
+                            <i class="ph ph-yin-yang"></i>
+                            <span>Luyện Tâm</span>
                         </button>
                     </div>
 

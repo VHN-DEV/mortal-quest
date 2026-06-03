@@ -70,6 +70,25 @@ export class BattleScreen {
         this.chantingBar = document.getElementById('chanting-progress');
 
         this.secretList = document.getElementById('battle-secret-list');
+
+        // Module 1: Stance buttons
+        this.stanceBtns = document.querySelectorAll('.stance-btn');
+        this.stanceBar = document.getElementById('battle-stance-bar');
+
+        // Module 3: Meditate button, dao-heart indicators
+        this.btnMeditate = document.getElementById('btn-meditate');
+        this.elTamMaIndicator = document.getElementById('player-tam-ma-indicator');
+        this.elDaoTamIndicator = document.getElementById('player-dao-tam-indicator');
+        this.elTamMaVal = document.getElementById('player-tam-ma-val');
+        this.elDaoTamVal = document.getElementById('player-dao-tam-val');
+        this.elDaoHeartRow = document.getElementById('player-daoheart-row');
+
+        // Module 4: Artifact attack button
+        this.btnArtifact = document.getElementById('btn-artifact');
+        this.btnArtifactLabel = document.getElementById('btn-artifact-label');
+
+        // Module 2: Combat event banner
+        this.combatEventBanner = document.getElementById('combat-event-banner');
     }
 
     initEvents() {
@@ -95,6 +114,17 @@ export class BattleScreen {
         if (this.btnSoulRepress) this.btnSoulRepress.onclick = () => this.handleAction('soul-repress');
         if (this.btnEscape) this.btnEscape.onclick = () => this.handleAction('escape');
         if (this.btnSecret) this.btnSecret.onclick = () => this.toggleSecretList();
+
+        // Module 1: Stance buttons
+        this.stanceBtns.forEach(btn => {
+            btn.onclick = () => this.handleAction('stance', btn.dataset.stance);
+        });
+
+        // Module 3: Meditate button
+        if (this.btnMeditate) this.btnMeditate.onclick = () => this.handleAction('meditate');
+
+        // Module 4: Artifact button
+        if (this.btnArtifact) this.btnArtifact.onclick = () => this.handleAction('artifact');
 
         // Enemy Stats Modal events
         if (this.enemyPortraitBtn) {
@@ -165,9 +195,11 @@ export class BattleScreen {
             case 'player-turn-start':
                 this.actionContainer.classList.remove('hidden');
                 this.updateProfessionTabs();
+                this.updateSpecialActions();
                 this.hideSecretList();
                 this.updateTurnIndicator(0);
                 this.updateChantingUI();
+                this.updateDaoHeartUI();
                 break;
             case 'player-turn-end':
                 this.actionContainer.classList.add('hidden');
@@ -185,6 +217,14 @@ export class BattleScreen {
                 this.updateTimeline();
                 this.updateTurnIndicator(data.turn);
                 this.updateChantingUI();
+                break;
+            // Module 1: Stance changed (no-turn action)
+            case 'stance':
+                this.updateStanceUI(data?.stance || 'NONE');
+                break;
+            // Module 2: Combat event triggered
+            case 'combat-event':
+                this.showCombatEventBanner(data);
                 break;
             case 'loot':
                 this.handlePostBattleLoot(data.enemy);
@@ -361,13 +401,49 @@ export class BattleScreen {
     }
 
     updateLog(logs) {
-        this.logEl.innerHTML = logs.map(msg => `<p class="mb-1">${msg}</p>`).join('');
+        // Module 5: Icon-prefixed log entries based on keywords
+        const iconMap = [
+            { test: /Sát Khí|Chiến Thế|Công Sát/i, icon: '⚔️' },
+            { test: /Kiếm Ý|Kiếm Quang/i, icon: '💠' },
+            { test: /Dị Hỏa|Thiêu Đốt|hỏa diêm/i, icon: '🔥' },
+            { test: /Tâm Ma|Tẩu Hỏa/i, icon: '⚠️' },
+            { test: /Pháp Bảo/i, icon: '💙' },
+            { test: /Luyện Tâm|Thiền Định/i, icon: '🧘' },
+            { test: /BẠO KHỨC|BẠO KÍCH/i, icon: '💥' },
+            { test: /Hộ Thân|Phòng Ngự|Bảo Hộ/i, icon: '🛡️' },
+            { test: /Đạo Tâm|Hộ Thể/i, icon: '✨' },
+            { test: /Thiên Lôi|Thiên Địa/i, icon: '⚡' },
+            { test: /Linh Khí Triều|Linh Khí Bạo/i, icon: '🌀' },
+            { test: /BI Pháp|Bí Pháp|Bí Thuật/i, icon: '📜' },
+            { test: /DạI THẮ́NG|THANH CONG/i, icon: '🏆' },
+            { test: /THẢM BẠI/i, icon: '💀' }
+        ];
+        this.logEl.innerHTML = logs.map(msg => {
+            let prefix = '';
+            for (const { test, icon } of iconMap) {
+                if (test.test(msg)) { prefix = `${icon} `; break; }
+            }
+            return `<p class="mb-1">${prefix}${msg}</p>`;
+        }).join('');
         this.logEl.scrollTop = this.logEl.scrollHeight;
     }
 
     showDamage(data) {
-        const anchor = data.target === 'enemy' ? this.enemyHpBar : this.playerHpBar;
-        state.ui.createDamagePopup(anchor, data.value, data.crit);
+        // Module 5: Colored floating numbers by actionType
+        const colorMap = {
+            'attack':      null,       // default white
+            'crit':        '#fbbf24',  // gold
+            'sword-intent':'#60a5fa',  // blue
+            'soul-repress':'#a78bfa',  // purple
+            'artifact':    '#4fd1c5',  // cyan/teal
+            'event':       '#f97316',  // orange
+            'tam_ma':      '#f43f5e',  // rose
+            'flame':       '#f97316',  // orange
+            'burn':        '#f97316',  // orange
+            'skill':       '#34d399',  // emerald
+        };
+        const color = data.crit ? colorMap['crit'] : (colorMap[data.actionType] || null);
+        state.ui.createDamagePopup(data.target === 'enemy' ? this.enemyHpBar : this.playerHpBar, data.value, data.crit, color);
 
         // Slide/attack kinetic animations for cards
         const targetCard = data.target === 'enemy' ? document.getElementById('enemy-card') : document.getElementById('player-card');
@@ -378,7 +454,7 @@ export class BattleScreen {
         this.spawnCombatVfx(targetCard, attackerCard, data);
 
         if (attackerCard && data.value > 0) {
-            const slideY = data.target === 'enemy' ? -15 : 15; // Player slides up (-15), Enemy slides down (+15)
+            const slideY = data.target === 'enemy' ? -15 : 15;
             gsap.to(attackerCard, {
                 y: slideY,
                 duration: 0.12,
@@ -388,14 +464,20 @@ export class BattleScreen {
             });
         }
 
-        // Shake target card
+        // Shake target card — Module 5: intensity scales with damage%
         if (targetCard && data.value > 0) {
+            const maxHp = data.target === 'enemy' ? state.currentCombat?.enemy?.maxHp : state.player?.maxHp;
+            const pct = maxHp ? data.value / maxHp : 0;
+            const shakeAmt = pct > 0.3 ? 10 : pct > 0.1 ? 6 : 3;
+            const shakeRep = pct > 0.3 ? 10 : 6;
             gsap.fromTo(targetCard, 
-                { x: -6 }, 
-                { x: 6, duration: 0.04, repeat: 6, yoyo: true, ease: "none", onComplete: () => {
+                { x: -shakeAmt }, 
+                { x: shakeAmt, duration: 0.04, repeat: shakeRep, yoyo: true, ease: "none", onComplete: () => {
                     gsap.set(targetCard, { x: 0 });
                 }}
             );
+            // Module 5: Flash low-HP enemy border
+            if (data.target === 'enemy') this.flashEnemyLowHp();
         } else if (targetImg && data.value > 0) {
             gsap.fromTo(targetImg, 
                 { x: -5 }, 
@@ -689,6 +771,22 @@ export class BattleScreen {
         if (flame && flame.type === 'di_hoa') {
             this.btnFlame.classList.remove('hidden');
         }
+
+        // Module 4: Artifact (Pháp Bảo Chủ Chiến) attack button
+        if (this.btnArtifact && state.currentCombat) {
+            const artifactId = state.player.equipment?.phap_bao_cong || state.player.lifeBoundTreasureId;
+            const isRecognized = artifactId && (state.player.recognizedItems || []).includes(artifactId);
+            const hasDurability = state.currentCombat.artifactCombatDurability > 0;
+            if (isRecognized && hasDurability) {
+                this.btnArtifact.classList.remove('hidden');
+                if (this.btnArtifactLabel) {
+                    const durLeft = state.currentCombat.artifactCombatDurability;
+                    this.btnArtifactLabel.textContent = `Pháp Bảo (${durLeft})`;
+                }
+            } else {
+                this.btnArtifact.classList.add('hidden');
+            }
+        }
     }
 
     updateSecretButton() {
@@ -909,5 +1007,110 @@ export class BattleScreen {
         // Also ensure stats modal is hidden when combat closes
         this.hideEnemyStats();
         state.ui.toggleOverlay(this.overlay, false);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MODULE 1: updateStanceUI — highlight active stance button
+    // ─────────────────────────────────────────────────────────────────────────
+    updateStanceUI(stanceId) {
+        if (!this.stanceBtns) return;
+        const colorMap = {
+            'NONE':  { active: 'bg-white/10 text-white border-white/30', inactive: 'border-white/10 text-gray-500' },
+            'SAT':   { active: 'bg-red-500/20 text-red-300 border-red-500/60 shadow-[0_0_10px_rgba(239,68,68,0.3)]', inactive: 'border-red-500/20 text-red-400/60' },
+            'THU':   { active: 'bg-blue-500/20 text-blue-300 border-blue-500/60 shadow-[0_0_10px_rgba(59,130,246,0.3)]', inactive: 'border-blue-500/20 text-blue-400/60' },
+            'DINH':  { active: 'bg-purple-500/20 text-purple-300 border-purple-500/60 shadow-[0_0_10px_rgba(168,85,247,0.3)]', inactive: 'border-purple-500/20 text-purple-400/60' }
+        };
+        this.stanceBtns.forEach(btn => {
+            const s = btn.dataset.stance;
+            const map = colorMap[s] || colorMap['NONE'];
+            // Remove all possible classes
+            btn.className = btn.className
+                .replace(/bg-\S+|text-\S+|border-\S+|shadow-\S+/g, '')
+                .trim();
+            btn.classList.add(
+                'stance-btn', 'flex-1', 'py-0.5', 'rounded-lg', 'text-[7px]', 'font-ancient',
+                'hover:opacity-90', 'transition-all', 'duration-200', 'border'
+            );
+            const targetClasses = (s === stanceId ? map.active : map.inactive).split(' ');
+            btn.classList.add(...targetClasses);
+        });
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MODULE 3: updateDaoHeartUI — show/hide Tam Ma / Dao Tam indicators
+    // ─────────────────────────────────────────────────────────────────────────
+    updateDaoHeartUI() {
+        const combat = state.currentCombat;
+        if (!combat) return;
+        const hd = combat.combatHeartDemon || 0;
+        const dt = combat.combatDaoTam || 0;
+        const showRow = hd > 30 || dt > 70;
+        if (this.elDaoHeartRow) {
+            this.elDaoHeartRow.classList.toggle('hidden', !showRow);
+            this.elDaoHeartRow.style.display = showRow ? 'flex' : 'none';
+        }
+        if (this.elTamMaIndicator) {
+            const show = hd > 30;
+            this.elTamMaIndicator.classList.toggle('hidden', !show);
+            this.elTamMaIndicator.style.display = show ? 'flex' : 'none';
+            if (this.elTamMaVal) this.elTamMaVal.textContent = `${Math.floor(hd)}%`;
+        }
+        if (this.elDaoTamIndicator) {
+            const show = dt > 70;
+            this.elDaoTamIndicator.classList.toggle('hidden', !show);
+            this.elDaoTamIndicator.style.display = show ? 'flex' : 'none';
+            if (this.elDaoTamVal) this.elDaoTamVal.textContent = `${Math.floor(dt)}`;
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MODULE 2: showCombatEventBanner — flash a temporary event notification
+    // ─────────────────────────────────────────────────────────────────────────
+    showCombatEventBanner(data) {
+        if (!this.combatEventBanner || !data) return;
+        this.combatEventBanner.textContent = `${data.icon} ${data.name}`;
+        this.combatEventBanner.style.color = data.color || '#ffffff';
+        this.combatEventBanner.style.borderColor = (data.color || '#ffffff') + '40';
+        this.combatEventBanner.style.backgroundColor = (data.color || '#ffffff') + '15';
+        this.combatEventBanner.classList.remove('hidden');
+        // Auto-hide after 2.5s
+        clearTimeout(this._eventBannerTimer);
+        this._eventBannerTimer = setTimeout(() => {
+            if (this.combatEventBanner) this.combatEventBanner.classList.add('hidden');
+        }, 2500);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MODULE 5: flashEnemyLowHp — pulse enemy card border red when HP < 20%
+    // ─────────────────────────────────────────────────────────────────────────
+    flashEnemyLowHp() {
+        if (!state.currentCombat) return;
+        const enemy = state.currentCombat.enemy;
+        const pct = enemy.hp / enemy.maxHp;
+        const card = document.getElementById('enemy-card');
+        if (!card) return;
+        if (pct < 0.2) {
+            card.style.borderColor = 'rgba(239,68,68,0.8)';
+            card.style.boxShadow = '0 0 20px rgba(239,68,68,0.4)';
+            // Keep flashing
+            if (!this._lowHpFlashing) {
+                this._lowHpFlashing = true;
+                const flash = () => {
+                    if (!state.currentCombat || state.currentCombat.enemy.hp / state.currentCombat.enemy.maxHp >= 0.2) {
+                        this._lowHpFlashing = false;
+                        if (card) { card.style.borderColor = ''; card.style.boxShadow = ''; }
+                        return;
+                    }
+                    gsap.to(card, { borderColor: 'rgba(239,68,68,0.9)', boxShadow: '0 0 30px rgba(239,68,68,0.6)', duration: 0.4, yoyo: true, repeat: 1,
+                        onComplete: () => setTimeout(flash, 600)
+                    });
+                };
+                flash();
+            }
+        } else {
+            this._lowHpFlashing = false;
+            card.style.borderColor = '';
+            card.style.boxShadow = '';
+        }
     }
 }

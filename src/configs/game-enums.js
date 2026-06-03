@@ -650,6 +650,140 @@ export const TOWER_MASTERS = Object.freeze({
     })
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// COMBAT STANCES — Chiến Thế Hệ Thống (Module 1)
+// ─────────────────────────────────────────────────────────────────────────────
+export const COMBAT_STANCES = Object.freeze({
+    NONE: Object.freeze({
+        id: 'NONE',
+        name: 'Vô Thế',
+        icon: '⚬',
+        color: '#9ca3af',
+        atkMult: 1.0,
+        defMult: 1.0,
+        manaRegen: 0,
+        manaCostMult: 1.0,
+        desc: 'Trạng thái tự nhiên, không thiên về công hay thủ.',
+        pathRestriction: null,       // null = available to all
+        pathBonus: null              // { path, bonus: {} }
+    }),
+    SAT: Object.freeze({
+        id: 'SAT',
+        name: 'Công Sát Thế',
+        icon: '⚔️',
+        color: '#ef4444',
+        atkMult: 1.3,
+        defMult: 0.7,
+        manaRegen: 0,
+        manaCostMult: 0.9,
+        desc: 'Toàn lực tập trung vào tấn công. Công kích +30%, Phòng ngự -30%, Linh Lực tiêu hao -10%.',
+        pathRestriction: null,
+        pathBonus: {
+            path: 'sword',
+            bonus: { swordIntentDmg: 0.15 }  // +15% sword-intent damage
+        }
+    }),
+    THU: Object.freeze({
+        id: 'THU',
+        name: 'Hộ Thân Thế',
+        icon: '🛡️',
+        color: '#3b82f6',
+        atkMult: 0.8,
+        defMult: 1.4,
+        manaRegen: 0.03,             // 3% mana regen per hit absorbed
+        manaCostMult: 1.0,
+        desc: 'Phòng thủ toàn diện. Phòng ngự +40%, Công kích -20%, mỗi đòn nhận phản hồi 3% Linh Lực.',
+        pathRestriction: null,
+        pathBonus: {
+            path: 'buddhist',
+            bonus: { shieldAmt: 0.05 }  // +5% shield amount on defend
+        }
+    }),
+    DINH: Object.freeze({
+        id: 'DINH',
+        name: 'Thiền Định Thế',
+        icon: '🧘',
+        color: '#a855f7',
+        atkMult: 0.9,
+        defMult: 1.0,
+        manaRegen: 0.05,             // 5% max mana regen per turn
+        manaCostMult: 0.8,
+        desc: 'Nội tâm bình lặng. Linh Lực hồi +5%/lượt, Bí Pháp uy lực +20%, Linh Lực tiêu hao -20%, giảm Tâm Ma tích tụ.',
+        pathRestriction: null,
+        pathBonus: {
+            path: 'confucian',
+            bonus: { comprehensionBonus: 0.1 }  // +10% technique damage scaling
+        }
+    })
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COMBAT EVENTS — Thiên Địa Dị Biến (Module 2)
+// ─────────────────────────────────────────────────────────────────────────────
+export const COMBAT_EVENTS = Object.freeze({
+    LINH_KHI_BAO_DONG: Object.freeze({
+        id: 'LINH_KHI_BAO_DONG',
+        name: 'Linh Khí Bạo Động',
+        icon: '🌀',
+        color: '#a855f7',
+        logColor: 'text-purple-400',
+        // Fires with 25% chance every 3 turns (checked in processTurnStatus)
+        chancePerCheck: 0.25,
+        checkInterval: 3,            // every N turns
+        // Condition: always eligible (checked before roll)
+        condition: (combat) => true,
+        desc: 'Linh khí thiên địa bạo loạn bất ngờ! Cả hai bên chịu ảnh hưởng ngẫu nhiên.'
+    }),
+    THIEN_LOI_HOI_KICH: Object.freeze({
+        id: 'THIEN_LOI_HOI_KICH',
+        name: 'Thiên Lôi Hội Kích',
+        icon: '⚡',
+        color: '#fbbf24',
+        logColor: 'text-yellow-300',
+        chancePerCheck: 0.40,
+        checkInterval: 1,
+        condition: (combat) =>
+            ['SPIRIT_BEAST', 'DRAGON'].includes(combat.enemy?.race) &&
+            combat.enemy?.hp < combat.enemy?.maxHp * 0.4,
+        desc: 'Kẻ địch yêu tộc trọng thương, Thiên Đạo giáng xuống một đạo thiên lôi!'
+    }),
+    TAM_MA_TA_AP: Object.freeze({
+        id: 'TAM_MA_TA_AP',
+        name: 'Tâm Ma Tà Áp',
+        icon: '🩸',
+        color: '#be123c',
+        logColor: 'text-rose-400',
+        chancePerCheck: 0.30,
+        checkInterval: 2,
+        condition: (combat) =>
+            (combat.player?.heartDemon || 0) > 30 &&
+            combat.playerStance !== 'DINH',  // Thiền Định Thế blocks this
+        desc: 'Tâm ma nhân lúc giao chiến trỗi dậy, khí huyết chấn động nhưng pháp lực bạo tăng!'
+    }),
+    LINH_KHI_TRIEU: Object.freeze({
+        id: 'LINH_KHI_TRIEU',
+        name: 'Linh Khí Triều',
+        icon: '🌿',
+        color: '#10b981',
+        logColor: 'text-emerald-400',
+        chancePerCheck: 1.0,         // always triggers when environment matches
+        checkInterval: 3,
+        condition: (combat) => combat.environment === 'SPIRITUAL_TIDE',
+        desc: 'Linh khí nồng đậm như triều dâng, Linh Lực hồi phục nhanh chóng!'
+    }),
+    SAT_KHI_TU_TAP: Object.freeze({
+        id: 'SAT_KHI_TU_TAP',
+        name: 'Sát Khí Tụ Tập',
+        icon: '⚔️',
+        color: '#dc2626',
+        logColor: 'text-red-400',
+        chancePerCheck: 0.50,
+        checkInterval: 1,
+        condition: (combat) => combat.enemy?.hp < combat.enemy?.maxHp * 0.2,
+        desc: 'Kẻ địch nguy cấp, sát khí bạo tụ! Mọi đòn tấn công đều thêm uy lực!'
+    })
+});
+
 // Helper to safely get the name of a quality (handling string or object)
 export const getQualityName = (quality) => {
     if (!quality) return '';
