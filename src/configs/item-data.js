@@ -145,7 +145,7 @@ export const ITEMS = {
     'dan_dao_chan_giai': {
         id: 'dan_dao_chan_giai',
         name: 'Đan Đạo Chân Giải',
-        image: 'items/books/dan_dao_chan_giai',
+        image: 'items/techniques/dan_dao_chan_giai',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📔',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
@@ -293,7 +293,7 @@ export const ITEMS = {
     'tran_phap_bi_tich': {
         id: 'tran_phap_bi_tich',
         name: 'Trận Pháp Bí Tịch',
-        image: 'items/books/tran_phap_bi_tich',
+        image: 'items/techniques/tran_phap_bi_tich',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📜',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
@@ -619,7 +619,7 @@ export const ITEMS = {
     'ban_ve_kiem_khoi': {
         id: 'ban_ve_kiem_khoi',
         name: 'Bản Vẽ Kiếm Khôi',
-        image: 'items/books/ban_ve_kiem_khoi',
+        image: 'items/techniques/ban_ve_kiem_khoi',
         type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -2386,7 +2386,7 @@ export const ITEMS = {
     'dan_dao_chan_giai': {
         id: 'dan_dao_chan_giai',
         name: 'Đan Đạo Chân Giải',
-        image: 'items/books/dan_dao_chan_giai',
+        image: 'items/techniques/dan_dao_chan_giai',
         type: ITEM_TYPES.DAN_DUOC,
         icon: '📜',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -2867,7 +2867,7 @@ export const ITEMS = {
     'truong_sinh_quyet': {
         id: 'truong_sinh_quyet',
         name: 'Trường Sinh Quyết (Bí Tịch)',
-        image: 'items/books/truong_sinh_quyet',
+        image: 'items/techniques/truong_sinh_quyet',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📖',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
@@ -3164,7 +3164,7 @@ export const ITEMS = {
     'truong_xuan_nap_khi_quyet': {
         id: 'truong_xuan_nap_khi_quyet',
         name: 'Trường Xuân Nạp Khí Quyết',
-        image: 'items/books/truong_xuan_nap_khi_quyet',
+        image: 'items/techniques/truong_xuan_nap_khi_quyet',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📘',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
@@ -3191,7 +3191,7 @@ export const ITEMS = {
     'han_thuy_quyet': {
         id: 'han_thuy_quyet',
         name: 'Hàn Thủy Quyết',
-        image: 'items/books/han_thuy_quyet',
+        image: 'items/techniques/han_thuy_quyet',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📗',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
@@ -3205,7 +3205,7 @@ export const ITEMS = {
     'thanh_moc_tam_kinh': {
         id: 'thanh_moc_tam_kinh',
         name: 'Thanh Mộc Tâm Kinh',
-        image: 'items/books/thanh_moc_tam_kinh',
+        image: 'items/techniques/thanh_moc_tam_kinh',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📒',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
@@ -3258,7 +3258,7 @@ export const ITEMS = {
     'duong_than_quyet': {
         id: 'duong_than_quyet',
         name: 'Dưỡng Thần Quyết',
-        image: 'items/books/duong_than_quyet',
+        image: 'items/techniques/duong_than_quyet',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '🧠',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
@@ -3285,7 +3285,7 @@ export const ITEMS = {
     'u_minh_huy_ngan': {
         id: 'u_minh_huy_ngan',
         name: 'U Minh Huy Ngạn',
-        image: 'items/books/u_minh_huy_ngan',
+        image: 'items/techniques/u_minh_huy_ngan',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '💀',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -3748,7 +3748,7 @@ export const ITEMS = {
     'co_tich_thien_kiem_quyet': {
         id: 'co_tich_thien_kiem_quyet',
         name: 'Cổ Tịch Thiên Kiếm Quyết',
-        image: 'items/books/thien_kiem_quyet',
+        image: 'items/techniques/thien_kiem_quyet',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📘',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -3801,7 +3801,7 @@ export const ITEMS = {
     'co_tich_huyen_am_chan_kinh': {
         id: 'co_tich_huyen_am_chan_kinh',
         name: 'Cổ Tịch Huyền Âm Chân Kinh',
-        image: 'items/books/huyen_am_chan_kinh',
+        image: 'items/techniques/huyen_am_chan_kinh',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📘',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -3828,7 +3828,7 @@ export const ITEMS = {
     'sach_co_yem_nguyet_song_tu_quyet': {
         id: 'sach_co_yem_nguyet_song_tu_quyet',
         name: 'Sách Cổ Yểm Nguyệt Song Tu Quyết',
-        image: 'items/books/yem_nguyet_song_tu',
+        image: 'items/techniques/yem_nguyet_song_tu',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📘',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -3907,7 +3907,7 @@ export const ITEMS = {
     'sach_co_linh_thu_van_thu_quyet': {
         id: 'sach_co_linh_thu_van_thu_quyet',
         name: 'Sách Cổ Linh Thú Vạn Thú Quyết',
-        image: 'items/books/van_thu_quyet',
+        image: 'items/techniques/van_thu_quyet',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📘',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -4090,7 +4090,7 @@ export const ITEMS = {
     'co_tich_thanh_duong_ma_hoa_kinh': {
         id: 'co_tich_thanh_duong_ma_hoa_kinh',
         name: 'Cổ Tịch Thanh Dương Ma Hỏa Kinh',
-        image: 'items/books/thanh_duong_ma_hoa_kinh',
+        image: 'items/techniques/thanh_duong_ma_hoa_kinh',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📘',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -4117,7 +4117,7 @@ export const ITEMS = {
     'sach_co_thien_sat_ma_quyet': {
         id: 'sach_co_thien_sat_ma_quyet',
         name: 'Sách Cổ Thiên Sát Ma Quyết',
-        image: 'items/books/thien_sat_ma_quyet',
+        image: 'items/techniques/thien_sat_ma_quyet',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📘',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -4758,7 +4758,7 @@ export const ITEMS = {
     'hoa_van_thu': {
         id: 'hoa_van_thu',
         name: 'Hóa Vân Quyết',
-        image: 'items/books/hoa_van_thu',
+        image: 'items/techniques/hoa_van_thu',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📘',
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
@@ -4772,7 +4772,7 @@ export const ITEMS = {
     'luc_hop_bi_dien': {
         id: 'luc_hop_bi_dien',
         name: 'Lục Hợp Vô Song',
-        image: 'items/books/luc_hop_bi_dien',
+        image: 'items/techniques/luc_hop_bi_dien',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📜',
         quality: PHAP_BAO_QUALITIES.LINH_BAO,
@@ -4799,7 +4799,7 @@ export const ITEMS = {
     'bat_quai_chan_kinh': {
         id: 'bat_quai_chan_kinh',
         name: 'Bát Quái Huyền Công',
-        image: 'items/books/bat_quai_chan_kinh',
+        image: 'items/techniques/bat_quai_chan_kinh',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📙',
         quality: PHAP_BAO_QUALITIES.LINH_BAO,
@@ -4826,7 +4826,7 @@ export const ITEMS = {
     'co_tich_truong_sinh_quyet': {
         id: 'co_tich_truong_sinh_quyet',
         name: 'Cổ Tịch Trường Sinh Quyết',
-        image: 'items/books/co_tich_truong_sinh_quyet',
+        image: 'items/techniques/co_tich_truong_sinh_quyet',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📗',
         quality: PHAP_BAO_QUALITIES.CO_BAO,
@@ -5183,7 +5183,7 @@ export const ITEMS = {
     'dai_dien_quyet': {
         id: 'dai_dien_quyet',
         name: 'Đại Diễn Quyết',
-        image: 'items/books/dai_dien_quyet',
+        image: 'items/techniques/dai_dien_quyet',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📔',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -5702,7 +5702,7 @@ export const ITEMS = {
     'ngoc_gian': {
         id: 'ngoc_gian',
         name: 'Ngọc Giản',
-        image: 'items/books/ngoc_gian',
+        image: 'items/techniques/ngoc_gian',
         type: ITEM_TYPES.NGOC_GIAN,
         icon: '📜',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
