@@ -1,5 +1,6 @@
 import { PUPPET_RECIPES, PUPPET_GRADES } from '../configs/puppet-data.js';
 import { getItemById } from '../configs/item-data.js';
+import { CRAFTING_QUALITIES } from '../configs/game-enums.js';
 
 export class PuppetSystem {
     constructor(player, ui) {
@@ -39,17 +40,17 @@ export class PuppetSystem {
         if (roll <= successRate) {
             // Quality determination
             const qualityRoll = Math.random() + (this.player.puppetLevel * 0.05) + (this.player.soulRealmId * 0.03);
-            let quality = 'Hạ Phẩm';
+            let quality = CRAFTING_QUALITIES.HA_PHAM.name;
             let hasIntelligence = false;
 
             if (qualityRoll > 2.3) { 
-                quality = 'Tiên Phẩm'; 
+                quality = CRAFTING_QUALITIES.TIEN_PHAM.name; 
                 hasIntelligence = Math.random() < 0.2;
             }
-            else if (qualityRoll > 1.9) { quality = 'Hoàn Mỹ'; hasIntelligence = Math.random() < 0.1; }
-            else if (qualityRoll > 1.5) { quality = 'Cực Phẩm'; }
-            else if (qualityRoll > 1.1) { quality = 'Thượng Phẩm'; }
-            else if (qualityRoll > 0.7) { quality = 'Trung Phẩm'; }
+            else if (qualityRoll > 1.9) { quality = CRAFTING_QUALITIES.HOAN_MY.name; hasIntelligence = Math.random() < 0.1; }
+            else if (qualityRoll > 1.5) { quality = CRAFTING_QUALITIES.CUC_PHAM.name; }
+            else if (qualityRoll > 1.1) { quality = CRAFTING_QUALITIES.THUONG_PHAM.name; }
+            else if (qualityRoll > 0.7) { quality = CRAFTING_QUALITIES.TRUNG_PHAM.name; }
 
             // Add Puppet item
             this.player.inventory.addItem('khoi_loi', 1, {

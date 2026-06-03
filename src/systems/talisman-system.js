@@ -1,5 +1,6 @@
 import { TALISMAN_RECIPES, getTalismanLevelInfo } from '../configs/talisman-data.js';
 import { getItemById } from '../configs/item-data.js';
+import { CRAFTING_QUALITIES } from '../configs/game-enums.js';
 
 export class TalismanSystem {
     constructor(player, ui) {
@@ -57,11 +58,11 @@ export class TalismanSystem {
         if (roll <= successRate) {
             // Quality determination
             const qualityRoll = Math.random() + (this.player.talismanLevel * 0.05) + soulBonus;
-            let quality = 'Hạ Phẩm';
-            if (qualityRoll > 1.8) quality = 'Tiên Phẩm';
-            else if (qualityRoll > 1.5) quality = 'Cực Phẩm';
-            else if (qualityRoll > 1.2) quality = 'Thượng Phẩm';
-            else if (qualityRoll > 0.8) quality = 'Trung Phẩm';
+            let quality = CRAFTING_QUALITIES.HA_PHAM.name;
+            if (qualityRoll > 1.8) quality = CRAFTING_QUALITIES.TIEN_PHAM.name;
+            else if (qualityRoll > 1.5) quality = CRAFTING_QUALITIES.CUC_PHAM.name;
+            else if (qualityRoll > 1.2) quality = CRAFTING_QUALITIES.THUONG_PHAM.name;
+            else if (qualityRoll > 0.8) quality = CRAFTING_QUALITIES.TRUNG_PHAM.name;
 
             const metadata = { quality };
             await window.game.receiveItem(recipe.id, 1, metadata);

@@ -591,6 +591,65 @@ export const RACE_VISUALS = Object.freeze({
     DRAGON: { icon: '🐲', color: '#fbbf24' }
 });
 
+
+export const CRAFTING_QUALITIES = Object.freeze({
+    HA_PHAM: createQuality('ha_pham', 'Hạ Phẩm', '#4CAF50', { sortOrder: 2, cssClass: 'hoang', bgClass: 'bg-green-500', glowClass: '' }),
+    TRUNG_PHAM: createQuality('trung_pham', 'Trung Phẩm', '#2196F3', { sortOrder: 3, cssClass: 'huyen', bgClass: 'bg-blue-500', glowClass: '' }),
+    THUONG_PHAM: createQuality('thuong_pham', 'Thượng Phẩm', '#9C27B0', { sortOrder: 4, cssClass: 'dia', bgClass: 'bg-purple-500', glowClass: 'quality-purple-500' }),
+    CUC_PHAM: createQuality('cuc_pham', 'Cực Phẩm', '#FF9800', { sortOrder: 5, cssClass: 'thien', bgClass: 'bg-orange-500', glowClass: 'quality-orange-500' }),
+    HOAN_MY: createQuality('hoan_my', 'Hoàn Mỹ', '#FF007F', { sortOrder: 6, cssClass: 'thong-thien', bgClass: 'bg-cultivation-gold', glowClass: 'quality-cultivation-gold' }),
+    TIEN_PHAM: createQuality('tien_pham', 'Tiên Phẩm', '#00FFFF', { sortOrder: 7, cssClass: 'tien', bgClass: 'bg-cyan-400', glowClass: 'quality-cyan-400' })
+});
+
+export const CORPSE_LEVELS = Object.freeze({
+    NHAP_MON: createQuality('nhap_mon', 'Nhập Môn Thi Sư', '#9ca3af'),
+    NHAT_GIAI: createQuality('nhat_giai', 'Nhất Giai Thi Sư', '#4ade80'),
+    NHI_GIAI: createQuality('nhi_giai', 'Nhị Giai Thi Sư', '#3b82f6'),
+    TAM_GIAI: createQuality('tam_giai', 'Tam Giai Thi Sư', '#a855f7'),
+    TU_GIAI: createQuality('tu_giai', 'Tứ Giai Thi Sư', '#f59e0b'),
+    NGU_GIAI: createQuality('ngu_giai', 'Ngũ Giai Thi Sư', '#ec4899'),
+    LUC_GIAI: createQuality('luc_giai', 'Lục Giai Thi Sư', '#ef4444'),
+    THAT_GIAI: createQuality('that_giai', 'Thất Giai Thi Sư', '#FF007F'),
+    BAT_GIAI: createQuality('bat_giai', 'Bát Giai Thi Sư', '#00FFFF'),
+    CUU_GIAI: createQuality('cuu_giai', 'Cửu Giai Thi Sư', '#FFD700'),
+    TIEN_GIAI: createQuality('tien_giai', 'Tiên Giai Thi Sư', '#E0115F'),
+    THAN_GIAI: createQuality('than_giai', 'Thần Giai Thi Sư', '#ffffff')
+});
+
+export const TOWER_LEVELS = Object.freeze({
+    FLOOR_1: Object.freeze({
+        floor: 1,
+        name: "Ngoại Tháp - Tầng 1",
+        description: "Nơi tập trung các luyện dược sư trẻ tuổi tài năng.",
+        minAlchemyLevel: 3,
+        rewards: Object.freeze({ expMult: 1.2 })
+    }),
+    FLOOR_2: Object.freeze({
+        floor: 2,
+        name: "Nội Tháp - Tầng 2",
+        description: "Chỉ dành cho những người có thần thức mạnh mẽ.",
+        minAlchemyLevel: 5,
+        rewards: Object.freeze({ expMult: 1.5, qualityBonus: 0.1 })
+    }),
+    FLOOR_3: Object.freeze({
+        floor: 3,
+        name: "Thánh Đan Điện",
+        description: "Nơi cư ngụ của các bậc Đan Thánh.",
+        minAlchemyLevel: 7,
+        rewards: Object.freeze({ expMult: 2.0, qualityBonus: 0.25 })
+    })
+});
+
+export const TOWER_MASTERS = Object.freeze({
+    HUYEN_LINH_TU: Object.freeze({
+        id: 'huyen_linh_tu',
+        name: 'Huyền Linh Tử',
+        title: 'Đan Thánh',
+        description: 'Bậc thầy về dung hợp dị hỏa.',
+        requirements: Object.freeze({ alchemyLevel: 6, hasFlame: true })
+    })
+});
+
 // Helper to safely get the name of a quality (handling string or object)
 export const getQualityName = (quality) => {
     if (!quality) return '';
@@ -620,7 +679,7 @@ export const getQualityObject = (quality) => {
     if (typeof quality === 'object') return quality;
     const str = String(quality).toLowerCase();
     for (const group of [
-        PHAP_BAO_QUALITIES, DAN_DUOC_QUALITIES, CONG_PHAP_QUALITIES, 
+        CRAFTING_QUALITIES, DAN_DUOC_QUALITIES, PHAP_BAO_QUALITIES, CONG_PHAP_QUALITIES, 
         DI_HOA_QUALITIES, DI_LOI_QUALITIES, LINH_THU_QUALITIES, 
         ROOT_QUALITIES, SPIRIT_STONE_GRADES, SPIRIT_STONE_QUALITIES, 
         PUPPET_GRADES, BEAST_BLOODLINES, LINH_THE_RARITIES,
@@ -629,7 +688,8 @@ export const getQualityObject = (quality) => {
         PHENOMENA_ENUM, SPIRIT_STONE_ATTRIBUTES_ENUM, NPC_RELATIONSHIP_LEVELS_ENUM,
         NPC_ROLES, NPC_PERSONALITIES_ENUM, NPC_GOALS_ENUM, NPC_SPECIAL_RELATIONS_ENUM,
         TALISMAN_LEVELS, PUPPET_MAKING_LEVELS, BEAST_LEVELS,
-        RACES_ENUM, CREATION_BLOODLINES_ENUM, DEMON_BLOODLINES_ENUM
+        RACES_ENUM, CREATION_BLOODLINES_ENUM, DEMON_BLOODLINES_ENUM,
+        CORPSE_LEVELS
     ]) {
         for (const q of Object.values(group)) {
             if (q.id.toLowerCase() === str || q.name.toLowerCase() === str) {

@@ -11,6 +11,7 @@ import {
     PUPPET_GRADES,
     BEAST_BLOODLINES,
     LINH_THE_RARITIES,
+    CRAFTING_QUALITIES,
     getQualityName
 } from '../configs/game-enums.js';
 
@@ -27,7 +28,8 @@ const ALL_QUALITIES_MAP = new Map();
     SPIRIT_STONE_QUALITIES,
     PUPPET_GRADES,
     BEAST_BLOODLINES,
-    LINH_THE_RARITIES
+    LINH_THE_RARITIES,
+    CRAFTING_QUALITIES
 ].forEach(group => {
     Object.values(group).forEach(q => {
         if (q.id) ALL_QUALITIES_MAP.set(q.id, q);

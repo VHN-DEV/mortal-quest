@@ -80,7 +80,7 @@ export class MountainController {
         if (!elFloors) return;
         elFloors.innerHTML = '';
 
-        TOWER_LEVELS.forEach(floor => {
+        Object.values(TOWER_LEVELS).forEach(floor => {
             const locked = state.player.alchemyLevel < floor.minAlchemyLevel;
             const el = document.createElement('div');
             el.className = `p-6 border border-white/5 rounded-2xl bg-white/5 space-y-3 ${locked ? 'opacity-40' : 'hover:border-cultivation-gold/50 cursor-pointer'}`;

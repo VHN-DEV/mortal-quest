@@ -2,6 +2,8 @@
  * DỮ LIỆU HỆ THỐNG LUYỆN THI
  */
 
+import { CORPSE_LEVELS } from './game-enums.js';
+
 export const CORPSE_TYPES = {
     'thi_binh': {
         id: 'thi_binh',
@@ -41,8 +43,10 @@ export const CORPSE_TYPES = {
 };
 
 export const getCorpseLevelInfo = (level) => {
-    const names = ["Nhập Môn Thi Sư", "Nhất Giai Thi Sư", "Nhị Giai Thi Sư", "Tam Giai Thi Sư", "Tứ Giai Thi Sư", "Ngũ Giai Thi Sư", "Lục Giai Thi Sư", "Thất Giai Thi Sư", "Bát Giai Thi Sư", "Cửu Giai Thi Sư", "Tiên Giai Thi Sư", "Thần Giai Thi Sư"];
+    const values = Object.values(CORPSE_LEVELS);
+    const levelKey = Math.min(Math.max(0, level), values.length - 1);
+    const q = values[levelKey];
     return {
-        name: names[Math.min(level, names.length - 1)] || `Cấp ${level} Thi Sư`
+        name: q ? q.name : `Cấp ${level} Thi Sư`
     };
 };

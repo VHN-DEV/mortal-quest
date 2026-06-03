@@ -1,5 +1,6 @@
 import { ALCHEMY_CERTIFICATIONS, GUILD_MISSIONS, ALCHEMY_ROOMS } from '../configs/guild-data.js';
 import { getItemById } from '../configs/item-data.js';
+import { CRAFTING_QUALITIES, getQualitySortOrder } from '../configs/game-enums.js';
 
 export class GuildSystem {
     constructor(player, ui) {
@@ -38,8 +39,9 @@ export class GuildSystem {
             // Check inventory for task items
             const items = this.player.inventory.allItems.filter(i => i.id === cert.task.targetId);
             const validItems = items.filter(i => {
-                const qMap = { 'Hạ Phẩm': 0, 'Trung Phẩm': 1, 'Thượng Phẩm': 2, 'Cực Phẩm': 3, 'Hoàn Mỹ': 4 };
-                return qMap[i.quality || 'Hạ Phẩm'] >= qMap[cert.task.minQuality];
+                const itemQualOrder = getQualitySortOrder(i.quality || CRAFTING_QUALITIES.HA_PHAM.name);
+                const reqQualOrder = getQualitySortOrder(cert.task.minQuality);
+                return itemQualOrder >= reqQualOrder;
             });
 
             if (validItems.length >= cert.task.quantity) {
@@ -68,8 +70,9 @@ export class GuildSystem {
         const items = this.player.inventory.allItems.filter(i => i.id === mission.targetId);
         const validItems = items.filter(i => {
             if (!mission.minQuality) return true;
-            const qMap = { 'Hạ Phẩm': 0, 'Trung Phẩm': 1, 'Thượng Phẩm': 2, 'Cực Phẩm': 3, 'Hoàn Mỹ': 4 };
-            return qMap[i.quality || 'Hạ Phẩm'] >= qMap[mission.minQuality];
+            const itemQualOrder = getQualitySortOrder(i.quality || CRAFTING_QUALITIES.HA_PHAM.name);
+            const reqQualOrder = getQualitySortOrder(mission.minQuality);
+            return itemQualOrder >= reqQualOrder;
         });
 
         if (validItems.length >= mission.quantity) {
