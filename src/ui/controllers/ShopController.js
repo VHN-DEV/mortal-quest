@@ -5,6 +5,11 @@ import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 import { getTechniqueById, getSecretTechniqueById } from '../../configs/technique-data.js';
 import { getDisplayQuality } from '../../utils/ui-utils.js';
 import { ITEM_CATEGORIES, classifyItem } from '../../configs/item-classification.js';
+import {
+    PHAP_BAO_QUALITIES,
+    CONG_PHAP_QUALITIES,
+    ROOT_QUALITIES
+} from '../../configs/game-enums.js';
 
 export class ShopController {
     constructor(parentScreen) {
@@ -269,42 +274,42 @@ export class ShopController {
 
         let qualities = [
             { id: 'all', name: 'TẤT CẢ PHẨM' },
-            { id: 'Phàm Khí', name: 'PHÀM KHÍ' },
-            { id: 'Pháp Khí', name: 'PHÁP KHÍ' },
-            { id: 'Linh Khí', name: 'LINH KHÍ' },
-            { id: 'Pháp Bảo', name: 'PHÁP BẢO' },
-            { id: 'Cổ Bảo', name: 'CỔ BẢO' },
-            { id: 'Linh Bảo', name: 'LINH BẢO' },
-            { id: 'Thông Thiên Linh Bảo', name: 'THÔNG THIÊN' },
-            { id: 'Tiên Khí', name: 'TIÊN KHÍ' },
-            { id: 'Danh Khí', name: 'DANH KHÍ' }
+            { id: PHAP_BAO_QUALITIES.PHAM_KHI.name, name: 'PHÀM KHÍ' },
+            { id: PHAP_BAO_QUALITIES.PHAP_KHI.name, name: 'PHÁP KHÍ' },
+            { id: PHAP_BAO_QUALITIES.LINH_KHI.name, name: 'LINH KHÍ' },
+            { id: PHAP_BAO_QUALITIES.PHAP_BAO.name, name: 'PHÁP BẢO' },
+            { id: PHAP_BAO_QUALITIES.CO_BAO.name, name: 'CỔ BẢO' },
+            { id: PHAP_BAO_QUALITIES.LINH_BAO.name, name: 'LINH BẢO' },
+            { id: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO.name, name: 'THÔNG THIÊN' },
+            { id: PHAP_BAO_QUALITIES.TIEN_KHI.name, name: 'TIÊN KHÍ' },
+            { id: PHAP_BAO_QUALITIES.DANH_KHI.name, name: 'DANH KHÍ' }
         ];
 
         if (section === 'cong_phap') {
             qualities = [
                 { id: 'all', name: 'TẤT CẢ PHẨM' },
-                { id: 'Phàm Khí', name: 'PHÀM GIAI' },
-                { id: 'Pháp Khí', name: 'HOÀNG GIAI' },
-                { id: 'Linh Khí', name: 'HUYỀN GIAI' },
-                { id: 'Pháp Bảo', name: 'ĐỊA GIAI' },
-                { id: 'Cổ Bảo', name: 'THIÊN GIAI' },
-                { id: 'Linh Bảo', name: 'LINH GIAI' },
-                { id: 'Thông Thiên Linh Bảo', name: 'THÁNH GIAI' },
-                { id: 'Tiên Khí', name: 'TIÊN GIAI' },
-                { id: 'Danh Khí', name: 'ĐẾ GIAI' }
+                { id: PHAP_BAO_QUALITIES.PHAM_KHI.name, name: CONG_PHAP_QUALITIES.PHAM_GIAI.name.toUpperCase() },
+                { id: PHAP_BAO_QUALITIES.PHAP_KHI.name, name: CONG_PHAP_QUALITIES.HOANG_GIAI.name.toUpperCase() },
+                { id: PHAP_BAO_QUALITIES.LINH_KHI.name, name: CONG_PHAP_QUALITIES.HUYEN_GIAI.name.toUpperCase() },
+                { id: PHAP_BAO_QUALITIES.PHAP_BAO.name, name: CONG_PHAP_QUALITIES.DIA_GIAI.name.toUpperCase() },
+                { id: PHAP_BAO_QUALITIES.CO_BAO.name, name: CONG_PHAP_QUALITIES.THIEN_GIAI.name.toUpperCase() },
+                { id: PHAP_BAO_QUALITIES.LINH_BAO.name, name: CONG_PHAP_QUALITIES.LINH_GIAI.name.toUpperCase() },
+                { id: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO.name, name: CONG_PHAP_QUALITIES.THANH_GIAI.name.toUpperCase() },
+                { id: PHAP_BAO_QUALITIES.TIEN_KHI.name, name: CONG_PHAP_QUALITIES.TIEN_GIAI.name.toUpperCase() },
+                { id: PHAP_BAO_QUALITIES.DANH_KHI.name, name: CONG_PHAP_QUALITIES.DE_GIAI.name.toUpperCase() }
             ];
         }
 
         const qColors = {
-            'Phàm Khí': 'text-gray-400 border-gray-500/20 bg-gray-500/5',
-            'Pháp Khí': 'text-green-400 border-green-500/20 bg-green-500/5',
-            'Linh Khí': 'text-qi-blue border-qi-blue/20 bg-qi-blue/5',
-            'Pháp Bảo': 'text-purple-400 border-purple-500/20 bg-purple-500/5',
-            'Cổ Bảo': 'text-orange-400 border-orange-500/20 bg-orange-500/5',
-            'Linh Bảo': 'text-red-400 border-red-500/20 bg-red-500/5',
-            'Thông Thiên Linh Bảo': 'text-cultivation-gold border-cultivation-gold/20 bg-cultivation-gold/5 font-bold shimmer-gold',
-            'Tiên Khí': 'text-pink-400 border-pink-500/20 bg-pink-500/5',
-            'Danh Khí': 'text-yellow-400 border-yellow-500/20 bg-yellow-500/5 font-bold'
+            [PHAP_BAO_QUALITIES.PHAM_KHI.name]: 'text-gray-400 border-gray-500/20 bg-gray-500/5',
+            [PHAP_BAO_QUALITIES.PHAP_KHI.name]: 'text-green-400 border-green-500/20 bg-green-500/5',
+            [PHAP_BAO_QUALITIES.LINH_KHI.name]: 'text-qi-blue border-qi-blue/20 bg-qi-blue/5',
+            [PHAP_BAO_QUALITIES.PHAP_BAO.name]: 'text-purple-400 border-purple-500/20 bg-purple-500/5',
+            [PHAP_BAO_QUALITIES.CO_BAO.name]: 'text-orange-400 border-orange-500/20 bg-orange-500/5',
+            [PHAP_BAO_QUALITIES.LINH_BAO.name]: 'text-red-400 border-red-500/20 bg-red-500/5',
+            [PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO.name]: 'text-cultivation-gold border-cultivation-gold/20 bg-cultivation-gold/5 font-bold shimmer-gold',
+            [PHAP_BAO_QUALITIES.TIEN_KHI.name]: 'text-pink-400 border-pink-500/20 bg-pink-500/5',
+            [PHAP_BAO_QUALITIES.DANH_KHI.name]: 'text-yellow-400 border-yellow-500/20 bg-yellow-500/5 font-bold'
         };
 
         this.elShopQualityFilterNav.innerHTML = qualities.map(q => {
@@ -373,7 +378,9 @@ export class ShopController {
         if (this.shopQualityFilter !== 'all') {
             inv = inv.filter(item => {
                 const itemData = getItemById(item.id);
-                return itemData && itemData.quality === this.shopQualityFilter;
+                if (!itemData) return false;
+                const qName = typeof itemData.quality === 'object' ? itemData.quality.name : itemData.quality;
+                return qName === this.shopQualityFilter;
             });
         }
 
@@ -399,25 +406,14 @@ export class ShopController {
                     return dataB.price - dataA.price;
 
                 case 'quality': {
+                    const getQualName = (q) => typeof q === 'object' ? (q.name || '') : String(q);
                     const qOrder = [
-                        'Phàm Khí',
-                        'Pháp Khí',
-                        'Linh Khí',
-                        'Pháp Bảo',
-                        'Cổ Bảo',
-                        'Linh Bảo',
-                        'Thông Thiên Linh Bảo',
-                        'Tiên Khí',
-                        'Danh Khí',
-                        'Hạ phẩm',
-                        'Trung phẩm',
-                        'Thượng phẩm',
-                        'Cực phẩm',
-                        'Hoàn Mỹ'
+                        ...Object.values(PHAP_BAO_QUALITIES).map(q => q.name),
+                        ...Object.values(ROOT_QUALITIES).map(q => q.name)
                     ];
 
-                    return qOrder.indexOf(dataB.quality)
-                        - qOrder.indexOf(dataA.quality);
+                    return qOrder.indexOf(getQualName(dataB.quality))
+                        - qOrder.indexOf(getQualName(dataA.quality));
                 }
 
                 default:
@@ -580,25 +576,16 @@ export class ShopController {
                     return dataB.price - dataA.price;
 
                 case 'quality': {
+                    const getQualName = (q) => typeof q === 'object' ? (q.name || '') : String(q);
                     const qOrder = [
-                        'Phàm Khí',
-                        'Pháp Khí',
-                        'Linh Khí',
-                        'Pháp Bảo',
-                        'Cổ Bảo',
-                        'Linh Bảo',
-                        'Thông Thiên Linh Bảo',
-                        'Tiên Khí',
-                        'Danh Khí',
-                        'Hạ phẩm',
-                        'Trung phẩm',
-                        'Thượng phẩm',
+                        ...Object.values(PHAP_BAO_QUALITIES).map(q => q.name),
+                        ...Object.values(ROOT_QUALITIES).map(q => q.name),
                         'Cực phẩm',
                         'Hoàn Mỹ'
                     ];
 
-                    return qOrder.indexOf(dataB.quality)
-                        - qOrder.indexOf(dataA.quality);
+                    return qOrder.indexOf(getQualName(dataB.quality))
+                        - qOrder.indexOf(getQualName(dataA.quality));
                 }
 
                 default:

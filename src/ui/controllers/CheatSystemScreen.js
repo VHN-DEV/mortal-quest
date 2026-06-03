@@ -325,7 +325,8 @@ export class CheatSystemScreen {
                     <!-- Glowing Items list -->
                     <div class="space-y-2.5 max-w-xs mx-auto">
                         ${rewards.map((reward, i) => {
-                            const col = REWARD_QUALITY_COLORS[reward.quality] || 'text-gray-400';
+                            const qName = typeof reward.quality === 'object' ? (reward.quality.name || '') : String(reward.quality);
+                            const col = REWARD_QUALITY_COLORS[qName] || 'text-gray-400';
                             return `
                                 <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/25 transition-all duration-300 animate-slide-up" style="animation-delay: ${i * 150}ms">
                                     <div class="flex items-center space-x-3">
@@ -421,7 +422,8 @@ export class CheatSystemScreen {
                     <div class="grid grid-cols-3 gap-3 py-2">
                         ${rewards.map((reward, i) => {
                             const isSelected = i === this.selectedChooseIndex;
-                            const col = REWARD_QUALITY_COLORS[reward.quality] || 'text-gray-400';
+                            const qName = typeof reward.quality === 'object' ? (reward.quality.name || '') : String(reward.quality);
+                            const col = REWARD_QUALITY_COLORS[qName] || 'text-gray-400';
                             return `
                                 <div class="relative p-2.5 rounded-2xl border transition-all duration-500 flex flex-col items-center justify-center space-y-2 h-32
                                     ${isSelected ? 'bg-amber-500/10 border-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.2)] scale-105 z-10' : 'bg-black/80 border-white/5 opacity-30'}">
@@ -522,7 +524,8 @@ export class CheatSystemScreen {
         if (!items || items.length === 0) return;
         let content = `<div class="space-y-2 mt-2">`;
         items.slice(0, 3).forEach(item => {
-            const col = REWARD_QUALITY_COLORS[item.quality] || 'text-gray-400';
+            const qName = typeof item.quality === 'object' ? (item.quality.name || '') : String(item.quality);
+            const col = REWARD_QUALITY_COLORS[qName] || 'text-gray-400';
             content += `
                 <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
                     <span class="text-[10px] text-white/80 font-bold">${item.icon} ${item.name} (x${item.qty})</span>

@@ -2,17 +2,18 @@ import { state } from '../state.js';
 import { ITEMS } from '../configs/item-data.js';
 import { WORLDS } from '../configs/map-data.js';
 import { CREATION_SYSTEMS } from '../configs/creation-data.js';
+import { PHAP_BAO_QUALITIES } from '../configs/game-enums.js';
 
 // Rarity color configurations for rewards UI
 export const REWARD_QUALITY_COLORS = {
-    'Phàm Khí': 'text-gray-400',
-    'Pháp Khí': 'text-qi-blue',
-    'Linh Khí': 'text-qi-purple',
-    'Pháp Bảo': 'text-amber-500',
-    'Cổ Bảo': 'text-orange-500',
-    'Linh Bảo': 'text-red-500',
-    'Thông Thiên Linh Bảo': 'text-pink-500',
-    'Tiên Khí': 'text-cyan-400'
+    [PHAP_BAO_QUALITIES.PHAM_KHI.name]: 'text-gray-400',
+    [PHAP_BAO_QUALITIES.PHAP_KHI.name]: 'text-qi-blue',
+    [PHAP_BAO_QUALITIES.LINH_KHI.name]: 'text-qi-purple',
+    [PHAP_BAO_QUALITIES.PHAP_BAO.name]: 'text-amber-500',
+    [PHAP_BAO_QUALITIES.CO_BAO.name]: 'text-orange-500',
+    [PHAP_BAO_QUALITIES.LINH_BAO.name]: 'text-red-500',
+    [PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO.name]: 'text-pink-500',
+    [PHAP_BAO_QUALITIES.TIEN_KHI.name]: 'text-cyan-400'
 };
 
 export class CheatSystem {

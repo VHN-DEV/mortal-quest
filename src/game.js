@@ -3127,12 +3127,13 @@ export class Game {
             }
 
             const quality = (metadata && metadata.quality) || itemData.quality || 'Phàm Khí';
+            const qName = typeof quality === 'object' ? (quality.name || '') : String(quality);
             const flashyQualities = ['Pháp Bảo', 'Cổ Bảo', 'Linh Bảo', 'Thông Thiên Linh Bảo', 'Tiên Khí', 'Danh Khí'];
 
             // Check for legendary appearance trigger (items with poem)
             if (itemData.poem) {
                 await state.ui.showArtifactAppearance(itemData);
-            } else if (flashyQualities.includes(quality)) {
+            } else if (flashyQualities.includes(qName)) {
                 // Show flashy UI
                 await state.ui.showAcquiredLoot({
                     ...itemData,

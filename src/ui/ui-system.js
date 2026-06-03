@@ -7,6 +7,7 @@ import { getAssetUrl } from '../configs/asset-data.js';
 import { getItemById } from '../configs/item-data.js';
 import { findLocationName, DANGER_LEVELS, getWorlds, getLocationById } from '../configs/map-data.js';
 import { getDisplayQuality, getQualityClass } from '../utils/ui-utils.js';
+import { PHAP_BAO_QUALITIES } from '../configs/game-enums.js';
 import { getRealmById } from '../configs/realm-data.js';
 
 export class UISystem {
@@ -949,22 +950,23 @@ export class UISystem {
         if (!overlay || !container) return;
 
         const rarityConfigs = {
-            'Phàm Khí': { color: '#ffffff', label: 'PHÀM KHÍ', sfx: 'click', shake: false },
-            'Pháp Khí': { color: '#10b981', label: 'PHÁP KHÍ', sfx: 'success', shake: false },
-            'Linh Khí': { color: '#3b82f6', label: 'LINH KHÍ', sfx: 'success', shake: false },
-            'Pháp Bảo': { color: '#8b5cf6', label: 'PHÁP BẢO', sfx: 'breakthrough', shake: 'medium' },
-            'Cổ Bảo': { color: '#f59e0b', label: 'CỔ BẢO', sfx: 'breakthrough', shake: 'medium' },
-            'Linh Bảo': { color: '#ef4444', label: 'LINH BẢO', sfx: 'breakthrough', shake: 'high' },
-            'Thông Thiên Linh Bảo': { color: '#d4af37', label: 'THÔNG THIÊN', sfx: 'breakthrough', shake: 'high', flash: true },
-            'Tiên Khí': { color: '#4fd1c5', label: 'TIÊN KHÍ', sfx: 'breakthrough', shake: 'high', flash: true, rainbow: true },
-            'Danh Khí': { color: '#f87171', label: 'DANH KHÍ', sfx: 'thunder', shake: 'high', flash: true, premium: true },
+            [PHAP_BAO_QUALITIES.PHAM_KHI.name]: { color: '#ffffff', label: 'PHÀM KHÍ', sfx: 'click', shake: false },
+            [PHAP_BAO_QUALITIES.PHAP_KHI.name]: { color: '#10b981', label: 'PHÁP KHÍ', sfx: 'success', shake: false },
+            [PHAP_BAO_QUALITIES.LINH_KHI.name]: { color: '#3b82f6', label: 'LINH KHÍ', sfx: 'success', shake: false },
+            [PHAP_BAO_QUALITIES.PHAP_BAO.name]: { color: '#8b5cf6', label: 'PHÁP BẢO', sfx: 'breakthrough', shake: 'medium' },
+            [PHAP_BAO_QUALITIES.CO_BAO.name]: { color: '#f59e0b', label: 'CỔ BẢO', sfx: 'breakthrough', shake: 'medium' },
+            [PHAP_BAO_QUALITIES.LINH_BAO.name]: { color: '#ef4444', label: 'LINH BẢO', sfx: 'breakthrough', shake: 'high' },
+            [PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO.name]: { color: '#d4af37', label: 'THÔNG THIÊN', sfx: 'breakthrough', shake: 'high', flash: true },
+            [PHAP_BAO_QUALITIES.TIEN_KHI.name]: { color: '#4fd1c5', label: 'TIÊN KHÍ', sfx: 'breakthrough', shake: 'high', flash: true, rainbow: true },
+            [PHAP_BAO_QUALITIES.DANH_KHI.name]: { color: '#f87171', label: 'DANH KHÍ', sfx: 'thunder', shake: 'high', flash: true, premium: true },
         };
 
         overlay.classList.remove('hidden');
         overlay.classList.add('flex', 'opacity-100');
 
         for (const item of lootItems) {
-            const config = rarityConfigs[item.quality] || rarityConfigs['Phàm Khí'];
+            const qKey = typeof item.quality === 'object' ? (item.quality.name || '') : String(item.quality);
+            const config = rarityConfigs[qKey] || rarityConfigs['Phàm Khí'];
 
             // Clear previous item
             container.innerHTML = '';
