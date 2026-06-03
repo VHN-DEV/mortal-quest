@@ -273,7 +273,7 @@ export class TechniqueSystem {
                 const rootType = this.player.spiritualRoot.type;
                 if (techData.compatibility[rootType]) {
                     attributeMult = techData.compatibility[rootType];
-                } else if ((this.player.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && techData.compatibility['Tạp']) {
+                } else if ((this.player.spiritualRoot.quality === 'TAP' || this.player.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && techData.compatibility['Tạp']) {
                     attributeMult = techData.compatibility['Tạp'];
                 } else if (this.player.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5;

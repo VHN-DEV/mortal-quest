@@ -56,7 +56,7 @@ export class TechniqueController {
                 const rootType = state.player.spiritualRoot.type;
                 if (data.compatibility[rootType]) {
                     attributeMult = data.compatibility[rootType];
-                } else if ((state.player.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && data.compatibility['Tạp']) {
+                } else if ((state.player.spiritualRoot.quality === 'TAP' || state.player.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && data.compatibility['Tạp']) {
                     attributeMult = data.compatibility['Tạp'];
                 } else if (state.player.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5;
@@ -140,7 +140,7 @@ export class TechniqueController {
                 const rootType = state.player.spiritualRoot.type;
                 if (data.compatibility[rootType]) {
                     attributeMult = data.compatibility[rootType];
-                } else if ((state.player.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && data.compatibility['Tạp']) {
+                } else if ((state.player.spiritualRoot.quality === 'TAP' || state.player.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && data.compatibility['Tạp']) {
                     attributeMult = data.compatibility['Tạp'];
                 } else if (state.player.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5;

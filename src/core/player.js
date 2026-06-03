@@ -2616,7 +2616,7 @@ export class Player {
                 // Check for exact match or generic "Mixed" (Tạp) root
                 if (techData.compatibility[rootType]) {
                     attributeMult = techData.compatibility[rootType];
-                } else if ((this.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && techData.compatibility['Tạp']) {
+                } else if ((this.spiritualRoot.quality === 'TAP' || this.spiritualRoot.quality === 'Tạp' || rootType.includes('Tạp')) && techData.compatibility['Tạp']) {
                     attributeMult = techData.compatibility['Tạp'];
                 } else if (this.spiritualRoot.id === 'thien_linh_can') {
                     attributeMult = 1.5; // Heaven Root gets 1.5x bonus for everything

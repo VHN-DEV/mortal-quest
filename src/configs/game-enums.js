@@ -223,13 +223,13 @@ export const BEAST_TYPES = Object.freeze({
 });
 
 export const ROOT_QUALITIES = Object.freeze({
-    'Tạp': createQuality('tap', 'Tạp', '#9ca3af', { sortOrder: 1, multiplier: 0.5, cssClass: 'pham' }),
-    'Hạ phẩm': createQuality('ha_pham', 'Hạ phẩm', '#4ade80', { sortOrder: 2, multiplier: 0.8, cssClass: 'pham' }),
-    'Trung phẩm': createQuality('trung_pham', 'Trung phẩm', '#3b82f6', { sortOrder: 3, multiplier: 1.2, cssClass: 'hoang' }),
-    'Thượng phẩm': createQuality('thuong_pham', 'Thượng phẩm', '#a855f7', { sortOrder: 4, multiplier: 1.8, cssClass: 'huyen' }),
-    'Địa': createQuality('dia', 'Địa', '#f59e0b', { sortOrder: 5, multiplier: 2.5, cssClass: 'dia' }),
-    'Thiên': createQuality('thien', 'Thiên', '#ec4899', { sortOrder: 6, multiplier: 4.0, cssClass: 'thien' }),
-    'Tiên': createQuality('tien', 'Tiên', '#ef4444', { sortOrder: 7, multiplier: 7.0, cssClass: 'tien' })
+    TAP: createQuality('tap', 'Tạp', '#9ca3af', { sortOrder: 1, multiplier: 0.5, cssClass: 'pham' }),
+    HA_PHAM: createQuality('ha_pham', 'Hạ phẩm', '#4ade80', { sortOrder: 2, multiplier: 0.8, cssClass: 'pham' }),
+    TRUNG_PHAM: createQuality('trung_pham', 'Trung phẩm', '#3b82f6', { sortOrder: 3, multiplier: 1.2, cssClass: 'hoang' }),
+    THUONG_PHAM: createQuality('thuong_pham', 'Thượng phẩm', '#a855f7', { sortOrder: 4, multiplier: 1.8, cssClass: 'huyen' }),
+    DIA: createQuality('dia', 'Địa', '#f59e0b', { sortOrder: 5, multiplier: 2.5, cssClass: 'dia' }),
+    THIEN: createQuality('thien', 'Thiên', '#ec4899', { sortOrder: 6, multiplier: 4.0, cssClass: 'thien' }),
+    TIEN: createQuality('tien', 'Tiên', '#ef4444', { sortOrder: 7, multiplier: 7.0, cssClass: 'tien' })
 });
 
 export const MORALITY_SCALES = Object.freeze({
