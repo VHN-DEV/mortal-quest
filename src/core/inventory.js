@@ -424,13 +424,40 @@ export class Inventory {
             // Other major attributes
             if (effect.spirit || effect.divineSense) {
                 const sVal = effect.spirit || effect.divineSense;
-                this.player.divineSense = (this.player.divineSense || 50) + Math.round(sVal * multiplier);
+                this.player.baseDivineSense = (this.player.baseDivineSense || 50) + Math.round(sVal * multiplier);
+                this.player.divineSense = this.player.baseDivineSense;
                 msgParts.push(`Thần thức +${Math.round(sVal * multiplier)}`);
                 processed = true;
             }
             if (effect.luck) {
-                this.player.luck = (this.player.luck || 50) + Math.round(effect.luck * multiplier);
+                this.player.baseLuck = (this.player.baseLuck || 50) + Math.round(effect.luck * multiplier);
+                this.player.luck = this.player.baseLuck;
                 msgParts.push(`Khí vận +${Math.round(effect.luck * multiplier)}`);
+                processed = true;
+            }
+            if (effect.comprehension) {
+                this.player.baseComprehension = (this.player.baseComprehension || 10) + Math.round(effect.comprehension * multiplier);
+                this.player.comprehension = this.player.baseComprehension;
+                msgParts.push(`Ngộ tính +${Math.round(effect.comprehension * multiplier)}`);
+                processed = true;
+            }
+            if (effect.daoTam) {
+                this.player.baseDaoTam = (this.player.baseDaoTam || 50) + Math.round(effect.daoTam * multiplier);
+                this.player.daoTam = this.player.baseDaoTam;
+                msgParts.push(`Đạo tâm +${Math.round(effect.daoTam * multiplier)}`);
+                processed = true;
+            }
+            if (effect.physiqueTalent || effect.physique) {
+                const pVal = effect.physiqueTalent || effect.physique;
+                this.player.basePhysiqueTalent = (this.player.basePhysiqueTalent || 50) + Math.round(pVal * multiplier);
+                this.player.physiqueTalent = this.player.basePhysiqueTalent;
+                msgParts.push(`Thể chất +${Math.round(pVal * multiplier)}`);
+                processed = true;
+            }
+            if (effect.karma) {
+                this.player.baseKarma = (this.player.baseKarma || 0) + Math.round(effect.karma * multiplier);
+                this.player.karma = this.player.baseKarma;
+                msgParts.push(`Nhân quả +${Math.round(effect.karma * multiplier)}`);
                 processed = true;
             }
             if (effect.tuViSpeed) {

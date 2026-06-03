@@ -1,4 +1,4 @@
-﻿import { ITEM_TYPES, ITEM_CATEGORIES_ENUM, EFFECT_TYPES, PHAP_BAO_QUALITIES, DAN_DUOC_QUALITIES, CONG_PHAP_QUALITIES, DI_HOA_QUALITIES, DI_LOI_QUALITIES, LINH_THU_QUALITIES } from './item-classification.js';
+import { ITEM_TYPES, ITEM_CATEGORIES_ENUM, EFFECT_TYPES, PHAP_BAO_QUALITIES, DAN_DUOC_QUALITIES, CONG_PHAP_QUALITIES, DI_HOA_QUALITIES, DI_LOI_QUALITIES, LINH_THU_QUALITIES } from './item-classification.js';
 
 // --- Hệ Thống Phẩm Cấp Pháp Bảo ---
 // 1. Phàm Khí
@@ -2739,7 +2739,7 @@ export const ITEMS = {
     'truong_sinh_quyet_bi_tich': {
         id: 'truong_sinh_quyet_bi_tich',
         name: 'Trường Sinh Quyết (Bí Tịch)',
-        image: 'items/techniques/truong_sinh_quyet_bi_tich',
+        image: 'items/techniques/truong_sinh_quyet',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📖',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,

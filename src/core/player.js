@@ -144,6 +144,7 @@ export class Player {
         };
         this.origin = null;
         this.luck = 50;
+        this.baseLuck = 50;
         this.talents = [];
         this.destinyRating = "Phàm mệnh";
         this.stability = 100; // 0-100%
@@ -165,6 +166,7 @@ export class Player {
         this.customTechniques = []; // Stores player-created custom techniques
         this.deviationTime = 0;     // Remaining duration of deviation (Tẩu Hỏa Nhập Ma)
         this.karma = 0; // -1000 to 1000
+        this.baseKarma = 0;
         
         // Alchemy System
         this.alchemyLevel = 1;
@@ -266,7 +268,13 @@ export class Player {
             fireDmg: 1.0,   
             waterDmg: 1.0,
             thunderDmg: 1.0,
+            woodDmg: 1.0,
+            earthDmg: 1.0,
+            windDmg: 1.0,
+            metalDmg: 1.0,
+            iceDmg: 1.0,
             poisonDmg: 1.0,
+            swordDmg: 1.0,
             qiAbsorb: 1.0,  
             lifeSteal: 0,
             soulRepress: 0,
@@ -281,7 +289,13 @@ export class Player {
             iceControl: 0,
             dotDmg: 1.0,
             damageReduction: 0,
-            techniqueMastery: 1.0
+            techniqueMastery: 1.0,
+            allRes: 0,
+            alchemySuccess: 0,
+            smithingBonus: 0,
+            talismanSuccess: 0,
+            puppetBonus: 0,
+            successRate: 0
         };
 
         this.equipmentMetadata = {}; // { [slot]: { spirit, level, durability, extraStat: { type, value } } }
@@ -297,10 +311,14 @@ export class Player {
 
         // --- New Enhanced Stats ---
         this.comprehension = 10; // Ngộ tính: Ảnh hưởng tốc độ lĩnh ngộ và tu luyện
+        this.baseComprehension = 10;
         this.heartDemon = 0;     // Tâm ma: 0-100%
         this.daoTam = 50;        // Đạo tâm: Chống tâm ma, ổn định linh lực
+        this.baseDaoTam = 50;
         this.divineSense = 50;   // Thần thức: Khống chế pháp bảo
+        this.baseDivineSense = 50;
         this.physiqueTalent = 50; // Căn cốt: HP và thể tu
+        this.basePhysiqueTalent = 50;
 
         // --- Hệ thống Đại Viên Mãn (PNTT-style) ---
         // Thay thế forced breakthrough: người chơi chủ động chọn khi nào đột phá
@@ -1943,6 +1961,14 @@ export class Player {
         const bodyLevel = this.bodyRealmId;
         const soulLevel = this.soulRealmId;
 
+        // Reset base stats to prevent infinite accumulation
+        this.luck = this.baseLuck || 50;
+        this.karma = this.baseKarma || 0;
+        this.comprehension = this.baseComprehension || 10;
+        this.daoTam = this.baseDaoTam || 50;
+        this.divineSense = this.baseDivineSense || 50;
+        this.physiqueTalent = this.basePhysiqueTalent || 50;
+
         this.tuViPerSecond = 0;
         this.bodyExpPerSecond = 0;
         this.soulExpPerSecond = 0;
@@ -1967,8 +1993,9 @@ export class Player {
         
         this.advancedStats = {
             pierce: 0, soulPierce: 0, critRate: 0.05, critDmg: 1.5,
-            fireDmg: 1.0, waterDmg: 1.0, thunderDmg: 1.0, poisonDmg: 1.0, swordDmg: 1.0,
-            qiAbsorb: 1.0, lifeSteal: 0, alchemySuccess: 0,
+            fireDmg: 1.0, waterDmg: 1.0, thunderDmg: 1.0, woodDmg: 1.0, earthDmg: 1.0,
+            windDmg: 1.0, metalDmg: 1.0, iceDmg: 1.0, poisonDmg: 1.0, swordDmg: 1.0,
+            qiAbsorb: 1.0, lifeSteal: 0, alchemySuccess: 0, smithingBonus: 0, talismanSuccess: 0, puppetBonus: 0, successRate: 0,
             soulRepress: 0, perception: 5 + (soulLevel * 2), daoVun: 0, murderQi: 0,
             allRes: 0, damageReduction: 0, techniqueMastery: 1.0, dodge: 0, reflectDmg: 0
         };
@@ -1987,8 +2014,14 @@ export class Player {
                 else if (key === 'bodyExpSpeed') this.bonusStats.bodyExpSpeed *= val;
                 else if (key === 'maxAge') this.bonusStats.maxAge += val;
                 else if (key === 'karma') this.karma += val;
+                else if (key === 'luck') this.luck += val;
+                else if (key === 'comprehension') this.comprehension += val;
+                else if (key === 'daoTam') this.daoTam += val;
+                else if (key === 'spirit') this.divineSense += val;
+                else if (key === 'physique') this.physiqueTalent += val;
                 else if (this.advancedStats.hasOwnProperty(key)) {
-                    if (['qiAbsorb', 'allRes', 'fireDmg', 'waterDmg', 'thunderDmg'].includes(key)) {
+                    const multKeys = ['qiAbsorb', 'fireDmg', 'waterDmg', 'thunderDmg', 'woodDmg', 'earthDmg', 'windDmg', 'metalDmg', 'iceDmg', 'poisonDmg', 'swordDmg', 'skillDmg', 'dotDmg', 'techniqueMastery'];
+                    if (multKeys.includes(key)) {
                         this.advancedStats[key] *= val;
                     } else {
                         this.advancedStats[key] += val;
@@ -2064,7 +2097,8 @@ export class Player {
                     if (elData && elData.bonus) {
                         Object.entries(elData.bonus).forEach(([key, val]) => {
                             if (this.advancedStats.hasOwnProperty(key)) {
-                                if (['fireDmg', 'waterDmg', 'thunderDmg', 'poisonDmg', 'skillDmg', 'dotDmg', 'qiAbsorb'].includes(key)) {
+                                const multKeys = ['fireDmg', 'waterDmg', 'thunderDmg', 'woodDmg', 'earthDmg', 'windDmg', 'metalDmg', 'iceDmg', 'poisonDmg', 'swordDmg', 'skillDmg', 'dotDmg', 'qiAbsorb', 'techniqueMastery'];
+                                if (multKeys.includes(key)) {
                                     this.advancedStats[key] *= val;
                                 } else {
                                     this.advancedStats[key] += val;
@@ -2083,7 +2117,8 @@ export class Player {
                 if (mutData && mutData.bonus) {
                     Object.entries(mutData.bonus).forEach(([key, val]) => {
                         if (this.advancedStats.hasOwnProperty(key)) {
-                            if (['fireDmg', 'waterDmg', 'thunderDmg', 'poisonDmg', 'skillDmg', 'dotDmg', 'qiAbsorb'].includes(key)) {
+                            const multKeys = ['fireDmg', 'waterDmg', 'thunderDmg', 'woodDmg', 'earthDmg', 'windDmg', 'metalDmg', 'iceDmg', 'poisonDmg', 'swordDmg', 'skillDmg', 'dotDmg', 'qiAbsorb', 'techniqueMastery'];
+                            if (multKeys.includes(key)) {
                                 this.advancedStats[key] *= val;
                             } else {
                                 this.advancedStats[key] += val;
@@ -2119,9 +2154,15 @@ export class Player {
                         else if (key === 'maxHp') this.baseStats.maxHp += val;
                         else if (key === 'spd') this.baseStats.spd += val;
                         else if (key === 'luck') this.luck += val;
+                        else if (key === 'karma') this.karma += val;
+                        else if (key === 'comprehension') this.comprehension += val;
+                        else if (key === 'daoTam') this.daoTam += val;
+                        else if (key === 'spirit') this.divineSense += val;
+                        else if (key === 'physique') this.physiqueTalent += val;
                         else if (key === 'maxAge') this.bonusStats.maxAge += val;
                         else if (this.advancedStats.hasOwnProperty(key)) {
-                            if (['qiAbsorb', 'fireDmg', 'waterDmg', 'thunderDmg'].includes(key)) {
+                            const multKeys = ['qiAbsorb', 'fireDmg', 'waterDmg', 'thunderDmg', 'woodDmg', 'earthDmg', 'windDmg', 'metalDmg', 'iceDmg', 'poisonDmg', 'swordDmg', 'skillDmg', 'dotDmg', 'techniqueMastery'];
+                            if (multKeys.includes(key)) {
                                 this.advancedStats[key] *= val;
                             } else {
                                 this.advancedStats[key] += val;
@@ -2137,29 +2178,34 @@ export class Player {
             const physBonus = getPhysiqueAwakenBonus(this.physique.id, this.physique.stage);
             const physData = getPhysiqueById(this.physique.id);
 
-            // Apply flat bonuses to Base Stats
-            if (physBonus.atk) this.baseStats.atk += physBonus.atk;
-            if (physBonus.def) this.baseStats.def += physBonus.def;
-            if (physBonus.maxHp) this.baseStats.maxHp += physBonus.maxHp;
-            if (physBonus.maxMana) this.baseStats.maxMana += physBonus.maxMana;
-            if (physBonus.spd) this.baseStats.spd += physBonus.spd;
-            if (physBonus.luck) this.luck += physBonus.luck;
-
-            // Apply rate bonuses to Bonus Stats
-            if (physBonus.tvps) this.bonusStats.tuViSpeed *= physBonus.tvps;
-            if (physBonus.bodyExpSpeed) this.bonusStats.bodyExpSpeed *= physBonus.bodyExpSpeed;
-            if (physBonus.soulExpSpeed) this.bonusStats.soulExpSpeed *= physBonus.soulExpSpeed;
-
-            // Apply Advanced Stats
-            if (physBonus.fireDmg) this.advancedStats.fireDmg *= physBonus.fireDmg;
-            if (physBonus.qiAbsorb) this.advancedStats.qiAbsorb *= physBonus.qiAbsorb;
-            if (physBonus.critRate) this.advancedStats.critRate += physBonus.critRate;
-            if (physBonus.critDmg) this.advancedStats.critDmg += physBonus.critDmg;
-            if (physBonus.pierce) this.advancedStats.pierce += physBonus.pierce;
-            if (physBonus.soulPierce) this.advancedStats.soulPierce += physBonus.soulPierce;
-            if (physBonus.lifeSteal) this.advancedStats.lifeSteal += physBonus.lifeSteal;
-            if (physBonus.daoVun) this.advancedStats.daoVun += physBonus.daoVun;
-            if (physBonus.murderQi) this.advancedStats.murderQi += physBonus.murderQi;
+            // Apply all physique bonuses dynamically
+            Object.entries(physBonus).forEach(([key, val]) => {
+                if (key === 'atk') this.baseStats.atk += val;
+                else if (key === 'def') this.baseStats.def += val;
+                else if (key === 'maxHp') this.baseStats.maxHp += val;
+                else if (key === 'maxMana') this.baseStats.maxMana += val;
+                else if (key === 'spd') this.baseStats.spd += val;
+                else if (key === 'luck') this.luck += val;
+                else if (key === 'karma') this.karma += val;
+                else if (key === 'comprehension') this.comprehension += val;
+                else if (key === 'daoTam') this.daoTam += val;
+                else if (key === 'spirit') this.divineSense += val;
+                else if (key === 'physique') this.physiqueTalent += val;
+                else if (key === 'maxAge') this.bonusStats.maxAge += val;
+                else if (key === 'tvps') this.bonusStats.tuViSpeed *= val;
+                else if (key === 'bodyExpSpeed') this.bonusStats.bodyExpSpeed *= val;
+                else if (key === 'soulExpSpeed') this.bonusStats.soulExpSpeed *= val;
+                else if (this.advancedStats.hasOwnProperty(key)) {
+                    const multKeys = ['qiAbsorb', 'fireDmg', 'waterDmg', 'thunderDmg', 'woodDmg', 'earthDmg', 'windDmg', 'metalDmg', 'iceDmg', 'poisonDmg', 'swordDmg', 'skillDmg', 'dotDmg', 'techniqueMastery'];
+                    if (multKeys.includes(key)) {
+                        this.advancedStats[key] *= val;
+                    } else {
+                        this.advancedStats[key] += val;
+                    }
+                } else if (this.bonusStats.hasOwnProperty(key)) {
+                    this.bonusStats[key] += val;
+                }
+            });
 
             // Handle non-awakened penalty (if applicable)
             if (physData.needAwaken && !this.physique.awakened) {
@@ -2204,26 +2250,35 @@ export class Player {
                 mult *= 0.5; // 50% penalty for broken artifacts — affects atk/def/pierce/extra etc.
             }
 
-            if (item.stats.atk) this.bonusStats.atk += item.stats.atk * mult;
-            if (item.stats.def) this.bonusStats.def += item.stats.def * mult;
-            if (item.stats.spd) this.bonusStats.spd += item.stats.spd * mult;
-            if (item.stats.hp) this.bonusStats.maxHp += item.stats.hp * mult;
-            if (item.stats.mana) this.bonusStats.maxMana += item.stats.mana * mult;
-            if (item.stats.tuViSpeed) this.bonusStats.tuViSpeed *= item.stats.tuViSpeed;
-            if (item.stats.bodyExpSpeed) this.bonusStats.bodyExpSpeed *= item.stats.bodyExpSpeed;
-            if (item.stats.soulExpSpeed) this.bonusStats.soulExpSpeed *= item.stats.soulExpSpeed;
-            
-            // Advanced Stats from items
-            if (item.stats.pierce) this.advancedStats.pierce += item.stats.pierce * mult;
-            if (item.stats.soulPierce) this.advancedStats.soulPierce += item.stats.soulPierce * mult;
-            if (item.stats.critRate) this.advancedStats.critRate += item.stats.critRate * mult;
-            if (item.stats.critDmg) this.advancedStats.critDmg += item.stats.critDmg * mult;
-            if (item.stats.fireDmg) this.advancedStats.fireDmg *= (1 + item.stats.fireDmg * mult);
-            if (item.stats.qiAbsorb) this.advancedStats.qiAbsorb *= (1 + item.stats.qiAbsorb * mult);
-            if (item.stats.lifeSteal) this.advancedStats.lifeSteal += item.stats.lifeSteal * mult;
-            if (item.stats.soulRepress) this.advancedStats.soulRepress += item.stats.soulRepress * mult;
-            if (item.stats.daoVun) this.advancedStats.daoVun += item.stats.daoVun * mult;
-            if (item.stats.murderQi) this.advancedStats.murderQi += item.stats.murderQi * mult;
+            // Apply all item stats dynamically
+            Object.entries(item.stats).forEach(([key, val]) => {
+                if (key === 'atk') this.bonusStats.atk += val * mult;
+                else if (key === 'def') this.bonusStats.def += val * mult;
+                else if (key === 'spd') this.bonusStats.spd += val * mult;
+                else if (key === 'hp') this.bonusStats.maxHp += val * mult;
+                else if (key === 'mana') this.bonusStats.maxMana += val * mult;
+                else if (key === 'luck') this.luck += val * mult;
+                else if (key === 'karma') this.karma += val * mult;
+                else if (key === 'comprehension') this.comprehension += val * mult;
+                else if (key === 'daoTam') this.daoTam += val * mult;
+                else if (key === 'spirit') this.divineSense += val * mult;
+                else if (key === 'physique') this.physiqueTalent += val * mult;
+                else if (key === 'maxAge') this.bonusStats.maxAge += val * mult;
+                else if (key === 'tuViSpeed') this.bonusStats.tuViSpeed *= val;
+                else if (key === 'bodyExpSpeed') this.bonusStats.bodyExpSpeed *= val;
+                else if (key === 'soulExpSpeed') this.bonusStats.soulExpSpeed *= val;
+                else if (this.advancedStats.hasOwnProperty(key)) {
+                    const multKeys = ['qiAbsorb', 'fireDmg', 'waterDmg', 'thunderDmg', 'woodDmg', 'earthDmg', 'windDmg', 'metalDmg', 'iceDmg', 'poisonDmg', 'swordDmg', 'skillDmg', 'dotDmg', 'techniqueMastery'];
+                    if (multKeys.includes(key)) {
+                        const rate = val < 1.0 ? (1 + val * mult) : (1 + (val - 1) * mult);
+                        this.advancedStats[key] *= rate;
+                    } else {
+                        this.advancedStats[key] += val * mult;
+                    }
+                } else if (this.bonusStats.hasOwnProperty(key)) {
+                    this.bonusStats[key] += val * mult;
+                }
+            });
 
             // Apply EXTRA STATS from metadata
             if (this.equipmentMetadata && this.equipmentMetadata[slot]) {
@@ -3815,7 +3870,17 @@ export class Player {
             talents: [...(this.talents || [])],
             destinyRating: this.destinyRating,
             luck: this.luck,
+            baseLuck: this.baseLuck || 50,
             karma: this.karma,
+            baseKarma: this.baseKarma || 0,
+            comprehension: this.comprehension || 10,
+            baseComprehension: this.baseComprehension || 10,
+            daoTam: this.daoTam || 50,
+            baseDaoTam: this.baseDaoTam || 50,
+            divineSense: this.divineSense || 50,
+            baseDivineSense: this.baseDivineSense || 50,
+            physiqueTalent: this.physiqueTalent || 50,
+            basePhysiqueTalent: this.basePhysiqueTalent || 50,
             fame: this.fame,
             evil: this.evil,
             fate: JSON.parse(JSON.stringify(this.fate)),
@@ -4073,8 +4138,18 @@ export class Player {
         this.talents = data.talents || [];
         this.destinyRating = data.destinyRating || "Phàm mệnh";
         
+        this.baseLuck = data.baseLuck !== undefined ? data.baseLuck : (data.luck || 50);
         this.luck = data.luck || 50;
+        this.baseKarma = data.baseKarma !== undefined ? data.baseKarma : (data.karma || 0);
         this.karma = data.karma || 0;
+        this.baseComprehension = data.baseComprehension !== undefined ? data.baseComprehension : (data.comprehension || 10);
+        this.comprehension = data.comprehension || 10;
+        this.baseDaoTam = data.baseDaoTam !== undefined ? data.baseDaoTam : (data.daoTam || 50);
+        this.daoTam = data.daoTam || 50;
+        this.baseDivineSense = data.baseDivineSense !== undefined ? data.baseDivineSense : (data.divineSense || 50);
+        this.divineSense = data.divineSense || 50;
+        this.basePhysiqueTalent = data.basePhysiqueTalent !== undefined ? data.basePhysiqueTalent : (data.physiqueTalent || 50);
+        this.physiqueTalent = data.physiqueTalent || 50;
         this.fame = data.fame || 0;
         this.evil = data.evil || 0;
         if (data.fate) this.fate = { ...this.fate, ...data.fate };

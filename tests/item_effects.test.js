@@ -15,6 +15,7 @@ beforeEach(() => {
 describe('PNTT Dynamic Item Effects', () => {
   it('should permanently increase player divine sense and max mana when consuming Linh Chi Tiên Thảo', () => {
     const player = new Player();
+    player.baseDivineSense = 100;
     player.divineSense = 100;
     player.baseStats.maxMana = 1000;
     player.maxMana = 1000;
