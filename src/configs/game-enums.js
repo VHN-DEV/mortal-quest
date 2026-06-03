@@ -499,48 +499,48 @@ export const NPC_SPECIAL_RELATIONS_ENUM = Object.freeze({
 });
 
 export const TALISMAN_LEVELS = Object.freeze({
-    0: createQuality('0', 'Nhập Môn Phù Sư', '#9ca3af', { bonusRate: 0 }),
-    1: createQuality('1', 'Nhất Giai Phù Sư', '#4ade80', { bonusRate: 0.05 }),
-    2: createQuality('2', 'Nhị Giai Phù Sư', '#3b82f6', { bonusRate: 0.10 }),
-    3: createQuality('3', 'Tam Giai Phù Sư', '#a855f7', { bonusRate: 0.15 }),
-    4: createQuality('4', 'Tứ Giai Phù Sư', '#f59e0b', { bonusRate: 0.20 }),
-    5: createQuality('5', 'Ngũ Giai Phù Sư', '#ec4899', { bonusRate: 0.25 }),
-    6: createQuality('6', 'Lục Giai Phù Sư', '#ef4444', { bonusRate: 0.30 }),
-    7: createQuality('7', 'Thất Giai Phù Sư', '#FF007F', { bonusRate: 0.35 }),
-    8: createQuality('8', 'Bát Giai Phù Sư', '#00FFFF', { bonusRate: 0.40 }),
-    9: createQuality('9', 'Cửu Giai Phù Sư', '#FFD700', { bonusRate: 0.50 }),
-    10: createQuality('10', 'Tiên Giai Phù Sư', '#E0115F', { bonusRate: 0.70 }),
-    11: createQuality('11', 'Thần Giai Phù Sư', '#ffffff', { bonusRate: 1.00 })
+    NHAP_MON_PHU_SU: createQuality('nhap_mon_phu_su', 'Nhập Môn Phù Sư', '#9ca3af', { bonusRate: 0 }),
+    NHAT_GIAI_PHU_SU: createQuality('nhat_giai_phu_su', 'Nhất Giai Phù Sư', '#4ade80', { bonusRate: 0.05 }),
+    NHI_GIAI_PHU_SU: createQuality('nhi_giai_phu_su', 'Nhị Giai Phù Sư', '#3b82f6', { bonusRate: 0.10 }),
+    TAM_GIAI_PHU_SU: createQuality('tam_giai_phu_su', 'Tam Giai Phù Sư', '#a855f7', { bonusRate: 0.15 }),
+    TU_GIAI_PHU_SU: createQuality('tu_giai_phu_su', 'Tứ Giai Phù Sư', '#f59e0b', { bonusRate: 0.20 }),
+    NGU_GIAI_PHU_SU: createQuality('ngu_giai_phu_su', 'Ngũ Giai Phù Sư', '#ec4899', { bonusRate: 0.25 }),
+    LUC_GIAI_PHU_SU: createQuality('luc_giai_phu_su', 'Lục Giai Phù Sư', '#ef4444', { bonusRate: 0.30 }),
+    THAT_GIAI_PHU_SU: createQuality('that_giai_phu_su', 'Thất Giai Phù Sư', '#FF007F', { bonusRate: 0.35 }),
+    BAT_GIAI_PHU_SU: createQuality('bat_giai_phu_su', 'Bát Giai Phù Sư', '#00FFFF', { bonusRate: 0.40 }),
+    CUU_GIAI_PHU_SU: createQuality('cuu_giai_phu_su', 'Cửu Giai Phù Sư', '#FFD700', { bonusRate: 0.50 }),
+    TIEN_GIAI_PHU_SU: createQuality('tien_giai_phu_su', 'Tiên Giai Phù Sư', '#E0115F', { bonusRate: 0.70 }),
+    THAN_GIAI_PHU_SU: createQuality('than_giai_phu_su', 'Thần Giai Phù Sư', '#ffffff', { bonusRate: 1.00 })
 });
 
 export const PUPPET_MAKING_LEVELS = Object.freeze({
-    0: createQuality('0', 'Nhập Môn Khôi Lỗi Sư', '#9ca3af', { bonusRate: 0 }),
-    1: createQuality('1', 'Nhất Giai Khôi Lỗi Sư', '#4ade80', { bonusRate: 0.05 }),
-    2: createQuality('2', 'Nhị Giai Khôi Lỗi Sư', '#3b82f6', { bonusRate: 0.10 }),
-    3: createQuality('3', 'Tam Giai Khôi Lỗi Sư', '#a855f7', { bonusRate: 0.15 }),
-    4: createQuality('4', 'Tứ Giai Khôi Lỗi Sư', '#f59e0b', { bonusRate: 0.20 }),
-    5: createQuality('5', 'Ngũ Giai Khôi Lỗi Sư', '#ec4899', { bonusRate: 0.25 }),
-    6: createQuality('6', 'Lục Giai Khôi Lỗi Sư', '#ef4444', { bonusRate: 0.30 }),
-    7: createQuality('7', 'Thất Giai Khôi Lỗi Sư', '#FF007F', { bonusRate: 0.35 }),
-    8: createQuality('8', 'Bát Giai Khôi Lỗi Sư', '#00FFFF', { bonusRate: 0.40 }),
-    9: createQuality('9', 'Cửu Giai Khôi Lỗi Sư', '#FFD700', { bonusRate: 0.50 }),
-    10: createQuality('10', 'Tiên Giai Khôi Lỗi Sư', '#E0115F', { bonusRate: 0.70 }),
-    11: createQuality('11', 'Thần Giai Khôi Lỗi Sư', '#ffffff', { bonusRate: 1.00 })
+    NHAP_MON_KHOI_LOI_SU: createQuality('nhap_mon_khoi_loi_su', 'Nhập Môn Khôi Lỗi Sư', '#9ca3af', { bonusRate: 0 }),
+    NHAT_GIAI_KHOI_LOI_SU: createQuality('nhat_giai_khoi_loi_su', 'Nhất Giai Khôi Lỗi Sư', '#4ade80', { bonusRate: 0.05 }),
+    NHI_GIAI_KHOI_LOI_SU: createQuality('nhi_giai_khoi_loi_su', 'Nhị Giai Khôi Lỗi Sư', '#3b82f6', { bonusRate: 0.10 }),
+    TAM_GIAI_KHOI_LOI_SU: createQuality('tam_giai_khoi_loi_su', 'Tam Giai Khôi Lỗi Sư', '#a855f7', { bonusRate: 0.15 }),
+    TU_GIAI_KHOI_LOI_SU: createQuality('tu_giai_khoi_loi_su', 'Tứ Giai Khôi Lỗi Sư', '#f59e0b', { bonusRate: 0.20 }),
+    NGU_GIAI_KHOI_LOI_SU: createQuality('ngu_giai_khoi_loi_su', 'Ngũ Giai Khôi Lỗi Sư', '#ec4899', { bonusRate: 0.25 }),
+    LUC_GIAI_KHOI_LOI_SU: createQuality('luc_giai_khoi_loi_su', 'Lục Giai Khôi Lỗi Sư', '#ef4444', { bonusRate: 0.30 }),
+    THAT_GIAI_KHOI_LOI_SU: createQuality('that_giai_khoi_loi_su', 'Thất Giai Khôi Lỗi Sư', '#FF007F', { bonusRate: 0.35 }),
+    BAT_GIAI_KHOI_LOI_SU: createQuality('bat_giai_khoi_loi_su', 'Bát Giai Khôi Lỗi Sư', '#00FFFF', { bonusRate: 0.40 }),
+    CUU_GIAI_KHOI_LOI_SU: createQuality('cuu_giai_khoi_loi_su', 'Cửu Giai Khôi Lỗi Sư', '#FFD700', { bonusRate: 0.50 }),
+    TIEN_GIAI_KHOI_LOI_SU: createQuality('tien_giai_khoi_loi_su', 'Tiên Giai Khôi Lỗi Sư', '#E0115F', { bonusRate: 0.70 }),
+    THAN_GIAI_KHOI_LOI_SU: createQuality('than_giai_khoi_loi_su', 'Thần Giai Khôi Lỗi Sư', '#ffffff', { bonusRate: 1.00 })
 });
 
 export const BEAST_LEVELS = Object.freeze({
-    0: createQuality('0', 'Ấu Thể', '#9ca3af'),
-    1: createQuality('1', 'Nhất Giai', '#4ade80'),
-    2: createQuality('2', 'Nhị Giai', '#3b82f6'),
-    3: createQuality('3', 'Tam Giai', '#a855f7'),
-    4: createQuality('4', 'Tứ Giai', '#f59e0b'),
-    5: createQuality('5', 'Ngũ Giai', '#ec4899'),
-    6: createQuality('6', 'Lục Giai', '#ef4444'),
-    7: createQuality('7', 'Thất Giai', '#FF007F'),
-    8: createQuality('8', 'Bát Giai', '#00FFFF'),
-    9: createQuality('9', 'Cửu Giai', '#FFD700'),
-    10: createQuality('10', 'Tiên Giai', '#E0115F'),
-    11: createQuality('11', 'Thần Giai', '#ffffff')
+    AU_THE: createQuality('au_the', 'Ấu Thể', '#9ca3af'),
+    NHAT_GIAI: createQuality('nhat_giai', 'Nhất Giai', '#4ade80'),
+    NHI_GIAI: createQuality('nhi_giai', 'Nhị Giai', '#3b82f6'),
+    TAM_GIAI: createQuality('tam_giai', 'Tam Giai', '#a855f7'),
+    TU_GIAI: createQuality('tu_giai', 'Tứ Giai', '#f59e0b'),
+    NGU_GIAI: createQuality('ngu_giai', 'Ngũ Giai', '#ec4899'),
+    LUC_GIAI: createQuality('luc_giai', 'Lục Giai', '#ef4444'),
+    THAT_GIAI: createQuality('that_giai', 'Thất Giai', '#FF007F'),
+    BAT_GIAI: createQuality('bat_giai', 'Bát Giai', '#00FFFF'),
+    CUU_GIAI: createQuality('cuu_giai', 'Cửu Giai', '#FFD700'),
+    TIEN_GIAI: createQuality('tien_giai', 'Tiên Giai', '#E0115F'),
+    THAN_GIAI: createQuality('than_giai', 'Thần Giai', '#ffffff')
 });
 
 export const RACES_ENUM = Object.freeze({

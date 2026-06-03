@@ -70,8 +70,9 @@ export const TALISMAN_RECIPES = {
 };
 
 export const getTalismanLevelInfo = (level) => {
-    const levelKey = Math.min(level, Object.keys(TALISMAN_LEVELS).length - 1);
-    const q = TALISMAN_LEVELS[levelKey];
+    const values = Object.values(TALISMAN_LEVELS);
+    const levelKey = Math.min(Math.max(0, level), values.length - 1);
+    const q = values[levelKey];
     return {
         name: q ? q.name : `Cấp ${level} Phù Sư`
     };

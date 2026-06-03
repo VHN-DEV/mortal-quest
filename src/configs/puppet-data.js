@@ -66,8 +66,9 @@ export const PUPPET_RECIPES = [
     }
 ];
 export const getPuppetLevelInfo = (level) => {
-    const levelKey = Math.min(level, Object.keys(PUPPET_MAKING_LEVELS).length - 1);
-    const q = PUPPET_MAKING_LEVELS[levelKey];
+    const values = Object.values(PUPPET_MAKING_LEVELS);
+    const levelKey = Math.min(Math.max(0, level), values.length - 1);
+    const q = values[levelKey];
     return {
         name: q ? q.name : `Cấp ${level} Khôi Lỗi Sư`
     };

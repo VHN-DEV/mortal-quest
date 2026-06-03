@@ -399,8 +399,9 @@ export const BEASTS = {
 };
 
 export const getBeastLevelInfo = (level) => {
-    const index = Math.min(Math.floor(level / 10), Object.keys(BEAST_LEVELS).length - 1);
-    const q = BEAST_LEVELS[index];
+    const values = Object.values(BEAST_LEVELS);
+    const index = Math.min(Math.max(0, Math.floor(level / 10)), values.length - 1);
+    const q = values[index];
     return {
         name: q ? q.name : `Cấp ${level}`,
         expRequired: Math.floor(100 * Math.pow(1.5, level - 1))
