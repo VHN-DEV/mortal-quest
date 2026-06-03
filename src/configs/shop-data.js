@@ -19,7 +19,7 @@ export const SHOPS = {
             ],
             'luyen_dan': [
                 { id: 'pham_lu', stock: 10 },
-                { id: 'huyen_lu', stock: 1, minVip: 1 },
+                { id: 'huyen_thiet_trong_lu', stock: 1, minVip: 1 },
                 { id: 'dia_lu', stock: 1, minVip: 3 },
                 { id: 'thien_lu', stock: 1, minVip: 5 },
                 { id: 'dan_phuong_hoi_linh_dan', stock: 5 },
@@ -144,7 +144,7 @@ export const SHOPS = {
                 { id: 'chu_sa_muc', stock: 10 },
                 { id: 'phu_van_kim_cuong_phu', stock: 2 },
                 { id: 'phu_van_than_hanh_phu', stock: 2 },
-                { id: 'phu_van_thun_di_phu', stock: 1, minVip: 1 },
+                { id: 'phu_van_thuan_di_phu', stock: 1, minVip: 1 },
                 { id: 'tran_do_tu_linh_tran', stock: 1 },
                 { id: 'tran_do_ao_anh_tran', stock: 1 },
                 { id: 'tran_do_sat_kiem_tran', stock: 1, minVip: 1 },
@@ -202,7 +202,7 @@ export const SHOPS = {
                 { id: 'hoa_nguyen_dan', stock: 2, minVip: 1 }
             ],
             'luyen_dan': [
-                { id: 'huyen_lu', stock: 5 }
+                { id: 'huyen_thiet_trong_lu', stock: 5 }
             ],
             'phap_bao': [
                 { id: 'phi_kiem_thanh_tuyen', stock: 10 },

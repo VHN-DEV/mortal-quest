@@ -389,7 +389,7 @@ export class CheatSystem {
                 { id: 'dan_phuong_ngung_anh_dan', qty: 1 },
                 { id: 'ban_ve_phi_kiem_tinh_ha', qty: 1 },
                 { id: 'ban_ve_long_lan_giap', qty: 1 },
-                { id: 'phu_van_thun_di_phu', qty: 1 },
+                { id: 'phu_van_thuan_di_phu', qty: 1 },
                 { id: 'phu_van_thien_loi_phu', qty: 1 },
                 { id: 'tran_do_sat_kiem_tran', qty: 1 },
                 { id: 'bi_phuong_dong_giap_thi', qty: 1 }

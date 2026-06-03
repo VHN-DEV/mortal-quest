@@ -268,7 +268,7 @@ export class UISystem {
             const originalCancelText = this.modalBtnCancel.textContent;
 
             this.modalTitle.textContent = title;
-            
+
             // Select thematic icon based on title keywords
             let iconClass = 'ph-yin-yang';
             const lowerTitle = title.toLowerCase();
@@ -296,10 +296,10 @@ export class UISystem {
                 const label = opt.label !== undefined ? opt.label : (opt.text !== undefined ? opt.text : '');
                 const value = opt.value !== undefined ? opt.value : opt.id;
                 const btn = document.createElement('button');
-                
+
                 // Premium left-aligned list style for options
                 btn.className = 'w-full py-3.5 px-4 bg-gradient-to-r from-white/[0.03] to-white/[0.01] hover:from-cultivation-gold/10 hover:to-transparent border border-white/5 hover:border-cultivation-gold/30 rounded-2xl text-xs font-ancient text-gray-300 hover:text-cultivation-gold transition-all duration-300 active:scale-[0.98] flex items-center justify-start space-x-3 group relative overflow-hidden shadow-sm';
-                
+
                 btn.innerHTML = `
                     <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-cultivation-gold/20 group-hover:border-cultivation-gold/40 transition-colors flex-shrink-0">
                         <i class="ph ${opt.icon || 'ph-caret-right'} text-sm text-gray-400 group-hover:text-cultivation-gold group-hover:translate-x-0.5 transition-all"></i>
@@ -678,7 +678,7 @@ export class UISystem {
             p.style.height = `${size}px`;
             p.style.opacity = `${0.6 + Math.random() * 0.4}`;
             p.style.willChange = 'transform, opacity';
-            
+
             // Random start position near center
             const startX = rect.width / 2 + (Math.random() - 0.5) * 80;
             const startY = rect.height / 2 + (Math.random() - 0.5) * 80;
@@ -817,7 +817,7 @@ export class UISystem {
             const startDist = 100 + Math.random() * 80;
             const spiralAngleOffset = (Math.random() > 0.5 ? 1 : -1) * (Math.PI / 2 + Math.random() * Math.PI);
             const delay = Math.random() * 0.15;
-            
+
             const obj = { t: 0 };
             gsap.to(obj, {
                 t: 1,
@@ -828,7 +828,7 @@ export class UISystem {
                     const t = obj.t;
                     const curX = x + Math.cos(angle + t * spiralAngleOffset) * (startDist * (1 - t));
                     const curY = y + Math.sin(angle + t * spiralAngleOffset) * (startDist * (1 - t));
-                    
+
                     p.style.left = `${curX}px`;
                     p.style.top = `${curY}px`;
                     p.style.transform = `translate(-50%, -50%) scale(${0.4 + t * 0.8})`;
@@ -848,11 +848,11 @@ export class UISystem {
     triggerPortraitHitEffect(color) {
         const auraGlow = document.getElementById('aura-glow');
         const auraBorder = document.getElementById('aura-border');
-        
+
         if (auraGlow) {
             gsap.killTweensOf(auraGlow);
             gsap.fromTo(auraGlow,
-                { 
+                {
                     backgroundColor: color,
                     opacity: 0.8,
                     scale: 1.05
@@ -866,7 +866,7 @@ export class UISystem {
                 }
             );
         }
-        
+
         if (auraBorder) {
             gsap.killTweensOf(auraBorder);
             gsap.fromTo(auraBorder,
@@ -1415,7 +1415,7 @@ export class UISystem {
                                 const atTeleport = state.currentLocId === 'thuong_co_truyen_tong_tran';
                                 const hasTalisman = state.player?.inventory && (
                                     state.player.inventory.hasItem('pha_khong_phu') ||
-                                    state.player.inventory.hasItem('thun_di_phu') ||
+                                    state.player.inventory.hasItem('thuan_di_phu') ||
                                     state.player.inventory.hasItem('truyen_tong_lenh')
                                 );
                                 const hasBoat = state.player?.inventory && (
@@ -1865,7 +1865,7 @@ export class UISystem {
                 p.style.setProperty('--element-color', cfg.color);
                 p.style.left = `${x}px`;
                 p.style.top = `${y}px`;
-                
+
                 // Hardware accelerated transition
                 p.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease-in, scale 0.6s ease-in';
                 p.style.transform = 'translate(0px, 0px) scale(1)';
@@ -1878,7 +1878,7 @@ export class UISystem {
                 // Animate first to mid point, then to destination
                 requestAnimationFrame(() => {
                     p.style.transform = `translate(${midX}px, ${midY}px) scale(1.2)`;
-                    
+
                     setTimeout(() => {
                         p.style.transform = `translate(${destX - x}px, ${destY - y}px) scale(0.3)`;
                         p.style.opacity = '0';
@@ -1973,7 +1973,7 @@ export class UISystem {
 
         const floatDuration = 0.8 + Math.random() * 0.4;
         bubble.style.transition = `transform ${floatDuration}s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${floatDuration}s ease-out`;
-        
+
         requestAnimationFrame(() => {
             bubble.style.opacity = '1';
             bubble.style.transform = `scale(1) translate(${(Math.random() - 0.5) * 40}px, ${-50 - Math.random() * 30}px)`;
@@ -1999,10 +1999,10 @@ export class UISystem {
         const auraBorder = document.getElementById('aura-border');
         if (auraBorder) {
             auraBorder.classList.remove('pulse-glow-tuvi', 'pulse-glow-body', 'pulse-glow-soul');
-            
+
             // Trigger reflow to restart CSS animation
             void auraBorder.offsetWidth;
-            
+
             if (focus === 'tuvi') {
                 auraBorder.classList.add('pulse-glow-tuvi');
             } else if (focus === 'body') {
@@ -2187,21 +2187,21 @@ export class UISystem {
     async downloadImage(url) {
         try {
             this.toast("Đang chuẩn bị tải ảnh...", "info");
-            
+
             // Try fetching as a blob to bypass potential cross-origin issues
             const response = await fetch(url);
             const blob = await response.blob();
             const blobUrl = URL.createObjectURL(blob);
-            
+
             const filename = url.split('/').pop().split('?')[0] || 'mortal-quest-asset.webp';
             const link = document.createElement('a');
             link.href = blobUrl;
             link.download = filename;
-            
+
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
+
             URL.revokeObjectURL(blobUrl);
             this.toast("Đã tải ảnh thành công!", "success");
         } catch (error) {
@@ -2212,7 +2212,7 @@ export class UISystem {
             link.href = url;
             link.download = filename;
             link.target = "_blank";
-            
+
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

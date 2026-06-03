@@ -366,7 +366,7 @@ export class MapScreen {
                         const atTeleport = state.currentLocId === 'thuong_co_truyen_tong_tran';
                         const hasTalisman = state.player.inventory && (
                             state.player.inventory.hasItem('pha_khong_phu') ||
-                            state.player.inventory.hasItem('thun_di_phu') ||
+                            state.player.inventory.hasItem('thuan_di_phu') ||
                             state.player.inventory.hasItem('truyen_tong_lenh')
                         );
                         const hasBoat = state.player.inventory && (

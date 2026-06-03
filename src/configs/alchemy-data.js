@@ -30,8 +30,8 @@ export const CAULDRONS = {
         outputBonus: 0,
         description: 'Lò luyện đan phổ thông của các đệ tử sơ nhập.'
     },
-    'huyen_lu': {
-        id: 'huyen_lu',
+    'huyen_thiet_trong_lu': {
+        id: 'huyen_thiet_trong_lu',
         name: 'Huyền Thiết Trọng Lư',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
         successBonus: 0.05,

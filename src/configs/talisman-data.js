@@ -38,8 +38,8 @@ export const TALISMAN_RECIPES = {
         manaCost: 20,
         expGain: 40
     },
-    'thun_di_phu': {
-        id: 'thun_di_phu',
+    'thuan_di_phu': {
+        id: 'thuan_di_phu',
         name: 'Thuấn Di Phù',
         level: 3,
         materials: [

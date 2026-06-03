@@ -39,7 +39,7 @@ export class TravelSystem {
             const flightArtifacts = this.player.inventory.allItems
                 .map(i => getItemById(i.id))
                 .filter(item => item && item.type === 'flightArtifact');
-            
+
             if (flightArtifacts.length > 0) {
                 flightArtifacts.sort((a, b) => ((b.stats?.spd || 0) - (a.stats?.spd || 0)));
                 const best = flightArtifacts[0];
@@ -72,7 +72,7 @@ export class TravelSystem {
 
     startTravel(toLocId) {
         if (this.isTraveling) return false;
-        
+
         const fromLocId = state.currentLocId;
         const route = getTravelRoute(fromLocId, toLocId);
 
@@ -91,12 +91,12 @@ export class TravelSystem {
             if (!isAlreadyThere) {
                 const atTeleport = fromLocId === 'thuong_co_truyen_tong_tran';
                 const hasTalisman = this.player.inventory && (
-                    this.player.inventory.hasItem('pha_khong_phu') || 
-                    this.player.inventory.hasItem('thun_di_phu') || 
+                    this.player.inventory.hasItem('pha_khong_phu') ||
+                    this.player.inventory.hasItem('thuan_di_phu') ||
                     this.player.inventory.hasItem('truyen_tong_lenh')
                 );
                 const hasBoat = this.player.inventory && (
-                    this.player.inventory.hasItem('ngu_phong_phi_chu') || 
+                    this.player.inventory.hasItem('ngu_phong_phi_chu') ||
                     this.player.inventory.hasItem('linh_thuyen_so')
                 );
 
@@ -155,7 +155,7 @@ export class TravelSystem {
                 minRealmReq = 42; // Chân Tiên
                 worldName = "Tiên Giới";
             }
-            
+
             if (this.player.realmId < minRealmReq) {
                 this.ui.toast(`Cảnh giới chưa đủ để phi thăng ${worldName}! Nhục thân ngươi sẽ bị lực lượng giới diện xé rách!`, "error");
                 return false;
@@ -190,7 +190,7 @@ export class TravelSystem {
         };
 
         logger.info('system', `Bắt đầu hành trình từ ${findLocationName(fromLocId)} đến ${findLocationName(toLocId)}. Quãng đường: ${route.baseDistance} dặm.`);
-        
+
         // Show Travel Overlay
         this.ui.showTravelOverlay(this.travelData);
 
@@ -202,7 +202,7 @@ export class TravelSystem {
 
     simulateJourney() {
         const updateInterval = 1000; // 1 giây trigger 1 lần event
-        
+
         this.travelData.timer = setInterval(() => {
             if (!this.isTraveling) return;
 
@@ -227,7 +227,7 @@ export class TravelSystem {
         // Xác suất gặp sự kiện dựa vào Danger Level
         const dangerObj = DANGER_LEVELS[this.travelData.route.baseDanger];
         const isDangerous = dangerObj && (this.travelData.route.baseDanger !== 'an_toan');
-        
+
         const rand = Math.random();
         let logMsg = "";
         let type = "info";
@@ -273,7 +273,7 @@ export class TravelSystem {
     completeTravel() {
         clearInterval(this.travelData.timer);
         this.isTraveling = false;
-        
+
         const toLocId = this.travelData.route.to;
         const toWorldId = findWorldIdByLocId(toLocId);
 
@@ -290,7 +290,7 @@ export class TravelSystem {
 
         this.ui.toast(`Đã đến ${findLocationName(toLocId)}!`, "success");
         this.ui.hideTravelOverlay();
-        
+
         // Render destination
         if (window.game && window.game.screens && window.game.screens.map) {
             window.game.screens.map.startExploration(toLocId, true, true); // skipTravel = true
