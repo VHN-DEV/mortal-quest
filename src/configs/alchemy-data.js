@@ -6,8 +6,8 @@ import { PHAP_BAO_QUALITIES } from './item-classification.js';
 
 import { ALCHEMY_LEVELS as ALCHEMY_LEVELS_ENUM } from './game-enums.js';
 
-export const ALCHEMY_LEVELS = Object.values(ALCHEMY_LEVELS_ENUM).map(q => ({
-    level: parseInt(q.id),
+export const ALCHEMY_LEVELS = Object.values(ALCHEMY_LEVELS_ENUM).map((q, idx) => ({
+    level: idx + 1,
     name: q.name,
     bonusRate: q.bonusRate
 }));

@@ -336,51 +336,51 @@ export const GAME_STATS = Object.freeze({
 });
 
 export const SMITHING_LEVELS = Object.freeze({
-    0: createQuality('0', 'Nhập Môn Luyện Khí Sư', '#9ca3af', { bonusRate: 0 }),
-    1: createQuality('1', 'Nhất Giai Luyện Khí Sư', '#4ade80', { bonusRate: 0.05 }),
-    2: createQuality('2', 'Nhị Giai Luyện Khí Sư', '#3b82f6', { bonusRate: 0.10 }),
-    3: createQuality('3', 'Tam Giai Luyện Khí Sư', '#a855f7', { bonusRate: 0.15 }),
-    4: createQuality('4', 'Tứ Giai Luyện Khí Sư', '#f59e0b', { bonusRate: 0.20 }),
-    5: createQuality('5', 'Ngũ Giai Luyện Khí Sư', '#ec4899', { bonusRate: 0.25 }),
-    6: createQuality('6', 'Lục Giai Luyện Khí Sư', '#ef4444', { bonusRate: 0.30 }),
-    7: createQuality('7', 'Thất Giai Luyện Khí Sư', '#FF007F', { bonusRate: 0.35 }),
-    8: createQuality('8', 'Bát Giai Luyện Khí Sư', '#00FFFF', { bonusRate: 0.40 }),
-    9: createQuality('9', 'Cửu Giai Luyện Khí Sư', '#FFD700', { bonusRate: 0.50 }),
-    10: createQuality('10', 'Tiên Giai Luyện Khí Sư', '#E0115F', { bonusRate: 0.70 }),
-    11: createQuality('11', 'Thần Giai Luyện Khí Sư', '#ffffff', { bonusRate: 1.00 })
+    NHAP_MON_LUYEN_KHI_SU: createQuality('nhap_mon_luyen_khi_su', 'Nhập Môn Luyện Khí Sư', '#9ca3af', { bonusRate: 0 }),
+    NHAT_GIAI_LUYEN_KHI_SU: createQuality('nhat_giai_luyen_khi_su', 'Nhất Giai Luyện Khí Sư', '#4ade80', { bonusRate: 0.05 }),
+    NHI_GIAI_LUYEN_KHI_SU: createQuality('nhi_giai_luyen_khi_su', 'Nhị Giai Luyện Khí Sư', '#3b82f6', { bonusRate: 0.10 }),
+    TAM_GIAI_LUYEN_KHI_SU: createQuality('tam_giai_luyen_khi_su', 'Tam Giai Luyện Khí Sư', '#a855f7', { bonusRate: 0.15 }),
+    TU_GIAI_LUYEN_KHI_SU: createQuality('tu_giai_luyen_khi_su', 'Tứ Giai Luyện Khí Sư', '#f59e0b', { bonusRate: 0.20 }),
+    NGU_GIAI_LUYEN_KHI_SU: createQuality('ngu_giai_luyen_khi_su', 'Ngũ Giai Luyện Khí Sư', '#ec4899', { bonusRate: 0.25 }),
+    LUC_GIAI_LUYEN_KHI_SU: createQuality('luc_giai_luyen_khi_su', 'Lục Giai Luyện Khí Sư', '#ef4444', { bonusRate: 0.30 }),
+    THAT_GIAI_LUYEN_KHI_SU: createQuality('that_giai_luyen_khi_su', 'Thất Giai Luyện Khí Sư', '#FF007F', { bonusRate: 0.35 }),
+    BAT_GIAI_LUYEN_KHI_SU: createQuality('bat_giai_luyen_khi_su', 'Bát Giai Luyện Khí Sư', '#00FFFF', { bonusRate: 0.40 }),
+    CUU_GIAI_LUYEN_KHI_SU: createQuality('cuu_giai_luyen_khi_su', 'Cửu Giai Luyện Khí Sư', '#FFD700', { bonusRate: 0.50 }),
+    TIEN_GIAI_LUYEN_KHI_SU: createQuality('tien_giai_luyen_khi_su', 'Tiên Giai Luyện Khí Sư', '#E0115F', { bonusRate: 0.70 }),
+    THAN_GIAI_LUYEN_KHI_SU: createQuality('than_giai_luyen_khi_su', 'Thần Giai Luyện Khí Sư', '#ffffff', { bonusRate: 1.00 })
 });
 
 export const ALCHEMY_LEVELS = Object.freeze({
-    1: createQuality('1', 'Nhất Phẩm Luyện Dược Sư', '#4ade80', { bonusRate: 0.05 }),
-    2: createQuality('2', 'Nhị Phẩm Luyện Dược Sư', '#3b82f6', { bonusRate: 0.10 }),
-    3: createQuality('3', 'Tam Phẩm Luyện Dược Sư', '#a855f7', { bonusRate: 0.15 }),
-    4: createQuality('4', 'Tứ Phẩm Luyện Dược Sư', '#f59e0b', { bonusRate: 0.20 }),
-    5: createQuality('5', 'Ngũ Phẩm Luyện Dược Sư', '#ec4899', { bonusRate: 0.25 }),
-    6: createQuality('6', 'Lục Phẩm Luyện Dược Sư', '#ef4444', { bonusRate: 0.30 }),
-    7: createQuality('7', 'Thất Phẩm Luyện Dược Sư', '#FF007F', { bonusRate: 0.35 }),
-    8: createQuality('8', 'Bát Phẩm Luyện Dược Sư', '#00FFFF', { bonusRate: 0.40 }),
-    9: createQuality('9', 'Cửu Phẩm Luyện Dược Sư', '#FFD700', { bonusRate: 0.50 }),
-    10: createQuality('10', 'Đế Phẩm Luyện Dược Đại Tông Sư', '#E0115F', { bonusRate: 0.70 }),
-    11: createQuality('11', 'Tiên Phẩm Đan Thần', '#ffffff', { bonusRate: 1.00 })
+    NHAT_PHAM_LUYEN_DUOC_SU: createQuality('nhat_pham_luyen_duoc_su', 'Nhất Phẩm Luyện Dược Sư', '#4ade80', { bonusRate: 0.05 }),
+    NHI_PHAM_LUYEN_DUOC_SU: createQuality('nhi_pham_luyen_duoc_su', 'Nhị Phẩm Luyện Dược Sư', '#3b82f6', { bonusRate: 0.10 }),
+    TAM_PHAM_LUYEN_DUOC_SU: createQuality('tam_pham_luyen_duoc_su', 'Tam Phẩm Luyện Dược Sư', '#a855f7', { bonusRate: 0.15 }),
+    TU_PHAM_LUYEN_DUOC_SU: createQuality('tu_pham_luyen_duoc_su', 'Tứ Phẩm Luyện Dược Sư', '#f59e0b', { bonusRate: 0.20 }),
+    NGU_PHAM_LUYEN_DUOC_SU: createQuality('ngu_pham_luyen_duoc_su', 'Ngũ Phẩm Luyện Dược Sư', '#ec4899', { bonusRate: 0.25 }),
+    LUC_PHAM_LUYEN_DUOC_SU: createQuality('luc_pham_luyen_duoc_su', 'Lục Phẩm Luyện Dược Sư', '#ef4444', { bonusRate: 0.30 }),
+    THAT_PHAM_LUYEN_DUOC_SU: createQuality('that_pham_luyen_duoc_su', 'Thất Phẩm Luyện Dược Sư', '#FF007F', { bonusRate: 0.35 }),
+    BAT_PHAM_LUYEN_DUOC_SU: createQuality('bat_pham_luyen_duoc_su', 'Bát Phẩm Luyện Dược Sư', '#00FFFF', { bonusRate: 0.40 }),
+    CUU_PHAM_LUYEN_DUOC_SU: createQuality('cuu_pham_luyen_duoc_su', 'Cửu Phẩm Luyện Dược Sư', '#FFD700', { bonusRate: 0.50 }),
+    DE_PHAM_LUYEN_DUOC_DAI_TONG_SU: createQuality('de_pham_luyen_duoc_dai_tong_su', 'Đế Phẩm Luyện Dược Đại Tông Sư', '#E0115F', { bonusRate: 0.70 }),
+    TIEN_PHAM_DAN_THAN: createQuality('tien_pham_dan_than', 'Tiên Phẩm Đan Thần', '#ffffff', { bonusRate: 1.00 })
 });
 
 export const PHYSIQUE_GRADES = Object.freeze({
-    'PHAM': createQuality('PHAM', 'Phàm Thể', '#9ca3af', { multiplier: 1.0, sortOrder: 1 }),
-    'LINH': createQuality('LINH', 'Linh Thể', '#4ade80', { multiplier: 1.5, sortOrder: 2 }),
-    'BAO': createQuality('BAO', 'Bảo Thể', '#3b82f6', { multiplier: 2.2, sortOrder: 3 }),
-    'CHIEN': createQuality('CHIEN', 'Chiến Thể', '#a855f7', { multiplier: 3.0, sortOrder: 4 }),
-    'THANH': createQuality('THANH', 'Thánh Thể', '#f59e0b', { multiplier: 4.5, sortOrder: 5 }),
-    'DAO': createQuality('DAO', 'Đạo Thể', '#ec4899', { multiplier: 7.0, sortOrder: 6 }),
-    'TIEN': createQuality('TIEN', 'Tiên Thể', '#ef4444', { multiplier: 12.0, sortOrder: 7 }),
-    'HONG_MONG': createQuality('HONG_MONG', 'Hồng Mông Thể', '#ffffff', { multiplier: 25.0, sortOrder: 8 })
+    'PHAM': createQuality('pham', 'Phàm Thể', '#9ca3af', { multiplier: 1.0, sortOrder: 1 }),
+    'LINH': createQuality('linh', 'Linh Thể', '#4ade80', { multiplier: 1.5, sortOrder: 2 }),
+    'BAO': createQuality('bao', 'Bảo Thể', '#3b82f6', { multiplier: 2.2, sortOrder: 3 }),
+    'CHIEN': createQuality('chien', 'Chiến Thể', '#a855f7', { multiplier: 3.0, sortOrder: 4 }),
+    'THANH': createQuality('thanh', 'Thánh Thể', '#f59e0b', { multiplier: 4.5, sortOrder: 5 }),
+    'DAO': createQuality('dao', 'Đạo Thể', '#ec4899', { multiplier: 7.0, sortOrder: 6 }),
+    'TIEN': createQuality('tien', 'Tiên Thể', '#ef4444', { multiplier: 12.0, sortOrder: 7 }),
+    'HONG_MONG': createQuality('hong_mong', 'Hồng Mông Thể', '#ffffff', { multiplier: 25.0, sortOrder: 8 })
 });
 
 export const PHYSIQUE_STAGES = Object.freeze({
-    'SO_KHAI': createQuality('SO_KHAI', 'Sơ Khai', '#9ca3af', { multiplier: 1.0, sortOrder: 1 }),
-    'TIEU_THANH': createQuality('TIEU_THANH', 'Tiểu Thành', '#4ade80', { multiplier: 1.5, sortOrder: 2 }),
-    'DAI_THANH': createQuality('DAI_THANH', 'Đại Thành', '#3b82f6', { multiplier: 2.5, sortOrder: 3 }),
-    'VIEN_MAN': createQuality('VIEN_MAN', 'Viên Mãn', '#a855f7', { multiplier: 4.0, sortOrder: 4 }),
-    'HOAN_MY': createQuality('HOAN_MY', 'Hoàn Mỹ', '#f59e0b', { multiplier: 7.0, sortOrder: 5 })
+    'SO_KHAI': createQuality('so_khai', 'Sơ Khai', '#9ca3af', { multiplier: 1.0, sortOrder: 1 }),
+    'TIEU_THANH': createQuality('tieu_thanh', 'Tiểu Thành', '#4ade80', { multiplier: 1.5, sortOrder: 2 }),
+    'DAI_THANH': createQuality('dai_thanh', 'Đại Thành', '#3b82f6', { multiplier: 2.5, sortOrder: 3 }),
+    'VIEN_MAN': createQuality('vien_man', 'Viên Mãn', '#a855f7', { multiplier: 4.0, sortOrder: 4 }),
+    'HOAN_MY': createQuality('hoan_my', 'Hoàn Mỹ', '#f59e0b', { multiplier: 7.0, sortOrder: 5 })
 });
 
 export const PHYSIQUE_CATEGORIES = Object.freeze({
@@ -452,15 +452,15 @@ export const PHENOMENA_ENUM = Object.freeze({
 });
 
 export const SPIRIT_STONE_ATTRIBUTES_ENUM = Object.freeze({
-    'NORMAL': createQuality('NORMAL', 'Vô Thuộc Tính', '#9ca3af', { bonus: 1.0 }),
-    'FIRE': createQuality('FIRE', 'Hỏa', '#ef4444', { bonus: 1.2 }),
-    'ICE': createQuality('ICE', 'Băng', '#06b6d4', { bonus: 1.2 }),
-    'WOOD': createQuality('WOOD', 'Mộc', '#4ade80', { bonus: 1.2 }),
-    'METAL': createQuality('METAL', 'Kim', '#fcd34d', { bonus: 1.2 }),
-    'EARTH': createQuality('EARTH', 'Thổ', '#d97706', { bonus: 1.2 }),
-    'LIGHTNING': createQuality('LIGHTNING', 'Lôi', '#a855f7', { bonus: 1.5 }),
-    'DEMON': createQuality('DEMON', 'Ma Khí', '#212121', { bonus: 1.5 }),
-    'IMMORTAL': createQuality('IMMORTAL', 'Tiên Khí', '#00FFFF', { bonus: 2.0 })
+    'NORMAL': createQuality('normal', 'Vô Thuộc Tính', '#9ca3af', { bonus: 1.0 }),
+    'FIRE': createQuality('fire', 'Hỏa', '#ef4444', { bonus: 1.2 }),
+    'ICE': createQuality('ice', 'Băng', '#06b6d4', { bonus: 1.2 }),
+    'WOOD': createQuality('wood', 'Mộc', '#4ade80', { bonus: 1.2 }),
+    'METAL': createQuality('metal', 'Kim', '#fcd34d', { bonus: 1.2 }),
+    'EARTH': createQuality('earth', 'Thổ', '#d97706', { bonus: 1.2 }),
+    'LIGHTNING': createQuality('lightning', 'Lôi', '#a855f7', { bonus: 1.5 }),
+    'DEMON': createQuality('demon', 'Ma Khí', '#212121', { bonus: 1.5 }),
+    'IMMORTAL': createQuality('immortal', 'Tiên Khí', '#00FFFF', { bonus: 2.0 })
 });
 
 

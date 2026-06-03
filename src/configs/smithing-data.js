@@ -89,10 +89,11 @@ export const SMITHING_RECIPES = {
 };
 
 export const getSmithingLevelInfo = (level) => {
-    const lvlKey = Math.min(Math.max(0, level), 11);
-    const lvlInfo = SMITHING_LEVELS[lvlKey] || SMITHING_LEVELS[0];
+    const values = Object.values(SMITHING_LEVELS);
+    const lvlKey = Math.min(Math.max(0, level), values.length - 1);
+    const lvlInfo = values[lvlKey];
     return {
-        name: lvlInfo.name,
-        bonusRate: lvlInfo.bonusRate
+        name: lvlInfo ? lvlInfo.name : `Cấp ${level} Luyện Khí Sư`,
+        bonusRate: lvlInfo ? lvlInfo.bonusRate : 0
     };
 };
