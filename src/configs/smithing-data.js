@@ -1,3 +1,5 @@
+import { SMITHING_LEVELS } from './game-enums.js';
+
 export const SMITHING_RECIPES = {
     'tinh_ha_phi_kiem': {
         id: 'tinh_ha_phi_kiem',
@@ -87,8 +89,10 @@ export const SMITHING_RECIPES = {
 };
 
 export const getSmithingLevelInfo = (level) => {
-    const names = ["Nhập Môn Luyện Khí Sư", "Nhất Giai Luyện Khí Sư", "Nhị Giai Luyện Khí Sư", "Tam Giai Luyện Khí Sư", "Tứ Giai Luyện Khí Sư", "Ngũ Giai Luyện Khí Sư", "Lục Giai Luyện Khí Sư", "Thất Giai Luyện Khí Sư", "Bát Giai Luyện Khí Sư", "Cửu Giai Luyện Khí Sư", "Tiên Giai Luyện Khí Sư", "Thần Giai Luyện Khí Sư"];
+    const lvlKey = Math.min(Math.max(0, level), 11);
+    const lvlInfo = SMITHING_LEVELS[lvlKey] || SMITHING_LEVELS[0];
     return {
-        name: names[Math.min(level, names.length - 1)] || `Cấp ${level} Luyện Khí Sư`
+        name: lvlInfo.name,
+        bonusRate: lvlInfo.bonusRate
     };
 };

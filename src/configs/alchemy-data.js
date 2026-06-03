@@ -4,19 +4,13 @@
 
 import { PHAP_BAO_QUALITIES } from './item-classification.js';
 
-export const ALCHEMY_LEVELS = [
-    { level: 1, name: "Nhất Phẩm Luyện Dược Sư", bonusRate: 0.05 },
-    { level: 2, name: "Nhị Phẩm Luyện Dược Sư", bonusRate: 0.10 },
-    { level: 3, name: "Tam Phẩm Luyện Dược Sư", bonusRate: 0.15 },
-    { level: 4, name: "Tứ Phẩm Luyện Dược Sư", bonusRate: 0.20 },
-    { level: 5, name: "Ngũ Phẩm Luyện Dược Sư", bonusRate: 0.25 },
-    { level: 6, name: "Lục Phẩm Luyện Dược Sư", bonusRate: 0.30 },
-    { level: 7, name: "Thất Phẩm Luyện Dược Sư", bonusRate: 0.35 },
-    { level: 8, name: "Bát Phẩm Luyện Dược Sư", bonusRate: 0.40 },
-    { level: 9, name: "Cửu Phẩm Luyện Dược Sư", bonusRate: 0.50 },
-    { level: 10, name: "Đế Phẩm Luyện Dược Đại Tông Sư", bonusRate: 0.70 },
-    { level: 11, name: "Tiên Phẩm Đan Thần", bonusRate: 1.00 }
-];
+import { ALCHEMY_LEVELS as ALCHEMY_LEVELS_ENUM } from './game-enums.js';
+
+export const ALCHEMY_LEVELS = Object.values(ALCHEMY_LEVELS_ENUM).map(q => ({
+    level: parseInt(q.id),
+    name: q.name,
+    bonusRate: q.bonusRate
+}));
 
 export const CAULDRONS = {
     'pham_lu': {

@@ -1,5 +1,5 @@
 import { ASSETS } from './asset-data.js';
-import { NPC_PERSONALITIES_KEYS, NPC_GOALS_KEYS } from './game-enums.js';
+import { NPC_PERSONALITIES_KEYS, NPC_GOALS_KEYS, NPC_RELATIONSHIP_LEVELS_ENUM } from './game-enums.js';
 
 export const NPC_PERSONALITIES = {
     'lanh_lung': { id: 'lanh_lung', name: 'Lạnh lùng', desc: 'Ít nói, khó gần, nhưng hành động dứt khoát.' },
@@ -21,16 +21,13 @@ export const NPC_GOALS = {
     'tim_dao_lu': { id: 'tim_dao_lu', name: 'Tìm đạo lữ', desc: 'Mong muốn tìm được người cùng tu hành.' }
 };
 
-export const NPC_RELATIONSHIP_LEVELS = [
-    { id: 'huyet_hai_tham_thu', name: 'Huyết hải thâm thù', min: -100, max: -81, color: '#ff0000' },
-    { id: 'thu_dich', name: 'Thù địch', min: -80, max: -51, color: '#ff4444' },
-    { id: 'cam_ghet', name: 'Căm ghét', min: -50, max: -21, color: '#ff8888' },
-    { id: 'xa_la', name: 'Xa lạ', min: -20, max: 20, color: '#aaaaaa' },
-    { id: 'quen_biet', name: 'Quen biết', min: 21, max: 40, color: '#88ff88' },
-    { id: 'dong_minh', name: 'Đồng minh', min: 41, max: 60, color: '#44ff44' },
-    { id: 'bang_huu', name: 'Bằng hữu', min: 61, max: 80, color: '#00ff00' },
-    { id: 'sinh_tu_chi_giao', name: 'Sinh tử chi giao', min: 81, max: 100, color: '#ffff00' }
-];
+export const NPC_RELATIONSHIP_LEVELS = Object.values(NPC_RELATIONSHIP_LEVELS_ENUM).map(q => ({
+    id: q.id,
+    name: q.name,
+    min: q.min,
+    max: q.max,
+    color: q.color
+}));
 
 export const NPC_SPECIAL_RELATIONS = {
     'dao_lu': { name: 'Đạo lữ', desc: 'Bạn đời cùng tu hành.' },

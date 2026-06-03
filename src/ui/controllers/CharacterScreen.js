@@ -1,12 +1,12 @@
 import { state } from '../../state.js';
 import { getSectById } from '../../configs/sect-data.js';
 import { getTechniqueById, MASTERY_LEVELS } from '../../configs/technique-data.js';
-import { getPhysiqueById, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../../configs/physique-data.js';
+import { getPhysiqueById } from '../../configs/physique-data.js';
 import { RACE_DATA } from '../../configs/realm-data.js';
 import { TITLES } from '../../configs/fate-data.js';
 import { getGenderLabel } from '../../configs/display-mappers.js';
 import { CULTIVATION_PATHS } from '../../configs/cultivation-paths.js';
-import { ELEMENT_TYPES, STATUS_EFFECT_CATEGORIES } from '../../configs/game-enums.js';
+import { ELEMENT_TYPES, STATUS_EFFECT_CATEGORIES, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../../configs/game-enums.js';
 
 /**
  * Quản lý giao diện chỉ số nhân vật, cảnh giới và các thông tin liên quan.

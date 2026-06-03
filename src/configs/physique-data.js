@@ -3,38 +3,9 @@
  */
 
 import { ELEMENT_TYPES } from './item-classification.js';
+import { PHYSIQUE_GRADES, PHYSIQUE_STAGES, PHYSIQUE_CATEGORIES } from './game-enums.js';
 
-export const PHYSIQUE_GRADES = {
-    'PHAM': { id: 1, name: 'Phàm Thể', color: '#9ca3af', multiplier: 1.0 },
-    'LINH': { id: 2, name: 'Linh Thể', color: '#4ade80', multiplier: 1.5 },
-    'BAO': { id: 3, name: 'Bảo Thể', color: '#3b82f6', multiplier: 2.2 },
-    'CHIEN': { id: 4, name: 'Chiến Thể', color: '#a855f7', multiplier: 3.0 },
-    'THANH': { id: 5, name: 'Thánh Thể', color: '#f59e0b', multiplier: 4.5 },
-    'DAO': { id: 6, name: 'Đạo Thể', color: '#ec4899', multiplier: 7.0 },
-    'TIEN': { id: 7, name: 'Tiên Thể', color: '#ef4444', multiplier: 12.0 },
-    'HONG_MONG': { id: 8, name: 'Hồng Mông Thể', color: '#ffffff', multiplier: 25.0 }
-};
-
-export const PHYSIQUE_STAGES = {
-    'SO_KHAI': { id: 1, name: 'Sơ Khai', multiplier: 1.0 },
-    'TIEU_THANH': { id: 2, name: 'Tiểu Thành', multiplier: 1.5 },
-    'DAI_THANH': { id: 3, name: 'Đại Thành', multiplier: 2.5 },
-    'VIEN_MAN': { id: 4, name: 'Viên Mãn', multiplier: 4.0 },
-    'HOAN_MY': { id: 5, name: 'Hoàn Mỹ', multiplier: 7.0 }
-};
-
-export const PHYSIQUE_CATEGORIES = {
-    'PHAM': 'Phàm Thể',
-    'LINH': 'Linh Thể',
-    'BAO': 'Bảo Thể',
-    'CHIEN': 'Chiến Thể',
-    'THANH': 'Thánh Thể',
-    'DAO': 'Đạo Thể',
-    'MA': 'Ma Thể',
-    'HON': 'Hồn Thể',
-    'YEU': 'Yêu Thể',
-    'CAM_KY': 'Cấm Kỵ Thể Chất'
-};
+export { PHYSIQUE_GRADES, PHYSIQUE_STAGES, PHYSIQUE_CATEGORIES };
 
 export const PHYSIQUES = {
     // 1. Phàm Thể
