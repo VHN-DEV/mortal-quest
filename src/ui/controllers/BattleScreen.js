@@ -257,6 +257,9 @@ export class BattleScreen {
                         setTimeout(() => state.currentCombat?.onEnd('win'), 1000);
                     } else if (choice === 'search') {
                         window.game.screens.loot.open(enemy);
+                    } else {
+                        // Hủy bỏ — thoát chương trình chiến bình thường
+                        state.currentCombat?.onEnd('win');
                     }
                 });
         } else {

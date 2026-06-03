@@ -593,10 +593,31 @@ export class UISystem {
 
     /**
      * Create a damage popup effect
+     * @param {HTMLElement} anchor  - Element to anchor the popup near
+     * @param {number}  value       - Damage value
+     * @param {boolean} crit        - Whether this was a critical hit
+     * @param {string|null} color   - Optional override hex color for the number
      */
-    createDamagePopup(anchor, value, crit) {
+    createDamagePopup(anchor, value, crit, color = null) {
         const popup = document.createElement('div');
-        popup.className = `damage-popup font-ancient font-bold pointer-events-none ${crit ? 'text-3xl text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]' : 'text-xl text-red-500'}`;
+        // Base class for sizing / font; color is applied inline when custom
+        const defaultClass = crit
+            ? 'text-3xl drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]'
+            : 'text-xl';
+        popup.className = `damage-popup font-ancient font-bold pointer-events-none ${defaultClass}`;
+
+        // Apply color: custom > crit gold > miss/heal cyan > default red
+        if (color) {
+            popup.style.color = color;
+            popup.style.textShadow = `0 0 12px ${color}80`;
+        } else if (crit) {
+            popup.style.color = '#fbbf24';
+        } else if (value === 0) {
+            popup.style.color = '#94a3b8'; // gray for miss / block
+        } else {
+            popup.style.color = '#ef4444'; // default red
+        }
+
         popup.textContent = (value > 0 ? '-' : '+') + Math.abs(value);
 
         const app = document.getElementById('app');
