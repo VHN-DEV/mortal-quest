@@ -463,6 +463,115 @@ export const SPIRIT_STONE_ATTRIBUTES_ENUM = Object.freeze({
     'IMMORTAL': createQuality('IMMORTAL', 'Tiên Khí', '#00FFFF', { bonus: 2.0 })
 });
 
+
+export const NPC_ROLES = Object.freeze({
+    TANK: createQuality('Tank', 'Hộ Vệ', '#3b82f6', { hpMult: 1.6, defMult: 1.5, atkMult: 0.8 }),
+    HEALER: createQuality('Healer', 'Trị Liệu', '#10b981', { hpMult: 0.9, atkMult: 0.6, spdMult: 1.1 }),
+    SWORD: createQuality('Sword', 'Kiếm Tu', '#ef4444', { atkMult: 1.4, spdMult: 1.2 }),
+    MAGE: createQuality('Mage', 'Pháp Sư', '#a855f7', { hpMult: 1.0, defMult: 1.0, atkMult: 1.0, spdMult: 1.0 })
+});
+
+export const NPC_PERSONALITIES_ENUM = Object.freeze({
+    LANH_LUNG: createQuality('lanh_lung', 'Lạnh lùng', '#9ca3af', { desc: 'Ít nói, khó gần, nhưng hành động dứt khoát.' }),
+    CHINH_TRUC: createQuality('chinh_truc', 'Chính trực', '#10b981', { desc: 'Coi trọng đạo lý, ghét kẻ gian tà.' }),
+    THAM_LAM: createQuality('tham_lam', 'Tham lam', '#f59e0b', { desc: 'Dễ bị lợi dụ bởi linh thạch và bảo vật.' }),
+    KIEU_NGAO: createQuality('kieu_ngao', 'Kiêu ngạo', '#a855f7', { desc: 'Coi thường kẻ yếu, không chịu khuất phục.' }),
+    DIEN_CUONG: createQuality('dien_cuong', 'Điên cuồng', '#ef4444', { desc: 'Hành động khó đoán, dễ rơi vào trạng thái bạo tẩu.' }),
+    DA_NGHI: createQuality('da_nghi', 'Đa nghi', '#6b7280', { desc: 'Khó tin tưởng người khác, luôn đề phòng.' }),
+    TRUNG_THANH: createQuality('trung_thanh', 'Trung thành', '#3b82f6', { desc: 'Một khi đã kết giao sẽ không bao giờ phản bội.' }),
+    HOA_NHA: createQuality('hoa_nha', 'Hòa nhã', '#34d399', { desc: 'Dễ kết bạn, luôn giúp đỡ người khác.' }),
+    QUY_QUYET: createQuality('quy_quyet', 'Quỷ quyệt', '#8b5cf6', { desc: 'Thích dùng mưu mẹo, không từ thủ đoạn.' })
+});
+
+export const NPC_GOALS_ENUM = Object.freeze({
+    BAO_THU: createQuality('bao_thu', 'Báo thù', '#ef4444', { desc: 'Tìm kiếm kẻ thù để rửa hận.' }),
+    THANH_TIEN: createQuality('thanh_tien', 'Thành tiên', '#3b82f6', { desc: 'Dồn toàn lực vào tu luyện.' }),
+    TIM_TRUYEN_THUA: createQuality('tim_truyen_thua', 'Tìm truyền thừa', '#fbbf24', { desc: 'Khám phá bí cảnh, tìm kiếm di sản cổ đại.' }),
+    CHAN_HUNG_TON_MON: createQuality('chan_hung_tong_mon', 'Chấn hưng tông môn', '#10b981', { desc: 'Làm rạng danh tông môn của mình.' }),
+    TIM_DAO_LU: createQuality('tim_dao_lu', 'Tìm đạo lữ', '#ec4899', { desc: 'Mong muốn tìm được người cùng tu hành.' })
+});
+
+export const NPC_SPECIAL_RELATIONS_ENUM = Object.freeze({
+    DAO_LU: createQuality('dao_lu', 'Đạo lữ', '#fbcfe8', { desc: 'Bạn đời cùng tu hành.' }),
+    SU_DO: createQuality('su_do', 'Sư đồ', '#6366f1', { desc: 'Mối quan hệ thầy trò.' }),
+    GIA_TOC: createQuality('gia_toc', 'Gia tộc', '#3b82f6', { desc: 'Người cùng dòng máu.' }),
+    CHU_TO: createQuality('chu_to', 'Chủ tớ', '#10b981', { desc: 'Mối quan hệ khế ước.' })
+});
+
+export const TALISMAN_LEVELS = Object.freeze({
+    0: createQuality('0', 'Nhập Môn Phù Sư', '#9ca3af', { bonusRate: 0 }),
+    1: createQuality('1', 'Nhất Giai Phù Sư', '#4ade80', { bonusRate: 0.05 }),
+    2: createQuality('2', 'Nhị Giai Phù Sư', '#3b82f6', { bonusRate: 0.10 }),
+    3: createQuality('3', 'Tam Giai Phù Sư', '#a855f7', { bonusRate: 0.15 }),
+    4: createQuality('4', 'Tứ Giai Phù Sư', '#f59e0b', { bonusRate: 0.20 }),
+    5: createQuality('5', 'Ngũ Giai Phù Sư', '#ec4899', { bonusRate: 0.25 }),
+    6: createQuality('6', 'Lục Giai Phù Sư', '#ef4444', { bonusRate: 0.30 }),
+    7: createQuality('7', 'Thất Giai Phù Sư', '#FF007F', { bonusRate: 0.35 }),
+    8: createQuality('8', 'Bát Giai Phù Sư', '#00FFFF', { bonusRate: 0.40 }),
+    9: createQuality('9', 'Cửu Giai Phù Sư', '#FFD700', { bonusRate: 0.50 }),
+    10: createQuality('10', 'Tiên Giai Phù Sư', '#E0115F', { bonusRate: 0.70 }),
+    11: createQuality('11', 'Thần Giai Phù Sư', '#ffffff', { bonusRate: 1.00 })
+});
+
+export const PUPPET_MAKING_LEVELS = Object.freeze({
+    0: createQuality('0', 'Nhập Môn Khôi Lỗi Sư', '#9ca3af', { bonusRate: 0 }),
+    1: createQuality('1', 'Nhất Giai Khôi Lỗi Sư', '#4ade80', { bonusRate: 0.05 }),
+    2: createQuality('2', 'Nhị Giai Khôi Lỗi Sư', '#3b82f6', { bonusRate: 0.10 }),
+    3: createQuality('3', 'Tam Giai Khôi Lỗi Sư', '#a855f7', { bonusRate: 0.15 }),
+    4: createQuality('4', 'Tứ Giai Khôi Lỗi Sư', '#f59e0b', { bonusRate: 0.20 }),
+    5: createQuality('5', 'Ngũ Giai Khôi Lỗi Sư', '#ec4899', { bonusRate: 0.25 }),
+    6: createQuality('6', 'Lục Giai Khôi Lỗi Sư', '#ef4444', { bonusRate: 0.30 }),
+    7: createQuality('7', 'Thất Giai Khôi Lỗi Sư', '#FF007F', { bonusRate: 0.35 }),
+    8: createQuality('8', 'Bát Giai Khôi Lỗi Sư', '#00FFFF', { bonusRate: 0.40 }),
+    9: createQuality('9', 'Cửu Giai Khôi Lỗi Sư', '#FFD700', { bonusRate: 0.50 }),
+    10: createQuality('10', 'Tiên Giai Khôi Lỗi Sư', '#E0115F', { bonusRate: 0.70 }),
+    11: createQuality('11', 'Thần Giai Khôi Lỗi Sư', '#ffffff', { bonusRate: 1.00 })
+});
+
+export const BEAST_LEVELS = Object.freeze({
+    0: createQuality('0', 'Ấu Thể', '#9ca3af'),
+    1: createQuality('1', 'Nhất Giai', '#4ade80'),
+    2: createQuality('2', 'Nhị Giai', '#3b82f6'),
+    3: createQuality('3', 'Tam Giai', '#a855f7'),
+    4: createQuality('4', 'Tứ Giai', '#f59e0b'),
+    5: createQuality('5', 'Ngũ Giai', '#ec4899'),
+    6: createQuality('6', 'Lục Giai', '#ef4444'),
+    7: createQuality('7', 'Thất Giai', '#FF007F'),
+    8: createQuality('8', 'Bát Giai', '#00FFFF'),
+    9: createQuality('9', 'Cửu Giai', '#FFD700'),
+    10: createQuality('10', 'Tiên Giai', '#E0115F'),
+    11: createQuality('11', 'Thần Giai', '#ffffff')
+});
+
+export const RACES_ENUM = Object.freeze({
+    HUMAN: createQuality('HUMAN', 'Nhân Tộc', '#60a5fa', { cost: 0, desc: 'Linh hồn hoàn chỉnh nhất, thích hợp tu luyện mọi loại công pháp. Tốc độ lĩnh ngộ ổn định.', bonus: { tvps: 1.0, soulExpSpeed: 1.1 } }),
+    YAO: createQuality('YAO', 'Yêu Tộc', '#34d399', { cost: 40, desc: 'Hóa hình từ yêu thú, thân thể cực mạnh, thọ nguyên dài. Có khả năng thức tỉnh huyết mạch thần thú.', bloodline: 'LINH', bonus: { maxHp: 500, def: 50, maxAge: 1000, tvps: 0.9 } }),
+    DEMON: createQuality('DEMON', 'Ma Tộc', '#ef4444', { cost: 60, desc: 'Chủng tộc của bản năng và sức mạnh hủy diệt. Tốc độ thăng tiến cực nhanh nhưng dễ bị tâm ma quấy phá.', bloodline: 'CHAN', bonus: { atk: 150, tvps: 1.3, karma: -200, maxAge: 500 } })
+});
+
+export const CREATION_BLOODLINES_ENUM = Object.freeze({
+    PHAM: createQuality('PHAM', 'Phàm Huyết', '#9ca3af', { multiplier: 1.0 }),
+    LINH: createQuality('LINH', 'Linh Huyết', '#4ade80', { multiplier: 1.5 }),
+    DIA: createQuality('DIA', 'Địa Huyết', '#3b82f6', { multiplier: 2.5 }),
+    THIEN: createQuality('THIEN', 'Thiên Huyết', '#ec4899', { multiplier: 4.0 }),
+    VUONG: createQuality('VUONG', 'Vương Huyết', '#f59e0b', { multiplier: 6.5 }),
+    HOANG: createQuality('HOANG', 'Hoàng Huyết', '#eab308', { multiplier: 10.0 }),
+    THANH: createQuality('THANH', 'Thánh Huyết', '#a855f7', { multiplier: 18.0 }),
+    DE: createQuality('DE', 'Đế Huyết', '#ef4444', { multiplier: 35.0 }),
+    TIEN_LINH: createQuality('TIEN_LINH', 'Tiên Linh Huyết', '#06b6d4', { multiplier: 70.0 }),
+    THAI_CO: createQuality('THAI_CO', 'Thái Cổ Huyết', '#ffffff', { multiplier: 150.0 })
+});
+
+export const DEMON_BLOODLINES_ENUM = Object.freeze({
+    PHAM: createQuality('PHAM', 'Phàm Ma Huyết', '#9ca3af', { multiplier: 1.0 }),
+    CHAN: createQuality('CHAN', 'Chân Ma Huyết', '#4ade80', { multiplier: 1.8 }),
+    THIEN: createQuality('THIEN', 'Thiên Ma Huyết', '#3b82f6', { multiplier: 3.5 }),
+    CO: createQuality('CO', 'Cổ Ma Huyết', '#a855f7', { multiplier: 7.0 }),
+    THANH: createQuality('THANH', 'Thánh Ma Huyết', '#f59e0b', { multiplier: 15.0 }),
+    THAN: createQuality('THAN', 'Ma Thần Huyết', '#ef4444', { multiplier: 40.0 }),
+    NGUYEN_SO: createQuality('NGUYEN_SO', 'Nguyên Sơ Ma Huyết', '#ffffff', { multiplier: 100.0 })
+});
+
 export const NPC_RELATIONSHIP_LEVELS_ENUM = Object.freeze({
     HUYET_HAI_THAM_THU: createQuality('huyet_hai_tham_thu', 'Huyết hải thâm thù', '#ff0000', { min: -100, max: -81 }),
     THU_DICH: createQuality('thu_dich', 'Thù địch', '#ff4444', { min: -80, max: -51 }),
@@ -517,7 +626,10 @@ export const getQualityObject = (quality) => {
         PUPPET_GRADES, BEAST_BLOODLINES, LINH_THE_RARITIES,
         PHYSIQUE_GRADES, PHYSIQUE_STAGES, ALCHEMY_LEVELS, 
         SMITHING_LEVELS, HOURS_ENUM, SEASONS_ENUM, 
-        PHENOMENA_ENUM, SPIRIT_STONE_ATTRIBUTES_ENUM, NPC_RELATIONSHIP_LEVELS_ENUM
+        PHENOMENA_ENUM, SPIRIT_STONE_ATTRIBUTES_ENUM, NPC_RELATIONSHIP_LEVELS_ENUM,
+        NPC_ROLES, NPC_PERSONALITIES_ENUM, NPC_GOALS_ENUM, NPC_SPECIAL_RELATIONS_ENUM,
+        TALISMAN_LEVELS, PUPPET_MAKING_LEVELS, BEAST_LEVELS,
+        RACES_ENUM, CREATION_BLOODLINES_ENUM, DEMON_BLOODLINES_ENUM
     ]) {
         for (const q of Object.values(group)) {
             if (q.id.toLowerCase() === str || q.name.toLowerCase() === str) {

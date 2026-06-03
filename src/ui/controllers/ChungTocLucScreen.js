@@ -1,6 +1,6 @@
 import { CREATION_RACES } from '../../configs/creation-data.js';
 import { state } from '../../state.js';
-import { GAME_STATS, RACE_VISUALS } from '../../configs/game-enums.js';
+import { GAME_STATS, RACES_ENUM } from '../../configs/game-enums.js';
 
 /**
  * Màn hình hiển thị Vạn Tộc Thông Giám - Danh sách các chủng tộc trong game.
@@ -78,11 +78,11 @@ export class ChungTocLucScreen {
     }
 
     getRaceIcon(id) {
-        return RACE_VISUALS[id]?.icon || '👤';
+        return RACES_ENUM[id]?.icon || '👤';
     }
 
     getRaceColor(id) {
-        return RACE_VISUALS[id]?.color || '#ffffff';
+        return RACES_ENUM[id]?.color || '#ffffff';
     }
 
     translateStat(stat) {

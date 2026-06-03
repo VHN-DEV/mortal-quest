@@ -1,3 +1,5 @@
+import { TALISMAN_LEVELS } from './game-enums.js';
+
 export const TALISMAN_RECIPES = {
     'hoa_cau_phu': {
         id: 'hoa_cau_phu',
@@ -68,8 +70,9 @@ export const TALISMAN_RECIPES = {
 };
 
 export const getTalismanLevelInfo = (level) => {
-    const names = ["Nhập Môn Phù Sư", "Nhất Giai Phù Sư", "Nhị Giai Phù Sư", "Tam Giai Phù Sư", "Tứ Giai Phù Sư", "Ngũ Giai Phù Sư", "Lục Giai Phù Sư", "Thất Giai Phù Sư", "Bát Giai Phù Sư", "Cửu Giai Phù Sư", "Tiên Giai Phù Sư", "Thần Giai Phù Sư"];
+    const levelKey = Math.min(level, Object.keys(TALISMAN_LEVELS).length - 1);
+    const q = TALISMAN_LEVELS[levelKey];
     return {
-        name: names[Math.min(level, names.length - 1)] || `Cấp ${level} Phù Sư`
+        name: q ? q.name : `Cấp ${level} Phù Sư`
     };
 };

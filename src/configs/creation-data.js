@@ -1,4 +1,5 @@
 import { ELEMENT_TYPES } from './item-classification.js';
+import { RACES_ENUM, CREATION_BLOODLINES_ENUM, DEMON_BLOODLINES_ENUM } from './game-enums.js';
 
 export const CREATION_CONFIG = {
     BASE_POINTS: 150,
@@ -6,18 +7,10 @@ export const CREATION_CONFIG = {
     MAX_DISADVANTAGES: 3
 };
 
-export const BLOODLINES = {
-    'PHAM': { id: 'PHAM', name: 'Phàm Huyết', multiplier: 1.0 },
-    'LINH': { id: 'LINH', name: 'Linh Huyết', multiplier: 1.5 },
-    'DIA': { id: 'DIA', name: 'Địa Huyết', multiplier: 2.5 },
-    'THIEN': { id: 'THIEN', name: 'Thiên Huyết', multiplier: 4.0 },
-    'VUONG': { id: 'VUONG', name: 'Vương Huyết', multiplier: 6.5 },
-    'HOANG': { id: 'HOANG', name: 'Hoàng Huyết', multiplier: 10.0 },
-    'THANH': { id: 'THANH', name: 'Thánh Huyết', multiplier: 18.0 },
-    'DE': { id: 'DE', name: 'Đế Huyết', multiplier: 35.0 },
-    'TIEN_LINH': { id: 'TIEN_LINH', name: 'Tiên Linh Huyết', multiplier: 70.0 },
-    'THAI_CO': { id: 'THAI_CO', name: 'Thái Cổ Huyết', multiplier: 150.0 }
-};
+export const BLOODLINES = Object.freeze(Object.values(CREATION_BLOODLINES_ENUM).reduce((acc, q) => {
+    acc[q.id] = { id: q.id, name: q.name, multiplier: q.multiplier };
+    return acc;
+}, {}));
 
 export const TRANSFORMATION_STAGES = [
     'Chưa Khai Trí',
@@ -36,15 +29,10 @@ export const AWAKENING_STAGES = [
     'Chân Linh Hóa'
 ];
 
-export const DEMON_BLOODLINES = {
-    'PHAM': { id: 'PHAM', name: 'Phàm Ma Huyết', multiplier: 1.0 },
-    'CHAN': { id: 'CHAN', name: 'Chân Ma Huyết', multiplier: 1.8 },
-    'THIEN': { id: 'THIEN', name: 'Thiên Ma Huyết', multiplier: 3.5 },
-    'CO': { id: 'CO', name: 'Cổ Ma Huyết', multiplier: 7.0 },
-    'THANH': { id: 'THANH', name: 'Thánh Ma Huyết', multiplier: 15.0 },
-    'THAN': { id: 'THAN', name: 'Ma Thần Huyết', multiplier: 40.0 },
-    'NGUYEN_SO': { id: 'NGUYEN_SO', name: 'Nguyên Sơ Ma Huyết', multiplier: 100.0 }
-};
+export const DEMON_BLOODLINES = Object.freeze(Object.values(DEMON_BLOODLINES_ENUM).reduce((acc, q) => {
+    acc[q.id] = { id: q.id, name: q.name, multiplier: q.multiplier };
+    return acc;
+}, {}));
 
 export const DEMON_FACTIONS = {
     'HUYET': { id: 'HUYET', name: 'Huyết Ma', focus: 'Hút máu & Hồi phục', bonus: { lifesteal: 0.15, hpRegen: 1.5 } },
@@ -70,25 +58,17 @@ export const DEMON_KARMA = [
     'Diệt Thế Sát'
 ];
 
-export const CREATION_RACES = {
-    'HUMAN': {
-        id: 'HUMAN', name: 'Nhân Tộc', cost: 0,
-        desc: 'Linh hồn hoàn chỉnh nhất, thích hợp tu luyện mọi loại công pháp. Tốc độ lĩnh ngộ ổn định.',
-        bonus: { tvps: 1.0, soulExpSpeed: 1.1 }
-    },
-    'YAO': {
-        id: 'YAO', name: 'Yêu Tộc', cost: 40,
-        desc: 'Hóa hình từ yêu thú, thân thể cực mạnh, thọ nguyên dài. Có khả năng thức tỉnh huyết mạch thần thú.',
-        bloodline: 'LINH',
-        bonus: { maxHp: 500, def: 50, maxAge: 1000, tvps: 0.9 }
-    },
-    'DEMON': {
-        id: 'DEMON', name: 'Ma Tộc', cost: 60,
-        desc: 'Chủng tộc của bản năng và sức mạnh hủy diệt. Tốc độ thăng tiến cực nhanh nhưng dễ bị tâm ma quấy phá.',
-        bloodline: 'CHAN',
-        bonus: { atk: 150, tvps: 1.3, karma: -200, maxAge: 500 }
-    }
-};
+export const CREATION_RACES = Object.freeze(Object.values(RACES_ENUM).reduce((acc, q) => {
+    acc[q.id] = {
+        id: q.id,
+        name: q.name,
+        cost: q.cost,
+        desc: q.desc,
+        bloodline: q.bloodline,
+        bonus: q.bonus
+    };
+    return acc;
+}, {}));
 
 export const ROOT_RARITY = {
     'PHAM': { id: 'PHAM', name: 'Phàm', color: '#9ca3af', chance: 0.45, multiplier: 1.0 },

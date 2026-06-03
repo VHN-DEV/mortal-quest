@@ -3,6 +3,7 @@ import { getRealmById } from '../configs/realm-data.js';
 import { CREATION_ROOTS, CREATION_PHYSIQUES } from '../configs/creation-data.js';
 import { WORLDS } from '../configs/map-data.js';
 import { NPCAI } from './npc-ai.js';
+import { NPC_ROLES } from '../configs/game-enums.js';
 
 export class NPC {
     constructor(templateId, realmId) {
@@ -114,10 +115,14 @@ export class NPC {
         this.def = 8 * realmMultiplier;
         this.spd = 10 * realmMultiplier;
         
-        // Role adjustments
-        if (this.role === 'Tank') { this.maxHp *= 1.6; this.def *= 1.5; this.atk *= 0.8; }
-        if (this.role === 'Healer') { this.maxHp *= 0.9; this.atk *= 0.6; this.spd *= 1.1; }
-        if (this.role === 'Sword') { this.atk *= 1.4; this.spd *= 1.2; }
+        // Role adjustments based on centralized NPC_ROLES enum
+        const roleConfig = Object.values(NPC_ROLES).find(r => r.id === this.role);
+        if (roleConfig) {
+            if (roleConfig.hpMult) this.maxHp *= roleConfig.hpMult;
+            if (roleConfig.defMult) this.def *= roleConfig.defMult;
+            if (roleConfig.atkMult) this.atk *= roleConfig.atkMult;
+            if (roleConfig.spdMult) this.spd *= roleConfig.spdMult;
+        }
 
         // Supreme Demon adjustments
         if (this.templateId === 'ma_than') {

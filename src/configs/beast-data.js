@@ -1,5 +1,5 @@
 import { LINH_THU_QUALITIES } from './item-classification.js';
-import { BEAST_BLOODLINES, BEAST_TYPES } from './game-enums.js';
+import { BEAST_BLOODLINES, BEAST_TYPES, BEAST_LEVELS } from './game-enums.js';
 
 export { BEAST_TYPES };
 
@@ -399,9 +399,10 @@ export const BEASTS = {
 };
 
 export const getBeastLevelInfo = (level) => {
-    const names = ["Ấu Thể", "Nhất Giai", "Nhị Giai", "Tam Giai", "Tứ Giai", "Ngũ Giai", "Lục Giai", "Thất Giai", "Bát Giai", "Cửu Giai", "Tiên Giai", "Thần Giai"];
+    const index = Math.min(Math.floor(level / 10), Object.keys(BEAST_LEVELS).length - 1);
+    const q = BEAST_LEVELS[index];
     return {
-        name: names[Math.min(Math.floor(level / 10), names.length - 1)] || `Cấp ${level}`,
+        name: q ? q.name : `Cấp ${level}`,
         expRequired: Math.floor(100 * Math.pow(1.5, level - 1))
     };
 };

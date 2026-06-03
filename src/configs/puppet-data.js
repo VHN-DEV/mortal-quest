@@ -1,6 +1,6 @@
-import { PUPPET_GRADES, PUPPET_TYPES } from './game-enums.js';
+import { PUPPET_GRADES, PUPPET_TYPES, PUPPET_MAKING_LEVELS } from './game-enums.js';
 
-export { PUPPET_GRADES, PUPPET_TYPES };
+export { PUPPET_GRADES, PUPPET_TYPES, PUPPET_MAKING_LEVELS };
 
 export const PUPPET_CORE_TYPES = {
     'SPIRIT_STONE': { id: 'SPIRIT_STONE', name: 'Linh Thạch Lõi', efficiency: 1.0 },
@@ -66,8 +66,9 @@ export const PUPPET_RECIPES = [
     }
 ];
 export const getPuppetLevelInfo = (level) => {
-    const names = ["Nhập Môn Khôi Lỗi Sư", "Nhất Giai Khôi Lỗi Sư", "Nhị Giai Khôi Lỗi Sư", "Tam Giai Khôi Lỗi Sư", "Tứ Giai Khôi Lỗi Sư", "Ngũ Giai Khôi Lỗi Sư", "Lục Giai Khôi Lỗi Sư", "Thất Giai Khôi Lỗi Sư", "Bát Giai Khôi Lỗi Sư", "Cửu Giai Khôi Lỗi Sư", "Tiên Giai Khôi Lỗi Sư", "Thần Giai Khôi Lỗi Sư"];
+    const levelKey = Math.min(level, Object.keys(PUPPET_MAKING_LEVELS).length - 1);
+    const q = PUPPET_MAKING_LEVELS[levelKey];
     return {
-        name: names[Math.min(level, names.length - 1)] || `Cấp ${level} Khôi Lỗi Sư`
+        name: q ? q.name : `Cấp ${level} Khôi Lỗi Sư`
     };
 };

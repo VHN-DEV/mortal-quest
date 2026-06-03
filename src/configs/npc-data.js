@@ -1,25 +1,22 @@
 import { ASSETS } from './asset-data.js';
-import { NPC_PERSONALITIES_KEYS, NPC_GOALS_KEYS, NPC_RELATIONSHIP_LEVELS_ENUM } from './game-enums.js';
+import { 
+    NPC_PERSONALITIES_KEYS, 
+    NPC_GOALS_KEYS, 
+    NPC_RELATIONSHIP_LEVELS_ENUM,
+    NPC_PERSONALITIES_ENUM,
+    NPC_GOALS_ENUM,
+    NPC_SPECIAL_RELATIONS_ENUM
+} from './game-enums.js';
 
-export const NPC_PERSONALITIES = {
-    'lanh_lung': { id: 'lanh_lung', name: 'Lạnh lùng', desc: 'Ít nói, khó gần, nhưng hành động dứt khoát.' },
-    'chinh_truc': { id: 'chinh_truc', name: 'Chính trực', desc: 'Coi trọng đạo lý, ghét kẻ gian tà.' },
-    'tham_lam': { id: 'tham_lam', name: 'Tham lam', desc: 'Dễ bị lợi dụ bởi linh thạch và bảo vật.' },
-    'kieu_ngao': { id: 'kieu_ngao', name: 'Kiêu ngạo', desc: 'Coi thường kẻ yếu, không chịu khuất phục.' },
-    'dien_cuong': { id: 'dien_cuong', name: 'Điên cuồng', desc: 'Hành động khó đoán, dễ rơi vào trạng thái bạo tẩu.' },
-    'da_nghi': { id: 'da_nghi', name: 'Đa nghi', desc: 'Khó tin tưởng người khác, luôn đề phòng.' },
-    'trung_thanh': { id: 'trung_thanh', name: 'Trung thành', desc: 'Một khi đã kết giao sẽ không bao giờ phản bội.' },
-    'hoa_nha': { id: 'hoa_nha', name: 'Hòa nhã', desc: 'Dễ kết bạn, luôn giúp đỡ người khác.' },
-    'quy_quyet': { id: 'quy_quyet', name: 'Quỷ quyệt', desc: 'Thích dùng mưu mẹo, không từ thủ đoạn.' }
-};
+export const NPC_PERSONALITIES = Object.freeze(Object.values(NPC_PERSONALITIES_ENUM).reduce((acc, q) => {
+    acc[q.id] = { id: q.id, name: q.name, desc: q.desc };
+    return acc;
+}, {}));
 
-export const NPC_GOALS = {
-    'bao_thu': { id: 'bao_thu', name: 'Báo thù', desc: 'Tìm kiếm kẻ thù để rửa hận.' },
-    'thanh_tien': { id: 'thanh_tien', name: 'Thành tiên', desc: 'Dồn toàn lực vào tu luyện.' },
-    'tim_truyen_thua': { id: 'tim_truyen_thua', name: 'Tìm truyền thừa', desc: 'Khám phá bí cảnh, tìm kiếm di sản cổ đại.' },
-    'chan_hung_tong_mon': { id: 'chan_hung_tong_mon', name: 'Chấn hưng tông môn', desc: 'Làm rạng danh tông môn của mình.' },
-    'tim_dao_lu': { id: 'tim_dao_lu', name: 'Tìm đạo lữ', desc: 'Mong muốn tìm được người cùng tu hành.' }
-};
+export const NPC_GOALS = Object.freeze(Object.values(NPC_GOALS_ENUM).reduce((acc, q) => {
+    acc[q.id] = { id: q.id, name: q.name, desc: q.desc };
+    return acc;
+}, {}));
 
 export const NPC_RELATIONSHIP_LEVELS = Object.values(NPC_RELATIONSHIP_LEVELS_ENUM).map(q => ({
     id: q.id,
@@ -29,12 +26,10 @@ export const NPC_RELATIONSHIP_LEVELS = Object.values(NPC_RELATIONSHIP_LEVELS_ENU
     color: q.color
 }));
 
-export const NPC_SPECIAL_RELATIONS = {
-    'dao_lu': { name: 'Đạo lữ', desc: 'Bạn đời cùng tu hành.' },
-    'su_do': { name: 'Sư đồ', desc: 'Mối quan hệ thầy trò.' },
-    'gia_toc': { name: 'Gia tộc', desc: 'Người cùng dòng máu.' },
-    'chu_to': { name: 'Chủ tớ', desc: 'Mối quan hệ khế ước.' }
-};
+export const NPC_SPECIAL_RELATIONS = Object.freeze(Object.values(NPC_SPECIAL_RELATIONS_ENUM).reduce((acc, q) => {
+    acc[q.id] = { name: q.name, desc: q.desc };
+    return acc;
+}, {}));
 
 export const NPC_TEMPLATES = {
     'tan_tu': {
