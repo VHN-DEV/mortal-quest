@@ -229,6 +229,7 @@ export class Player {
         this.explorationProgress = 0;
         this.gridExplorationState = null;
         this.discoveredWorlds = ['nhan_gioi'];
+        this.knownWorlds = ['nhan_gioi'];
 
         // Formation System
         this.activeFormations = []; // { id, startTime, staminaConsumed }
@@ -4083,6 +4084,65 @@ export class Player {
     }
 
     /**
+     * Reveals a world (Visible but Locked state).
+     * @param {string} worldId
+     * @returns {boolean} True if newly learned, false if already known or discovered
+     */
+    knowWorld(worldId) {
+        if (!this.knownWorlds) {
+            this.knownWorlds = ['nhan_gioi'];
+        }
+        if (this.knownWorlds.includes(worldId) || (this.discoveredWorlds && this.discoveredWorlds.includes(worldId))) {
+            return false;
+        }
+        this.knownWorlds.push(worldId);
+        
+        // Auto-save the game when discovery state changes
+        if (window.game && typeof window.game.saveGame === 'function') {
+            window.game.saveGame();
+        }
+        if (window.game && window.game.screens.map && typeof window.game.screens.map.render === 'function') {
+            window.game.screens.map.render();
+        }
+        return true;
+    }
+
+    /**
+     * Unlocks a world completely (Accessible state).
+     * @param {string} worldId
+     * @returns {boolean} True if newly unlocked, false if already unlocked
+     */
+    discoverWorld(worldId) {
+        if (!this.discoveredWorlds) {
+            this.discoveredWorlds = ['nhan_gioi'];
+        }
+        if (!this.knownWorlds) {
+            this.knownWorlds = ['nhan_gioi'];
+        }
+        
+        const alreadyDiscovered = this.discoveredWorlds.includes(worldId);
+        
+        if (!alreadyDiscovered) {
+            this.discoveredWorlds.push(worldId);
+        }
+        if (!this.knownWorlds.includes(worldId)) {
+            this.knownWorlds.push(worldId);
+        }
+        
+        if (!alreadyDiscovered) {
+            // Auto-save the game when discovery state changes
+            if (window.game && typeof window.game.saveGame === 'function') {
+                window.game.saveGame();
+            }
+            if (window.game && window.game.screens.map && typeof window.game.screens.map.render === 'function') {
+                window.game.screens.map.render();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Chuyển đổi đối tượng Player thành dữ liệu JSON để lưu trữ
      */
     save() {
@@ -4248,6 +4308,7 @@ export class Player {
             explorationProgress: this.explorationProgress,
             gridExplorationState: this.gridExplorationState || null,
             discoveredWorlds: [...(this.discoveredWorlds || [this.currentWorldId || 'nhan_gioi'])],
+            knownWorlds: [...(this.knownWorlds || [this.currentWorldId || 'nhan_gioi'])],
             createdAt: this.createdAt,
 
             // PNTT properties
@@ -4770,6 +4831,7 @@ export class Player {
         this.explorationProgress = data.explorationProgress || 0;
         this.gridExplorationState = data.gridExplorationState || null;
         this.discoveredWorlds = data.discoveredWorlds || [this.currentWorldId];
+        this.knownWorlds = data.knownWorlds || [this.currentWorldId];
 
         // PNTT properties
         this.nguyenThanRank = data.nguyenThanRank || 0;

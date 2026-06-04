@@ -83,4 +83,27 @@ describe('PNTT Dynamic Item Effects', () => {
     expect(player.spiritualRoot.proportions['Thủy']).toBeUndefined();
     expect(player.spiritualRoot.multiplier).toBeGreaterThan(1.5);
   });
+
+  it('should know or discover worlds when using specific discovery items', () => {
+    const player = new Player();
+    const inventory = player.inventory;
+
+    // Use Linh Giới Phi Thăng Lục to know Linh Giới
+    inventory.addItem('linh_gioi_phi_thang_luc', 1);
+    expect(player.knownWorlds).not.toContain('linh_gioi');
+    
+    let used = inventory.useItem('linh_gioi_phi_thang_luc', 1);
+    expect(used).toBe(true);
+    expect(player.knownWorlds).toContain('linh_gioi');
+    expect(player.discoveredWorlds).not.toContain('linh_gioi');
+
+    // Use Tiên Giới Dẫn Lộ Đồ to discover Tiên Giới
+    inventory.addItem('tien_gioi_dan_lo_do', 1);
+    expect(player.discoveredWorlds).not.toContain('tien_gioi');
+
+    used = inventory.useItem('tien_gioi_dan_lo_do', 1);
+    expect(used).toBe(true);
+    expect(player.discoveredWorlds).toContain('tien_gioi');
+    expect(player.knownWorlds).toContain('tien_gioi');
+  });
 });

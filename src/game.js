@@ -4,7 +4,7 @@ import { SaveSystem, utf8_to_hex, hex_to_utf8 } from './core/save-system.js';
 import { UISystem } from './ui/ui-system.js';
 import { ASSETS } from './configs/asset-data.js';
 import { EnemyGenerator } from './core/enemy.js';
-import { getLocationById } from './configs/map-data.js';
+import { getLocationById, getWorlds } from './configs/map-data.js';
 import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
 import { Preferences } from '@capacitor/preferences';
@@ -3298,10 +3298,39 @@ export class Game {
         if (typeof npc === 'string') {
             npcObj = state.systems.npc?.npcs.find(n => n.id === npc) || state.systems.npc?.npcs.find(n => n.templateId === npc);
         }
-        if (npcObj && this.screens.systems) {
-            this.screens.systems.renderNPCDialogue(npcObj);
-            state.ui.switchScreen('systems', null);
+        if (!npcObj) return;
+
+        let dialogueText = "Đạo hữu hảo! Ta có việc gì giúp ngươi?";
+        if (typeof npcObj.generateDialogue === 'function') {
+            dialogueText = npcObj.generateDialogue(state.player);
         }
+
+        // Check if there are any worlds that the player doesn't know/discover yet
+        if (state.player) {
+            if (!state.player.knownWorlds) {
+                state.player.knownWorlds = ['nhan_gioi'];
+            }
+            if (!state.player.discoveredWorlds) {
+                state.player.discoveredWorlds = ['nhan_gioi'];
+            }
+
+            const unknownWorlds = Object.entries(getWorlds()).filter(([id, w]) => {
+                const isKnown = state.player.knownWorlds.includes(id) || state.player.discoveredWorlds.includes(id);
+                return !isKnown;
+            });
+
+            // 20% chance to discover a world during conversation
+            if (unknownWorlds.length > 0 && Math.random() < 0.20) {
+                const randomIndex = Math.floor(Math.random() * unknownWorlds.length);
+                const [worldId, worldData] = unknownWorlds[randomIndex];
+                state.player.knowWorld(worldId);
+
+                dialogueText += `<br><br><span class="text-cultivation-gold font-bold">💡 [Tin Tức Giới Diện]</span> Qua cuộc đàm đạo, ${npcObj.name} tình cờ tiết lộ cho ngươi một số truyền thuyết về <span class="text-qi-blue font-bold">${worldData.name}</span>. Bản đồ của ngươi đã được cập nhật thông tin về giới diện này!`;
+            }
+        }
+
+        const npcRealm = getRealmById(npcObj.realmId)?.name || 'Phàm Nhân';
+        state.ui.alert(dialogueText, `${npcObj.name} (${npcRealm})`);
     }
 
     openNPCGift(npcId) {

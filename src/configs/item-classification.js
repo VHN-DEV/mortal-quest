@@ -797,4 +797,6 @@ export const EFFECT_TYPES = {
     AP_TRUNG: 'hatch',
     THUAN_THUC_CONG_PHAP: 'technique_mastery',
     TANG_CO_HOI_DOT_PHA: 'breakthrough_chance',
+    KNOW_WORLD: 'know_world',
+    DISCOVER_WORLD: 'discover_world',
 };

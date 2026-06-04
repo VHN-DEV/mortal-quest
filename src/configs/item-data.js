@@ -5513,6 +5513,32 @@ export const ITEMS = {
         categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
         ]
+    },
+    'linh_gioi_phi_thang_luc': {
+        id: 'linh_gioi_phi_thang_luc',
+        name: 'Linh Giới Phi Thăng Lục',
+        type: ITEM_TYPES.NGOC_GIAN,
+        icon: '📜',
+        quality: PHAP_BAO_QUALITIES.LINH_BAO,
+        price: 15000,
+        description: 'Ngọc giản cổ ghi chép tường tận về tọa độ linh lộ phi thăng lên Linh Giới và cấu trúc linh khí của nó. Sử dụng để nắm rõ thông tin về Linh Giới (hiện nhưng bị khóa nếu chưa đạt yêu cầu).',
+        effect: { type: EFFECT_TYPES.KNOW_WORLD, value: 'linh_gioi' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.TU_LUYEN }
+        ]
+    },
+    'tien_gioi_dan_lo_do': {
+        id: 'tien_gioi_dan_lo_do',
+        name: 'Tiên Giới Dẫn Lộ Đồ',
+        type: ITEM_TYPES.BAN_DO,
+        icon: '🗺️',
+        quality: PHAP_BAO_QUALITIES.TIEN_KHI,
+        price: 50000,
+        description: 'Cổ bản đồ chí bảo vẽ lại nghịch thiên tinh lộ dẫn trực tiếp tới Tiên Giới mà không cần thông qua phi thăng đài. Sử dụng để lập tức mở khóa (vĩnh viễn có thể dịch chuyển đến) Tiên Giới!',
+        effect: { type: EFFECT_TYPES.DISCOVER_WORLD, value: 'tien_gioi' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.TU_LUYEN }
+        ]
     }
 };
 

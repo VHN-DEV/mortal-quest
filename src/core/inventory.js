@@ -3,6 +3,7 @@ import { getQualitySortOrder } from '../configs/game-enums.js';
 import { EFFECT_TYPES } from '../configs/item-classification.js';
 import { state } from '../state.js';
 import { BEASTS } from '../configs/beast-data.js';
+import { getWorlds } from '../configs/map-data.js';
 
 export class Inventory {
     constructor(player) {
@@ -236,7 +237,7 @@ export class Inventory {
                 state.ui.toast(res.msg, 'warning');
                 return false;
             }
-        } else if (itemData.effect && (itemData.type === 'sach_cong_phap' || itemData.type === 'dan_phuong' || itemData.type === 'don_phu')) {
+        } else if (itemData.effect && (itemData.type === 'sach_cong_phap' || itemData.type === 'dan_phuong' || itemData.type === 'don_phu' || itemData.type === 'ngoc_gian' || itemData.type === 'ban_do')) {
             for (let i = 0; i < quantity; i++) {
                 this.applyEffect(itemData.effect);
             }
@@ -668,6 +669,24 @@ export class Inventory {
         } else if (effect.type === EFFECT_TYPES.HOC_NHIEU_CONG_THUC) {
             if (Array.isArray(effect.value)) {
                 effect.value.forEach(subEffect => this.applyEffect(subEffect, multiplier));
+            }
+        } else if (effect.type === EFFECT_TYPES.KNOW_WORLD) {
+            const worldId = effect.value;
+            const success = this.player.knowWorld(worldId);
+            const worldName = getWorlds()[worldId]?.name || worldId;
+            if (success) {
+                state.ui.alert(`Ngươi học được thông tin địa lý cổ xưa. Giới diện <span class="text-qi-blue font-bold">${worldName}</span> đã hiển thị trên bản đồ (Trạng thái: Khóa)!`, "Bản Đồ Cập Nhật");
+            } else {
+                state.ui.toast(`Ngươi đã biết thông tin về giới diện ${worldName} từ trước rồi.`, "info");
+            }
+        } else if (effect.type === EFFECT_TYPES.DISCOVER_WORLD) {
+            const worldId = effect.value;
+            const success = this.player.discoverWorld(worldId);
+            const worldName = getWorlds()[worldId]?.name || worldId;
+            if (success) {
+                state.ui.alert(`Chúc mừng đạo hữu! Giới diện <span class="text-cultivation-gold font-bold">${worldName}</span> đã được mở khóa hoàn toàn trên bản đồ. Ngươi có thể lập tức dịch chuyển đến đó!`, "Thông Đạo Mở Ra");
+            } else {
+                state.ui.toast(`Ngươi đã mở khóa giới diện ${worldName} từ trước rồi.`, "info");
             }
         } else if (effect.type === EFFECT_TYPES.LUYEN_HOA_DI_HOA) {
             if (!this.player.ownedFlames.includes(effect.value)) {

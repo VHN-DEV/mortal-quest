@@ -263,13 +263,14 @@ export class MapScreen {
             const w = worlds[id];
             const isStartingOrCurrent = (id === state.player.currentWorldId);
             const isDiscovered = state.player.discoveredWorlds && state.player.discoveredWorlds.includes(id);
+            const isUnlocked = isDiscovered || isStartingOrCurrent;
+            const isKnown = isUnlocked || (state.player.knownWorlds && state.player.knownWorlds.includes(id)) || (state.player.realmId >= w.minRealm);
 
-            // 1. Hide world if realm is too low, it is not discovered yet, and it is not starting/current world
-            if (state.player.realmId < w.minRealm && !isDiscovered && !isStartingOrCurrent) {
+            // Hide world if it is not unlocked and not known
+            if (!isKnown) {
                 return;
             }
 
-            const isUnlocked = isDiscovered || isStartingOrCurrent;
             const reqRealmName = getRealmById(w.minRealm).name;
             const previewImg = isUnlocked ? (w.image || ASSETS.backgrounds.cultivation) : ASSETS.backgrounds.cultivation;
             const title = isUnlocked ? w.name : `🔒 ${w.name} (Chưa Khai Phá)`;
@@ -303,7 +304,8 @@ export class MapScreen {
 
             el.onclick = () => {
                 if (!isUnlocked) {
-                    state.ui.toast(`Lịch luyện ${w.name} yêu cầu dịch chuyển xuyên giới diện! Hãy chọn địa điểm khám phá và bắt đầu du hành.`, 'info');
+                    state.ui.toast(`Giới diện ${w.name} đã bị phong ấn hoặc chưa mở lối thông đạo. Cần kích hoạt thông đạo để dịch chuyển!`, 'warning');
+                    return;
                 }
                 this.selectWorld(id);
             };
@@ -318,6 +320,15 @@ export class MapScreen {
         const w = getWorlds()[id];
         if (!w) {
             state.ui.toast("Không tìm thấy dữ liệu thế giới!", "error");
+            return;
+        }
+
+        const isStartingOrCurrent = (id === state.player.currentWorldId);
+        const isDiscovered = state.player.discoveredWorlds && state.player.discoveredWorlds.includes(id);
+        const isUnlocked = isDiscovered || isStartingOrCurrent;
+
+        if (!isUnlocked) {
+            state.ui.toast(`Giới diện ${w.name} đã bị phong ấn hoặc chưa mở lối thông đạo. Cần kích hoạt thông đạo để dịch chuyển!`, 'warning');
             return;
         }
 

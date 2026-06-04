@@ -442,34 +442,62 @@ describe('Player class', () => {
   });
 
   describe('Realm Discovery', () => {
-    it('should initialize discoveredWorlds with only the default world', () => {
+    it('should initialize discoveredWorlds and knownWorlds with only the default world', () => {
       const player = new Player();
       expect(player.discoveredWorlds).toEqual(['nhan_gioi']);
+      expect(player.knownWorlds).toEqual(['nhan_gioi']);
     });
 
-    it('should save and load discoveredWorlds correctly', () => {
+    it('should save and load discoveredWorlds and knownWorlds correctly', () => {
       const player = new Player();
-      player.discoveredWorlds.push('linh_gioi');
+      player.discoverWorld('linh_gioi');
+      player.knowWorld('ma_gioi');
       
       const saveData = player.save();
       expect(saveData.discoveredWorlds).toContain('nhan_gioi');
       expect(saveData.discoveredWorlds).toContain('linh_gioi');
+      expect(saveData.knownWorlds).toContain('nhan_gioi');
+      expect(saveData.knownWorlds).toContain('linh_gioi');
+      expect(saveData.knownWorlds).toContain('ma_gioi');
       
       const newPlayer = new Player();
       newPlayer.load(saveData);
       expect(newPlayer.discoveredWorlds).toContain('nhan_gioi');
       expect(newPlayer.discoveredWorlds).toContain('linh_gioi');
+      expect(newPlayer.knownWorlds).toContain('nhan_gioi');
+      expect(newPlayer.knownWorlds).toContain('linh_gioi');
+      expect(newPlayer.knownWorlds).toContain('ma_gioi');
     });
 
     it('should fallback to currentWorldId if discoveredWorlds is missing in loaded data', () => {
       const player = new Player();
       const saveData = player.save();
       delete saveData.discoveredWorlds;
+      delete saveData.knownWorlds;
       saveData.currentWorldId = 'ma_gioi';
       
       const newPlayer = new Player();
       newPlayer.load(saveData);
       expect(newPlayer.discoveredWorlds).toEqual(['ma_gioi']);
+      expect(newPlayer.knownWorlds).toEqual(['ma_gioi']);
+    });
+
+    it('should successfully know and discover worlds and reject duplicates', () => {
+      const player = new Player();
+      
+      // knowWorld check
+      expect(player.knowWorld('linh_gioi')).toBe(true);
+      expect(player.knownWorlds).toContain('linh_gioi');
+      expect(player.discoveredWorlds).not.toContain('linh_gioi');
+      expect(player.knowWorld('linh_gioi')).toBe(false); // duplicate know
+
+      // discoverWorld check
+      expect(player.discoverWorld('linh_gioi')).toBe(true);
+      expect(player.discoveredWorlds).toContain('linh_gioi');
+      expect(player.discoverWorld('linh_gioi')).toBe(false); // duplicate discover
+      
+      // knowWorld after discover should be rejected
+      expect(player.knowWorld('linh_gioi')).toBe(false);
     });
   });
 });
