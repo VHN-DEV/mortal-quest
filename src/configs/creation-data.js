@@ -1,5 +1,7 @@
 import { ELEMENT_TYPES } from './item-classification.js';
-import { RACES_ENUM, CREATION_BLOODLINES_ENUM, DEMON_BLOODLINES_ENUM } from './game-enums.js';
+import { RACES_ENUM, CREATION_BLOODLINES_ENUM, DEMON_BLOODLINES_ENUM, ROOT_RARITY_ENUM } from './game-enums.js';
+export { ROOT_RARITY_ENUM };
+
 
 export const CREATION_CONFIG = {
     BASE_POINTS: 150,
@@ -12,51 +14,22 @@ export const BLOODLINES = Object.freeze(Object.values(CREATION_BLOODLINES_ENUM).
     return acc;
 }, {}));
 
-export const TRANSFORMATION_STAGES = [
-    'Chưa Khai Trí',
-    'Khai Linh Trí',
-    'Bán Hóa Hình',
-    'Hoàn Toàn Hóa Hình',
-    'Tiên Thiên Đạo Thể'
-];
-
-export const AWAKENING_STAGES = [
-    'Chưa Thức Tỉnh',
-    'Sơ Bộ Thức Tỉnh',
-    'Tiểu Thành',
-    'Đại Thành',
-    'Phản Tổ',
-    'Chân Linh Hóa'
-];
-
 export const DEMON_BLOODLINES = Object.freeze(Object.values(DEMON_BLOODLINES_ENUM).reduce((acc, q) => {
     acc[q.id] = { id: q.id, name: q.name, multiplier: q.multiplier };
     return acc;
 }, {}));
 
-export const DEMON_FACTIONS = {
+
+export const DEMON_FACTIONS = Object.freeze({
     'HUYET': { id: 'HUYET', name: 'Huyết Ma', focus: 'Hút máu & Hồi phục', bonus: { lifesteal: 0.15, hpRegen: 1.5 } },
     'THIEN': { id: 'THIEN', name: 'Thiên Ma', focus: 'Tâm ma & Thần hồn', bonus: { soulAtk: 0.2, innerDemonRes: -0.2 } },
-    'COT': { id: 'COT', name: 'Cốt Ma', focus: 'Luyện xương & Bất tử', bonus: { def: 100, deathRes: 0.1 } },
-    'ANH': { id: 'ANH', name: 'Ảnh Ma', focus: 'Ám sát & Không gian', bonus: { critDmg: 0.5, dodge: 0.1 } },
-    'VIEM': { id: 'VIEM', name: 'Viêm Ma', focus: 'Ma hỏa & Hủy diệt', bonus: { fireDmg: 0.3, atk: 50 } }
-};
+    'COT':   { id: 'COT',   name: 'Cốt Ma', focus: 'Luyện xương & Bất tử', bonus: { def: 100, deathRes: 0.1 } },
+    'ANH':   { id: 'ANH',   name: 'Ảnh Ma', focus: 'Ám sát & Không gian', bonus: { critDmg: 0.5, dodge: 0.1 } },
+    'VIEM':  { id: 'VIEM',  name: 'Viêm Ma', focus: 'Ma hỏa & Hủy diệt', bonus: { fireDmg: 0.3, atk: 50 } },
+});
 
-export const DEMON_TRANSFORMATION = [
-    'Bán Ma',
-    'Ma Hóa',
-    'Chân Ma Hóa',
-    'Cổ Ma Chân Thân',
-    'Ma Thần Thể'
-];
-
-export const DEMON_KARMA = [
-    'Vô Nghiệp',
-    'Tiểu Sát Nghiệp',
-    'Huyết Sát',
-    'Tu La Sát',
-    'Diệt Thế Sát'
-];
+// Alias backward-compatible: ROOT_RARITY -> ROOT_RARITY_ENUM
+export const ROOT_RARITY = ROOT_RARITY_ENUM;
 
 export const CREATION_RACES = Object.freeze(Object.values(RACES_ENUM).reduce((acc, q) => {
     acc[q.id] = {
@@ -70,16 +43,9 @@ export const CREATION_RACES = Object.freeze(Object.values(RACES_ENUM).reduce((ac
     return acc;
 }, {}));
 
-export const ROOT_RARITY = {
-    'PHAM': { id: 'PHAM', name: 'Phàm', color: '#9ca3af', chance: 0.45, multiplier: 1.0 },
-    'LINH': { id: 'LINH', name: 'Linh', color: '#4ade80', chance: 0.30, multiplier: 1.5 },
-    'DIA': { id: 'DIA', name: 'Địa', color: '#3b82f6', chance: 0.15, multiplier: 2.2 },
-    'THIEN': { id: 'THIEN', name: 'Thiên', color: '#ec4899', chance: 0.07, multiplier: 3.5 },
-    'THANH': { id: 'THANH', name: 'Thánh', color: '#f59e0b', chance: 0.025, multiplier: 6.0 },
-    'TIEN': { id: 'TIEN', name: 'Tiên', color: '#ffffff', chance: 0.005, multiplier: 12.0 }
-};
 
 export const CREATION_ROOTS = {
+
     'thien_linh_can': {
         id: 'thien_linh_can', name: 'Thiên Linh Căn', cost: 100, type: 'special', quantity: 1,
         desc: 'Linh căn hoàn mỹ, chỉ một thuộc tính tinh thuần. Hấp thu linh khí gần như không hao tổn.',

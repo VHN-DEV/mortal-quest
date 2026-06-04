@@ -1,3 +1,6 @@
+import { QI_PURITY_ENUM } from './game-enums.js';
+export { QI_PURITY_ENUM };
+
 export const ENERGY_TYPES = {
     "linh_khi": {
         id: "linh_khi",
@@ -163,12 +166,8 @@ export const ENERGY_TYPES = {
     }
 };
 
-export const QI_PURITY = {
-    "TAP": { id: "tap", name: "Tạp Khí", multiplier: 0.5, description: "Chứa nhiều tạp chất." },
-    "TINH_THUAN": { id: "tinh_thuan", name: "Tinh Thuần", multiplier: 1.0, description: "Dễ hấp thu." },
-    "CUC_PHAM": { id: "cuc_pham", name: "Cực Phẩm", multiplier: 2.0, description: "Chất lượng cực cao." },
-    "DAO": { id: "dao", name: "Đạo Khí", multiplier: 5.0, description: "Mang đạo vận." }
-};
+// Re-export QI_PURITY_ENUM dưới alias QI_PURITY để backward-compatible
+export const QI_PURITY = QI_PURITY_ENUM;
 
 export const QI_CONFLICTS = [
     { type1: "han_khi", type2: "viem_khi", severity: 0.8 },

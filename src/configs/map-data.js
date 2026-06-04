@@ -1,37 +1,15 @@
 import { getAssetUrl } from './asset-data.js';
+import { DANGER_LEVELS_ENUM } from './game-enums.js';
 
 const getLocImg = (id) => getAssetUrl(`locations/${id}`);
 
-export const DANGER_LEVELS = {
-    an_toan: {
-        name: 'An Toàn',
-        color: '#22c55e'
-    },
-    ha_cap: {
-        name: 'Hạ Cấp',
-        color: '#3b82f6'
-    },
-    trung_cap: {
-        name: 'Trung Cấp',
-        color: '#eab308'
-    },
-    cao_cap: {
-        name: 'Cao Cấp',
-        color: '#f97316'
-    },
-    nguy_hiem: {
-        name: 'Nguy Hiểm',
-        color: '#ef4444'
-    },
-    cuc_ky_nguy_hiem: {
-        name: 'Cực Kỳ Nguy Hiểm',
-        color: '#991b1b'
-    },
-    tu_dia: {
-        name: 'Tử Địa',
-        color: '#7e22ce'
-    }
-};
+// Backward-compatible lookup: DANGER_LEVELS['an_toan'] → enum object với .name và .color
+export const DANGER_LEVELS = Object.freeze(
+    Object.values(DANGER_LEVELS_ENUM).reduce((acc, q) => {
+        acc[q.id] = q;
+        return acc;
+    }, {})
+);
 
 export const WORLDS = {
     'nhan_gioi': {
