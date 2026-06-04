@@ -57,6 +57,7 @@ export class DiHoaBangScreen {
         this.listView.classList.add('hidden');
         this.detailView.classList.remove('hidden');
 
+        this.elDetailIcon.className = "flame-effect";
         this.elDetailIcon.innerHTML = '<i class="ph ph-fire text-6xl"></i>';
         const icon = this.elDetailIcon.querySelector('i');
         this.elDetailRank.textContent = `Hạng ${diHoa.rank}`;
