@@ -68,26 +68,16 @@ export class DiHoaBangScreen {
         this.elDetailSpecial.textContent = diHoa.special;
 
         // Dynamic icon color
-        const colorMap = {
-            "Trắng": "#ffffff",
-            "Đen": "#333333",
-            "Đỏ": "#ff4444",
-            "Vàng": "#ffd700",
-            "Xanh lá": "#44ff44",
-            "Xanh biển": "#4444ff",
-            "Tím": "#a020f0",
-            "Bạc": "#c0c0c0"
-        };
+        const flameColor = diHoa.flameColor || '#ff4444';
+        const glowColor = diHoa.glowColor || flameColor;
 
-        let foundColor = "#ff4444";
-        for (const [key, val] of Object.entries(colorMap)) {
-            if (diHoa.color.includes(key)) {
-                foundColor = val;
-                break;
-            }
-        }
-        this.elDetailIcon.style.color = foundColor;
-        this.elDetailIcon.style.filter = `drop-shadow(0 0 15px ${foundColor}80)`;
+        this.elDetailIcon.style.color = flameColor;
+
+        this.elDetailIcon.style.filter = `
+            drop-shadow(0 0 10px ${glowColor})
+            drop-shadow(0 0 20px ${glowColor})
+            drop-shadow(0 0 35px ${glowColor})
+        `;
     }
 
     buildCachedList() {
@@ -96,7 +86,22 @@ export class DiHoaBangScreen {
 
         DI_HOA_DATA.forEach(item => {
             const el = document.createElement('div');
-            el.className = 'group relative bg-white/5 hover:bg-red-950/20 border border-white/5 hover:border-red-500/30 rounded-2xl p-4 flex items-center space-x-4 cursor-pointer transition-all active:scale-95';
+
+            el.className =
+                'group relative bg-white/5 hover:bg-red-950/20 border border-white/5 hover:border-red-500/30 rounded-2xl p-4 flex items-center space-x-4 cursor-pointer transition-all active:scale-95';
+
+            if (item.rank <= 10) {
+                el.classList.remove('border-white/5');
+                el.classList.add('border-yellow-500/20');
+            }
+
+            if (item.rank <= 3) {
+                el.classList.add(
+                    'bg-gradient-to-r',
+                    'from-yellow-900/10',
+                    'to-red-900/10'
+                );
+            }
 
             // Quality border color
             const rarityClass = this.getRarityClass(item.rarity);
@@ -112,7 +117,15 @@ export class DiHoaBangScreen {
                         <span class="text-[8px] font-bold ${rarityClass}">${item.rarity}</span>
                     </div>
                 </div>
-                <i class="ph ph-fire text-gray-600 group-hover:text-red-500"></i>
+                <i
+                    class="ph ph-fire text-xl transition-all duration-300 group-hover:scale-125"
+                    style="
+                        color:${item.flameColor || '#ff4444'};
+                        text-shadow:
+                            0 0 5px ${item.glowColor || '#ff4444'},
+                            0 0 10px ${item.glowColor || '#ff4444'};
+                    ">
+                </i>
             `;
 
             el.onclick = () => this.showDetail(item);

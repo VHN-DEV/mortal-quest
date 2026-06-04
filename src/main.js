@@ -1125,13 +1125,19 @@ window.renderCreationScreen = () => {
             const text = numVal !== null ? `${numVal}` : stat.value;
             // Highlight if stat is boosted above base
             let isBoosted = false;
-            const key = Object.keys(base).find(k => CREATION_BONUS_LABELS[k] === stat.label);
-            if (key) {
-                if (numVal !== null) isBoosted = numVal > base[key];
-                else if (stat.label === 'Tu vi/s') isBoosted = stat.value !== '+0%';
-                else if (stat.label === 'Hấp thu') isBoosted = qiBonus > 1.0;
-                else if (stat.label === 'Luyện đan') isBoosted = sumFlat('alchemySuccess') > 0;
-                else if (stat.label === 'Bạo kích') isBoosted = (base.critRate + sumFlat('critRate')) > base.critRate;
+            switch (stat.label) {
+                case 'Công': isBoosted = numVal > base.atk; break;
+                case 'Thủ': isBoosted = numVal > base.def; break;
+                case 'Sinh lực': isBoosted = numVal > base.maxHp; break;
+                case 'Mana': isBoosted = numVal > base.mana; break;
+                case 'Tốc': isBoosted = numVal > base.spd; break;
+                case 'Thọ nguyên': isBoosted = numVal > base.maxAge; break;
+                case 'May mắn': isBoosted = numVal > base.luck; break;
+                case 'Nghiệp lực': isBoosted = numVal > base.karma; break;
+                case 'Tu vi/s': isBoosted = stat.value !== '+0%'; break;
+                case 'Hấp thu': isBoosted = qiBonus > 1.0; break;
+                case 'Luyện đan': isBoosted = sumFlat('alchemySuccess') > 0; break;
+                case 'Bạo kích': isBoosted = (base.critRate + sumFlat('critRate')) > base.critRate; break;
             }
 
             return `
