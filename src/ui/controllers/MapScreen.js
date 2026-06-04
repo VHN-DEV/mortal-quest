@@ -263,26 +263,27 @@ export class MapScreen {
             const w = worlds[id];
             const locked = state.player.realmId < w.minRealm;
             const el = document.createElement('div');
-            el.className = `group relative overflow-hidden p-5 rounded-[2rem] border transition-all duration-500 active:scale-[0.98] ${locked ? 'bg-black/20 border-white/5 opacity-60' : 'bg-qi-ink/40 border-white/10 hover:border-qi-blue/50 hover:bg-black/60 shadow-xl'}`;
+            el.className = `location-card h-48 p-6 flex flex-col justify-end ${locked ? 'opacity-50 grayscale' : 'cursor-pointer'}`;
 
             const reqRealmName = getRealmById(w.minRealm).name;
+            const previewImg = w.image || ASSETS.backgrounds.cultivation;
 
             el.innerHTML = `
-                <div class="absolute -top-10 -right-10 w-24 h-24 bg-qi-blue/5 rounded-full blur-2xl group-hover:bg-qi-blue/20 transition-all"></div>
+                <img src="${previewImg}" class="location-card-image">
                 <div class="relative z-10 flex flex-col space-y-3">
                     <div class="flex justify-between items-start">
                         <div class="space-y-1">
                             <span class="text-2xl font-charm text-white group-hover:text-qi-blue transition-colors">${w.name}</span>
-                            <div class="text-[9px] text-gray-500 font-ancient tracking-[0.2em] uppercase opacity-60">Cõi Giới</div>
+                            <div class="text-[9px] text-gray-400 font-ancient tracking-[0.2em] uppercase opacity-70">Cõi Giới</div>
                         </div>
                         <span class="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest ${locked ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-qi-blue/10 text-qi-blue border border-qi-blue/20'}">
                             ${locked ? '<i class="ph ph-lock mr-1"></i> ' + reqRealmName : '<i class="ph ph-check-circle mr-1"></i> Đã mở'}
                         </span>
                     </div>
-                    <p class="text-xs text-gray-400 font-ancient leading-relaxed opacity-80">${w.description}</p>
-                    <div class="flex items-center space-x-2 pt-2 text-[9px] text-gray-600 font-ancient uppercase tracking-widest">
+                    <p class="text-xs text-gray-300 font-ancient leading-relaxed opacity-90">${w.description}</p>
+                    <div class="flex items-center space-x-2 pt-1 text-[9px] text-gray-400 font-ancient uppercase tracking-widest">
                         <i class="ph ph-map-trifold"></i>
-                        <span>${w.locations ? w.locations.length : 0} Địa điểm khám phá</span>
+                        <span>${w.locations ? w.locations.length : 0} Khu vực khám phá</span>
                     </div>
                 </div>
             `;

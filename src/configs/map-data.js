@@ -37,6 +37,7 @@ export const WORLDS = {
     'nhan_gioi': {
         name: "Phàm Trần Giới",
         minRealm: 0,
+        image: getLocImg("nhan_gioi"),
         description: "Vùng đất của phàm nhân và các tu sĩ bắt đầu con đường nghịch thiên.",
         locations: [
             {
@@ -2234,6 +2235,7 @@ export const WORLDS = {
     'linh_gioi': {
         name: "Linh Giới",
         minRealm: 0,
+        image: getLocImg("linh_gioi"),
         description: "Vùng đất của linh khí tinh thuần, nơi cường giả tụ hội.",
         locations: [
             {
@@ -3265,6 +3267,7 @@ export const WORLDS = {
     'tien_gioi': {
         name: "Tiên Giới",
         minRealm: 0,
+        image: getLocImg("tien_gioi"),
         description: "Đỉnh cao của chư thiên vạn giới.",
         locations: [
             {
@@ -4120,6 +4123,7 @@ export const WORLDS = {
     'ma_gioi': {
         name: "Vực Ngoại Ma Giới",
         minRealm: 0,
+        image: getLocImg("ma_gioi"),
         description: "Vùng đất hắc ám hoang tàn, nơi ma khí ngập tràn và sinh linh tàn sát lẫn nhau để chứng đạo.",
         locations: [
             {
@@ -4479,6 +4483,7 @@ export const WORLDS = {
     'song_song': {
         name: "Các Giới Diện Song Song",
         minRealm: 0,
+        image: getLocImg("gioi_dien_song_song"),
         description: "Các giới diện phụ, song song hoặc âm ty nằm bên cạnh phàm nhân và tiên nhân giới.",
         locations: [
             {
