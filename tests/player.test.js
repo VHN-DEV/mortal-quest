@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Player } from '../src/core/player.js';
 import { state } from '../src/state.js';
 import { getSecretTechniqueById } from '../src/configs/technique-data.js';
+import { getItemRequirements } from '../src/configs/artifact-data.js';
 
 // Setup Mock UI and systems on state
 beforeEach(() => {
@@ -339,8 +340,61 @@ describe('Player class', () => {
       expect(res.success).toBe(true);
       expect(player.phapTac.loi).toBeGreaterThan(0);
       expect(player.stamina).toBe(80); // cost deducted
-      randomSpy.mockRestore();
+    });
+  });
+
+  describe('PNTT Equipment and Natal Dharma Treasure', () => {
+    it('should calculate equipment requirements correctly via getItemRequirements', () => {
+      const item = { tier: 'LINH_KHI' };
+      const req = getItemRequirements(item);
+      expect(req.mana).toBe(150);
+      expect(req.divineSense).toBe(40);
+    });
+
+    it('should check item requirements correctly and apply cubic penalty', () => {
+      const player = new Player();
+      player.maxMana = 100;
+      player.divineSense = 20;
+
+      const item = { tier: 'LINH_KHI', stats: { atk: 100 } };
+      const res = player.checkItemRequirements(item);
+      expect(res.meets).toBe(false);
+      expect(res.penaltyMultiplier).toBeCloseTo(0.125);
+    });
+
+    it('should refine, upgrade, and binh giai natal treasure successfully', () => {
+      const player = new Player();
+      player.realmId = 18; // Kết Đan
+      player.inventory.addItem('ha_pham_linh_thach', 200000);
+      player.inventory.addItem('van_nien_thiet_moc', 1);
+      player.inventory.addItem('tinh_kim', 5);
+
+      // Refine
+      const refineRes = player.refineNatalTreasure('thanh_truc_phong_van_kiem');
+      expect(refineRes.success).toBe(true);
+      expect(player.natalTreasure).not.toBeNull();
+      expect(player.natalTreasure.name).toBe('Thanh Trúc Phong Vân Kiếm');
+      expect(player.natalTreasure.level).toBe(1);
+
+      // Upgrade
+      player.tuVi = 500000;
+      player.inventory.addItem('ha_pham_linh_thach', 100000);
+      player.inventory.addItem('van_nien_thiet_moc', 1);
+      
+      const upgradeRes = player.upgradeNatalTreasure();
+      expect(upgradeRes.success).toBe(true);
+      expect(player.natalTreasure.level).toBe(2);
+
+      // Binh giai
+      player.hp = 1000;
+      player.mana = 500;
+      const binhGiaiRes = player.binhGiaiNatalTreasure();
+      expect(binhGiaiRes.success).toBe(true);
+      expect(player.natalTreasure).toBeNull();
+      expect(player.hp).toBe(700); // 30% loss
+      expect(player.mana).toBe(350); // 30% loss
     });
   });
 });
+
 

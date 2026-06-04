@@ -9,6 +9,7 @@ import { findLocationName, DANGER_LEVELS, getWorlds, getLocationById } from '../
 import { getDisplayQuality, getQualityClass } from '../utils/ui-utils.js';
 import { PHAP_BAO_QUALITIES, GAME_STATS } from '../configs/game-enums.js';
 import { getRealmById } from '../configs/realm-data.js';
+import { getItemRequirements } from '../configs/artifact-data.js';
 
 export class UISystem {
     constructor() {
@@ -1304,14 +1305,65 @@ export class UISystem {
         const qClass = this.getQualityClass(quality);
 
         let statsHtml = '';
+        let requirementsHtml = '';
+
         if (item.stats) {
+            let penaltyMultiplier = 1.0;
+            let meetsReqs = true;
+            let reqsText = [];
+
+            if (state.player && typeof state.player.checkItemRequirements === 'function') {
+                const reqCheck = state.player.checkItemRequirements(item);
+                penaltyMultiplier = reqCheck.penaltyMultiplier;
+                meetsReqs = reqCheck.meets;
+
+                const req = getItemRequirements(item);
+                if (req.mana > 0) reqsText.push(`Linh Lực: ${req.mana}`);
+                if (req.divineSense > 0) reqsText.push(`Thần Thức: ${req.divineSense}`);
+                if (req.law > 0) reqsText.push(`Pháp Tắc: ${req.law}%`);
+                if (req.tienKhieu > 0) reqsText.push(`Tiên Khiếu: ${req.tienKhieu}`);
+            }
+
             statsHtml = `<div class="mt-2 pt-2 border-t border-white/5 space-y-1">` +
-                Object.entries(item.stats).map(([k, v]) => `
-                    <div class="flex justify-between text-[8px]">
-                        <span class="text-gray-500 uppercase">${this.getStatLabel(k)}</span>
-                        <span class="text-qi-blue font-bold">+${v}</span>
-                    </div>
-                `).join('') + `</div>`;
+                Object.entries(item.stats).map(([k, v]) => {
+                    if (typeof v === 'number') {
+                        const penalizedVal = v * penaltyMultiplier;
+                        const hasPenalty = penaltyMultiplier < 0.999;
+                        const displayVal = hasPenalty 
+                            ? `+${v} <span class="text-red-400 font-normal">(${penalizedVal.toFixed(1)})</span>`
+                            : `+${v}`;
+                        return `
+                            <div class="flex justify-between text-[8px]">
+                                <span class="text-gray-500 uppercase">${this.getStatLabel(k)}</span>
+                                <span class="text-qi-blue font-bold">${displayVal}</span>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="flex justify-between text-[8px]">
+                                <span class="text-gray-500 uppercase">${this.getStatLabel(k)}</span>
+                                <span class="text-qi-blue font-bold">+${v}</span>
+                            </div>
+                        `;
+                    }
+                }).join('') + `</div>`;
+
+            if (reqsText.length > 0) {
+                const reqColor = meetsReqs ? 'text-green-400' : 'text-red-400';
+                requirementsHtml = `
+                    <div class="mt-2 pt-2 border-t border-white/5 space-y-0.5 text-[7.5px]">
+                        <div class="text-gray-500 uppercase font-bold">Yêu cầu kích hoạt:</div>
+                        <div class="${reqColor}">${reqsText.join(' | ')}</div>
+                `;
+                if (!meetsReqs) {
+                    requirementsHtml += `
+                        <div class="text-red-500 italic mt-0.5 animate-pulse">
+                            ⚠️ Linh hải bất túc! Uy lực pháp bảo giảm còn ${(penaltyMultiplier * 100).toFixed(1)}%!
+                        </div>
+                    `;
+                }
+                requirementsHtml += `</div>`;
+            }
         }
 
         const displayQuality = getDisplayQuality(quality, item.type);
@@ -1326,6 +1378,7 @@ export class UISystem {
             </div>
             <div class="text-[9px] text-gray-400 italic leading-tight">${item.description || ''}</div>
             ${statsHtml}
+            ${requirementsHtml}
         `;
 
         this.elTooltip.classList.remove('hidden');

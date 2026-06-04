@@ -6,7 +6,7 @@ import { getItemById } from '../configs/item-data.js';
 import { getTechniqueById, getSecretTechniqueById, TECHNIQUE_LEVELS, TECHNIQUE_QUALITIES, MASTERY_LEVELS } from '../configs/technique-data.js';
 import { getPhysiqueById, getPhysiqueAwakenBonus } from '../configs/physique-data.js';
 import { PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../configs/game-enums.js';
-import { ARTIFACT_SETS } from '../configs/artifact-data.js';
+import { ARTIFACT_SETS, getItemRequirements, NATAL_TREASURE_CONFIGS } from '../configs/artifact-data.js';
 import { CREATION_TRAITS, ROOT_ELEMENTS, SPECIAL_ELEMENTS } from '../configs/creation-data.js';
 import { TITLES } from '../configs/fate-data.js';
 import { getLocationById, WORLDS } from '../configs/map-data.js';
@@ -348,6 +348,7 @@ export class Player {
         this.tanTienKiếpCount = 0;
         this.tamSuyState = 'none'; // 'none' | 'nhuc_than_suy' | 'nguyen_than_suy' | 'phap_tac_suy'
         this.nextPeriodicTribulationYear = 0;
+        this.natalTreasure = null;
     }
 
     get spiritRoot() {
@@ -2261,7 +2262,9 @@ export class Player {
             const isLifeBound = item.isLifeBound === true;
             const isRecognized = isLifeBound || (this.recognizedItems && this.recognizedItems.includes(itemId)) || item.isRecognized !== false;
             
-            let mult = isRecognized ? 1.0 : 0.3; // 70% penalty if not recognized
+            // Check dynamic stats requirements
+            const reqCheck = this.checkItemRequirements(item);
+            let mult = (isRecognized ? 1.0 : 0.3) * reqCheck.penaltyMultiplier; // 70% penalty if not recognized, scaled by requirements met ratio
 
             // Durability penalty: apply IMMEDIATELY so it affects ALL stats from this item
             if (this.equipmentMetadata?.[slot]?.durability !== undefined &&
@@ -2313,6 +2316,44 @@ export class Player {
                 }
             }
         });
+
+        // Apply Natal Dharma Treasure (Bản Mệnh Pháp Bảo) stats
+        if (this.natalTreasure) {
+            const config = NATAL_TREASURE_CONFIGS[this.natalTreasure.id];
+            if (config && config.stats) {
+                const lvl = this.natalTreasure.level || 1;
+                const nourish = this.natalTreasure.nourishYears || 0;
+                // Level scaling: +25% per level above 1
+                // Nourishment scaling: +5% per year
+                const scale = 1.0 + (lvl - 1) * 0.25 + nourish * 0.05;
+
+                Object.entries(config.stats).forEach(([key, val]) => {
+                    const scaledVal = val * scale;
+                    if (key === 'atk') this.bonusStats.atk += scaledVal;
+                    else if (key === 'def') this.bonusStats.def += scaledVal;
+                    else if (key === 'spd') this.bonusStats.spd += scaledVal;
+                    else if (key === 'hp') this.bonusStats.maxHp += scaledVal;
+                    else if (key === 'mana') this.bonusStats.maxMana += scaledVal;
+                    else if (key === 'luck') this.luck += scaledVal;
+                    else if (key === 'karma') this.karma += scaledVal;
+                    else if (key === 'comprehension') this.comprehension += scaledVal;
+                    else if (key === 'daoTam') this.daoTam += scaledVal;
+                    else if (key === 'spirit') this.divineSense += scaledVal;
+                    else if (key === 'physique') this.physiqueTalent += scaledVal;
+                    else if (key === 'maxAge') this.bonusStats.maxAge += scaledVal;
+                    else if (this.advancedStats.hasOwnProperty(key)) {
+                        const multKeys = ['qiAbsorb', 'fireDmg', 'waterDmg', 'thunderDmg', 'woodDmg', 'earthDmg', 'windDmg', 'metalDmg', 'iceDmg', 'poisonDmg', 'swordDmg', 'skillDmg', 'dotDmg', 'techniqueMastery'];
+                        if (multKeys.includes(key)) {
+                            this.advancedStats[key] *= (1.0 + val * scale);
+                        } else {
+                            this.advancedStats[key] += scaledVal;
+                        }
+                    } else if (this.bonusStats.hasOwnProperty(key)) {
+                        this.bonusStats[key] += scaledVal;
+                    }
+                });
+            }
+        }
 
         // 3.5 Apply SET BONUSES
         this.applySetBonuses(equippedIds);
@@ -2781,6 +2822,62 @@ export class Player {
     }
 
 
+    checkItemRequirements(item) {
+        const req = getItemRequirements(item);
+        let meets = true;
+        let reasons = [];
+        let multipliers = [];
+
+        if (req.mana > 0) {
+            const actual = this.maxMana || 0;
+            if (actual < req.mana) {
+                meets = false;
+                reasons.push(`Linh lực tối đa không đủ: ${actual}/${req.mana}`);
+                multipliers.push(actual / req.mana);
+            } else {
+                multipliers.push(1.0);
+            }
+        }
+        if (req.divineSense > 0) {
+            const actual = this.divineSense || 0;
+            if (actual < req.divineSense) {
+                meets = false;
+                reasons.push(`Thần thức không đủ: ${actual}/${req.divineSense}`);
+                multipliers.push(actual / req.divineSense);
+            } else {
+                multipliers.push(1.0);
+            }
+        }
+        if (req.law > 0) {
+            const actual = Object.values(this.phapTac || {}).reduce((a, b) => a + b, 0);
+            if (actual < req.law) {
+                meets = false;
+                reasons.push(`Lĩnh ngộ Pháp tắc không đủ: ${actual}%/${req.law}%`);
+                multipliers.push(actual > 0 ? (actual / req.law) : 0.05);
+            } else {
+                multipliers.push(1.0);
+            }
+        }
+        if (req.tienKhieu > 0) {
+            const actual = this.tienKhieuOpen || 0;
+            if (actual < req.tienKhieu) {
+                meets = false;
+                reasons.push(`Số Tiên Khiếu mở không đủ: ${actual}/${req.tienKhieu}`);
+                multipliers.push(actual / req.tienKhieu);
+            } else {
+                multipliers.push(1.0);
+            }
+        }
+
+        let penaltyMultiplier = 1.0;
+        if (multipliers.length > 0) {
+            const minRatio = Math.min(...multipliers);
+            penaltyMultiplier = Math.pow(minRatio, 3);
+        }
+
+        return { meets, penaltyMultiplier, reasons };
+    }
+
     equip(itemId) {
         const item = getItemById(itemId);
         if (!item || !item.type) return false;
@@ -2834,16 +2931,14 @@ export class Player {
 
         const slot = this.getEquipSlotForItemType(item.type);
         if (this.equipment.hasOwnProperty(slot)) {
-            // Check requirement (Realm)
-            if (item.tier) {
-                const { ARTIFACT_TIERS } = require('../configs/artifact-data.js');
-                const tierInfo = ARTIFACT_TIERS[item.tier];
-                if (tierInfo && this.realmId < (tierInfo.id * 4 - 3)) { // Simple heuristic: each tier is ~4 realms
-                    // Actually, let's just check the name/id mapping if needed, 
-                    // but for now a simple check:
-                    if (item.tier === 'PHAP_KHI' && this.realmId < 1) return false; // Luyện Khí 1
-                    if (item.tier === 'LINH_KHI' && this.realmId < 10) return false; // Trúc Cơ 1 (9+1)
+            // Flexible requirement check
+            const reqCheck = this.checkItemRequirements(item);
+            if (!reqCheck.meets) {
+                if (reqCheck.penaltyMultiplier < 0.01) {
+                    state.ui.toast(`Tu vi hoặc Linh Hải quá yếu ớt, không thể kích hoạt ${item.name}! (Hiệu quả dưới 1%)`, "error");
+                    return false;
                 }
+                state.ui.toast(`Cảnh báo: Tu vi/Thần thức chưa đủ để phát huy hết uy lực của ${item.name}! (Hiệu suất: ${(reqCheck.penaltyMultiplier * 100).toFixed(1)}%)`, "warning");
             }
 
             if (this.equipment[slot]) {
@@ -3961,6 +4056,7 @@ export class Player {
             evil: this.evil,
             fate: JSON.parse(JSON.stringify(this.fate)),
             cheatSystemId: this.cheatSystemId,
+            natalTreasure: this.natalTreasure ? JSON.parse(JSON.stringify(this.natalTreasure)) : null,
             
             // Resources
             spiritStoneSettings: { ...this.spiritStoneSettings },
@@ -4217,6 +4313,126 @@ export class Player {
         }
     }
 
+    refineNatalTreasure(treasureId) {
+        if (this.realmId < 18 && !this.isTanTien) {
+            return { success: false, msg: "Tu vi chưa đạt Kết Đan Kỳ, không thể tụ lửa đan điền luyện chế Bản Mệnh Pháp Bảo!" };
+        }
+        if (this.natalTreasure) {
+            return { success: false, msg: "Ngươi đã có Bản Mệnh Pháp Bảo rồi! Muốn luyện cái mới phải Binh Giải cái cũ." };
+        }
+
+        const config = NATAL_TREASURE_CONFIGS[treasureId];
+        if (!config) {
+            return { success: false, msg: "Pháp bảo bản mệnh không tồn tại trong điển tịch!" };
+        }
+
+        // Check Spirit Stones
+        if (this.lingShi < config.costs.spiritStones) {
+            return { success: false, msg: `Không đủ Linh Thạch! Cần ${config.costs.spiritStones.toLocaleString()} Linh Thạch.` };
+        }
+
+        // Check Materials
+        const missing = [];
+        for (const [matId, qty] of Object.entries(config.costs.materials)) {
+            const hasQty = this.inventory ? this.inventory.getItemQuantity(matId) : 0;
+            if (hasQty < qty) {
+                missing.push(`${qty}x ${getItemById(matId)?.name || matId}`);
+            }
+        }
+
+        if (missing.length > 0) {
+            return { success: false, msg: `Thiếu nguyên liệu luyện chế: ${missing.join(', ')}` };
+        }
+
+        // Deduct spirit stones & materials
+        const success = this.spendLingShi(config.costs.spiritStones);
+        if (!success) return { success: false, msg: "Khấu trừ Linh Thạch thất bại!" };
+
+        for (const [matId, qty] of Object.entries(config.costs.materials)) {
+            this.inventory.removeItem(matId, qty);
+        }
+
+        // Create natal treasure
+        this.natalTreasure = {
+            id: config.id,
+            name: config.name,
+            level: 1,
+            nourishYears: 0,
+            description: config.description,
+            icon: config.icon
+        };
+
+        this.calculateStats();
+
+        return {
+            success: true,
+            msg: `🎉 Chúc mừng! Ngươi đã tụ đan hỏa luyện chế thành công Bản Mệnh Pháp Bảo: ${config.name}!`
+        };
+    }
+
+    upgradeNatalTreasure() {
+        if (!this.natalTreasure) {
+            return { success: false, msg: "Ngươi chưa luyện chế Bản Mệnh Pháp Bảo!" };
+        }
+
+        const currentLvl = this.natalTreasure.level || 1;
+        if (currentLvl >= 10) {
+            return { success: false, msg: "Bản Mệnh Pháp Bảo đã đạt cấp độ tối đa (10)!" };
+        }
+
+        const tuViCost = currentLvl * 100000;
+        const lingshiCost = currentLvl * 50000;
+
+        if (this.tuVi < tuViCost) {
+            return { success: false, msg: `Không đủ Tu Vi! Nâng cấp cần ${tuViCost.toLocaleString()} Tu Vi.` };
+        }
+        if (this.lingShi < lingshiCost) {
+            return { success: false, msg: `Không đủ Linh Thạch! Nâng cấp cần ${lingshiCost.toLocaleString()} Linh Thạch.` };
+        }
+
+        const isUpperRealm = this.realmId >= 42 || this.isTanTien;
+        const requiredMat = isUpperRealm ? 'tien_nguyen_thach' : 'van_nien_thiet_moc';
+        const matName = isUpperRealm ? 'Tiên Nguyên Thạch' : 'Vạn Niên Thiết Mộc';
+
+        const matCount = this.inventory ? this.inventory.getItemQuantity(requiredMat) : 0;
+        if (matCount < 1) {
+            return { success: false, msg: `Thiếu nguyên liệu tiến cấp! Cần 1x ${matName}.` };
+        }
+
+        this.tuVi -= tuViCost;
+        this.spendLingShi(lingshiCost);
+        this.inventory.removeItem(requiredMat, 1);
+
+        this.natalTreasure.level = currentLvl + 1;
+        this.calculateStats();
+
+        return {
+            success: true,
+            msg: `🔥 Thối hỏa thành công! Bản Mệnh Pháp Bảo đã thăng cấp thành Cấp ${this.natalTreasure.level}!`
+        };
+    }
+
+    binhGiaiNatalTreasure() {
+        if (!this.natalTreasure) {
+            return { success: false, msg: "Ngươi chưa luyện chế Bản Mệnh Pháp Bảo!" };
+        }
+
+        const hpLoss = Math.floor((this.hp || 0) * 0.3);
+        const manaLoss = Math.floor((this.mana || 0) * 0.3);
+
+        this.hp = Math.max(1, (this.hp || 0) - hpLoss);
+        this.mana = Math.max(0, (this.mana || 0) - manaLoss);
+
+        const treasureName = this.natalTreasure.name;
+        this.natalTreasure = null;
+        this.calculateStats();
+
+        return {
+            success: true,
+            msg: `💥 Binh Giải thành công! Bản Mệnh Pháp Bảo ${treasureName} đã tan biến. Linh hải chấn động dữ dội, ngươi mất đi 30% Sinh Mệnh và Linh Lực!`
+        };
+    }
+
     convertMainPath(newPathId) {
         const newPathConfig = CULTIVATION_PATHS[newPathId];
         if (!newPathConfig) {
@@ -4341,6 +4557,7 @@ export class Player {
         this.evil = data.evil || 0;
         if (data.fate) this.fate = { ...this.fate, ...data.fate };
         this.cheatSystemId = data.cheatSystemId || null;
+        this.natalTreasure = data.natalTreasure || null;
 
         // Resources
         if (data.spiritStoneSettings) this.spiritStoneSettings = { ...this.spiritStoneSettings, ...data.spiritStoneSettings };

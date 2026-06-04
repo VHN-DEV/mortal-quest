@@ -6,7 +6,8 @@ import { RACE_DATA } from '../../configs/realm-data.js';
 import { TITLES } from '../../configs/fate-data.js';
 import { getGenderLabel } from '../../configs/display-mappers.js';
 import { CULTIVATION_PATHS } from '../../configs/cultivation-paths.js';
-import { ELEMENT_TYPES, STATUS_EFFECT_CATEGORIES, PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../../configs/game-enums.js';
+import { ELEMENT_TYPES, STATUS_EFFECT_CATEGORIES, PHYSIQUE_GRADES, PHYSIQUE_STAGES, GAME_STATS } from '../../configs/game-enums.js';
+import { NATAL_TREASURE_CONFIGS } from '../../configs/artifact-data.js';
 
 /**
  * Quản lý giao diện chỉ số nhân vật, cảnh giới và các thông tin liên quan.
@@ -102,6 +103,20 @@ export class CharacterScreen {
         this.elLawKhongGianVal = document.getElementById('law-khong_gian-val');
         this.elLawThoiGianVal = document.getElementById('law-thoi_gian-val');
         this.elLawLuanHoiVal = document.getElementById('law-luan_hoi-val');
+
+        // Natal Dharma Treasure Elements
+        this.elNatalPanel = document.getElementById('natal-treasure-panel');
+        this.elNatalRefineSection = document.getElementById('natal-refine-section');
+        this.elNatalInfoSection = document.getElementById('natal-info-section');
+        this.elNatalItemIcon = document.getElementById('natal-item-icon');
+        this.elNatalItemName = document.getElementById('natal-item-name');
+        this.elNatalItemLevel = document.getElementById('natal-item-level');
+        this.elNatalItemDesc = document.getElementById('natal-item-desc');
+        this.elNatalNourishYears = document.getElementById('natal-nourish-years');
+        this.elNatalNourishBoost = document.getElementById('natal-nourish-boost');
+        this.elNatalStatsList = document.getElementById('natal-stats-list');
+        this.elBtnUpgradeNatal = document.getElementById('btn-upgrade-natal');
+        this.elBtnBinhGiaiNatal = document.getElementById('btn-binh-giai-natal');
     }
     
     initEvents() {
@@ -152,8 +167,78 @@ export class CharacterScreen {
                         state.ui.toast(res.msg, "error");
                     }
                 }
+        });
+
+        // Event delegation for refining natal treasure
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.btn-select-natal');
+            if (btn) {
+                const treasureId = btn.dataset.id;
+                if (state.player && typeof state.player.refineNatalTreasure === 'function') {
+                    const config = NATAL_TREASURE_CONFIGS[treasureId];
+                    if (!config) return;
+
+                    state.ui.showConfirm(`Luyện Chế Bản Mệnh`, `Đạo hữu có chắc chắn muốn tiêu hao tài nguyên rèn đúc [${config.name}] làm Bản Mệnh Pháp Bảo?`, async () => {
+                        const res = state.player.refineNatalTreasure(treasureId);
+                        if (res.success) {
+                            if (window.game && typeof window.game.saveGame === 'function') {
+                                await window.game.saveGame();
+                            }
+                            if (window.game && typeof window.game.refreshUI === 'function') {
+                                window.game.refreshUI();
+                            }
+                            state.ui.toast(res.msg, "success");
+                        } else {
+                            state.ui.toast(res.msg, "error");
+                        }
+                    });
+                }
             }
         });
+
+        // Event listener for upgrading natal treasure
+        if (this.elBtnUpgradeNatal) {
+            this.elBtnUpgradeNatal.onclick = async () => {
+                if (state.player && typeof state.player.upgradeNatalTreasure === 'function') {
+                    state.ui.showConfirm(`Tiến Cấp Bản Mệnh`, `Tiến cấp Bản Mệnh Pháp Bảo sẽ tiêu hao Tu Vi và Linh Thạch cùng Thiên tài địa bảo. Đạo hữu chắc chắn nâng cấp?`, async () => {
+                        const res = state.player.upgradeNatalTreasure();
+                        if (res.success) {
+                            if (window.game && typeof window.game.saveGame === 'function') {
+                                await window.game.saveGame();
+                            }
+                            if (window.game && typeof window.game.refreshUI === 'function') {
+                                window.game.refreshUI();
+                            }
+                            state.ui.toast(res.msg, "success");
+                        } else {
+                            state.ui.toast(res.msg, "error");
+                        }
+                    });
+                }
+            };
+        }
+
+        // Event listener for binh giải natal treasure
+        if (this.elBtnBinhGiaiNatal) {
+            this.elBtnBinhGiaiNatal.onclick = async () => {
+                if (state.player && typeof state.player.binhGiaiNatalTreasure === 'function') {
+                    state.ui.showConfirm(`Binh Giải Bản Mệnh`, `<span class="text-red-500 font-bold">CẢNH BÁO:</span> Binh giải Bản Mệnh Pháp Bảo sẽ làm tan biến hoàn toàn món thần khí này, đan điền linh hải bị phản phệ dữ dội, mất đi 30% Sinh Mệnh và Linh Lực. Đạo hữu quyết tâm thực hiện?`, async () => {
+                        const res = state.player.binhGiaiNatalTreasure();
+                        if (res.success) {
+                            if (window.game && typeof window.game.saveGame === 'function') {
+                                await window.game.saveGame();
+                            }
+                            if (window.game && typeof window.game.refreshUI === 'function') {
+                                window.game.refreshUI();
+                            }
+                            state.ui.toast(res.msg, "success");
+                        } else {
+                            state.ui.toast(res.msg, "error");
+                        }
+                    });
+                }
+            };
+        }
     }
 
     render() {
@@ -488,6 +573,54 @@ export class CharacterScreen {
             if (this.elLawLuanHoiVal) this.elLawLuanHoiVal.textContent = `${phapTac.luan_hoi || 0}%`;
         } else {
             if (this.elPnttPanel) this.elPnttPanel.classList.add('hidden');
+        }
+
+        // Render Natal Treasure Panel
+        const showNatal = state.player.realmId >= 18 || state.player.isTanTien;
+        if (showNatal && this.elNatalPanel) {
+            this.elNatalPanel.classList.remove('hidden');
+
+            if (state.player.natalTreasure) {
+                if (this.elNatalRefineSection) this.elNatalRefineSection.classList.add('hidden');
+                if (this.elNatalInfoSection) this.elNatalInfoSection.classList.remove('hidden');
+
+                const t = state.player.natalTreasure;
+                const config = NATAL_TREASURE_CONFIGS[t.id];
+
+                if (this.elNatalItemIcon) this.elNatalItemIcon.textContent = t.icon || '🗡️';
+                if (this.elNatalItemName) this.elNatalItemName.textContent = t.name;
+                if (this.elNatalItemLevel) this.elNatalItemLevel.textContent = `CẤP ${t.level || 1}`;
+                if (this.elNatalItemDesc) this.elNatalItemDesc.textContent = t.description;
+                if (this.elNatalNourishYears) this.elNatalNourishYears.textContent = `${t.nourishYears || 0} năm`;
+                if (this.elNatalNourishBoost) this.elNatalNourishBoost.textContent = `+${(t.nourishYears || 0) * 5}% uy lực`;
+
+                // Render scaled stats list
+                if (this.elNatalStatsList && config && config.stats) {
+                    const lvl = t.level || 1;
+                    const nourish = t.nourishYears || 0;
+                    const scale = 1.0 + (lvl - 1) * 0.25 + nourish * 0.05;
+
+                    this.elNatalStatsList.innerHTML = Object.entries(config.stats).map(([k, v]) => {
+                        const scaledVal = v * scale;
+                        const label = state.ui.getStatLabel(k);
+                        const displayVal = k.includes('Dmg') || k.includes('Absorb') || k.includes('Rate') 
+                            ? `+${(scaledVal * 100).toFixed(1)}%` 
+                            : `+${Math.round(scaledVal)}`;
+
+                        return `
+                            <div class="flex justify-between text-gray-500">
+                                <span class="uppercase">${label}</span>
+                                <span class="text-amber-400 font-bold font-mono">${displayVal}</span>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } else {
+                if (this.elNatalRefineSection) this.elNatalRefineSection.classList.remove('hidden');
+                if (this.elNatalInfoSection) this.elNatalInfoSection.classList.add('hidden');
+            }
+        } else {
+            if (this.elNatalPanel) this.elNatalPanel.classList.add('hidden');
         }
     }
 

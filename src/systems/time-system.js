@@ -155,6 +155,13 @@ export class TimeSystem {
             window.game.triggerPeriodicTribulation(this.getYear());
         }
 
+        // Increment Natal Dharma Treasure nourishment
+        if (state.player && state.player.natalTreasure) {
+            state.player.natalTreasure.nourishYears = (state.player.natalTreasure.nourishYears || 0) + 1;
+            state.player.calculateStats();
+            this.ui.toast(`⚡ Bản Mệnh Pháp Bảo [${state.player.natalTreasure.name}] hấp thu tinh hoa đan điền của ngươi thêm 1 năm (Đã ôn dưỡng: ${state.player.natalTreasure.nourishYears} năm, uy lực tăng ${state.player.natalTreasure.nourishYears * 5}%)!`, "success");
+        }
+
         // Auction House event every 5 years
         if (this.getYear() % 5 === 0) {
             if (state.systems.npc) {

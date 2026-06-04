@@ -79,3 +79,111 @@ export const ARTIFACT_SETS = {
         ]
     }
 };
+
+export function getItemRequirements(item) {
+    const req = { mana: 0, divineSense: 0, law: 0, tienKhieu: 0 };
+    if (!item) return req;
+
+    // Explicit overrides
+    if (item.requireMana !== undefined) req.mana = item.requireMana;
+    if (item.requireDivineSense !== undefined) req.divineSense = item.requireDivineSense;
+    if (item.requireLaw !== undefined) req.law = item.requireLaw;
+    if (item.requireTienKhieu !== undefined) req.tienKhieu = item.requireTienKhieu;
+
+    // Fall back to tier/quality-based defaults if not explicitly set
+    const tier = item.tier || (item.quality && item.quality.id ? item.quality.id : item.quality);
+    const t = typeof tier === 'string' ? tier.toUpperCase() : '';
+
+    if (t === 'PHAM_KHI') {
+        req.mana = 10;
+    } else if (t === 'PHAP_KHI') {
+        req.mana = 50;
+        req.divineSense = 10;
+    } else if (t === 'LINH_KHI') {
+        req.mana = 150;
+        req.divineSense = 40;
+    } else if (t === 'PHAP_BAO') {
+        req.mana = 500;
+        req.divineSense = 150;
+    } else if (t === 'CO_BAO') {
+        req.divineSense = 250;
+    } else if (t === 'LINH_BAO') {
+        req.mana = 1500;
+        req.divineSense = 500;
+        req.law = 5;
+    } else if (t === 'THONG_THIEN') {
+        req.mana = 4000;
+        req.divineSense = 1200;
+        req.law = 20;
+    } else if (t === 'HUYEN_THIEN' || t === 'HUYEN_THIEN_CHI_BAO') {
+        req.mana = 15000;
+        req.divineSense = 3000;
+        req.law = 50;
+    } else if (t === 'TIEN_KHI') {
+        req.mana = 50000;
+        req.divineSense = 8000;
+        req.tienKhieu = 12;
+    }
+
+    return req;
+}
+
+export const NATAL_TREASURE_CONFIGS = {
+    'thanh_truc_phong_van_kiem': {
+        id: 'thanh_truc_phong_van_kiem',
+        name: 'Thanh Trúc Phong Vân Kiếm',
+        description: 'Bản mệnh phi kiếm do Hàn Lập luyện chế từ Vạn Niên Thiết Mộc. Ẩn chứa thần thông Phách Lôi và biến hóa khôn lường.',
+        icon: '🗡️',
+        stats: { atk: 250, spd: 30, thunderDmg: 0.15 },
+        costs: {
+            spiritStones: 200000,
+            materials: {
+                'van_nien_thiet_moc': 1,
+                'tinh_kim': 5
+            }
+        }
+    },
+    'vo_hinh_cham': {
+        id: 'vo_hinh_cham',
+        name: 'Vô Hinh Châm',
+        description: 'Pháp bảo bản mệnh vô ảnh vô hình, thích hợp ám sát và xuất kỳ bất ý.',
+        icon: '🪡',
+        stats: { atk: 180, pierce: 50, critRate: 0.1 },
+        costs: {
+            spiritStones: 150000,
+            materials: {
+                'tinh_kim': 10
+            }
+        }
+    },
+    'ngu_hanh_huyet_ngung_phach': {
+        id: 'ngu_hanh_huyet_ngung_phach',
+        name: 'Ngũ Hành Huyết Ngưng Phách',
+        description: 'Bản mệnh pháp bảo kỳ dị luyện từ huyết anh chân tinh, dung hợp ngũ hành pháp tắc.',
+        icon: '🔮',
+        stats: { hp: 1500, def: 80, qiAbsorb: 0.1 },
+        costs: {
+            spiritStones: 250000,
+            materials: {
+                'van_nien_linh_nhu': 1,
+                'van_nien_huyet_linh_chi': 1
+            }
+        }
+    },
+    'van_bao_phien': {
+        id: 'van_bao_phien',
+        name: 'Vạn Bảo Phiến',
+        description: 'Quạt bản mệnh dung hợp vô số tài liệu quý hiếm, lay động có thể phát ra ngũ sắc quang mang công thủ vẹn toàn.',
+        icon: '🪭',
+        stats: { atk: 200, def: 50, mana: 500 },
+        costs: {
+            spiritStones: 300000,
+            materials: {
+                'van_nien_thiet_moc': 1,
+                'van_nien_linh_nhu': 1
+            }
+        }
+    }
+};
+
+

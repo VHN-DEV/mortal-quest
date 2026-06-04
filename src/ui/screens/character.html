@@ -495,6 +495,87 @@
         </div>
     </div>
 
+    <!-- Natal Dharma Treasure (Bản Mệnh Pháp Bảo) Panel -->
+    <div id="natal-treasure-panel" class="hidden bg-black/40 p-4 rounded-2xl border border-amber-500/20 space-y-4 shadow-lg mb-6 backdrop-blur-md">
+        <h3 class="text-xs font-ancient text-amber-400 uppercase tracking-[0.2em] border-b border-white/5 pb-2 flex justify-between items-center">
+            <span>✨ Bản Mệnh Pháp Bảo</span>
+        </h3>
+
+        <!-- Refinement Section (shown if no natal treasure is refined) -->
+        <div id="natal-refine-section" class="space-y-3">
+            <div class="text-[9.5px] text-gray-400 font-ancient italic">
+                Cảnh giới Kết Đan hoặc Tán Tiên trở lên có thể đem thiên tài địa bảo dung hợp tinh huyết, rèn đúc Bản Mệnh Pháp Bảo cùng trưởng thành.
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[9px]">
+                <button class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all" data-id="thanh_truc_phong_van_kiem">
+                    <span class="text-xl">🗡️</span>
+                    <span class="text-amber-400 font-bold font-ancient mt-1 text-[8.5px]">Thanh Trúc Kiếm</span>
+                    <span class="text-[7px] text-gray-500 mt-0.5 text-center">Atk +250, Spd +30, Lôi +15%</span>
+                    <span class="text-[7px] text-cyan-400 mt-1">200k LT & 1 Vạn Niên Thiết Mộc, 5 Tinh Kim</span>
+                </button>
+                <button class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all" data-id="vo_hinh_cham">
+                    <span class="text-xl">🪡</span>
+                    <span class="text-amber-400 font-bold font-ancient mt-1 text-[8.5px]">Vô Hinh Châm</span>
+                    <span class="text-[7px] text-gray-500 mt-0.5 text-center">Atk +180, Xuyên Giáp +50, Crit +10%</span>
+                    <span class="text-[7px] text-cyan-400 mt-1">150k LT & 10 Tinh Kim</span>
+                </button>
+                <button class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all" data-id="ngu_hanh_huyet_ngung_phach">
+                    <span class="text-xl">🔮</span>
+                    <span class="text-amber-400 font-bold font-ancient mt-1 text-[8.5px]">Huyết Ngưng Phách</span>
+                    <span class="text-[7px] text-gray-500 mt-0.5 text-center">HP +1500, Def +80, Linh Lực Hấp Thu +10%</span>
+                    <span class="text-[7px] text-cyan-400 mt-1">250k LT & 1 Vạn Niên Linh Nhu, 1 Huyết Linh Chi</span>
+                </button>
+                <button class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all" data-id="van_bao_phien">
+                    <span class="text-xl">🪭</span>
+                    <span class="text-amber-400 font-bold font-ancient mt-1 text-[8.5px]">Vạn Bảo Phiến</span>
+                    <span class="text-[7px] text-gray-500 mt-0.5 text-center">Atk +200, Def +50, Mana +500</span>
+                    <span class="text-[7px] text-cyan-400 mt-1">300k LT & 1 Thiết Mộc, 1 Linh Nhu</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Info Section (shown if natal treasure is refined) -->
+        <div id="natal-info-section" class="hidden space-y-3">
+            <div class="flex items-center space-x-3 bg-white/[0.02] p-2.5 rounded-xl border border-white/5">
+                <div id="natal-item-icon" class="text-3xl bg-black/45 w-12 h-12 rounded-lg flex items-center justify-center border border-amber-500/20 shadow-md">🗡️</div>
+                <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                        <span id="natal-item-name" class="text-[10px] font-bold text-amber-400 font-ancient">Thanh Trúc Phong Vân Kiếm</span>
+                        <span id="natal-item-level" class="text-[8px] px-1.5 py-0.5 bg-amber-950 border border-amber-500/30 text-amber-300 rounded font-mono font-bold">CẤP 1</span>
+                    </div>
+                    <div id="natal-item-desc" class="text-[8px] text-gray-500 mt-1 line-clamp-2">Bản mệnh phi kiếm do Hàn Lập luyện chế từ Vạn Niên Thiết Mộc.</div>
+                </div>
+            </div>
+
+            <!-- Stats & Nourishment Details -->
+            <div class="bg-black/20 p-2.5 rounded-xl border border-white/5 space-y-1.5 text-[8.5px]">
+                <div class="flex justify-between text-gray-400">
+                    <span>Thời gian ôn dưỡng trong Đan Điền:</span>
+                    <span id="natal-nourish-years" class="text-amber-400 font-bold font-mono">0 năm</span>
+                </div>
+                <div class="flex justify-between text-gray-400">
+                    <span>Hiệu quả ôn dưỡng (tự động tăng):</span>
+                    <span id="natal-nourish-boost" class="text-green-400 font-bold">+0% uy lực</span>
+                </div>
+                <div class="h-px bg-white/5 my-1.5"></div>
+                <div class="text-gray-500 text-[8px] uppercase font-bold mb-1">Thuộc tính cộng thêm (Đã nhân hệ số):</div>
+                <div id="natal-stats-list" class="space-y-1">
+                    <!-- Dynamic stats lines go here -->
+                </div>
+            </div>
+
+            <!-- Upgrade/Binh Giải actions -->
+            <div class="flex gap-2">
+                <button id="btn-upgrade-natal" class="flex-1 py-2 bg-amber-950/40 hover:bg-amber-900/40 border border-amber-500/30 text-amber-400 rounded-lg text-[9px] active:scale-95 transition-all">
+                    🔥 Thối Hỏa Nâng Cấp (Tu Vi & Vạn Niên/Tiên Nguyên Thạch)
+                </button>
+                <button id="btn-binh-giai-natal" class="px-3 py-2 bg-red-950/30 hover:bg-red-900/30 border border-red-500/20 text-red-400 rounded-lg text-[9px] active:scale-95 transition-all" title="Binh Giải (Hủy bỏ pháp bảo, mất 30% HP/Mana)">
+                    💀 Binh Giải
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Global System Actions (Sleek Save & Exit Button) -->
     <div class="mt-4 mb-8 w-full px-1">
         <button id="btn-save-exit"
