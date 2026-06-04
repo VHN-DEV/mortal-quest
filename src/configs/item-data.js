@@ -2762,6 +2762,19 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.KIEM_QUYET }
         ]
     },
+    'thanh_linh_kiem_quyet': {
+        id: 'thanh_linh_kiem_quyet',
+        name: 'Thanh Linh Kiếm Quyết',
+        image: 'items/techniques/thanh_linh_kiem_quyet',
+        type: ITEM_TYPES.TUYET_KY,
+        icon: '🌿',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 60000,
+        description: 'Kiếm quyết hệ Mộc cổ xưa. Tu luyện đến đại thành có thể ngưng tụ Thanh Linh Kiếm Khí, hóa kiếm ảnh đầy trời, công thủ nhất thể. Đối với tà tu, quỷ vật và âm sát chi lực có hiệu quả khắc chế mạnh.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.KIEM_QUYET }
+        ]
+    },
 
     // --- SMITHING MATERIALS (LINH QUẶNG & DỊ KIM) ---
     'thai_duong_than_kim': {
@@ -2845,6 +2858,24 @@ export const ITEMS = {
         hatchTime: 300, // 5 minutes
         categories: [
             { category: ITEM_CATEGORIES_ENUM.LINH_THU.KEY, subcategory: ITEM_CATEGORIES_ENUM.LINH_THU.SUBCATEGORIES.TRUNG_LINH_THU }
+        ]
+    },
+    'thach_lan_co_noan': {
+        id: 'thach_lan_co_noan',
+        name: 'Thạch Lan Cổ Noãn',
+        image: 'items/eggs/thach_lan_co_noan',
+        type: ITEM_TYPES.TRUNG_LINH_THU,
+        icon: '🥚',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 15000,
+        description: 'Quả trứng của Thạch Lan Cổ Thú. Lớp vỏ dày đặc các phiến thạch giáp tự nhiên, có thể hấp thu linh khí thiên địa để tự bảo vệ. Sau khi nở, linh thú sở hữu năng lực đào núi xuyên đá và phòng ngự vượt xa yêu thú cùng cấp.',
+        beastId: 'thach_lan_co_thu',
+        hatchTime: 5400,
+        categories: [
+            {
+                category: ITEM_CATEGORIES_ENUM.LINH_THU.KEY,
+                subcategory: ITEM_CATEGORIES_ENUM.LINH_THU.SUBCATEGORIES.TRUNG_LINH_THU
+            }
         ]
     },
     'xich_diem_lang_linh_noan': {
@@ -2936,6 +2967,7 @@ export const ITEMS = {
     'liet_duong_cong': {
         id: 'liet_duong_cong',
         name: 'Liệt Dương Công',
+        image: 'items/techniques/liet_duong_cong',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📙',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
@@ -3534,6 +3566,7 @@ export const ITEMS = {
     'bi_tich_huyen_am_quy_trao': {
         id: 'bi_tich_huyen_am_quy_trao',
         name: 'Bí Tịch Huyền Âm Quỷ Trảo',
+        image: 'items/techniques/bi_tich_huyen_am_quy_trao',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📜',
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
@@ -3561,6 +3594,7 @@ export const ITEMS = {
     'bi_tich_mi_anh_hoac_than': {
         id: 'bi_tich_mi_anh_hoac_than',
         name: 'Bí Tịch Mị Ảnh Hoặc Thần',
+        image: 'items/techniques/mi_anh_hoac_than',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📜',
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
