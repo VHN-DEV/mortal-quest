@@ -338,6 +338,16 @@ export class Player {
         this.soulState = 'accumulating'; // 'accumulating' | 'full' | 'danger'
         this.than_hon_qua_tai = 0;       // Thần Hồn Quá Tải (0-100) — tăng khi tích quá 100%
         this.thoiGianSoulVienMan = 0;    // Số phút game-time đã ở trạng thái Soul Viên Mãn
+
+        // --- PHÀM NHÂN TU TIÊN PROPERTIES ---
+        this.nguyenThanRank = 0; // 0: Chưa ngưng tụ, 1: Sơ cấp, 2: Trung cấp, 3: Cao cấp, 4: Tiên cấp, 5: Chí Tôn
+        this.tienKhieuOpen = 0; // 0 to 108
+        this.phapTac = { loi: 0, hoa: 0, thuy: 0, phong: 0, khong_gian: 0, thoi_gian: 0, luan_hoi: 0 };
+        this.chanLinhHuyetMach = []; // Array of { id, name, purity }
+        this.isTanTien = false;
+        this.tanTienKiếpCount = 0;
+        this.tamSuyState = 'none'; // 'none' | 'nhuc_than_suy' | 'nguyen_than_suy' | 'phap_tac_suy'
+        this.nextPeriodicTribulationYear = 0;
     }
 
     get spiritRoot() {
@@ -2574,6 +2584,63 @@ export class Player {
         
         this.maxAge = Math.floor(baseLifespan + realmAgeBonus * raceFactor + this.bonusStats.maxAge + (this.permanentLifespanBonus || 0));
 
+        // --- PHÀM NHÂN TU TIÊN STAT BONUSES ---
+        // 1. Tiên Khiếu multipliers (+1% to core stats per open aperture)
+        const tienKhieuMult = 1 + (this.tienKhieuOpen || 0) * 0.01;
+        this.atk = Math.floor(this.atk * tienKhieuMult);
+        this.def = Math.floor(this.def * tienKhieuMult);
+        this.spd = Math.floor(this.spd * tienKhieuMult);
+        this.maxHp = Math.floor(this.maxHp * tienKhieuMult);
+        this.maxMana = Math.floor(this.maxMana * tienKhieuMult);
+
+        // 2. Nguyên Thần rank bonuses
+        if (this.nguyenThanRank === 1) {
+            this.divineSense = Math.floor((this.divineSense || 50) * 1.2);
+            this.advancedStats.soulPierce = (this.advancedStats.soulPierce || 0) + 0.05;
+            this.advancedStats.soulRepress = (this.advancedStats.soulRepress || 0) + 0.05;
+        } else if (this.nguyenThanRank === 2) {
+            this.divineSense = Math.floor((this.divineSense || 50) * 1.5);
+            this.advancedStats.soulPierce = (this.advancedStats.soulPierce || 0) + 0.10;
+            this.advancedStats.soulRepress = (this.advancedStats.soulRepress || 0) + 0.10;
+        } else if (this.nguyenThanRank === 3) {
+            this.divineSense = Math.floor((this.divineSense || 50) * 2.0);
+            this.advancedStats.soulPierce = (this.advancedStats.soulPierce || 0) + 0.20;
+            this.advancedStats.soulRepress = (this.advancedStats.soulRepress || 0) + 0.20;
+        } else if (this.nguyenThanRank === 4) {
+            this.divineSense = Math.floor((this.divineSense || 50) * 3.0);
+            this.advancedStats.soulPierce = (this.advancedStats.soulPierce || 0) + 0.35;
+            this.advancedStats.soulRepress = (this.advancedStats.soulRepress || 0) + 0.35;
+        } else if (this.nguyenThanRank === 5) {
+            this.divineSense = Math.floor((this.divineSense || 50) * 5.0);
+            this.advancedStats.soulPierce = (this.advancedStats.soulPierce || 0) + 0.50;
+            this.advancedStats.soulRepress = (this.advancedStats.soulRepress || 0) + 0.50;
+        }
+
+        // Update Nguyên Thần name dynamically
+        const nguyenThanNames = ["Chưa ngưng tụ", "Sơ cấp Nguyên Thần", "Trung cấp Nguyên Thần", "Cao cấp Nguyên Thần", "Tiên cấp Nguyên Thần", "Chí Tôn Nguyên Thần"];
+        this.nguyenThanName = nguyenThanNames[this.nguyenThanRank || 0] || "Chưa ngưng tụ";
+
+        // 3. Laws bonuses
+        if (this.phapTac) {
+            this.advancedStats.thunderDmg = (this.advancedStats.thunderDmg || 1.0) + (this.phapTac.loi || 0) * 0.02;
+            this.advancedStats.fireDmg = (this.advancedStats.fireDmg || 1.0) + (this.phapTac.hoa || 0) * 0.02;
+            this.advancedStats.waterDmg = (this.advancedStats.waterDmg || 1.0) + (this.phapTac.thuy || 0) * 0.02;
+            this.advancedStats.windDmg = (this.advancedStats.windDmg || 1.0) + (this.phapTac.phong || 0) * 0.02;
+            this.advancedStats.pierce = (this.advancedStats.pierce || 0) + (this.phapTac.khong_gian || 0) * 0.005;
+            this.spd = Math.floor(this.spd * (1 + (this.phapTac.thoi_gian || 0) * 0.01));
+            this.advancedStats.damageReduction = (this.advancedStats.damageReduction || 0) + (this.phapTac.luan_hoi || 0) * 0.003;
+        }
+
+        // 4. Tán Tiên modifications (-30% base, +15% per survived tribulation)
+        if (this.isTanTien) {
+            const tanTienMult = 0.7 + (this.tanTienKiếpCount || 0) * 0.15;
+            this.atk = Math.floor(this.atk * tanTienMult);
+            this.def = Math.floor(this.def * tanTienMult);
+            this.spd = Math.floor(this.spd * tanTienMult);
+            this.maxHp = Math.floor(this.maxHp * tanTienMult);
+            this.maxMana = Math.floor(this.maxMana * tanTienMult);
+        }
+
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);
     }
@@ -3990,6 +4057,16 @@ export class Player {
             explorationProgress: this.explorationProgress,
             gridExplorationState: this.gridExplorationState || null,
             createdAt: this.createdAt,
+
+            // PNTT properties
+            nguyenThanRank: this.nguyenThanRank || 0,
+            tienKhieuOpen: this.tienKhieuOpen || 0,
+            phapTac: { ...(this.phapTac || {}) },
+            chanLinhHuyetMach: [...(this.chanLinhHuyetMach || [])],
+            isTanTien: this.isTanTien || false,
+            tanTienKiếpCount: this.tanTienKiếpCount || 0,
+            tamSuyState: this.tamSuyState || 'none',
+            nextPeriodicTribulationYear: this.nextPeriodicTribulationYear || 0,
             
             // External systems data
             npcData: (typeof state !== 'undefined' && state.systems.npc) ? state.systems.npc.saveData() : null,
@@ -4037,6 +4114,107 @@ export class Player {
         this.calculateStats();
 
         return { success: true, msg: `Chúc mừng bạn đã bắt đầu tu luyện con đường ${pathConfig.name}!` };
+    }
+
+    openTienKhieu() {
+        if (this.realmId < 42 && !this.isTanTien) {
+            return { success: false, msg: "Cảnh giới chưa đủ để khai thông Tiên Khiếu! Yêu cầu Chân Tiên cảnh giới trở lên." };
+        }
+        if (this.tienKhieuOpen >= 108) {
+            return { success: false, msg: "Ngươi đã khai thông tối đa 108 Tiên Khiếu!" };
+        }
+
+        // Check resources: 1 Tiên Nguyên Thạch and 500,000 EXP (or 300,000 if Tán Tiên)
+        const requiredExp = this.isTanTien ? 300000 : 500000;
+        if (this.tuVi < requiredExp) {
+            return { success: false, msg: `Không đủ Tu Vi! Cần ${requiredExp.toLocaleString()} Tu Vi.` };
+        }
+        if (!this.inventory.hasItem('tien_nguyen_thach', 1)) {
+            return { success: false, msg: "Không đủ Tiên Nguyên Thạch để khai khiếu!" };
+        }
+
+        // Deduct resources
+        this.tuVi -= requiredExp;
+        this.inventory.removeItem('tien_nguyen_thach', 1);
+
+        // Success check
+        const baseChance = 0.8 - (this.tienKhieuOpen * 0.006);
+        const luckBonus = (this.luck || 50) * 0.002;
+        const totalChance = Math.min(0.95, Math.max(0.05, baseChance + luckBonus));
+
+        if (Math.random() < totalChance) {
+            this.tienKhieuOpen++;
+            this.calculateStats();
+            return {
+                success: true,
+                msg: `✨ Chúc mừng! Khai thông thành công Tiên Khiếu thứ ${this.tienKhieuOpen}! Thực lực tăng vọt.`
+            };
+        } else {
+            return {
+                success: false,
+                msg: `💥 Khai khiếu thất bại! Cường đại tiên lực phản phệ làm ngươi chấn động, tiêu hao 1 Tiên Nguyên Thạch và Tu Vi.`
+            };
+        }
+    }
+
+    comprehendLaw(lawId) {
+        if (this.realmId < 26 && !this.isTanTien) {
+            return { success: false, msg: "Chưa đạt Hóa Thần cảnh giới, không thể cảm ứng Thiên Đạo Pháp Tắc!" };
+        }
+
+        const lawNames = {
+            loi: "Lôi Hệ Pháp Tắc",
+            hoa: "Hỏa Hệ Pháp Tắc",
+            thuy: "Thủy Hệ Pháp Tắc",
+            phong: "Phong Hệ Pháp Tắc",
+            khong_gian: "Không Gian Pháp Tắc",
+            thoi_gian: "Thời Gian Pháp Tắc",
+            luan_hoi: "Luân Hồi Pháp Tắc"
+        };
+
+        if (!lawNames[lawId]) {
+            return { success: false, msg: "Loại pháp tắc không hợp lệ." };
+        }
+
+        if (!this.phapTac) {
+            this.phapTac = { loi: 0, hoa: 0, thuy: 0, phong: 0, khong_gian: 0, thoi_gian: 0, luan_hoi: 0 };
+        }
+
+        const currentVal = this.phapTac[lawId] || 0;
+        if (currentVal >= 100) {
+            return { success: false, msg: `Ngươi đã lĩnh ngộ hoàn mỹ 100% ${lawNames[lawId]}!` };
+        }
+
+        const requiredExp = 100000;
+        if (this.tuVi < requiredExp) {
+            return { success: false, msg: `Không đủ Tu Vi! Cần ${requiredExp.toLocaleString()} Tu Vi.` };
+        }
+        if (this.stamina < 20) {
+            return { success: false, msg: "Không đủ thể lực! Cần 20 thể lực." };
+        }
+
+        // Deduct resources
+        this.tuVi -= requiredExp;
+        this.stamina -= 20;
+
+        // Success calculation based on comprehension stat
+        const comp = this.comprehension || 10;
+        const baseChance = (comp / 150) * (1 - currentVal / 120);
+        const totalChance = Math.min(0.9, Math.max(0.02, baseChance));
+
+        if (Math.random() < totalChance) {
+            this.phapTac[lawId] = currentVal + 1;
+            this.calculateStats();
+            return {
+                success: true,
+                msg: `✨ Lĩnh ngộ thành công! ${lawNames[lawId]} tăng lên ${this.phapTac[lawId]}%.`
+            };
+        } else {
+            return {
+                success: false,
+                msg: `🌀 Thiên đạo huyền diệu, ngươi rơi vào ngộ đạo mê cung, lĩnh ngộ thất bại.`
+            };
+        }
     }
 
     convertMainPath(newPathId) {
@@ -4276,6 +4454,16 @@ export class Player {
         this.currentLocId = data.currentLocId || 'thanh_van_tran';
         this.explorationProgress = data.explorationProgress || 0;
         this.gridExplorationState = data.gridExplorationState || null;
+
+        // PNTT properties
+        this.nguyenThanRank = data.nguyenThanRank || 0;
+        this.tienKhieuOpen = data.tienKhieuOpen || 0;
+        this.phapTac = data.phapTac || { loi: 0, hoa: 0, thuy: 0, phong: 0, khong_gian: 0, thoi_gian: 0, luan_hoi: 0 };
+        this.chanLinhHuyetMach = data.chanLinhHuyetMach || [];
+        this.isTanTien = data.isTanTien || false;
+        this.tanTienKiếpCount = data.tanTienKiếpCount || 0;
+        this.tamSuyState = data.tamSuyState || 'none';
+        this.nextPeriodicTribulationYear = data.nextPeriodicTribulationYear || 0;
 
         this.calculateStats();
     }

@@ -1333,11 +1333,374 @@ export class Game {
             return;
         }
 
-        // First check if they can breakthrough at all
-        const canCheck = state.player.canBreakthrough(focus);
         if (!canCheck.can) {
             state.ui.toast(canCheck.reason || "Chưa đủ điều kiện đột phá!", "error");
             return;
+        }
+
+        // --- PNTT SYSTEM CUSTOM TRIBULATIONS ---
+        if (focus === 'tuvi') {
+            const currentRealmId = state.player.realmId;
+
+            // 1. Kết Đan -> Nguyên Anh (Tâm Ma Kiếp) - Realm ID 21
+            if (currentRealmId === 21) {
+                const choice = await state.ui.promptOptions(
+                    "🌀 ĐỘT PHÁ NGUYÊN ANH: TÂM MA KIẾP",
+                    [
+                        { id: 'focus', name: "🧘 Tĩnh tâm thủ nhất", desc: "Dựa vào Định lực thần hồn chống đỡ. Tỷ lệ thành công dựa vào Độ Ổn Định." },
+                        { id: 'resolve', name: "❤️ Hóa giải chấp niệm", desc: "Sử dụng kiên trì Đạo Tâm để phá ngộ. Tỷ lệ thành công dựa vào Đạo Tâm." },
+                        { id: 'suppress', name: "⚡ Cưỡng ép trấn áp", desc: "Cưỡng ép dùng Tu Vi đè bẹp Tâm Ma. Tỷ lệ thành công dựa vào tích lũy Tu Vi." }
+                    ],
+                    "Đột phá Nguyên Anh phải đối mặt với Vô hình Tâm Ma kiếp, khảo nghiệm thần hồn ý chí. Thất bại sẽ tổn hại nghiêm trọng thọ nguyên cùng tu vi!"
+                );
+
+                if (!choice) return;
+
+                let successChance = 0;
+                if (choice === 'focus') {
+                    successChance = state.player.getBreakthroughSuccessRate('tuvi');
+                } else if (choice === 'resolve') {
+                    successChance = (state.player.daoTam || 50) + 15;
+                } else if (choice === 'suppress') {
+                    const required = state.player.getCurrentRealm('tuvi').expRequired;
+                    successChance = Math.min(95, (state.player.tuVi / required) * 50);
+                }
+
+                if (Math.random() * 100 < successChance) {
+                    state.player.nguyenThanRank = 1; // Sơ cấp Nguyên Thần
+                    state.player.tuVi = Math.max(0, state.player.tuVi - state.player.getCurrentRealm('tuvi').expRequired);
+                    state.player.realmId++;
+                    state.player.calculateStats();
+                    state.ui.showModal({
+                        title: "✨ NGƯNG TỤ NGUYÊN ANH",
+                        message: "Chúc mừng! Ngươi phá tan Tâm ma chấp niệm, thành công phá vỡ vỏ bọc Kết Đan, ngưng tụ ra [Sơ cấp Nguyên Thần]! Thần thức biến hóa kỳ diệu.",
+                        icon: "ph-sparkles"
+                    });
+                    state.ui.showBreakthroughEffect(state.player.getCurrentRealm('tuvi').name);
+                    await this.saveGame();
+                } else {
+                    state.player.tuVi = Math.floor(state.player.tuVi * 0.7);
+                    state.player.stability = Math.max(10, state.player.stability - 30);
+                    state.player.calculateStats();
+                    state.ui.showModal({
+                        title: "💀 TỔN THƯƠNG TÂM MA",
+                        message: "Tâm ma phản phệ! Thần hồn điên cuồng hỗn loạn, ngưng tụ thất bại. Ngươi mất đi 30% Tu Vi và 30 điểm Độ Ổn Định.",
+                        icon: "ph-skull"
+                    });
+                }
+                this.refreshUI();
+                return;
+            }
+
+            // 2. Nguyên Anh -> Hóa Thần (Hóa Thần Lôi Kiếp) - Realm ID 25
+            if (currentRealmId === 25) {
+                state.ui.toast("⚡ Hóa Thần Lôi Kiếp bắt đầu ngưng tụ...", "warning");
+                let waves = 3;
+                let alive = true;
+
+                for (let i = 1; i <= waves; i++) {
+                    const dmg = 400 + i * 200;
+                    const choice = await state.ui.promptOptions(
+                        `⚡ HÓA THẦN LÔI KIẾP - ĐỢT ${i}/${waves}`,
+                        [
+                            { id: 'tank', name: `🛡️ Nhục thân chống đỡ`, desc: `Chịu ${dmg.toLocaleString()} Sát thương HP (trước phòng ngự).` },
+                            { id: 'mana', name: `🔮 Linh lực hộ thể`, desc: "Tiêu hao 250 điểm Mana để hấp thụ sát thương lôi kiếp." },
+                            { id: 'gems', name: `💎 Pháp bảo hộ thân`, desc: "Tiêu hao 1,500 Linh thạch kích hoạt thuẫn chống kiếp." }
+                        ],
+                        `Kiếp lôi đợt thứ ${i} đang cuồng bạo lao xuống! Sát thương cơ bản: ${dmg}.`
+                    );
+
+                    if (!choice) { alive = false; break; }
+
+                    if (choice === 'gems') {
+                        if ((state.player.lingShi || 0) >= 1500) {
+                            state.player.spendLingShi(1500);
+                            state.ui.toast("🛡️ Pháp bảo nứt vỡ nhưng đã cản hoàn toàn kiếp lôi!", "success");
+                        } else {
+                            state.ui.toast("Không đủ Linh thạch! Kiếp lôi bổ thẳng vào đầu...", "error");
+                            const finalDmg = Math.max(50, dmg - state.player.def);
+                            state.player.hp -= finalDmg;
+                        }
+                    } else if (choice === 'mana') {
+                        if (state.player.mana >= 250) {
+                            state.player.mana -= 250;
+                            state.ui.toast("🔮 Tiêu hao Linh lực hóa giải phần lớn kiếp lôi!", "info");
+                            const finalDmg = Math.max(20, Math.floor((dmg - state.player.def) * 0.3));
+                            state.player.hp -= finalDmg;
+                        } else {
+                            state.ui.toast("Không đủ Linh lực! Kiếp lôi nghiền nát nhục thân...", "error");
+                            const finalDmg = Math.max(50, dmg - state.player.def);
+                            state.player.hp -= finalDmg;
+                        }
+                    } else {
+                        const finalDmg = Math.max(80, dmg - state.player.def);
+                        state.player.hp -= finalDmg;
+                        state.ui.toast(`💥 Cưỡng kháng! Chịu ${finalDmg} sát thương.`, "warning");
+                    }
+
+                    if (state.player.hp <= 0) {
+                        alive = false;
+                        break;
+                    }
+                    this.refreshUI();
+                }
+
+                if (alive) {
+                    state.player.tuVi = Math.max(0, state.player.tuVi - state.player.getCurrentRealm('tuvi').expRequired);
+                    state.player.realmId++;
+                    state.player.calculateStats();
+                    state.ui.showModal({
+                        title: "✨ HÓA THẦN THÀNH CÔNG",
+                        message: "Chúc mừng! Ngươi thuận lợi vượt qua thiên kiếp, đắp nặn lại nguyên thần nhục cốt, thành công đặt chân vào HÓA THẦN KỲ!",
+                        icon: "ph-sparkles"
+                    });
+                    state.ui.showBreakthroughEffect(state.player.getCurrentRealm('tuvi').name);
+                    await this.saveGame();
+                } else {
+                    state.player.hp = 10;
+                    state.player.tuVi = Math.floor(state.player.tuVi * 0.75);
+                    state.player.calculateStats();
+                    state.ui.showModal({
+                        title: "💥 HÓA THẦN THẤT BẠI",
+                        message: "Nhục thân sụp đổ dưới lôi kiếp! Đột phá thất bại, tu vi hao tổn 25%, rơi vào trạng thái trọng thương.",
+                        icon: "ph-warning"
+                    });
+                }
+                this.refreshUI();
+                return;
+            }
+
+            // 3. Đại Thừa -> Chân Tiên (Phi Thăng Tiên Kiếp) - Realm ID 41
+            if (currentRealmId === 41) {
+                state.ui.toast("⚡ PHI THĂNG TIÊN KIẾP GIÁNG LÂM!", "warning");
+                let waves = 5;
+                let alive = true;
+
+                for (let i = 1; i <= waves; i++) {
+                    const dmg = 3000 + i * 1500;
+                    const choice = await state.ui.promptOptions(
+                        `⚡ PHI THĂNG TIÊN KIẾP - ĐỢT ${i}/${waves}`,
+                        [
+                            { id: 'tank', name: `🛡️ Nhục thân kháng lôi`, desc: `Chịu ${dmg.toLocaleString()} Sát thương HP (trước phòng ngự).` },
+                            { id: 'mana', name: `🔮 Cực hạn Linh khí đại thuẫn`, desc: "Tiêu hao 1,000 điểm Mana, chịu 30% sát thương." },
+                            { id: 'tien_nguyen', name: `💎 Tiêu hao 1 Tiên Nguyên Thạch`, desc: "Hóa giải hoàn toàn đợt kiếp lôi nhờ tiên linh lực." }
+                        ],
+                        `Phi thăng kiếp lôi đợt thứ ${i} cuồng bạo lao xuống! Sát thương cơ bản: ${dmg.toLocaleString()}.`
+                    );
+
+                    if (!choice) { alive = false; break; }
+
+                    if (choice === 'tien_nguyen') {
+                        if (state.player.inventory.hasItem('tien_nguyen_thach', 1)) {
+                            state.player.inventory.removeItem('tien_nguyen_thach', 1);
+                            state.ui.toast("🛡️ Tiên Nguyên Thạch tiêu tán, hoàn toàn triệt tiêu kiếp lôi đợt này!", "success");
+                        } else {
+                            state.ui.toast("Không đủ Tiên Nguyên Thạch! Kiếp lôi oanh tạc...", "error");
+                            const finalDmg = Math.max(500, dmg - state.player.def);
+                            state.player.hp -= finalDmg;
+                        }
+                    } else if (choice === 'mana') {
+                        if (state.player.mana >= 1000) {
+                            state.player.mana -= 1000;
+                            const finalDmg = Math.max(300, Math.floor((dmg - state.player.def) * 0.3));
+                            state.player.hp -= finalDmg;
+                            state.ui.toast(`🔮 Linh khí đại thuẫn cản phá! Chịu ${finalDmg.toLocaleString()} sát thương.`, "info");
+                        } else {
+                            state.ui.toast("Không đủ Mana! Kiếp lôi bổ trúng nhục cốt...", "error");
+                            const finalDmg = Math.max(500, dmg - state.player.def);
+                            state.player.hp -= finalDmg;
+                        }
+                    } else {
+                        const finalDmg = Math.max(800, dmg - state.player.def);
+                        state.player.hp -= finalDmg;
+                        state.ui.toast(`💥 Cưỡng kháng! Chịu ${finalDmg.toLocaleString()} sát thương.`, "warning");
+                    }
+
+                    if (state.player.hp <= 0) {
+                        alive = false;
+                        break;
+                    }
+                    this.refreshUI();
+                }
+
+                if (alive) {
+                    state.player.tuVi = Math.max(0, state.player.tuVi - state.player.getCurrentRealm('tuvi').expRequired);
+                    state.player.realmId++; // Chân Tiên
+                    state.player.nguyenThanRank = 4; // Tiên cấp Nguyên Thần
+                    state.player.calculateStats();
+                    state.ui.showModal({
+                        title: "✨ PHI THĂNG CHÂN TIÊN",
+                        message: "Chúc mừng! Ngươi chịu qua Ngũ đợt Thiên kiếp rửa tội, nhục thân thành tiên, phi thăng Tiên Giới, trở thành CHÂN TIÊN CHÍ TÔN!",
+                        icon: "ph-sparkles"
+                    });
+                    state.ui.showBreakthroughEffect(state.player.getCurrentRealm('tuvi').name);
+                    await this.saveGame();
+                } else {
+                    const choice = await state.ui.promptOptions(
+                        "💀 BINH GIẢI TÁN TIÊN?",
+                        [
+                            { id: 'tan_tien', name: "💫 Binh giải chân linh thành Tán Tiên", desc: "Không thể phi thăng, thọ nguyên bị hạn chế, nhận debuff vĩnh viễn nhưng giữ mạng." },
+                            { id: 'die', name: "💀 Chấp nhận linh hồn tiêu tán", desc: "Linh hồn hoàn toàn tan vỡ, bắt đầu lại từ đầu." }
+                        ],
+                        "Lôi kiếp quá bá đạo đã chém chết thân xác ngươi! Chỉ còn Nguyên thần lay lắt, ngươi muốn binh giải thành Tán Tiên nghịch thiên sinh tồn, hay chấp nhận tử vong?"
+                    );
+
+                    if (choice === 'tan_tien') {
+                        state.player.isTanTien = true;
+                        state.player.tanTienKiếpCount = 1;
+                        state.player.tuVi = Math.floor(state.player.tuVi * 0.4);
+                        state.player.hp = 100;
+                        state.player.calculateStats();
+                        state.ui.showModal({
+                            title: "💫 BINH GIẢI THÀNH CÔNG",
+                            message: "Ngươi chấp nhận binh giải, từ bỏ tiên thân phi thăng để trốn tránh thảm cảnh tiêu diệt, trở thành TÁN TIÊN. Cứ mỗi 5 năm ngươi sẽ phải chịu một đợt Tán Tiên Kiếp!",
+                            icon: "ph-sparkles"
+                        });
+                        await this.saveGame();
+                    } else {
+                        state.player.hp = 0;
+                        if (typeof this.handleDeath === 'function') {
+                            await this.handleDeath();
+                        } else {
+                            state.ui.showModal({
+                                title: "💀 VÔ PHÁP VÔ THIÊN",
+                                message: "Hồn cốt vỡ vụn dưới thiên uy, tu tiên lộ chấm dứt...",
+                                icon: "ph-skull"
+                            });
+                        }
+                    }
+                }
+                this.refreshUI();
+                return;
+            }
+
+            // 4. Chân Tiên -> Kim Tiên (Realm ID 45) - Requires 36 Tiên Khiếu
+            if (currentRealmId === 45) {
+                if ((state.player.tienKhieuOpen || 0) < 36) {
+                    state.ui.showModal({
+                        title: "⚠️ KHÔNG ĐỦ TIÊN KHIẾU",
+                        message: `Đột phá Kim Tiên yêu cầu khai thông ít nhất <b>36 Tiên Khiếu</b> để chứa đựng quy tắc tiên lực! Hiện tại: <b>${state.player.tienKhieuOpen || 0}/36</b>.`,
+                        icon: "ph-warning"
+                    });
+                    return;
+                }
+            }
+
+            // 5. Kim Tiên -> Thái Ất (Realm ID 49) - Requires Tam Suy Check
+            if (currentRealmId === 49) {
+                const choice = await state.ui.promptOptions(
+                    "🌀 TAM SUY KIẾP NẠN: NHỤC THÂN & NGUYÊN THẦN SUY",
+                    [
+                        { id: 'thai_at_dan', name: "💊 Sử dụng Thái Ất Đan", desc: "Hóa giải 100% kiếp suy bằng dược lực bảo mệnh." },
+                        { id: 'resist', name: "✊ Cương nghị chống đỡ", desc: "Thử thách ý chí bản thân. Tỷ lệ thành công: 30% + Đạo Tâm bonus." }
+                    ],
+                    "Đột phá Thái Ất Ngọc Tiên phải chịu Tam Suy rửa tội, nhục thân mục nát, nguyên thần chập chờn. Không đủ chuẩn bị sẽ hóa đạo tiêu tan!"
+                );
+
+                if (!choice) return;
+
+                let success = false;
+                if (choice === 'thai_at_dan') {
+                    if (state.player.inventory.hasItem('thai_at_dan', 1)) {
+                        state.player.inventory.removeItem('thai_at_dan', 1);
+                        success = true;
+                    } else {
+                        state.ui.toast("Không có Thái Ất Đan! Cưỡng ép vượt kiếp...", "error");
+                    }
+                }
+
+                if (!success) {
+                    const chance = 30 + (state.player.daoTam || 50) * 0.4;
+                    if (Math.random() * 100 < chance) {
+                        success = true;
+                    }
+                }
+
+                if (success) {
+                    state.player.tuVi = Math.max(0, state.player.tuVi - state.player.getCurrentRealm('tuvi').expRequired);
+                    state.player.realmId++;
+                    state.player.nguyenThanRank = 5; // Chí Tôn Nguyên Thần
+                    state.player.calculateStats();
+                    state.ui.showModal({
+                        title: "✨ ĐỘT PHÁ THÁI ẤT NGỌC TIÊN",
+                        message: "Chúc mừng! Ngươi vượt qua kiếp nạn Nhục thân suy cùng Nguyên thần suy, ngưng tụ ra Chí Tôn Nguyên Thần, bước vào THÁI ẤT NGỌC TIÊN CẢNH GIỚI!",
+                        icon: "ph-sparkles"
+                    });
+                    state.ui.showBreakthroughEffect(state.player.getCurrentRealm('tuvi').name);
+                    await this.saveGame();
+                } else {
+                    state.player.isTanTien = true;
+                    state.player.realmId = 42;
+                    state.player.tuVi = 0;
+                    state.player.calculateStats();
+                    state.ui.showModal({
+                        title: "💀 TIÊN THỂ TIÊU BIẾN: ĐỌC VÀO TÁN TIÊN",
+                        message: "Ngươi bất hạnh thất bại trước Tam Suy, nhục thân cùng nguyên thần vỡ nát, linh phách rơi rụng hóa thành Tán Tiên lay lắt...",
+                        icon: "ph-skull"
+                    });
+                    await this.saveGame();
+                }
+                this.refreshUI();
+                return;
+            }
+
+            // 6. Thái Ất -> Đại La (Realm ID 53) - Requires Pháp Tắc Suy
+            if (currentRealmId === 53) {
+                const choice = await state.ui.promptOptions(
+                    "🌀 TAM SUY KIẾP NẠN: PHÁP TẮC SUY",
+                    [
+                        { id: 'bo_thien_dan', name: "💊 Sử dụng Bổ Thiên Đan", desc: "Hoàn mỹ vá trời, ngưng tụ quy tắc. Tỷ lệ thành công: 100%." },
+                        { id: 'resist', name: "✊ Cương nghị chống đỡ", desc: "Dựa vào lĩnh ngộ Pháp Tắc để hóa giải. Tỷ lệ thành công dựa vào tổng thuộc tính Pháp Tắc." }
+                    ],
+                    "Để đột phá Đại La Cảnh Giới, ngươi phải chịu Pháp Tắc kiếp suy thanh tẩy. Thiên đạo pháp tắc đảo lộn, hỗn loạn oanh tạc quy tắc cơ thể!"
+                );
+
+                if (!choice) return;
+
+                let success = false;
+                if (choice === 'bo_thien_dan') {
+                    if (state.player.inventory.hasItem('bo_thien_dan', 1)) {
+                        state.player.inventory.removeItem('bo_thien_dan', 1);
+                        success = true;
+                    } else {
+                        state.ui.toast("Không có Bổ Thiên Đan! Cưỡng ép vượt kiếp...", "error");
+                    }
+                }
+
+                if (!success) {
+                    const totalLaw = Object.values(state.player.phapTac || {}).reduce((a, b) => a + b, 0);
+                    const chance = 20 + totalLaw * 0.5;
+                    if (Math.random() * 100 < chance) {
+                        success = true;
+                    }
+                }
+
+                if (success) {
+                    state.player.tuVi = Math.max(0, state.player.tuVi - state.player.getCurrentRealm('tuvi').expRequired);
+                    state.player.realmId++;
+                    state.player.calculateStats();
+                    state.ui.showModal({
+                        title: "✨ CHỨNG ĐẠO ĐẠI LA CHÂN TIÊN",
+                        message: "Chúc mừng! Pháp tắc kiếp suy tan biến, quy tắc thân thể vững chãi như bàn thạch, chứng đạo ĐẠI LA CHÂN TIÊN CẢNH GIỚI!",
+                        icon: "ph-sparkles"
+                    });
+                    state.ui.showBreakthroughEffect(state.player.getCurrentRealm('tuvi').name);
+                    await this.saveGame();
+                } else {
+                    state.player.isTanTien = true;
+                    state.player.realmId = 42;
+                    state.player.tuVi = 0;
+                    state.player.calculateStats();
+                    state.ui.showModal({
+                        title: "💀 CHỨNG ĐẠO THẤT BẠI: ĐỌC VÀO TÁN TIÊN",
+                        message: "Pháp tắc trong thân thể ngươi sụp đổ, điên cuồng cắn trả! Tiên thể hóa thành cát bụi, may mắn trốn thoát Nguyên thần biến thành Tán Tiên...",
+                        icon: "ph-skull"
+                    });
+                    await this.saveGame();
+                }
+                this.refreshUI();
+                return;
+            }
         }
 
         let pillId = null;
@@ -1417,6 +1780,113 @@ export class Game {
             await this.saveGame();
         }
         this.refreshUI();
+    }
+
+    applyLightningDamageToPlayer(dmg, kiếpName) {
+        if (!state.player) return;
+        const reducedDmg = Math.max(100, Math.floor(dmg * (1 - (state.player.advancedStats.damageReduction || 0)) - state.player.def));
+        state.player.hp -= reducedDmg;
+        state.ui.toast(`💥 Kiếp lôi đánh trúng nhục thân! Chịu ${reducedDmg.toLocaleString()} sát thương.`, "error");
+
+        if (state.player.hp <= 0) {
+            state.player.hp = 10;
+            if (state.player.isTanTien) {
+                state.player.tanTienKiếpCount = Math.max(0, state.player.tanTienKiếpCount - 1);
+                state.player.tuVi = Math.floor(state.player.tuVi * 0.7);
+                state.player.calculateStats();
+                state.ui.showModal({
+                    title: "💀 TÁN TIÊN BẠI VONG",
+                    message: "Tán Tiên Kiếp quá mạnh mẽ, nhục thân ngươi oanh tạc vụn vỡ! Hồn phách bị trọng thương, tu vi hao tổn 30%, rơi rụng Tán Tiên thọ nguyên...",
+                    icon: "ph-skull"
+                });
+            } else {
+                state.player.tuVi = Math.floor(state.player.tuVi * 0.8);
+                state.ui.showModal({
+                    title: "⚡ KIẾP LÔI PHẢN PHỆ",
+                    message: "Ngươi không chống chịu nổi Đại Thiên Kiếp, kinh mạch đứt đoạn, tu vi rơi rụng 20%! Thân thể trọng thương suy yếu.",
+                    icon: "ph-warning"
+                });
+            }
+        } else {
+            if (state.player.isTanTien) {
+                state.player.tanTienKiếpCount++;
+                state.player.calculateStats();
+            }
+            state.ui.showModal({
+                title: "✨ VƯỢT KIẾP THÀNH CÔNG",
+                message: `Chúc mừng ngươi kiên trì chống chọi qua ${kiếpName}! Thần hồn cùng thể chất đạt được lôi đình rèn luyện, thực lực tăng tiến.`,
+                icon: "ph-sparkles"
+            });
+        }
+    }
+
+    async triggerPeriodicTribulation(year) {
+        if (!state.player) return;
+        const rId = state.player.realmId;
+        const isLooseImmortal = state.player.isTanTien;
+
+        if (isLooseImmortal && year % 5 === 0) {
+            state.ui.toast("⚡ Tán Tiên Kiếp đã giáng lâm!", "warning");
+            const count = state.player.tanTienKiếpCount || 0;
+            const dmg = 8000 + count * 2000;
+
+            const chosen = await state.ui.promptOptions(
+                "⚡ TÁN TIÊN KIẾP",
+                [
+                    { id: 'tank', name: `🛡️ Cưỡng kháng Lôi kiếp (Chịu ${dmg.toLocaleString()} Sát thương)`, desc: "Dùng nhục thân đối đầu trực diện thiên uy." },
+                    { id: 'formation', name: `🔮 Tiêu hao 5 Tiên Nguyên Thạch`, desc: "Kích hoạt hộ sơn đại trận che chắn." }
+                ],
+                `Tán Tiên điên cuồng nghịch thiên, cứ mỗi 5 năm phải chịu thiên kiếp rửa tội. Lần này kiếp lôi cực kỳ hung hiểm, uy lực lên tới <b>${dmg.toLocaleString()}</b> điểm!`
+            );
+
+            if (chosen === 'formation') {
+                if (state.player.inventory.hasItem('tien_nguyen_thach', 5)) {
+                    state.player.inventory.removeItem('tien_nguyen_thach', 5);
+                    state.player.tanTienKiếpCount++;
+                    state.player.calculateStats();
+                    state.ui.showModal({
+                        title: "VƯỢT KIẾP THÀNH CÔNG",
+                        message: "Ngươi tiêu hao 5 Tiên Nguyên Thạch bố trí Thiên Lôi Trận pháp, hóa giải đại bộ phận kiếp lôi, an toàn vượt kiếp! Thực lực tăng tiến.",
+                        icon: "ph-sparkles"
+                    });
+                } else {
+                    state.ui.toast("Không đủ Tiên Nguyên Thạch! Cưỡng ép chịu đòn kiếp lôi...", "error");
+                    this.applyLightningDamageToPlayer(dmg, "Tán Tiên Kiếp");
+                }
+            } else if (chosen === 'tank') {
+                this.applyLightningDamageToPlayer(dmg, "Tán Tiên Kiếp");
+            }
+            this.refreshUI();
+        } else if (rId >= 30 && rId <= 41 && year % 10 === 0) {
+            state.ui.toast("⚡ Đại Thiên Kiếp giáng lâm!", "warning");
+            const dmg = 5000 + (rId * 200);
+
+            const chosen = await state.ui.promptOptions(
+                "⚡ ĐẠI THIÊN KIẾP",
+                [
+                    { id: 'tank', name: `🛡️ Dùng Nhục thân chống đỡ (Chịu ${dmg.toLocaleString()} Sát thương)`, desc: "Tôi luyện nhục thân bằng thiên kiếp." },
+                    { id: 'gems', name: `💎 Tiêu hao 10,000 Linh Thạch`, desc: "Mua trận bàn ngự lôi." }
+                ],
+                `Luyện Hư kỳ trở lên thọ nguyên vô tận, nhưng cứ mỗi 10 năm Thiên Đạo sẽ giáng xuống Đại Thiên Kiếp để hủy diệt kẻ nghịch thiên. Cường độ sát thương: <b>${dmg.toLocaleString()}</b>.`
+            );
+
+            if (chosen === 'gems') {
+                if ((state.player.lingShi || 0) >= 10000) {
+                    state.player.spendLingShi(10000);
+                    state.ui.showModal({
+                        title: "ĐẠI THIÊN KIẾP VƯỢT QUA",
+                        message: "Ngươi tiêu hao 10,000 Linh Thạch mua sắm phòng ngự trận pháp, an toàn qua kiếp lôi.",
+                        icon: "ph-sparkles"
+                    });
+                } else {
+                    state.ui.toast("Không đủ Linh Thạch! Cưỡng ép chịu đòn...", "error");
+                    this.applyLightningDamageToPlayer(dmg, "Đại Thiên Kiếp");
+                }
+            } else if (chosen === 'tank') {
+                this.applyLightningDamageToPlayer(dmg, "Đại Thiên Kiếp");
+            }
+            this.refreshUI();
+        }
     }
 
     setCultivationFocus(focus) {

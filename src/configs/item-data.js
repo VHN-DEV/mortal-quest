@@ -3443,7 +3443,7 @@ export const ITEMS = {
         name: 'Lôi Bằng Linh Noãn',
         type: ITEM_TYPES.TRUNG_LINH_THU,
         beastId: 'loi_bang',
-                icon: '🥚',
+        icon: '🥚',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
         price: 8000,
         description: 'Trứng của Lôi Bằng, loài chim khổng lồ mang theo sức mạnh lôi đình, khi trưởng thành có thể sải cánh vạn dặm.',
@@ -5429,6 +5429,55 @@ export const ITEMS = {
         description: 'Thẻ giản khắc bằng linh mộc quý, buộc dây lụa xanh ngọc. Bên trong khắc ghi bí pháp cổ đại, có thể dùng để học tập hoặc truyền thụ tri thức tu luyện.',
         categories: [
             { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.TU_LUYEN }
+        ]
+    },
+    // --- PHÀM NHÂN TU TIÊN ITEMS ---
+    'thai_at_dan': {
+        id: 'thai_at_dan',
+        name: 'Thái Ất Đan',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '💊',
+        quality: PHAP_BAO_QUALITIES.TIEN_KHI,
+        price: 50000,
+        description: 'Tiên đan chí bảo cực kỳ trân quý, có tác dụng trợ giúp tu sĩ Kim Tiên chống chọi Nhục Thân Suy và Nguyên Thần Suy trong kiếp nạn Tam Suy.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
+        ]
+    },
+    'bo_thien_dan': {
+        id: 'bo_thien_dan',
+        name: 'Bổ Thiên Đan',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '💎',
+        quality: PHAP_BAO_QUALITIES.TIEN_KHI,
+        price: 100000,
+        description: 'Bổ Thiên Chi Đan ngưng tụ từ thiên địa tinh hoa và quy tắc chi lực, dùng để vượt qua Pháp Tắc Suy của Thái Ất Ngọc Tiên.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
+        ]
+    },
+    'tien_nguyen_thach': {
+        id: 'tien_nguyen_thach',
+        name: 'Tiên Nguyên Thạch',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '💎',
+        quality: PHAP_BAO_QUALITIES.TIEN_KHI,
+        price: 10000,
+        description: 'Tinh thạch kết tinh từ Tiên linh khí thượng giới, là tiền tệ giao dịch phổ biến của Tiên nhân và dùng để khai thông Tiên Khiếu.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'chan_linh_tinh_huyet': {
+        id: 'chan_linh_tinh_huyet',
+        name: 'Chân Linh Tinh Huyết',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🩸',
+        quality: PHAP_BAO_QUALITIES.TIEN_KHI,
+        price: 25000,
+        description: 'Một giọt máu tinh hoa của thượng cổ Chân Linh, tỏa ra uy áp khủng khiếp, dùng để dung hợp Chân Linh Huyết Mạch.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
         ]
     }
 };

@@ -87,6 +87,21 @@ export class CharacterScreen {
         // Active Status Panels
         this.elCharStatusPanel = document.getElementById('char-status-effects-panel');
         this.elCharStatusList = document.getElementById('char-status-effects-list');
+
+        // PNTT Elements
+        this.elPnttPanel = document.getElementById('pntt-panel');
+        this.elCharTanTienBadge = document.getElementById('char-tan-tien-badge');
+        this.elCharNguyenThan = document.getElementById('char-nguyen-than');
+        this.elCharTienKhieu = document.getElementById('char-tien-khieu');
+        this.elBtnOpenTienKhieu = document.getElementById('btn-open-tien-khieu');
+
+        this.elLawLoiVal = document.getElementById('law-loi-val');
+        this.elLawHoaVal = document.getElementById('law-hoa-val');
+        this.elLawThuyVal = document.getElementById('law-thuy-val');
+        this.elLawPhongVal = document.getElementById('law-phong-val');
+        this.elLawKhongGianVal = document.getElementById('law-khong_gian-val');
+        this.elLawThoiGianVal = document.getElementById('law-thoi_gian-val');
+        this.elLawLuanHoiVal = document.getElementById('law-luan_hoi-val');
     }
     
     initEvents() {
@@ -98,6 +113,47 @@ export class CharacterScreen {
                 }
             };
         }
+
+        if (this.elBtnOpenTienKhieu) {
+            this.elBtnOpenTienKhieu.onclick = async () => {
+                if (state.player && typeof state.player.openTienKhieu === 'function') {
+                    const res = state.player.openTienKhieu();
+                    if (res.success) {
+                        if (window.game && typeof window.game.saveGame === 'function') {
+                            await window.game.saveGame();
+                        }
+                        if (window.game && typeof window.game.refreshUI === 'function') {
+                            window.game.refreshUI();
+                        }
+                        state.ui.toast(res.msg, "success");
+                    } else {
+                        state.ui.toast(res.msg, "error");
+                    }
+                }
+            };
+        }
+
+        // Event delegation for comprehending laws
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.btn-comprehend-law');
+            if (btn) {
+                const lawId = btn.dataset.law;
+                if (state.player && typeof state.player.comprehendLaw === 'function') {
+                    const res = state.player.comprehendLaw(lawId);
+                    if (res.success) {
+                        if (window.game && typeof window.game.saveGame === 'function') {
+                            await window.game.saveGame();
+                        }
+                        if (window.game && typeof window.game.refreshUI === 'function') {
+                            window.game.refreshUI();
+                        }
+                        state.ui.toast(res.msg, "success");
+                    } else {
+                        state.ui.toast(res.msg, "error");
+                    }
+                }
+            }
+        });
     }
 
     render() {
@@ -400,6 +456,39 @@ export class CharacterScreen {
         
         // Active Status Effects
         this.renderStatusEffects();
+
+        // PNTT Cultivation Panel Render
+        const showPntt = state.player.realmId >= 26 || state.player.isTanTien;
+        if (showPntt) {
+            if (this.elPnttPanel) this.elPnttPanel.classList.remove('hidden');
+            if (this.elCharTanTienBadge) {
+                if (state.player.isTanTien) {
+                    this.elCharTanTienBadge.classList.remove('hidden');
+                    this.elCharTanTienBadge.textContent = `TÁN TIÊN (${state.player.tanTienKiếpCount || 1} KIẾP)`;
+                } else {
+                    this.elCharTanTienBadge.classList.add('hidden');
+                }
+            }
+            if (this.elCharNguyenThan) {
+                const names = ["Chưa ngưng tụ", "Sơ cấp Nguyên Thần", "Trung cấp Nguyên Thần", "Cao cấp Nguyên Thần", "Tiên cấp Nguyên Thần", "Chí Tôn Nguyên Thần"];
+                this.elCharNguyenThan.textContent = names[state.player.nguyenThanRank || 0] || "Chưa ngưng tụ";
+            }
+            if (this.elCharTienKhieu) {
+                this.elCharTienKhieu.textContent = `${state.player.tienKhieuOpen || 0} / 108`;
+            }
+
+            // Law values
+            const phapTac = state.player.phapTac || {};
+            if (this.elLawLoiVal) this.elLawLoiVal.textContent = `${phapTac.loi || 0}%`;
+            if (this.elLawHoaVal) this.elLawHoaVal.textContent = `${phapTac.hoa || 0}%`;
+            if (this.elLawThuyVal) this.elLawThuyVal.textContent = `${phapTac.thuy || 0}%`;
+            if (this.elLawPhongVal) this.elLawPhongVal.textContent = `${phapTac.phong || 0}%`;
+            if (this.elLawKhongGianVal) this.elLawKhongGianVal.textContent = `${phapTac.khong_gian || 0}%`;
+            if (this.elLawThoiGianVal) this.elLawThoiGianVal.textContent = `${phapTac.thoi_gian || 0}%`;
+            if (this.elLawLuanHoiVal) this.elLawLuanHoiVal.textContent = `${phapTac.luan_hoi || 0}%`;
+        } else {
+            if (this.elPnttPanel) this.elPnttPanel.classList.add('hidden');
+        }
     }
 
     renderSpecializedPaths() {

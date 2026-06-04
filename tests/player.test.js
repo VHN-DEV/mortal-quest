@@ -277,4 +277,70 @@ describe('Player class', () => {
       expect(player.insectExp).toBe(60);
     });
   });
+
+  describe('PNTT Cultivation Mechanics', () => {
+    it('should initialize PNTT properties correctly', () => {
+      const player = new Player();
+      expect(player.nguyenThanRank).toBe(0);
+      expect(player.tienKhieuOpen).toBe(0);
+      expect(player.phapTac).toEqual({ loi: 0, hoa: 0, thuy: 0, phong: 0, khong_gian: 0, thoi_gian: 0, luan_hoi: 0 });
+      expect(player.isTanTien).toBe(false);
+      expect(player.tanTienKiếpCount).toBe(0);
+    });
+
+    it('should apply stats scaling for Nguyên Thần and Tiên Khiếu', () => {
+      const player = new Player();
+      player.permanentStats = { atk: 100, def: 100, spd: 100 };
+      
+      // Open 10 Tiên Khiếu
+      player.tienKhieuOpen = 10;
+      // Calculate bonuses
+      player.calculateStats();
+      // Multiplier should be 1 + 10 * 0.01 = 1.10
+      expect(player.atk).toBeGreaterThanOrEqual(110);
+
+      // Upgrade Nguyên Thần
+      player.nguyenThanRank = 3; // Cao cấp Nguyên Thần
+      player.calculateStats();
+      expect(player.divineSense).toBeGreaterThan(50); // Divine sense bonus applied
+    });
+
+    it('should handle openTienKhieu correctly', () => {
+      const player = new Player();
+      player.realmId = 42; // Chân Tiên (eligible)
+      player.tuVi = 500000;
+      
+      // Should fail without Tiên Nguyên Thạch
+      let res = player.openTienKhieu();
+      expect(res.success).toBe(false);
+      expect(res.msg).toContain('Tiên Nguyên Thạch');
+
+      // Add 1 Tiên Nguyên Thạch
+      player.inventory.addItem('tien_nguyen_thach', 1);
+
+      // Spy Math.random to guarantee success
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.0);
+      res = player.openTienKhieu();
+      expect(res.success).toBe(true);
+      expect(player.tienKhieuOpen).toBe(1);
+      randomSpy.mockRestore();
+    });
+
+    it('should handle comprehendLaw correctly', () => {
+      const player = new Player();
+      player.realmId = 26; // Hóa Thần
+      player.tuVi = 500000;
+      player.stamina = 100;
+      player.comprehension = 80;
+
+      // Spy Math.random to guarantee success
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.0);
+      const res = player.comprehendLaw('loi');
+      expect(res.success).toBe(true);
+      expect(player.phapTac.loi).toBeGreaterThan(0);
+      expect(player.stamina).toBe(80); // cost deducted
+      randomSpy.mockRestore();
+    });
+  });
 });
+

@@ -150,6 +150,11 @@ export class TimeSystem {
     onYearChanged() {
         this.ui.toast(`Chúc mừng năm mới! Năm ${this.getYear()}`, "success");
         
+        // PNTT Periodic Tribulations check
+        if (state.player && typeof window.game !== 'undefined' && typeof window.game.triggerPeriodicTribulation === 'function') {
+            window.game.triggerPeriodicTribulation(this.getYear());
+        }
+
         // Auction House event every 5 years
         if (this.getYear() % 5 === 0) {
             if (state.systems.npc) {
