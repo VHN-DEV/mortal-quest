@@ -54,6 +54,10 @@ export class UISystem {
 
         // Initialize dynamic image zoom listener
         this.initImageZoomListener();
+
+        // Auto-hide tooltip on click or touch to prevent sticking
+        document.addEventListener('click', () => this.hideTooltip());
+        document.addEventListener('touchend', () => this.hideTooltip());
     }
 
     updateTimeUI(time) {
@@ -1160,6 +1164,7 @@ export class UISystem {
      * Smoothly transition screen
      */
     async switchScreen(screenId, btn) {
+        this.hideTooltip();
         this.currentScreenId = screenId;
         const screens = document.querySelectorAll('.screen');
         const navButtons = document.querySelectorAll('.nav-item');

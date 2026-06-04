@@ -76,6 +76,9 @@ export class LootScreen {
     }
 
     render() {
+        if (state.ui && typeof state.ui.hideTooltip === 'function') {
+            state.ui.hideTooltip();
+        }
         this.renderVictimItems();
         this.renderPlayerItems();
     }
@@ -209,6 +212,9 @@ export class LootScreen {
     }
 
     close() {
+        if (state.ui && typeof state.ui.hideTooltip === 'function') {
+            state.ui.hideTooltip();
+        }
         state.ui.toggleOverlay(this.overlay, false);
 
         const hasCombatActive = !!state.currentCombat;
