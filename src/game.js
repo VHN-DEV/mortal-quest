@@ -1333,6 +1333,7 @@ export class Game {
             return;
         }
 
+        const canCheck = state.player.canBreakthrough(focus);
         if (!canCheck.can) {
             state.ui.toast(canCheck.reason || "Chưa đủ điều kiện đột phá!", "error");
             return;
