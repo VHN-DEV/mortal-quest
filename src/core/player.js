@@ -228,6 +228,7 @@ export class Player {
         this.currentLocId = null;
         this.explorationProgress = 0;
         this.gridExplorationState = null;
+        this.discoveredWorlds = ['nhan_gioi'];
 
         // Formation System
         this.activeFormations = []; // { id, startTime, staminaConsumed }
@@ -4246,6 +4247,7 @@ export class Player {
             currentLocId: this.currentLocId,
             explorationProgress: this.explorationProgress,
             gridExplorationState: this.gridExplorationState || null,
+            discoveredWorlds: [...(this.discoveredWorlds || [this.currentWorldId || 'nhan_gioi'])],
             createdAt: this.createdAt,
 
             // PNTT properties
@@ -4767,6 +4769,7 @@ export class Player {
         this.currentLocId = data.currentLocId || 'thanh_van_tran';
         this.explorationProgress = data.explorationProgress || 0;
         this.gridExplorationState = data.gridExplorationState || null;
+        this.discoveredWorlds = data.discoveredWorlds || [this.currentWorldId];
 
         // PNTT properties
         this.nguyenThanRank = data.nguyenThanRank || 0;

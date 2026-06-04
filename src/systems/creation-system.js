@@ -867,6 +867,7 @@ export class CreationSystem {
         player.currentWorldId = startWorldId;
         player.currentLocId = startLocId;
         player.explorationProgress = 0;
+        player.discoveredWorlds = [startWorldId];
 
         // Finalize stats (player.calculateStats will look at root, physique, and talents)
         player.calculateStats();

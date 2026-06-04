@@ -1,5 +1,5 @@
 import { state } from '../state.js';
-import { getTravelRoute, findLocationName, findWorldIdByLocId, DANGER_LEVELS, getLocationById } from '../configs/map-data.js';
+import { getTravelRoute, findLocationName, findWorldIdByLocId, DANGER_LEVELS, getLocationById, getWorlds } from '../configs/map-data.js';
 import { getItemById } from '../configs/item-data.js';
 import { getRealmById } from '../configs/realm-data.js';
 
@@ -149,12 +149,9 @@ export class TravelSystem {
         const toWorldId = findWorldIdByLocId(toLocId);
         if (fromWorldId && toWorldId && fromWorldId !== toWorldId) {
             // Yêu cầu cảnh giới tối thiểu tùy giới diện mục tiêu
-            let minRealmReq = 26; // Hóa Thần cho Linh Giới
-            let worldName = "Linh Giới";
-            if (toWorldId === 'tien_gioi') {
-                minRealmReq = 42; // Chân Tiên
-                worldName = "Tiên Giới";
-            }
+            const toWorld = getWorlds()[toWorldId];
+            const minRealmReq = toWorld ? toWorld.minRealm : 26;
+            const worldName = toWorld ? toWorld.name : toWorldId;
 
             if (this.player.realmId < minRealmReq) {
                 this.ui.toast(`Cảnh giới chưa đủ để phi thăng ${worldName}! Nhục thân ngươi sẽ bị lực lượng giới diện xé rách!`, "error");
@@ -286,6 +283,17 @@ export class TravelSystem {
         // Đổi location
         state.currentWorldId = toWorldId;
         state.currentLocId = toLocId;
+
+        // Mở khóa giới diện mới trong discoveredWorlds
+        if (this.player) {
+            if (!this.player.discoveredWorlds) {
+                this.player.discoveredWorlds = ['nhan_gioi'];
+            }
+            if (toWorldId && !this.player.discoveredWorlds.includes(toWorldId)) {
+                this.player.discoveredWorlds.push(toWorldId);
+            }
+        }
+
         if (window.game && window.game.saveGame) window.game.saveGame();
 
         this.ui.toast(`Đã đến ${findLocationName(toLocId)}!`, "success");

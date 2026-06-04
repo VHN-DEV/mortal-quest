@@ -440,6 +440,38 @@ describe('Player class', () => {
       expect(player.fatalStrikeChance).toBeCloseTo(0.016);
     });
   });
+
+  describe('Realm Discovery', () => {
+    it('should initialize discoveredWorlds with only the default world', () => {
+      const player = new Player();
+      expect(player.discoveredWorlds).toEqual(['nhan_gioi']);
+    });
+
+    it('should save and load discoveredWorlds correctly', () => {
+      const player = new Player();
+      player.discoveredWorlds.push('linh_gioi');
+      
+      const saveData = player.save();
+      expect(saveData.discoveredWorlds).toContain('nhan_gioi');
+      expect(saveData.discoveredWorlds).toContain('linh_gioi');
+      
+      const newPlayer = new Player();
+      newPlayer.load(saveData);
+      expect(newPlayer.discoveredWorlds).toContain('nhan_gioi');
+      expect(newPlayer.discoveredWorlds).toContain('linh_gioi');
+    });
+
+    it('should fallback to currentWorldId if discoveredWorlds is missing in loaded data', () => {
+      const player = new Player();
+      const saveData = player.save();
+      delete saveData.discoveredWorlds;
+      saveData.currentWorldId = 'ma_gioi';
+      
+      const newPlayer = new Player();
+      newPlayer.load(saveData);
+      expect(newPlayer.discoveredWorlds).toEqual(['ma_gioi']);
+    });
+  });
 });
 
 

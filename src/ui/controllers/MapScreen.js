@@ -261,37 +261,49 @@ export class MapScreen {
 
         Object.keys(worlds).forEach(id => {
             const w = worlds[id];
-            const locked = state.player.realmId < w.minRealm;
-            const el = document.createElement('div');
-            el.className = `location-card h-48 p-6 flex flex-col justify-end ${locked ? 'opacity-50 grayscale' : 'cursor-pointer'}`;
+            const isStartingOrCurrent = (id === state.player.currentWorldId);
+            const isDiscovered = state.player.discoveredWorlds && state.player.discoveredWorlds.includes(id);
 
+            // 1. Hide world if realm is too low, it is not discovered yet, and it is not starting/current world
+            if (state.player.realmId < w.minRealm && !isDiscovered && !isStartingOrCurrent) {
+                return;
+            }
+
+            const isUnlocked = isDiscovered || isStartingOrCurrent;
             const reqRealmName = getRealmById(w.minRealm).name;
-            const previewImg = w.image || ASSETS.backgrounds.cultivation;
+            const previewImg = isUnlocked ? (w.image || ASSETS.backgrounds.cultivation) : ASSETS.backgrounds.cultivation;
+            const title = isUnlocked ? w.name : `🔒 ${w.name} (Chưa Khai Phá)`;
+            const description = isUnlocked ? w.description : `Đây là giới diện cấp cao đầy huyền bí. Đạo hữu cần đạt cảnh giới tối thiểu và thực hiện dịch chuyển xuyên giới diện để đặt chân đến đây. (Yêu cầu cảnh giới: ${reqRealmName})`;
+            const badgeText = isUnlocked ? '<i class="ph ph-check-circle mr-1"></i> Đang mở' : '<i class="ph ph-lock mr-1"></i> Chưa khai phá';
+            const badgeClass = isUnlocked ? 'bg-qi-blue/10 text-qi-blue border border-qi-blue/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+            const cardClass = `location-card h-48 p-6 flex flex-col justify-end transition-all duration-300 ${isUnlocked ? 'cursor-pointer' : 'cursor-pointer opacity-75 grayscale hover:grayscale-0'}`;
+
+            const el = document.createElement('div');
+            el.className = cardClass;
 
             el.innerHTML = `
                 <img src="${previewImg}" class="location-card-image">
                 <div class="relative z-10 flex flex-col space-y-3">
                     <div class="flex justify-between items-start">
                         <div class="space-y-1">
-                            <span class="text-2xl font-charm text-white group-hover:text-qi-blue transition-colors">${w.name}</span>
+                            <span class="text-2xl font-charm text-white group-hover:text-qi-blue transition-colors">${title}</span>
                             <div class="text-[9px] text-gray-400 font-ancient tracking-[0.2em] uppercase opacity-70">Cõi Giới</div>
                         </div>
-                        <span class="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest ${locked ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-qi-blue/10 text-qi-blue border border-qi-blue/20'}">
-                            ${locked ? '<i class="ph ph-lock mr-1"></i> ' + reqRealmName : '<i class="ph ph-check-circle mr-1"></i> Đã mở'}
+                        <span class="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest ${badgeClass}">
+                            ${badgeText}
                         </span>
                     </div>
-                    <p class="text-xs text-gray-300 font-ancient leading-relaxed opacity-90">${w.description}</p>
+                    <p class="text-xs text-gray-300 font-ancient leading-relaxed opacity-90">${description}</p>
                     <div class="flex items-center space-x-2 pt-1 text-[9px] text-gray-400 font-ancient uppercase tracking-widest">
                         <i class="ph ph-map-trifold"></i>
-                        <span>${w.locations ? w.locations.length : 0} Khu vực khám phá</span>
+                        <span>${isUnlocked ? (w.locations ? w.locations.length : 0) : 0} Khu vực khám phá</span>
                     </div>
                 </div>
             `;
 
             el.onclick = () => {
-                if (locked) {
-                    state.ui.toast(`Cảnh giới không đủ! Yêu cầu: ${reqRealmName}`, 'warning');
-                    return;
+                if (!isUnlocked) {
+                    state.ui.toast(`Lịch luyện ${w.name} yêu cầu dịch chuyển xuyên giới diện! Hãy chọn địa điểm khám phá và bắt đầu du hành.`, 'info');
                 }
                 this.selectWorld(id);
             };

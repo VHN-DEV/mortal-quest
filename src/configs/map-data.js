@@ -2234,7 +2234,7 @@ export const WORLDS = {
     },
     'linh_gioi': {
         name: "Linh Giới",
-        minRealm: 0,
+        minRealm: 26,
         image: getLocImg("linh_gioi"),
         description: "Vùng đất của linh khí tinh thuần, nơi cường giả tụ hội.",
         locations: [
@@ -3266,7 +3266,7 @@ export const WORLDS = {
     },
     'tien_gioi': {
         name: "Tiên Giới",
-        minRealm: 0,
+        minRealm: 42,
         image: getLocImg("tien_gioi"),
         description: "Đỉnh cao của chư thiên vạn giới.",
         locations: [
@@ -4122,7 +4122,7 @@ export const WORLDS = {
     },
     'ma_gioi': {
         name: "Vực Ngoại Ma Giới",
-        minRealm: 0,
+        minRealm: 26,
         image: getLocImg("ma_gioi"),
         description: "Vùng đất hắc ám hoang tàn, nơi ma khí ngập tràn và sinh linh tàn sát lẫn nhau để chứng đạo.",
         locations: [
