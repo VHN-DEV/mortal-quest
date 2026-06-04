@@ -2809,6 +2809,7 @@ export const ITEMS = {
         id: 'de_khi_dai',
         name: 'Đế Khí Đài',
         type: ITEM_TYPES.DE_LUYEN_KHI,
+        image: 'items/cauldrons/de_khi_dai',
         icon: '⚒️',
         quality: PHAP_BAO_QUALITIES.PHAM_KHI,
         price: 200,
@@ -5538,6 +5539,263 @@ export const ITEMS = {
         effect: { type: EFFECT_TYPES.DISCOVER_WORLD, value: 'tien_gioi' },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.TU_LUYEN }
+        ]
+    },
+    'co_phap_ngo_dao_tra_diep': {
+        id: 'co_phap_ngo_dao_tra_diep',
+        name: 'Cổ Pháp Ngộ Đạo Trà Diệp',
+        image: 'items/herbs/co_phap_ngo_dao_tra_diep',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🍃',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 150,
+        description: 'Lá trà Ngộ Đạo thượng hạng hái từ ngọn trà cổ trăm năm, dùng làm nguyên liệu pha trà hoặc chế luyện dược phẩm ngộ đạo.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: '100_nam' }
+        ]
+    },
+    'hac_doc_tra_am': {
+        id: 'hac_doc_tra_am',
+        name: 'Hắc Độc Trà Ấm',
+        image: 'items/artifacts/hac_doc_tra_am',
+        type: ITEM_TYPES.BAO_VAT,
+        icon: '🏺',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 15000,
+        description: 'Ấm trà cổ làm từ hắc hỏa thạch, tỏa ra làn khói độc dịu nhẹ. Tương truyền dùng ấm này pha trà sẽ sinh ra kịch độc.',
+        stats: { def: 30, soul: 50 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.CO_BAO }
+        ]
+    },
+    'xich_vu_duc': {
+        id: 'xich_vu_duc',
+        name: 'Xích Vũ Dực',
+        image: 'items/artifacts/xich_vu_duc',
+        type: ITEM_TYPES.PHAP_BAO_PHI_HANH,
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        tier: 'LINH_KHI',
+        icon: '🪶',
+        description: 'Cặp cánh chế tác từ lông vũ của hỏa điểu cấp cao, giúp phi hành với tốc độ cực nhanh.',
+        price: 8000,
+        stats: { spd: 40 },
+        durability: 120,
+        maxDurability: 120,
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'linh_lung_chuong': {
+        id: 'linh_lung_chuong',
+        name: 'Linh Lung Chuông',
+        image: 'items/artifacts/linh_lung_chuong',
+        type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        icon: '🔔',
+        price: 1500,
+        description: 'Chiếc chuông nhỏ phát ra âm thanh giòn giã định thần, giảm thiểu ảnh hưởng của tâm ma.',
+        stats: { soul: 20 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.PHAP_KHI }
+        ]
+    },
+    'hac_ta_thu_da_long': {
+        id: 'hac_ta_thu_da_long',
+        name: 'Hắc Tà Thú Da Lông',
+        image: 'items/herbs/hac_ta_thu_da_long',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🐆',
+        quality: PHAP_BAO_QUALITIES.PHAM_KHI,
+        price: 50,
+        description: 'Bộ da lông dày và dai của Hắc Tà Thú, dùng làm nguyên liệu chế tạo giáp bảo hoặc pháp bảo phòng ngự.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.YEU_THU, subSubcategory: 'da_long' }
+        ]
+    },
+    'huyen_thiet_dai_kiem': {
+        id: 'huyen_thiet_dai_kiem',
+        name: 'Huyền Thiết Đại Kiếm',
+        image: 'items/artifacts/huyen_thiet_dai_kiem',
+        type: ITEM_TYPES.VU_KHI,
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        icon: '🗡️',
+        price: 2500,
+        description: 'Thanh đại kiếm nặng nề đúc từ Huyền Thiết, chém sắt như bùn, có thể tăng mạnh công kích vật lý.',
+        stats: { atk: 45 },
+        durability: 100,
+        maxDurability: 100,
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.PHAP_KHI }
+        ]
+    },
+    'huyen_linh_gioi_chi': {
+        id: 'huyen_linh_gioi_chi',
+        name: 'Huyền Linh Giới Chỉ',
+        image: 'items/artifacts/huyen_linh_gioi_chi',
+        type: ITEM_TYPES.TUI_TRU_VAT,
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        icon: '💍',
+        price: 1000,
+        description: 'Nhẫn trữ vật chế tác từ linh thạch không gian sơ cấp, mở rộng linh không chứa 20 ô vật phẩm.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.TUI_TRU_VAT }
+        ]
+    },
+    'u_minh_hac_lien': {
+        id: 'u_minh_hac_lien',
+        name: 'U Minh Hắc Liên',
+        image: 'items/herbs/u_minh_hac_lien',
+        type: ITEM_TYPES.LINH_DUOC,
+        icon: '🪷',
+        quality: PHAP_BAO_QUALITIES.LINH_BAO,
+        price: 15000,
+        description: 'Đóa sen cổ xưa màu xanh đen mọc ở cửu u linh địa, tỏa ra linh khí cực âm, là thần vật giúp tu luyện ma công hoặc u minh thần thông.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC }
+        ]
+    },
+    'huyet_thach': {
+        id: 'huyet_thach',
+        name: 'Huyết Thạch',
+        image: 'items/ores/huyet_thach',
+        type: ITEM_TYPES.LINH_KHOANG,
+        icon: '💎',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 500,
+        description: 'Loại khoáng thạch màu đỏ huyết dụ chứa khí huyết yêu thú ngưng tụ, là vật liệu tốt để rèn đúc ma khí hoặc huyết hệ pháp bảo.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_KHOANG, subSubcategory: 'di_khoang' }
+        ]
+    },
+    'kim_o_gioi_chi': {
+        id: 'kim_o_gioi_chi',
+        name: 'Kim Ô Giới Chỉ',
+        image: 'items/artifacts/kim_o_gioi_chi',
+        type: ITEM_TYPES.TUI_TRU_VAT,
+        quality: PHAP_BAO_QUALITIES.PHAP_BAO,
+        icon: '💍',
+        price: 50000,
+        description: 'Nhẫn trữ vật thần bí đúc từ thái dương thần thạch và lông vũ Kim Ô, mở rộng không gian cực đại chứa 50 ô vật phẩm.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.TUI_TRU_VAT }
+        ]
+    },
+    'nghich_lan_long_phien': {
+        id: 'nghich_lan_long_phien',
+        name: 'Nghịch Lân Long Phiến',
+        image: 'items/artifacts/nghich_lan_long_phien',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        quality: PHAP_BAO_QUALITIES.LINH_BAO,
+        icon: '🪭',
+        price: 35000,
+        description: 'Quạt xếp chế tác từ vảy và da nghịch lân của chân long, vung quạt có thể thổi ra chân long chi hỏa thiêu rụi càn khôn.',
+        stats: { atk: 120, soul: 30 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.LINH_BAO }
+        ]
+    },
+    'bich_ngoc_linh_moc': {
+        id: 'bich_ngoc_linh_moc',
+        name: 'Bích Ngọc Linh Mộc',
+        image: 'items/herbs/bich_ngoc_linh_moc',
+        type: ITEM_TYPES.LINH_MOC,
+        icon: '🌿',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1500,
+        description: 'Nhánh cây linh mộc màu xanh ngọc bích óng ánh, sinh trưởng ở nơi có linh khí mộc hệ nồng đậm, chứa sức sống dồi dào.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_MOC }
+        ]
+    },
+    'ngoc_tuy_co_moc': {
+        id: 'ngoc_tuy_co_moc',
+        name: 'Ngọc Tủy Cổ Mộc',
+        image: 'items/herbs/ngoc_tuy_co_moc',
+        type: ITEM_TYPES.LINH_MOC,
+        icon: '🌳',
+        quality: PHAP_BAO_QUALITIES.PHAP_BAO,
+        price: 6000,
+        description: 'Nhánh cổ mộc ngàn năm có vỏ ngoài màu nâu xù xì nhưng bên trong đã hóa thành ngọc tủy xanh ngắt, dùng làm phôi khí chế tác pháp bảo hệ mộc.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_MOC }
+        ]
+    },
+    'u_minh_co_dien_tan_do': {
+        id: 'u_minh_co_dien_tan_do',
+        name: 'U Minh Cổ Điện Tàn Đồ',
+        image: 'items/artifacts/u_minh_co_dien_tan_do',
+        type: ITEM_TYPES.BAN_DO,
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        icon: '🗺️',
+        price: 3000,
+        description: 'Mảnh tàn đồ rách nát chỉ dẫn con đường bí ẩn đi vào cổ điện hoang phế thời thượng cổ ở U Minh Địa.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.BAN_DO }
+        ]
+    },
+    'hoang_kim_san_ho_thao': {
+        id: 'hoang_kim_san_ho_thao',
+        name: 'Hoàng Kim San Hô Thảo',
+        image: 'items/herbs/hoang_kim_san_ho_thao',
+        type: ITEM_TYPES.LINH_DUOC,
+        icon: '🪸',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1500,
+        description: 'Loại linh thảo quý hiếm có hình dáng như san hô màu vàng óng, hấp thụ kim linh khí địa mạch, dùng để luyện chế luyện thể đan dược.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC }
+        ]
+    },
+    'lam_ngoc_thao': {
+        id: 'lam_ngoc_thao',
+        name: 'Lam Ngọc Thảo',
+        image: 'items/herbs/lam_ngoc_thao',
+        type: ITEM_TYPES.LINH_DUOC,
+        icon: '🌿',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 300,
+        description: 'Linh thảo sơ cấp có lá màu xanh lam óng ánh như ngọc, chứa thủy linh khí ôn hòa.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC }
+        ]
+    },
+    'thiet_giap_thu_yeu_nanh': {
+        id: 'thiet_giap_thu_yeu_nanh',
+        name: 'Thiết Giáp Thú Yêu Nanh',
+        image: 'items/ores/thiet_giap_thu_yeu_nanh',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🦷',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 100,
+        description: 'Răng nanh cực kỳ cứng cáp của Thiết Giáp Thú, sắc bén vô cùng, thường được dùng để rèn đúc vũ khí phá giáp.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.YEU_THU, subSubcategory: 'yeu_nanh' }
+        ]
+    },
+    'huyen_quy_yeu_phien': {
+        id: 'huyen_quy_yeu_phien',
+        name: 'Huyền Quy Yêu Phiến',
+        image: 'items/ores/huyen_quy_yeu_phien',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🛡️',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 120,
+        description: 'Vảy giáp dày nặng từ mai của Huyền Quy, bền bỉ dẻo dai, dùng rèn đúc giáp bảo hoặc khiên phòng ngự.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.YEU_THU, subSubcategory: 'da_long' }
+        ]
+    },
+    'huyet_lang_yeu_vuot': {
+        id: 'huyet_lang_yeu_vuot',
+        name: 'Huyết Lang Yêu Vuốt',
+        image: 'items/ores/huyet_lang_yeu_vuot',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🐾',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 100,
+        description: 'Móng vuốt tẩm đầy huyết khí hung tợn của Huyết Lang thú, cực kỳ sắc lẹm, dùng chế tác vũ khí cào xé.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.YEU_THU, subSubcategory: 'trao' }
         ]
     }
 };
