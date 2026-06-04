@@ -57,8 +57,8 @@ export class DiHoaBangScreen {
         this.listView.classList.add('hidden');
         this.detailView.classList.remove('hidden');
 
-        this.elDetailIcon.className = "text-6xl mb-4 flame-effect";
-        this.elDetailIcon.textContent = "🔥"; // Default emoji, can be changed based on type/color
+        this.elDetailIcon.innerHTML = '<i class="ph ph-fire text-6xl"></i>';
+        const icon = this.elDetailIcon.querySelector('i');
         this.elDetailRank.textContent = `Hạng ${diHoa.rank}`;
         this.elDetailName.textContent = diHoa.name;
         this.elDetailColor.textContent = diHoa.color;
@@ -71,13 +71,15 @@ export class DiHoaBangScreen {
         const flameColor = diHoa.flameColor || '#ff4444';
         const glowColor = diHoa.glowColor || flameColor;
 
-        this.elDetailIcon.style.color = flameColor;
+        if (icon) {
+            icon.style.color = flameColor;
 
-        this.elDetailIcon.style.filter = `
-            drop-shadow(0 0 10px ${glowColor})
-            drop-shadow(0 0 20px ${glowColor})
-            drop-shadow(0 0 35px ${glowColor})
-        `;
+            icon.style.filter = `
+                drop-shadow(0 0 10px ${glowColor})
+                drop-shadow(0 0 20px ${glowColor})
+                drop-shadow(0 0 35px ${glowColor})
+            `;
+        }
     }
 
     buildCachedList() {
