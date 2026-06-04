@@ -4,6 +4,7 @@ import { getSecretTechniqueById } from '../../configs/technique-data.js';
 import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 import { gsap } from 'gsap';
 import { audioManager } from '../../utils/audio-manager.js';
+import { getSpeedItemsInInventory } from '../../core/combat-engine.js';
 
 /**
  * Quản lý giao diện và logic của màn hình Chiến Đấu.
@@ -157,6 +158,7 @@ export class BattleScreen {
             case 'start':
                 state.ui.toggleOverlay(this.overlay, true);
                 audioManager.playBgm('battle');
+                if (this.btnEscape) this.btnEscape.classList.remove('hidden');
                 this.enemyName.textContent = combat.enemy.name;
                 if (this.playerName) this.playerName.textContent = state.player.name;
                 if (this.playerImg) {
@@ -213,6 +215,31 @@ export class BattleScreen {
                 break;
             case 'enemy-escape-attempt':
                 this.actionContainer.classList.add('hidden');
+                
+                // Show/hide chase items section dynamically
+                const chaseItemsSection = document.getElementById('chase-items-section');
+                const chaseItemsList = document.getElementById('chase-items-list');
+                
+                if (chaseItemsSection && chaseItemsList) {
+                    const speedItems = getSpeedItemsInInventory(state.player);
+                    if (speedItems.length > 0) {
+                        chaseItemsSection.classList.remove('hidden');
+                        chaseItemsList.innerHTML = speedItems.map(item => `
+                            <button class="w-full p-2.5 bg-qi-jade/10 hover:bg-qi-jade/20 border border-qi-jade/30 rounded-xl text-[10px] font-bold text-qi-jade flex items-center justify-between transition-all active:scale-98"
+                                    onclick="window.game.startChase('${item.id}')">
+                                <span class="flex items-center space-x-1.5">
+                                    <span>${item.icon}</span>
+                                    <span>${item.name} (Còn ${item.quantity})</span>
+                                </span>
+                                <span class="text-[8px] bg-qi-jade/20 px-1.5 py-0.5 rounded font-mono">+${item.bonus} Tốc</span>
+                            </button>
+                        `).join('');
+                    } else {
+                        chaseItemsSection.classList.add('hidden');
+                        chaseItemsList.innerHTML = '';
+                    }
+                }
+                
                 state.ui.toggleOverlay(document.getElementById('chase-overlay'), true);
                 break;
             case 'turn':

@@ -282,4 +282,80 @@ describe('CombatEngine mechanics', () => {
       expect(player.thanThuc).toBe(35);
     });
   });
+
+  describe('Combat Escape & Chase Mechanics', () => {
+    it('should fail player escape if caught by enemy and set playerCannotEscape', () => {
+      const player = {
+        name: 'Tu Sĩ', spd: 10, advancedStats: {}, equipment: {}, inventory: { allItems: [] }
+      };
+      const enemy = { name: 'Thích Khách', spd: 100 }; // Much faster enemy
+      const engine = new CombatEngine(player, enemy, mockOnUpdate, mockOnEnd);
+      engine.turn = 0;
+      engine.isActive = true;
+
+      // Force catch
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.01);
+
+      engine.playerEscape();
+
+      expect(engine.playerCannotEscape).toBe(true);
+      expect(engine.isActive).toBe(true);
+      expect(mockOnUpdate).toHaveBeenCalledWith('escape-fail');
+
+      randomSpy.mockRestore();
+    });
+
+    it('should prevent player escape if playerCannotEscape is already true', () => {
+      const player = {
+        name: 'Tu Sĩ', spd: 100, advancedStats: {}, equipment: {}, inventory: { allItems: [] }
+      };
+      const enemy = { name: 'Quái', spd: 10 };
+      const engine = new CombatEngine(player, enemy, mockOnUpdate, mockOnEnd);
+      engine.turn = 0;
+      engine.isActive = true;
+      engine.playerCannotEscape = true;
+
+      const addLogSpy = vi.spyOn(engine, 'addLog');
+      engine.playerEscape();
+
+      expect(addLogSpy).toHaveBeenCalledWith(expect.stringContaining('không thể trốn chạy được nữa'));
+      expect(engine.isActive).toBe(true);
+    });
+
+    it('should consume speed-boosting item and successfully chase enemy', () => {
+      const allItems = [
+        { id: 'phu_van_than_hanh_phu', quantity: 2 }
+      ];
+      const player = {
+        name: 'Tu Sĩ',
+        spd: 50,
+        advancedStats: {},
+        equipment: {},
+        inventory: {
+          allItems: allItems,
+          removeItem: vi.fn((id, qty) => {
+            const item = allItems.find(i => i.id === id);
+            if (item) item.quantity -= qty;
+          })
+        }
+      };
+      const enemy = { name: 'Quái', spd: 60 };
+      const engine = new CombatEngine(player, enemy, mockOnUpdate, mockOnEnd);
+      engine.isActive = true;
+
+      // Mock random to guarantee success (e.g. 0.05 < successChance)
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.01);
+
+      // Chase with phu_van_than_hanh_phu (+30 spd)
+      const success = engine.chaseEnemy('phu_van_than_hanh_phu');
+
+      expect(success).toBe(true);
+      expect(player.inventory.removeItem).toHaveBeenCalledWith('phu_van_than_hanh_phu', 1);
+      expect(allItems[0].quantity).toBe(1);
+      expect(engine.enemyCannotEscape).toBe(true);
+      expect(engine.isActive).toBe(true);
+
+      randomSpy.mockRestore();
+    });
+  });
 });

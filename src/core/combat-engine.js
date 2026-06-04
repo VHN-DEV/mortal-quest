@@ -397,8 +397,8 @@ export class CombatEngine {
     enemyTurn() {
         if (!this.isActive) return;
 
-        // 1. Check for escape if HP is very low (< 15%)
-        if (this.enemy.hp < this.enemy.maxHp * 0.15 && Math.random() < 0.6) {
+        // 1. Check for escape if HP is very low (< 15%) and enemy hasn't been chased/locked
+        if (this.enemy.hp < this.enemy.maxHp * 0.15 && !this.enemyCannotEscape && Math.random() < 0.6) {
             this.enemyEscape();
             return;
         }
@@ -535,7 +535,7 @@ export class CombatEngine {
         }, 60000);
     }
 
-    chaseEnemy() {
+    chaseEnemy(itemId = null) {
         // Clear the safety fallback timeout since the player has interacted
         if (this._escapeTimeout) {
             clearTimeout(this._escapeTimeout);
@@ -546,20 +546,35 @@ export class CombatEngine {
         const enemySpd = this.enemy.spd;
 
         let flightBonus = 0;
-        if (this.player.equipment.flightArtifact) {
+        if (this.player.equipment?.flightArtifact) {
             const artifact = getItemById(this.player.equipment.flightArtifact);
             flightBonus = artifact?.stats?.spd || 20;
         }
 
-        let successChance = 0.4 + ((playerSpd + flightBonus - enemySpd) / 100);
+        let itemBonus = 0;
+        let itemName = '';
+        if (itemId) {
+            const speedItems = getSpeedItemsInInventory(this.player);
+            const item = speedItems.find(i => i.id === itemId);
+            if (item) {
+                this.player.inventory.removeItem(itemId, 1);
+                itemBonus = item.bonus;
+                itemName = item.name;
+                this.addLog(`Ngươi kích hoạt <span class="text-orange-400 font-bold">[${itemName}]</span>, tốc độ truy đuổi tăng thêm +${itemBonus}!`);
+            }
+        }
+
+        const totalPlayerSpd = playerSpd + flightBonus + itemBonus;
+        let successChance = 0.4 + ((totalPlayerSpd - enemySpd) / 100);
         if (isNaN(successChance)) successChance = 0.4;
-        successChance = Math.max(0.1, Math.min(0.9, successChance));
-        
+        successChance = Math.max(0.1, Math.min(0.95, successChance));
+
         const success = Math.random() < successChance;
 
         if (success) {
             this.isActive = true;
-            this.addLog("<span class='text-qi-blue'>Ngươi dồn lực vào đôi chân, thành công đuổi kịp kẻ địch!</span>");
+            this.enemyCannotEscape = true; // Lock enemy escape
+            this.addLog("<span class='text-qi-blue font-bold'>Ngươi dồn lực truy kích, thành công giữ chân kẻ địch! Đối thủ không thể chạy trốn được nữa!</span>");
             this.turn = 0; // Player gets to move
             this.nextTurn();
             return true;
@@ -1044,6 +1059,12 @@ export class CombatEngine {
     playerEscape() {
         if (this.turn !== 0 || !this.isActive) return;
 
+        // Check if player is locked in combat (failing escape once makes them locked)
+        if (this.playerCannotEscape) {
+            this.addLog("<span class='text-red-400'>Ngươi đã bị đối phương khóa chặt khí cơ, không thể trốn chạy được nữa!</span>");
+            return;
+        }
+
         const playerSpd = this.player.spd;
         const enemySpd = this.enemy.spd;
 
@@ -1082,28 +1103,37 @@ export class CombatEngine {
         });
 
         // --- Escape calculation ---
-        // Base: player spd vs enemy spd. Độn Thuật adds flat escape bonus (0–1.0).
-        const spdRatio = playerSpd / Math.max(1, enemySpd);
-        const baseChance = Math.min(0.9, spdRatio * 0.5); // caps at 90% from speed
-        const finalEscapeChance = Math.min(1.0, baseChance + escapeChanceBonus);
+        let flightBonus = 0;
+        if (this.player.equipment?.flightArtifact) {
+            const artifact = getItemById(this.player.equipment.flightArtifact);
+            flightBonus = artifact?.stats?.spd || 20;
+        }
+
+        // Enemy chase success chance
+        let enemyChaseChance = 0.45 + ((enemySpd - (playerSpd + flightBonus)) / 100);
+        // Reduce enemy chase chance by player's escape technique bonus
+        enemyChaseChance = Math.max(0.05, enemyChaseChance - escapeChanceBonus);
 
         const roll = Math.random();
-        const escapeSuccess = roll <= finalEscapeChance || hasEscapeSecret;
+        const caught = roll < enemyChaseChance && !hasEscapeSecret;
 
-        if (escapeSuccess) {
-            if (donThuatFlavor) {
-                this.addLog(donThuatFlavor);
-            } else {
-                this.addLog("<span class='text-qi-blue'>Ngươi vận dụng thân pháp cực hạn, thành công thoát khỏi chiến trường!</span>");
-            }
+        if (donThuatFlavor) {
+            this.addLog(donThuatFlavor);
+        } else {
+            this.addLog("<span class='text-qi-blue'>Ngươi vận dụng thân pháp cực hạn hòng thoát khỏi chiến trường!</span>");
+        }
+
+        if (!caught) {
+            this.addLog("<span class='text-green-400 font-bold'>Trốn thoát thành công! Ngươi đã biến mất khỏi tầm mắt của đối thủ.</span>");
             this.isActive = false;
             this.onUpdate('end');
             setTimeout(() => this.onEnd('escape'), 1500);
         } else {
             const failMsg = donThuatName
-                ? `<span class='text-red-400'>Thoát thân thất bại! Dù đã vận <b>${donThuatName}</b>, đối phương vẫn truy kịp ngươi!</span>`
-                : `<span class='text-red-400'>Thoát thân thất bại! Đối phương tốc độ quá nhanh, khóa chặt mọi đường lui!</span>`;
+                ? `<span class='text-red-400'>Thoát thân thất bại! Đối phương (${this.enemy.name}) phản ứng cực nhanh, triển khai độn tốc truy kích và chặn đứng đường lui của ngươi!</span>`
+                : `<span class='text-red-400'>Thoát thân thất bại! Đối phương tốc độ quá nhanh, sải bước dài tóm gọn lấy ngươi!</span>`;
             this.addLog(failMsg);
+            this.playerCannotEscape = true; // Lock player from escaping again
             this.onUpdate('escape-fail');
             this.endPlayerTurn();
         }
@@ -2081,4 +2111,51 @@ export class CombatEngine {
         this.onUpdate('end');
         setTimeout(() => this.onEnd('lose'), 3000);
     }
+}
+
+export function getSpeedItemsInInventory(player) {
+    if (!player || !player.inventory || !player.inventory.allItems) return [];
+    
+    const knownSpeedItems = {
+        'phu_van_than_hanh_phu': { name: 'Thần Hành Phù', bonus: 30, icon: '📜' },
+        'phu_van_thuan_di_phu': { name: 'Thuấn Di Phù', bonus: 50, icon: '📜' },
+        'thuan_di_phu': { name: 'Thuấn Di Phù', bonus: 50, icon: '📜' },
+        'pha_khong_phu': { name: 'Phá Không Phù', bonus: 80, icon: '📜' },
+        'than_hanh_dan': { name: 'Thần Hành Đan', bonus: 40, icon: '💊' }
+    };
+
+    const speedItems = [];
+    player.inventory.allItems.forEach(i => {
+        const data = getItemById(i.id);
+        if (!data) return;
+        
+        let bonus = 0;
+        let icon = data.icon || '💊';
+        let name = data.name || '';
+        
+        if (knownSpeedItems[i.id]) {
+            bonus = knownSpeedItems[i.id].bonus;
+            icon = knownSpeedItems[i.id].icon;
+        } else if (data.stats && (data.stats.spd || data.stats.speed)) {
+            bonus = data.stats.spd || data.stats.speed;
+        } else if (data.effect && (data.effect.stat === 'spd' || data.effect.stat === 'speed')) {
+            bonus = data.effect.value || 20;
+        } else if (data.effects && (data.effects.spd || data.effects.speed)) {
+            bonus = data.effects.spd || data.effects.speed;
+            if (bonus < 1) bonus = Math.floor(bonus * 100);
+        } else if (i.id.includes('than_hanh') || i.id.includes('thuan_di') || i.id.includes('pha_khong')) {
+            bonus = 30;
+        }
+        
+        if (bonus > 0) {
+            speedItems.push({
+                id: i.id,
+                name: name,
+                quantity: i.quantity,
+                bonus: bonus,
+                icon: icon
+            });
+        }
+    });
+    return speedItems;
 }

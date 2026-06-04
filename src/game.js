@@ -3250,10 +3250,10 @@ export class Game {
         this.refreshUI();
     }
 
-    startChase() {
+    startChase(itemId = null) {
         if (state.currentCombat) {
             state.ui.toggleOverlay(document.getElementById('chase-overlay'), false);
-            state.currentCombat.chaseEnemy?.();
+            state.currentCombat.chaseEnemy?.(itemId);
         }
     }
 
