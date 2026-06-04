@@ -167,6 +167,7 @@ export class CharacterScreen {
                         state.ui.toast(res.msg, "error");
                     }
                 }
+            }
         });
 
         // Event delegation for refining natal treasure
