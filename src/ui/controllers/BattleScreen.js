@@ -1010,6 +1010,10 @@ export class BattleScreen {
         // Also ensure stats modal is hidden when combat closes
         this.hideEnemyStats();
         state.ui.toggleOverlay(this.overlay, false);
+        const chaseOverlay = document.getElementById('chase-overlay');
+        if (chaseOverlay) {
+            state.ui.toggleOverlay(chaseOverlay, false);
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
