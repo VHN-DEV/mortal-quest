@@ -258,31 +258,33 @@ export const ASSETS = {
         huyet_ngoc_tri_chu_svg: getAssetUrl('aberrations/huyet-ngoc-tri-chu.svg'),
         phe_kim_trung_svg: getAssetUrl('aberrations/phe-kim-trung.svg'),
         hac_thiet_loi_thu: getAssetUrl('beasts/hac_thiet_loi_thu'),
+        loi_bang: getAssetUrl('beasts/tu_van_hac'),
+        thien_phong_ngan_uynh: getAssetUrl('aberrations/huyen-diem-nga.svg'),
     }, 'beasts', 'cuu_vi_thien_ho'),
 
     // Khôi lỗi & Thi hài
     puppets: createAssetProxy({
-        thiet_giap_khoi_loi: getAssetUrl('locations/theme_chien_truong'),
-        kiem_khoi: getAssetUrl('locations/theme_chien_truong'),
+        thiet_giap_khoi_loi: getAssetUrl('locations/vuc_ngoai_thien_ma_chien_truong'),
+        kiem_khoi: getAssetUrl('locations/vuc_ngoai_thien_ma_chien_truong'),
         thanh_vien_khoi_loi: getAssetUrl('items/puppets/thanh_vien_khoi_loi'),
     }, 'items/puppets', 'thiet_giap_khoi_loi'),
 
     corpses: createAssetProxy({
-        thi_binh: getAssetUrl('locations/theme_huyet_hai'),
-        thi_tuong: getAssetUrl('locations/theme_huyet_hai'),
-        dong_giap_thi: getAssetUrl('locations/theme_ma_uyen'),
+        thi_binh: getAssetUrl('locations/huyet_sac_cam_dia'),
+        thi_tuong: getAssetUrl('locations/huyet_sac_cam_dia'),
+        dong_giap_thi: getAssetUrl('locations/ma_uyen'),
     }, 'corpses', 'thi_binh'),
 
     // Sự kiện Thẻ Cảnh (Scenery Cards)
     events: createAssetProxy({
-        rare_herb: getAssetUrl('locations/theme_van_yeu'),
-        chaos_rift: getAssetUrl('locations/theme_khong_gian'),
-        old_friend: getAssetUrl('locations/theme_linh_thanh'),
-        demon_ritual: getAssetUrl('locations/theme_huyet_hai'),
-        heavenly_tribulation: getAssetUrl('locations/theme_ma_uyen'),
-        med_king_valley: getAssetUrl('locations/theme_linh_ngoai'),
-        hidden_library: getAssetUrl('locations/theme_tien_phu'),
-        death_match_arena: getAssetUrl('locations/theme_chien_truong'),
+        rare_herb: getAssetUrl('locations/van_yeu_son_mach'),
+        chaos_rift: getAssetUrl('locations/khong_gian_khe_nut'),
+        old_friend: getAssetUrl('locations/thien_uyen_thanh'),
+        demon_ritual: getAssetUrl('locations/huyet_sac_cam_dia'),
+        heavenly_tribulation: getAssetUrl('locations/ma_uyen'),
+        med_king_valley: getAssetUrl('locations/tieu_linh_thien'),
+        hidden_library: getAssetUrl('locations/chan_tien_dong_phu'),
+        death_match_arena: getAssetUrl('locations/vuc_ngoai_thien_ma_chien_truong'),
     }, 'events', 'rare_herb'),
 
     // Bối cảnh & Bản đồ

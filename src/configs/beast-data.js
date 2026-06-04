@@ -20,7 +20,7 @@ export const BEASTS = {
         type: BEAST_TYPES.LINH_TRUNG,
         bloodline: BEAST_BLOODLINES.LINH,
         icon: '🐞',
-        image: 'beasts/phe_linh_trung.webp',
+        image: 'beasts/thanh_van_ly',
         description: 'Loại linh trùng nhỏ bé có khả năng cắn nuốt linh lực.',
         baseStats: { hp: 50, atk: 5, def: 2, spd: 15 },
         abilities: ['Thôn Linh']
@@ -31,7 +31,7 @@ export const BEASTS = {
         type: BEAST_TYPES.LINH_TRUNG,
         bloodline: BEAST_BLOODLINES.DIA,
         icon: '🐛',
-        image: 'beasts/kim_tam.webp',
+        image: 'beasts/thanh_nguu',
         description: 'Tằm vàng quý hiếm, tơ của nó là vật liệu luyện khí cực tốt.',
         baseStats: { hp: 120, atk: 10, def: 20, spd: 5 },
         abilities: ['Kim Ti']
@@ -53,7 +53,7 @@ export const BEASTS = {
         type: BEAST_TYPES.LINH_THU,
         bloodline: BEAST_BLOODLINES.LINH,
         icon: '🐺',
-        image: 'beasts/xich_diem_lang.webp',
+        image: 'beasts/ac_long',
         description: 'Sói lửa vùng hỏa núi, tính tình hung dữ.',
         baseStats: { hp: 350, atk: 45, def: 15, spd: 30 },
         abilities: ['Hỏa Trảo']
@@ -64,7 +64,7 @@ export const BEASTS = {
         type: BEAST_TYPES.DI_THU,
         bloodline: BEAST_BLOODLINES.THIEN,
         icon: '🦁',
-        image: 'beasts/loi_duc_su.webp',
+        image: 'beasts/cuu_dau',
         description: 'Sư tử có cánh mang theo sức mạnh của sấm sét.',
         baseStats: { hp: 1500, atk: 250, def: 100, spd: 80 },
         abilities: ['Thiên Lôi Hống']
@@ -75,7 +75,7 @@ export const BEASTS = {
         type: BEAST_TYPES.THAN_THU,
         bloodline: BEAST_BLOODLINES.THANH,
         icon: '🦊',
-        image: 'beasts/cuu_vi_thien_ho.webp',
+        image: 'beasts/tu_tuoc',
         description: 'Hồ ly chín đuôi trong truyền thuyết, có khả năng mê hoặc chúng sinh.',
         baseStats: { hp: 5000, atk: 800, def: 300, spd: 120 },
         abilities: ['Mê Hồn Huyễn Cảnh']
@@ -215,7 +215,7 @@ export const BEASTS = {
         type: BEAST_TYPES.DI_THU,
         bloodline: BEAST_BLOODLINES.THIEN,
         icon: '🦅',
-        image: 'beasts/loi_bang.webp',
+        image: 'beasts/tu_van_hac',
         description: 'Chim khổng lồ mang sức mạnh lôi đình, sải cánh che kín cả bầu trời, khi trưởng thành có thể bay vạn dặm.',
         baseStats: { hp: 3000, atk: 400, def: 150, spd: 180 },
         abilities: ['Lôi Đình Vạn Kích', 'Cuồng Phong Dực']
@@ -226,7 +226,7 @@ export const BEASTS = {
         type: BEAST_TYPES.KY_TRUNG,
         bloodline: BEAST_BLOODLINES.THANH,
         icon: '🐞',
-        image: 'beasts/thien_phong_ngan_uynh.webp',
+        image: 'aberrations/huyen-diem-nga.svg',
         description: 'Kỳ trùng quý hiếm bậc nhất, có khả năng xuyên thấu không gian và né tránh mọi công kích vật lý.',
         baseStats: { hp: 1000, atk: 500, def: 50, spd: 250 },
         abilities: ['Không Gian Xuyên Thấu', 'Ngân Quang Trảm']

@@ -764,7 +764,7 @@ export const ITEMS = {
     'tran_chau_linh_coc': {
         id: 'tran_chau_linh_coc',
         name: 'Trân Châu Linh Cốc',
-        image: 'items/herbs/tran_chau_linh_coc',
+        image: 'items/herbs/linh_coc',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🌾',
         quality: PHAP_BAO_QUALITIES.PHAM_KHI,
@@ -804,7 +804,7 @@ export const ITEMS = {
     'thanh_phuc_thao': {
         id: 'thanh_phuc_thao',
         name: 'Thanh Phục Thảo',
-        image: 'items/herbs/thanh_phuc_thao',
+        image: 'items/herbs/linh_thao_thap',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🌿',
         quality: PHAP_BAO_QUALITIES.PHAM_KHI,
@@ -1891,7 +1891,7 @@ export const ITEMS = {
         name: 'Thanh Tuyền Kiếm',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
-        image: 'items/artifacts/thanh_tuyen_kiem',
+        image: 'items/artifacts/phi_kiem_thanh_tuyen',
         icon: '🗡️',
         description: 'Phi kiếm cấp thấp, tăng nhẹ công kích và tốc độ.',
         price: 800,
@@ -2137,7 +2137,7 @@ export const ITEMS = {
         type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
         quality: PHAP_BAO_QUALITIES.TIEN_KHI,
         tier: 'TIEN_KHI',
-        image: 'items/artifacts/quang_han_linh_ngoc_bat',
+        image: 'items/artifacts/quan_han_linh_ngoc_bat',
         description: 'Bát ngọc từ Quảng Hàn cung, chứa đựng hàn khí tinh khiết của mặt trăng.',
         price: 4500000,
         stats: { maxHp: 5000, iceDmg: 400, def: 1000 },
@@ -2305,6 +2305,7 @@ export const ITEMS = {
         name: 'Trúc Phù Bút',
         type: ITEM_TYPES.BUT_VE_PHU,
         icon: '🖌️',
+        image: 'items/artifacts/thanh_phong_but',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
         price: 500,
         description: 'Bút vẽ phù làm từ linh trúc, tăng tỷ lệ thành công thêm 5%.',
@@ -2456,7 +2457,7 @@ export const ITEMS = {
     'thap_nien_hoang_tinh_thao': {
         id: 'thap_nien_hoang_tinh_thao',
         name: 'Thập Niên Hoàng Tinh Thảo',
-        image: 'items/herbs/thap_nien_hoang_tinh_thao',
+        image: 'items/herbs/linh_thao_10y',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🌿',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
@@ -2469,7 +2470,7 @@ export const ITEMS = {
     'bach_nien_uan_co_thao': {
         id: 'bach_nien_uan_co_thao',
         name: 'Bách Niên Uẩn Cổ Thảo',
-        image: 'items/herbs/bach_nien_uan_co_thao',
+        image: 'items/herbs/linh_thao_100y',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🍃',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -2482,7 +2483,7 @@ export const ITEMS = {
     'thien_nien_cuu_khuc_linh_sam': {
         id: 'thien_nien_cuu_khuc_linh_sam',
         name: 'Thiên Niên Cửu Khúc Linh Sâm',
-        image: 'items/herbs/thien_nien_cuu_khuc_linh_sam',
+        image: 'items/herbs/linh_thao_1000y',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🎋',
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
@@ -2572,7 +2573,7 @@ export const ITEMS = {
     'van_nien_huyet_linh_chi': {
         id: 'van_nien_huyet_linh_chi',
         name: 'Vạn Niên Huyết Linh Chi',
-        image: 'items/herbs/van_nien_huyet_linh_chi',
+        image: 'items/herbs/linh_thao_van_nam',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🌺',
         quality: PHAP_BAO_QUALITIES.CO_BAO,
@@ -3091,7 +3092,7 @@ export const ITEMS = {
     'dia_long_phan_thien_lu': {
         id: 'dia_long_phan_thien_lu',
         name: 'Địa Long Phần Thiên Lư',
-        image: 'items/cauldrons/dia_long_phan_thien_lu',
+        image: 'items/cauldrons/dia_lu',
         type: ITEM_TYPES.DAN_LU,
         icon: '🏺',
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
@@ -3105,7 +3106,7 @@ export const ITEMS = {
     'thien_cuc_thai_hu_lu': {
         id: 'thien_cuc_thai_hu_lu',
         name: 'Thiên Cực Thái Hư Lư',
-        image: 'items/cauldrons/thien_cuc_thai_hu_lu',
+        image: 'items/cauldrons/thien_lu',
         type: ITEM_TYPES.DAN_LU,
         icon: '🏺',
         quality: PHAP_BAO_QUALITIES.CO_BAO,
@@ -4512,7 +4513,7 @@ export const ITEMS = {
     'hoa_van_quyet': {
         id: 'hoa_van_quyet',
         name: 'Hóa Vân Quyết',
-        image: 'items/techniques/hoa_van_quyet',
+        image: 'items/techniques/hoa_van_thu',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📘',
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
@@ -4526,7 +4527,7 @@ export const ITEMS = {
     'luc_hop_vo_song': {
         id: 'luc_hop_vo_song',
         name: 'Lục Hợp Vô Song',
-        image: 'items/techniques/luc_hop_vo_song',
+        image: 'items/techniques/luc_hop_bi_dien',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📜',
         quality: PHAP_BAO_QUALITIES.LINH_BAO,
@@ -4553,7 +4554,7 @@ export const ITEMS = {
     'bat_quai_huyen_cong': {
         id: 'bat_quai_huyen_cong',
         name: 'Bát Quái Huyền Công',
-        image: 'items/techniques/bat_quai_huyen_cong',
+        image: 'items/techniques/bat_quai_chan_kinh',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📙',
         quality: PHAP_BAO_QUALITIES.LINH_BAO,
@@ -5310,7 +5311,7 @@ export const ITEMS = {
     'yeu_thu_tinh_nhuc': {
         id: 'yeu_thu_tinh_nhuc',
         name: 'Yêu Thú Tinh Nhục',
-        image: 'items/herbs/yeu_thu_tinh_nhuc',
+        image: 'items/herbs/thit_yeu_thu',
         type: ITEM_TYPES.LINH_DUOC,
         icon: '🥩',
         quality: PHAP_BAO_QUALITIES.PHAM_KHI,
@@ -5324,7 +5325,7 @@ export const ITEMS = {
     'bach_ngan_linh_moc': {
         id: 'bach_ngan_linh_moc',
         name: 'Bạch Ngân Linh Mộc',
-        image: 'items/herbs/bach_ngan_linh_moc',
+        image: 'items/herbs/linh_moc_bach',
         type: ITEM_TYPES.LINH_MOC,
         icon: '🌿',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -5338,7 +5339,7 @@ export const ITEMS = {
     'kim_linh_co_moc': {
         id: 'kim_linh_co_moc',
         name: 'Kim Linh Cổ Mộc',
-        image: 'items/herbs/kim_linh_co_moc',
+        image: 'items/herbs/kim_linh_moc',
         type: ITEM_TYPES.LINH_MOC,
         icon: '🌳',
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
@@ -5440,7 +5441,7 @@ export const ITEMS = {
     'co_bao_lu': {
         id: 'co_bao_lu',
         name: 'Cổ Bảo Lư',
-        image: 'items/cauldrons/co_bao_lu',
+        image: 'items/cauldrons/cu_bao_lu',
         type: ITEM_TYPES.DAN_LU,
         icon: '🏺',
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
