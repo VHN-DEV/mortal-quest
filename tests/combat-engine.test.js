@@ -152,4 +152,88 @@ describe('CombatEngine mechanics', () => {
       expect(mult).toBe(1.0);
     });
   });
+
+  describe('Phàm Nhân Combat Engine Upgraded Mechanics', () => {
+    it('should calculate extreme realm suppression matrix correctly', () => {
+      const mockPlayer = { advancedStats: {}, equipment: {} };
+      const enemy = { name: 'Yêu Thú Luyện Khí Kỳ', realmId: 5 }; // Tier 1
+      const engine = new CombatEngine(mockPlayer, enemy, mockOnUpdate, mockOnEnd);
+
+      // 1. Extreme superiority (Tier 3 vs Tier 1) -> 8.65x
+      const attacker1 = { realmId: 18 }; // Tier 3
+      const defender1 = { realmId: 5 }; // Tier 1
+      expect(engine.calculateRealmSuppression(attacker1, defender1)).toBe(8.65);
+
+      // 2. Overwhelming gap (Tier 4 vs Tier 1) -> 20.85x
+      const attacker2 = { realmId: 22 }; // Tier 4
+      const defender2 = { realmId: 5 }; // Tier 1
+      expect(engine.calculateRealmSuppression(attacker2, defender2)).toBe(20.85);
+
+      // 3. Absolute godlike gap (Tier 5 vs Tier 1) -> 51.05x
+      const attacker3 = { realmId: 26 }; // Tier 5
+      const defender3 = { realmId: 5 }; // Tier 1
+      expect(engine.calculateRealmSuppression(attacker3, defender3)).toBe(51.05);
+
+      // 4. Heavy suppression against much higher (Tier 1 vs Tier 3) -> 0.005x (capped)
+      expect(engine.calculateRealmSuppression(defender1, attacker1)).toBe(0.005);
+
+      // 5. Total crushing (Tier 1 vs Tier 4) -> 0.005x (capped)
+      expect(engine.calculateRealmSuppression(defender2, attacker2)).toBe(0.005);
+    });
+
+    it('should correctly process player attack with weakness and fatal strike rolls', () => {
+      // 100% weakness strike chance, 0% fatal strike
+      const player = {
+        name: 'Tu Sĩ',
+        hp: 100, maxHp: 100, mana: 50, maxMana: 50,
+        atk: 100, def: 50, spd: 50, realmId: 14,
+        advancedStats: {
+          weaknessStrikeChance: 1.0,
+          fatalStrikeChance: 0.0,
+          critDmg: 1.5,
+          fatalDmg: 3.0
+        },
+        equipment: {},
+        calculateStats: vi.fn()
+      };
+      const enemy = { name: 'Quái', hp: 1000, maxHp: 1000, atk: 50, def: 20, spd: 50, realmId: 14 };
+      const engine = new CombatEngine(player, enemy, mockOnUpdate, mockOnEnd);
+
+      // Spy Math.random
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5);
+
+      // Let's call playerAttack()
+      engine.playerAttack();
+
+      // Damage: (player.atk - enemy.def/2) * weakness strike multiplier
+      // (100 - 10) * 1.5 = 135 -> enemy.hp = 1000 - 135 = 865
+      expect(enemy.hp).toBe(865);
+
+      randomSpy.mockRestore();
+    });
+
+    it('should trigger heart demon turn penalties correctly', () => {
+      const player = {
+        name: 'Tu Sĩ',
+        hp: 100, maxHp: 100, mana: 100, maxMana: 100,
+        atk: 50, def: 50, spd: 50, realmId: 14,
+        advancedStats: { weaknessStrikeChance: 0.05, fatalStrikeChance: 0.02 },
+        equipment: {},
+        buffs: [],
+        calculateStats: vi.fn()
+      };
+      const enemy = { name: 'Quái', hp: 100, maxHp: 100, atk: 50, def: 50, spd: 50, realmId: 14 };
+      const engine = new CombatEngine(player, enemy, mockOnUpdate, mockOnEnd);
+      engine.combatHeartDemon = 60; // Thần Thức Hỗn Loạn triggerable
+      engine.turn = 0; // Player's turn
+
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.1); // triggers 20% Thần Thức Hỗn Loạn
+      const endTurnSpy = vi.spyOn(engine, 'endPlayerTurn').mockImplementation(() => {});
+
+      engine.processTurnStatus();
+
+      expect(endTurnSpy).toHaveBeenCalled();
+      randomSpy.mockRestore();
+    });
+  });
 });

@@ -47,9 +47,6 @@ export class CombatEngine {
         this.combatHeartDemon = Math.min(100, player.heartDemon || 0);
         this.combatDaoTam = Math.max(0, player.daoTam || 50);
         
-        // --- Module 4: Bản Mệnh Pháp Bảo durability within combat ---
-        const equippedArtifactId = player.equipment?.phap_bao_cong || player.lifeBoundTreasureId;
-        this.artifactCombatDurability = equippedArtifactId ? 10 : 0;
     }
 
     getEnemyMultiplier(statKey) {
@@ -216,21 +213,33 @@ export class CombatEngine {
 
         if (aMajor > dMajor) {
             const majorDiff = aMajor - dMajor;
+            const mults = { 1: 3.0, 2: 8.0, 3: 20.0 };
+            mult = mults[majorDiff] || 50.0;
             const subDiff = aRealm - dRealm;
-            mult = 1.0 + (majorDiff * 0.5) + (subDiff * 0.05); // Lore-accurate suppression
-            this.addLog(`<span class="text-cultivation-gold">Uy áp!</span> Cảnh giới cao áp chế kẻ yếu, uy lực tăng mạnh.`);
+            mult += subDiff * 0.05;
+            if (Math.random() < 0.15) {
+                this.addLog(`<span class="text-cultivation-gold">Uy áp!</span> Cảnh giới cao áp chế kẻ yếu, uy lực tăng mạnh.`);
+            }
         } else if (aMajor < dMajor) {
             const majorDiff = dMajor - aMajor;
             const subDiff = dRealm - aRealm;
-            // 60% penalty per major realm difference, plus sub-realm penalties
-            mult = Math.max(0.05, Math.pow(0.4, majorDiff) - (subDiff * 0.02));
-            this.addLog(`<span class="text-red-400">Trấn áp!</span> Cảnh giới kẻ địch quá cao, ngươi chịu áp chế cảnh giới nặng nề.`);
+            if (majorDiff === 1) {
+                mult = 0.15;
+            } else if (majorDiff === 2) {
+                mult = 0.03;
+            } else {
+                mult = 0.01;
+            }
+            mult = Math.max(0.005, mult - subDiff * 0.002);
+            if (Math.random() < 0.15) {
+                this.addLog(`<span class="text-red-400">Trấn áp!</span> Cảnh giới kẻ địch quá cao, ngươi chịu áp chế cảnh giới nặng nề.`);
+            }
         } else if (aRealm > dRealm) {
             const diff = aRealm - dRealm;
-            mult = 1.0 + (diff * 0.05); // Small bonus for sub-realm difference within same major realm
+            mult = 1.0 + (diff * 0.05);
         } else if (aRealm < dRealm) {
             const diff = dRealm - aRealm;
-            mult = Math.max(0.7, 1.0 - (diff * 0.05)); // Small penalty for sub-realm difference within same major realm
+            mult = Math.max(0.6, 1.0 - (diff * 0.05));
         }
 
         return mult;
@@ -578,10 +587,21 @@ export class CombatEngine {
             }
         }
 
+        const isPersistentStatus = (b) => {
+            if (!b) return false;
+            const cat = (b.category || '').toLowerCase();
+            const id = (b.id || '').toLowerCase();
+            return cat === 'poison' || cat === 'burn' || 
+                   id.includes('doc') || id.includes('hoa') || 
+                   id.includes('phe') || id.includes('tre') ||
+                   id === 'moc_doc' || id === 'hoa_doc' || id === 'han_doc' || id === 'loi_phe' || id === 'tho_tre';
+        };
+
         // 2. Tick down Player's persistent status effects (1 combat turn = 15 seconds)
         if (this.turn === 0 && this.player.buffs && this.player.buffs.length > 0) {
             this.player.buffs.forEach(b => {
-                if (b.duration !== undefined && b.duration !== null && b.duration !== Infinity) {
+                const isPersistent = isPersistentStatus(b);
+                if (!isPersistent && b.duration !== undefined && b.duration !== null && b.duration !== Infinity) {
                     b.duration = Math.max(0, b.duration - 15);
                     b.endTime = now + b.duration * 1000;
                 }
@@ -598,7 +618,8 @@ export class CombatEngine {
                     if (b.effects.dot_mana) {
                         const manaLoss = Math.floor(Math.abs(b.effects.dot_mana) * this.player.maxMana * 15 * stacks);
                         this.player.mana = Math.max(0, this.player.mana - manaLoss);
-                        this.addLog(`🧪 Trạng thái [${b.name}] tiêu hao pháp lực: Bản thân mất -${manaLoss} Mana!`);
+                        const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'Linh Lực';
+                        this.addLog(`🧪 Trạng thái [${b.name}] tiêu hao pháp lực: Bản thân mất -${manaLoss} ${label}!`);
                     }
                     if (b.effects.burn_lifespan) {
                         const ageInc = b.effects.burn_lifespan * 15 * stacks;
@@ -609,6 +630,8 @@ export class CombatEngine {
 
             const countBefore = this.player.buffs.length;
             this.player.buffs = this.player.buffs.filter(b => {
+                const isPersistent = isPersistentStatus(b);
+                if (isPersistent) return true;
                 if (b.duration !== undefined) {
                     return b.duration > 0 || b.duration === Infinity;
                 }
@@ -623,7 +646,8 @@ export class CombatEngine {
         // 3. Tick down Enemy's temporary status effects in combat
         if (this.turn === 1 && this.enemy.buffs && this.enemy.buffs.length > 0) {
             this.enemy.buffs.forEach(b => {
-                if (b.duration !== undefined && b.duration !== null && b.duration !== Infinity) {
+                const isPersistent = isPersistentStatus(b);
+                if (!isPersistent && b.duration !== undefined && b.duration !== null && b.duration !== Infinity) {
                     b.duration = Math.max(0, b.duration - 15);
                 }
 
@@ -643,7 +667,11 @@ export class CombatEngine {
                 }
             });
 
-            this.enemy.buffs = this.enemy.buffs.filter(b => b.duration > 0 || b.duration === Infinity);
+            this.enemy.buffs = this.enemy.buffs.filter(b => {
+                const isPersistent = isPersistentStatus(b);
+                if (isPersistent) return true;
+                return b.duration > 0 || b.duration === Infinity;
+            });
         }
 
         // Tick down player instability (backlash or secret side-effects)
@@ -658,32 +686,44 @@ export class CombatEngine {
         if (this.playerStance === 'DINH' && this.turn === 0) {
             const manaRegen = Math.floor(this.player.maxMana * (COMBAT_STANCES.DINH.manaRegen || 0.05));
             this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaRegen);
-            this.addLog(`🧘 [Thiền Định Thế] Nội tâm bình lặng, Linh Lực hồi +${manaRegen}.`);
+            const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'Linh Lực';
+            this.addLog(`🧘 [Thiền Định Thế] Nội tâm bình lặng, ${label} hồi +${manaRegen}.`);
         }
 
         // --- Module 2: Tâm Ma Bạo Phát check (Module 3 mechanic triggered here) ---
         if (this.turn === 0 && this.combatHeartDemon > 50 && this.playerStance !== 'DINH') {
-            if (Math.random() < 0.15) {
-                this.addLog(`⚠️ <span class="text-red-500 font-ancient font-bold">TÂM MA BẠO PHÁT!</span> Nội tâm hoảng loạn, ngươi mất kiểm soát lượt này!`);
-                // Lose this turn: forced random outcome
-                const roll = Math.random();
-                if (roll < 0.4) {
-                    // Miss turn entirely
-                    this.addLog(`Tâm thần mơ hồ, ngươi đứng yên không làm gì được.`);
-                } else if (roll < 0.7) {
-                    // Attack self
-                    const selfDmg = Math.floor(this.player.atk * 0.3);
-                    this.player.hp = Math.max(1, this.player.hp - selfDmg);
-                    this.addLog(`Ma ý chi phối, ngươi tự dưa chương vào chính mình, bị -${selfDmg} khí huyết!`);
-                    this.onUpdate('damage', { target: 'player', value: selfDmg, crit: false, actionType: 'tam_ma' });
-                } else {
-                    // Buff enemy
-                    this.enemy.atk = Math.floor(this.enemy.atk * 1.1);
-                    this.addLog(`Tâm ma phát độc, vô tình tiết lộ sơ hở, kẻ địch công kích tăng 10% lượt này!`);
-                }
-                this.onUpdate('combat-event', { id: 'TAM_MA_BAO_PHAT', name: 'Tâm Ma Bạo Phát', icon: '⚠️', color: '#be123c' });
+            const hd = this.combatHeartDemon;
+            
+            // 20% Thần Thức Hỗn Loạn (choáng lượt) when > 50
+            if (Math.random() < 0.20) {
+                this.addLog(`⚠️ <span class="text-purple-400 font-ancient font-bold">THẦN THỨC HỖN LOẠN!</span> Tâm ma quấy nhiễu, thần hồn hoảng hốt, ngươi đứng yên không thể hành động!`);
+                this.onUpdate('combat-event', { id: 'TAM_MA_BAO_PHAT', name: 'Thần Thức Hỗn Loạn', icon: '🧠', color: '#a855f7' });
                 this.endPlayerTurn();
                 return;
+            }
+
+            if (hd > 70 && hd <= 90) {
+                // 25% Pháp Lực Rối Loạn (tiêu hao 15% maxMana)
+                if (Math.random() < 0.25) {
+                    const manaLoss = Math.floor(this.player.maxMana * 0.15);
+                    this.player.mana = Math.max(0, this.player.mana - manaLoss);
+                    const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'linh lực';
+                    this.addLog(`⚠️ <span class="text-amber-500 font-ancient font-bold">PHÁP LỰC RỐI LOẠN!</span> Tâm ma phản phệ, linh khí hỗn loạn tiêu tán mất -${manaLoss} ${label}!`);
+                    this.onUpdate('combat-event', { id: 'TAM_MA_BAO_PHAT', name: 'Pháp Lực Rối Loạn', icon: '🌀', color: '#d97706' });
+                    this.onUpdate('damage', { target: 'player', value: 0, crit: false, actionType: 'dot' });
+                }
+            } else if (hd > 90) {
+                // > 90: 20% Tẩu Hỏa Nhập Ma (5% maxHP self-damage + instability status for 2 turns)
+                if (Math.random() < 0.20) {
+                    const selfDmg = Math.floor(this.player.maxHp * 0.05);
+                    this.player.hp = Math.max(1, this.player.hp - selfDmg);
+                    this.status.player.instability = Math.max(this.status.player.instability, 2);
+                    this.addLog(`⚠️ <span class="text-red-600 font-ancient font-bold">TẨU HỎA NHẬP MA!</span> Tâm ma xâm lấn hoàn toàn, kinh mạch nghịch chuyển tự thương, nhận -${selfDmg} HP và rơi vào trạng thái linh khí bất ổn!`);
+                    this.onUpdate('combat-event', { id: 'TAM_MA_BAO_PHAT', name: 'Tẩu Hỏa Nhập Ma', icon: '👹', color: '#dc2626' });
+                    this.onUpdate('damage', { target: 'player', value: selfDmg, crit: false, actionType: 'tam_ma' });
+                    this.endPlayerTurn();
+                    return;
+                }
             }
         }
 
@@ -823,28 +863,44 @@ export class CombatEngine {
             return;
         }
 
-        let critRate = this.player.advancedStats.critRate || 0.05;
-        critRate += (pSense - eSense) * 0.002; // Divine sense helps finding weak points
+        let weaknessChance = this.player.advancedStats.weaknessStrikeChance || this.player.advancedStats.critRate || 0.05;
+        weaknessChance += (pSense - eSense) * 0.002; // Divine sense helps finding weak points
 
-        if (this.playerAmbushBonus) {
-            critRate += 0.4;
+        let fatalChance = this.player.advancedStats.fatalStrikeChance || 0.02;
+        fatalChance += (pSense - eSense) * 0.001; // Divine sense also helps fatal strike
+
+        if (this.ambushType === 'player' || this.playerAmbushBonus) {
+            fatalChance += 0.30;
+            weaknessChance += 0.40;
             this.playerAmbushBonus = false;
         }
-        const crit = Math.random() < critRate;
 
-        const critDmg = this.player.advancedStats.critDmg || 2.0;
-        const finalDamage = crit ? Math.floor(damage * critDmg) : damage;
+        const isFatal = Math.random() < fatalChance;
+        const isWeakness = !isFatal && (Math.random() < weaknessChance);
 
-        this.enemy.hp -= finalDamage;
-        if (crit) {
-            this.addLog(`<span class="text-red-500 font-bold">BẠO KÍCH!</span> Ngươi nhìn thấu sơ hở, gây ${finalDamage} sát thương.`);
+        let finalDamage = damage;
+        let logMsg = '';
+        let isCritReport = false;
+
+        if (isFatal) {
+            finalDamage = Math.floor(damage * 3.0);
+            logMsg = `⚡☠️ <span class="text-purple-500 font-ancient font-extrabold uppercase animate-pulse">CHÍ TỬ KÍCH!</span> Đòn đánh cắn ngập vào mạch máu/yết hầu kẻ địch, gây cực hạn <span class="text-purple-400 font-bold">${finalDamage}</span> sát thương!`;
+            isCritReport = true;
+        } else if (isWeakness) {
+            const weaknessMult = this.player.advancedStats.critDmg || 1.8;
+            finalDamage = Math.floor(damage * weaknessMult);
+            logMsg = `💥 <span class="text-amber-400 font-bold">SƠ HỞ KÍCH!</span> Ngươi bắt được sơ hở trong phòng thủ, gây <span class="text-amber-300 font-bold">${finalDamage}</span> sát thương!`;
+            isCritReport = true;
         } else {
             const verb = this.getAttackVerb(this.player.race);
-            this.addLog(`Ngươi ${verb}, gây ${finalDamage} sát thương.`);
+            logMsg = `Ngươi ${verb}, gây <span class="text-white">${finalDamage}</span> sát thương.`;
         }
-        this.onUpdate('damage', { target: 'enemy', value: finalDamage, crit, actionType: 'attack' });
 
-        this.applyCombatStatusEffects(this.player, this.enemy, true, finalDamage, crit);
+        this.enemy.hp -= finalDamage;
+        this.addLog(logMsg);
+        this.onUpdate('damage', { target: 'enemy', value: finalDamage, crit: isCritReport, actionType: 'attack' });
+
+        this.applyCombatStatusEffects(this.player, this.enemy, true, finalDamage, isWeakness || isFatal);
 
         this.handlePartyAssistance(finalDamage);
         this.endPlayerTurn();
@@ -1288,8 +1344,12 @@ export class CombatEngine {
         }
 
         // Check for preparation turns
-        const prepTurns = secretData.preparationTurns || 0;
+        let prepTurns = secretData.preparationTurns || 0;
         if (prepTurns > 0 && !skipChant) {
+            if (this.combatHeartDemon > 30) {
+                prepTurns += 1;
+                this.addLog(`⚠️ <span class="text-purple-400 font-ancient">TÂM MA KHẤP KHỞI!</span> Tâm ma quấy nhiễu, thời gian niệm chú tăng thêm 1 lượt!`);
+            }
             this.playerChanting = {
                 turns: prepTurns,
                 maxTurns: prepTurns,
@@ -1336,6 +1396,14 @@ export class CombatEngine {
         if (costLifespan) this.player.age += costLifespan;
 
         this.player.secretTechniqueCooldowns[secretId] = now;
+
+        // Heart demon penalty: if > 90, using a secret technique or thần thông has 30% chance to cause backlash
+        if (this.combatHeartDemon > 90 && Math.random() < 0.3) {
+            const backlash = Math.floor(this.player.maxHp * 0.15);
+            this.player.hp = Math.max(1, this.player.hp - backlash);
+            this.addLog(`🚨 <span class="text-red-600 font-ancient font-bold">PHẢN THƯƠNG TÂM MA!</span> Ở trạng thái tột cùng Tâm Ma (>90), ngươi thi triển bí thuật bị phản phệ, chịu -${backlash} HP!`);
+            this.onUpdate('damage', { target: 'player', value: backlash, crit: false, actionType: 'backlash' });
+        }
 
         // [CATEGORY SPECIFIC BONUS] Pháp Thuật: 30% chance to refund 30% mana
         if (secretData.category === 'Pháp Thuật' && costMana > 0) {
@@ -1595,16 +1663,28 @@ export class CombatEngine {
         const effectiveEnemyAtk = Math.max(1, Math.floor(this.enemy.atk * this.getEnemyMultiplier('atk')));
         let damage = Math.max(1, (effectiveEnemyAtk - Math.floor(effectivePlayerDef / 2)) * suppression * elementalMult * (1 - dr) * (1 - allRes));
 
-        // Calculate Enemy Critical Strike
-        let critRate = this.enemy.advancedStats?.critRate || 0.05;
-        critRate += (eSense - pSense) * 0.002;
-        const crit = Math.random() < critRate;
+        // Calculate Enemy Weakness Strike (Sơ Hở)
+        let weaknessChance = this.enemy.advancedStats?.weaknessStrikeChance || this.enemy.advancedStats?.critRate || 0.05;
+        weaknessChance += (eSense - pSense) * 0.002;
+        let fatalChance = this.enemy.advancedStats?.fatalStrikeChance || 0.02;
+        fatalChance += (eSense - pSense) * 0.001;
+
+        if (this.ambushType === 'enemy') {
+            fatalChance += 0.30;
+            weaknessChance += 0.40;
+        }
+
+        const isFatal = Math.random() < fatalChance;
+        const isWeakness = !isFatal && (Math.random() < weaknessChance);
         const critDmg = this.enemy.advancedStats?.critDmg || 1.5;
 
         let attackMsg = "";
-        if (crit) {
+        if (isFatal) {
+            damage = Math.floor(damage * 3.0);
+            attackMsg = `<span class="text-purple-500 font-bold font-ancient uppercase animate-pulse">ĐỐI PHƯƠNG ĐÁNH CHÍ TỬ!</span> Đòn đánh cắn ngập mạch máu hiểm độc của ${this.enemy.name}, gây <span class="text-purple-400 font-bold">${Math.floor(damage)}</span> sát thương!`;
+        } else if (isWeakness) {
             damage = Math.floor(damage * critDmg);
-            attackMsg = `<span class="text-red-500 font-bold">ĐỐI PHƯƠNG BẠO KÍCH!</span> ${this.enemy.name} đánh trúng hiểm yếu, gây ${Math.floor(damage)} sát thương!`;
+            attackMsg = `<span class="text-red-500 font-bold">ĐỐI PHƯƠNG ĐÁNH VÀO SƠ HỞ!</span> ${this.enemy.name} đánh trúng hiểm yếu, gây ${Math.floor(damage)} sát thương!`;
         } else {
             attackMsg = `${this.enemy.name} lao đến tấn công, gây ${Math.floor(damage)} sát thương.`;
         }
@@ -1614,8 +1694,15 @@ export class CombatEngine {
             const truePart = Math.floor(effectiveEnemyAtk * 0.4);
             const normalPart = Math.max(1, effectiveEnemyAtk - Math.floor(effectivePlayerDef * 0.3));
             damage = (truePart + normalPart) * suppression * (1 - dr) * (1 - allRes);
-            if (crit) damage = Math.floor(damage * critDmg);
-            attackMsg = `${this.enemy.name} biến ảo khôn lường, xuyên qua sơ hở gây <span class="text-red-400 font-bold">${Math.floor(damage)}</span> sát thương!`;
+            if (isFatal) {
+                damage = Math.floor(damage * 3.0);
+                attackMsg = `${this.enemy.name} biến ảo khôn lường, xuyên qua sơ hở gây <span class="text-purple-400 font-bold">${Math.floor(damage)}</span> sát thương chí mạng!`;
+            } else if (isWeakness) {
+                damage = Math.floor(damage * critDmg);
+                attackMsg = `${this.enemy.name} biến ảo khôn lường, xuyên qua sơ hở gây <span class="text-red-400 font-bold">${Math.floor(damage)}</span> sát thương sơ hở!`;
+            } else {
+                attackMsg = `${this.enemy.name} biến ảo khôn lường, xuyên qua sơ hở gây <span class="text-white">${Math.floor(damage)}</span> sát thương!`;
+            }
             if (Math.random() < 0.2) {
                 this.status.player.stun = Math.max(this.status.player.stun, 1);
                 this.addLog(`Ngươi bị trấn áp, rơi vào trạng thái <span class="text-yellow-500">CHOÁNG</span>!`);
@@ -1673,7 +1760,10 @@ export class CombatEngine {
             const stanceConf = COMBAT_STANCES.THU;
             const manaGain = Math.floor(this.player.maxMana * stanceConf.manaRegen);
             this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
-            if (manaGain > 0) this.addLog(`🛡️ [Hộ Thân Thế] Linh lực phản hồi +${manaGain}.`);
+            if (manaGain > 0) {
+                const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'Linh Lực';
+                this.addLog(`🛡️ [Hộ Thân Thế] ${label} phản hồi +${manaGain}.`);
+            }
         }
         this.addLog(attackMsg);
         this.onUpdate('damage', { target: 'player', value: finalPlayerDamage, crit, actionType: 'attack' });
@@ -1837,8 +1927,10 @@ export class CombatEngine {
             this.addLog('Ngươi không có Pháp Bảo chủ chiến nào có thể triệu hồi!');
             return;
         }
-        if (this.artifactCombatDurability <= 0) {
-            this.addLog(`⚠️ Pháp bảo đã cạn linh lực trong chiến đấu, không thể tiếp tục thẩm nhập!`);
+        const cost = 30;
+        if (this.player.mana < cost) {
+            const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'Linh Lực';
+            this.addLog(`⚠️ ${label} không đủ, cần tối thiểu ${cost} để kích hoạt pháp bảo!`);
             return;
         }
         // Check recognized
@@ -1850,7 +1942,7 @@ export class CombatEngine {
         const item = getItemById(artifactId);
         if (!item) return;
 
-        this.artifactCombatDurability--;
+        this.player.mana -= cost;
 
         const itemName = item.name || 'Pháp Bảo';
         const stats = item.stats || {};
@@ -1865,6 +1957,11 @@ export class CombatEngine {
         const suppression = this.calculateRealmSuppression(this.player, this.enemy);
         const effectiveDef = Math.max(1, Math.floor(this.enemy.def * (1 - piercePct) * this.getEnemyMultiplier('def')));
         let dmg = Math.max(5, Math.floor((this.player.atk * 0.5 + atkBonus) * suppression * levelMult) - Math.floor(effectiveDef / 2));
+
+        if (this.combatHeartDemon > 70) {
+            dmg = Math.floor(dmg * 0.7);
+            this.addLog(`⚠️ <span class="text-purple-400 font-ancient">TÂM MA KHẤP KHỞI!</span> Tâm ma quấy nhiễu làm suy giảm khả năng điều khiển pháp bảo, sát thương pháp bảo giảm 30%!`);
+        }
 
         // Tier bonuses for high-grade artifacts
         const quality = item.quality?.name || item.quality || '';
@@ -1883,8 +1980,8 @@ export class CombatEngine {
         }
 
         this.enemy.hp -= dmg;
-        this.addLog(`💙 <span class="text-qi-blue font-ancient">${itemName}</span> xunhỏ lầy lộng, chiến oanh phát, gây <span class="text-qi-blue font-bold">${dmg}</span> sát thương!${tierEffect}`);
-        this.addLog(`  Dư linh lực chiến đấu còn: ${this.artifactCombatDurability} lần.`);
+        const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'Linh Lực';
+        this.addLog(`💙 <span class="text-qi-blue font-ancient">${itemName}</span> xuất kích vang dội, tiêu hao -${cost} ${label}, gây <span class="text-qi-blue font-bold">${dmg}</span> sát thương!${tierEffect}`);
         this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false, actionType: 'artifact' });
 
         // Life steal

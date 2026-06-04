@@ -316,11 +316,17 @@ export class BattleScreen {
         }
         if (this.playerManaBar) {
             gsap.to(this.playerManaBar, { width: `${Math.max(0, playerManaPercent)}%`, duration: 0.5, ease: "power2.out" });
+            const color = state.player.getEnergyColor ? state.player.getEnergyColor() : '#22d3ee';
+            this.playerManaBar.style.background = `linear-gradient(to right, ${color}d0, ${color})`;
+            this.playerManaBar.style.boxShadow = `0 0 8px ${color}60`;
         }
         
         if (this.enemyHpText) this.enemyHpText.textContent = `${Math.floor(combat.enemy.hp)}/${Math.floor(combat.enemy.maxHp)}`;
         if (this.playerHpText) this.playerHpText.textContent = `${Math.floor(state.player.hp)}/${Math.floor(state.player.maxHp)}`;
-        if (this.playerManaText) this.playerManaText.textContent = `${Math.floor(state.player.mana)}/${Math.floor(state.player.maxMana)}`;
+        if (this.playerManaText) {
+            const label = state.player.getEnergyLabel ? state.player.getEnergyLabel() : 'Pháp Lực';
+            this.playerManaText.textContent = `${label} ${Math.floor(state.player.mana)}/${Math.floor(state.player.maxMana)}`;
+        }
     }
 
     updateTurnIndicator(turn) {
@@ -779,12 +785,14 @@ export class BattleScreen {
         if (this.btnArtifact && state.currentCombat) {
             const artifactId = state.player.equipment?.phap_bao_cong || state.player.lifeBoundTreasureId;
             const isRecognized = artifactId && (state.player.recognizedItems || []).includes(artifactId);
-            const hasDurability = state.currentCombat.artifactCombatDurability > 0;
-            if (isRecognized && hasDurability) {
+            if (isRecognized) {
                 this.btnArtifact.classList.remove('hidden');
                 if (this.btnArtifactLabel) {
-                    const durLeft = state.currentCombat.artifactCombatDurability;
-                    this.btnArtifactLabel.textContent = `Pháp Bảo (${durLeft})`;
+                    const energyLabel = state.player.getEnergyLabel ? state.player.getEnergyLabel() : 'Linh Lực';
+                    let shortLabel = 'L.Lực';
+                    if (energyLabel === 'Chân Nguyên') shortLabel = 'C.Nguyên';
+                    else if (energyLabel === 'Thiên Địa Nguyên Khí') shortLabel = 'Nguyên Khí';
+                    this.btnArtifactLabel.textContent = `Pháp Bảo (30 ${shortLabel})`;
                 }
             } else {
                 this.btnArtifact.classList.add('hidden');
@@ -931,7 +939,13 @@ export class BattleScreen {
         const senseEl = document.getElementById('enemy-stats-sense');
 
         if (hpEl) hpEl.textContent = `${Math.floor(enemy.hp)}/${Math.floor(enemy.maxHp)}`;
-        if (manaEl) manaEl.textContent = `${Math.floor(enemy.mana)}/${Math.floor(enemy.maxMana)}`;
+        if (manaEl) {
+            const label = enemy.getEnergyLabel ? enemy.getEnergyLabel() : (enemy.realmId > 17 ? 'Chân Nguyên' : 'Linh Lực');
+            if (manaEl.previousElementSibling) {
+                manaEl.previousElementSibling.textContent = label;
+            }
+            manaEl.textContent = `${Math.floor(enemy.mana)}/${Math.floor(enemy.maxMana)}`;
+        }
         if (atkEl) atkEl.textContent = Math.floor(enemy.atk);
         if (defEl) defEl.textContent = Math.floor(enemy.def);
         if (spdEl) spdEl.textContent = Math.floor(enemy.spd);
@@ -953,8 +967,8 @@ export class BattleScreen {
             const advStats = enemy.advancedStats || {};
 
             const labels = {
-                critRate: { label: 'Tỷ lệ bạo kích', val: (v) => `${Math.round(v * 100)}%`, color: 'text-red-400' },
-                critDmg: { label: 'Sát thương bạo kích', val: (v) => `${v.toFixed(1)}x`, color: 'text-red-500' },
+                critRate: { label: 'Tỷ lệ sơ hở', val: (v) => `${Math.round((advStats.weaknessStrikeChance || v) * 100)}%`, color: 'text-red-400' },
+                critDmg: { label: 'Sát thương sơ hở', val: (v) => `${v.toFixed(1)}x`, color: 'text-red-500' },
                 pierce: { label: 'Xuyên giáp', val: (v) => `${Math.round(v * 100)}%`, color: 'text-yellow-400' },
                 damageReduction: { label: 'Giảm sát thương', val: (v) => `${Math.round(v * 100)}%`, color: 'text-qi-jade' },
                 lifeSteal: { label: 'Hút máu', val: (v) => `${Math.round(v * 100)}%`, color: 'text-red-600' }

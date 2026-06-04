@@ -281,12 +281,19 @@ export class CharacterScreen {
             const mana = state.player.mana || 0;
             const maxMana = state.player.maxMana || 50;
             this.elCharMana.textContent = `${Math.floor(mana)} / ${Math.floor(maxMana)}`;
+            if (this.elCharMana.previousElementSibling) {
+                const label = state.player.getEnergyLabel ? state.player.getEnergyLabel() : 'Pháp Lực';
+                this.elCharMana.previousElementSibling.innerHTML = `<i class="ph ph-lightning text-cyan-400"></i> ${label}`;
+            }
         }
 
         if (this.elCharManaBar) {
             const mana = state.player.mana || 0;
             const maxMana = state.player.maxMana || 50;
             this.elCharManaBar.style.width = `${Math.min(100, (mana / maxMana) * 100)}%`;
+            const color = state.player.getEnergyColor ? state.player.getEnergyColor() : '#22d3ee';
+            this.elCharManaBar.style.background = `linear-gradient(to right, ${color}d0, ${color})`;
+            this.elCharManaBar.style.boxShadow = `0 0 8px ${color}60`;
         }
 
         if (this.elCharStamina) {
@@ -302,8 +309,11 @@ export class CharacterScreen {
         }
 
         if (this.elCharCritRate) {
-            const crit = state.player.advancedStats?.critRate || 0.05;
+            const crit = state.player.advancedStats?.weaknessStrikeChance || state.player.advancedStats?.critRate || 0.05;
             this.elCharCritRate.textContent = `${Math.round(crit * 100)}%`;
+            if (this.elCharCritRate.previousElementSibling) {
+                this.elCharCritRate.previousElementSibling.innerHTML = `<i class="ph ph-sparkles text-amber-500"></i> Tỷ Lệ Sơ Hở`;
+            }
         }
 
         if (this.elCharDodge) {

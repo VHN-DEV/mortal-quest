@@ -395,6 +395,51 @@ describe('Player class', () => {
       expect(player.mana).toBe(350); // 30% loss
     });
   });
+
+  describe('Phàm Nhân Tu Tiên Advanced Stats Upgrades', () => {
+    it('should map critRate to weaknessStrikeChance with backward compatibility', () => {
+      const player = new Player();
+      player.soulRealmId = 1;
+      player.calculateStats();
+      
+      expect(player.weaknessStrikeChance).toBe(0.05);
+      expect(player.fatalStrikeChance).toBe(0.02);
+      expect(player.advancedStats.critRate).toBe(0.05);
+
+      // Modify weaknessStrikeChance and check critRate
+      player.weaknessStrikeChance = 0.12;
+      expect(player.advancedStats.critRate).toBe(0.12);
+
+      // Modify critRate and check weaknessStrikeChance
+      player.advancedStats.critRate = 0.08;
+      expect(player.weaknessStrikeChance).toBe(0.08);
+      expect(player.advancedStats.weaknessStrikeChance).toBe(0.08);
+    });
+
+    it('should correctly scale weaknessStrikeChance and fatalStrikeChance based on Soul Realm level', () => {
+      const player = new Player();
+      player.soulRealmId = 5; // Level 5 Thần Hồn
+      player.calculateStats();
+      
+      // Starting is 0.05, added (5 - 1) * 0.01 = 0.04 -> 0.09
+      expect(player.weaknessStrikeChance).toBeCloseTo(0.09);
+      // Starting is 0.02, added (5 - 1) * 0.002 = 0.008 -> 0.028
+      expect(player.fatalStrikeChance).toBeCloseTo(0.028);
+    });
+
+    it('should reduce weaknessStrikeChance and fatalStrikeChance based on Heart Demon levels', () => {
+      const player = new Player();
+      player.soulRealmId = 1;
+      player.heartDemon = 40; // > 10 penalty
+      player.calculateStats();
+      
+      // hdPenalty = 1 - (40 / 200) = 0.8
+      // weaknessStrikeChance = 0.05 * 0.8 = 0.04
+      // fatalStrikeChance = 0.02 * 0.8 = 0.016
+      expect(player.weaknessStrikeChance).toBeCloseTo(0.04);
+      expect(player.fatalStrikeChance).toBeCloseTo(0.016);
+    });
+  });
 });
 
 

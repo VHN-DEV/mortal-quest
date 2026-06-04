@@ -359,6 +359,79 @@ export class Player {
         // No-op to remain synchronized with spiritualRoot.elements
     }
 
+    get linhLuc() {
+        return this.mana;
+    }
+
+    set linhLuc(val) {
+        this.mana = val;
+    }
+
+    get maxLinhLuc() {
+        return this.maxMana;
+    }
+
+    set maxLinhLuc(val) {
+        this.maxMana = val;
+    }
+
+    get chanNguyen() {
+        return this.mana;
+    }
+
+    set chanNguyen(val) {
+        this.mana = val;
+    }
+
+    get maxChanNguyen() {
+        return this.maxMana;
+    }
+
+    set maxChanNguyen(val) {
+        this.maxMana = val;
+    }
+
+    get weaknessStrikeChance() {
+        return this.advancedStats?.weaknessStrikeChance || 0.05;
+    }
+
+    set weaknessStrikeChance(val) {
+        if (this.advancedStats) this.advancedStats.weaknessStrikeChance = val;
+    }
+
+    get fatalStrikeChance() {
+        return this.advancedStats?.fatalStrikeChance || 0.02;
+    }
+
+    set fatalStrikeChance(val) {
+        if (this.advancedStats) this.advancedStats.fatalStrikeChance = val;
+    }
+
+    getEnergyLabel() {
+        const realmId = this.realmId || 1;
+        if (realmId <= 17) {
+            // Luyện Khí (1-13) & Trúc Cơ (14-17)
+            return 'Linh Lực';
+        } else if (realmId <= 29) {
+            // Kết Đan (18-21), Nguyên Anh (22-25), Hóa Thần (26-29)
+            return 'Chân Nguyên';
+        } else {
+            // Luyện Hư trở lên
+            return 'Thiên Địa Nguyên Khí';
+        }
+    }
+
+    getEnergyColor() {
+        const realmId = this.realmId || 1;
+        if (realmId <= 17) {
+            return '#3b82f6'; // Blue
+        } else if (realmId <= 29) {
+            return '#d97706'; // Amber/Gold
+        } else {
+            return '#a855f7'; // Purple (Thiên Địa Nguyên Khí)
+        }
+    }
+
     get lingShi() {
         if (!this.inventory) return 0;
         let total = 0;
@@ -2012,13 +2085,22 @@ export class Player {
         }
         
         this.advancedStats = {
-            pierce: 0, soulPierce: 0, critRate: 0.05, critDmg: 1.5,
+            pierce: 0, soulPierce: 0,
+            weaknessStrikeChance: 0.05, fatalStrikeChance: 0.02, critDmg: 1.5,
             fireDmg: 1.0, waterDmg: 1.0, thunderDmg: 1.0, woodDmg: 1.0, earthDmg: 1.0,
             windDmg: 1.0, metalDmg: 1.0, iceDmg: 1.0, poisonDmg: 1.0, swordDmg: 1.0,
             qiAbsorb: 1.0, lifeSteal: 0, alchemySuccess: 0, smithingBonus: 0, talismanSuccess: 0, puppetBonus: 0, successRate: 0,
             soulRepress: 0, perception: 5 + (soulLevel * 2), daoVun: 0, murderQi: 0,
             allRes: 0, damageReduction: 0, techniqueMastery: 1.0, dodge: 0, reflectDmg: 0
         };
+
+        // Backward compatibility mapping for critRate to weaknessStrikeChance
+        Object.defineProperty(this.advancedStats, 'critRate', {
+            get: () => this.advancedStats.weaknessStrikeChance,
+            set: (val) => { this.advancedStats.weaknessStrikeChance = val; },
+            configurable: true,
+            enumerable: true
+        });
 
         // 1. Calculate BASE STATS (from Realms)
         const realmMult = realmLevel > 0 ? Math.pow(1.8, realmLevel - 1) : 1.0;
@@ -2073,6 +2155,7 @@ export class Player {
         this.baseStats.maxMana += 60 * Math.max(0, soulLevel - 1) * soulMult;
         this.baseStats.spd += 10 * Math.max(0, soulLevel - 1) * soulMult;
         this.advancedStats.critRate += (soulLevel - 1) * 0.01;
+        this.advancedStats.fatalStrikeChance += (soulLevel - 1) * 0.002;
 
         // --- Stability & Heart Demon Penalties ---
         if (this.stability < 40) {
@@ -2085,6 +2168,7 @@ export class Player {
             const hdPenalty = 1 - (this.heartDemon / 200);
             this.baseStats.atk *= hdPenalty;
             this.advancedStats.critRate *= hdPenalty;
+            this.advancedStats.fatalStrikeChance *= hdPenalty;
         }
 
         // 1.5 Specialized Path Bonuses
