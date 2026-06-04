@@ -3368,7 +3368,7 @@ export class Game {
         console.warn('--- EMERGENCY UI RESET TRIGGERED ---');
         state.ui?.logActiveOverlays();
         state.ui?.showLoading(false);
-        const overlays = ['shop-overlay', 'guild-overlay', 'mountain-overlay', 'tower-overlay', 'sects-overlay', 'modal-overlay', 'battle-overlay', 'spirit-stone-overlay', 'item-detail', 'chase-overlay', 'guide-overlay'];
+        const overlays = ['shop-overlay', 'guild-overlay', 'mountain-overlay', 'tower-overlay', 'sects-overlay', 'modal-overlay', 'battle-overlay', 'ambush-overlay', 'spirit-stone-overlay', 'item-detail', 'chase-overlay', 'guide-overlay'];
         overlays.forEach(id => {
             const el = document.getElementById(id);
             if (el) state.ui.toggleOverlay(el, false);

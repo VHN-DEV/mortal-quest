@@ -1137,7 +1137,8 @@ export class CombatEngine {
         } else if (data.effect?.type === 'escape') {
             this.addLog(`Ngươi dùng ${data.name} thoát chiến.`);
             this.isActive = false;
-            this.onEnd('escape');
+            this.onUpdate('end');
+            setTimeout(() => this.onEnd('escape'), 1500);
             return;
         }
         this.endPlayerTurn();
@@ -1365,8 +1366,9 @@ export class CombatEngine {
 
         if (secretData.effects?.type === 'escape' || secretData.type === 'escape') {
             this.addLog(`Ngươi thi triển ${secretData.name} và thoát khỏi trận chiến!`);
-            setTimeout(() => this.onEnd('escape'), 1000);
             this.isActive = false;
+            this.onUpdate('end');
+            setTimeout(() => this.onEnd('escape'), 1000);
             return;
         }
 
