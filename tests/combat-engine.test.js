@@ -237,6 +237,7 @@ describe('CombatEngine mechanics', () => {
     });
 
     it('should correctly handle Thần Thức (Divine Sense) resource and actions', () => {
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.9);
       const player = {
         name: 'Tu Sĩ',
         hp: 100, maxHp: 100, mana: 100, maxMana: 100,
@@ -280,6 +281,8 @@ describe('CombatEngine mechanics', () => {
       expect(player.mana).toBe(80);
       // costThanThuc = 15 -> thanThuc becomes 35
       expect(player.thanThuc).toBe(35);
+
+      randomSpy.mockRestore();
     });
   });
 

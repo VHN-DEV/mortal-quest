@@ -35,6 +35,9 @@ export class CombatEngine {
         this.enemy.buffs = this.enemy.buffs || [];
         this.turnOrder = [];
         this.calculateTurnOrder();
+
+        this.playerGauge = 0;
+        this.enemyGauge = 0;
         
         // --- Module 1: Chiến Thế (Combat Stance) ---
         this.playerStance = 'NONE';
@@ -299,14 +302,28 @@ export class CombatEngine {
     start() {
         if (this.ambushType === 'player') {
             this.addLog(`<span class="text-red-500 font-bold">TẬP KÍCH THÀNH CÔNG!</span> Ngươi giành được tiên cơ, lần công kích đầu tiên tăng mạnh bạo kích.`);
-            this.turn = 0;
+            this.playerGauge = 100;
+            this.enemyGauge = 0;
             this.playerAmbushBonus = true;
         } else if (this.ambushType === 'enemy') {
             this.addLog(`<span class="text-red-600 font-bold">BỊ TẬP KÍCH!</span> Đối phương xuất hiện bất ngờ, ngươi rơi vào thế bị động.`);
-            this.turn = 1;
+            this.playerGauge = 0;
+            this.enemyGauge = 100;
         } else {
             this.addLog(`Khởi động cuộc chiến với ${this.enemy.name}!`);
-            this.turn = this.turnOrder[0].id === 'player' ? 0 : 1;
+            const pSense = (this.player.advancedStats?.perception || 10) * 0.1;
+            const eSense = (this.enemy.perception || 10) * 0.1;
+            const pSpd = Math.max(1, this.player.spd + pSense);
+            const eSpd = Math.max(1, (this.enemy.spd + eSense) * this.getEnemyMultiplier('spd'));
+            
+            // Give a head start based on relative speed
+            if (pSpd >= eSpd) {
+                this.playerGauge = 50;
+                this.enemyGauge = 50 * (eSpd / pSpd);
+            } else {
+                this.enemyGauge = 50;
+                this.playerGauge = 50 * (pSpd / eSpd);
+            }
         }
         this.nextTurn();
     }
@@ -319,13 +336,51 @@ export class CombatEngine {
 
     nextTurn() {
         if (!this.isActive) return;
+
+        const pSense = (this.player.advancedStats?.perception || 10) * 0.1;
+        const eSense = (this.enemy.perception || 10) * 0.1;
+        const pSpd = Math.max(1, this.player.spd + pSense);
+        const eSpd = Math.max(1, (this.enemy.spd + eSense) * this.getEnemyMultiplier('spd'));
+
+        // Tick gauges until at least one reaches or exceeds 100
+        while (this.playerGauge < 100 && this.enemyGauge < 100) {
+            const timeToPlayer = (100 - this.playerGauge) / pSpd;
+            const timeToEnemy = (100 - this.enemyGauge) / eSpd;
+            const timeToTick = Math.min(timeToPlayer, timeToEnemy);
+            
+            if (timeToTick <= 0 || isNaN(timeToTick) || timeToTick === Infinity) {
+                this.playerGauge += pSpd * 0.1;
+                this.enemyGauge += eSpd * 0.1;
+            } else {
+                this.playerGauge += pSpd * timeToTick;
+                this.enemyGauge += eSpd * timeToTick;
+            }
+        }
+
+        // Determine who gets the turn (with tie-breaker if both are ready)
+        if (this.playerGauge >= 100 && this.enemyGauge >= 100) {
+            this.turn = this.turn === 1 ? 0 : 1;
+        } else if (this.playerGauge >= 100) {
+            this.turn = 0;
+        } else {
+            this.turn = 1;
+        }
         this.processTurnStatus();
         if (!this.isActive) return;
         
         this.onUpdate('turn', { turn: this.turn });
 
         if (this.turn === 1) {
-            this.enemyTurn();
+            if (this.status.enemy.stun > 0) {
+                this.status.enemy.stun--;
+                this.addLog(`${this.enemy.name} đang bị <span class='text-yellow-500'>CHOÁNG</span>, không thể hành động!`);
+                this.enemyGauge = Math.max(0, this.enemyGauge - 100);
+                setTimeout(() => {
+                    this.nextTurn();
+                }, 1000);
+            } else {
+                this.enemyTurn();
+            }
         } else {
             // [SONG TU BENEFIT & BACKLASH]
             if (this.player.mainDualId) {
@@ -358,11 +413,11 @@ export class CombatEngine {
                 this.playerChanting.turns--;
                 this.addLog(`Đang tích tụ linh lực cho <span class="text-cultivation-gold">${this.playerChanting.name}</span>... (Còn ${this.playerChanting.turns} lượt)`);
                 
+                this.playerGauge = Math.max(0, this.playerGauge - 100);
                 if (this.playerChanting.turns <= 0) {
                     this.executeChanting();
                 } else {
                     setTimeout(() => {
-                        this.turn = 1;
                         this.nextTurn();
                     }, 1500);
                 }
@@ -372,8 +427,8 @@ export class CombatEngine {
             if (this.status.player.stun > 0) {
                 this.status.player.stun--;
                 this.addLog("Ngươi đang bị <span class='text-yellow-500'>CHOÁNG</span>, không thể hành động!");
+                this.playerGauge = Math.max(0, this.playerGauge - 100);
                 setTimeout(() => {
-                    this.turn = 1;
                     this.nextTurn();
                 }, 1000);
             } else {
@@ -419,7 +474,7 @@ export class CombatEngine {
                 if (pill.quantity <= 0) this.enemy.inventory.splice(pillIndex, 1);
 
                 setTimeout(() => {
-                    this.turn = 0;
+                    this.enemyGauge = Math.max(0, this.enemyGauge - 100);
                     this.nextTurn();
                 }, 1500);
                 return;
@@ -487,7 +542,7 @@ export class CombatEngine {
             this.player.hp = 0;
             this.lose();
         } else {
-            this.turn = 0;
+            this.enemyGauge = Math.max(0, this.enemyGauge - 100);
             this.nextTurn();
         }
     }
@@ -517,7 +572,7 @@ export class CombatEngine {
             this.lose();
         } else {
             setTimeout(() => {
-                this.turn = 0;
+                this.enemyGauge = Math.max(0, this.enemyGauge - 100);
                 this.nextTurn();
             }, 1000);
         }
@@ -575,7 +630,8 @@ export class CombatEngine {
             this.isActive = true;
             this.enemyCannotEscape = true; // Lock enemy escape
             this.addLog("<span class='text-qi-blue font-bold'>Ngươi dồn lực truy kích, thành công giữ chân kẻ địch! Đối thủ không thể chạy trốn được nữa!</span>");
-            this.turn = 0; // Player gets to move
+            this.turn = 1; 
+            this.enemyGauge = Math.max(0, this.enemyGauge - 100);
             this.nextTurn();
             return true;
         } else {
@@ -827,7 +883,7 @@ export class CombatEngine {
             this.enemy.hp = 0;
             this.win();
         } else {
-            this.turn = 1;
+            this.playerGauge = Math.max(0, this.playerGauge - 100);
             this.nextTurn();
         }
     }
@@ -972,7 +1028,7 @@ export class CombatEngine {
     playerDodge() {
         this.playerDodging = true;
         this.addLog("Ngươi triển khai thân pháp ảo ảnh, tăng khả năng né tránh lượt tới.");
-        this.turn = 1;
+        this.playerGauge = Math.max(0, this.playerGauge - 100);
         this.nextTurn();
     }
 
@@ -1018,7 +1074,7 @@ export class CombatEngine {
             this.addLog(`☸️ [Phật Tu] Hộ Thể Kim Quang kích hoạt: Nhận +${shieldAmt} Giáp Hộ Thân và hồi phục +${healAmt} khí huyết!`);
         }
 
-        this.turn = 1;
+        this.playerGauge = Math.max(0, this.playerGauge - 100);
         this.nextTurn();
     }
 
@@ -1163,7 +1219,7 @@ export class CombatEngine {
             this.enemy.hp = 0;
             this.win();
         } else {
-            this.turn = 1;
+            this.playerGauge = Math.max(0, this.playerGauge - 100);
             this.nextTurn();
         }
     }
@@ -1642,7 +1698,7 @@ export class CombatEngine {
             this.enemy.hp = 0;
             this.win();
         } else {
-            this.turn = 1;
+            this.playerGauge = Math.max(0, this.playerGauge - 100);
             this.nextTurn();
         }
     }
@@ -1668,7 +1724,7 @@ export class CombatEngine {
         if (Math.random() > hitChance) {
             this.addLog(`${this.enemy.name} tấn công nhưng ngươi đã né tránh thành công!`);
             this.onUpdate('damage', { target: 'player', value: 0, crit: false, actionType: 'miss' });
-            this.turn = 0;
+            this.enemyGauge = Math.max(0, this.enemyGauge - 100);
             this.nextTurn();
             return;
         }
@@ -1813,7 +1869,7 @@ export class CombatEngine {
             this.player.hp = 0;
             this.lose();
         } else {
-            this.turn = 0;
+            this.enemyGauge = Math.max(0, this.enemyGauge - 100);
             this.nextTurn();
         }
     }
