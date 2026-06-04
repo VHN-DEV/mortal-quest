@@ -35,6 +35,8 @@ export class BattleScreen {
         this.playerHpText = document.getElementById('player-hp-text');
         this.playerManaBar = document.getElementById('battle-player-mana');
         this.playerManaText = document.getElementById('player-mana-text');
+        this.playerThanThucBar = document.getElementById('battle-player-than-thuc');
+        this.playerThanThucText = document.getElementById('player-than-thuc-text');
         this.playerImg = document.getElementById('battle-player-img');
         this.playerStatusContainer = document.getElementById('player-status-effects');
         
@@ -307,6 +309,7 @@ export class BattleScreen {
         const enemyHpPercent = (combat.enemy.hp / combat.enemy.maxHp) * 100;
         const playerHpPercent = (state.player.hp / state.player.maxHp) * 100;
         const playerManaPercent = (state.player.mana / state.player.maxMana) * 100;
+        const playerThanThucPercent = ((state.player.thanThuc || 0) / (state.player.maxThanThuc || 50)) * 100;
         
         if (this.enemyHpBar) {
             gsap.to(this.enemyHpBar, { width: `${Math.max(0, enemyHpPercent)}%`, duration: 0.5, ease: "power2.out" });
@@ -320,12 +323,18 @@ export class BattleScreen {
             this.playerManaBar.style.background = `linear-gradient(to right, ${color}d0, ${color})`;
             this.playerManaBar.style.boxShadow = `0 0 8px ${color}60`;
         }
+        if (this.playerThanThucBar) {
+            gsap.to(this.playerThanThucBar, { width: `${Math.max(0, playerThanThucPercent)}%`, duration: 0.5, ease: "power2.out" });
+        }
         
         if (this.enemyHpText) this.enemyHpText.textContent = `${Math.floor(combat.enemy.hp)}/${Math.floor(combat.enemy.maxHp)}`;
         if (this.playerHpText) this.playerHpText.textContent = `${Math.floor(state.player.hp)}/${Math.floor(state.player.maxHp)}`;
         if (this.playerManaText) {
             const label = state.player.getEnergyLabel ? state.player.getEnergyLabel() : 'Pháp Lực';
             this.playerManaText.textContent = `${label} ${Math.floor(state.player.mana)}/${Math.floor(state.player.maxMana)}`;
+        }
+        if (this.playerThanThucText) {
+            this.playerThanThucText.textContent = `TS ${Math.floor(state.player.thanThuc || 0)}/${Math.floor(state.player.maxThanThuc || 50)}`;
         }
     }
 
@@ -949,7 +958,7 @@ export class BattleScreen {
         if (atkEl) atkEl.textContent = Math.floor(enemy.atk);
         if (defEl) defEl.textContent = Math.floor(enemy.def);
         if (spdEl) spdEl.textContent = Math.floor(enemy.spd);
-        if (senseEl) senseEl.textContent = Math.floor(enemy.perception);
+        if (senseEl) senseEl.textContent = Math.floor(enemy.divineSense || enemy.maxThanThuc || enemy.perception || 50);
 
         const comprehensionEl = document.getElementById('enemy-stats-comprehension');
         const physiqueEl = document.getElementById('enemy-stats-physique');

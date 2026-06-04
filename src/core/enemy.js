@@ -99,6 +99,13 @@ export class Enemy {
         this.perception = Math.floor(10 + (this.realmId * 2) + (this.divineSense / 5));
         this.perception = Math.round(this.perception * variance);
 
+        this.maxThanThuc = Math.floor(this.divineSense || 50);
+        if (this.thanThuc === undefined) {
+            this.thanThuc = this.maxThanThuc;
+        } else {
+            this.thanThuc = Math.min(this.maxThanThuc, this.thanThuc);
+        }
+
         // Initialize Advanced Stats
         this.advancedStats = {
             pierce: 0,

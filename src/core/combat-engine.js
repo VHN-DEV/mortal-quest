@@ -573,6 +573,15 @@ export class CombatEngine {
     processTurnStatus() {
         const now = Date.now();
 
+        // Passive Thần Thức regeneration per turn
+        if (this.turn === 0) {
+            const recovery = 2 + Math.floor((this.player.maxThanThuc || 50) * 0.02);
+            this.player.thanThuc = Math.min(this.player.maxThanThuc || 50, (this.player.thanThuc || 0) + recovery);
+        } else if (this.turn === 1 && this.enemy) {
+            const recovery = 2 + Math.floor((this.enemy.maxThanThuc || 50) * 0.02);
+            this.enemy.thanThuc = Math.min(this.enemy.maxThanThuc || 50, (this.enemy.thanThuc || 0) + recovery);
+        }
+
         // 1. Tick down enemy standard burn
         if (this.status.enemy.burn > 0 && this.enemy.hp > 0) {
             const burnDmg = Math.max(1, Math.floor(this.status.enemy.burnPower));
@@ -999,31 +1008,31 @@ export class CombatEngine {
     }
 
     playerSoulRepress() {
-        const costMana = 30;
-        if (this.player.mana < costMana) {
-            this.addLog("Linh lực không đủ để thi triển Nhiếp Hồn!");
+        const costThanThuc = 25;
+        if ((this.player.thanThuc || 0) < costThanThuc) {
+            this.addLog("Thần Thức không đủ để thi triển Thần Thức Trấn Áp!");
             return;
         }
-        this.player.mana -= costMana;
+        this.player.thanThuc = Math.max(0, (this.player.thanThuc || 0) - costThanThuc);
 
-        this.addLog("<span class='text-qi-purple font-ancient'>Thần Thức Trấn Áp!</span> Ngươi giải phóng thần hải hồn lực khổng lồ oanh tạc thần hồn đối phương.");
+        this.addLog("<span class='text-qi-purple font-ancient'>Thần Thức Trấn Áp!</span> Ngươi giải phóng thần hải hồn lực khổng lồ oanh tạc thần hồn đối phương (tiêu hao -25 Thần Thức).");
 
         const suppression = this.calculateRealmSuppression(this.player, this.enemy);
         
-        // Soul Damage scales with Perception (Divine Sense) and Soul Realm level
-        const perception = this.player.advancedStats?.perception || 10;
+        // Soul Damage scales with maxThanThuc (Divine Sense capacity) and Soul Realm level
+        const maxThanThuc = this.player.maxThanThuc || 50;
         const soulRealm = this.player.specializedPaths?.soul_path?.realmId || 1;
         
-        let damage = Math.floor((perception * 3 + soulRealm * 25) * suppression);
+        let damage = Math.floor((maxThanThuc * 1.5 + soulRealm * 35) * suppression);
         const finalDmg = Math.max(1, damage);
 
         this.enemy.hp -= finalDmg;
         this.addLog(`Thần hồn đối phương rung động dữ dội, chịu <span class="text-purple-400 font-bold">${finalDmg}</span> hồn thương!`);
         this.onUpdate('damage', { target: 'enemy', value: finalDmg, crit: false, actionType: 'soul-repress' });
 
-        // Chance to stun: 30% + (perception diff * 1%)
-        const ePerception = this.enemy.perception || 10;
-        const stunChance = 0.3 + (perception - ePerception) * 0.01;
+        // Chance to stun: 30% + (Thần Thức chênh lệch * 0.5%)
+        const eMaxThanThuc = this.enemy.maxThanThuc || 50;
+        const stunChance = 0.3 + (maxThanThuc - eMaxThanThuc) * 0.005;
         if (Math.random() < stunChance) {
             this.status.enemy.stun = Math.max(this.status.enemy.stun || 0, 1);
             this.addLog(`<span class="text-yellow-400 font-bold">CHOÁNG VÁNG!</span> Thần hồn đối phương bị đánh trúng, lâm vào trạng thái ngốc trệ.`);
@@ -1905,14 +1914,17 @@ export class CombatEngine {
     // MODULE 3: Luyện Tâm (Meditate)
     // ─────────────────────────────────────────────────────────────────────────
     playerMeditate() {
-        // Calm the heart demon, regen some mana, sacrifice the turn
+        // Calm the heart demon, regen some mana and divine sense, sacrifice the turn
         const heartDemonReduce = 5;
         const manaGain = Math.floor(this.player.maxMana * 0.08);
+        const thanThucGain = Math.floor((this.player.maxThanThuc || 50) * 0.15);
 
         this.combatHeartDemon = Math.max(0, this.combatHeartDemon - heartDemonReduce);
         this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
+        this.player.thanThuc = Math.min(this.player.maxThanThuc || 50, (this.player.thanThuc || 0) + thanThucGain);
         
-        this.addLog(`🧘 <span class="text-purple-400 font-ancient">Luyện Tâm!</span> Ngươi thu tâm thần, hóa giải Tâm Ma (-${heartDemonReduce}), hồi Lính Lực +${manaGain}.`);
+        const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'Linh Lực';
+        this.addLog(`🧘 <span class="text-purple-400 font-ancient">Luyện Tâm!</span> Ngươi thu tâm thần, hóa giải Tâm Ma (-${heartDemonReduce}), hồi ${label} +${manaGain}, hồi Thần Thức +${thanThucGain}.`);
         this.onUpdate('damage', { target: 'player', value: 0, crit: false, actionType: 'meditate' });
         
         this.endPlayerTurn();
@@ -1927,10 +1939,15 @@ export class CombatEngine {
             this.addLog('Ngươi không có Pháp Bảo chủ chiến nào có thể triệu hồi!');
             return;
         }
-        const cost = 30;
-        if (this.player.mana < cost) {
+        const costMana = 20;
+        const costThanThuc = 15;
+        if (this.player.mana < costMana) {
             const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'Linh Lực';
-            this.addLog(`⚠️ ${label} không đủ, cần tối thiểu ${cost} để kích hoạt pháp bảo!`);
+            this.addLog(`⚠️ ${label} không đủ, cần tối thiểu ${costMana} để kích hoạt pháp bảo!`);
+            return;
+        }
+        if ((this.player.thanThuc || 0) < costThanThuc) {
+            this.addLog(`⚠️ Thần Thức không đủ, cần tối thiểu ${costThanThuc} để ngự dịch pháp bảo!`);
             return;
         }
         // Check recognized
@@ -1942,7 +1959,8 @@ export class CombatEngine {
         const item = getItemById(artifactId);
         if (!item) return;
 
-        this.player.mana -= cost;
+        this.player.mana -= costMana;
+        this.player.thanThuc = Math.max(0, (this.player.thanThuc || 0) - costThanThuc);
 
         const itemName = item.name || 'Pháp Bảo';
         const stats = item.stats || {};
@@ -1981,7 +1999,7 @@ export class CombatEngine {
 
         this.enemy.hp -= dmg;
         const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'Linh Lực';
-        this.addLog(`💙 <span class="text-qi-blue font-ancient">${itemName}</span> xuất kích vang dội, tiêu hao -${cost} ${label}, gây <span class="text-qi-blue font-bold">${dmg}</span> sát thương!${tierEffect}`);
+        this.addLog(`💙 <span class="text-qi-blue font-ancient">${itemName}</span> xuất kích vang dội, tiêu hao -${costMana} ${label} & -${costThanThuc} Thần Thức, gây <span class="text-qi-blue font-bold">${dmg}</span> sát thương!${tierEffect}`);
         this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false, actionType: 'artifact' });
 
         // Life steal

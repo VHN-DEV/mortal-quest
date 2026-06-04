@@ -29,6 +29,8 @@ export class CharacterScreen {
         this.elCharManaBar = document.getElementById('char-mana-bar');
         this.elCharStamina = document.getElementById('char-stamina');
         this.elCharStaminaBar = document.getElementById('char-stamina-bar');
+        this.elCharThanThuc = document.getElementById('char-than-thuc');
+        this.elCharThanThucBar = document.getElementById('char-than-thuc-bar');
         this.elCharCritRate = document.getElementById('char-crit-rate');
         this.elCharDodge = document.getElementById('char-dodge');
         this.elCharAge = document.getElementById('char-age');
@@ -306,6 +308,18 @@ export class CharacterScreen {
             const stamina = state.player.stamina || 0;
             const maxStamina = state.player.maxStamina || 100;
             this.elCharStaminaBar.style.width = `${Math.min(100, (stamina / maxStamina) * 100)}%`;
+        }
+
+        if (this.elCharThanThuc) {
+            const thanThuc = state.player.thanThuc || 0;
+            const maxThanThuc = state.player.maxThanThuc || 50;
+            this.elCharThanThuc.textContent = `${Math.floor(thanThuc)} / ${Math.floor(maxThanThuc)}`;
+        }
+
+        if (this.elCharThanThucBar) {
+            const thanThuc = state.player.thanThuc || 0;
+            const maxThanThuc = state.player.maxThanThuc || 50;
+            this.elCharThanThucBar.style.width = `${Math.min(100, (thanThuc / maxThanThuc) * 100)}%`;
         }
 
         if (this.elCharCritRate) {

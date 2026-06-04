@@ -3161,15 +3161,15 @@ export class Game {
         if (overrideImage) enemy.image = overrideImage;
         this.pendingEncounter = { worldId, locId, enemy, onEnd };
 
-        const playerPerc = state.player.advancedStats.perception || 5;
-        const enemyPerc = enemy.perception || 5;
-        const roll = Math.random() * 10 - 5;
+        const playerSense = state.player.divineSense || 50;
+        const enemySense = enemy.divineSense || enemy.maxThanThuc || 50;
+        const roll = Math.random() * 40 - 20;
 
-        if (playerPerc > enemyPerc + roll) {
+        if (playerSense > enemySense + roll) {
             const elDesc = document.getElementById('ambush-desc');
             if (elDesc) elDesc.textContent = `Thần thức nhạy bén giúp ngươi phát hiện một con ${enemy.name} đang ẩn nấp phía trước. Ngươi có muốn tập kích nó không?`;
             state.ui.toggleOverlay(document.getElementById('ambush-overlay'), true);
-        } else if (enemyPerc > playerPerc + (Math.random() * 10)) {
+        } else if (enemySense > playerSense + (Math.random() * 40)) {
             state.ui.toast(`Ngươi bị một con ${enemy.name} tập kích bất ngờ!`, 'error');
             setTimeout(() => this.startBattle(enemy, null, onEnd), 1000);
         } else {

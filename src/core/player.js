@@ -318,6 +318,8 @@ export class Player {
         this.baseDaoTam = 50;
         this.divineSense = 50;   // Thần thức: Khống chế pháp bảo
         this.baseDivineSense = 50;
+        this.maxThanThuc = 50;
+        this.thanThuc = 50;
         this.physiqueTalent = 50; // Căn cốt: HP và thể tu
         this.basePhysiqueTalent = 50;
 
@@ -2768,6 +2770,12 @@ export class Player {
 
         this.hp = Math.min(this.hp, this.maxHp);
         this.mana = Math.min(this.mana, this.maxMana);
+        this.maxThanThuc = Math.floor(this.divineSense || 50);
+        if (this.thanThuc === undefined) {
+            this.thanThuc = this.maxThanThuc;
+        } else {
+            this.thanThuc = Math.min(this.maxThanThuc, this.thanThuc);
+        }
     }
 
     applySetBonuses(equippedIds) {
@@ -4134,6 +4142,8 @@ export class Player {
             baseDaoTam: this.baseDaoTam || 50,
             divineSense: this.divineSense || 50,
             baseDivineSense: this.baseDivineSense || 50,
+            thanThuc: this.thanThuc !== undefined ? this.thanThuc : (this.divineSense || 50),
+            maxThanThuc: this.maxThanThuc !== undefined ? this.maxThanThuc : (this.divineSense || 50),
             physiqueTalent: this.physiqueTalent || 50,
             basePhysiqueTalent: this.basePhysiqueTalent || 50,
             fame: this.fame,
@@ -4635,6 +4645,8 @@ export class Player {
         this.daoTam = data.daoTam || 50;
         this.baseDivineSense = data.baseDivineSense !== undefined ? data.baseDivineSense : (data.divineSense || 50);
         this.divineSense = data.divineSense || 50;
+        this.maxThanThuc = data.maxThanThuc !== undefined ? data.maxThanThuc : (this.divineSense || 50);
+        this.thanThuc = data.thanThuc !== undefined ? data.thanThuc : this.maxThanThuc;
         this.basePhysiqueTalent = data.basePhysiqueTalent !== undefined ? data.basePhysiqueTalent : (data.physiqueTalent || 50);
         this.physiqueTalent = data.physiqueTalent || 50;
         this.fame = data.fame || 0;

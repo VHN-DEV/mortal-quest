@@ -235,5 +235,51 @@ describe('CombatEngine mechanics', () => {
       expect(endTurnSpy).toHaveBeenCalled();
       randomSpy.mockRestore();
     });
+
+    it('should correctly handle Thần Thức (Divine Sense) resource and actions', () => {
+      const player = {
+        name: 'Tu Sĩ',
+        hp: 100, maxHp: 100, mana: 100, maxMana: 100,
+        atk: 50, def: 50, spd: 50, realmId: 14,
+        maxThanThuc: 100, thanThuc: 50,
+        advancedStats: { weaknessStrikeChance: 0.05, fatalStrikeChance: 0.02 },
+        equipment: { phap_bao_cong: 'thanh_hong_kiem' },
+        recognizedItems: ['thanh_hong_kiem'],
+        buffs: [],
+        calculateStats: vi.fn()
+      };
+      const enemy = { name: 'Quái', hp: 500, maxHp: 500, atk: 50, def: 50, spd: 50, realmId: 14, maxThanThuc: 50, thanThuc: 50 };
+      
+      const engine = new CombatEngine(player, enemy, mockOnUpdate, mockOnEnd);
+
+      // Test passive regeneration
+      engine.turn = 0;
+      engine.processTurnStatus();
+      // Recovery = 2 + 2% maxThanThuc = 2 + 2 = 4 -> thanThuc becomes 54
+      expect(player.thanThuc).toBe(54);
+
+      // Test Luyện Tâm (Meditate) Thần Thức recovery
+      player.thanThuc = 50;
+      engine.playerMeditate();
+      // recovery = 15% maxThanThuc = 15 -> thanThuc becomes 65
+      expect(player.thanThuc).toBe(65);
+
+      // Test Thần Thức Trấn Áp (Soul Repress) consumption & damage
+      player.thanThuc = 50;
+      engine.playerSoulRepress();
+      // cost = 25 -> thanThuc becomes 25
+      expect(player.thanThuc).toBe(25);
+      // damage is calculated and enemy hp decreases
+      expect(enemy.hp).toBeLessThan(500);
+
+      // Test Artifact Attack consumption of both mana & thanThuc
+      player.mana = 100;
+      player.thanThuc = 50;
+      engine.playerArtifactAttack();
+      // costMana = 20 -> mana becomes 80
+      expect(player.mana).toBe(80);
+      // costThanThuc = 15 -> thanThuc becomes 35
+      expect(player.thanThuc).toBe(35);
+    });
   });
 });
