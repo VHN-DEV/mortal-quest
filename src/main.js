@@ -370,8 +370,10 @@ window.renderMainStats = () => {
     if (!player) return;
 
     // 1. Render global stats (Header & Time HUD) - always update with dirty checking!
-    const realm = player.getCurrentRealm();
-    updateCachedText('current-realm', realm.name);
+    const realm = player.getCurrentRealm('tuvi', true);
+    const currentWorld = WORLDS[player.currentWorldId || 'nhan_gioi'];
+    const isSuppressed = currentWorld && currentWorld.maxRealmLimit !== undefined && player.realmId > currentWorld.maxRealmLimit;
+    updateCachedText('current-realm', isSuppressed ? `${realm.name} (Áp Chế)` : realm.name);
 
     updateCachedHtml('ling-shi-text', player.getFormattedLingShi());
     updateCachedText('header-stamina-text', `${Math.floor(player.stamina)}/${player.maxStamina}`);

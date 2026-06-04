@@ -8,6 +8,7 @@ import { getGenderLabel } from '../../configs/display-mappers.js';
 import { CULTIVATION_PATHS } from '../../configs/cultivation-paths.js';
 import { ELEMENT_TYPES, STATUS_EFFECT_CATEGORIES, PHYSIQUE_GRADES, PHYSIQUE_STAGES, GAME_STATS } from '../../configs/game-enums.js';
 import { NATAL_TREASURE_CONFIGS } from '../../configs/artifact-data.js';
+import { WORLDS } from '../../configs/map-data.js';
 
 /**
  * Quản lý giao diện chỉ số nhân vật, cảnh giới và các thông tin liên quan.
@@ -402,13 +403,15 @@ export class CharacterScreen {
         }
 
         // Render Realms & Progress
-        const tuviRealm = state.player.getCurrentRealm('tuvi');
+        const currentWorld = WORLDS[state.player.currentWorldId || 'nhan_gioi'];
+        const isSuppressed = currentWorld && currentWorld.maxRealmLimit !== undefined && state.player.realmId > currentWorld.maxRealmLimit;
+        const tuviRealm = state.player.getCurrentRealm('tuvi', true);
         const bodyRealm = state.player.getCurrentRealm('body');
         const soulRealm = state.player.getCurrentRealm('soul');
 
         // Main Realm Bar
         if (this.elCharRealmName) {
-            this.elCharRealmName.textContent = tuviRealm.name;
+            this.elCharRealmName.textContent = isSuppressed ? `${tuviRealm.name} (Áp Chế)` : tuviRealm.name;
         }
         if (this.elCharExpDetails) {
             this.elCharExpDetails.textContent = `${Math.floor(state.player.tuVi || 0).toLocaleString()} / ${tuviRealm.expRequired.toLocaleString()}`;
@@ -417,7 +420,7 @@ export class CharacterScreen {
             this.elCharRealmExpBar.style.width = `${Math.min(100, (state.player.tuVi / tuviRealm.expRequired) * 100)}%`;
         }
 
-        if (this.elCharRealmTuvi) this.elCharRealmTuvi.textContent = tuviRealm.name;
+        if (this.elCharRealmTuvi) this.elCharRealmTuvi.textContent = isSuppressed ? `${tuviRealm.name} (Áp Chế)` : tuviRealm.name;
         if (this.elCharRealmBody) this.elCharRealmBody.textContent = bodyRealm.name;
         if (this.elCharRealmSoul) this.elCharRealmSoul.textContent = soulRealm.name;
 
@@ -792,7 +795,26 @@ export class CharacterScreen {
     renderStatusEffects() {
         if (!this.elCharStatusPanel || !this.elCharStatusList) return;
 
-        const buffs = state.player.buffs || [];
+        const currentWorld = WORLDS[state.player.currentWorldId || 'nhan_gioi'];
+        const isSuppressed = currentWorld && currentWorld.maxRealmLimit !== undefined && state.player.realmId > currentWorld.maxRealmLimit;
+        const buffs = [...(state.player.buffs || [])];
+        if (isSuppressed) {
+            buffs.push({
+                id: 'realm_suppression',
+                name: 'Áp Chế Giới Diện',
+                category: 'DEBUFF',
+                type: 'debuff',
+                desc: `Tu vi vượt quá giới hạn cực đại của giới diện này (${currentWorld.name}). Tu vi và thuộc tính bị giới hạn, tốc độ tu luyện giảm 90%!`,
+                icon: '⚖️',
+                duration: Infinity,
+                effects: {
+                    tuViSpeed: -0.9,
+                    body_speed: -0.9,
+                    soul_speed: -0.9
+                }
+            });
+        }
+
         if (buffs.length === 0) {
             this.elCharStatusPanel.classList.add('hidden');
             return;

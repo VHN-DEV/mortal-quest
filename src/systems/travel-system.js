@@ -148,8 +148,25 @@ export class TravelSystem {
         const fromWorldId = findWorldIdByLocId(fromLocId);
         const toWorldId = findWorldIdByLocId(toLocId);
         if (fromWorldId && toWorldId && fromWorldId !== toWorldId) {
-            // Yêu cầu cảnh giới tối thiểu tùy giới diện mục tiêu
+            // Check discovery
+            const isDiscovered = this.player.discoveredWorlds && this.player.discoveredWorlds.includes(toWorldId);
+            if (!isDiscovered) {
+                this.ui.toast(`Giới diện mục tiêu chưa được khai phá hoàn toàn hoặc thiếu tọa độ không gian!`, "error");
+                return false;
+            }
+
+            const fromWorld = getWorlds()[fromWorldId];
             const toWorld = getWorlds()[toWorldId];
+
+            // Kiểm tra hạ giới (from higher minRealm to lower minRealm)
+            if (fromWorld && toWorld && toWorld.minRealm < fromWorld.minRealm) {
+                if (this.player.realmId < 30) {
+                    this.ui.toast("Quy tắc giới diện ngăn cản tu sĩ dưới Luyện Hư kỳ hạ giới! Nhục thân ngươi sẽ bị lực lượng nghịch chuyển giới diện xé rách!", "error");
+                    return false;
+                }
+            }
+
+            // Yêu cầu cảnh giới tối thiểu tùy giới diện mục tiêu
             const minRealmReq = toWorld ? toWorld.minRealm : 26;
             const worldName = toWorld ? toWorld.name : toWorldId;
 

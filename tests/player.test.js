@@ -499,6 +499,39 @@ describe('Player class', () => {
       // knowWorld after discover should be rejected
       expect(player.knowWorld('linh_gioi')).toBe(false);
     });
+
+    describe('Realm Suppression', () => {
+      it('should clamp getCurrentRealm to maxRealmLimit if useSuppression is true', () => {
+        const player = new Player();
+        player.realmId = 32; // Hóa Thần Hậu Kỳ (exceeding nhan_gioi limit of 29)
+        player.currentWorldId = 'nhan_gioi';
+        
+        const unsuppressed = player.getCurrentRealm('tuvi', false);
+        expect(unsuppressed.id).toBe(32);
+        
+        const suppressed = player.getCurrentRealm('tuvi', true);
+        expect(suppressed.id).toBe(29); // clamped to nhan_gioi limit
+      });
+
+      it('should clamp stats and scale down cultivation speed in calculateStats when suppressed', () => {
+        const player = new Player();
+        player.realmId = 32;
+        player.currentWorldId = 'nhan_gioi';
+        
+        player.calculateStats();
+        const suppressedAtk = player.atk;
+        const suppressedHp = player.maxHp;
+
+        // Move player to a world without limit
+        player.currentWorldId = 'tien_gioi';
+        player.calculateStats();
+        const unsuppressedAtk = player.atk;
+        const unsuppressedHp = player.maxHp;
+
+        expect(suppressedAtk).toBeLessThan(unsuppressedAtk);
+        expect(suppressedHp).toBeLessThan(unsuppressedHp);
+      });
+    });
   });
 });
 

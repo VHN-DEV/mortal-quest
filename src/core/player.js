@@ -601,13 +601,20 @@ export class Player {
         return comp;
     }
 
-    getCurrentRealm(type = 'tuvi') {
+    getCurrentRealm(type = 'tuvi', useSuppression = false) {
         let id;
         if (type === 'tuvi') id = this.realmId;
         else if (type === 'body') id = this.bodyRealmId;
         else if (type === 'soul') id = this.soulRealmId;
         else if (this.specializedPaths && this.specializedPaths[type]) id = this.specializedPaths[type].realmId;
         else id = 0;
+
+        if (useSuppression && type === 'tuvi') {
+            const currentWorld = WORLDS[this.currentWorldId || 'nhan_gioi'];
+            if (currentWorld && currentWorld.maxRealmLimit !== undefined && id > currentWorld.maxRealmLimit) {
+                id = currentWorld.maxRealmLimit;
+            }
+        }
         
         if (type === 'body') return BODY_REALMS.find(r => r.id === id) || BODY_REALMS[0];
         if (type === 'soul') return SOUL_REALMS.find(r => r.id === id) || SOUL_REALMS[0];
@@ -2054,7 +2061,15 @@ export class Player {
     }
 
     calculateStats() {
-        const realmLevel = this.realmId;
+        const currentWorld = WORLDS[this.currentWorldId || 'nhan_gioi'];
+        let isSuppressed = false;
+        let effectiveRealmLevel = this.realmId;
+        if (currentWorld && currentWorld.maxRealmLimit !== undefined && this.realmId > currentWorld.maxRealmLimit) {
+            effectiveRealmLevel = currentWorld.maxRealmLimit;
+            isSuppressed = true;
+        }
+
+        const realmLevel = effectiveRealmLevel;
         const bodyLevel = this.bodyRealmId;
         const soulLevel = this.soulRealmId;
 
@@ -2777,6 +2792,13 @@ export class Player {
             this.thanThuc = this.maxThanThuc;
         } else {
             this.thanThuc = Math.min(this.maxThanThuc, this.thanThuc);
+        }
+
+        // Apply spatial suppression penalty to cultivation speed
+        if (isSuppressed) {
+            this.tuViPerSecond = Math.max(0, this.tuViPerSecond * 0.1);
+            this.bodyExpPerSecond = Math.max(0, this.bodyExpPerSecond * 0.1);
+            this.soulExpPerSecond = Math.max(0, this.soulExpPerSecond * 0.1);
         }
     }
 
