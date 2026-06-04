@@ -18,6 +18,8 @@ export class PhapBaoLucScreen {
     constructor() {
         this.initElements();
         this.initEvents();
+        this.rendered = false;
+        this.buildCachedList();
     }
 
     initElements() {
@@ -48,6 +50,10 @@ export class PhapBaoLucScreen {
     open() {
         if (!this.overlay) return;
         state.ui.toggleOverlay('phap-bao-luc-overlay', true);
+        if (!this.rendered) {
+            this.renderList();
+            this.rendered = true;
+        }
         this.showList();
     }
 
@@ -58,7 +64,7 @@ export class PhapBaoLucScreen {
     showList() {
         this.listView.classList.remove('hidden');
         this.detailView.classList.add('hidden');
-        this.renderList();
+        this.listView.scrollTop = 0;
     }
 
     showDetail(item) {
@@ -192,7 +198,17 @@ export class PhapBaoLucScreen {
 
     renderList() {
         this.listView.innerHTML = '';
-        this.buildCachedList();
-        this.cachedElements.forEach(el => this.listView.appendChild(el));
+
+        // First batch: render immediately for instant visual feedback
+        const firstBatch = this.cachedElements.slice(0, 8);
+        firstBatch.forEach(el => this.listView.appendChild(el));
+
+        // Remaining items: defer to avoid blocking the main thread during overlay open
+        setTimeout(() => {
+            if (this.listView) {
+                const remaining = this.cachedElements.slice(8);
+                remaining.forEach(el => this.listView.appendChild(el));
+            }
+        }, 100);
     }
 }

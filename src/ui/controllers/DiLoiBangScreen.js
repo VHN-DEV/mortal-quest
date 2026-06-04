@@ -8,6 +8,8 @@ export class DiLoiBangScreen {
     constructor() {
         this.initElements();
         this.initEvents();
+        this.rendered = false;
+        this.buildCachedList();
     }
 
     initElements() {
@@ -26,6 +28,10 @@ export class DiLoiBangScreen {
         this.elDetailOrigin = document.getElementById('di-loi-detail-origin');
         this.elDetailDesc = document.getElementById('di-loi-detail-desc');
         this.elDetailSpecial = document.getElementById('di-loi-detail-special');
+
+        // Custom wrappers for dynamic theme styling
+        this.elDetailIconWrap = document.getElementById('di-loi-detail-icon-wrap');
+        this.elDetailSpecialBox = document.getElementById('di-loi-detail-special-box');
     }
 
     initEvents() {
@@ -40,6 +46,10 @@ export class DiLoiBangScreen {
     open() {
         if (!this.overlay) return;
         state.ui.toggleOverlay('di-loi-bang-overlay', true);
+        if (!this.rendered) {
+            this.renderList();
+            this.rendered = true;
+        }
         this.showList();
     }
 
@@ -50,18 +60,18 @@ export class DiLoiBangScreen {
     showList() {
         this.listView.classList.remove('hidden');
         this.detailView.classList.add('hidden');
-        this.renderList();
+        this.listView.scrollTop = 0;
     }
 
     showDetail(diLoi) {
         this.listView.classList.add('hidden');
         this.detailView.classList.remove('hidden');
+        this.detailView.scrollTop = 0;
 
         this.elDetailIcon.innerHTML =
             '<i class="ph ph-lightning text-6xl"></i>';
 
-        const icon =
-            this.elDetailIcon.querySelector('i');
+        const icon = this.elDetailIcon.querySelector('i');
 
         this.elDetailRank.textContent = `Hạng ${diLoi.rank}`;
         this.elDetailName.textContent = diLoi.name;
@@ -71,20 +81,45 @@ export class DiLoiBangScreen {
         this.elDetailDesc.textContent = diLoi.description;
         this.elDetailSpecial.textContent = diLoi.special;
 
-        const lightningColor =
-            diLoi.lightningColor || '#3b82f6';
-
-        const glowColor =
-            diLoi.glowColor || lightningColor;
+        const lightningColor = diLoi.lightningColor || '#3b82f6';
+        const glowColor = diLoi.glowColor || lightningColor;
 
         if (icon) {
             icon.style.color = lightningColor;
-
             icon.style.filter = `
                 drop-shadow(0 0 10px ${glowColor})
                 drop-shadow(0 0 20px ${glowColor})
                 drop-shadow(0 0 35px ${glowColor})
             `;
+        }
+
+        // Apply dynamic theme colors to the detail view
+        const colorRgba = hexToRgba(lightningColor, 0.2);
+        const bgRgba = hexToRgba(lightningColor, 0.08);
+
+        if (this.elDetailIconWrap) {
+            this.elDetailIconWrap.style.borderColor = hexToRgba(lightningColor, 0.4);
+            this.elDetailIconWrap.style.boxShadow = `0 0 35px ${hexToRgba(glowColor, 0.35)}`;
+            const pulseBg = this.elDetailIconWrap.querySelector('.animate-pulse');
+            if (pulseBg) {
+                pulseBg.style.backgroundColor = hexToRgba(lightningColor, 0.1);
+            }
+        }
+
+        this.elDetailRank.style.color = lightningColor;
+        this.elDetailRank.style.textShadow = `0 0 8px ${hexToRgba(glowColor, 0.4)}`;
+        this.elDetailName.style.textShadow = `0 0 15px ${hexToRgba(glowColor, 0.5)}`;
+        this.elDetailColor.style.color = lightningColor;
+
+        if (this.elDetailSpecialBox) {
+            this.elDetailSpecialBox.style.backgroundColor = bgRgba;
+            this.elDetailSpecialBox.style.borderColor = colorRgba;
+            const specialHeader = this.elDetailSpecialBox.querySelector('h4');
+            if (specialHeader) {
+                specialHeader.style.color = lightningColor;
+                specialHeader.style.borderColor = hexToRgba(lightningColor, 0.15);
+            }
+            this.elDetailSpecial.style.color = glowColor;
         }
     }
 
@@ -94,50 +129,43 @@ export class DiLoiBangScreen {
 
         DI_LOI_DATA.forEach(item => {
             const el = document.createElement('div');
-            el.className = 'group relative bg-white/5 hover:bg-blue-950/20 border border-white/5 hover:border-blue-500/30 rounded-2xl p-4 flex items-center space-x-4 cursor-pointer transition-all active:scale-95';
+            el.className = 'diloi-item-card group';
 
-            if (item.rank <= 5) {
-                el.classList.remove('border-white/5');
-                el.classList.add('border-cyan-500/20');
-            }
+            const lightningColor = item.lightningColor || '#3b82f6';
+            const glowColor = item.glowColor || lightningColor;
+            
+            // Set dynamic colors using CSS variables
+            el.style.setProperty('--item-color', glowColor);
+            el.style.setProperty('--item-lightning-color', lightningColor);
+            el.style.setProperty('--item-border-color', hexToRgba(glowColor, 0.2));
+            el.style.setProperty('--item-bg-dim', hexToRgba(glowColor, 0.05));
+            el.style.setProperty('--item-glow-dim', hexToRgba(glowColor, 0.15));
+            el.style.setProperty('--item-bg-hover', hexToRgba(glowColor, 0.15));
+            el.style.setProperty('--item-glow-hover', hexToRgba(glowColor, 0.45));
 
-            if (item.rank <= 3) {
-                el.classList.add(
-                    'bg-gradient-to-r',
-                    'from-indigo-500/10',
-                    'to-cyan-500/10'
-                );
-            }
-
+            // Dynamic ranking classes
             if (item.rank === 1) {
-                el.classList.add(
-                    'ring-1',
-                    'ring-purple-400/30'
-                );
+                el.classList.add('rank-1');
+            } else if (item.rank <= 3) {
+                el.classList.add('rank-top3');
+            } else if (item.rank <= 5) {
+                el.classList.add('rank-top5');
             }
 
             const rarityClass = this.getRarityClass(item.rarity);
 
             el.innerHTML = `
-                <div class="flex-none w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-sm font-ancient text-gray-400 group-hover:text-blue-500 transition-colors">
+                <div class="rank-circle">
                     ${item.rank}
                 </div>
                 <div class="flex-grow">
-                    <h4 class="text-sm font-charm text-white group-hover:text-blue-400 transition-colors">${item.name}</h4>
+                    <h4 class="text-sm font-charm text-white transition-colors">${item.name}</h4>
                     <div class="flex items-center space-x-2 mt-0.5">
                         <span class="text-[8px] px-1.5 py-0.5 rounded bg-white/5 text-gray-500 uppercase">${item.color}</span>
                         <span class="text-[8px] font-bold ${rarityClass}">${item.rarity}</span>
                     </div>
                 </div>
-                <i
-                    class="ph ph-lightning text-xl transition-all duration-300 group-hover:scale-125"
-                    style="
-                        color:${item.lightningColor || '#3b82f6'};
-                        text-shadow:
-                            0 0 5px ${item.glowColor || '#3b82f6'},
-                            0 0 10px ${item.glowColor || '#3b82f6'};
-                    ">
-                </i>
+                <i class="ph ph-lightning text-xl"></i>
             `;
 
             el.onclick = () => this.showDetail(item);
@@ -148,7 +176,18 @@ export class DiLoiBangScreen {
     renderList() {
         this.listView.innerHTML = '';
         this.buildCachedList();
-        this.cachedElements.forEach(el => this.listView.appendChild(el));
+        
+        // Render first 8 elements immediately to make the UI responsive and render instantly
+        const firstBatch = this.cachedElements.slice(0, 8);
+        firstBatch.forEach(el => this.listView.appendChild(el));
+
+        // Delay rendering of the remaining items to avoid blocking the thread during overlay opening
+        setTimeout(() => {
+            if (this.listView) {
+                const remaining = this.cachedElements.slice(8);
+                remaining.forEach(el => this.listView.appendChild(el));
+            }
+        }, 100);
     }
 
     getRarityClass(rarity) {
@@ -162,3 +201,17 @@ export class DiLoiBangScreen {
         }
     }
 }
+
+// Helper to convert Hex to RGBA
+function hexToRgba(hex, opacity) {
+    if (!hex) return `rgba(255, 255, 255, ${opacity})`;
+    hex = hex.replace('#', '');
+    if (hex.length === 3) {
+        hex = hex.split('').map(c => c + c).join('');
+    }
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+

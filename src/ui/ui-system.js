@@ -478,9 +478,6 @@ export class UISystem {
         }
     }
 
-    /**
-     * Centralized overlay management with stack support
-     */
     toggleOverlay(overlay, show, onComplete = null) {
         const el = typeof overlay === 'string' ? document.getElementById(overlay) : overlay;
         if (!el) return;
@@ -492,11 +489,14 @@ export class UISystem {
             el.classList.remove('hidden');
             el.classList.add('flex');
 
-            if (el.id === 'guide-overlay' || el.id === 'modal-overlay') {
+            if (el.classList.contains('instant-overlay')) {
+                el.style.opacity = '1';
+                if (onComplete) onComplete();
+            } else if (el.id === 'guide-overlay' || el.id === 'modal-overlay') {
                 gsap.fromTo(el,
-                    { opacity: 0, scale: 0.9, backdropFilter: "blur(0px)" },
+                    { opacity: 0, scale: 0.95 },
                     {
-                        opacity: 1, scale: 1, backdropFilter: "blur(8px)", duration: 0.4, ease: "power2.out", onComplete: () => {
+                        opacity: 1, scale: 1, duration: 0.25, ease: "power2.out", onComplete: () => {
                             if (onComplete) onComplete();
                         }
                     }
@@ -517,27 +517,46 @@ export class UISystem {
                 document.body.classList.add('modal-open');
             }
         } else {
-            gsap.to(el, {
-                opacity: 0,
-                duration: 0.2,
-                onComplete: () => {
-                    el.classList.add('hidden');
-                    el.classList.remove('flex');
+            if (el.classList.contains('instant-overlay')) {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+                el.style.opacity = '0';
 
-                    // Check if any other overlays are still visible
-                    const visibleOverlays = Array.from(document.querySelectorAll('.overlay-full:not(.hidden), .absolute.inset-0:not(.hidden)'))
-                        .filter(node => {
-                            const id = node.id || '';
-                            return id.includes('overlay') || id === 'item-detail' || node.classList.contains('overlay-full');
-                        });
+                // Check if any other overlays are still visible
+                const visibleOverlays = Array.from(document.querySelectorAll('.overlay-full:not(.hidden), .absolute.inset-0:not(.hidden)'))
+                    .filter(node => {
+                        const id = node.id || '';
+                        return id.includes('overlay') || id === 'item-detail' || node.classList.contains('overlay-full');
+                    });
 
-                    if (visibleOverlays.length === 0) {
-                        document.body.classList.remove('modal-open');
-                    }
-
-                    if (onComplete) onComplete();
+                if (visibleOverlays.length === 0) {
+                    document.body.classList.remove('modal-open');
                 }
-            });
+
+                if (onComplete) onComplete();
+            } else {
+                gsap.to(el, {
+                    opacity: 0,
+                    duration: 0.2,
+                    onComplete: () => {
+                        el.classList.add('hidden');
+                        el.classList.remove('flex');
+
+                        // Check if any other overlays are still visible
+                        const visibleOverlays = Array.from(document.querySelectorAll('.overlay-full:not(.hidden), .absolute.inset-0:not(.hidden)'))
+                            .filter(node => {
+                                const id = node.id || '';
+                                return id.includes('overlay') || id === 'item-detail' || node.classList.contains('overlay-full');
+                            });
+
+                        if (visibleOverlays.length === 0) {
+                            document.body.classList.remove('modal-open');
+                        }
+
+                        if (onComplete) onComplete();
+                    }
+                });
+            }
         }
     }
 

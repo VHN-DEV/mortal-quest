@@ -9,6 +9,8 @@ export class KyTrungBangScreen {
     constructor() {
         this.initElements();
         this.initEvents();
+        this.rendered = false;
+        this.buildCachedList();
     }
 
     initElements() {
@@ -43,6 +45,10 @@ export class KyTrungBangScreen {
     open() {
         if (!this.overlay) return;
         state.ui.toggleOverlay('ky-trung-bang-overlay', true);
+        if (!this.rendered) {
+            this.renderList();
+            this.rendered = true;
+        }
         this.showList();
     }
 
@@ -53,7 +59,7 @@ export class KyTrungBangScreen {
     showList() {
         if (this.listView) this.listView.classList.remove('hidden');
         if (this.detailView) this.detailView.classList.add('hidden');
-        this.renderList();
+        if (this.listView) this.listView.scrollTop = 0;
     }
 
     showDetail(item) {
@@ -157,8 +163,18 @@ export class KyTrungBangScreen {
     renderList() {
         if (!this.listView) return;
         this.listView.innerHTML = '';
-        this.buildCachedList();
-        this.cachedElements.forEach(el => this.listView.appendChild(el));
+
+        // First batch: render immediately for instant visual feedback
+        const firstBatch = this.cachedElements.slice(0, 8);
+        firstBatch.forEach(el => this.listView.appendChild(el));
+
+        // Remaining items: defer to avoid blocking the main thread during overlay open
+        setTimeout(() => {
+            if (this.listView) {
+                const remaining = this.cachedElements.slice(8);
+                remaining.forEach(el => this.listView.appendChild(el));
+            }
+        }, 100);
     }
 
     getRarityClass(rarity) {

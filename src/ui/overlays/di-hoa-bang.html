@@ -1,14 +1,10 @@
-<!-- Dị Hỏa Bảng Overlay -->
 <div id="di-hoa-bang-overlay"
-    class="hidden overlay-full z-[450] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
+    class="hidden overlay-full z-[450] bg-black/96 flex items-center justify-center p-4 instant-overlay">
     <div
         class="w-full max-w-md h-[90vh] bg-[#050505] border border-red-900/30 rounded-[2.5rem] flex flex-col shadow-[0_0_100px_rgba(153,27,27,0.15)] overflow-hidden relative">
         <!-- Decorative background elements -->
-        <div class="absolute -top-32 -right-32 w-64 h-64 bg-red-600/10 rounded-full blur-[100px] pointer-events-none">
-        </div>
-        <div
-            class="absolute -bottom-32 -left-32 w-64 h-64 bg-orange-600/10 rounded-full blur-[100px] pointer-events-none">
-        </div>
+        <div class="absolute -top-32 -right-32 w-64 h-64 bg-red-600/8 rounded-full opacity-60 pointer-events-none"></div>
+        <div class="absolute -bottom-32 -left-32 w-64 h-64 bg-orange-600/8 rounded-full opacity-60 pointer-events-none"></div>
 
         <!-- Header -->
         <div
@@ -79,7 +75,7 @@
                             Đặc tính chi tiết</h4>
                         <p id="di-hoa-detail-desc" class="text-xs text-gray-300 leading-relaxed"></p>
                     </div>
-                    <div class="bg-red-950/20 rounded-2xl p-5 border border-red-900/20">
+                    <div id="di-hoa-detail-special-box" class="bg-red-950/20 rounded-2xl p-5 border border-red-900/20">
                         <h4
                             class="text-[9px] text-red-400 uppercase tracking-widest mb-3 border-b border-red-900/10 pb-2">
                             Hiệu ứng đặc biệt</h4>

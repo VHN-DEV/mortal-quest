@@ -3112,4 +3112,182 @@ select option:checked {
 #image-zoom-overlay {
     transition: opacity 0.3s ease-in-out;
 }
+
+/* --- Dị Lôi Bảng & Dị Hỏa Bảng Dynamic Cards --- */
+.diloi-item-card, .dihoa-item-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--item-border-color, rgba(255, 255, 255, 0.06));
+    border-radius: 1.25rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    contain: layout style;
+    transition:
+        transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Rank modifier: #1 item — full glow ring */
+.diloi-item-card.rank-1, .dihoa-item-card.rank-1 {
+    background: linear-gradient(135deg, var(--item-bg-dim, rgba(255,255,255,0.04)) 0%, rgba(255,255,255,0.01) 100%);
+    border-color: var(--item-border-color, rgba(255,255,255,0.2));
+    box-shadow: 0 0 20px var(--item-glow-dim, rgba(255,255,255,0.1)),
+                inset 0 0 0 1px var(--item-border-color, rgba(255,255,255,0.15));
+}
+
+/* Rank modifier: top 3 — subtle gradient highlight */
+.diloi-item-card.rank-top3, .dihoa-item-card.rank-top3 {
+    background: linear-gradient(to right, var(--item-bg-dim, rgba(255,255,255,0.04)), rgba(255,255,255,0.01));
+    border-color: var(--item-border-color, rgba(255,255,255,0.12));
+}
+
+/* Rank modifier: top 5 / top 10 — faint border hint */
+.diloi-item-card.rank-top5, .dihoa-item-card.rank-top5,
+.diloi-item-card.rank-top10, .dihoa-item-card.rank-top10 {
+    border-color: var(--item-border-color, rgba(255,255,255,0.08));
+}
+
+/* Hover state — will-change only when needed, not on all 30 cards */
+.diloi-item-card:hover, .dihoa-item-card:hover {
+    will-change: transform;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, var(--item-bg-hover, rgba(59,130,246,0.12)) 100%);
+    border-color: var(--item-color, rgba(59,130,246,0.5)) !important;
+    box-shadow: 0 4px 16px var(--item-glow-hover, rgba(59,130,246,0.25));
+    transform: translateY(-2px);
+}
+
+/* Active / tap state */
+.diloi-item-card:active, .dihoa-item-card:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+/* Rank circle badge */
+.rank-circle {
+    flex: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-family: var(--font-ancient, serif);
+    color: rgba(156, 163, 175, 1);
+    transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.diloi-item-card:hover .rank-circle,
+.dihoa-item-card:hover .rank-circle {
+    color: var(--item-color) !important;
+    border-color: var(--item-color) !important;
+    box-shadow: 0 0 10px var(--item-glow-hover);
+}
+
+/* Title text */
+.diloi-item-card:hover h4, .dihoa-item-card:hover h4 {
+    color: var(--item-color) !important;
+    text-shadow: 0 0 12px var(--item-glow-hover);
+}
+
+/* Icon — color driven by CSS variable, animate on hover */
+.diloi-item-card i, .dihoa-item-card i {
+    color: var(--item-color, #9ca3af);
+    filter: drop-shadow(0 0 4px var(--item-glow-dim, transparent));
+    transition:
+        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        filter 0.2s ease;
+}
+
+.diloi-item-card:hover i, .dihoa-item-card:hover i {
+    filter: drop-shadow(0 0 8px var(--item-glow-hover, transparent));
+    transform: scale(1.3) rotate(5deg);
+}
+
+/* --- Chư Thiên Linh Thể Lục Dynamic Cards --- */
+.linh-the-item-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--item-border-color, rgba(167, 139, 250, 0.08));
+    border-radius: 1.25rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    contain: layout style;
+    transition:
+        transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Rank #1 — full glow ring */
+.linh-the-item-card.rank-1 {
+    background: linear-gradient(135deg, var(--item-bg-dim, rgba(248,113,113,0.06)) 0%, rgba(255,255,255,0.01) 100%);
+    border-color: var(--item-border-color, rgba(248,113,113,0.25));
+    box-shadow: 0 0 22px var(--item-glow-dim, rgba(248,113,113,0.12)),
+                inset 0 0 0 1px var(--item-border-color, rgba(248,113,113,0.15));
+}
+
+/* Rank top 5 — gradient highlight */
+.linh-the-item-card.rank-top3 {
+    background: linear-gradient(to right, var(--item-bg-dim, rgba(167,139,250,0.06)), rgba(255,255,255,0.01));
+    border-color: var(--item-border-color, rgba(167,139,250,0.14));
+}
+
+/* Rank top 10 — faint border */
+.linh-the-item-card.rank-top10 {
+    border-color: var(--item-border-color, rgba(167,139,250,0.08));
+}
+
+/* Hover — will-change only when needed */
+.linh-the-item-card:hover {
+    will-change: transform;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, var(--item-bg-hover, rgba(167,139,250,0.15)) 100%);
+    border-color: var(--item-color, rgba(167,139,250,0.55)) !important;
+    box-shadow: 0 4px 16px var(--item-glow-hover, rgba(167,139,250,0.25));
+    transform: translateY(-2px);
+}
+
+.linh-the-item-card:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+/* Rank circle */
+.linh-the-item-card .rank-circle {
+    flex: none;
+}
+
+.linh-the-item-card:hover .rank-circle {
+    color: var(--item-color) !important;
+    border-color: var(--item-color) !important;
+    box-shadow: 0 0 10px var(--item-glow-hover);
+}
+
+/* Title */
+.linh-the-item-card:hover h4 {
+    color: var(--item-color) !important;
+    text-shadow: 0 0 12px var(--item-glow-hover);
+}
+
+/* Icon */
+.linh-the-item-card i {
+    color: var(--item-color, #a78bfa);
+    filter: drop-shadow(0 0 4px var(--item-glow-dim, transparent));
+    transition:
+        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        filter 0.2s ease;
+}
+
+.linh-the-item-card:hover i {
+    filter: drop-shadow(0 0 9px var(--item-glow-hover, transparent));
+    transform: scale(1.3) rotate(15deg);
+}
+
 
