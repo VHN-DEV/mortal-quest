@@ -622,7 +622,13 @@ export class CombatEngine {
     }
 
     enemyEscape() {
-        this.addLog(`<span class="text-yellow-400">${this.enemy.name} cảm thấy bất ổn, đang tìm cách thoát thân!</span>`);
+        let escName = 'thân pháp thông thường';
+        if (this.enemy.mainEscapeId) {
+            if (this.enemy.mainEscapeId === 'loi_don_thuat') escName = 'Lôi Độn Thuật';
+            else if (this.enemy.mainEscapeId === 'huyet_don_thuat') escName = 'Huyết Độn Thuật';
+            else if (this.enemy.mainEscapeId === 'la_yen_bo') escName = 'La Yên Bộ';
+        }
+        this.addLog(`<span class="text-yellow-400">${this.enemy.name} cảm thấy bất ổn, đang thi triển Độn Thuật [${escName}] để thoát thân!</span>`);
         this.isActive = false;
         this.onUpdate('enemy-escape-attempt');
         // Safety fallback: if chase overlay is never interacted with, end combat after 60s
@@ -662,8 +668,17 @@ export class CombatEngine {
             }
         }
 
+        let enemyEscapePenalty = 0;
+        if (this.enemy.mainEscapeId) {
+            if (this.enemy.mainEscapeId === 'loi_don_thuat' || this.enemy.mainEscapeId === 'huyet_don_thuat') {
+                enemyEscapePenalty = 0.30;
+            } else if (this.enemy.mainEscapeId === 'la_yen_bo') {
+                enemyEscapePenalty = 0.15;
+            }
+        }
+
         const totalPlayerSpd = playerSpd + flightBonus + itemBonus;
-        let successChance = 0.4 + ((totalPlayerSpd - enemySpd) / 100);
+        let successChance = 0.4 + ((totalPlayerSpd - enemySpd) / 100) - enemyEscapePenalty;
         if (isNaN(successChance)) successChance = 0.4;
         successChance = Math.max(0.1, Math.min(0.95, successChance));
 
@@ -1189,8 +1204,23 @@ export class CombatEngine {
 
         // Enemy chase success chance
         let enemyChaseChance = 0.45 + ((enemySpd - (playerSpd + flightBonus)) / 100);
-        // Reduce enemy chase chance by player's escape technique bonus
-        enemyChaseChance = Math.max(0.05, enemyChaseChance - escapeChanceBonus);
+        
+        let enemyChaseBonus = 0;
+        let enemyArtName = '';
+        if (this.enemy.mainEscapeId) {
+            if (this.enemy.mainEscapeId === 'loi_don_thuat') {
+                enemyChaseBonus = 0.35;
+                enemyArtName = 'Lôi Độn Thuật';
+            } else if (this.enemy.mainEscapeId === 'huyet_don_thuat') {
+                enemyChaseBonus = 0.35;
+                enemyArtName = 'Huyết Độn Thuật';
+            } else if (this.enemy.mainEscapeId === 'la_yen_bo') {
+                enemyChaseBonus = 0.20;
+                enemyArtName = 'La Yên Bộ';
+            }
+        }
+
+        enemyChaseChance = Math.max(0.05, enemyChaseChance + enemyChaseBonus - escapeChanceBonus);
 
         const roll = Math.random();
         const caught = roll < enemyChaseChance && !hasEscapeSecret;
@@ -1199,6 +1229,10 @@ export class CombatEngine {
             this.addLog(donThuatFlavor);
         } else {
             this.addLog("<span class='text-qi-blue'>Ngươi vận dụng thân pháp cực hạn hòng thoát khỏi chiến trường!</span>");
+        }
+
+        if (enemyArtName) {
+            this.addLog(`<span class='text-red-300'>⚠️ <b>${this.enemy.name}</b> lập tức thi triển Độn Thuật <b>${enemyArtName}</b> bám đuổi sát nút!</span>`);
         }
 
         if (!caught) {

@@ -294,6 +294,44 @@ export class EnemyGenerator {
     static populateLoot(enemy) {
         const isHumanoid = ['HUMAN', 'DEMON'].includes(enemy.race);
         
+        // Assign concealment technique
+        enemy.equippedConcealmentId = null;
+        if (enemy.realmId >= 3) {
+            const roll = Math.random();
+            if (enemy.race === 'GHOST') {
+                enemy.equippedConcealmentId = 'liem_khi_quyet';
+            } else if (isHumanoid) {
+                if (roll < 0.25) {
+                    enemy.equippedConcealmentId = 'liem_khi_quyet';
+                } else if (roll < 0.35 && enemy.realmId >= 12) {
+                    enemy.equippedConcealmentId = 'quy_nguyen_thu_tuc_cong';
+                }
+            } else if (enemy.race === 'SPIRIT_BEAST' && roll < 0.2) {
+                enemy.equippedConcealmentId = 'liem_khi_quyet';
+            }
+        }
+
+        // Assign escape technique
+        enemy.mainEscapeId = null;
+        if (enemy.realmId >= 3) {
+            const roll = Math.random();
+            if (isHumanoid) {
+                if (roll < 0.15 && enemy.realmId >= 12) {
+                    enemy.mainEscapeId = 'loi_don_thuat';
+                } else if (roll < 0.25 && enemy.race === 'DEMON') {
+                    enemy.mainEscapeId = 'huyet_don_thuat';
+                } else if (roll < 0.4) {
+                    enemy.mainEscapeId = 'la_yen_bo';
+                }
+            } else if (enemy.race === 'DRAGON' || enemy.race === 'GHOST') {
+                if (roll < 0.5) {
+                    enemy.mainEscapeId = 'loi_don_thuat';
+                }
+            } else if (enemy.race === 'SPIRIT_BEAST' && roll < 0.3) {
+                enemy.mainEscapeId = 'la_yen_bo';
+            }
+        }
+
         // 1. Basic Loot (Common for all)
         if (Math.random() < 0.8) {
             enemy.inventory.push({ id: 'ha_pham_linh_thach', quantity: Math.floor(Math.random() * 50 * enemy.realmId) });

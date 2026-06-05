@@ -12,7 +12,9 @@ vi.mock('../src/core/enemy.js', () => {
           realmId: dangerLevel,
           divineSense: global.testEnemySense || 50,
           inventory: [],
-          calculateStats: vi.fn()
+          calculateStats: vi.fn(),
+          equippedConcealmentId: global.testEnemyConcealmentId || null,
+          mainEscapeId: global.testEnemyEscapeId || null
         };
       })
     }
@@ -24,6 +26,8 @@ describe('Divine Sense, Concealment, and Escape Mechanics', () => {
 
   beforeEach(() => {
     global.testEnemySense = 50;
+    global.testEnemyConcealmentId = null;
+    global.testEnemyEscapeId = null;
 
     // Reset global state
     state.player = {
@@ -98,6 +102,27 @@ describe('Divine Sense, Concealment, and Escape Mechanics', () => {
     expect(gameInstance.pendingEncounter.detectionReason).toBe('pierced');
   });
 
+  it('should detect and force detection on the player if the enemy is concealed and player divine sense is not overwhelmingly superior', () => {
+    state.player.divineSense = 50;
+    global.testEnemySense = 50;
+    global.testEnemyConcealmentId = 'liem_khi_quyet';
+
+    gameInstance.handleCombatEncounter(1, 'some-loc', null, null, 'force_player', null, { x: 0, y: 0 });
+
+    expect(gameInstance.pendingEncounter.isDetected).toBe(true);
+    expect(gameInstance.pendingEncounter.detectionReason).toBe('enemy_concealed');
+  });
+
+  it('should allow the player to detect the enemy first if the player divine sense is overwhelmingly superior to the concealed enemy', () => {
+    state.player.divineSense = 100;
+    global.testEnemySense = 50;
+    global.testEnemyConcealmentId = 'liem_khi_quyet';
+
+    gameInstance.handleCombatEncounter(1, 'some-loc', null, null, 'force_player', null, { x: 0, y: 0 });
+
+    expect(gameInstance.pendingEncounter.isDetected).toBe(false);
+  });
+
   it('should succeed escape 100% with Loi Don Thuat costing stamina', () => {
     state.player.mainEscapeId = 'loi_don_thuat';
     state.player.stamina = 50;
@@ -142,6 +167,37 @@ describe('Divine Sense, Concealment, and Escape Mechanics', () => {
       expect.stringContaining('Huyết Độn Thuật thành công'),
       'success'
     );
+  });
+
+  it('should apply escape chance penalty if the enemy has a pursuit technique equipped', () => {
+    state.player.mainEscapeId = 'la_yen_bo';
+    state.player.stamina = 50;
+    global.testEnemyEscapeId = 'loi_don_thuat';
+
+    const enemy = enemyModule.EnemyGenerator.generate(5);
+    gameInstance.pendingEncounter = {
+      enemy,
+      isDetected: true,
+      prevPos: { x: 0, y: 0 },
+      cell: { status: 'combat', resolved: false }
+    };
+
+    // Math.random returns 0.3, player La Yen Bo success is 0.75, penalty is 0.40 -> actual escape chance is 0.35.
+    // Since 0.3 < 0.35, it should succeed.
+    const randSpy = vi.spyOn(Math, 'random').mockReturnValue(0.3);
+
+    gameInstance.escapeAmbush();
+
+    expect(state.ui.toast).toHaveBeenCalledWith(
+      expect.stringContaining('Đối thủ phát động Lôi Độn Thuật'),
+      'warning'
+    );
+    expect(state.ui.toast).toHaveBeenCalledWith(
+      expect.stringContaining('La Yên Bộ thành công'),
+      'success'
+    );
+
+    randSpy.mockRestore();
   });
 
   it('should fail escape due to lack of stamina and force battle', () => {

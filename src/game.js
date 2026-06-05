@@ -3170,21 +3170,43 @@ export class Game {
             state.player.equippedAuxiliaryIds.includes('quy_nguyen_thu_tuc_cong')
         )) || state.player.mainTechniqueId === 'liem_khi_quyet';
 
-        let isDetected = false;
-        let detectionReason = ''; // 'no_concealment', 'pierced'
+        // Check if enemy has concealment techniques equipped
+        const enemyHasConcealment = enemy.equippedConcealmentId === 'liem_khi_quyet' || enemy.equippedConcealmentId === 'quy_nguyen_thu_tuc_cong';
 
+        let isDetected = false;
+        let detectionReason = ''; // 'no_concealment', 'pierced', 'enemy_concealed'
+
+        // Check if player detects enemy first
+        let playerDetectedEnemy = false;
+        if (enemyHasConcealment) {
+            // Player must overwhelmingly pierce enemy's concealment
+            if (playerSense > enemySense * 1.8) {
+                playerDetectedEnemy = true;
+            }
+        } else {
+            // Standard check
+            if (playerSense > enemySense - 15) {
+                playerDetectedEnemy = true;
+            }
+        }
+
+        // Check if enemy detects player
         if (hasConcealment) {
-            // Concealment can be pierced if enemy's divine sense is overwhelmingly superior
             if (enemySense > playerSense * 1.8) {
                 isDetected = true;
                 detectionReason = 'pierced';
             }
         } else {
-            // No concealment: if enemy's divine sense is higher or close (with variance)
             if (enemySense > playerSense - 15) {
                 isDetected = true;
                 detectionReason = 'no_concealment';
             }
+        }
+
+        // If enemy is concealed and player failed to detect them first, player is automatically caught/ambushed!
+        if (enemyHasConcealment && !playerDetectedEnemy) {
+            isDetected = true;
+            detectionReason = 'enemy_concealed';
         }
 
         this.pendingEncounter = { worldId, locId, enemy, onEnd, cell, prevPos, isDetected, detectionReason };
@@ -3210,6 +3232,9 @@ export class Game {
                 if (elDesc) {
                     if (detectionReason === 'pierced') {
                         elDesc.textContent = `Thần thức của [${enemy.name}] quá cường đại, đã nhìn thấu pháp thuật ẩn nặc của ngươi! Thần thức đối phương đã khóa chặt, không thể tiến hành tập kích.`;
+                    } else if (detectionReason === 'enemy_concealed') {
+                        const enemyArtName = enemy.equippedConcealmentId === 'quy_nguyen_thu_tuc_cong' ? 'Quy Nguyên Thu Tức Công' : 'Liễm Khí Quyết';
+                        elDesc.textContent = `[${enemy.name}] sử dụng công pháp ẩn nặc [${enemyArtName}] che giấu hoàn toàn khí tức, phục kích bất ngờ! Thần thức đối phương đã khóa chặt.`;
                     } else {
                         elDesc.textContent = `Ngươi không ẩn giấu khí tức, cự ly quá gần khiến [${enemy.name}] nhạy bén phát giác! Thần thức đối phương đã khóa chặt, không thể tiến hành tập kích.`;
                     }
@@ -3246,15 +3271,19 @@ export class Game {
             // normal mode (random encounters on empty cells)
             if (isDetected) {
                 // Enemy detected player first, triggers enemy ambush!
-                state.ui.toast(`Ngươi bị [${enemy.name}] phát hiện khí tức và tập kích bất ngờ!`, 'error');
+                let ambushText = `Ngươi bị [${enemy.name}] phát hiện khí tức và tập kích bất ngờ!`;
+                if (detectionReason === 'enemy_concealed') {
+                    const enemyArtName = enemy.equippedConcealmentId === 'quy_nguyen_thu_tuc_cong' ? 'Quy Nguyên Thu Tức Công' : 'Liễm Khí Quyết';
+                    ambushText = `Ngươi vô tình lọt vào tầm phục kích của [${enemy.name}] đang thi triển [${enemyArtName}]!`;
+                }
+                state.ui.toast(ambushText, 'error');
                 if (window.game && window.game.screens && window.game.screens.map) {
-                    window.game.screens.map.updateEventDisplay(`🚨 [BỊ TẬP KÍCH] [${enemy.name}] phát hiện khí tức của ngươi từ xa, lao ra đánh úp!`);
+                    window.game.screens.map.updateEventDisplay(`🚨 [BỊ TẬP KÍCH] [${enemy.name}] phục kích bất ngờ!`);
                 }
                 setTimeout(() => this.startBattle(enemy, 'enemy', onEnd), 1000);
             } else {
                 // Player is not detected. Check if player's divine sense is high enough to discover enemy first
-                const roll = Math.random() * 40 - 20;
-                if (playerSense > enemySense + roll) {
+                if (playerDetectedEnemy) {
                     const elDesc = document.getElementById('ambush-desc');
                     const elTitle = document.querySelector('#ambush-overlay h3');
                     const elIcon = document.querySelector('#ambush-overlay i');
@@ -3264,7 +3293,12 @@ export class Game {
                     if (elTitle) elTitle.textContent = "Tập Kích Kẻ Địch!";
                     if (elIcon) elIcon.className = 'ph ph-eye text-5xl text-cultivation-gold';
                     if (elDesc) {
-                        elDesc.textContent = `Thần thức nhạy bén phát hiện một con [${enemy.name}] đang ẩn nấp phía trước. Ngươi có muốn phản tập kích nó không?`;
+                        if (enemyHasConcealment) {
+                            const enemyArtName = enemy.equippedConcealmentId === 'quy_nguyen_thu_tuc_cong' ? 'Quy Nguyên Thu Tức Công' : 'Liễm Khí Quyết';
+                            elDesc.textContent = `Thần thức cực kỳ nhạy bén giúp ngươi nhìn thấu thuật ẩn nặc [${enemyArtName}] của [${enemy.name}] phía trước. Ngươi có muốn phản tập kích nó không?`;
+                        } else {
+                            elDesc.textContent = `Thần thức nhạy bén phát hiện một con [${enemy.name}] đang ẩn nấp phía trước. Ngươi có muốn phản tập kích nó không?`;
+                        }
                     }
                     if (btnAmbushStart) {
                         const span = btnAmbushStart.querySelector('span');
@@ -3392,6 +3426,26 @@ export class Game {
                 escapeChance = 0.75;
                 artName = "La Yên Bộ";
                 costStamina = 15;
+            }
+
+            // Check if enemy has a pursuit technique equipped!
+            const enemy = this.pendingEncounter.enemy;
+            if (enemy && enemy.mainEscapeId) {
+                let enemyArtName = "Thân pháp";
+                let escapePenalty = 0;
+                if (enemy.mainEscapeId === 'loi_don_thuat') {
+                    enemyArtName = "Lôi Độn Thuật";
+                    escapePenalty = 0.40;
+                } else if (enemy.mainEscapeId === 'huyet_don_thuat') {
+                    enemyArtName = "Huyết Độn Thuật";
+                    escapePenalty = 0.40;
+                } else if (enemy.mainEscapeId === 'la_yen_bo') {
+                    enemyArtName = "La Yên Bộ";
+                    escapePenalty = 0.20;
+                }
+
+                escapeChance = Math.max(0.05, escapeChance - escapePenalty);
+                state.ui.toast(`⚠️ Đối thủ phát động ${enemyArtName} để chặn đường đào tẩu của ngươi!`, "warning");
             }
 
             // Check stamina
