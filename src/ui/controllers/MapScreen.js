@@ -506,7 +506,7 @@ export class MapScreen {
                         </div>
                         <div class="flex justify-between items-end pt-2">
                             <span class="text-[7px] text-gray-500 uppercase tracking-widest block">Đại Lục</span>
-                            <button class="btn-region-info px-2 py-0.5 bg-white/5 hover:bg-cultivation-gold/20 hover:text-cultivation-gold border border-white/10 hover:border-cultivation-gold/30 rounded text-[9px] font-bold transition-all z-20 flex items-center space-x-1">
+                            <button class="btn-region-info px-2 py-0.5 bg-white/5 hover:bg-cultivation-gold/20 hover:text-cultivation-gold border border-white/10 hover:border-cultivation-gold/30 rounded text-[9px] font-bold transition-all z-20 flex items-center space-x-1 whitespace-nowrap">
                                 <i class="ph ph-info"></i>
                                 <span>CHI TIẾT</span>
                             </button>
@@ -598,7 +598,7 @@ export class MapScreen {
                         </div>
                         <div class="flex justify-between items-end pt-2">
                             <span class="text-[7px] text-gray-500 uppercase tracking-widest block">Phân Khu</span>
-                            <button class="btn-subregion-info px-2 py-0.5 bg-white/5 hover:bg-cultivation-gold/20 hover:text-cultivation-gold border border-white/10 hover:border-cultivation-gold/30 rounded text-[9px] font-bold transition-all z-20 flex items-center space-x-1">
+                            <button class="btn-subregion-info px-2 py-0.5 bg-white/5 hover:bg-cultivation-gold/20 hover:text-cultivation-gold border border-white/10 hover:border-cultivation-gold/30 rounded text-[9px] font-bold transition-all z-20 flex items-center space-x-1 whitespace-nowrap">
                                 <i class="ph ph-info"></i>
                                 <span>CHI TIẾT</span>
                             </button>
@@ -705,7 +705,7 @@ export class MapScreen {
                                 </div>
                                 <span class="text-[7px] text-gray-500 uppercase tracking-widest block">${reqLabel.split('|')[0]}</span>
                             </div>
-                            <button class="btn-location-info px-2 py-0.5 bg-white/5 hover:bg-cultivation-gold/20 hover:text-cultivation-gold border border-white/10 hover:border-cultivation-gold/30 rounded text-[9px] font-bold transition-all z-20 flex items-center space-x-1">
+                            <button class="btn-location-info px-2 py-0.5 bg-white/5 hover:bg-cultivation-gold/20 hover:text-cultivation-gold border border-white/10 hover:border-cultivation-gold/30 rounded text-[9px] font-bold transition-all z-20 flex items-center space-x-1 whitespace-nowrap">
                                 <i class="ph ph-info"></i>
                                 <span>CHI TIẾT</span>
                             </button>
