@@ -6,23 +6,23 @@ import { state } from '../state.js';
 export const SECT_GEAR = {
     'thien_kiem_tong': {
         weapon: { id: 'tinh_ha_phi_kiem', name: 'Tinh Hà Phi Kiếm' },
-        armor: { id: 'thien_kiem_phap_y', name: 'Thiên Kiếm Đạo Bào' },
-        artifact: { id: 'linh_kiem_phu', name: 'Kiếm Ý Hộ Thể Phù' }
+        armor: { id: 'thien_kiem_dao_bao', name: 'Thiên Kiếm Đạo Bào' },
+        artifact: { id: 'kiem_y_ho_the_phu', name: 'Kiếm Ý Hộ Thể Phù' }
     },
     'hoang_phong_coc': {
         weapon: { id: 'hoang_phong_sa_kiem', name: 'Hoàng Phong Sa Kiếm' },
         armor: { id: 'hoang_phong_dao_bao', name: 'Hoàng Phong Đạo Bào' },
-        artifact: { id: 'hoang_phong_than_sa_tui', name: 'Thần Sa Túi' }
+        artifact: { id: 'than_sa_tui', name: 'Thần Sa Túi' }
     },
     'huyen_am_coc': {
         weapon: { id: 'u_minh_quy_viem_kiem', name: 'U Minh Quỷ Viêm Kiếm' },
-        armor: { id: 'huyen_am_ma_y', name: 'Huyền Âm Pháp Y' },
+        armor: { id: 'huyen_am_phap_y', name: 'Huyền Âm Pháp Y' },
         artifact: { id: 'am_hon_phien', name: 'Âm Hồn Phiên' }
     },
     'yem_nguyet_tong': {
-        weapon: { id: 'song_tu_mi_anh_kiem', name: 'Mị Ảnh Song Kiếm' },
-        armor: { id: 'yem_nguyet_khi_y', name: 'Yểm Nguyệt Bích Y' },
-        artifact: { id: 'hoan_nguyet_tran', name: 'Hoan Nguyệt Kính' }
+        weapon: { id: 'mi_anh_song_kiem', name: 'Mị Ảnh Song Kiếm' },
+        armor: { id: 'yem_nguyet_bich_y', name: 'Yểm Nguyệt Bích Y' },
+        artifact: { id: 'hoan_nguyet_kinh', name: 'Hoan Nguyệt Kính' }
     },
     'lac_van_tong': {
         weapon: { id: 'lac_van_linh_kiem', name: 'Lạc Vân Linh Kiếm' },
@@ -30,53 +30,53 @@ export const SECT_GEAR = {
         artifact: { id: 'than_nong_dinh', name: 'Thần Nông Đan Đỉnh' }
     },
     'thien_tinh_tong': {
-        weapon: { id: 'tinh_thuc_tran_ban', name: 'Tinh Thần Trận Bản' },
-        armor: { id: 'thien_tinh_tran_y', name: 'Thiên Tinh Bát Quái Y' },
-        artifact: { id: 'tinh_quang_tran_ban', name: 'Tinh Quang Trận Kỳ' }
+        weapon: { id: 'tinh_than_tran_ban', name: 'Tinh Thần Trận Bản' },
+        armor: { id: 'thien_tinh_bat_quai_y', name: 'Thiên Tinh Bát Quái Y' },
+        artifact: { id: 'tinh_quang_tran_ky', name: 'Tinh Quang Trận Kỳ' }
     },
     'linh_thu_son': {
-        weapon: { id: 'ngu_thu_linh_phong', name: 'Ngự Thú Linh Tiên' },
-        armor: { id: 'linh_thu_giap_y', name: 'Vạn Thú Giáp Y' },
-        artifact: { id: 'thu_hoan', name: 'Linh Thú Hộ Cổ' }
+        weapon: { id: 'ngu_thu_linh_tien', name: 'Ngự Thú Linh Tiên' },
+        armor: { id: 'van_thu_giap_y', name: 'Vạn Thú Giáp Y' },
+        artifact: { id: 'linh_thu_ho_co', name: 'Linh Thú Hộ Cổ' }
     },
     'thanh_hu_mon': {
-        weapon: { id: 'thanh_hu_tran_tien', name: 'Thanh Hư Phất Trần' },
+        weapon: { id: 'thanh_hu_phat_tran', name: 'Thanh Hư Phất Trần' },
         armor: { id: 'thanh_hu_dao_bao', name: 'Thanh Hư Đạo Bào' },
         artifact: { id: 'thanh_hu_ngoc_lo', name: 'Thanh Hư Ngọc Lộ' }
     },
     'cu_kiem_mon': {
         weapon: { id: 'huyen_thiet_trong_kiem', name: 'Huyền Thiết Trọng Kiếm' },
         armor: { id: 'cu_kiem_trong_giap', name: 'Cự Kiếm Trọng Giáp' },
-        artifact: { id: 'thach_linh_khien', name: 'Địa Mạch Thiết Thuẫn' }
+        artifact: { id: 'dia_mach_thiet_thuan', name: 'Địa Mạch Thiết Thuẫn' }
     },
     'hoa_dao_o': {
         weapon: { id: 'cuong_phong_sat_dao', name: 'Cuồng Phong Sát Đao' },
-        armor: { id: 'hoa_dao_thu_y', name: 'Hóa Đao Thiết Y' },
+        armor: { id: 'hoa_dao_thiet_y', name: 'Hóa Đao Thiết Y' },
         artifact: { id: 'hoa_dao_linh_sa', name: 'Hóa Đao Linh Sa' }
     },
     'thien_khuyet_bao': {
-        weapon: { id: 'kim_linh_kiem', name: 'Kim Lục Trọng Kiếm' },
+        weapon: { id: 'kim_luc_trong_kiem', name: 'Kim Lục Trọng Kiếm' },
         armor: { id: 'thien_khuyet_linh_giap', name: 'Thiên Khuyết Linh Giáp' },
-        artifact: { id: 'kim_cuong_phu', name: 'Kim Cương Hộ Hỏa Phù' }
+        artifact: { id: 'kim_cuong_ho_hoa_phu', name: 'Kim Cương Hộ Hỏa Phù' }
     },
     'quy_linh_mon': {
-        weapon: { id: 'quy_linh_dao', name: 'Quỷ Linh Sát Đao' },
-        armor: { id: 'quy_linh_giap_y', name: 'Quỷ Linh Ma Y' },
-        artifact: { id: 'hac_am_linh_ky', name: 'Vạn Hồn Ma Kỳ' }
+        weapon: { id: 'quy_linh_sat_dao', name: 'Quỷ Linh Sát Đao' },
+        armor: { id: 'quy_linh_ma_y', name: 'Quỷ Linh Ma Y' },
+        artifact: { id: 'van_hon_ma_ky', name: 'Vạn Hồn Ma Kỳ' }
     },
     'hop_hoan_tong': {
         weapon: { id: 'hop_hoan_thuan_kiem', name: 'Hợp Hoan Thuần Kiếm' },
-        armor: { id: 'hop_hoan_nhieu_y', name: 'Hợp Hoan Mị Y' },
-        artifact: { id: 'phu_dung_phu', name: 'Phù Dung Trận Bàn' }
+        armor: { id: 'hop_hoan_mi_y', name: 'Hợp Hoan Mị Y' },
+        artifact: { id: 'phu_dung_tran_ban', name: 'Phù Dung Trận Bàn' }
     },
     'ma_diem_mon': {
         weapon: { id: 'thanh_duong_ma_kiem', name: 'Thanh Dương Ma Kiếm' },
-        armor: { id: 'ma_diem_linh_y', name: 'Ma Diễm Hỏa Giáp' },
-        artifact: { id: 'ma_hoa_phu', name: 'U Minh Địa Hỏa Châu' }
+        armor: { id: 'ma_diem_hoa_giap', name: 'Ma Diễm Hỏa Giáp' },
+        artifact: { id: 'u_minh_dia_hoa_chau', name: 'U Minh Địa Hỏa Châu' }
     },
     'thien_sat_tong': {
-        weapon: { id: 'thien_sat_kich', name: 'Thiên Sát Chiến Kích' },
-        armor: { id: 'thien_sat_giap', name: 'Thiên Sát Ma Giáp' },
+        weapon: { id: 'thien_sat_chien_kich', name: 'Thiên Sát Chiến Kích' },
+        armor: { id: 'thien_sat_ma_giap', name: 'Thiên Sát Ma Giáp' },
         artifact: { id: 'sat_khi_linh_phien', name: 'Sát Khí Linh Phiến' }
     },
     'ngu_linh_tong': {
@@ -85,8 +85,8 @@ export const SECT_GEAR = {
         artifact: { id: 'hap_huyet_trung_tui', name: 'Hấp Huyết Trùng Túi' }
     },
     'khoi_am_tong': {
-        weapon: { id: 'khoi_loi_cot_kiem', name: 'Khôi Lỗi Thiết Kiếm' },
-        armor: { id: 'khoi_am_ma_y', name: 'Thi Khôi Thiết Giáp' },
+        weapon: { id: 'khoi_loi_thiet_kiem', name: 'Khôi Lỗi Thiết Kiếm' },
+        armor: { id: 'thi_khoi_thiet_giap', name: 'Thi Khôi Thiết Giáp' },
         artifact: { id: 'thiet_giap_khoi_loi', name: 'Thiết Giáp Khôi Lỗi' }
     }
 };

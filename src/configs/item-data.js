@@ -5801,8 +5801,8 @@ export const ITEMS = {
     },
 
     // === PHÁP BẢO & TRANG BỊ MÔN PHÁI (SECT GEARS) ===
-    'thien_kiem_phap_y': {
-        id: 'thien_kiem_phap_y',
+    'thien_kiem_dao_bao': {
+        id: 'thien_kiem_dao_bao',
         name: 'Thiên Kiếm Đạo Bào',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
@@ -5814,8 +5814,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'linh_kiem_phu': {
-        id: 'linh_kiem_phu',
+    'kiem_y_ho_the_phu': {
+        id: 'kiem_y_ho_the_phu',
         name: 'Kiếm Ý Hộ Thể Phù',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '📜',
@@ -5853,6 +5853,19 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
+    'than_sa_tui': {
+        id: 'than_sa_tui',
+        name: 'Thần Sa Túi',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🎒',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2500,
+        description: 'Túi thần sa của đệ tử Hoàng Phong Cốc, chứa cát vàng đặc biệt có thể tung ra làm suy giảm khả năng tập trung công kích của kẻ địch.',
+        stats: { def: 65, maxHp: 100 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
     'u_minh_quy_viem_kiem': {
         id: 'u_minh_quy_viem_kiem',
         name: 'U Minh Quỷ Viêm Kiếm',
@@ -5866,8 +5879,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'huyen_am_ma_y': {
-        id: 'huyen_am_ma_y',
+    'huyen_am_phap_y': {
+        id: 'huyen_am_phap_y',
         name: 'Huyền Âm Pháp Y',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
@@ -5879,8 +5892,21 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'song_tu_mi_anh_kiem': {
-        id: 'song_tu_mi_anh_kiem',
+    'am_hon_phien': {
+        id: 'am_hon_phien',
+        name: 'Âm Hồn Phiên',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🏴',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2800,
+        description: 'Lá cờ tụ hồn của Huyền Âm Cốc, triệu hồi khí tức âm hồn làm nhiễu loạn thần trí đối phương.',
+        stats: { def: 60, maxHp: 130 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'mi_anh_song_kiem': {
+        id: 'mi_anh_song_kiem',
         name: 'Mị Ảnh Song Kiếm',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '⚔️',
@@ -5892,8 +5918,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'yem_nguyet_khi_y': {
-        id: 'yem_nguyet_khi_y',
+    'yem_nguyet_bich_y': {
+        id: 'yem_nguyet_bich_y',
         name: 'Yểm Nguyệt Bích Y',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '👗',
@@ -5905,8 +5931,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'hoan_nguyet_tran': {
-        id: 'hoan_nguyet_tran',
+    'hoan_nguyet_kinh': {
+        id: 'hoan_nguyet_kinh',
         name: 'Hoan Nguyệt Kính',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '🔮',
@@ -5957,8 +5983,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'tinh_thuc_tran_ban': {
-        id: 'tinh_thuc_tran_ban',
+    'tinh_than_tran_ban': {
+        id: 'tinh_than_tran_ban',
         name: 'Tinh Thần Trận Bản',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '⚔️',
@@ -5970,8 +5996,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'thien_tinh_tran_y': {
-        id: 'thien_tinh_tran_y',
+    'thien_tinh_bat_quai_y': {
+        id: 'thien_tinh_bat_quai_y',
         name: 'Thiên Tinh Bát Quái Y',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
@@ -5983,8 +6009,21 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'ngu_thu_linh_phong': {
-        id: 'ngu_thu_linh_phong',
+    'tinh_quang_tran_ky': {
+        id: 'tinh_quang_tran_ky',
+        name: 'Tinh Quang Trận Kỳ',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🚩',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2500,
+        description: 'Linh trận kỳ thu phát tinh quang bảo vệ chu vi quanh người, có thể triệt tiêu năng lượng sát thương từ bùa pháp.',
+        stats: { def: 60, maxHp: 130 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'ngu_thu_linh_tien': {
+        id: 'ngu_thu_linh_tien',
         name: 'Ngự Thú Linh Tiên',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '📿',
@@ -5996,8 +6035,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'linh_thu_giap_y': {
-        id: 'linh_thu_giap_y',
+    'van_thu_giap_y': {
+        id: 'van_thu_giap_y',
         name: 'Vạn Thú Giáp Y',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
@@ -6009,8 +6048,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'thu_hoan': {
-        id: 'thu_hoan',
+    'linh_thu_ho_co': {
+        id: 'linh_thu_ho_co',
         name: 'Linh Thú Hộ Cổ',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '⭕',
@@ -6022,8 +6061,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'thanh_hu_tran_tien': {
-        id: 'thanh_hu_tran_tien',
+    'thanh_hu_phat_tran': {
+        id: 'thanh_hu_phat_tran',
         name: 'Thanh Hư Phất Trần',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '🧹',
@@ -6061,8 +6100,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'thach_linh_khien': {
-        id: 'thach_linh_khien',
+    'dia_mach_thiet_thuan': {
+        id: 'dia_mach_thiet_thuan',
         name: 'Địa Mạch Thiết Thuẫn',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '🛡️',
@@ -6087,8 +6126,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'hoa_dao_thu_y': {
-        id: 'hoa_dao_thu_y',
+    'hoa_dao_thiet_y': {
+        id: 'hoa_dao_thiet_y',
         name: 'Hóa Đao Thiết Y',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
@@ -6100,8 +6139,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'kim_linh_kiem': {
-        id: 'kim_linh_kiem',
+    'kim_luc_trong_kiem': {
+        id: 'kim_luc_trong_kiem',
         name: 'Kim Lục Trọng Kiếm',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '🗡️',
@@ -6126,8 +6165,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'kim_cuong_phu': {
-        id: 'kim_cuong_phu',
+    'kim_cuong_ho_hoa_phu': {
+        id: 'kim_cuong_ho_hoa_phu',
         name: 'Kim Cương Hộ Hỏa Phù',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '📜',
@@ -6139,8 +6178,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'quy_linh_dao': {
-        id: 'quy_linh_dao',
+    'quy_linh_sat_dao': {
+        id: 'quy_linh_sat_dao',
         name: 'Quỷ Linh Sát Đao',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '🔪',
@@ -6152,8 +6191,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'quy_linh_giap_y': {
-        id: 'quy_linh_giap_y',
+    'quy_linh_ma_y': {
+        id: 'quy_linh_ma_y',
         name: 'Quỷ Linh Ma Y',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
@@ -6165,8 +6204,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'hac_am_linh_ky': {
-        id: 'hac_am_linh_ky',
+    'van_hon_ma_ky': {
+        id: 'van_hon_ma_ky',
         name: 'Vạn Hồn Ma Kỳ',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '🏴',
@@ -6191,8 +6230,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'hop_hoan_nhieu_y': {
-        id: 'hop_hoan_nhieu_y',
+    'hop_hoan_mi_y': {
+        id: 'hop_hoan_mi_y',
         name: 'Hợp Hoan Mị Y',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
@@ -6204,8 +6243,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'phu_dung_phu': {
-        id: 'phu_dung_phu',
+    'phu_dung_tran_ban': {
+        id: 'phu_dung_tran_ban',
         name: 'Phù Dung Trận Bàn',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '🏵️',
@@ -6230,8 +6269,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'ma_diem_linh_y': {
-        id: 'ma_diem_linh_y',
+    'ma_diem_hoa_giap': {
+        id: 'ma_diem_hoa_giap',
         name: 'Ma Diễm Hỏa Giáp',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
@@ -6243,8 +6282,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'ma_hoa_phu': {
-        id: 'ma_hoa_phu',
+    'u_minh_dia_hoa_chau': {
+        id: 'u_minh_dia_hoa_chau',
         name: 'U Minh Địa Hỏa Châu',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '🔮',
@@ -6256,8 +6295,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'thien_sat_kich': {
-        id: 'thien_sat_kich',
+    'thien_sat_chien_kich': {
+        id: 'thien_sat_chien_kich',
         name: 'Thiên Sát Chiến Kích',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '🔱',
@@ -6269,8 +6308,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'thien_sat_giap': {
-        id: 'thien_sat_giap',
+    'thien_sat_ma_giap': {
+        id: 'thien_sat_ma_giap',
         name: 'Thiên Sát Ma Giáp',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
@@ -6278,6 +6317,19 @@ export const ITEMS = {
         price: 3400,
         description: 'Bộ ma giáp đen tuyền đúc từ hắc thiết linh quặng, bảo vệ vững chắc cho đệ tử Thiên Sát Tông.',
         stats: { def: 100, maxHp: 180 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'sat_khi_linh_phien': {
+        id: 'sat_khi_linh_phien',
+        name: 'Sát Khí Linh Phiến',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🪭',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2500,
+        description: 'Lá quạt ngưng tụ lượng sát khí cực kỳ dày đặc của Thiên Sát Tông, vung quạt tạo gió sát khí đẩy lùi và giảm sát thương của địch.',
+        stats: { def: 60, maxHp: 120 },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
@@ -6321,8 +6373,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'khoi_loi_cot_kiem': {
-        id: 'khoi_loi_cot_kiem',
+    'khoi_loi_thiet_kiem': {
+        id: 'khoi_loi_thiet_kiem',
         name: 'Khôi Lỗi Thiết Kiếm',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '⚔️',
@@ -6334,8 +6386,8 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
-    'khoi_am_ma_y': {
-        id: 'khoi_am_ma_y',
+    'thi_khoi_thiet_giap': {
+        id: 'thi_khoi_thiet_giap',
         name: 'Thi Khôi Thiết Giáp',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
