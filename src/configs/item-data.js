@@ -5798,6 +5798,738 @@ export const ITEMS = {
         categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.YEU_THU, subSubcategory: 'trao' }
         ]
+    },
+
+    // === PHÁP BẢO & TRANG BỊ MÔN PHÁI (SECT GEARS) ===
+    'thien_kiem_phap_y': {
+        id: 'thien_kiem_phap_y',
+        name: 'Thiên Kiếm Đạo Bào',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3000,
+        description: 'Đạo bào đặc trưng của đệ tử Thiên Kiếm Tông, ẩn chứa phong duệ chi khí giúp thân thủ nhanh nhẹn.',
+        stats: { def: 80, maxHp: 100, spd: 5 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'linh_kiem_phu': {
+        id: 'linh_kiem_phu',
+        name: 'Kiếm Ý Hộ Thể Phù',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '📜',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2500,
+        description: 'Linh phù bảo hộ chứa kiếm ý hộ thể cực mạnh của Thiên Kiếm Tông, tự động kích hoạt kiếm quang bảo vệ chủ nhân.',
+        stats: { def: 60, maxHp: 120 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'hoang_phong_sa_kiem': {
+        id: 'hoang_phong_sa_kiem',
+        name: 'Hoàng Phong Sa Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚔️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3500,
+        description: 'Phi kiếm rèn từ cát vàng linh quặng đặc sản của Hoàng Phong Cốc, khi vung kiếm cuốn theo cát bụi làm nhiễu loạn đối phương.',
+        stats: { atk: 90, def: 20 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'hoang_phong_dao_bao': {
+        id: 'hoang_phong_dao_bao',
+        name: 'Hoàng Phong Đạo Bào',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3000,
+        description: 'Đạo bào màu vàng đất của đệ tử Hoàng Phong Cốc, dệt từ sợi tơ thổ linh, tăng khả năng phòng thủ vững chãi.',
+        stats: { def: 95 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'u_minh_quy_viem_kiem': {
+        id: 'u_minh_quy_viem_kiem',
+        name: 'U Minh Quỷ Viêm Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚔️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3800,
+        description: 'Kiếm ma đạo của Huyền Âm Cốc, lưỡi kiếm rực cháy ngọn lửa U Minh âm hàn, thiêu đốt linh hồn đối thủ.',
+        stats: { atk: 105, spd: 10 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'huyen_am_ma_y': {
+        id: 'huyen_am_ma_y',
+        name: 'Huyền Âm Pháp Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3200,
+        description: 'Pháp y dệt từ quỷ ti ở đầm lầy Huyền Âm Cốc, tỏa ra khí lạnh lẽo thấu xương chống lại các đòn đánh vật lý.',
+        stats: { def: 85, maxHp: 150 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'song_tu_mi_anh_kiem': {
+        id: 'song_tu_mi_anh_kiem',
+        name: 'Mị Ảnh Song Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚔️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3600,
+        description: 'Cặp phi kiếm song sinh của Yểm Nguyệt Tông, di chuyển như hình với bóng, mang theo mị lực huyền ảo.',
+        stats: { atk: 95, spd: 15 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'yem_nguyet_khi_y': {
+        id: 'yem_nguyet_khi_y',
+        name: 'Yểm Nguyệt Bích Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '👗',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3100,
+        description: 'Bích y của tu sĩ Yểm Nguyệt Tông dệt từ tơ tằm ảo ảnh, nhẹ nhàng thanh thoát giúp tăng khả năng né tránh.',
+        stats: { def: 80, dodge: 0.08 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'hoan_nguyet_tran': {
+        id: 'hoan_nguyet_tran',
+        name: 'Hoan Nguyệt Kính',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🔮',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2600,
+        description: 'Kính ảo ảnh của Yểm Nguyệt Tông, phản chiếu ánh trăng làm mờ mắt kẻ địch khi công kích.',
+        stats: { def: 70, maxHp: 100 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'lac_van_linh_kiem': {
+        id: 'lac_van_linh_kiem',
+        name: 'Lạc Vân Linh Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚔️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3400,
+        description: 'Linh kiếm thanh nhã của Lạc Vân Tông, rèn từ mây mù và thanh kim, mang lại cảm giác nhẹ nhàng thanh thoát.',
+        stats: { atk: 85, spd: 10 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'lac_van_phap_y': {
+        id: 'lac_van_phap_y',
+        name: 'Lạc Vân Pháp Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2900,
+        description: 'Pháp y dệt từ thiên ti của Lạc Vân Tông, quanh năm mây mù lượn lờ giúp đẩy lùi hỏa khí và độc khí.',
+        stats: { def: 88, maxHp: 120 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'than_nong_dinh': {
+        id: 'than_nong_dinh',
+        name: 'Thần Nông Đan Đỉnh',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🏺',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 4000,
+        description: 'Lò luyện đan nhỏ hộ thân của Lạc Vân Tông, đúc theo hình mẫu đan đỉnh viễn cổ, tỏa ra linh quang hộ thể ôn hòa.',
+        stats: { def: 50, maxHp: 200 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'tinh_thuc_tran_ban': {
+        id: 'tinh_thuc_tran_ban',
+        name: 'Tinh Thần Trận Bản',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚔️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3800,
+        description: 'Trận bản chứa đựng lực lượng tinh tú của Thiên Tinh Tông, có thể khống chế thiên địa linh khí để đả thương địch.',
+        stats: { atk: 90, spd: 5 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thien_tinh_tran_y': {
+        id: 'thien_tinh_tran_y',
+        name: 'Thiên Tinh Bát Quái Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3200,
+        description: 'Đạo y thêu đồ hình bát quái tinh tú của Thiên Tinh Tông, có khả năng chuyển hóa và làm giảm lực công kích của địch.',
+        stats: { def: 100, spd: -2 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'ngu_thu_linh_phong': {
+        id: 'ngu_thu_linh_phong',
+        name: 'Ngự Thú Linh Tiên',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '📿',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3300,
+        description: 'Chiếc roi da ngâm trong máu yêu thú cấp cao của Linh Thú Sơn, phát ra tiếng rít xé gió khiến dã thú khiếp sợ.',
+        stats: { atk: 90, spd: 12 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'linh_thu_giap_y': {
+        id: 'linh_thu_giap_y',
+        name: 'Vạn Thú Giáp Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3100,
+        description: 'Giáp y chế tác từ da lông của nhiều loài mãnh thú cấp cao ở Linh Thú Sơn, vô cùng thô ráp và kiên cố.',
+        stats: { def: 90, maxHp: 150 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thu_hoan': {
+        id: 'thu_hoan',
+        name: 'Linh Thú Hộ Cổ',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '⭕',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2400,
+        description: 'Cặp vòng đồng chứa yêu khí hộ thể của đệ tử Linh Thú Sơn, giúp giảm thiểu chấn động từ đòn đánh vật lý.',
+        stats: { def: 65, maxHp: 130 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thanh_hu_tran_tien': {
+        id: 'thanh_hu_tran_tien',
+        name: 'Thanh Hư Phất Trần',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '🧹',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3500,
+        description: 'Phất trần dệt từ lông đuôi của linh thú Bạch Hạc của Thanh Hư Môn, hóa giải tà khí, đả thương ma đạo.',
+        stats: { atk: 88, spd: 8 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thanh_hu_dao_bao': {
+        id: 'thanh_hu_dao_bao',
+        name: 'Thanh Hư Đạo Bào',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3000,
+        description: 'Đạo bào đặc trưng màu lam nhạt của đệ tử Thanh Hư Môn, thêu chỉ bạc linh trận giúp kinh mạch thư thái.',
+        stats: { def: 90, maxHp: 100 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'huyen_thiet_trong_kiem': {
+        id: 'huyen_thiet_trong_kiem',
+        name: 'Huyền Thiết Trọng Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '🗡️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 4000,
+        description: 'Cự kiếm nặng ngàn cân rèn từ Huyền Thiết của Cự Kiếm Môn. Nhất kiếm vung ra thế thái sơn áp đỉnh.',
+        stats: { atk: 140, spd: -15 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thach_linh_khien': {
+        id: 'thach_linh_khien',
+        name: 'Địa Mạch Thiết Thuẫn',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🛡️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2800,
+        description: 'Tấm thuẫn rèn từ đá địa mạch thâm sâu của Cự Kiếm Môn, kiên cố không thể phá vỡ.',
+        stats: { def: 110, maxHp: 150 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'cuong_phong_sat_dao': {
+        id: 'cuong_phong_sat_dao',
+        name: 'Cuồng Phong Sát Đao',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '🔪',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3600,
+        description: 'Lưỡi đao sắc bén tỏa ra cuồng phong chi lực của Hóa Đao Ổ, am hiểu các đòn chém nhanh đoạt mạng.',
+        stats: { atk: 115, spd: 5 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'hoa_dao_thu_y': {
+        id: 'hoa_dao_thu_y',
+        name: 'Hóa Đao Thiết Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3000,
+        description: 'Bộ y phục bó sát phủ vảy sắt dẻo dai của Hóa Đao Ổ, bảo vệ tối ưu khi áp sát cận chiến.',
+        stats: { def: 85, maxHp: 120 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'kim_linh_kiem': {
+        id: 'kim_linh_kiem',
+        name: 'Kim Lục Trọng Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '🗡️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3900,
+        description: 'Trọng kiếm bằng kim linh thạch của Thiên Khuyết Bảo, chém sắt như chém bùn, mang sát thương kim hệ cực lớn.',
+        stats: { atk: 120, spd: -5 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thien_khuyet_linh_giap': {
+        id: 'thien_khuyet_linh_giap',
+        name: 'Thiên Khuyết Linh Giáp',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3300,
+        description: 'Bộ linh giáp chế tác bằng khoáng thạch quý hiếm từ Thiên Khuyết Bảo, dẻo dai vô cùng.',
+        stats: { def: 105, maxHp: 160 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'kim_cuong_phu': {
+        id: 'kim_cuong_phu',
+        name: 'Kim Cương Hộ Hỏa Phù',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '📜',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2500,
+        description: 'Linh phù bảo hộ kiên cố như kim cương của Thiên Khuyết Bảo, tạo ra màn chắn linh khí chặn đứng sát thương.',
+        stats: { def: 80, maxHp: 100 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'quy_linh_dao': {
+        id: 'quy_linh_dao',
+        name: 'Quỷ Linh Sát Đao',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '🔪',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3800,
+        description: 'Sát đao ma khí cuồn cuộn của đệ tử Quỷ Linh Môn, lưỡi đao thèm khát tinh huyết của địch nhân.',
+        stats: { atk: 110, spd: 8 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'quy_linh_giap_y': {
+        id: 'quy_linh_giap_y',
+        name: 'Quỷ Linh Ma Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3200,
+        description: 'Bộ ma y màu đen hắc ám của Quỷ Linh Môn, dệt từ tơ nhện độc và u hồn linh khí.',
+        stats: { def: 90, maxHp: 130 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'hac_am_linh_ky': {
+        id: 'hac_am_linh_ky',
+        name: 'Vạn Hồn Ma Kỳ',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🏴',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2900,
+        description: 'Lá cờ triệu hoán oan hồn của Quỷ Linh Môn, tỏa ra hắc vụ dày đặc che chắn cho chủ nhân.',
+        stats: { def: 60, maxHp: 160 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'hop_hoan_thuan_kiem': {
+        id: 'hop_hoan_thuan_kiem',
+        name: 'Hợp Hoan Thuần Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚔️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3700,
+        description: 'Linh kiếm của Hợp Hoan Tông, thân kiếm mềm dẻo như dải lụa, đường kiếm lả lướt khó lường.',
+        stats: { atk: 100, spd: 12 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'hop_hoan_nhieu_y': {
+        id: 'hop_hoan_nhieu_y',
+        name: 'Hợp Hoan Mị Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3100,
+        description: 'Bộ mị phục quyến rũ của Hợp Hoan Tông, nhẹ tênh như sương khói, khiến địch nhân xao nhãng.',
+        stats: { def: 82, dodge: 0.07 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'phu_dung_phu': {
+        id: 'phu_dung_phu',
+        name: 'Phù Dung Trận Bàn',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🏵️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2600,
+        description: 'Trận bàn thêu hoa phù dung của Hợp Hoan Tông, khi khởi động tạo ra phấn hoa mê hương giảm sát thương nhận vào.',
+        stats: { def: 75, maxHp: 110 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thanh_duong_ma_kiem': {
+        id: 'thanh_duong_ma_kiem',
+        name: 'Thanh Dương Ma Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚔️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3900,
+        description: 'Ma kiếm rực cháy ngọn lửa màu xanh lục đặc trưng của Thanh Dương Ma Hỏa thuộc Ma Diễm Môn.',
+        stats: { atk: 108, spd: 5 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'ma_diem_linh_y': {
+        id: 'ma_diem_linh_y',
+        name: 'Ma Diễm Hỏa Giáp',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3300,
+        description: 'Giáp lửa của Ma Diễm Môn, tỏa ra nhiệt lượng hừng hực ngăn chặn đòn đánh vật lý tiếp cận.',
+        stats: { def: 92, maxHp: 140 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'ma_hoa_phu': {
+        id: 'ma_hoa_phu',
+        name: 'U Minh Địa Hỏa Châu',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🔮',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2700,
+        description: 'Hạt châu u minh chứa địa hỏa hung bạo của Ma Diễm Môn, tỏa ra hỏa thuẫn bảo vệ.',
+        stats: { def: 65, maxHp: 140 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thien_sat_kich': {
+        id: 'thien_sat_kich',
+        name: 'Thiên Sát Chiến Kích',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '🔱',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 4100,
+        description: 'Kích chiến hạng nặng của Thiên Sát Tông, thấm nhuần sát khí ngàn năm, hung hãn vô cùng.',
+        stats: { atk: 130, spd: -10 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thien_sat_giap': {
+        id: 'thien_sat_giap',
+        name: 'Thiên Sát Ma Giáp',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3400,
+        description: 'Bộ ma giáp đen tuyền đúc từ hắc thiết linh quặng, bảo vệ vững chắc cho đệ tử Thiên Sát Tông.',
+        stats: { def: 100, maxHp: 180 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'van_con_tien': {
+        id: 'van_con_tien',
+        name: 'Vạn Côn Tiên',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '📿',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3500,
+        description: 'Roi độc rèn từ gân vạn côn yêu trùng của Ngự Linh Tông, mỗi đòn đánh mang theo kịch độc ăn mòn.',
+        stats: { atk: 92, spd: 10 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'ngu_linh_doc_y': {
+        id: 'ngu_linh_doc_y',
+        name: 'Ngự Linh Độc Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3100,
+        description: 'Pháp y tẩm độc linh dịch của Ngự Linh Tông, bảo vệ đệ tử khỏi chướng khí và độc tố.',
+        stats: { def: 88, maxHp: 130 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'hap_huyet_trung_tui': {
+        id: 'hap_huyet_trung_tui',
+        name: 'Hấp Huyết Trùng Túi',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🎒',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2800,
+        description: 'Túi chứa đám Hấp Huyết Trùng của Ngự Linh Tông, hút máu địch để che chắn vết thương cho chủ nhân.',
+        stats: { def: 60, maxHp: 150 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'khoi_loi_cot_kiem': {
+        id: 'khoi_loi_cot_kiem',
+        name: 'Khôi Lỗi Thiết Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚔️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3600,
+        description: 'Thiết kiếm gia cố bằng xương của tinh anh khôi lỗi, mang khí tức lạnh lẽo âm u.',
+        stats: { atk: 105, spd: 6 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'khoi_am_ma_y': {
+        id: 'khoi_am_ma_y',
+        name: 'Thi Khôi Thiết Giáp',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3200,
+        description: 'Thiết giáp thô kệch dầy cộm dệt từ thi ma chi khí của đệ tử Khôi Âm Tông.',
+        stats: { def: 96, maxHp: 150 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thiet_giap_khoi_loi': {
+        id: 'thiet_giap_khoi_loi',
+        name: 'Thiết Giáp Khôi Lỗi',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🤖',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3500,
+        description: 'Khôi lỗi thiết giáp bảo hộ chủ nhân khỏi các sát thương đòn đánh trực diện.',
+        stats: { def: 90, maxHp: 180 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+
+    // === PHÁP BẢO & TRANG BỊ TÁN TU (ROGUE CULTIVATOR GEARS) ===
+    'linh_thiet_kiem': {
+        id: 'linh_thiet_kiem',
+        name: 'Linh Thiết Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚔️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1800,
+        description: 'Phi kiếm rèn bằng linh thiết chất lượng tốt, bén ngót và dễ sử dụng cho các tán tu linh căn bất kỳ.',
+        stats: { atk: 50 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thanh_phong_kiem': {
+        id: 'thanh_phong_kiem',
+        name: 'Thanh Phong Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚔️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2200,
+        description: 'Kiếm mỏng dệt từ làn gió thanh thoát, tăng nhẹ tốc độ ra đòn.',
+        stats: { atk: 60, spd: 5 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'hoa_van_dao': {
+        id: 'hoa_van_dao',
+        name: 'Hỏa Vân Đao',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '🔪',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2500,
+        description: 'Đao bản rộng chứa nhiệt lượng hừng hực như lửa đỏ, tấn công có uy lực mạnh mẽ.',
+        stats: { atk: 70, spd: -2 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'thuy_nguyet_kiem': {
+        id: 'thuy_nguyet_kiem',
+        name: 'Thủy Nguyệt Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚔️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2300,
+        description: 'Kiếm mang ánh lam ôn hòa như mặt nước đêm trăng, linh hoạt vô cùng.',
+        stats: { atk: 62, spd: 3 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'bang_suong_cham': {
+        id: 'bang_suong_cham',
+        name: 'Băng Sương Châm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '針',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2000,
+        description: 'Mũi châm làm từ băng tuyết tinh túy cực lạnh, đâm nhanh khôn lường.',
+        stats: { atk: 45, spd: 15 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'linh_thu_bi_y': {
+        id: 'linh_thu_bi_y',
+        name: 'Linh Thú Bì Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1500,
+        description: 'Áo khoác chế tác thô sơ từ da thú linh thú hoang dã dẻo dai, giữ ấm và phòng vệ cơ bản.',
+        stats: { def: 45 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'kim_ty_phap_y': {
+        id: 'kim_ty_phap_y',
+        name: 'Kim Ty Pháp Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2000,
+        description: 'Áo bào dệt bằng chỉ vàng tơ linh bảo hộ, vừa nhẹ vừa chống kiếm khí tốt.',
+        stats: { def: 55, spd: 2 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'huyen_thiet_giap': {
+        id: 'huyen_thiet_giap',
+        name: 'Huyền Thiết Giáp',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2800,
+        description: 'Giáp đúc bằng sắt đen huyền thiết, rất nặng nhưng độ bảo hộ cực kỳ cao.',
+        stats: { def: 75, spd: -5 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'bat_quai_dao_y': {
+        id: 'bat_quai_dao_y',
+        name: 'Bát Quái Đạo Y',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🥋',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2400,
+        description: 'Đạo y thêu hình bát quái giúp cân bằng và lưu thông ngũ hành linh khí.',
+        stats: { def: 60 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'kim_cuong_ho_phu': {
+        id: 'kim_cuong_ho_phu',
+        name: 'Kim Cương Hộ Phù',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '📜',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1600,
+        description: 'Bùa hộ mệnh tạm thời giúp ngưng tụ kim quang chắn đòn công kích.',
+        stats: { def: 40, maxHp: 50 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'linh_quang_thuan': {
+        id: 'linh_quang_thuan',
+        name: 'Linh Quang Thuẫn',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🛡️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2000,
+        description: 'Chiếc khiên nhỏ phát ra ánh linh quang hộ thể chống đỡ sát thương vật lý.',
+        stats: { def: 50, maxHp: 80 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'ho_tam_nguyet_khi': {
+        id: 'ho_tam_nguyet_khi',
+        name: 'Hộ Tâm Nguyệt Kính',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🔮',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2200,
+        description: 'Gương hộ tâm tròn đeo trước ngực, phản chiếu ánh sáng giảm thiểu chí mạng.',
+        stats: { def: 45, maxHp: 100 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'huyen_loi_chau': {
+        id: 'huyen_loi_chau',
+        name: 'Huyền Lôi Châu',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🔮',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2500,
+        description: 'Hạt châu ẩn chứa sấm sét u tối, tăng nhẹ sát thương phản kích.',
+        stats: { def: 30, maxHp: 60 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
     }
 };
 

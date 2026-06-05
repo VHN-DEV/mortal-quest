@@ -3,7 +3,7 @@ import { ASSETS } from '../configs/asset-data.js';
 import { SECTS } from '../configs/sect-data.js';
 import { state } from '../state.js';
 
-const SECT_GEAR = {
+export const SECT_GEAR = {
     'thien_kiem_tong': {
         weapon: { id: 'tinh_ha_phi_kiem', name: 'Tinh Hà Phi Kiếm' },
         armor: { id: 'thien_kiem_phap_y', name: 'Thiên Kiếm Đạo Bào' },
@@ -502,14 +502,30 @@ export class EnemyGenerator {
                 if (sectG.artifact && enemy.realmId >= 8) artifactData = sectG.artifact;
             } else if (!enemy.sectId && Math.random() < 0.6) {
                 // Custom random gear for Tán Tu
-                const ranWeapons = ['Linh Thiết Kiếm', 'Thanh Phong Kiếm', 'Hỏa Vân Đao', 'Thủy Nguyệt Kiếm', 'Băng Sương Châm'];
-                const ranArmors = ['Linh Thú Bì Y', 'Kim Ty Pháp Y', 'Huyền Thiết Giáp', 'Bát Quái Đạo Y'];
-                const ranArtifacts = ['Kim Cương Hộ Phù', 'Linh Quang Thuẫn', 'Hộ Tâm Nguyệt Kính', 'Huyền Lôi Châu'];
+                const ranWeapons = [
+                    { id: 'linh_thiet_kiem', name: 'Linh Thiết Kiếm' },
+                    { id: 'thanh_phong_kiem', name: 'Thanh Phong Kiếm' },
+                    { id: 'hoa_van_dao', name: 'Hỏa Vân Đao' },
+                    { id: 'thuy_nguyet_kiem', name: 'Thủy Nguyệt Kiếm' },
+                    { id: 'bang_suong_cham', name: 'Băng Sương Châm' }
+                ];
+                const ranArmors = [
+                    { id: 'linh_thu_bi_y', name: 'Linh Thú Bì Y' },
+                    { id: 'kim_ty_phap_y', name: 'Kim Ty Pháp Y' },
+                    { id: 'huyen_thiet_giap', name: 'Huyền Thiết Giáp' },
+                    { id: 'bat_quai_dao_y', name: 'Bát Quái Đạo Y' }
+                ];
+                const ranArtifacts = [
+                    { id: 'kim_cuong_ho_phu', name: 'Kim Cương Hộ Phù' },
+                    { id: 'linh_quang_thuan', name: 'Linh Quang Thuẫn' },
+                    { id: 'ho_tam_nguyet_khi', name: 'Hộ Tâm Nguyệt Kính' },
+                    { id: 'huyen_loi_chau', name: 'Huyền Lôi Châu' }
+                ];
 
-                weaponData = { id: 'custom_w', name: ranWeapons[Math.floor(Math.random() * ranWeapons.length)] };
-                armorData = { id: 'custom_a', name: ranArmors[Math.floor(Math.random() * ranArmors.length)] };
+                weaponData = ranWeapons[Math.floor(Math.random() * ranWeapons.length)];
+                armorData = ranArmors[Math.floor(Math.random() * ranArmors.length)];
                 if (enemy.realmId >= 8) {
-                    artifactData = { id: 'custom_art', name: ranArtifacts[Math.floor(Math.random() * ranArtifacts.length)] };
+                    artifactData = ranArtifacts[Math.floor(Math.random() * ranArtifacts.length)];
                 }
             }
 
