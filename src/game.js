@@ -3156,25 +3156,49 @@ export class Game {
         state.currentCombat.start();
     }
 
-    handleCombatEncounter(worldId, locId, onEnd = null, overrideImage = null) {
+    handleCombatEncounter(worldId, locId, onEnd = null, overrideImage = null, ambushMode = 'normal', cell = null, prevPos = null) {
         const loc = getLocationById(worldId, locId);
         const enemy = EnemyGenerator.generate(loc?.dangerLevel || 1);
         if (overrideImage) enemy.image = overrideImage;
-        this.pendingEncounter = { worldId, locId, enemy, onEnd };
+        this.pendingEncounter = { worldId, locId, enemy, onEnd, cell, prevPos };
 
-        const playerSense = state.player.divineSense || 50;
-        const enemySense = enemy.divineSense || enemy.maxThanThuc || 50;
-        const roll = Math.random() * 40 - 20;
-
-        if (playerSense > enemySense + roll) {
-            const elDesc = document.getElementById('ambush-desc');
-            if (elDesc) elDesc.textContent = `Thần thức nhạy bén giúp ngươi phát hiện một con ${enemy.name} đang ẩn nấp phía trước. Ngươi có muốn tập kích nó không?`;
-            state.ui.toggleOverlay(document.getElementById('ambush-overlay'), true);
-        } else if (enemySense > playerSense + (Math.random() * 40)) {
-            state.ui.toast(`Ngươi bị một con ${enemy.name} tập kích bất ngờ!`, 'error');
-            setTimeout(() => this.startBattle(enemy, null, onEnd), 1000);
-        } else {
+        if (ambushMode === 'skip') {
             this.startBattle(enemy, null, onEnd);
+            return;
+        }
+
+        if (ambushMode === 'force_player') {
+            const elDesc = document.getElementById('ambush-desc');
+            if (elDesc) {
+                elDesc.textContent = `Ngươi tiến vào vùng hoạt động của [${enemy.name}]. Thần thức đã khóa chặt mục tiêu, ngươi muốn chủ động tập kích hay né tránh rút lui?`;
+            }
+            state.ui.toggleOverlay(document.getElementById('ambush-overlay'), true);
+        } else {
+            const playerSense = state.player.divineSense || 50;
+            const enemySense = enemy.divineSense || enemy.maxThanThuc || 50;
+            const roll = Math.random() * 40 - 20;
+
+            if (playerSense > enemySense + roll) {
+                const elDesc = document.getElementById('ambush-desc');
+                if (elDesc) {
+                    elDesc.textContent = `Thần thức nhạy bén phát hiện một con [${enemy.name}] đang ẩn nấp tập kích phía trước. Ngươi có muốn phản tập kích nó không?`;
+                }
+                if (window.game && window.game.screens && window.game.screens.map) {
+                    window.game.screens.map.updateEventDisplay(`🚨 [PHÁT HIỆN PHỤC KÍCH] Thần thức nhạy bén phát hiện một đầu hung thú [${enemy.name}] ẩn nấp phía trước!`);
+                }
+                state.ui.toggleOverlay(document.getElementById('ambush-overlay'), true);
+            } else if (enemySense > playerSense + (Math.random() * 40)) {
+                state.ui.toast(`Ngươi bị một con [${enemy.name}] tập kích bất ngờ!`, 'error');
+                if (window.game && window.game.screens && window.game.screens.map) {
+                    window.game.screens.map.updateEventDisplay(`🚨 [BỊ TẬP KÍCH] Ngươi bị một đầu hung thú [${enemy.name}] từ bóng tối lao ra tập kích bất ngờ!`);
+                }
+                setTimeout(() => this.startBattle(enemy, 'enemy', onEnd), 1000);
+            } else {
+                if (window.game && window.game.screens && window.game.screens.map) {
+                    window.game.screens.map.updateEventDisplay(`⚔️ Gặp phải hung thú [${enemy.name}], chiến đấu nổ ra!`);
+                }
+                this.startBattle(enemy, null, onEnd);
+            }
         }
     }
 
@@ -3245,10 +3269,28 @@ export class Game {
     }
 
     escapeAmbush() {
+        if (!this.pendingEncounter) return;
         state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
-        state.ui.toast("Ngươi lặng lẽ lách mình qua kẻ địch, tránh được một cuộc chiến.", "info");
+
+        const { prevPos, cell } = this.pendingEncounter;
+        if (prevPos && state.player && state.player.gridExplorationState) {
+            // Move player back to their previous position
+            state.player.gridExplorationState.playerPos = prevPos;
+            // Restore cell to unlocked since they retreated
+            if (cell) {
+                cell.status = 'unlocked';
+                cell.resolved = false;
+            }
+            state.ui.toast("Ngươi cảm thấy nguy hiểm, lặng lẽ rút lui về vị trí cũ.", "info");
+        } else {
+            state.ui.toast("Ngươi lặng lẽ lách mình qua kẻ địch, tránh được một cuộc chiến.", "info");
+        }
+
         this.pendingEncounter = null;
         this.refreshUI();
+        if (window.game && window.game.screens && window.game.screens.map) {
+            window.game.screens.map.renderGridMap();
+        }
     }
 
     startChase(itemId = null) {

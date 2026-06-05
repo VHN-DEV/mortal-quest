@@ -1677,6 +1677,7 @@ export class MapScreen {
 
         const cell = gridState.grid[y][x];
         const playerPos = gridState.playerPos;
+        const previousPlayerPos = { x: playerPos.x, y: playerPos.y };
 
         // Tránh click ô bị khóa sương mù
         if (cell.status === 'locked') {
@@ -1869,15 +1870,20 @@ export class MapScreen {
                         'cuc_ky_nguy_hiem': 0.25,
                         'tu_dia': 0.30
                     };
-                    const chance = ambushChances[danger] !== undefined ? ambushChances[danger] : 0.10;
+                    let chance = ambushChances[danger] !== undefined ? ambushChances[danger] : 0.10;
+
+                    // Giảm tỷ lệ bị tập kích ở ô trống dựa vào Thần Thức (divineSense) của người chơi
+                    const divineSense = state.player.divineSense || 50;
+                    const senseFactor = Math.max(0.1, 1 - (divineSense / 600));
+                    chance = chance * senseFactor;
 
                     if (Math.random() < chance) {
                         const beastIdx = Math.floor(Math.random() * BEAST_IMAGES.length);
                         const overrideImage = getAssetUrl(BEAST_IMAGES[beastIdx]);
 
-                        this.updateEventDisplay(`🚨 [TẬP KÍCH BẤT NGỜ] Không gian chấn động! Một đầu hung thú ẩn nấp trong bóng tối đột ngột lao ra tập kích ngươi!`);
+                        this.updateEventDisplay(`🚨 [TẬP KÍCH BẤT NGỜ] Sát khí phóng tới! Một đầu hung thú ẩn nấp đang tìm cách tập kích ngươi!`);
                         setTimeout(() => {
-                            window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId, null, overrideImage);
+                            window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId, null, overrideImage, 'normal', cell, previousPlayerPos);
                         }, 1000);
                     } else {
                         const emptyMsgs = [
@@ -1944,9 +1950,9 @@ export class MapScreen {
                     const beastIdx = cell.beastIdx !== undefined ? cell.beastIdx : ((x * 7 + y * 13) % BEAST_IMAGES.length);
                     const overrideImage = getAssetUrl(BEAST_IMAGES[beastIdx]);
 
-                    this.updateEventDisplay(`👹 [YÊU THÚ TRẤN ẢI] Một đầu cự yêu hung ác từ sương mù gầm rú chặn đứng cổ lộ! Chiến đấu nổ ra!`);
+                    this.updateEventDisplay(`👹 [YÊU THÚ TRẤN ẢI] Một đầu cự yêu hung ác chặn đứng cổ lộ! Ngươi chuẩn bị ra tay...`);
                     setTimeout(() => {
-                        window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId, null, overrideImage);
+                        window.game.handleCombatEncounter(state.currentWorldId, state.currentLocId, null, overrideImage, 'force_player', cell, previousPlayerPos);
                     }, 1000);
                     break;
                 }
