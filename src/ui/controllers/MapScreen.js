@@ -278,26 +278,31 @@ export class MapScreen {
             const badgeText = isUnlocked ? '<i class="ph ph-check-circle mr-1"></i> Đang mở' : '<i class="ph ph-lock mr-1"></i> Chưa khai phá';
             const badgeClass = isUnlocked ? 'bg-qi-blue/10 text-qi-blue border border-qi-blue/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
             const cardClass = `location-card h-48 p-6 flex flex-col justify-end transition-all duration-300 ${isUnlocked ? 'cursor-pointer' : 'cursor-pointer opacity-75 grayscale hover:grayscale-0'}`;
-
             const el = document.createElement('div');
             el.className = cardClass;
 
             el.innerHTML = `
                 <img src="${previewImg}" class="location-card-image">
                 <div class="relative z-10 flex flex-col space-y-3">
-                    <div class="flex justify-between items-start">
-                        <div class="space-y-1">
-                            <span class="text-2xl font-charm text-white group-hover:text-qi-blue transition-colors">${title}</span>
+                    <div class="flex justify-between items-start space-x-3 w-full min-w-0">
+                        <div class="space-y-1 min-w-0 flex-grow">
+                            <span class="text-2xl font-charm text-white group-hover:text-qi-blue transition-colors truncate block">${title}</span>
                             <div class="text-[9px] text-gray-400 font-ancient tracking-[0.2em] uppercase opacity-70">Cõi Giới</div>
                         </div>
-                        <span class="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest ${badgeClass}">
+                        <span class="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest flex-shrink-0 ${badgeClass}">
                             ${badgeText}
                         </span>
                     </div>
-                    <p class="text-xs text-gray-300 font-ancient leading-relaxed opacity-90">${description}</p>
-                    <div class="flex items-center space-x-2 pt-1 text-[9px] text-gray-400 font-ancient uppercase tracking-widest">
-                        <i class="ph ph-map-trifold"></i>
-                        <span>${isUnlocked ? (w.locations ? w.locations.length : 0) : 0} Khu vực khám phá</span>
+                    <p class="text-xs text-gray-300 font-ancient leading-relaxed opacity-90 line-clamp-2 overflow-hidden text-ellipsis">${description}</p>
+                    <div class="flex justify-between items-center pt-1">
+                        <div class="flex items-center space-x-2 text-[9px] text-gray-400 font-ancient uppercase tracking-widest">
+                            <i class="ph ph-map-trifold"></i>
+                            <span>${isUnlocked ? (w.locations ? w.locations.length : 0) : 0} Khu vực khám phá</span>
+                        </div>
+                        <button class="btn-world-info px-2 py-0.5 bg-white/5 hover:bg-cultivation-gold/20 hover:text-cultivation-gold border border-white/10 hover:border-cultivation-gold/30 rounded text-[9px] font-bold transition-all z-20 flex items-center space-x-1">
+                            <i class="ph ph-info"></i>
+                            <span>CHI TIẾT</span>
+                        </button>
                     </div>
                 </div>
             `;
@@ -310,8 +315,82 @@ export class MapScreen {
                 this.selectWorld(id);
             };
 
+            const btnInfo = el.querySelector('.btn-world-info');
+            if (btnInfo) {
+                btnInfo.onclick = (e) => {
+                    e.stopPropagation();
+                    this.showWorldDetailPopup(id);
+                };
+            }
+
             this.elWorldList.appendChild(el);
         });
+    }
+
+    showWorldDetailPopup(worldId) {
+        const w = getWorlds()[worldId];
+        if (!w) return;
+
+        const isStartingOrCurrent = (worldId === state.player.currentWorldId);
+        const isDiscovered = state.player.discoveredWorlds && state.player.discoveredWorlds.includes(worldId);
+        const isUnlocked = isDiscovered || isStartingOrCurrent;
+
+        const reqRealmName = getRealmById(w.minRealm).name;
+        const title = isUnlocked ? w.name : `🔒 ${w.name} (Chưa Khai Phá)`;
+        const description = isUnlocked 
+            ? w.description 
+            : `Đây là giới diện cấp cao đầy huyền bí. Đạo hữu cần đạt cảnh giới tối thiểu và thực hiện dịch chuyển xuyên giới diện để đặt chân đến đây.<br><br><span class="text-red-400 font-bold">Yêu cầu cảnh giới: ${reqRealmName}</span>`;
+
+        // Set Name & Description
+        const elName = document.getElementById('loc-detail-name');
+        const elDesc = document.getElementById('loc-detail-description');
+        if (elName) elName.textContent = title;
+        if (elDesc) elDesc.innerHTML = description;
+
+        // Set Image
+        const elImg = document.getElementById('loc-detail-image');
+        if (elImg) {
+            const previewImg = isUnlocked ? (w.image || ASSETS.backgrounds.cultivation) : ASSETS.backgrounds.cultivation;
+            elImg.src = previewImg;
+        }
+
+        // Set Region & Sub-Region
+        const elRegion = document.getElementById('loc-detail-region');
+        const elSubRegion = document.getElementById('loc-detail-subregion');
+        if (elRegion) elRegion.textContent = 'CÕI GIỚI';
+        if (elSubRegion) {
+            elSubRegion.textContent = isUnlocked ? 'ĐÃ KHAI PHÁ' : 'CHƯA KHAI PHÁ';
+            elSubRegion.classList.remove('hidden');
+        }
+
+        // Set Min Realm Requirement
+        const elMinRealm = document.getElementById('loc-detail-min-realm');
+        if (elMinRealm) {
+            elMinRealm.textContent = reqRealmName;
+            const satisfies = state.player.realmId >= w.minRealm;
+            elMinRealm.className = `text-[10px] font-ancient uppercase tracking-wider block ${satisfies ? 'text-cultivation-gold' : 'text-red-500'}`;
+        }
+
+        // Set World Locations Count (replaces Danger box)
+        const elDanger = document.getElementById('loc-detail-danger');
+        if (elDanger) {
+            const elDangerLabel = elDanger.previousElementSibling;
+            if (elDangerLabel) elDangerLabel.textContent = 'Khu Vực Thám Hiểm';
+            elDanger.textContent = `${w.locations ? w.locations.length : 0} Địa Điểm`;
+            elDanger.style.color = '#4fd1c5'; // Qi Blue
+        }
+
+        // Hide resources, energies, element qi sections for world popup
+        const elResourcesSection = document.getElementById('loc-detail-resources-section');
+        const elEnergiesSection = document.getElementById('loc-detail-energies-section');
+        const elElementQiSection = document.getElementById('loc-detail-element-qi-section');
+
+        if (elResourcesSection) elResourcesSection.classList.add('hidden');
+        if (elEnergiesSection) elEnergiesSection.classList.add('hidden');
+        if (elElementQiSection) elElementQiSection.classList.add('hidden');
+
+        // Toggle Overlay using state.ui
+        state.ui.toggleOverlay('location-detail-overlay', true);
     }
 
     async selectWorld(id, keepState = false) {
@@ -518,7 +597,7 @@ export class MapScreen {
                 const locked = minLocked || maxLocked || isTimeLocked;
 
                 const el = document.createElement('div');
-                el.className = `location-card h-40 p-5 flex flex-col justify-end ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
+                el.className = `location-card h-40 p-5 flex flex-col justify-between ${locked ? 'opacity-40 grayscale' : 'cursor-pointer'}`;
 
                 const relDanger = this.getRelativeDanger(loc);
                 const dangerInfo = DANGER_LEVELS[relDanger] || { name: relDanger };
@@ -537,15 +616,25 @@ export class MapScreen {
 
                 el.innerHTML = `
                     <img src="${loc.image || ASSETS.backgrounds.cultivation}" class="location-card-image">
-                    <div class="relative z-10 space-y-1">
-                        <div class="flex justify-between items-center">
-                            <h4 class="text-xl font-charm text-white group-hover:text-qi-blue transition-colors">${loc.name}</h4>
-                            ${locked ? '<i class="ph ph-lock text-red-500"></i>' : ''}
+                    <div class="relative z-10 flex flex-col justify-between h-full w-full">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center w-full min-w-0 space-x-2">
+                                <h4 class="text-xl font-charm text-white group-hover:text-qi-blue transition-colors truncate block flex-grow min-w-0">${loc.name}</h4>
+                                ${locked ? '<i class="ph ph-lock text-red-500 flex-shrink-0"></i>' : ''}
+                            </div>
+                            <p class="text-[10px] text-gray-300 font-serif line-clamp-2 overflow-hidden text-ellipsis opacity-70 leading-relaxed">${loc.description || 'Vùng đất thần bí ẩn chứa linh khí thiên địa.'}</p>
                         </div>
-                        <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">${loc.description}</p>
-                        <div class="flex items-center space-x-2 pt-1">
-                            <span class="px-2 py-0.5 rounded border text-[7px] uppercase font-bold tracking-widest ${dangerClass}">${dangerInfo.name}</span>
-                            <span class="text-[7px] text-gray-500 uppercase tracking-widest">${reqLabel}</span>
+                        <div class="flex justify-between items-end pt-2">
+                            <div class="flex flex-col space-y-1">
+                                <div class="flex items-center space-x-1.5">
+                                    <span class="px-2 py-0.5 rounded border text-[7px] uppercase font-bold tracking-widest ${dangerClass}">${dangerInfo.name}</span>
+                                </div>
+                                <span class="text-[7px] text-gray-500 uppercase tracking-widest block">${reqLabel.split('|')[0]}</span>
+                            </div>
+                            <button class="btn-location-info px-2 py-0.5 bg-white/5 hover:bg-cultivation-gold/20 hover:text-cultivation-gold border border-white/10 hover:border-cultivation-gold/30 rounded text-[9px] font-bold transition-all z-20 flex items-center space-x-1">
+                                <i class="ph ph-info"></i>
+                                <span>CHI TIẾT</span>
+                            </button>
                         </div>
                     </div>
                 `;
@@ -566,6 +655,29 @@ export class MapScreen {
                     }
                     this.startExploration(loc.id);
                 };
+
+                const btnInfo = el.querySelector('.btn-location-info');
+                if (btnInfo) {
+                    btnInfo.onclick = (e) => {
+                        e.stopPropagation();
+                        window.showLocationDetailPopup(this.viewedWorldId, loc.id, () => {
+                            if (minLocked) {
+                                state.ui.toast(`Cảnh giới không đủ! Yêu cầu: ${reqRealmName}`, 'warning');
+                                return;
+                            }
+                            if (maxLocked) {
+                                const failMsg = loc.maxRealmMessage || `Cảnh giới của ngươi quá cao để vào cấm địa này! Sức ép không gian sẽ làm nó sụp đổ!`;
+                                state.ui.toast(failMsg, 'warning');
+                                return;
+                            }
+                            if (isTimeLocked) {
+                                state.ui.toast(`Bí cảnh chưa mở! ${timeMessage}`, 'warning');
+                                return;
+                            }
+                            this.startExploration(loc.id);
+                        });
+                    };
+                }
 
                 this.elLocList.appendChild(el);
             });

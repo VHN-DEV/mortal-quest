@@ -135,9 +135,19 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 window.refreshUI = () => game.refreshUI();
 window.switchScreen = (screenId, btn) => state.ui.switchScreen(screenId, btn);
 
-const showLocationDetailPopup = (worldId, locId) => {
+const showLocationDetailPopup = (worldId, locId, onConfirmCallback) => {
     const loc = getLocationById(worldId, locId);
     if (!loc) return;
+
+    // Reset layout modifications that might have been done by showWorldDetailPopup
+    const elElementQiSection = document.getElementById('loc-detail-element-qi-section');
+    if (elElementQiSection) elElementQiSection.classList.remove('hidden');
+
+    const elDanger = document.getElementById('loc-detail-danger');
+    if (elDanger) {
+        const elDangerLabel = elDanger.previousElementSibling;
+        if (elDangerLabel) elDangerLabel.textContent = 'Độ Nguy Hiểm';
+    }
 
     // Set Name & Description
     const elName = document.getElementById('loc-detail-name');
@@ -185,7 +195,6 @@ const showLocationDetailPopup = (worldId, locId) => {
     }
 
     // Set Danger Level
-    const elDanger = document.getElementById('loc-detail-danger');
     if (elDanger) {
         const dangerConfig = DANGER_LEVELS[loc.danger] || DANGER_LEVELS.an_toan;
         elDanger.textContent = dangerConfig.name;
@@ -262,7 +271,6 @@ const showLocationDetailPopup = (worldId, locId) => {
     }
 
     // Set Elemental Qi (Ngũ Hành) Grid
-    const elElementQiSection = document.getElementById('loc-detail-element-qi-section');
     const elElementQi = document.getElementById('loc-detail-element-qi');
     if (elElementQiSection && elElementQi) {
         const defaultQi = {
@@ -298,6 +306,23 @@ const showLocationDetailPopup = (worldId, locId) => {
                 </div>
             `;
         }).join('');
+    }
+
+    // Set Confirm Button Callback
+    const btnConfirmLocDetail = document.getElementById('loc-detail-confirm-btn');
+    if (btnConfirmLocDetail) {
+        if (onConfirmCallback) {
+            btnConfirmLocDetail.textContent = 'TIẾN VÀO';
+            btnConfirmLocDetail.onclick = () => {
+                state.ui.toggleOverlay('location-detail-overlay', false);
+                onConfirmCallback();
+            };
+        } else {
+            btnConfirmLocDetail.textContent = 'XÁC NHẬN';
+            btnConfirmLocDetail.onclick = () => {
+                state.ui.toggleOverlay('location-detail-overlay', false);
+            };
+        }
     }
 
     // Toggle Overlay using state.ui
