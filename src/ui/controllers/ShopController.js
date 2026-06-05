@@ -4,7 +4,7 @@ import { getItemById } from '../../configs/item-data.js';
 import { SHOPS } from '../../configs/shop-data.js';
 import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 import { getTechniqueById, getSecretTechniqueById } from '../../configs/technique-data.js';
-import { getDisplayQuality } from '../../utils/ui-utils.js';
+import { getDisplayQuality, getQualityColor } from '../../utils/ui-utils.js';
 import { ITEM_CATEGORIES, classifyItem } from '../../configs/item-classification.js';
 import {
     PHAP_BAO_QUALITIES,
@@ -400,6 +400,7 @@ export class ShopController {
             if (!itemData) return;
 
             const qClass = this.getQualityClass(itemData.quality);
+            const qColor = getQualityColor(itemData.quality);
             const finalPrice = Math.floor(itemData.price * (1 - Math.min(0.25, state.player.vipLevel * 0.05)));
             const isVipLocked = item.minVip && state.player.vipLevel < item.minVip;
             const isOutOfStock = item.stock <= 0;
@@ -426,7 +427,10 @@ export class ShopController {
                 : '';
 
             const el = document.createElement('div');
-            el.className = `flex items-center gap-3 px-3 py-2.5 bg-black/40 border border-gray-800/80 rounded-xl hover:border-${qClass}/60 hover:bg-black/60 cursor-pointer transition-all duration-200`;
+            el.className = `flex items-center gap-3 px-3 py-2.5 bg-black/40 border rounded-xl cursor-pointer transition-all duration-200 hover:bg-black/60`;
+            el.style.borderColor = `${qColor}40`;
+            el.onmouseenter = () => el.style.borderColor = `${qColor}99`;
+            el.onmouseleave = () => el.style.borderColor = `${qColor}40`;
             el.onclick = () => {
                 if (window.game.screens.inventory) {
                     window.game.screens.inventory.selectItem(item.id, true);
@@ -434,7 +438,7 @@ export class ShopController {
             };
 
             el.innerHTML = `
-                <div class="w-11 h-11 flex items-center justify-center shrink-0 rounded-lg border border-${qClass}/30 bg-black/60">
+                <div class="w-11 h-11 flex items-center justify-center shrink-0 rounded-lg bg-black/60" style="border: 1.5px solid ${qColor}; box-shadow: 0 0 8px ${qColor}40;">
                     ${iconHtml}
                 </div>
                 <div class="flex-1 min-w-0">

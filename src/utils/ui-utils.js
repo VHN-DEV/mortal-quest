@@ -64,6 +64,20 @@ export function getQualityClass(quality) {
 }
 
 /**
+ * Returns the hex color for a given item quality.
+ * @param {string|object} quality
+ * @returns {string} hex color
+ */
+export function getQualityColor(quality) {
+    if (!quality) return '#6b7280';
+    if (typeof quality === 'object' && quality.color) return quality.color;
+    const qStr = String(quality);
+    const qObj = ALL_QUALITIES_MAP.get(quality) || ALL_QUALITIES_MAP.get(qStr.toLowerCase());
+    if (qObj && qObj.color) return qObj.color;
+    return '#6b7280';
+}
+
+/**
  * Generates HTML for an item card.
  * @param {Object} item The item object from configs
  * @param {Object} options Configuration for the card
