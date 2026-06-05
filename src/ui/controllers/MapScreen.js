@@ -703,7 +703,7 @@ export class MapScreen {
                                 <div class="flex items-center space-x-1.5">
                                     <span class="px-2 py-0.5 rounded border text-[7px] uppercase font-bold tracking-widest ${dangerClass}">${dangerInfo.name}</span>
                                 </div>
-                                <span class="text-[7px] text-gray-500 uppercase tracking-widest block">${reqLabel.split('|')[0]}</span>
+                                <span class="text-[7px] text-gray-500 uppercase tracking-widest block truncate max-w-[140px]" title="${reqLabel.split('|')[0]}">${reqLabel.split('|')[0]}</span>
                             </div>
                             <button class="btn-location-info px-2 py-0.5 bg-white/5 hover:bg-cultivation-gold/20 hover:text-cultivation-gold border border-white/10 hover:border-cultivation-gold/30 rounded text-[9px] font-bold transition-all z-20 flex items-center space-x-1 whitespace-nowrap">
                                 <i class="ph ph-info"></i>
