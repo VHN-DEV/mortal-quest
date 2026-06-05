@@ -400,16 +400,11 @@ export class ShopController {
             if (!itemData) return;
 
             const qClass = this.getQualityClass(itemData.quality);
+            const finalPrice = Math.floor(itemData.price * (1 - Math.min(0.25, state.player.vipLevel * 0.05)));
+            const isVipLocked = item.minVip && state.player.vipLevel < item.minVip;
+            const isOutOfStock = item.stock <= 0;
 
-            const el = document.createElement('div');
-            el.className = `flex items-center justify-between p-3 bg-black/40 border border-gray-800 rounded-xl hover:border-${qClass} cursor-pointer transition-colors duration-200`;
-            el.onclick = () => {
-                if (window.game.screens.inventory) {
-                    window.game.screens.inventory.selectItem(item.id, true);
-                }
-            };
-
-            // Build immersive dynamic labels
+            // Category badges
             const classification = classifyItem(itemData);
             const labelsHtml = classification.allClassifications.map(cls => {
                 const subName = ITEM_CATEGORIES[cls.category]?.subcategories[cls.subcategory] || '';
@@ -417,57 +412,50 @@ export class ShopController {
                     ? ITEM_CATEGORIES.nguyen_lieu.subSubcategories[cls.subcategory]?.[cls.subSubcategory] || ''
                     : '';
                 return `
-                    <span class="px-1.5 py-0.5 rounded bg-qi-blue/10 border border-qi-blue/20 text-[6px] font-ancient uppercase tracking-widest text-qi-blue font-bold shadow-[0_0_4px_rgba(79,209,197,0.1)]">${subName}</span>
-                    ${subSubName ? `<span class="px-1.5 py-0.5 rounded bg-cultivation-gold/10 border border-cultivation-gold/20 text-[6px] font-ancient uppercase tracking-widest text-cultivation-gold font-bold shadow-[0_0_4px_rgba(212,175,55,0.1)]">${subSubName}</span>` : ''}
+                    <span class="px-1.5 py-0.5 rounded bg-qi-blue/10 border border-qi-blue/20 text-[6px] font-ancient uppercase tracking-widest text-qi-blue font-bold">${subName}</span>
+                    ${subSubName ? `<span class="px-1.5 py-0.5 rounded bg-cultivation-gold/10 border border-cultivation-gold/20 text-[6px] font-ancient uppercase tracking-widest text-cultivation-gold font-bold">${subSubName}</span>` : ''}
                 `;
             }).join('');
 
-            const categoryLabels = `
-                <div class="flex flex-wrap gap-1 mt-1">
-                    ${labelsHtml}
-                </div>
-            `;
+            const iconHtml = (itemData.image && getAssetUrl(itemData.image))
+                ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">`
+                : `<span class="text-2xl leading-none">${itemData.icon || ''}</span>`;
 
-            const displayQuality = getDisplayQuality(itemData.quality, itemData.type);
+            const discountHtml = itemData.price !== finalPrice
+                ? `<div class="text-[7px] text-gray-500 line-through leading-none">${Player.formatPrice(itemData.price)}</div>`
+                : '';
 
-            const info = document.createElement('div');
-            info.className = 'flex items-center space-x-3 min-w-0 flex-1 overflow-hidden';
-            info.innerHTML = `
-                <div class="w-12 h-12 flex items-center justify-center shrink-0 bg-black/60 rounded-lg border border-${qClass}/30">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : `<span class="text-2xl leading-none">${itemData.icon || ''}</span>`}</div>
-                <div class="min-w-0 flex-1">
-                     <div class="text-sm font-bold text-white truncate">${itemData.name}</div>
-                    <div class="text-[9px] text-gray-400">Kho: ${item.stock}</div>
-                    ${categoryLabels}
-                </div>
-            `;
-
-            const finalPrice = Math.floor(itemData.price * (1 - Math.min(0.25, state.player.vipLevel * 0.05)));
-            const isVipLocked = item.minVip && state.player.vipLevel < item.minVip;
-
-            const btnContainer = document.createElement('div');
-            btnContainer.className = 'flex items-center space-x-2 shrink-0 ml-2';
-            btnContainer.innerHTML = `
-                <div class="text-right max-w-[80px]">
-                    ${itemData.price !== finalPrice ? `<div class="text-[8px] text-gray-500 line-through truncate">${Player.formatPrice(itemData.price)}</div>` : ''}
-                    <div class="text-[10px] font-mono text-cultivation-gold truncate">${Player.formatPrice(finalPrice, true)}</div>
-                    ${isVipLocked ? `<div class="text-[7px] text-red-500 font-bold uppercase animate-pulse truncate">VIP ${item.minVip}</div>` : ''}
-                </div>
-            `;
-
-            const btn = document.createElement('button');
-            const isOutOfStock = item.stock <= 0;
-            btn.className = `px-3 py-1.5 btn-gold text-[10px] font-bold rounded-lg whitespace-nowrap ${isOutOfStock || isVipLocked ? 'opacity-50 grayscale pointer-events-none' : ''}`;
-            btn.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>TRAO ĐỔI`;
-            btn.onclick = (e) => {
-                e.stopPropagation();
+            const el = document.createElement('div');
+            el.className = `flex items-center gap-3 px-3 py-2.5 bg-black/40 border border-gray-800/80 rounded-xl hover:border-${qClass}/60 hover:bg-black/60 cursor-pointer transition-all duration-200`;
+            el.onclick = () => {
                 if (window.game.screens.inventory) {
                     window.game.screens.inventory.selectItem(item.id, true);
                 }
             };
 
-            btnContainer.appendChild(btn);
-            el.appendChild(info);
-            el.appendChild(btnContainer);
+            el.innerHTML = `
+                <div class="w-11 h-11 flex items-center justify-center shrink-0 rounded-lg border border-${qClass}/30 bg-black/60">
+                    ${iconHtml}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[12px] font-bold text-white truncate leading-snug">${itemData.name}</div>
+                    <div class="text-[8px] text-gray-500 mt-0.5">Kho: ${item.stock}</div>
+                    <div class="flex flex-wrap gap-1 mt-1">${labelsHtml}</div>
+                </div>
+                <div class="flex flex-col items-end gap-1.5 shrink-0">
+                    <div class="text-right">
+                        ${discountHtml}
+                        <div class="text-[10px] font-mono font-bold text-cultivation-gold whitespace-nowrap">${Player.formatPrice(finalPrice, true)}</div>
+                        ${isVipLocked ? `<div class="text-[7px] text-red-400 font-bold uppercase animate-pulse mt-0.5">VIP ${item.minVip}</div>` : ''}
+                    </div>
+                    <button
+                        class="px-2.5 py-1 btn-gold text-[9px] font-bold rounded-lg whitespace-nowrap flex items-center gap-1 ${isOutOfStock || isVipLocked ? 'opacity-40 grayscale pointer-events-none' : ''}"
+                        onclick="event.stopPropagation(); window.game.screens.inventory && window.game.screens.inventory.selectItem('${item.id}', true)">
+                        <i class="ph ph-shopping-cart-simple"></i>TRAO ĐỔI
+                    </button>
+                </div>
+            `;
+
             this.elShopBuyView.appendChild(el);
         });
     }
