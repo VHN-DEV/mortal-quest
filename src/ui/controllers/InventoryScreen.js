@@ -1,4 +1,5 @@
 import { state } from '../../state.js';
+import { Player } from '../../core/player.js';
 import { getItemById, ITEMS } from '../../configs/item-data.js';
 import { EFFECT_TYPES } from '../../configs/item-classification.js';
 import { getAssetUrl } from '../../configs/asset-data.js';
@@ -289,7 +290,7 @@ export class InventoryScreen {
                 // Update total price inside the button!
                 const totalPrice = finalPricePerUnit * currentVal;
                 if (this.btnBuyItem) {
-                    this.btnBuyItem.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>TRAO ĐỔI (${totalPrice.toLocaleString()} LT)`;
+                    this.btnBuyItem.innerHTML = `<i class="ph ph-shopping-cart-simple mr-1"></i>TRAO ĐỔI (${Player.formatPrice(totalPrice, true)})`;
                 }
             }
         } else if (this.detailFromSell) {
@@ -307,7 +308,7 @@ export class InventoryScreen {
                 const finalPricePerUnit = Math.floor(itemData.price * sellMult);
                 const totalPrice = finalPricePerUnit * currentVal;
                 if (this.btnSellItem) {
-                    this.btnSellItem.innerHTML = `<i class="ph ph-handshake mr-1"></i>BÁN (${totalPrice.toLocaleString()} LT)`;
+                    this.btnSellItem.innerHTML = `<i class="ph ph-handshake mr-1"></i>BÁN (+${Player.formatPrice(totalPrice, true)})`;
                 }
             }
         } else {

@@ -1,4 +1,5 @@
 import { state } from '../../state.js';
+import { Player } from '../../core/player.js';
 import { getItemById } from '../../configs/item-data.js';
 import { SHOPS } from '../../configs/shop-data.js';
 import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
@@ -447,8 +448,8 @@ export class ShopController {
             btnContainer.className = 'flex items-center space-x-3';
             btnContainer.innerHTML = `
                 <div class="text-right">
-                    <div class="text-[8px] text-gray-500 line-through">${itemData.price} LT</div>
-                    <div class="text-xs font-mono text-cultivation-gold whitespace-nowrap">${finalPrice} LT</div>
+                    ${itemData.price !== finalPrice ? `<div class="text-[8px] text-gray-500 line-through">${Player.formatPrice(itemData.price)}</div>` : ''}
+                    <div class="text-[10px] font-mono text-cultivation-gold whitespace-nowrap">${Player.formatPrice(finalPrice, true)}</div>
                     ${isVipLocked ? `<div class="text-[7px] text-red-500 font-bold uppercase animate-pulse">Yêu cầu VIP ${item.minVip}</div>` : ''}
                 </div>
             `;
@@ -582,7 +583,7 @@ export class ShopController {
                 </div>
                 <div class="absolute bottom-0 left-0 right-0 h-[32px] bg-black/70 border-t border-white/5 rounded-b-[10px] backdrop-blur-[2px] flex flex-col items-center justify-center z-10">
                     <span class="text-[7.5px] font-sans font-bold quality-${qClass} truncate px-1 text-center w-full leading-tight">${itemData.name}</span>
-                    <span class="text-[7.5px] font-mono font-bold text-cultivation-gold leading-none mt-0.5">${Math.floor(itemData.price * sellMult)} LT</span>
+                    <span class="text-[7.5px] font-mono font-bold text-cultivation-gold leading-none mt-0.5">${Player.formatPrice(Math.floor(itemData.price * sellMult))}</span>
                 </div>
             `;
             el.onclick = () => {

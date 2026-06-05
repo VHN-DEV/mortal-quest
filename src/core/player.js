@@ -32,7 +32,7 @@ export class Player {
         this.totalSpent = 0;
         this.vipLevel = 0;
         this.spiritStoneSettings = {
-            autoUsePriority: ['HA', 'TRUNG', 'THUONG'],
+            autoUsePriority: ['HA', 'TRUNG', 'THUONG', 'CUC'],
             lockCucPham: true,
             minReserve: 0
         };
@@ -454,6 +454,38 @@ export class Player {
         return total;
     }
 
+    /**
+     * Converts a raw Hạ Phẩm amount into a denomination display string.
+     * E.g.: 350 → "3 Trung 50 Hạ" | 400000 → "40 Thượng" | 1200050 → "1 Cực 20 Thượng 50 Hạ"
+     * @param {number} amount - total value in Hạ Phẩm units
+     * @param {boolean} [html=false] - whether to wrap spans with grade colour classes
+     * @returns {string}
+     */
+    static formatPrice(amount, html = false) {
+        if (amount <= 0) return html ? `<span class="grade-ha">0 Hạ</span>` : '0 Hạ';
+
+        const denoms = [
+            { val: 1000000, label: 'Cực',   cls: 'grade-cuc' },
+            { val: 10000,   label: 'Thượng', cls: 'grade-thuong' },
+            { val: 100,     label: 'Trung',  cls: 'grade-trung' },
+            { val: 1,       label: 'Hạ',     cls: 'grade-ha' }
+        ];
+
+        let remaining = Math.floor(amount);
+        const parts = [];
+
+        for (const d of denoms) {
+            const qty = Math.floor(remaining / d.val);
+            if (qty > 0) {
+                const text = `${qty} ${d.label}`;
+                parts.push(html ? `<span class="${d.cls}">${text}</span>` : text);
+                remaining -= qty * d.val;
+            }
+        }
+
+        return parts.join(html ? ' ' : ' ') || (html ? `<span class="grade-ha">0 Hạ</span>` : '0 Hạ');
+    }
+
     getFormattedLingShi() {
         const counts = {
             'ha_pham_linh_thach': 0,
@@ -483,7 +515,7 @@ export class Player {
         if (this.lingShi < amount) return false;
 
         let remaining = amount;
-        const priority = this.spiritStoneSettings?.autoUsePriority || ['HA', 'TRUNG', 'THUONG'];
+        const priority = this.spiritStoneSettings?.autoUsePriority || ['HA', 'TRUNG', 'THUONG', 'CUC'];
         const mappings = {
             'HA': { id: 'ha_pham_linh_thach', val: 1 },
             'TRUNG': { id: 'trung_pham_linh_thach', val: 100 },
@@ -491,8 +523,17 @@ export class Player {
             'CUC': { id: 'cuc_pham_linh_thach', val: 1000000 }
         };
 
+        // Calculate total value of non-Cực Phẩm stones
+        let nonCucValue = 0;
+        for (const g of ['HA', 'TRUNG', 'THUONG']) {
+            const item = this.inventory.allItems.find(i => i.id === mappings[g].id);
+            if (item && item.quantity > 0) {
+                nonCucValue += item.quantity * mappings[g].val;
+            }
+        }
+
         for (const gradeId of priority) {
-            if (gradeId === 'CUC' && this.spiritStoneSettings?.lockCucPham && amount < 1000000) continue;
+            if (gradeId === 'CUC' && this.spiritStoneSettings?.lockCucPham && amount < 1000000 && nonCucValue >= remaining) continue;
             
             const info = mappings[gradeId];
             const item = this.inventory.allItems.find(i => i.id === info.id);
@@ -528,7 +569,22 @@ export class Player {
 
     addLingShi(amount) {
         if (amount <= 0) return;
-        this.inventory.addItem('ha_pham_linh_thach', amount);
+        
+        let remaining = amount;
+        const mappings = [
+            { id: 'cuc_pham_linh_thach', val: 1000000 },
+            { id: 'thuong_pham_linh_thach', val: 10000 },
+            { id: 'trung_pham_linh_thach', val: 100 },
+            { id: 'ha_pham_linh_thach', val: 1 }
+        ];
+
+        for (const item of mappings) {
+            const qty = Math.floor(remaining / item.val);
+            if (qty > 0) {
+                this.inventory.addItem(item.id, qty);
+                remaining -= qty * item.val;
+            }
+        }
     }
 
     addTuVi(amount) {
