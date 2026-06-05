@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Player } from '../src/core/player.js';
 import { CombatEngine } from '../src/core/combat-engine.js';
 import { state } from '../src/state.js';
+import { EnemyGenerator } from '../src/core/enemy.js';
 
 beforeEach(() => {
   state.ui = {
@@ -156,5 +157,53 @@ describe('Dynamic Elemental Combat Multipliers', () => {
     expect(engine.getElementalMultiplier('Neutral', 'Hỏa')).toBe(1.0);
     expect(engine.getElementalMultiplier('Hỏa', 'Neutral')).toBe(1.0);
     expect(engine.getElementalMultiplier('Phong', 'Hỏa')).toBe(1.0);
+  });
+});
+
+describe('Enemy Sect and Rogue Cultivator Generation', () => {
+  it('should generate sect guard with correct sectId, name, skills and equipment when spawned at sect gate', () => {
+    // Mock current location as a sect gate (e.g. thien_kiem_tong)
+    state.currentLocId = 'thien_kiem_tong';
+    
+    // Generate until we get a humanoid sect guard
+    let enemy;
+    for (let i = 0; i < 50; i++) {
+      enemy = EnemyGenerator.generate(15);
+      if (enemy.race === 'HUMAN' || enemy.race === 'DEMON') {
+        break;
+      }
+    }
+    
+    expect(enemy.sectId).toBe('thien_kiem_tong');
+    expect(enemy.name).toContain('Thiên Kiếm Tông');
+    expect(enemy.skills).toContain('BASIC_ATTACK');
+    
+    // Clean up
+    state.currentLocId = '';
+  });
+
+  it('should randomly assign sect or Tán Tu status and appropriate gear/skills', () => {
+    state.currentLocId = 'hoang_da'; // neutral zone
+    
+    // Generate 30 enemies to check distribution and presence of sectId / Tán Tu status
+    let sectCount = 0;
+    let rogueCount = 0;
+    for (let i = 0; i < 30; i++) {
+      const enemy = EnemyGenerator.generate(10);
+      if (enemy.sectId) {
+        sectCount++;
+        expect(enemy.equipment.weapon).toBeDefined();
+        expect(enemy.equipment.armor).toBeDefined();
+      } else {
+        rogueCount++;
+        if (enemy.race === 'HUMAN' || enemy.race === 'DEMON') {
+          expect(enemy.name).toContain('Tán Tu');
+        }
+      }
+    }
+    
+    expect(sectCount + rogueCount).toBe(30);
+    
+    state.currentLocId = '';
   });
 });

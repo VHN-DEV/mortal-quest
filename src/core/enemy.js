@@ -1,6 +1,115 @@
 import { getRealmById, RACE_DATA } from '../configs/realm-data.js';
 import { ASSETS } from '../configs/asset-data.js';
 import { SECTS } from '../configs/sect-data.js';
+import { state } from '../state.js';
+
+const SECT_GEAR = {
+    'thien_kiem_tong': {
+        weapon: { id: 'tinh_ha_phi_kiem', name: 'Tinh Hà Phi Kiếm' },
+        armor: { id: 'thien_kiem_phap_y', name: 'Thiên Kiếm Đạo Bào' },
+        artifact: { id: 'linh_kiem_phu', name: 'Kiếm Ý Hộ Thể Phù' }
+    },
+    'hoang_phong_coc': {
+        weapon: { id: 'hoang_phong_sa_kiem', name: 'Hoàng Phong Sa Kiếm' },
+        armor: { id: 'hoang_phong_dao_bao', name: 'Hoàng Phong Đạo Bào' },
+        artifact: { id: 'hoang_phong_than_sa_tui', name: 'Thần Sa Túi' }
+    },
+    'huyen_am_coc': {
+        weapon: { id: 'u_minh_quy_viem_kiem', name: 'U Minh Quỷ Viêm Kiếm' },
+        armor: { id: 'huyen_am_ma_y', name: 'Huyền Âm Pháp Y' },
+        artifact: { id: 'am_hon_phien', name: 'Âm Hồn Phiên' }
+    },
+    'yem_nguyet_tong': {
+        weapon: { id: 'song_tu_mi_anh_kiem', name: 'Mị Ảnh Song Kiếm' },
+        armor: { id: 'yem_nguyet_khi_y', name: 'Yểm Nguyệt Bích Y' },
+        artifact: { id: 'hoan_nguyet_tran', name: 'Hoan Nguyệt Kính' }
+    },
+    'lac_van_tong': {
+        weapon: { id: 'lac_van_linh_kiem', name: 'Lạc Vân Linh Kiếm' },
+        armor: { id: 'lac_van_phap_y', name: 'Lạc Vân Pháp Y' },
+        artifact: { id: 'than_nong_dinh', name: 'Thần Nông Đan Đỉnh' }
+    },
+    'thien_tinh_tong': {
+        weapon: { id: 'tinh_thuc_tran_ban', name: 'Tinh Thần Trận Bản' },
+        armor: { id: 'thien_tinh_tran_y', name: 'Thiên Tinh Bát Quái Y' },
+        artifact: { id: 'tinh_quang_tran_ban', name: 'Tinh Quang Trận Kỳ' }
+    },
+    'linh_thu_son': {
+        weapon: { id: 'ngu_thu_linh_phong', name: 'Ngự Thú Linh Tiên' },
+        armor: { id: 'linh_thu_giap_y', name: 'Vạn Thú Giáp Y' },
+        artifact: { id: 'thu_hoan', name: 'Linh Thú Hộ Cổ' }
+    },
+    'thanh_hu_mon': {
+        weapon: { id: 'thanh_hu_tran_tien', name: 'Thanh Hư Phất Trần' },
+        armor: { id: 'thanh_hu_dao_bao', name: 'Thanh Hư Đạo Bào' },
+        artifact: { id: 'thanh_hu_ngoc_lo', name: 'Thanh Hư Ngọc Lộ' }
+    },
+    'cu_kiem_mon': {
+        weapon: { id: 'huyen_thiet_trong_kiem', name: 'Huyền Thiết Trọng Kiếm' },
+        armor: { id: 'cu_kiem_trong_giap', name: 'Cự Kiếm Trọng Giáp' },
+        artifact: { id: 'thach_linh_khien', name: 'Địa Mạch Thiết Thuẫn' }
+    },
+    'hoa_dao_o': {
+        weapon: { id: 'cuong_phong_sat_dao', name: 'Cuồng Phong Sát Đao' },
+        armor: { id: 'hoa_dao_thu_y', name: 'Hóa Đao Thiết Y' },
+        artifact: { id: 'hoa_dao_linh_sa', name: 'Hóa Đao Linh Sa' }
+    },
+    'thien_khuyet_bao': {
+        weapon: { id: 'kim_linh_kiem', name: 'Kim Lục Trọng Kiếm' },
+        armor: { id: 'thien_khuyet_linh_giap', name: 'Thiên Khuyết Linh Giáp' },
+        artifact: { id: 'kim_cuong_phu', name: 'Kim Cương Hộ Hỏa Phù' }
+    },
+    'quy_linh_mon': {
+        weapon: { id: 'quy_linh_dao', name: 'Quỷ Linh Sát Đao' },
+        armor: { id: 'quy_linh_giap_y', name: 'Quỷ Linh Ma Y' },
+        artifact: { id: 'hac_am_linh_ky', name: 'Vạn Hồn Ma Kỳ' }
+    },
+    'hop_hoan_tong': {
+        weapon: { id: 'hop_hoan_thuan_kiem', name: 'Hợp Hoan Thuần Kiếm' },
+        armor: { id: 'hop_hoan_nhieu_y', name: 'Hợp Hoan Mị Y' },
+        artifact: { id: 'phu_dung_phu', name: 'Phù Dung Trận Bàn' }
+    },
+    'ma_diem_mon': {
+        weapon: { id: 'thanh_duong_ma_kiem', name: 'Thanh Dương Ma Kiếm' },
+        armor: { id: 'ma_diem_linh_y', name: 'Ma Diễm Hỏa Giáp' },
+        artifact: { id: 'ma_hoa_phu', name: 'U Minh Địa Hỏa Châu' }
+    },
+    'thien_sat_tong': {
+        weapon: { id: 'thien_sat_kich', name: 'Thiên Sát Chiến Kích' },
+        armor: { id: 'thien_sat_giap', name: 'Thiên Sát Ma Giáp' },
+        artifact: { id: 'sat_khi_linh_phien', name: 'Sát Khí Linh Phiến' }
+    },
+    'ngu_linh_tong': {
+        weapon: { id: 'van_con_kiem', name: 'Vạn Côn Tiên' },
+        armor: { id: 'ngu_linh_bao_y', name: 'Ngự Linh Độc Y' },
+        artifact: { id: 'hap_huyet_trung_tui', name: 'Hấp Huyết Trùng Túi' }
+    },
+    'khoi_am_tong': {
+        weapon: { id: 'khoi_loi_cot_kiem', name: 'Khôi Lỗi Thiết Kiếm' },
+        armor: { id: 'khoi_am_ma_y', name: 'Thi Khôi Thiết Giáp' },
+        artifact: { id: 'thiet_giap_khoi_loi', name: 'Thiết Giáp Khôi Lỗi' }
+    }
+};
+
+const SECT_SKILLS = {
+    'thien_kiem_tong': ['SWORD_RAIN', 'GREEN_BAMBOO_SWORD'],
+    'hoang_phong_coc': ['QI_BURST', 'SHIELD_UP'],
+    'huyen_am_coc': ['SOUL_REPRESS', 'DEVIL_TRANSFORM'],
+    'yem_nguyet_tong': ['VIRTUAL_SHADOW', 'QI_BURST'],
+    'lac_van_tong': ['GREEN_BAMBOO_SWORD', 'HEAL_TECHNIQUE'],
+    'thien_tinh_tong': ['FIVE_ELEMENTS_SHIELD', 'SHIELD_UP'],
+    'linh_thu_son': ['BEAST_ROAR', 'QI_BURST'],
+    'thanh_hu_mon': ['HEAL_TECHNIQUE', 'FIVE_ELEMENTS_SHIELD'],
+    'cu_kiem_mon': ['SWORD_RAIN', 'SHIELD_UP'],
+    'hoa_dao_o': ['SWORD_RAIN', 'VIRTUAL_SHADOW'],
+    'thien_khuyet_bao': ['SHIELD_UP', 'FIVE_ELEMENTS_SHIELD'],
+    'quy_linh_mon': ['SOUL_REPRESS', 'SOUL_DEVOUR'],
+    'hop_hoan_tong': ['VIRTUAL_SHADOW', 'SOUL_DEVOUR'],
+    'ma_diem_mon': ['BLOOD_SACRIFICE', 'POISON_MIST'],
+    'thien_sat_tong': ['BLOOD_SACRIFICE', 'DEVIL_TRANSFORM'],
+    'ngu_linh_tong': ['POISON_MIST', 'BEAST_SWALLOW'],
+    'khoi_am_tong': ['SOUL_REPRESS', 'SHIELD_UP']
+};
 
 export class Enemy {
     get element() {
@@ -37,6 +146,7 @@ export class Enemy {
         this.inventory = [];
         this.equipment = { weapon: null, armor: null, artifact: null };
         this.skills = [];
+        this.sectId = null;
         
         // Initialize xianxia stats
         let physBonus = 0;
@@ -265,10 +375,11 @@ export class EnemyGenerator {
         
         const enemy = new Enemy(targetRealm, typeData);
 
-        // Intercept for Sect Guard spawning at Sect Gates
-        const currentLocId = window.state?.currentLocId || '';
+        // Intercept for Sect Guard spawning at Sect Gates or random assignment
+        const currentLocId = state?.currentLocId || '';
         const sect = SECTS[currentLocId];
         if (sect && (enemy.race === 'HUMAN' || enemy.race === 'DEMON')) {
+            enemy.sectId = sect.id;
             let title = 'Đệ tử Ngoại môn';
             if (targetRealm >= 30) {
                 title = 'Trưởng lão';
@@ -282,6 +393,33 @@ export class EnemyGenerator {
                 const dropPassive = Math.random() < 0.7;
                 const dropItemId = dropPassive ? `item_${currentLocId}_t` : `item_${currentLocId}_s`;
                 enemy.inventory.push({ id: dropItemId, quantity: 1 });
+            }
+        } else if (enemy.race === 'HUMAN' || enemy.race === 'DEMON') {
+            const roll = Math.random();
+            if (roll < 0.45) {
+                const sectKeys = Object.keys(SECTS);
+                let possibleSects = [];
+                if (enemy.race === 'DEMON') {
+                    possibleSects = sectKeys.filter(k => SECTS[k].isDemonic || k === 'huyen_am_coc');
+                } else {
+                    possibleSects = sectKeys.filter(k => !SECTS[k].isDemonic && k !== 'huyen_am_coc');
+                }
+                if (possibleSects.length > 0) {
+                    const chosenSectId = possibleSects[Math.floor(Math.random() * possibleSects.length)];
+                    enemy.sectId = chosenSectId;
+                    const chosenSect = SECTS[chosenSectId];
+                    
+                    let title = 'Đệ tử Ngoại môn';
+                    if (targetRealm >= 30) {
+                        title = 'Trưởng lão';
+                    } else if (targetRealm >= 15) {
+                        title = 'Đệ tử Nội môn';
+                    }
+                    enemy.name = `${title} ${chosenSect.name} - ${typeData.name} (${enemy.realmName})`;
+                }
+            } else {
+                enemy.sectId = null;
+                enemy.name = `Tán Tu ${typeData.name} (${enemy.realmName})`;
             }
         }
 
@@ -347,28 +485,53 @@ export class EnemyGenerator {
         if (isHumanoid) {
             // Randomly equip items based on realm (with exponential gearMult scaling)
             const gearMult = Math.pow(1.8, enemy.realmId - 1);
-            if (enemy.realmId >= 1) {
-                enemy.equipment.weapon = { 
-                    id: 'phi_kiem_go', 
-                    name: 'Phi Kiếm Gỗ', 
-                    stats: { atk: Math.round(15 * gearMult) } 
-                };
-                enemy.equipment.armor = { 
-                    id: 'tho_bo_pham_y', 
-                    name: 'Áo Vải Tu Sĩ', 
-                    stats: { def: Math.round(8 * gearMult) } 
-                };
-            }
+            let weaponData = { id: 'phi_kiem_go', name: 'Phi Kiếm Gỗ' };
+            let armorData = { id: 'tho_bo_pham_y', name: 'Áo Vải Tu Sĩ' };
+            let artifactData = null;
+
             if (enemy.realmId >= 10) {
-                enemy.equipment.weapon = { 
-                    id: 'thanh_hong_kiem', 
-                    name: 'Thanh Hồng Kiếm', 
-                    stats: { atk: Math.round(25 * gearMult) } 
-                };
-                enemy.equipment.artifact = { 
-                    id: 'ho_tam_kinh', 
-                    name: 'Hộ Tâm Kính', 
-                    stats: { def: Math.round(12 * gearMult), hp: Math.round(100 * gearMult) } 
+                weaponData = { id: 'thanh_hong_kiem', name: 'Thanh Hồng Kiếm' };
+                artifactData = { id: 'ho_tam_kinh', name: 'Hộ Tâm Kính' };
+            }
+
+            const useSectGear = enemy.sectId && SECT_GEAR[enemy.sectId] && Math.random() < 0.75;
+            if (useSectGear) {
+                const sectG = SECT_GEAR[enemy.sectId];
+                if (sectG.weapon) weaponData = sectG.weapon;
+                if (sectG.armor) armorData = sectG.armor;
+                if (sectG.artifact && enemy.realmId >= 8) artifactData = sectG.artifact;
+            } else if (!enemy.sectId && Math.random() < 0.6) {
+                // Custom random gear for Tán Tu
+                const ranWeapons = ['Linh Thiết Kiếm', 'Thanh Phong Kiếm', 'Hỏa Vân Đao', 'Thủy Nguyệt Kiếm', 'Băng Sương Châm'];
+                const ranArmors = ['Linh Thú Bì Y', 'Kim Ty Pháp Y', 'Huyền Thiết Giáp', 'Bát Quái Đạo Y'];
+                const ranArtifacts = ['Kim Cương Hộ Phù', 'Linh Quang Thuẫn', 'Hộ Tâm Nguyệt Kính', 'Huyền Lôi Châu'];
+
+                weaponData = { id: 'custom_w', name: ranWeapons[Math.floor(Math.random() * ranWeapons.length)] };
+                armorData = { id: 'custom_a', name: ranArmors[Math.floor(Math.random() * ranArmors.length)] };
+                if (enemy.realmId >= 8) {
+                    artifactData = { id: 'custom_art', name: ranArtifacts[Math.floor(Math.random() * ranArtifacts.length)] };
+                }
+            }
+
+            // Assign stats
+            enemy.equipment.weapon = {
+                id: weaponData.id,
+                name: weaponData.name,
+                stats: { atk: Math.round((enemy.realmId >= 10 ? 25 : 15) * gearMult) }
+            };
+            enemy.equipment.armor = {
+                id: armorData.id,
+                name: armorData.name,
+                stats: { def: Math.round(8 * gearMult) }
+            };
+            if (artifactData) {
+                enemy.equipment.artifact = {
+                    id: artifactData.id,
+                    name: artifactData.name,
+                    stats: {
+                        def: Math.round(12 * gearMult),
+                        hp: Math.round(100 * gearMult)
+                    }
                 };
             }
 
@@ -376,24 +539,44 @@ export class EnemyGenerator {
             enemy.skills.push('BASIC_ATTACK');
             if (enemy.realmId >= 3) enemy.skills.push('QI_BURST');
             if (enemy.realmId >= 6) enemy.skills.push('SHIELD_UP');
-            if (enemy.realmId >= 10) {
-                if (enemy.race === 'DEMON') {
-                    enemy.skills.push('BLOOD_SACRIFICE');
-                    enemy.skills.push('SOUL_REPRESS');
-                } else {
-                    enemy.skills.push('SWORD_RAIN');
+
+            const useSectSkills = enemy.sectId && SECT_SKILLS[enemy.sectId] && Math.random() < 0.75;
+            if (useSectSkills) {
+                const sectS = SECT_SKILLS[enemy.sectId];
+                if (enemy.realmId >= 8 && sectS[0]) {
+                    enemy.skills.push(sectS[0]);
                 }
-            }
-            if (enemy.realmId >= 12) {
-                if (enemy.race === 'DEMON') {
-                    enemy.skills.push('DEVIL_TRANSFORM');
-                    enemy.skills.push('SOUL_DEVOUR');
-                } else {
-                    enemy.skills.push('FIVE_ELEMENTS_SHIELD');
-                    enemy.skills.push('GREEN_BAMBOO_SWORD');
+                if (enemy.realmId >= 12 && sectS[1]) {
+                    enemy.skills.push(sectS[1]);
                 }
+                // Fallback to fill up if they don't have enough skills
+                if (enemy.realmId >= 10 && !enemy.skills.includes('SWORD_RAIN') && !enemy.skills.includes('SOUL_REPRESS')) {
+                    enemy.skills.push(enemy.race === 'DEMON' ? 'SOUL_REPRESS' : 'SWORD_RAIN');
+                }
+                if (enemy.realmId >= 14 && !enemy.skills.includes('HEAL_TECHNIQUE')) {
+                    enemy.skills.push('HEAL_TECHNIQUE');
+                }
+            } else {
+                // Standard/Tán Tu skills
+                if (enemy.realmId >= 10) {
+                    if (enemy.race === 'DEMON') {
+                        enemy.skills.push('BLOOD_SACRIFICE');
+                        enemy.skills.push('SOUL_REPRESS');
+                    } else {
+                        enemy.skills.push('SWORD_RAIN');
+                    }
+                }
+                if (enemy.realmId >= 12) {
+                    if (enemy.race === 'DEMON') {
+                        enemy.skills.push('DEVIL_TRANSFORM');
+                        enemy.skills.push('SOUL_DEVOUR');
+                    } else {
+                        enemy.skills.push('FIVE_ELEMENTS_SHIELD');
+                        enemy.skills.push('GREEN_BAMBOO_SWORD');
+                    }
+                }
+                if (enemy.realmId >= 14) enemy.skills.push('HEAL_TECHNIQUE');
             }
-            if (enemy.realmId >= 14) enemy.skills.push('HEAL_TECHNIQUE');
  
             // Pills (for combat use)
             if (Math.random() < 0.5) enemy.inventory.push({ id: 'hoi_huyet_dan', quantity: 1 });
