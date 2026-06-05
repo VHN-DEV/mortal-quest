@@ -431,7 +431,7 @@ export class ShopController {
             const displayQuality = getDisplayQuality(itemData.quality, itemData.type);
 
             const info = document.createElement('div');
-            info.className = 'flex items-center space-x-3';
+            info.className = 'flex items-center space-x-3 min-w-0 flex-1 overflow-hidden';
             info.innerHTML = `
                 <div class="w-12 h-12 flex items-center justify-center shrink-0 bg-black/60 rounded-lg border border-${qClass}/30">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : `<span class="text-2xl leading-none">${itemData.icon || ''}</span>`}</div>
                 <div class="min-w-0 flex-1">
@@ -445,12 +445,12 @@ export class ShopController {
             const isVipLocked = item.minVip && state.player.vipLevel < item.minVip;
 
             const btnContainer = document.createElement('div');
-            btnContainer.className = 'flex items-center space-x-3';
+            btnContainer.className = 'flex items-center space-x-2 shrink-0 ml-2';
             btnContainer.innerHTML = `
-                <div class="text-right">
-                    ${itemData.price !== finalPrice ? `<div class="text-[8px] text-gray-500 line-through">${Player.formatPrice(itemData.price)}</div>` : ''}
-                    <div class="text-[10px] font-mono text-cultivation-gold whitespace-nowrap">${Player.formatPrice(finalPrice, true)}</div>
-                    ${isVipLocked ? `<div class="text-[7px] text-red-500 font-bold uppercase animate-pulse">Yêu cầu VIP ${item.minVip}</div>` : ''}
+                <div class="text-right max-w-[80px]">
+                    ${itemData.price !== finalPrice ? `<div class="text-[8px] text-gray-500 line-through truncate">${Player.formatPrice(itemData.price)}</div>` : ''}
+                    <div class="text-[10px] font-mono text-cultivation-gold truncate">${Player.formatPrice(finalPrice, true)}</div>
+                    ${isVipLocked ? `<div class="text-[7px] text-red-500 font-bold uppercase animate-pulse truncate">VIP ${item.minVip}</div>` : ''}
                 </div>
             `;
 
