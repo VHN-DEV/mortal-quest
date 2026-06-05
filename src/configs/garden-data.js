@@ -119,6 +119,24 @@ export const SEEDS = [
         baseGrowthTime: 4200, // 70 min
         attributeReq: 'AM_MINH',
         description: 'Linh chi u tối, mút lấy u minh chi khí nơi đáy động sâu để nảy mầm.'
+    },
+    {
+        id: 'linh_chung_ngan_tinh_thao',
+        name: 'Linh Chủng Ngân Tinh Thảo',
+        herbId: 'ngan_tinh_thao',
+        grade: 'LINH',
+        baseGrowthTime: 1800, // 30 minutes
+        attributeReq: 'NORMAL',
+        description: 'Ngân Tinh Thảo lấp lánh ánh bạc, thích hợp gieo trồng ở linh điền bình thường hoặc Âm Minh.'
+    },
+    {
+        id: 'linh_chung_cuu_u_linh_tuyet_lien',
+        name: 'Linh Chủng Cửu U Linh Tuyết Liên',
+        herbId: 'cuu_u_linh_tuyet_lien',
+        grade: 'HUYEN',
+        baseGrowthTime: 3600, // 60 minutes
+        attributeReq: 'BANG',
+        description: 'Tuyết liên cực hàn chỉ có thể nảy mầm trên linh điền Hàn Băng.'
     }
 ];
 

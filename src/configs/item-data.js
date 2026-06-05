@@ -6582,6 +6582,174 @@ export const ITEMS = {
         categories: [
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
+    },
+
+    // --- NEW DIVERSE ITEMS ---
+    'ngan_tinh_thao': {
+        id: 'ngan_tinh_thao',
+        name: 'Ngân Tinh Thảo',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🌿',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 300,
+        description: 'Linh thảo lấp lánh ánh bạc, chỉ hấp thụ tinh hoa nguyệt quang để sinh trưởng.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: '100_nam' }
+        ]
+    },
+    'linh_chung_ngan_tinh_thao': {
+        id: 'linh_chung_ngan_tinh_thao',
+        name: 'Linh Chủng Ngân Tinh Thảo',
+        type: ITEM_TYPES.LINH_CHUNG,
+        icon: '🌱',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 100,
+        description: 'Linh chủng của Ngân Tinh Thảo, có thể gieo trồng ở linh điền.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: 'duoi_100_nam' }
+        ]
+    },
+    'cuu_u_linh_tuyet_lien': {
+        id: 'cuu_u_linh_tuyet_lien',
+        name: 'Cửu U Linh Tuyết Liên',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '❄️',
+        quality: PHAP_BAO_QUALITIES.PHAP_BAO,
+        price: 1500,
+        description: 'Đóa tuyết liên ngàn năm sinh trưởng nơi u minh cực hàn, có tác dụng chí dương cực hàn giao thoa.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: '1000_nam' }
+        ]
+    },
+    'linh_chung_cuu_u_linh_tuyet_lien': {
+        id: 'linh_chung_cuu_u_linh_tuyet_lien',
+        name: 'Linh Chủng Cửu U Linh Tuyết Liên',
+        type: ITEM_TYPES.LINH_CHUNG,
+        icon: '❄️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 500,
+        description: 'Hạt giống Cửu U Linh Tuyết Liên, chỉ có thể nảy mầm trên linh điền thuộc tính Hàn Băng.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: 'duoi_100_nam' }
+        ]
+    },
+    'thai_at_hoa_than_dan': {
+        id: 'thai_at_hoa_than_dan',
+        name: 'Thái Ất Hóa Thần Đan',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '💊',
+        quality: DAN_DUOC_QUALITIES.CUC_PHAM,
+        price: 150000,
+        description: 'Thần đan vô giá hỗ trợ ngưng tụ linh lực phá cảnh, gia tăng mạnh đột phá Hóa Thần cảnh.',
+        stats: { breakthroughChance: 0.35 },
+        effect: { type: EFFECT_TYPES.TANG_CO_HOI_DOT_PHA, value: 0.35 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.DOT_PHA }
+        ]
+    },
+    'ho_menh_chan_nguyen_dan': {
+        id: 'ho_menh_chan_nguyen_dan',
+        name: 'Hộ Mệnh Chân Nguyên Đan',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '🟢',
+        quality: DAN_DUOC_QUALITIES.THUONG_PHAM,
+        price: 8000,
+        description: 'Đan dược hộ mệnh cấp cao, hồi phục lượng lớn Khí Huyết và Linh Lực khi sử dụng.',
+        effect: { type: EFFECT_TYPES.HOI_PHUC, hp: 5000, mana: 2000 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.HOI_PHUC }
+        ]
+    },
+    'tu_cuc_ngo_dao_dan': {
+        id: 'tu_cuc_ngo_dao_dan',
+        name: 'Tử Cực Ngộ Đạo Đan',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '🟣',
+        quality: DAN_DUOC_QUALITIES.CUC_PHAM,
+        price: 25000,
+        description: 'Đan dược thượng cổ chí bảo, tăng mạnh tốc độ tu luyện trong thời gian dài.',
+        effect: { type: EFFECT_TYPES.BUFF_TAM_THOI, stat: 'tuViSpeed', value: 1.8, duration: 7200 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.BUFF }
+        ]
+    },
+    'co_quan_phuc_nguyen_dan': {
+        id: 'co_quan_phuc_nguyen_dan',
+        name: 'Cơ Quan Phục Nguyên Đan',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '⚙️',
+        quality: DAN_DUOC_QUALITIES.TRUNG_PHAM,
+        price: 1200,
+        description: 'Đan dược đặc chế giúp kích thích khí huyết và tăng mạnh tốc độ luyện thể.',
+        effect: { type: EFFECT_TYPES.BUFF_TAM_THOI, stat: 'bodyExpSpeed', value: 1.5, duration: 3600 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.BUFF }
+        ]
+    },
+    'loi_dinh_than_binh': {
+        id: 'loi_dinh_than_binh',
+        name: 'Lôi Đình Thần Binh',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⚡',
+        quality: PHAP_BAO_QUALITIES.PHAP_BAO,
+        price: 45000,
+        description: 'Lôi hệ thần kiếm rèn từ Vạn Niên Lôi Kích Mộc, chứa lôi đình chi lực kinh người.',
+        stats: { atk: 1200, spd: 30, thunderDmg: 0.25 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.PHAP_BAO_SUB }
+        ]
+    },
+    'ngu_hanh_ho_the_giap': {
+        id: 'ngu_hanh_ho_the_giap',
+        name: 'Ngũ Hành Hộ Thể Giáp',
+        type: ITEM_TYPES.GIAP_BAO,
+        icon: '🛡️',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 65000,
+        description: 'Bảo giáp hộ thân khắc ngũ hành trận pháp, nâng cao phòng thủ và kháng ngũ hành thuộc tính.',
+        stats: { def: 1800, hp: 5000, fireRes: 0.2, coldRes: 0.2, thunderRes: 0.2, poisonRes: 0.2 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.CO_BAO }
+        ]
+    },
+    'hu_vo_than_kinh': {
+        id: 'hu_vo_than_kinh',
+        name: 'Hư Vô Thần Kính',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🪞',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 50000,
+        description: 'Cổ kính phòng ngự phản chiếu hư không, tăng mạnh phòng thủ và khả năng né tránh công kích.',
+        stats: { def: 900, dodge: 0.15, soulRepress: 50 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.CO_BAO }
+        ]
+    },
+    'cuu_loi_diet_the_phu': {
+        id: 'cuu_loi_diet_the_phu',
+        name: 'Cửu Lôi Diệt Thế Phù',
+        type: ITEM_TYPES.DON_PHU,
+        icon: '⚡',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 15000,
+        description: 'Cổ phù khắc họa Cửu Thiên Huyền Lôi, kích hoạt giáng xuống lôi đình diệt thế sát thương cực đại.',
+        stats: { atk: 8000 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.CONG_KICH }
+        ]
+    },
+    'thai_cuc_huyen_tran_do': {
+        id: 'thai_cuc_huyen_tran_do',
+        name: 'Thái Cực Huyền Trận Đồ',
+        type: ITEM_TYPES.TRAN_PHAP,
+        icon: '☯️',
+        quality: PHAP_BAO_QUALITIES.PHAP_BAO,
+        price: 32000,
+        description: 'Trận đồ Thái Cực ngưng tụ lưỡng nghi âm dương cát tường khí, tăng mạnh phòng thủ và thu nạp linh khí.',
+        stats: { formationPower: 300, def: 500, qiAbsorb: 200 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.TRAN_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.TRAN_PHAP.SUBCATEGORIES.PHONG_NGU_TRAN }
+        ]
     }
 };
 
