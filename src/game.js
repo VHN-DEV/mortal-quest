@@ -3160,7 +3160,34 @@ export class Game {
         const loc = getLocationById(worldId, locId);
         const enemy = EnemyGenerator.generate(loc?.dangerLevel || 1);
         if (overrideImage) enemy.image = overrideImage;
-        this.pendingEncounter = { worldId, locId, enemy, onEnd, cell, prevPos };
+
+        const playerSense = state.player.divineSense || 50;
+        const enemySense = enemy.divineSense || enemy.maxThanThuc || enemy.perception || 50;
+
+        // Check if player has concealment techniques equipped
+        const hasConcealment = (state.player.equippedAuxiliaryIds && (
+            state.player.equippedAuxiliaryIds.includes('liem_khi_quyet') ||
+            state.player.equippedAuxiliaryIds.includes('quy_nguyen_thu_tuc_cong')
+        )) || state.player.mainTechniqueId === 'liem_khi_quyet';
+
+        let isDetected = false;
+        let detectionReason = ''; // 'no_concealment', 'pierced'
+
+        if (hasConcealment) {
+            // Concealment can be pierced if enemy's divine sense is overwhelmingly superior
+            if (enemySense > playerSense * 1.8) {
+                isDetected = true;
+                detectionReason = 'pierced';
+            }
+        } else {
+            // No concealment: if enemy's divine sense is higher or close (with variance)
+            if (enemySense > playerSense - 15) {
+                isDetected = true;
+                detectionReason = 'no_concealment';
+            }
+        }
+
+        this.pendingEncounter = { worldId, locId, enemy, onEnd, cell, prevPos, isDetected, detectionReason };
 
         if (ambushMode === 'skip') {
             this.startBattle(enemy, null, onEnd);
@@ -3169,35 +3196,96 @@ export class Game {
 
         if (ambushMode === 'force_player') {
             const elDesc = document.getElementById('ambush-desc');
-            if (elDesc) {
-                elDesc.textContent = `Ngươi tiến vào vùng hoạt động của [${enemy.name}]. Thần thức đã khóa chặt mục tiêu, ngươi muốn chủ động tập kích hay né tránh rút lui?`;
+            const elTitle = document.querySelector('#ambush-overlay h3');
+            const elIcon = document.querySelector('#ambush-overlay i');
+            const btnAmbushStart = document.getElementById('btn-ambush-start');
+            const btnAmbushEscape = document.getElementById('btn-ambush-escape');
+
+            if (elTitle) elTitle.textContent = isDetected ? "Bị Phát Hiện!" : "Phát Hiện Kẻ Địch!";
+            if (elIcon) {
+                elIcon.className = isDetected ? 'ph ph-warning-circle text-5xl text-red-500 animate-pulse' : 'ph ph-eye text-5xl text-cultivation-gold';
+            }
+
+            if (isDetected) {
+                if (elDesc) {
+                    if (detectionReason === 'pierced') {
+                        elDesc.textContent = `Thần thức của [${enemy.name}] quá cường đại, đã nhìn thấu pháp thuật ẩn nặc của ngươi! Thần thức đối phương đã khóa chặt, không thể tiến hành tập kích.`;
+                    } else {
+                        elDesc.textContent = `Ngươi không ẩn giấu khí tức, cự ly quá gần khiến [${enemy.name}] nhạy bén phát giác! Thần thức đối phương đã khóa chặt, không thể tiến hành tập kích.`;
+                    }
+                }
+                if (btnAmbushStart) {
+                    const span = btnAmbushStart.querySelector('span');
+                    const p = btnAmbushStart.querySelector('p');
+                    if (span) span.textContent = "NGHÊNH CHIẾN";
+                    if (p) p.textContent = "Chiến đấu bình thường";
+                }
+                if (btnAmbushEscape) {
+                    btnAmbushEscape.textContent = "ĐÀO TẨU (ĐỘN THUẬT)";
+                }
+            } else {
+                if (elDesc) {
+                    if (hasConcealment) {
+                        elDesc.textContent = `Nhờ có thuật ẩn nặc khống chế khí tức, [${enemy.name}] hoàn toàn không phát giác ra ngươi. Ngươi muốn chủ động tập kích hay né tránh rút lui?`;
+                    } else {
+                        elDesc.textContent = `Thần thức của ngươi nhạy bén khóa chặt [${enemy.name}] trước khi bị phát hiện. Ngươi muốn chủ động tập kích hay né tránh rút lui?`;
+                    }
+                }
+                if (btnAmbushStart) {
+                    const span = btnAmbushStart.querySelector('span');
+                    const p = btnAmbushStart.querySelector('p');
+                    if (span) span.textContent = "TẬP KÍCH";
+                    if (p) p.textContent = "Ưu tiên tấn công";
+                }
+                if (btnAmbushEscape) {
+                    btnAmbushEscape.textContent = "LÁNH MẶT";
+                }
             }
             state.ui.toggleOverlay(document.getElementById('ambush-overlay'), true);
         } else {
-            const playerSense = state.player.divineSense || 50;
-            const enemySense = enemy.divineSense || enemy.maxThanThuc || 50;
-            const roll = Math.random() * 40 - 20;
-
-            if (playerSense > enemySense + roll) {
-                const elDesc = document.getElementById('ambush-desc');
-                if (elDesc) {
-                    elDesc.textContent = `Thần thức nhạy bén phát hiện một con [${enemy.name}] đang ẩn nấp tập kích phía trước. Ngươi có muốn phản tập kích nó không?`;
-                }
+            // normal mode (random encounters on empty cells)
+            if (isDetected) {
+                // Enemy detected player first, triggers enemy ambush!
+                state.ui.toast(`Ngươi bị [${enemy.name}] phát hiện khí tức và tập kích bất ngờ!`, 'error');
                 if (window.game && window.game.screens && window.game.screens.map) {
-                    window.game.screens.map.updateEventDisplay(`🚨 [PHÁT HIỆN PHỤC KÍCH] Thần thức nhạy bén phát hiện một đầu hung thú [${enemy.name}] ẩn nấp phía trước!`);
-                }
-                state.ui.toggleOverlay(document.getElementById('ambush-overlay'), true);
-            } else if (enemySense > playerSense + (Math.random() * 40)) {
-                state.ui.toast(`Ngươi bị một con [${enemy.name}] tập kích bất ngờ!`, 'error');
-                if (window.game && window.game.screens && window.game.screens.map) {
-                    window.game.screens.map.updateEventDisplay(`🚨 [BỊ TẬP KÍCH] Ngươi bị một đầu hung thú [${enemy.name}] từ bóng tối lao ra tập kích bất ngờ!`);
+                    window.game.screens.map.updateEventDisplay(`🚨 [BỊ TẬP KÍCH] [${enemy.name}] phát hiện khí tức của ngươi từ xa, lao ra đánh úp!`);
                 }
                 setTimeout(() => this.startBattle(enemy, 'enemy', onEnd), 1000);
             } else {
-                if (window.game && window.game.screens && window.game.screens.map) {
-                    window.game.screens.map.updateEventDisplay(`⚔️ Gặp phải hung thú [${enemy.name}], chiến đấu nổ ra!`);
+                // Player is not detected. Check if player's divine sense is high enough to discover enemy first
+                const roll = Math.random() * 40 - 20;
+                if (playerSense > enemySense + roll) {
+                    const elDesc = document.getElementById('ambush-desc');
+                    const elTitle = document.querySelector('#ambush-overlay h3');
+                    const elIcon = document.querySelector('#ambush-overlay i');
+                    const btnAmbushStart = document.getElementById('btn-ambush-start');
+                    const btnAmbushEscape = document.getElementById('btn-ambush-escape');
+
+                    if (elTitle) elTitle.textContent = "Tập Kích Kẻ Địch!";
+                    if (elIcon) elIcon.className = 'ph ph-eye text-5xl text-cultivation-gold';
+                    if (elDesc) {
+                        elDesc.textContent = `Thần thức nhạy bén phát hiện một con [${enemy.name}] đang ẩn nấp phía trước. Ngươi có muốn phản tập kích nó không?`;
+                    }
+                    if (btnAmbushStart) {
+                        const span = btnAmbushStart.querySelector('span');
+                        const p = btnAmbushStart.querySelector('p');
+                        if (span) span.textContent = "PHẢN KÍCH";
+                        if (p) p.textContent = "Tập kích bất ngờ";
+                    }
+                    if (btnAmbushEscape) {
+                        btnAmbushEscape.textContent = "TRÁNH NÉ";
+                    }
+                    if (window.game && window.game.screens && window.game.screens.map) {
+                        window.game.screens.map.updateEventDisplay(`🚨 [PHÁT HIỆN PHỤC KÍCH] Thần thức nhạy bén phát hiện [${enemy.name}] ẩn nấp phía trước!`);
+                    }
+                    state.ui.toggleOverlay(document.getElementById('ambush-overlay'), true);
+                } else {
+                    // Both stumble upon each other, normal encounter
+                    if (window.game && window.game.screens && window.game.screens.map) {
+                        window.game.screens.map.updateEventDisplay(`⚔️ Bất ngờ giáp mặt [${enemy.name}], chiến đấu nổ ra!`);
+                    }
+                    this.startBattle(enemy, null, onEnd);
                 }
-                this.startBattle(enemy, null, onEnd);
             }
         }
     }
@@ -3257,37 +3345,113 @@ export class Game {
     startAmbush() {
         if (!this.pendingEncounter) return;
         state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
-        const successChance = 0.6 + ((state.player.advancedStats.perception || 5) / 100);
-        const { enemy, onEnd } = this.pendingEncounter;
-        if (Math.random() < successChance) {
-            this.startBattle(enemy, 'player', onEnd);
-        } else {
-            state.ui.toast("Tập kích thất bại! Ngươi đã bị đối phương phát hiện.", "warning");
+        const { enemy, onEnd, isDetected } = this.pendingEncounter;
+
+        if (isDetected) {
+            // Normal battle, no player ambush bonus
             this.startBattle(enemy, null, onEnd);
+        } else {
+            // Attempt ambush
+            const successChance = 0.6 + ((state.player.advancedStats.perception || 5) / 100);
+            if (Math.random() < successChance) {
+                this.startBattle(enemy, 'player', onEnd);
+            } else {
+                state.ui.toast("Tập kích thất bại! Ngươi đã bị đối phương phát hiện.", "warning");
+                this.startBattle(enemy, null, onEnd);
+            }
         }
         this.pendingEncounter = null;
     }
 
     escapeAmbush() {
         if (!this.pendingEncounter) return;
-        state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
+        
+        const { prevPos, cell, isDetected } = this.pendingEncounter;
 
-        const { prevPos, cell } = this.pendingEncounter;
-        if (prevPos && state.player && state.player.gridExplorationState) {
-            // Move player back to their previous position
-            state.player.gridExplorationState.playerPos = prevPos;
-            // Restore cell to unlocked since they retreated
-            if (cell) {
-                cell.status = 'unlocked';
-                cell.resolved = false;
+        if (isDetected) {
+            // Escape attempt when detected! Check escape/movement arts (Độn Thuật)
+            const escapeTechId = state.player.mainEscapeId;
+            const equippedSecrets = state.player.equippedSecretTechniqueIds || [];
+            const hasHuyetDon = equippedSecrets.includes('huyet_don_thuat') || (state.player.learnedSecretTechniques && state.player.learnedSecretTechniques.some(t => t.id === 'huyet_don_thuat'));
+            
+            let escapeChance = 0.2; // base chance without escape arts
+            let artName = "thân pháp thông thường";
+            let costHp = 0;
+            let costStamina = 10;
+
+            if (escapeTechId === 'loi_don_thuat') {
+                escapeChance = 1.0;
+                artName = "Lôi Độn Thuật";
+                costStamina = 20;
+            } else if (hasHuyetDon) {
+                escapeChance = 1.0;
+                artName = "Huyết Độn Thuật";
+                costHp = 25; // burning blood costs HP
+                costStamina = 5;
+            } else if (escapeTechId === 'la_yen_bo') {
+                escapeChance = 0.75;
+                artName = "La Yên Bộ";
+                costStamina = 15;
             }
-            state.ui.toast("Ngươi cảm thấy nguy hiểm, lặng lẽ rút lui về vị trí cũ.", "info");
+
+            // Check stamina
+            if (state.player.stamina < costStamina) {
+                state.ui.toast("Thể lực cạn kiệt, không thể thi triển độn thuật để chạy trốn!", "error");
+                // Force fight (enemy attacks first!)
+                state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
+                state.ui.toast("Đào tẩu thất bại do kiệt sức! Đối thủ thừa cơ tập kích!", "error");
+                this.startBattle(this.pendingEncounter.enemy, 'enemy', this.pendingEncounter.onEnd);
+                this.pendingEncounter = null;
+                return;
+            }
+
+            // Deduct stamina/HP
+            state.player.stamina -= costStamina;
+            if (costHp > 0) {
+                state.player.hp = Math.max(1, state.player.hp - costHp);
+            }
+
+            state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
+
+            if (Math.random() < escapeChance) {
+                // Success escape! Move back
+                if (prevPos && state.player.gridExplorationState) {
+                    state.player.gridExplorationState.playerPos = prevPos;
+                    if (cell) {
+                        cell.status = 'unlocked';
+                        cell.resolved = false;
+                    }
+                }
+                if (costHp > 0) {
+                    state.ui.toast(`Thi triển ${artName} thành công thoát khỏi khóa chặt! Tiêu hao ${costStamina} Thể lực, hao tổn ${costHp} HP tinh huyết.`, "success");
+                } else {
+                    state.ui.toast(`Thi triển ${artName} thành công thoát khỏi khóa chặt! Tiêu hao ${costStamina} Thể lực.`, "success");
+                }
+                this.pendingEncounter = null;
+                this.refreshUI();
+            } else {
+                // Fail escape! Force combat (enemy attacks first)
+                state.ui.toast(`Thi triển ${artName} thất bại! Đối thủ đuổi kịp và đánh úp ngươi!`, "error");
+                this.startBattle(this.pendingEncounter.enemy, 'enemy', this.pendingEncounter.onEnd);
+                this.pendingEncounter = null;
+            }
         } else {
-            state.ui.toast("Ngươi lặng lẽ lách mình qua kẻ địch, tránh được một cuộc chiến.", "info");
+            // Normal escape (retreat when not detected is 100% success, no cost)
+            state.ui.toggleOverlay(document.getElementById('ambush-overlay'), false);
+            if (prevPos && state.player && state.player.gridExplorationState) {
+                state.player.gridExplorationState.playerPos = prevPos;
+                if (cell) {
+                    cell.status = 'unlocked';
+                    cell.resolved = false;
+                }
+                state.ui.toast("Ngươi lặng lẽ thoái lui khi đối phương chưa kịp phát hiện.", "info");
+            } else {
+                state.ui.toast("Ngươi lặng lẽ lách mình qua kẻ địch, tránh được một cuộc chiến.", "info");
+            }
+            this.pendingEncounter = null;
+            this.refreshUI();
         }
 
-        this.pendingEncounter = null;
-        this.refreshUI();
         if (window.game && window.game.screens && window.game.screens.map) {
             window.game.screens.map.renderGridMap();
         }
