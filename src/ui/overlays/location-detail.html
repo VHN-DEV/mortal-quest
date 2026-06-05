@@ -11,12 +11,17 @@
         </button>
 
         <!-- Location Banner/Artwork -->
-        <div class="relative w-full h-44 shrink-0 overflow-hidden">
-            <img id="loc-detail-image" src="" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-qi-ink via-qi-ink/40 to-transparent"></div>
+        <div class="relative w-full h-44 shrink-0 overflow-hidden group/banner">
+            <img id="loc-detail-image" src="" class="w-full h-full object-cover cursor-zoom-in zoomable-image transition-transform duration-500 group-hover/banner:scale-105">
+            <div class="absolute inset-0 bg-gradient-to-t from-qi-ink via-qi-ink/40 to-transparent pointer-events-none"></div>
+
+            <!-- Zoom Hint Icon (appears on hover) -->
+            <div class="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/50 border border-white/20 flex items-center justify-center opacity-0 group-hover/banner:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                <i class="ph ph-magnifying-glass-plus text-white/80 text-sm"></i>
+            </div>
 
             <!-- Region & Sub-Region Badges -->
-            <div class="absolute bottom-4 left-6 right-6 flex flex-wrap gap-1.5">
+            <div class="absolute bottom-4 left-6 right-6 flex flex-wrap gap-1.5 pointer-events-none">
                 <span id="loc-detail-region"
                     class="px-2.5 py-0.5 rounded bg-qi-blue/15 border border-qi-blue/30 text-qi-blue text-[8px] font-ancient uppercase tracking-widest">Thiên
                     Nam Đại Lục</span>

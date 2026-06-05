@@ -2293,7 +2293,8 @@ export class UISystem {
                 '.save-card img',
                 '.save-portrait img',
                 '.character-avatar img',
-                '#char-portrait img'
+                '#char-portrait img',
+                '#loc-detail-image'
             ];
 
             const isZoomable = allowedSelectors.some(selector => img.matches(selector));
@@ -2327,7 +2328,8 @@ export class UISystem {
                 '.save-card img',
                 '.save-portrait img',
                 '.character-avatar img',
-                '#char-portrait img'
+                '#char-portrait img',
+                '#loc-detail-image'
             ];
 
             allowedSelectors.forEach(selector => {
