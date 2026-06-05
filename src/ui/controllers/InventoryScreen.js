@@ -400,17 +400,21 @@ export class InventoryScreen {
             const qClass = this.getQualityClass(displayQuality);
 
             const el = document.createElement('div');
-            el.className = `p-2 border rounded-lg bg-black/20 flex flex-col items-center justify-between cursor-pointer transition-all border-${qClass}/30 ${state.selectedItemId === item.id ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'} min-h-[72px]`;
+            el.className = `relative p-1.5 border rounded-lg bg-black/20 flex flex-col items-center justify-center cursor-pointer transition-all border-${qClass}/30 ${state.selectedItemId === item.id ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'} aspect-square`;
 
             const categories = this.getTechniqueCategoriesForBook(itemData);
-            const gridCategoryHtml = categories.length > 0
-                ? `<div class="flex flex-wrap gap-0.5 justify-center mt-1 w-full overflow-hidden max-h-[14px] leading-none">${categories.map(cat => `<span class="px-0.5 py-0.2 rounded bg-qi-blue/20 text-[5px] text-qi-blue uppercase font-ancient whitespace-nowrap scale-90 border border-qi-blue/30 leading-none">${cat}</span>`).join('')}</div>`
+            const categoryBadgeHtml = categories.length > 0
+                ? `<div class="absolute bottom-1 left-0 right-0 flex flex-wrap gap-0.5 justify-center px-0.5 overflow-hidden">${categories.map(cat => `<span class="px-0.5 rounded bg-qi-blue/20 text-[4.5px] text-qi-blue uppercase font-ancient whitespace-nowrap border border-qi-blue/30 leading-[1.4]">${cat}</span>`).join('')}</div>`
                 : '';
 
+            // Short label: max 4 chars to keep badge compact
+            const labelText = itemData.name ? itemData.name.slice(0, 5) : '';
+
             el.innerHTML = `
-                <div class="text-2xl mb-0.5">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
-                <div class="text-[9px] text-gray-400">x${item.quantity}</div>
-                ${gridCategoryHtml}
+                <span class="absolute top-0.5 left-0.5 text-[7px] text-gray-300 leading-none bg-black/60 px-0.5 rounded truncate max-w-[55%] z-10">${labelText}</span>
+                <span class="absolute top-0.5 right-0.5 text-[7px] text-cultivation-gold font-mono leading-none bg-black/60 px-0.5 rounded z-10">x${item.quantity}</span>
+                <div class="flex items-center justify-center">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-9 h-9 object-contain">` : `<span class="text-2xl">${itemData.icon || ''}</span>`}</div>
+                ${categoryBadgeHtml}
             `;
             el.onclick = () => this.selectItem(item.id);
             this.elInventoryGrid.appendChild(el);

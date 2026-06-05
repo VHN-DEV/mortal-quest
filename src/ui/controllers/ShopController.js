@@ -567,11 +567,15 @@ export class ShopController {
             if (['nguyen_lieu', 'linh_duoc', 'linh_khoang', 'linh_moc'].includes(itemData.type)) sellMult = 0.3;
 
             const el = document.createElement('div');
-            el.className = `p-2 border border-gray-800 rounded-lg bg-black/20 flex flex-col items-center cursor-pointer hover:border-${qClass} transition-colors duration-200 active:scale-95`;
+            el.className = `relative p-1.5 border border-gray-800 rounded-lg bg-black/20 flex flex-col items-center justify-center cursor-pointer hover:border-${qClass} transition-all duration-200 active:scale-95 aspect-square`;
+            
+            const labelText = itemData.name ? itemData.name.slice(0, 5) : '';
+
             el.innerHTML = `
-                <div class="text-2xl mb-1">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
-                <div class="text-[9px] text-gray-400">x${item.quantity}</div>
-                <div class="text-[8px] text-cultivation-gold mt-1">${Math.floor(itemData.price * sellMult)} LT</div>
+                <span class="absolute top-0.5 left-0.5 text-[7px] text-gray-300 leading-none bg-black/60 px-0.5 rounded truncate max-w-[55%] z-10">${labelText}</span>
+                <span class="absolute top-0.5 right-0.5 text-[7px] text-cultivation-gold font-mono leading-none bg-black/60 px-0.5 rounded z-10">x${item.quantity}</span>
+                <div class="flex items-center justify-center">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-9 h-9 object-contain">` : `<span class="text-2xl">${itemData.icon || ''}</span>`}</div>
+                <span class="absolute bottom-0.5 left-0.5 right-0.5 text-center text-[7.5px] text-cultivation-gold font-bold leading-none bg-black/60 py-0.5 rounded z-10">${Math.floor(itemData.price * sellMult)} LT</span>
             `;
             el.onclick = () => {
                 if (window.game.screens.inventory) {

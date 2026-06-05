@@ -1,6 +1,7 @@
 import { state } from '../../state.js';
 import { getItemById } from '../../configs/item-data.js';
 import { getQualityObject } from '../../configs/game-enums.js';
+import { getAssetUrl } from '../../configs/asset-data.js';
 
 /**
  * Màn hình Loot đồ (PUBG style)
@@ -117,16 +118,20 @@ export class LootScreen {
         
         // Add quality class for specific glows
         const qualityClass = this.getQualityClass(itemData?.quality);
-        div.className = `loot-item-slot group ${qualityClass}`;
+        div.className = `loot-item-slot group ${qualityClass} relative`;
         
         const qualityColor = this.getQualityColor(itemData?.quality);
         
+        const labelText = itemData?.name ? itemData.name.slice(0, 5) : '';
+        const imageUrl = itemData?.image ? getAssetUrl(itemData.image) : (itemData?.img || '');
+        const imageHtml = imageUrl 
+            ? `<img src="${imageUrl}" class="w-9 h-9 object-contain opacity-90 group-hover:opacity-100 transition-all group-hover:scale-105">`
+            : `<span class="text-2xl">${itemData?.icon || ''}</span>`;
+
         div.innerHTML = `
-            ${itemData?.icon ? `<div class="text-3xl opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all drop-shadow-md">${itemData.icon}</div>` : 
-              (itemData?.img ? `<img src="${itemData.img}" class="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-all group-hover:scale-105">` : 
-              `<div class="w-full h-full flex items-center justify-center text-[10px] text-gray-500 font-ancient text-center p-1">${itemData?.name || 'Vô danh'}</div>`)}
-            
-            <div class="loot-item-quantity">${item.quantity}</div>
+            <span class="absolute top-0.5 left-0.5 text-[7px] text-gray-300 leading-none bg-black/60 px-0.5 rounded truncate max-w-[55%] z-10">${labelText}</span>
+            <span class="absolute top-0.5 right-0.5 text-[7px] text-cultivation-gold font-mono leading-none bg-black/60 px-0.5 rounded z-10">x${item.quantity}</span>
+            <div class="flex items-center justify-center w-full h-full">${imageHtml}</div>
             <div class="loot-quality-bar ${qualityColor}"></div>
         `;
 
