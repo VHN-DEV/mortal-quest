@@ -400,21 +400,28 @@ export class InventoryScreen {
             const qClass = this.getQualityClass(displayQuality);
 
             const el = document.createElement('div');
-            el.className = `relative p-1.5 border rounded-lg bg-black/20 flex flex-col items-center justify-center cursor-pointer transition-all border-${qClass}/30 ${state.selectedItemId === item.id ? 'bg-qi-blue/10 border-qi-blue' : 'hover:border-white/30'} aspect-square`;
+            el.className = `relative border-2 rounded-xl bg-black/40 cursor-pointer transition-all duration-300 border-${qClass} ${state.selectedItemId === item.id ? 'bg-qi-blue/15 border-qi-blue shadow-[0_0_15px_rgba(79,209,197,0.3)]' : 'hover:border-white/50 hover:bg-black/60'} w-full aspect-square`;
 
             const categories = this.getTechniqueCategoriesForBook(itemData);
             const categoryBadgeHtml = categories.length > 0
-                ? `<div class="absolute bottom-1 left-0 right-0 flex flex-wrap gap-0.5 justify-center px-0.5 overflow-hidden">${categories.map(cat => `<span class="px-0.5 rounded bg-qi-blue/20 text-[4.5px] text-qi-blue uppercase font-ancient whitespace-nowrap border border-qi-blue/30 leading-[1.4]">${cat}</span>`).join('')}</div>`
+                ? `<span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-qi-blue/20 text-[6.5px] text-qi-blue uppercase font-sans font-bold whitespace-nowrap border border-qi-blue/30 leading-none z-20">${categories[0]}</span>`
                 : '';
 
-            // Short label: max 4 chars to keep badge compact
-            const labelText = itemData.name ? itemData.name.slice(0, 5) : '';
+            const quantityBadgeHtml = item.quantity > 1
+                ? `<span class="absolute top-1.5 right-1.5 text-[8px] text-cultivation-gold font-mono font-bold leading-none bg-black/70 px-1.5 py-0.5 rounded border border-white/5 z-20">x${item.quantity}</span>`
+                : '';
 
             el.innerHTML = `
-                <span class="absolute top-0.5 left-0.5 text-[7px] text-gray-300 leading-none bg-black/60 px-0.5 rounded truncate max-w-[55%] z-10">${labelText}</span>
-                <span class="absolute top-0.5 right-0.5 text-[7px] text-cultivation-gold font-mono leading-none bg-black/60 px-0.5 rounded z-10">x${item.quantity}</span>
-                <div class="flex items-center justify-center">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-9 h-9 object-contain">` : `<span class="text-2xl">${itemData.icon || ''}</span>`}</div>
                 ${categoryBadgeHtml}
+                ${quantityBadgeHtml}
+                <div class="absolute inset-0 pb-[22px] flex items-center justify-center z-10">
+                    ${(itemData.image && getAssetUrl(itemData.image)) 
+                        ? `<img src="${getAssetUrl(itemData.image)}" class="w-9 h-9 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)] hover:scale-105 transition-transform duration-300">` 
+                        : `<span class="text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">${itemData.icon || ''}</span>`}
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 h-[22px] bg-black/70 border-t border-white/5 rounded-b-[10px] backdrop-blur-[2px] flex items-center justify-center z-10">
+                    <span class="text-[8px] font-sans font-bold quality-${qClass} truncate px-1 text-center w-full leading-none">${itemData.name}</span>
+                </div>
             `;
             el.onclick = () => this.selectItem(item.id);
             this.elInventoryGrid.appendChild(el);
@@ -425,8 +432,8 @@ export class InventoryScreen {
         if (currentItemsCount < itemsPerPage) {
             for (let i = 0; i < itemsPerPage - currentItemsCount; i++) {
                 const el = document.createElement('div');
-                el.className = 'p-2 border border-white/5 rounded-lg bg-black/10 flex items-center justify-center opacity-20';
-                el.innerHTML = '<div class="w-8 h-8"></div>';
+                el.className = 'border border-white/5 rounded-xl bg-black/5 w-full aspect-square opacity-20';
+                el.innerHTML = '';
                 this.elInventoryGrid.appendChild(el);
             }
         }

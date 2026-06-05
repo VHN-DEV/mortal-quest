@@ -567,15 +567,23 @@ export class ShopController {
             if (['nguyen_lieu', 'linh_duoc', 'linh_khoang', 'linh_moc'].includes(itemData.type)) sellMult = 0.3;
 
             const el = document.createElement('div');
-            el.className = `relative p-1.5 border border-gray-800 rounded-lg bg-black/20 flex flex-col items-center justify-center cursor-pointer hover:border-${qClass} transition-all duration-200 active:scale-95 aspect-square`;
+            el.className = `relative border-2 rounded-xl bg-black/40 cursor-pointer transition-all duration-300 border-${qClass} hover:border-white/50 hover:bg-black/60 active:scale-95 w-full aspect-square`;
             
-            const labelText = itemData.name ? itemData.name.slice(0, 5) : '';
+            const quantityBadgeHtml = item.quantity > 1
+                ? `<span class="absolute top-1.5 right-1.5 text-[8px] text-cultivation-gold font-mono font-bold leading-none bg-black/70 px-1.5 py-0.5 rounded border border-white/5 z-10">x${item.quantity}</span>`
+                : '';
 
             el.innerHTML = `
-                <span class="absolute top-0.5 left-0.5 text-[7px] text-gray-300 leading-none bg-black/60 px-0.5 rounded truncate max-w-[55%] z-10">${labelText}</span>
-                <span class="absolute top-0.5 right-0.5 text-[7px] text-cultivation-gold font-mono leading-none bg-black/60 px-0.5 rounded z-10">x${item.quantity}</span>
-                <div class="flex items-center justify-center">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-9 h-9 object-contain">` : `<span class="text-2xl">${itemData.icon || ''}</span>`}</div>
-                <span class="absolute bottom-0.5 left-0.5 right-0.5 text-center text-[7.5px] text-cultivation-gold font-bold leading-none bg-black/60 py-0.5 rounded z-10">${Math.floor(itemData.price * sellMult)} LT</span>
+                ${quantityBadgeHtml}
+                <div class="absolute inset-0 pb-[32px] flex items-center justify-center z-10">
+                    ${(itemData.image && getAssetUrl(itemData.image)) 
+                        ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)] hover:scale-105 transition-transform duration-300">` 
+                        : `<span class="text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">${itemData.icon || ''}</span>`}
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 h-[32px] bg-black/70 border-t border-white/5 rounded-b-[10px] backdrop-blur-[2px] flex flex-col items-center justify-center z-10">
+                    <span class="text-[7.5px] font-sans font-bold quality-${qClass} truncate px-1 text-center w-full leading-tight">${itemData.name}</span>
+                    <span class="text-[7.5px] font-mono font-bold text-cultivation-gold leading-none mt-0.5">${Math.floor(itemData.price * sellMult)} LT</span>
+                </div>
             `;
             el.onclick = () => {
                 if (window.game.screens.inventory) {

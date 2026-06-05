@@ -116,23 +116,30 @@ export class LootScreen {
         const itemData = getItemById(item.id);
         const div = document.createElement('div');
         
+        const qObj = getQualityObject(itemData?.quality);
+        const qClass = qObj?.cssClass || 'pham';
+        
         // Add quality class for specific glows
         const qualityClass = this.getQualityClass(itemData?.quality);
-        div.className = `loot-item-slot group ${qualityClass} relative`;
+        div.className = `loot-item-slot group ${qualityClass} border-2 border-${qClass} relative flex flex-col justify-between p-1`;
         
-        const qualityColor = this.getQualityColor(itemData?.quality);
-        
-        const labelText = itemData?.name ? itemData.name.slice(0, 5) : '';
         const imageUrl = itemData?.image ? getAssetUrl(itemData.image) : (itemData?.img || '');
         const imageHtml = imageUrl 
-            ? `<img src="${imageUrl}" class="w-9 h-9 object-contain opacity-90 group-hover:opacity-100 transition-all group-hover:scale-105">`
-            : `<span class="text-2xl">${itemData?.icon || ''}</span>`;
+            ? `<img src="${imageUrl}" class="w-9 h-9 object-contain opacity-90 group-hover:opacity-100 transition-all group-hover:scale-105 duration-300 drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]">`
+            : `<span class="text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">${itemData?.icon || ''}</span>`;
+
+        const quantityBadgeHtml = item.quantity > 1
+            ? `<span class="absolute top-1.5 right-1.5 text-[8px] text-cultivation-gold font-mono font-bold leading-none bg-black/70 px-1.5 py-0.5 rounded border border-white/5 z-10">x${item.quantity}</span>`
+            : '';
 
         div.innerHTML = `
-            <span class="absolute top-0.5 left-0.5 text-[7px] text-gray-300 leading-none bg-black/60 px-0.5 rounded truncate max-w-[55%] z-10">${labelText}</span>
-            <span class="absolute top-0.5 right-0.5 text-[7px] text-cultivation-gold font-mono leading-none bg-black/60 px-0.5 rounded z-10">x${item.quantity}</span>
-            <div class="flex items-center justify-center w-full h-full">${imageHtml}</div>
-            <div class="loot-quality-bar ${qualityColor}"></div>
+            ${quantityBadgeHtml}
+            <div class="absolute inset-0 pb-[22px] flex items-center justify-center z-10">
+                ${imageHtml}
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-[22px] bg-black/70 border-t border-white/5 rounded-b-[14px] backdrop-blur-[2px] flex items-center justify-center z-10">
+                <span class="text-[7.5px] font-sans font-bold quality-${qClass} truncate px-1 text-center w-full leading-none">${itemData.name}</span>
+            </div>
         `;
 
         // Click to transfer

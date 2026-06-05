@@ -21,13 +21,20 @@
   --color-qi-ink: #0a0a0c;
 
   /* Item Quality Colors */
+  --color-pham: #94a3b8;
   --color-pham-khi: #94a3b8;
+  --color-hoang: #10b981;
   --color-phap-khi: #10b981;
+  --color-huyen: #3b82f6;
   --color-linh-khi: #3b82f6;
+  --color-dia: #8b5cf6;
   --color-phap-bao: #8b5cf6;
+  --color-thien: #f59e0b;
   --color-co-bao: #f59e0b;
   --color-linh-bao: #ef4444;
+  --color-than: #d4af37;
   --color-thong-thien: #d4af37;
+  --color-tien: #4fd1c5;
   --color-tien-khi: #4fd1c5;
   --color-danh-khi: #f87171;
 }
