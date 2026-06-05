@@ -1,15 +1,5 @@
 import { ITEM_TYPES, ITEM_CATEGORIES_ENUM, EFFECT_TYPES, PHAP_BAO_QUALITIES, DAN_DUOC_QUALITIES, CONG_PHAP_QUALITIES, DI_HOA_QUALITIES, DI_LOI_QUALITIES, LINH_THU_QUALITIES } from './item-classification.js';
 
-// --- Hệ Thống Phẩm Cấp Pháp Bảo ---
-// 1. Phàm Khí
-// 2. Pháp Khí
-// 3. Linh Khí
-// 4. Pháp Bảo
-// 5. Cổ Bảo
-// 6. Linh Bảo
-// 7. Thông Thiên Linh Bảo
-// 8. Tiên Khí
-
 export const ITEMS = {
     // Hạt giống
     'linh_chung_thanh_phuc_thao': {
