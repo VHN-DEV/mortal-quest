@@ -136,7 +136,7 @@ window.refreshUI = () => game.refreshUI();
 window.switchScreen = (screenId, btn) => state.ui.switchScreen(screenId, btn);
 
 const showLocationDetailPopup = (worldId, locId, onConfirmCallback) => {
-    const loc = getLocationById(worldId, locId);
+    const loc = typeof locId === 'object' ? locId : getLocationById(worldId, locId);
     if (!loc) return;
 
     // Reset layout modifications that might have been done by showWorldDetailPopup

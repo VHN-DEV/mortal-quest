@@ -485,27 +485,32 @@ export class MapScreen {
                 }
 
                 const el = document.createElement('div');
-                if (isLocked) {
-                    el.className = 'location-card h-40 p-5 flex flex-col justify-end opacity-65 grayscale';
-                } else {
-                    el.className = 'location-card h-40 p-5 flex flex-col justify-end cursor-pointer';
-                }
+                el.className = `location-card h-40 p-5 flex flex-col justify-between ${isLocked ? 'opacity-65 grayscale' : 'cursor-pointer'}`;
 
                 const previewLoc = w.locations.find(loc => loc.regionId === regionId);
                 const previewImg = previewLoc?.image || ASSETS.backgrounds.cultivation;
 
                 el.innerHTML = `
                     <img src="${previewImg}" class="location-card-image">
-                    <div class="relative z-10 space-y-1">
-                        <div class="flex justify-between items-center">
-                            <h4 class="text-xl font-charm text-white group-hover:text-qi-blue transition-colors">
-                                ${regionName} ${isLocked ? '🔒' : ''}
-                            </h4>
-                            ${isLocked ? '<i class="ph ph-lock text-red-500 text-lg"></i>' : '<i class="ph ph-caret-right text-qi-blue text-xl"></i>'}
+                    <div class="relative z-10 flex flex-col justify-between h-full w-full">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center w-full min-w-0 space-x-2">
+                                <h4 class="text-xl font-charm text-white group-hover:text-qi-blue transition-colors truncate block flex-grow min-w-0">
+                                    ${regionName}
+                                </h4>
+                                ${isLocked ? '<i class="ph ph-lock text-red-500 flex-shrink-0"></i>' : '<i class="ph ph-caret-right text-qi-blue text-lg flex-shrink-0"></i>'}
+                            </div>
+                            <p class="text-[10px] text-gray-300 font-serif line-clamp-2 overflow-hidden text-ellipsis opacity-70 leading-relaxed">
+                                ${isLocked ? lockReason : `Đại lục / Hải vực rộng lớn chứa nhiều cơ duyên và thử thách tại ${regionName}.`}
+                            </p>
                         </div>
-                        <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">
-                            ${isLocked ? lockReason : `Lịch luyện thám hiểm khu vực ${regionName}`}
-                        </p>
+                        <div class="flex justify-between items-end pt-2">
+                            <span class="text-[7px] text-gray-500 uppercase tracking-widest block">Đại Lục</span>
+                            <button class="btn-region-info px-2 py-0.5 bg-white/5 hover:bg-cultivation-gold/20 hover:text-cultivation-gold border border-white/10 hover:border-cultivation-gold/30 rounded text-[9px] font-bold transition-all z-20 flex items-center space-x-1">
+                                <i class="ph ph-info"></i>
+                                <span>CHI TIẾT</span>
+                            </button>
+                        </div>
                     </div>
                 `;
 
@@ -519,6 +524,38 @@ export class MapScreen {
                     await this.saveNavState();
                     this.renderLocationList();
                 };
+
+                const btnInfo = el.querySelector('.btn-region-info');
+                if (btnInfo) {
+                    btnInfo.onclick = (e) => {
+                        e.stopPropagation();
+
+                        const realLoc = w.locations.find(loc => loc.id === regionId);
+                        const virtualLoc = realLoc || {
+                            id: regionId,
+                            name: regionName,
+                            description: `Đại lục / Hải vực ${regionName} thuộc cõi giới ${w.name}. Nơi đây bao gồm nhiều quốc gia, tông môn và các bí cảnh tu tiên hiểm trở để các tu sĩ khám phá thám hiểm.`,
+                            image: previewImg,
+                            regionName: w.name,
+                            subRegionName: 'ĐẠI LỤC',
+                            minRealm: previewLoc ? previewLoc.minRealm : 0,
+                            danger: previewLoc ? previewLoc.danger : 'an_toan',
+                            resources: [],
+                            energies: [],
+                            elementQi: {}
+                        };
+
+                        window.showLocationDetailPopup(this.viewedWorldId, virtualLoc, () => {
+                            if (isLocked) {
+                                state.ui.toast("Để đến Loạn Tinh Hải, đạo hữu cần ở Thượng Cổ Truyền Tống Trận, hoặc có Phi Chu (Linh Thuyền, Phi Chu), hoặc có Truyền Tống Phù (Thuấn Di Phù, Phá Không Phù).", "warning");
+                                return;
+                            }
+                            this.selectedRegionId = regionId;
+                            this.mapNavLevel = 'subregions';
+                            this.saveNavState().then(() => this.renderLocationList());
+                        });
+                    };
+                }
 
                 this.elLocList.appendChild(el);
             });
@@ -544,19 +581,28 @@ export class MapScreen {
 
             subRegionsMap.forEach((subName, subId) => {
                 const el = document.createElement('div');
-                el.className = 'location-card h-40 p-5 flex flex-col justify-end cursor-pointer';
+                el.className = 'location-card h-40 p-5 flex flex-col justify-between cursor-pointer';
 
                 const previewLoc = w.locations.find(loc => loc.subRegionId === subId);
                 const previewImg = previewLoc?.image || ASSETS.backgrounds.cultivation;
 
                 el.innerHTML = `
                     <img src="${previewImg}" class="location-card-image">
-                    <div class="relative z-10 space-y-1">
-                        <div class="flex justify-between items-center">
-                            <h4 class="text-xl font-charm text-white group-hover:text-qi-blue transition-colors">${subName}</h4>
-                            <i class="ph ph-caret-right text-qi-blue text-xl"></i>
+                    <div class="relative z-10 flex flex-col justify-between h-full w-full">
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center w-full min-w-0 space-x-2">
+                                <h4 class="text-xl font-charm text-white group-hover:text-qi-blue transition-colors truncate block flex-grow min-w-0">${subName}</h4>
+                                <i class="ph ph-caret-right text-qi-blue text-lg flex-shrink-0"></i>
+                            </div>
+                            <p class="text-[10px] text-gray-300 font-serif line-clamp-2 overflow-hidden text-ellipsis opacity-70 leading-relaxed">Phân khu địa lý, quốc gia hoặc thế lực cát cứ tại địa vực ${subName}.</p>
                         </div>
-                        <p class="text-[10px] text-gray-300 font-serif line-clamp-1 opacity-70">Thế lực trấn thủ, thành trì giao thương tại ${subName}</p>
+                        <div class="flex justify-between items-end pt-2">
+                            <span class="text-[7px] text-gray-500 uppercase tracking-widest block">Phân Khu</span>
+                            <button class="btn-subregion-info px-2 py-0.5 bg-white/5 hover:bg-cultivation-gold/20 hover:text-cultivation-gold border border-white/10 hover:border-cultivation-gold/30 rounded text-[9px] font-bold transition-all z-20 flex items-center space-x-1">
+                                <i class="ph ph-info"></i>
+                                <span>CHI TIẾT</span>
+                            </button>
+                        </div>
                     </div>
                 `;
 
@@ -566,6 +612,34 @@ export class MapScreen {
                     await this.saveNavState();
                     this.renderLocationList();
                 };
+
+                const btnInfo = el.querySelector('.btn-subregion-info');
+                if (btnInfo) {
+                    btnInfo.onclick = (e) => {
+                        e.stopPropagation();
+
+                        const realLoc = w.locations.find(loc => loc.id === subId);
+                        const virtualLoc = realLoc || {
+                            id: subId,
+                            name: subName,
+                            description: `Quốc gia / Tông môn / Thành trì ${subName} nằm trong khu vực ${regionName}. Đây là địa phận cư trú của nhiều thế lực tu tiên và phàm nhân cát cứ.`,
+                            image: previewImg,
+                            regionName: regionName,
+                            subRegionName: 'PHÂN KHU',
+                            minRealm: previewLoc ? previewLoc.minRealm : 0,
+                            danger: previewLoc ? previewLoc.danger : 'an_toan',
+                            resources: [],
+                            energies: [],
+                            elementQi: {}
+                        };
+
+                        window.showLocationDetailPopup(this.viewedWorldId, virtualLoc, () => {
+                            this.selectedSubRegionId = subId;
+                            this.mapNavLevel = 'locations';
+                            this.saveNavState().then(() => this.renderLocationList());
+                        });
+                    };
+                }
 
                 this.elLocList.appendChild(el);
             });
