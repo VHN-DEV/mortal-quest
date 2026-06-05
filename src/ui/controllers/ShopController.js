@@ -433,7 +433,7 @@ export class ShopController {
             const info = document.createElement('div');
             info.className = 'flex items-center space-x-3';
             info.innerHTML = `
-                <div class="text-2xl bg-black/60 p-2 rounded-lg border border-${qClass}/30">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : (itemData.icon || '')}</div>
+                <div class="w-12 h-12 flex items-center justify-center shrink-0 bg-black/60 rounded-lg border border-${qClass}/30">${(itemData.image && getAssetUrl(itemData.image)) ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain">` : `<span class="text-2xl leading-none">${itemData.icon || ''}</span>`}</div>
                 <div>
                     <div class="text-sm font-bold text-white">${itemData.name}</div>
                     <div class="text-[9px] font-bold quality-${qClass}">${displayQuality}${(displayQuality.toLowerCase().includes('khí') || displayQuality.toLowerCase().includes('bảo') || displayQuality.toLowerCase().includes('phẩm') || displayQuality.toLowerCase().includes('giai') || displayQuality.toLowerCase().includes('hỏa') || displayQuality.toLowerCase().includes('lôi') || ['Hoàn Mỹ', 'Tiên Khí', 'Linh Bảo', 'Danh Khí'].includes(displayQuality)) ? '' : ' phẩm'} | Kho: ${item.stock}</div>
