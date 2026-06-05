@@ -6660,7 +6660,7 @@ export const ITEMS = {
         description: 'Đan dược thượng cổ chí bảo, tăng mạnh tốc độ tu luyện trong thời gian dài.',
         effect: { type: EFFECT_TYPES.BUFF_TAM_THOI, stat: 'tuViSpeed', value: 1.8, duration: 7200 },
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.BUFF }
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.TU_LUYEN }
         ]
     },
     'co_quan_phuc_nguyen_dan': {
@@ -6673,7 +6673,7 @@ export const ITEMS = {
         description: 'Đan dược đặc chế giúp kích thích khí huyết và tăng mạnh tốc độ luyện thể.',
         effect: { type: EFFECT_TYPES.BUFF_TAM_THOI, stat: 'bodyExpSpeed', value: 1.5, duration: 3600 },
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.BUFF }
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.LUYEN_THE }
         ]
     },
     'loi_dinh_than_binh': {
