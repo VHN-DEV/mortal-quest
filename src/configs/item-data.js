@@ -5623,13 +5623,13 @@ export const ITEMS = {
         id: 'huyen_linh_gioi_chi',
         name: 'Huyền Linh Giới Chỉ',
         image: 'items/artifacts/huyen_linh_gioi_chi',
-        type: ITEM_TYPES.TUI_TRU_VAT,
+        type: ITEM_TYPES.NHAN_KHONG_GIAN,
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
         icon: '💍',
         price: 1000,
         description: 'Nhẫn trữ vật chế tác từ linh thạch không gian sơ cấp, mở rộng linh không chứa 20 ô vật phẩm.',
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.TUI_TRU_VAT }
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.NHAN_KHONG_GIAN }
         ]
     },
     'u_minh_hac_lien': {
@@ -5662,13 +5662,13 @@ export const ITEMS = {
         id: 'kim_o_gioi_chi',
         name: 'Kim Ô Giới Chỉ',
         image: 'items/artifacts/kim_o_gioi_chi',
-        type: ITEM_TYPES.TUI_TRU_VAT,
+        type: ITEM_TYPES.NHAN_KHONG_GIAN,
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
         icon: '💍',
         price: 50000,
         description: 'Nhẫn trữ vật thần bí đúc từ thái dương thần thạch và lông vũ Kim Ô, mở rộng không gian cực đại chứa 50 ô vật phẩm.',
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.TUI_TRU_VAT }
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.NHAN_KHONG_GIAN }
         ]
     },
     'nghich_lan_long_phien': {

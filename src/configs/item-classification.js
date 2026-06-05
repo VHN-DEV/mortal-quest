@@ -51,7 +51,8 @@ export const ITEM_CATEGORIES = {
             'tran_ap': 'Trấn Áp',
             'don_thuat': 'Độn Thuật',
             'trieu_hoi': 'Triệu Hồi',
-            'truyen_am': 'Truyền Âm'
+            'truyen_am': 'Truyền Âm',
+            'phu_cu': 'Phù Cụ'
         }
     },
     'tran_phap': {
@@ -177,8 +178,10 @@ export const ITEM_CATEGORIES = {
             'lenh_bai': 'Lệnh Bài',
             'chia_khoa': 'Chìa Khóa Bí Cảnh',
             'di_hoa': 'Dị Hỏa',
+            'di_loi': 'Dị Lôi',
             'linh_thu_dai': 'Linh Thú Đại',
             'tui_tru_vat': 'Túi Trữ Vật',
+            'nhan_khong_gian': 'Nhân Không Gian',
             'default': 'Kỳ Vật Khác'
         }
     },
@@ -349,6 +352,8 @@ function _classifyItemRaw(item) {
             sub = 'trieu_hoi';
         } else if (id.includes('truyen_am')) {
             sub = 'truyen_am';
+        } else if (id.includes('phu_cu')) {
+            sub = 'phu_cu';
         }
         return { category: 'phu_luc', subcategory: sub };
     }
@@ -550,8 +555,12 @@ function _classifyItemRaw(item) {
         sub = 'ngoc_gian';
     } else if (id.includes('di_hoa') || type === ITEM_TYPES.DI_HOA) {
         sub = 'di_hoa';
+    } else if (id.includes('di_loi') || type === ITEM_TYPES.DI_LOI) {
+        sub = 'di_loi';
     } else if (id.includes('linh_thu_dai') || type === ITEM_TYPES.LINH_THU_DAI) {
         sub = 'linh_thu_dai';
+    } else if (id.includes('nhan_khong_gian') || type === ITEM_TYPES.NHAN_KHONG_GIAN) {
+        sub = 'nhan_khong_gian';
     }
 
     return { category: 'ky_vat_di_bao', subcategory: sub };
@@ -604,6 +613,7 @@ export const ITEM_TYPES = {
     LINH_HOA: 'linh_hoa',
     TUI_TRU_VAT: 'tui_tru_vat',
     LINH_THU_DAI: 'linh_thu_dai',
+    NHAN_KHONG_GIAN: 'nhan_khong_gian',
     BAN_DO: 'ban_do',
     DICH_VU: 'dich_vu',
     DI_HOA: 'di_hoa',
@@ -741,6 +751,7 @@ export const ITEM_CATEGORIES_ENUM = {
             DI_LOI: 'di_loi',
             TUI_TRU_VAT: 'tui_tru_vat',
             LINH_THU_DAI: 'linh_thu_dai',
+            NHAN_KHONG_GIAN: 'nhan_khong_gian',
             DEFAULT: 'default'
         }
     },
