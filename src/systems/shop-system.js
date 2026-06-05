@@ -19,6 +19,10 @@ export class ShopSystem {
             if (shop.sections[sec]) {
                 shop.sections[sec].forEach(item => {
                     if (!seen.has(item.id)) {
+                        const itemData = getItemById(item.id);
+                        if (itemData && itemData.isUnique && this.player.hasItemInPossession(item.id)) {
+                            return; // Skip unique item already owned by player
+                        }
                         seen.add(item.id);
                         items.push(item);
                     }
@@ -31,6 +35,15 @@ export class ShopSystem {
     buyItem(itemId, quantity = 1) {
         const itemData = getItemById(itemId);
         if (!itemData) return { success: false, msg: 'Bảo vật không tồn tại!' };
+
+        if (itemData.isUnique) {
+            if (this.player.hasItemInPossession(itemId)) {
+                return { success: false, msg: `Bảo vật độc nhất ${itemData.name} chỉ có thể sở hữu một bản duy nhất!` };
+            }
+            if (quantity > 1) {
+                return { success: false, msg: `Bảo vật độc nhất ${itemData.name} chỉ có thể sở hữu một bản duy nhất!` };
+            }
+        }
 
         // Check VIP requirement
         const shopData = SHOPS[this.currentShopId];

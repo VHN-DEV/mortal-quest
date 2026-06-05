@@ -80,8 +80,8 @@ const SECT_GEAR = {
         artifact: { id: 'sat_khi_linh_phien', name: 'Sát Khí Linh Phiến' }
     },
     'ngu_linh_tong': {
-        weapon: { id: 'van_con_kiem', name: 'Vạn Côn Tiên' },
-        armor: { id: 'ngu_linh_bao_y', name: 'Ngự Linh Độc Y' },
+        weapon: { id: 'van_con_tien', name: 'Vạn Côn Tiên' },
+        armor: { id: 'ngu_linh_doc_y', name: 'Ngự Linh Độc Y' },
         artifact: { id: 'hap_huyet_trung_tui', name: 'Hấp Huyết Trùng Túi' }
     },
     'khoi_am_tong': {
@@ -123,7 +123,7 @@ export class Enemy {
         if (this.name.includes('Mộc') || this.name.includes('Lục')) return 'Mộc';
         if (this.name.includes('Kim')) return 'Kim';
         if (this.name.includes('Thổ') || this.name.includes('Đá') || this.name.includes('Thạch')) return 'Thổ';
-        
+
         const elements = ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'];
         return elements[this.realmId % elements.length];
     }
@@ -136,25 +136,25 @@ export class Enemy {
         this.realmId = realmId;
         this.race = typeData.race || 'HUMAN';
         this.typeData = typeData;
-        
+
         const realm = getRealmById(this.realmId, 'tuvi', this.race);
         this.realmName = realm.name;
         this.name = `${typeData.name} (${this.realmName})`;
         this.image = typeData.img;
         this.statMult = typeData.statMult;
-        
+
         this.inventory = [];
         this.equipment = { weapon: null, armor: null, artifact: null };
         this.skills = [];
         this.sectId = null;
-        
+
         // Initialize xianxia stats
         let physBonus = 0;
         let dsBonus = 0;
         let compBonus = 0;
         let dtBonus = 0;
         let hdBonus = 0;
-        
+
         if (this.race === 'DEMON') {
             hdBonus += 15; // Ma tộc dễ bị tâm ma quấy nhiễu
             dsBonus += 5;
@@ -170,26 +170,26 @@ export class Enemy {
             physBonus += 15; // Thi tộc mình đồng da sắt
             dsBonus -= 10; // Mất đi thần trí
         }
-        
+
         const baseVal = 40 + this.realmId * 2;
         const varianceVal = () => Math.floor(Math.random() * 15) - 7;
-        
+
         this.comprehension = Math.max(5, Math.floor(10 + this.realmId * 0.5 + compBonus + (Math.random() * 6 - 3)));
         this.heartDemon = Math.max(0, Math.floor(Math.random() * 20 + hdBonus));
         this.daoTam = Math.max(10, Math.floor(baseVal + dtBonus + varianceVal()));
         this.divineSense = Math.max(10, Math.floor(baseVal + dsBonus + varianceVal()));
         this.physiqueTalent = Math.max(10, Math.floor(baseVal + physBonus + varianceVal()));
-        
+
         this.calculateStats();
     }
 
     calculateStats() {
         const raceInfo = RACE_DATA[this.race] || RACE_DATA.HUMAN;
         const raceMults = raceInfo.statMult;
-        
+
         const baseMultiplier = Math.pow(1.8, this.realmId - 1) * this.statMult;
         const variance = 0.9 + Math.random() * 0.2;
-        
+
         // Keep HP & Mana percentage
         const hpPercent = this.maxHp ? (this.hp / this.maxHp) : 1.0;
         const manaPercent = this.maxMana ? (this.mana / this.maxMana) : 1.0;
@@ -265,10 +265,10 @@ export class Enemy {
         this.advancedStats = {
             pierce: 0,
             soulPierce: 0,
-            critRate: 0.05, 
+            critRate: 0.05,
             weaknessStrikeChance: 0.05,
-            critDmg: 1.5,   
-            fireDmg: 1.0,   
+            critDmg: 1.5,
+            fireDmg: 1.0,
             waterDmg: 1.0,
             thunderDmg: 1.0,
             woodDmg: 1.0,
@@ -317,7 +317,7 @@ export class Enemy {
         const equippedItems = [this.equipment.weapon, this.equipment.armor, this.equipment.artifact].filter(Boolean);
         equippedItems.forEach(item => {
             if (!item.stats) return;
-            
+
             Object.entries(item.stats).forEach(([k, v]) => {
                 if (k === 'atk') this.atk += v;
                 else if (k === 'def') this.def += v;
@@ -372,7 +372,7 @@ export class EnemyGenerator {
 
         const targetRealm = Math.max(1, playerRealmId + Math.floor(Math.random() * 5) - 2);
         const typeData = types[Math.floor(Math.random() * types.length)];
-        
+
         const enemy = new Enemy(targetRealm, typeData);
 
         // Intercept for Sect Guard spawning at Sect Gates or random assignment
@@ -387,7 +387,7 @@ export class EnemyGenerator {
                 title = 'Đệ tử Nội môn';
             }
             enemy.name = `${title} ${sect.name} (${enemy.realmName})`;
-            
+
             // Apply rare scroll loot drop (12% chance)
             if (Math.random() < 0.12) {
                 const dropPassive = Math.random() < 0.7;
@@ -408,7 +408,7 @@ export class EnemyGenerator {
                     const chosenSectId = possibleSects[Math.floor(Math.random() * possibleSects.length)];
                     enemy.sectId = chosenSectId;
                     const chosenSect = SECTS[chosenSectId];
-                    
+
                     let title = 'Đệ tử Ngoại môn';
                     if (targetRealm >= 30) {
                         title = 'Trưởng lão';
@@ -431,7 +431,7 @@ export class EnemyGenerator {
 
     static populateLoot(enemy) {
         const isHumanoid = ['HUMAN', 'DEMON'].includes(enemy.race);
-        
+
         // Assign concealment technique
         enemy.equippedConcealmentId = null;
         if (enemy.realmId >= 3) {
@@ -577,11 +577,11 @@ export class EnemyGenerator {
                 }
                 if (enemy.realmId >= 14) enemy.skills.push('HEAL_TECHNIQUE');
             }
- 
+
             // Pills (for combat use)
             if (Math.random() < 0.5) enemy.inventory.push({ id: 'hoi_huyet_dan', quantity: 1 });
             if (enemy.realmId >= 10 && Math.random() < 0.3) enemy.inventory.push({ id: 'thanh_tam_dan', quantity: 1 });
- 
+
             // Offensive items (Talismans)
             if (enemy.realmId >= 3 && Math.random() < 0.4) {
                 enemy.inventory.push({ id: 'hoa_cau_phu', quantity: 1 });

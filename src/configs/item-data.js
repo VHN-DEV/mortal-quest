@@ -5801,5 +5801,38 @@ export const ITEMS = {
     }
 };
 
+// Mark unique items
+const UNIQUE_ITEM_IDS = [
+    'chuong_thien_binh',
+    'hu_thien_dinh',
+    'bat_linh_xich',
+    'binh_son_an',
+    'phong_loi_si',
+    'nguyen_tu_cuc_son',
+    'bac_cuc_nguyen_quang_cuc_son',
+    'hao_am_han_phach_cuc_son',
+    'thai_at_thanh_quang_cuc_son',
+    'am_duong_dai_ngu_hanh_cuc_son',
+    'nguyen_hop_ngu_cuc_son',
+    'vo_dinh_tieu_dao_cam',
+    'van_tinh_nho_quan',
+    'that_thai_huyen_nghien',
+    'te_hon_toa',
+    'luyen_phong_thach',
+    'kim_than_xa_loi',
+    'duong_kiem_ho',
+    'cuu_mach_linh_cham',
+    'co_luyen_lung',
+    'chan_vu_nho_quan_ta',
+    'chan_vu_nho_quan_huu',
+    'chan_vu_nho_quan_hoan_thien',
+    'bo_thien_lang'
+];
+UNIQUE_ITEM_IDS.forEach(id => {
+    if (ITEMS[id]) {
+        ITEMS[id].isUnique = true;
+    }
+});
+
 export const getItemById = (id) => ITEMS[id];
 

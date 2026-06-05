@@ -3068,6 +3068,37 @@ export class Player {
         return false;
     }
 
+    hasItemInPossession(itemId) {
+        // 1. Check in inventory
+        if (this.inventory && this.inventory.allItems) {
+            if (this.inventory.allItems.some(i => i.id === itemId)) return true;
+        }
+        // 2. Check in equipment
+        if (this.equipment) {
+            for (const slot in this.equipment) {
+                const eq = this.equipment[slot];
+                if (eq) {
+                    if (typeof eq === 'string' && eq === itemId) return true;
+                    if (typeof eq === 'object' && eq.id === itemId) return true;
+                }
+            }
+        }
+        // 3. Check special owned professions/tools
+        if (this.currentCauldron === itemId) return true;
+        if (this.ownedCauldrons && this.ownedCauldrons.includes(itemId)) return true;
+        
+        if (this.currentTalismanPen === itemId) return true;
+        if (this.ownedTalismanPens && this.ownedTalismanPens.includes(itemId)) return true;
+        
+        if (this.smithingTool === itemId) return true;
+        if (this.ownedSmithingTools && this.ownedSmithingTools.includes(itemId)) return true;
+        
+        if (this.currentFlame === itemId) return true;
+        if (this.ownedFlames && this.ownedFlames.includes(itemId)) return true;
+        
+        return false;
+    }
+
     getEquipSlotForItemType(itemType) {
         return itemType;
     }
