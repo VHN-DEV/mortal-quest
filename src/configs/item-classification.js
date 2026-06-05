@@ -607,6 +607,7 @@ export const ITEM_TYPES = {
     BAN_DO: 'ban_do',
     DICH_VU: 'dich_vu',
     DI_HOA: 'di_hoa',
+    DI_LOI: 'di_loi',
     VU_KHI: 'vu_khi',
     GIAP_BAO: 'giap_bao',
     TRANG_SUC: 'trang_suc',
@@ -737,6 +738,7 @@ export const ITEM_CATEGORIES_ENUM = {
             LENH_BAI: 'lenh_bai',
             CHIA_KHOA: 'chia_khoa',
             DI_HOA: 'di_hoa',
+            DI_LOI: 'di_loi',
             TUI_TRU_VAT: 'tui_tru_vat',
             LINH_THU_DAI: 'linh_thu_dai',
             DEFAULT: 'default'
@@ -791,6 +793,7 @@ export const EFFECT_TYPES = {
     // === Buff / Trang bị ===
     BUFF_TAM_THOI: 'buff',
     LUYEN_HOA_DI_HOA: 'refine_flame',
+    LUYEN_HOA_DI_LOI: 'refine_lightning',
     TRANG_BI_DAN_LU: 'equip_cauldron',
 
     // === Đặc biệt ===

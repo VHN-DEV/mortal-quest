@@ -81,7 +81,7 @@ export class Inventory {
 
     hasItem(itemId, quantity = 1) {
         const item = this.allItems.find(i => i.id === itemId);
-        return item && item.quantity >= quantity;
+        return !!(item && item.quantity >= quantity);
     }
 
     getItemQuantity(itemId) {
@@ -237,7 +237,16 @@ export class Inventory {
                 state.ui.toast(res.msg, 'warning');
                 return false;
             }
-        } else if (itemData.effect && (itemData.type === 'sach_cong_phap' || itemData.type === 'dan_phuong' || itemData.type === 'don_phu' || itemData.type === 'ngoc_gian' || itemData.type === 'ban_do')) {
+        } else if (itemData.effect && (
+            itemData.type === 'sach_cong_phap' ||
+            itemData.type === 'dan_phuong' ||
+            itemData.type === 'don_phu' ||
+            itemData.type === 'ngoc_gian' ||
+            itemData.type === 'ban_do' ||
+            itemData.type === 'di_hoa' ||
+            itemData.type === 'di_loi' ||
+            itemData.type === 'dan_lu'
+        )) {
             for (let i = 0; i < quantity; i++) {
                 this.applyEffect(itemData.effect);
             }
@@ -692,6 +701,14 @@ export class Inventory {
             if (!this.player.ownedFlames.includes(effect.value)) {
                 this.player.ownedFlames.push(effect.value);
                 this.player.currentFlame = effect.value;
+            }
+        } else if (effect.type === EFFECT_TYPES.LUYEN_HOA_DI_LOI) {
+            if (!this.player.ownedLightnings) {
+                this.player.ownedLightnings = [];
+            }
+            if (!this.player.ownedLightnings.includes(effect.value)) {
+                this.player.ownedLightnings.push(effect.value);
+                this.player.currentLightning = effect.value;
             }
         } else if (effect.type === EFFECT_TYPES.TRANG_BI_DAN_LU) {
             if (!this.player.ownedCauldrons.includes(effect.value)) {

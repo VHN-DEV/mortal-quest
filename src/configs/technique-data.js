@@ -720,6 +720,40 @@ export const TECHNIQUES = {
             3: { tvps: 1.75, stability: 25 },
             4: { tvps: 2.15, stability: 40 }
         }
+    },
+    'phan_quyet': {
+        id: 'phan_quyet',
+        name: 'Phần Quyết',
+        type: 'Linh Lực',
+        element: ELEMENT_TYPES.HOA,
+        quality: CONG_PHAP_QUALITIES.THIEN_GIAI,
+        description: 'Môn công pháp viễn cổ nghịch thiên cải mệnh, có thể cắn nuốt dị hỏa để tiến hóa vô giới hạn.',
+        comprehendDifficulty: { baseTime: 12000, difficultyName: 'Nghịch Thiên Huyền Diệu' },
+        maxStage: 9,
+        stageLabel: 'Trọng',
+        stats: { atk: 500, mana: 600, spd: 80 },
+        effects: { tvps: 4.5, fireDmg: 1.5, critRate: 0.15 },
+        compatibility: {
+            [ELEMENT_TYPES.HOA]: 1.5,
+            'Thiên Linh Căn': 1.8
+        }
+    },
+    'cuu_thien_van_loi_quyet': {
+        id: 'cuu_thien_van_loi_quyet',
+        name: 'Cửu Thiên Vạn Lôi Quyết',
+        type: 'Linh Lực',
+        element: ELEMENT_TYPES.LOI,
+        quality: CONG_PHAP_QUALITIES.THIEN_GIAI,
+        description: 'Tuyệt học lôi hệ thượng cổ, có thể dẫn động cửu thiên thần lôi rèn luyện tiên thể và oanh sát cường địch.',
+        comprehendDifficulty: { baseTime: 10000, difficultyName: 'Lôi Đình Uy Áp' },
+        maxStage: 9,
+        stageLabel: 'Tầng',
+        stats: { atk: 600, hp: 1200, spd: 120 },
+        effects: { tvps: 4.2, thunderDmg: 1.6, thunderRes: 0.4 },
+        compatibility: {
+            [ELEMENT_TYPES.LOI]: 1.6,
+            'Thiên Linh Căn': 1.8
+        }
     }
 };
 

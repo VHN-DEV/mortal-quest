@@ -30,7 +30,8 @@ export const SHOPS = {
                 { id: 'dan_phuong_ngoc_de_dan', stock: 2 },
                 { id: 'dan_phuong_thanh_tam_dan', stock: 2 },
                 { id: 'dan_phuong_truc_co_dan', stock: 1, minVip: 2 },
-                { id: 'dan_phuong_bo_nguyen_dan', stock: 3 }
+                { id: 'dan_phuong_bo_nguyen_dan', stock: 3 },
+                { id: 'phan_thien_dinh', stock: 1, minVip: 4 }
             ],
             'phap_bao': [
                 { id: 'linh_hoa', stock: 10 },
@@ -80,7 +81,8 @@ export const SHOPS = {
                 { id: 'van_thuy_luu_ly_binh', stock: 1, minVip: 4 },
                 { id: 'loi_dinh_than_binh', stock: 1, minVip: 2 },
                 { id: 'ngu_hanh_ho_the_giap', stock: 1, minVip: 3 },
-                { id: 'hu_vo_than_kinh', stock: 1, minVip: 3 }
+                { id: 'hu_vo_than_kinh', stock: 1, minVip: 3 },
+                { id: 'hon_don_loi_thap', stock: 1, minVip: 4 }
             ],
             'nguyen_lieu': [
                 { id: 'tich_coc_thao', stock: 5000 },
@@ -100,7 +102,41 @@ export const SHOPS = {
                 { id: 'cuu_tich_chi', stock: 15 },
                 { id: 'tu_nguyet_thao', stock: 10, minVip: 1 },
                 { id: 'ngan_tinh_thao', stock: 20 },
-                { id: 'cuu_u_linh_tuyet_lien', stock: 5, minVip: 2 }
+                { id: 'cuu_u_linh_tuyet_lien', stock: 5, minVip: 2 },
+                // --- 22 OTHER EXOTIC FLAMES ---
+                { id: 'da_xa_co_de', stock: 1, minVip: 5 },
+                { id: 'hu_vo_thon_viem', stock: 1, minVip: 5 },
+                { id: 'tinh_lien_yeu_hoa', stock: 1, minVip: 5 },
+                { id: 'kim_de_phan_thien_viem', stock: 1, minVip: 4 },
+                { id: 'sinh_linh_chi_diem', stock: 1, minVip: 4 },
+                { id: 'bat_hoang_pha_diet_diem', stock: 1, minVip: 4 },
+                { id: 'cuu_u_kim_to_hoa', stock: 1, minVip: 3 },
+                { id: 'hong_lien_nghiep_hoa', stock: 1, minVip: 3 },
+                { id: 'tam_thien_diem_thuong_hoa', stock: 1, minVip: 3 },
+                { id: 'cuu_u_phong_viem', stock: 1, minVip: 3 },
+                { id: 'cot_loi_linh_hoa', stock: 1, minVip: 3 },
+                { id: 'cuu_long_loi_cuong_hoa', stock: 1, minVip: 3 },
+                { id: 'quy_linh_dia_hoa', stock: 1, minVip: 2 },
+                { id: 'van_lac_tam_viem', stock: 1, minVip: 2 },
+                { id: 'hai_tam_diem', stock: 1, minVip: 2 },
+                { id: 'hoa_van_thuy_viem', stock: 1, minVip: 2 },
+                { id: 'phan_thien_liet_diem', stock: 1, minVip: 2 },
+                { id: 'phong_loi_no_diem', stock: 1, minVip: 1 },
+                { id: 'long_phuong_diem', stock: 1, minVip: 1 },
+                { id: 'luc_dao_luan_hoi_diem', stock: 1, minVip: 1 },
+                { id: 'van_thu_linh_hoa', stock: 1, minVip: 1 },
+                { id: 'huyen_hoang_viem', stock: 1 },
+                // --- 10 EXOTIC LIGHTNINGS ---
+                { id: 'hon_don_tu_tieu', stock: 1, minVip: 5 },
+                { id: 'cuu_tiao_diet_the', stock: 1, minVip: 5 },
+                { id: 'thai_hu_hu_khong', stock: 1, minVip: 5 },
+                { id: 'dai_nhat_kim_o', stock: 1, minVip: 4 },
+                { id: 'huyen_am_cuu_u', stock: 1, minVip: 4 },
+                { id: 'thanh_min_at_moc', stock: 1, minVip: 3 },
+                { id: 'bac_minh_han_sat', stock: 1, minVip: 3 },
+                { id: 'tu_cuc_ma_diet', stock: 1, minVip: 2 },
+                { id: 'thien_cuong_chinh_phap', stock: 1, minVip: 2 },
+                { id: 'xich_viem_bao_loi', stock: 1, minVip: 1 }
             ],
             'cong_phap': [
                 { id: 'truong_xuan_nap_khi_quyet', stock: 10 },
@@ -114,7 +150,9 @@ export const SHOPS = {
                 { id: 'huyet_don_thuat', stock: 1, minVip: 1 },
                 { id: 'cuu_chuyen_kim_than', stock: 1, minVip: 2 },
                 { id: 'u_minh_huy_ngan', stock: 1, minVip: 2 },
-                { id: 'phong_loi_quyet', stock: 1, minVip: 3 }
+                { id: 'phong_loi_quyet', stock: 1, minVip: 3 },
+                { id: 'phan_quyet_cong_phap', stock: 1, minVip: 4 },
+                { id: 'cuu_thien_van_loi_quyet_cong_phap', stock: 1, minVip: 4 }
             ],
             'tran_phap': [
                 { id: 'tran_do_tu_linh', stock: 5 },

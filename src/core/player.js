@@ -179,6 +179,8 @@ export class Player {
         this.dailyPillStats = { day: 0, count: 0 };
         this.knownRecipes = []; // No default recipes
         this.ownedFlames = [];
+        this.ownedLightnings = [];
+        this.currentLightning = null;
         this.ownedCauldrons = [];
         this.alchemyReputation = 0;
         this.currentAlchemyRoom = null;
@@ -4351,6 +4353,8 @@ export class Player {
             currentFlame: this.currentFlame,
             knownRecipes: [...this.knownRecipes],
             ownedFlames: [...this.ownedFlames],
+            ownedLightnings: [...(this.ownedLightnings || [])],
+            currentLightning: this.currentLightning,
             alchemyReputation: this.alchemyReputation,
             danPoison: this.danPoison,
             pillResistance: { ...this.pillResistance },
@@ -4860,6 +4864,8 @@ export class Player {
         this.currentFlame = data.currentFlame || null;
         this.knownRecipes = data.knownRecipes || [];
         this.ownedFlames = data.ownedFlames || [];
+        this.ownedLightnings = data.ownedLightnings || [];
+        this.currentLightning = data.currentLightning || null;
         this.alchemyReputation = data.alchemyReputation || 0;
         this.danPoison = data.danPoison || 0;
         this.pillResistance = data.pillResistance || {};

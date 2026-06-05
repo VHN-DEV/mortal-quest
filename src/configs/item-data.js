@@ -6750,6 +6750,492 @@ export const ITEMS = {
         categories: [
             { category: ITEM_CATEGORIES_ENUM.TRAN_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.TRAN_PHAP.SUBCATEGORIES.PHONG_NGU_TRAN }
         ]
+    },
+    // --- 23 EXOTIC FLAMES (DỊ HỎA) ---
+    'da_xa_co_de': {
+        id: 'da_xa_co_de',
+        name: 'Đà Xá Cổ Đế',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.HONG_MONG_TO_HOA,
+        price: 2000000,
+        description: 'Đế Viêm Đà Xá Cổ Đế, vạn hỏa chi vương, có uy năng thôn phệ vạn hỏa và thao túng quy luật thiên địa.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'da_xa_co_de' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'hu_vo_thon_viem': {
+        id: 'hu_vo_thon_viem',
+        name: 'Hư Vô Thôn Viêm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.DAO_HOA,
+        price: 1000000,
+        description: 'Hư Vô Thôn Viêm hỏa chủng, sinh ra từ vô tận hư không, có khả năng cắn nuốt vạn vật cực kỳ bá đạo.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'hu_vo_thon_viem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'tinh_lien_yeu_hoa': {
+        id: 'tinh_lien_yeu_hoa',
+        name: 'Tịnh Liên Yêu Hỏa',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.DAO_HOA,
+        price: 800000,
+        description: 'Tịnh Liên Yêu Hỏa hỏa chủng, ngọn lửa tịnh hóa thế gian, thanh tẩy tội nghiệt thành hư vô.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'tinh_lien_yeu_hoa' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'kim_de_phan_thien_viem': {
+        id: 'kim_de_phan_thien_viem',
+        name: 'Kim Đế Phần Thiên Viêm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.DAO_HOA,
+        price: 600000,
+        description: 'Kim Đế Phần Thiên Viêm hỏa chủng, truyền thừa chí cao chi viêm của viễn cổ Cổ tộc.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'kim_de_phan_thien_viem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'sinh_linh_chi_diem': {
+        id: 'sinh_linh_chi_diem',
+        name: 'Sinh Linh Chi Diễm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.TIEN_HOA,
+        price: 400000,
+        description: 'Sinh Linh Chi Diễm hỏa chủng, chứa đựng sức sống mãnh liệt vô tận, bách thảo gặp chi tức khắc sinh trưởng.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'sinh_linh_chi_diem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'bat_hoang_pha_diet_diem': {
+        id: 'bat_hoang_pha_diet_diem',
+        name: 'Bát Hoang Phá Diệt Diễm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.TIEN_HOA,
+        price: 300000,
+        description: 'Bát Hoang Phá Diệt Diễm hỏa chủng, bá đạo vô biên, hung danh ngập trời.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'bat_hoang_pha_diet_diem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'cuu_u_kim_to_hoa': {
+        id: 'cuu_u_kim_to_hoa',
+        name: 'Cửu U Kim Tổ Hỏa',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.TIEN_HOA,
+        price: 250000,
+        description: 'Cửu U Kim Tổ Hỏa hỏa chủng, mang kim tính khắc chế vạn bảo binh khí.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'cuu_u_kim_to_hoa' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'hong_lien_nghiep_hoa': {
+        id: 'hong_lien_nghiep_hoa',
+        name: 'Hồng Liên Nghiệp Hỏa',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.TIEN_HOA,
+        price: 200000,
+        description: 'Hồng Liên Nghiệp Hỏa hỏa chủng, sinh ra từ nhân quả nghiệp báo lực, trực diện đốt cháy linh hồn.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'hong_lien_nghiep_hoa' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'tam_thien_diem_thuong_hoa': {
+        id: 'tam_thien_diem_thuong_hoa',
+        name: 'Tam Thiên Diễm Thương Hỏa',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.TIEN_HOA,
+        price: 180000,
+        description: 'Tam Thiên Diễm Thương Hỏa hỏa chủng, thu nạp tinh thần chi lực hóa thành ngọn lửa bất tử phục hồi cực tốc.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'tam_thien_diem_thuong_hoa' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'cuu_u_phong_viem': {
+        id: 'cuu_u_phong_viem',
+        name: 'Cửu U Phong Viêm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.TIEN_HOA,
+        price: 160000,
+        description: 'Cửu U Phong Viêm hỏa chủng, âm thanh rít gầm tàn phá thức hải nhiễu loạn thần trí đối thủ.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'cuu_u_phong_viem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'cot_loi_linh_hoa': {
+        id: 'cot_loi_linh_hoa',
+        name: 'Cốt Lôi Linh Hỏa',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.TIEN_HOA,
+        price: 150000,
+        description: 'Cốt Lôi Linh Hỏa hỏa chủng, kết hợp độc đáo giữa hàn băng thấu cốt và viêm hỏa rực nóng.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'cot_loi_linh_hoa' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'cuu_long_loi_cuong_hoa': {
+        id: 'cuu_long_loi_cuong_hoa',
+        name: 'Cửu Long Lôi Cương Hỏa',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.TIEN_HOA,
+        price: 120000,
+        description: 'Cửu Long Lôi Cương Hỏa hỏa chủng, ẩn chứa chín đầu thần long lôi cương lực trấn áp quỷ mị.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'cuu_long_loi_cuong_hoa' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'quy_linh_dia_hoa': {
+        id: 'quy_linh_dia_hoa',
+        name: 'Quy Linh Địa Hỏa',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.THIEN_HOA,
+        price: 100000,
+        description: 'Quy Linh Địa Hỏa hỏa chủng, ngưng tụ tựa mai rùa khổng lồ cứng chắc phòng thủ tối thượng.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'quy_linh_dia_hoa' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'van_lac_tam_viem': {
+        id: 'van_lac_tam_viem',
+        name: 'Vẫn Lạc Tâm Viêm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.THIEN_HOA,
+        price: 90000,
+        description: 'Vẫn Lạc Tâm Viêm hỏa chủng, được tôn vinh là công cụ gian lận tôi luyện khí hải ngày đêm liên tục.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'van_lac_tam_viem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'hai_tam_diem': {
+        id: 'hai_tam_diem',
+        name: 'Hải Tâm Diễm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.THIEN_HOA,
+        price: 80000,
+        description: 'Hải Tâm Diễm hỏa chủng, lam hỏa kỳ lạ sinh ra từ thâm hải giao hòa thủy linh.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'hai_tam_diem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'hoa_van_thuy_viem': {
+        id: 'hoa_van_thuy_viem',
+        name: 'Hỏa Vân Thủy Viêm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.THIEN_HOA,
+        price: 70000,
+        description: 'Hỏa Vân Thủy Viêm hỏa chủng, phiêu dật như vân hải xuất thần vô hình.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'hoa_van_thuy_viem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'phan_thien_liet_diem': {
+        id: 'phan_thien_liet_diem',
+        name: 'Phần Thiên Liệt Diễm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.THIEN_HOA,
+        price: 60000,
+        description: 'Phần Thiên Liệt Diễm hỏa chủng, chứa đựng cơn giận nung nấu thiêu rụi trời đất.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'phan_thien_liet_diem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'phong_loi_no_diem': {
+        id: 'phong_loi_no_diem',
+        name: 'Phong Lôi Nộ Diễm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.DIA_HOA,
+        price: 50000,
+        description: 'Phong Lôi Nộ Diễm hỏa chủng, cuồng bạo phong lôi hỏa ảnh.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'phong_loi_no_diem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'thanh_lien_dia_tam_hoa': {
+        id: 'thanh_lien_dia_tam_hoa',
+        name: 'Thanh Liên Địa Tâm Hỏa',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.DIA_HOA,
+        price: 40000,
+        description: 'Thanh Liên Địa Tâm Hỏa hỏa chủng, ngàn năm kết thanh liên dưới địa tâm dung nham tĩnh khí tu đạo.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'thanh_lien_dia_tam_hoa' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'long_phuong_diem': {
+        id: 'long_phuong_diem',
+        name: 'Long Phượng Phệ Thiên Viêm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.DIA_HOA,
+        price: 30000,
+        description: 'Long Phượng Phệ Thiên Viêm hỏa chủng, sinh ra nơi thần long phượng hoàng thi cốt táng thân.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'long_phuong_diem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'luc_dao_luan_hoi_diem': {
+        id: 'luc_dao_luan_hoi_diem',
+        name: 'Lục Đạo Luân Hồi Diễm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.LINH_HOA,
+        price: 20000,
+        description: 'Lục Đạo Luân Hồi Diễm hỏa chủng, tước đoạt sinh cơ đưa đối thủ chìm đắm luân hồi.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'luc_dao_luan_hoi_diem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'van_thu_linh_hoa': {
+        id: 'van_thu_linh_hoa',
+        name: 'Vạn Thú Linh Hỏa',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.LINH_HOA,
+        price: 15000,
+        description: 'Vạn Thú Linh Hỏa hỏa chủng, ngưng tụ từ vạn ma thú vạn thế hồn lực hoang dã.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'van_thu_linh_hoa' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+    'huyen_hoang_viem': {
+        id: 'huyen_hoang_viem',
+        name: 'Huyền Hoàng Viêm',
+        type: ITEM_TYPES.DI_HOA,
+        icon: '🔥',
+        quality: DI_HOA_QUALITIES.PHAM_HOA,
+        price: 10000,
+        description: 'Huyền Hoàng Viêm hỏa chủng, sơ khai địa mạch chi lực thối cốt hoàn mỹ.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_HOA, value: 'huyen_hoang_viem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_HOA }
+        ]
+    },
+
+    // --- 10 EXOTIC LIGHTNINGS (DỊ LÔI) ---
+    'hon_don_tu_tieu': {
+        id: 'hon_don_tu_tieu',
+        name: 'Hỗn Độn Tử Tiêu Thần Lôi',
+        type: ITEM_TYPES.DI_LOI,
+        icon: '⚡',
+        quality: DI_LOI_QUALITIES.TO_LOI,
+        price: 1500000,
+        description: 'Hỗn Độn Tử Tiêu Thần Lôi tinh phách, lôi đình tối cao thống lĩnh vạn lôi, hủy diệt vạn vật sơ khai.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_LOI, value: 'hon_don_tu_tieu' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_LOI }
+        ]
+    },
+    'cuu_tiao_diet_the': {
+        id: 'cuu_tiao_diet_the',
+        name: 'Cửu Tiêu Diệt Thế Lôi',
+        type: ITEM_TYPES.DI_LOI,
+        icon: '⚡',
+        quality: DI_LOI_QUALITIES.DAO_LOI,
+        price: 900000,
+        description: 'Cửu Tiêu Diệt Thế Lôi tinh phách, sấm sét cửu thiên buông xuống diệt thế đồ lục.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_LOI, value: 'cuu_tiao_diet_the' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_LOI }
+        ]
+    },
+    'thai_hu_hu_khong': {
+        id: 'thai_hu_hu_khong',
+        name: 'Thái Hư Hư Không Lôi',
+        type: ITEM_TYPES.DI_LOI,
+        icon: '⚡',
+        quality: DI_LOI_QUALITIES.DAO_LOI,
+        price: 700000,
+        description: 'Thái Hư Hư Không Lôi tinh phách, lôi hỏa quẩn quanh xé toạc tinh không vô cực.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_LOI, value: 'thai_hu_hu_khong' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_LOI }
+        ]
+    },
+    'dai_nhat_kim_o': {
+        id: 'dai_nhat_kim_o',
+        name: 'Đại Nhật Kim Ô Lôi',
+        type: ITEM_TYPES.DI_LOI,
+        icon: '⚡',
+        quality: DI_LOI_QUALITIES.TIEN_LOI,
+        price: 500000,
+        description: 'Đại Nhật Kim Ô Lôi tinh phách, dung hợp thái dương kim ô chi viêm phát ra chí dương lôi hỏa.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_LOI, value: 'dai_nhat_kim_o' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_LOI }
+        ]
+    },
+    'huyen_am_cuu_u': {
+        id: 'huyen_am_cuu_u',
+        name: 'Huyền Âm Cửu U Minh Lôi',
+        type: ITEM_TYPES.DI_LOI,
+        icon: '⚡',
+        quality: DI_LOI_QUALITIES.TIEN_LOI,
+        price: 400000,
+        description: 'Huyền Âm Cửu U Minh Lôi tinh phách, phát ra cực âm minh lôi thôn phệ khí hải linh mạch tu tiên giả.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_LOI, value: 'huyen_am_cuu_u' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_LOI }
+        ]
+    },
+    'thanh_min_at_moc': {
+        id: 'thanh_min_at_moc',
+        name: 'Thanh Minh Ất Mộc Thần Lôi',
+        type: ITEM_TYPES.DI_LOI,
+        icon: '⚡',
+        quality: DI_LOI_QUALITIES.TIEN_LOI,
+        price: 300000,
+        description: 'Thanh Minh Ất Mộc Thần Lôi tinh phách, sinh sinh bất diệt linh diệu sinh lôi.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_LOI, value: 'thanh_min_at_moc' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_LOI }
+        ]
+    },
+    'bac_minh_han_sat': {
+        id: 'bac_minh_han_sat',
+        name: 'Bắc Minh Hàn Sát Lôi',
+        type: ITEM_TYPES.DI_LOI,
+        icon: '⚡',
+        quality: DI_LOI_QUALITIES.THIEN_LOI,
+        price: 200000,
+        description: 'Bắc Minh Hàn Sát Lôi tinh phách, buốt giá vạn trượng đông cứng thức hải nguyên anh.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_LOI, value: 'bac_minh_han_sat' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_LOI }
+        ]
+    },
+    'tu_cuc_ma_diet': {
+        id: 'tu_cuc_ma_diet',
+        name: 'Tử Cực Ma Diệt Lôi',
+        type: ITEM_TYPES.DI_LOI,
+        icon: '⚡',
+        quality: DI_LOI_QUALITIES.THIEN_LOI,
+        price: 150000,
+        description: 'Tử Cực Ma Diệt Lôi tinh phách, ma sát cuồng bạo phá hủy tu vi thần hồn.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_LOI, value: 'tu_cuc_ma_diet' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_LOI }
+        ]
+    },
+    'thien_cuong_chinh_phap': {
+        id: 'thien_cuong_chinh_phap',
+        name: 'Thiên Cương Chính Pháp Lôi',
+        type: ITEM_TYPES.DI_LOI,
+        icon: '⚡',
+        quality: DI_LOI_QUALITIES.DIA_LOI,
+        price: 80000,
+        description: 'Thiên Cương Chính Pháp Lôi tinh phách, trừ tà diệt ma cương trực lôi tinh.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_LOI, value: 'thien_cuong_chinh_phap' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_LOI }
+        ]
+    },
+    'xich_viem_bao_loi': {
+        id: 'xich_viem_bao_loi',
+        name: 'Xích Viêm Bạo Lôi',
+        type: ITEM_TYPES.DI_LOI,
+        icon: '⚡',
+        quality: DI_LOI_QUALITIES.DIA_LOI,
+        price: 50000,
+        description: 'Xích Viêm Bạo Lôi tinh phách, sấm chớp đỏ rực oanh liệt nổ mạnh tàn phá diện rộng.',
+        effect: { type: EFFECT_TYPES.LUYEN_HOA_DI_LOI, value: 'xich_viem_bao_loi' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.KY_VAT_DI_BAO.SUBCATEGORIES.DI_LOI }
+        ]
+    },
+
+    // --- OTHER STUFF ---
+    'phan_thien_dinh': {
+        id: 'phan_thien_dinh',
+        name: 'Phần Thiên Đỉnh',
+        type: ITEM_TYPES.DAN_LU,
+        icon: '鼎',
+        quality: PHAP_BAO_QUALITIES.HUYEN_THIEN,
+        price: 150000,
+        description: 'Thần đỉnh đúc từ thiên ngoại thạch, nung nấu vạn hỏa chí cường giúp gia tăng thành đan suất.',
+        effect: { type: EFFECT_TYPES.TRANG_BI_DAN_LU, value: 'phan_thien_dinh' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.LUYEN_DAN.KEY, subcategory: ITEM_CATEGORIES_ENUM.LUYEN_DAN.SUBCATEGORIES.DAN_LU }
+        ]
+    },
+    'hon_don_loi_thap': {
+        id: 'hon_don_loi_thap',
+        name: 'Hỗn Độn Lôi Tháp',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '🗼',
+        quality: PHAP_BAO_QUALITIES.HUYEN_THIEN,
+        price: 180000,
+        description: 'Huyền thiên linh bảo Hỗn Độn Lôi Tháp, chứa đựng ngàn vạn tia lôi điện oanh kích thần ma.',
+        stats: { atk: 3500, thunderDmg: 0.45, thunderRes: 0.3 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.HUYEN_THIEN }
+        ]
+    },
+    'phan_quyet_cong_phap': {
+        id: 'phan_quyet_cong_phap',
+        name: 'Phần Quyết (Bí Tịch)',
+        type: ITEM_TYPES.SACH_CONG_PHAP,
+        icon: '📖',
+        quality: CONG_PHAP_QUALITIES.CUC_PHAM,
+        price: 250000,
+        description: 'Quyết môn công pháp viễn cổ nghịch thiên cải mệnh, tu luyện Phần Quyết giúp cắn nuốt dị hỏa để tiến hóa khí hải.',
+        techniqueId: 'phan_quyet',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.TU_LUYEN }
+        ]
+    },
+    'cuu_thien_van_loi_quyet_cong_phap': {
+        id: 'cuu_thien_van_loi_quyet_cong_phap',
+        name: 'Cửu Thiên Vạn Lôi Quyết (Bí Tịch)',
+        type: ITEM_TYPES.SACH_CONG_PHAP,
+        icon: '📖',
+        quality: CONG_PHAP_QUALITIES.CUC_PHAM,
+        price: 200000,
+        description: 'Bí tịch trấn tông lôi hệ cổ xưa, giúp ngộ ra Cửu Thiên Vạn Lôi Quyết dẫn sét luyện thể.',
+        techniqueId: 'cuu_thien_van_loi_quyet',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.TU_LUYEN }
+        ]
     }
 };
 
