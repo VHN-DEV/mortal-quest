@@ -74,10 +74,6 @@ export class BattleScreen {
 
         this.secretList = document.getElementById('battle-secret-list');
 
-        // Module 1: Stance buttons
-        this.stanceBtns = document.querySelectorAll('.stance-btn');
-        this.stanceBar = document.getElementById('battle-stance-bar');
-
         // Module 3: Meditate button, dao-heart indicators
         this.btnMeditate = document.getElementById('btn-meditate');
         this.elTamMaIndicator = document.getElementById('player-tam-ma-indicator');
@@ -118,10 +114,6 @@ export class BattleScreen {
         if (this.btnEscape) this.btnEscape.onclick = () => this.handleAction('escape');
         if (this.btnSecret) this.btnSecret.onclick = () => this.toggleSecretList();
 
-        // Module 1: Stance buttons
-        this.stanceBtns.forEach(btn => {
-            btn.onclick = () => this.handleAction('stance', btn.dataset.stance);
-        });
 
         // Module 3: Meditate button
         if (this.btnMeditate) this.btnMeditate.onclick = () => this.handleAction('meditate');
@@ -247,10 +239,7 @@ export class BattleScreen {
                 this.updateTurnIndicator(data.turn);
                 this.updateChantingUI();
                 break;
-            // Module 1: Stance changed (no-turn action)
-            case 'stance':
-                this.updateStanceUI(data?.stance || 'NONE');
-                break;
+
             // Module 2: Combat event triggered
             case 'combat-event':
                 this.showCombatEventBanner(data);
@@ -1066,32 +1055,7 @@ export class BattleScreen {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // MODULE 1: updateStanceUI — highlight active stance button
-    // ─────────────────────────────────────────────────────────────────────────
-    updateStanceUI(stanceId) {
-        if (!this.stanceBtns) return;
-        const colorMap = {
-            'NONE':  { active: 'bg-white/10 text-white border-white/30', inactive: 'border-white/10 text-gray-500' },
-            'SAT':   { active: 'bg-red-500/20 text-red-300 border-red-500/60 shadow-[0_0_10px_rgba(239,68,68,0.3)]', inactive: 'border-red-500/20 text-red-400/60' },
-            'THU':   { active: 'bg-blue-500/20 text-blue-300 border-blue-500/60 shadow-[0_0_10px_rgba(59,130,246,0.3)]', inactive: 'border-blue-500/20 text-blue-400/60' },
-            'DINH':  { active: 'bg-purple-500/20 text-purple-300 border-purple-500/60 shadow-[0_0_10px_rgba(168,85,247,0.3)]', inactive: 'border-purple-500/20 text-purple-400/60' }
-        };
-        this.stanceBtns.forEach(btn => {
-            const s = btn.dataset.stance;
-            const map = colorMap[s] || colorMap['NONE'];
-            // Remove all possible classes
-            btn.className = btn.className
-                .replace(/bg-\S+|text-\S+|border-\S+|shadow-\S+/g, '')
-                .trim();
-            btn.classList.add(
-                'stance-btn', 'flex-1', 'py-0.5', 'rounded-lg', 'text-[7px]', 'font-ancient',
-                'hover:opacity-90', 'transition-all', 'duration-200', 'border'
-            );
-            const targetClasses = (s === stanceId ? map.active : map.inactive).split(' ');
-            btn.classList.add(...targetClasses);
-        });
-    }
+
 
     // ─────────────────────────────────────────────────────────────────────────
     // MODULE 3: updateDaoHeartUI — show/hide Tam Ma / Dao Tam indicators

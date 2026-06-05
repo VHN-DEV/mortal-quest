@@ -687,72 +687,6 @@ export const TOWER_MASTERS = Object.freeze({
     })
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// COMBAT STANCES — Chiến Thế Hệ Thống (Module 1)
-// ─────────────────────────────────────────────────────────────────────────────
-export const COMBAT_STANCES = Object.freeze({
-    NONE: Object.freeze({
-        id: 'NONE',
-        name: 'Vô Thế',
-        icon: '⚬',
-        color: '#9ca3af',
-        atkMult: 1.0,
-        defMult: 1.0,
-        manaRegen: 0,
-        manaCostMult: 1.0,
-        desc: 'Trạng thái tự nhiên, không thiên về công hay thủ.',
-        pathRestriction: null,       // null = available to all
-        pathBonus: null              // { path, bonus: {} }
-    }),
-    SAT: Object.freeze({
-        id: 'SAT',
-        name: 'Công Sát Thế',
-        icon: '⚔️',
-        color: '#ef4444',
-        atkMult: 1.3,
-        defMult: 0.7,
-        manaRegen: 0,
-        manaCostMult: 0.9,
-        desc: 'Toàn lực tập trung vào tấn công. Công kích +30%, Phòng ngự -30%, Linh Lực tiêu hao -10%.',
-        pathRestriction: null,
-        pathBonus: {
-            path: 'sword',
-            bonus: { swordIntentDmg: 0.15 }  // +15% sword-intent damage
-        }
-    }),
-    THU: Object.freeze({
-        id: 'THU',
-        name: 'Hộ Thân Thế',
-        icon: '🛡️',
-        color: '#3b82f6',
-        atkMult: 0.8,
-        defMult: 1.4,
-        manaRegen: 0.03,             // 3% mana regen per hit absorbed
-        manaCostMult: 1.0,
-        desc: 'Phòng thủ toàn diện. Phòng ngự +40%, Công kích -20%, mỗi đòn nhận phản hồi 3% Linh Lực.',
-        pathRestriction: null,
-        pathBonus: {
-            path: 'buddhist',
-            bonus: { shieldAmt: 0.05 }  // +5% shield amount on defend
-        }
-    }),
-    DINH: Object.freeze({
-        id: 'DINH',
-        name: 'Thiền Định Thế',
-        icon: '🧘',
-        color: '#a855f7',
-        atkMult: 0.9,
-        defMult: 1.0,
-        manaRegen: 0.05,             // 5% max mana regen per turn
-        manaCostMult: 0.8,
-        desc: 'Nội tâm bình lặng. Linh Lực hồi +5%/lượt, Bí Pháp uy lực +20%, Linh Lực tiêu hao -20%, giảm Tâm Ma tích tụ.',
-        pathRestriction: null,
-        pathBonus: {
-            path: 'confucian',
-            bonus: { comprehensionBonus: 0.1 }  // +10% technique damage scaling
-        }
-    })
-});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // COMBAT EVENTS — Thiên Địa Dị Biến (Module 2)
@@ -792,9 +726,7 @@ export const COMBAT_EVENTS = Object.freeze({
         logColor: 'text-rose-400',
         chancePerCheck: 0.30,
         checkInterval: 2,
-        condition: (combat) =>
-            (combat.player?.heartDemon || 0) > 30 &&
-            combat.playerStance !== 'DINH',  // Thiền Định Thế blocks this
+        condition: (combat) => (combat.player?.heartDemon || 0) > 30,
         desc: 'Tâm ma nhân lúc giao chiến trỗi dậy, khí huyết chấn động nhưng pháp lực bạo tăng!'
     }),
     LINH_KHI_TRIEU: Object.freeze({

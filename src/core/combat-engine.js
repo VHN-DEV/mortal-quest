@@ -3,7 +3,7 @@ import { getFlameById } from '../configs/alchemy-data.js';
 import { getItemById } from '../configs/item-data.js';
 import { getStatusEffectById, STATUS_EFFECT_TEMPLATES } from '../configs/status-effect-data.js';
 import { QUALITY_TYPES } from '../configs/item-classification.js';
-import { COMBAT_STANCES, COMBAT_EVENTS } from '../configs/game-enums.js';
+import { COMBAT_EVENTS } from '../configs/game-enums.js';
 
 
 export class CombatEngine {
@@ -38,9 +38,6 @@ export class CombatEngine {
 
         this.playerGauge = 0;
         this.enemyGauge = 0;
-        
-        // --- Module 1: Chiến Thế (Combat Stance) ---
-        this.playerStance = 'NONE';
         
         // --- Module 2: Thiên Địa Dị Biến (Combat Events) ---
         this.combatEventTurnCounter = 0;
@@ -762,16 +759,8 @@ export class CombatEngine {
             }
         }
 
-        // --- Module 1: THIỀN ĐỊNH THẾ Mana Regen per turn ---
-        if (this.playerStance === 'DINH' && this.turn === 0) {
-            const manaRegen = Math.floor(this.player.maxMana * (COMBAT_STANCES.DINH.manaRegen || 0.05));
-            this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaRegen);
-            const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'Linh Lực';
-            this.addLog(`🧘 [Thiền Định Thế] Nội tâm bình lặng, ${label} hồi +${manaRegen}.`);
-        }
-
         // --- Module 2: Tâm Ma Bạo Phát check (Module 3 mechanic triggered here) ---
-        if (this.turn === 0 && this.combatHeartDemon > 50 && this.playerStance !== 'DINH') {
+        if (this.turn === 0 && this.combatHeartDemon > 50) {
             const hd = this.combatHeartDemon;
             
             // 20% Thần Thức Hỗn Loạn (choáng lượt) when > 50
@@ -866,9 +855,6 @@ export class CombatEngine {
             case 'soul-repress':
                 this.playerSoulRepress();
                 break;
-            case 'stance':
-                this.playerSetStance(payload);
-                break;
             case 'meditate':
                 this.playerMeditate();
                 break;
@@ -915,11 +901,7 @@ export class CombatEngine {
         
         const eDr = this.enemy.advancedStats?.damageReduction || 0;
         const eAllRes = this.enemy.advancedStats?.allRes || 0;
-        // --- Module 1: Chiến Thế ATK multiplier ---
-        const stanceConfig = COMBAT_STANCES[this.playerStance] || COMBAT_STANCES.NONE;
-        const stanceAtkMult = stanceConfig.atkMult || 1.0;
-
-        let damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression * racialBonus * envBonus * elementalMult * (1 - eDr) * (1 - eAllRes) * stanceAtkMult));
+        let damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression * racialBonus * envBonus * elementalMult * (1 - eDr) * (1 - eAllRes)));
 
         // Instability debuff reduces physical attack damage by 30%
         if (this.status.player.instability > 0) {
@@ -987,9 +969,7 @@ export class CombatEngine {
     }
 
     playerSwordIntent() {
-        // --- Module 1: SAT stance mana discount ---
-        const stanceConf = COMBAT_STANCES[this.playerStance] || COMBAT_STANCES.NONE;
-        const costMana = Math.floor(40 * (stanceConf.manaCostMult || 1.0));
+        const costMana = 40;
         if (this.player.mana < costMana) {
             this.addLog("Linh lực không đủ để ngưng tụ Kiếm Ý!");
             return;
@@ -999,11 +979,7 @@ export class CombatEngine {
         this.addLog("<span class='text-qi-blue font-ancient'>Kiếm Ý xung thiên!</span> Ngươi nhân kiếm hợp nhất, chém ra một kiếm tuyệt diệt.");
         
         const suppression = this.calculateRealmSuppression(this.player, this.enemy);
-        // --- Module 1: SAT stance sword-intent bonus (+15%) for sword path ---
         let swordIntentMult = 2.5;
-        if (this.playerStance === 'SAT' && (this.player.specializedPaths?.sword?.realmId || 0) > 0) {
-            swordIntentMult = 2.5 * (1 + (COMBAT_STANCES.SAT.pathBonus?.bonus?.swordIntentDmg || 0));
-        }
         const damage = Math.floor(this.player.atk * swordIntentMult * suppression);
         
         // Sword Intent ignores 80% defense
@@ -1850,16 +1826,6 @@ export class CombatEngine {
 
         this.player.hp -= finalPlayerDamage;
         
-        // --- Module 1: Hộ Thân Thế mana regen on taking a hit ---
-        if (this.playerStance === 'THU' && finalPlayerDamage > 0) {
-            const stanceConf = COMBAT_STANCES.THU;
-            const manaGain = Math.floor(this.player.maxMana * stanceConf.manaRegen);
-            this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
-            if (manaGain > 0) {
-                const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'Linh Lực';
-                this.addLog(`🛡️ [Hộ Thân Thế] ${label} phản hồi +${manaGain}.`);
-            }
-        }
         this.addLog(attackMsg);
         this.onUpdate('damage', { target: 'player', value: finalPlayerDamage, crit, actionType: 'attack' });
 
@@ -1907,23 +1873,7 @@ export class CombatEngine {
         this.player.calculateStats();
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // MODULE 1: Chiến Thế (Combat Stance)
-    // ─────────────────────────────────────────────────────────────────────────
-    playerSetStance(stanceId) {
-        if (!COMBAT_STANCES[stanceId]) return;
-        if (this.playerStance === stanceId) {
-            // Toggle off to NONE if already active
-            this.playerStance = 'NONE';
-            this.addLog(`Cười nhạt một tiếng, ngươi rút khỏi chiến thế, trở về trạng thái vô thế tự nhiên.`);
-        } else {
-            this.playerStance = stanceId;
-            const conf = COMBAT_STANCES[stanceId];
-            this.addLog(`<span class="font-ancient" style="color:${conf.color}">[${conf.icon} ${conf.name}]</span> Ngươi thần tâm chấn động, khai động chiến thế!`);
-        }
-        // Stance switching does NOT cost a turn — just emits a UI refresh
-        this.onUpdate('stance', { stance: this.playerStance });
-    }
+
 
     // ─────────────────────────────────────────────────────────────────────────
     // MODULE 2: Thiên Địa Dị Biến (Combat Events)
