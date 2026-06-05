@@ -85,18 +85,63 @@ export class Enemy {
         const manaPercent = this.maxMana ? (this.mana / this.maxMana) : 1.0;
 
         // Base values scaled by realm
-        this.maxHp = Math.floor(100 * baseMultiplier * variance * raceMults.hp);
-        this.atk = Math.floor(10 * baseMultiplier * variance * raceMults.atk);
-        this.def = Math.floor(5 * baseMultiplier * variance * raceMults.def);
-        this.spd = Math.floor((10 + (this.realmId * 1.5)) * variance * raceMults.spd);
-        this.maxMana = Math.floor(50 * baseMultiplier);
+        let baseHp = 100 * baseMultiplier * raceMults.hp;
+        let baseAtk = 10 * baseMultiplier * raceMults.atk;
+        let baseDef = 5 * baseMultiplier * raceMults.def;
+        let baseSpd = (15 + (this.realmId * 5)) * raceMults.spd;
+        let baseMana = 50 * baseMultiplier;
+
+        // 1. Simulated Luyện Thể (Body Realm)
+        let bodyLevel = 1;
+        if (this.race === 'DRAGON' || this.race === 'ZOMBIE') {
+            bodyLevel = Math.max(1, Math.floor(this.realmId * 1.2));
+        } else if (this.race === 'DEMON' || this.race === 'SPIRIT_BEAST') {
+            bodyLevel = Math.max(1, Math.floor(this.realmId * 1.0));
+        } else if (this.race === 'HUMAN') {
+            bodyLevel = Math.max(1, Math.floor(this.realmId * 0.8));
+        }
+        const bodyMult = bodyLevel > 0 ? Math.pow(1.2, bodyLevel - 1) : 1.0;
+        const bodyHpBonus = 100 * Math.max(0, bodyLevel - 1) * bodyMult;
+        const bodyDefBonus = 20 * Math.max(0, bodyLevel - 1) * bodyMult;
+
+        baseHp += bodyHpBonus;
+        baseDef += bodyDefBonus;
+
+        // 2. Simulated Thần Hồn (Soul Realm)
+        let soulLevel = 1;
+        if (this.race === 'GHOST') {
+            soulLevel = Math.max(1, Math.floor(this.realmId * 1.3));
+        } else if (this.race === 'HUMAN' || this.race === 'DEMON') {
+            soulLevel = Math.max(1, Math.floor(this.realmId * 0.9));
+        } else {
+            soulLevel = Math.max(1, Math.floor(this.realmId * 0.6));
+        }
+        const soulMult = soulLevel > 0 ? Math.pow(1.15, soulLevel - 1) : 1.0;
+        const soulManaBonus = 60 * Math.max(0, soulLevel - 1) * soulMult;
+        const soulSpdBonus = 10 * Math.max(0, soulLevel - 1) * soulMult;
+
+        baseMana += soulManaBonus;
+        baseSpd += soulSpdBonus;
 
         // Apply physiqueTalent (căn cốt) just like player
-        this.maxHp = Math.round(this.maxHp * (1 + (this.physiqueTalent / 200)));
-        this.def = Math.round(this.def * (1 + (this.physiqueTalent / 500)));
+        baseHp *= (1 + (this.physiqueTalent / 200));
+        baseDef *= (1 + (this.physiqueTalent / 500));
+
+        // 3. Simulated Công Pháp (Techniques) Multipliers
+        const techMult = 1.0 + (this.realmId * 0.18) * this.statMult;
+        baseHp *= techMult;
+        baseAtk *= techMult;
+        baseDef *= techMult;
+        baseSpd *= (1.0 + (this.realmId * 0.03));
+
+        this.maxHp = Math.floor(baseHp * variance);
+        this.atk = Math.floor(baseAtk * variance);
+        this.def = Math.floor(baseDef * variance);
+        this.spd = Math.floor(baseSpd * variance);
+        this.maxMana = Math.floor(baseMana);
 
         // Apply divineSense (thần thức) just like player to perception
-        this.perception = Math.floor(10 + (this.realmId * 2) + (this.divineSense / 5));
+        this.perception = Math.floor(10 + (soulLevel * 5) + (this.divineSense / 5));
         this.perception = Math.round(this.perception * variance);
 
         this.maxThanThuc = Math.floor(this.divineSense || 50);
@@ -111,11 +156,18 @@ export class Enemy {
             pierce: 0,
             soulPierce: 0,
             critRate: 0.05, 
+            weaknessStrikeChance: 0.05,
             critDmg: 1.5,   
             fireDmg: 1.0,   
             waterDmg: 1.0,
             thunderDmg: 1.0,
+            woodDmg: 1.0,
+            earthDmg: 1.0,
+            windDmg: 1.0,
+            metalDmg: 1.0,
+            iceDmg: 1.0,
             poisonDmg: 1.0,
+            swordDmg: 1.0,
             lifeSteal: 0,
             soulRepress: 0,
             damageReduction: 0,
@@ -124,21 +176,23 @@ export class Enemy {
         };
 
         // Base advanced stats scaled by cultivation realm
-        this.advancedStats.critRate += this.realmId * 0.01; // 1% crit rate per realm level
-        this.advancedStats.critDmg += this.realmId * 0.02; // +2% crit damage per realm level
-        this.advancedStats.pierce += this.realmId * 0.008; // Xuyên giáp tăng dần theo cảnh giới
-        this.advancedStats.damageReduction = 1 - (1 / (1 + (this.realmId * 0.025))); // Giảm sát thương tăng theo cảnh giới
+        this.advancedStats.critRate += this.realmId * 0.01;
+        this.advancedStats.weaknessStrikeChance += this.realmId * 0.01;
+        this.advancedStats.critDmg += this.realmId * 0.02;
+        this.advancedStats.pierce += this.realmId * 0.008;
+        this.advancedStats.damageReduction = 1 - (1 / (1 + (bodyLevel * 0.05))); // Match player DR formula
 
         // Racial advanced stats adjustments
         if (this.race === 'DEMON') {
-            this.advancedStats.lifeSteal += 0.05 + this.realmId * 0.005; // Ma tộc có sẵn khả năng hút máu
+            this.advancedStats.lifeSteal += 0.05 + this.realmId * 0.005;
         } else if (this.race === 'DRAGON') {
-            this.advancedStats.damageReduction += 0.1; // Long tộc mình đồng da sắt
-            this.advancedStats.thunderDmg += 0.2; // Lôi long bẩm sinh điều khiển sấm sét
+            this.advancedStats.damageReduction += 0.1;
+            this.advancedStats.thunderDmg += 0.2;
         } else if (this.race === 'SPIRIT_BEAST') {
-            this.advancedStats.critRate += 0.03; // Yêu thú dã tính có tỷ lệ bạo kích cao hơn
+            this.advancedStats.critRate += 0.03;
+            this.advancedStats.weaknessStrikeChance += 0.03;
         } else if (this.race === 'GHOST') {
-            this.advancedStats.pierce += 0.05; // Quỷ hồn công kích vô hình dễ xuyên phòng ngự
+            this.advancedStats.pierce += 0.05;
         }
 
         // Apply Heart Demon penalties if high
@@ -146,6 +200,7 @@ export class Enemy {
             const hdPenalty = 1 - (this.heartDemon / 200);
             this.atk = Math.round(this.atk * hdPenalty);
             this.advancedStats.critRate *= hdPenalty;
+            this.advancedStats.weaknessStrikeChance *= hdPenalty;
         }
 
         // Apply equipment bonuses dynamically (generic loop over stats)
@@ -168,6 +223,15 @@ export class Enemy {
                 }
             });
         });
+
+        // 4. Natural Arsenal Scaling for Beasts (who don't wear gear)
+        const isHumanoid = ['HUMAN', 'DEMON'].includes(this.race);
+        if (!isHumanoid) {
+            const gearMult = Math.pow(1.8, this.realmId - 1);
+            this.atk += Math.round(15 * gearMult * variance);
+            this.def += Math.round(10 * gearMult * variance);
+            this.maxHp += Math.round(80 * gearMult * variance);
+        }
 
         // Set final HP and Mana keeping percentage
         this.hp = Math.round(this.maxHp * hpPercent);
@@ -243,20 +307,46 @@ export class EnemyGenerator {
 
         // 3. Humanoid Equipment & Skills
         if (isHumanoid) {
-            // Randomly equip items based on realm
+            // Randomly equip items based on realm (with exponential gearMult scaling)
+            const gearMult = Math.pow(1.8, enemy.realmId - 1);
             if (enemy.realmId >= 1) {
-                enemy.equipment.weapon = { id: 'phi_kiem_go', name: 'Phi Kiếm Gỗ', stats: { atk: 10 + enemy.realmId * 5 } };
-                enemy.equipment.armor = { id: 'tho_bo_pham_y', name: 'Áo Vải Tu Sĩ', stats: { def: 5 + enemy.realmId * 3 } };
+                enemy.equipment.weapon = { 
+                    id: 'phi_kiem_go', 
+                    name: 'Phi Kiếm Gỗ', 
+                    stats: { atk: Math.round(15 * gearMult) } 
+                };
+                enemy.equipment.armor = { 
+                    id: 'tho_bo_pham_y', 
+                    name: 'Áo Vải Tu Sĩ', 
+                    stats: { def: Math.round(8 * gearMult) } 
+                };
             }
             if (enemy.realmId >= 10) {
-                enemy.equipment.weapon = { id: 'thanh_hong_kiem', name: 'Thanh Hồng Kiếm', stats: { atk: 50 + enemy.realmId * 10 } };
-                enemy.equipment.artifact = { id: 'ho_tam_kinh', name: 'Hộ Tâm Kính', stats: { def: 30, hp: 100 } };
+                enemy.equipment.weapon = { 
+                    id: 'thanh_hong_kiem', 
+                    name: 'Thanh Hồng Kiếm', 
+                    stats: { atk: Math.round(25 * gearMult) } 
+                };
+                enemy.equipment.artifact = { 
+                    id: 'ho_tam_kinh', 
+                    name: 'Hộ Tâm Kính', 
+                    stats: { def: Math.round(12 * gearMult), hp: Math.round(100 * gearMult) } 
+                };
             }
 
             // Skills
             enemy.skills.push('BASIC_ATTACK');
-            if (enemy.realmId >= 5) enemy.skills.push('QI_BURST');
-            if (enemy.realmId >= 15) enemy.skills.push('HEAL_TECHNIQUE');
+            if (enemy.realmId >= 3) enemy.skills.push('QI_BURST');
+            if (enemy.realmId >= 6) enemy.skills.push('SHIELD_UP');
+            if (enemy.realmId >= 10) {
+                if (enemy.race === 'DEMON') {
+                    enemy.skills.push('BLOOD_SACRIFICE');
+                    enemy.skills.push('SOUL_REPRESS');
+                } else {
+                    enemy.skills.push('SWORD_RAIN');
+                }
+            }
+            if (enemy.realmId >= 14) enemy.skills.push('HEAL_TECHNIQUE');
 
             // Pills (for combat use)
             if (Math.random() < 0.5) enemy.inventory.push({ id: 'hoi_huyet_dan', quantity: 1 });
@@ -265,6 +355,28 @@ export class EnemyGenerator {
             // Offensive items (Talismans)
             if (enemy.realmId >= 3 && Math.random() < 0.4) {
                 enemy.inventory.push({ id: 'hoa_cau_phu', quantity: 1 });
+            }
+        } else {
+            // Non-humanoid (Beasts, Dragons, Zombies, Ghosts) Skills allocation
+            enemy.skills.push('BASIC_ATTACK');
+            if (enemy.race === 'SPIRIT_BEAST' || enemy.race === 'DRAGON') {
+                if (enemy.realmId >= 3) enemy.skills.push('BEAST_ROAR');
+                if (enemy.realmId >= 8) {
+                    if (enemy.name.includes('Lôi') || enemy.race === 'DRAGON') {
+                        enemy.skills.push('LIGHTNING_TRIBULATION');
+                    } else if (enemy.name.includes('Xà') || enemy.name.includes('Điệp')) {
+                        enemy.skills.push('POISON_MIST');
+                    } else {
+                        enemy.skills.push('QI_BURST');
+                    }
+                }
+                if (enemy.realmId >= 12) enemy.skills.push('SHIELD_UP');
+            } else if (enemy.race === 'GHOST') {
+                enemy.skills.push('SOUL_REPRESS');
+                if (enemy.realmId >= 8) enemy.skills.push('QI_BURST');
+            } else if (enemy.race === 'ZOMBIE') {
+                if (enemy.realmId >= 5) enemy.skills.push('BEAST_ROAR');
+                if (enemy.realmId >= 10) enemy.skills.push('SHIELD_UP');
             }
         }
 

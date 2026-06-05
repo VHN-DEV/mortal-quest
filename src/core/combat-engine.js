@@ -504,6 +504,7 @@ export class CombatEngine {
         this.enemy.mana -= 20;
         let damage = Math.floor(this.enemy.atk * 1.5);
         let msg = "";
+        let defMult = 1.0;
 
         switch (skillId) {
             case 'QI_BURST':
@@ -517,6 +518,51 @@ export class CombatEngine {
                 damage = 0;
                 break;
             }
+            case 'SWORD_RAIN':
+                msg = `${this.enemy.name} phóng ra vạn đạo phi kiếm oanh kích, sắc bén xuyên thấu!`;
+                damage = Math.floor(this.enemy.atk * 1.7);
+                defMult = 0.5; // Ignores 50% physical defense
+                break;
+            case 'BLOOD_SACRIFICE': {
+                const selfDmg = Math.floor(this.enemy.maxHp * 0.12);
+                this.enemy.hp = Math.max(1, this.enemy.hp - selfDmg);
+                msg = `${this.enemy.name} hiến tế tinh huyết nhục thân (-${selfDmg} HP), kích phát đại sát thuật oanh tạc cực đại!`;
+                damage = Math.floor(this.enemy.atk * 2.4);
+                break;
+            }
+            case 'SOUL_REPRESS':
+                msg = `${this.enemy.name} thần thức ngưng trệ, bộc phát thần hồn uy áp thôn phệ thức hải của ngươi!`;
+                damage = Math.floor(this.enemy.atk * 1.3);
+                defMult = 0; // Ignores defense completely (soul attack)
+                if (Math.random() < 0.3) {
+                    this.status.player.stun = Math.max(this.status.player.stun, 1);
+                    msg += " Ngươi tạm thời bị CHOÁNG do thần hồn chấn động!";
+                }
+                break;
+            case 'POISON_MIST':
+                msg = `${this.enemy.name} phun ra một ngụm độc vụ mờ mịt, ăn mòn phòng ngự và đầu độc cơ thể ngươi!`;
+                damage = Math.floor(this.enemy.atk * 1.1);
+                this.player.addStatusEffect('moc_doc', null, this.enemy.name);
+                break;
+            case 'LIGHTNING_TRIBULATION':
+                msg = `${this.enemy.name} dẫn động thiên địa nguyên khí triệu hoán cuồng lôi, hóa thành lôi kiếp giáng thế!`;
+                damage = Math.floor(this.enemy.atk * 2.1);
+                break;
+            case 'SHIELD_UP': {
+                const shieldVal = Math.floor(this.enemy.maxHp * 0.25);
+                this.status.enemy.shield = (this.status.enemy.shield || 0) + shieldVal;
+                msg = `${this.enemy.name} ngưng tụ hộ thân linh khí, tạo thành một lớp Linh Hộ Thuẫn dày đặc (+${shieldVal} Giáp)!`;
+                damage = 0;
+                break;
+            }
+            case 'BEAST_ROAR':
+                msg = `${this.enemy.name} rống lên một tiếng gầm cuồng bạo kinh thiên động địa, đánh tan nhuệ khí đối thủ!`;
+                damage = Math.floor(this.enemy.atk * 1.0);
+                if (Math.random() < 0.45) {
+                    this.status.player.stun = Math.max(this.status.player.stun, 1);
+                    msg += " Tiếng rống chấn động làm ngươi bị CHOÁNG trong 1 lượt!";
+                }
+                break;
             default:
                 msg = `${this.enemy.name} thi triển kỹ năng đặc thù!`;
         }
@@ -527,7 +573,7 @@ export class CombatEngine {
             if (this.player.mainDualId) {
                 allRes += 0.10; // Song Tu Yin-Yang balance boost
             }
-            const finalDmg = Math.max(1, Math.floor((damage - Math.floor(this.player.def / 2)) * (1 - dr) * (1 - allRes)));
+            const finalDmg = Math.max(1, Math.floor((damage - Math.floor((this.player.def * defMult) / 2)) * (1 - dr) * (1 - allRes)));
             this.player.hp -= finalDmg;
             this.addLog(msg + ` Gây ${finalDmg} sát thương.`);
             this.onUpdate('damage', { target: 'player', value: finalDmg, crit: true, actionType: 'skill', skillId: skillId });
