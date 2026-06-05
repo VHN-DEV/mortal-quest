@@ -384,12 +384,21 @@ export class EnemyGenerator {
                     enemy.skills.push('SWORD_RAIN');
                 }
             }
+            if (enemy.realmId >= 12) {
+                if (enemy.race === 'DEMON') {
+                    enemy.skills.push('DEVIL_TRANSFORM');
+                    enemy.skills.push('SOUL_DEVOUR');
+                } else {
+                    enemy.skills.push('FIVE_ELEMENTS_SHIELD');
+                    enemy.skills.push('GREEN_BAMBOO_SWORD');
+                }
+            }
             if (enemy.realmId >= 14) enemy.skills.push('HEAL_TECHNIQUE');
-
+ 
             // Pills (for combat use)
             if (Math.random() < 0.5) enemy.inventory.push({ id: 'hoi_huyet_dan', quantity: 1 });
             if (enemy.realmId >= 10 && Math.random() < 0.3) enemy.inventory.push({ id: 'thanh_tam_dan', quantity: 1 });
-
+ 
             // Offensive items (Talismans)
             if (enemy.realmId >= 3 && Math.random() < 0.4) {
                 enemy.inventory.push({ id: 'hoa_cau_phu', quantity: 1 });
@@ -408,13 +417,21 @@ export class EnemyGenerator {
                         enemy.skills.push('QI_BURST');
                     }
                 }
-                if (enemy.realmId >= 12) enemy.skills.push('SHIELD_UP');
+                if (enemy.realmId >= 12) {
+                    enemy.skills.push('SHIELD_UP');
+                    enemy.skills.push('VIRTUAL_SHADOW');
+                }
+                if (enemy.realmId >= 15) {
+                    enemy.skills.push('BEAST_SWALLOW');
+                }
             } else if (enemy.race === 'GHOST') {
                 enemy.skills.push('SOUL_REPRESS');
                 if (enemy.realmId >= 8) enemy.skills.push('QI_BURST');
+                if (enemy.realmId >= 12) enemy.skills.push('VIRTUAL_SHADOW');
             } else if (enemy.race === 'ZOMBIE') {
                 if (enemy.realmId >= 5) enemy.skills.push('BEAST_ROAR');
                 if (enemy.realmId >= 10) enemy.skills.push('SHIELD_UP');
+                if (enemy.realmId >= 14) enemy.skills.push('DEVIL_TRANSFORM');
             }
         }
 

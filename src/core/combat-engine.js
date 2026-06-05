@@ -563,6 +563,45 @@ export class CombatEngine {
                     msg += " Tiếng rống chấn động làm ngươi bị CHOÁNG trong 1 lượt!";
                 }
                 break;
+            case 'DEVIL_TRANSFORM':
+                this.enemy.atk = Math.floor(this.enemy.atk * 1.4);
+                this.enemy.def = Math.floor(this.enemy.def * 1.3);
+                msg = `${this.enemy.name} gầm rú vận khởi Cực Ma Hoàng Biến! Thân thể ma hóa phình to, vảy đen bao phủ, ma khí ngập trời! (Tấn công +40%, Phòng ngự +30%)`;
+                damage = 0;
+                break;
+            case 'SOUL_DEVOUR':
+                msg = `${this.enemy.name} thi triển Phệ Hồn Thuật! Một luồng u hồn dữ tợn lao đến cắn xé nguyên thần và hút lấy tinh huyết của ngươi!`;
+                damage = Math.floor(this.enemy.atk * 1.5);
+                defMult = 0.3; // ignores 70% defense
+                break;
+            case 'FIVE_ELEMENTS_SHIELD': {
+                const shieldVal = Math.floor(this.enemy.maxHp * 0.30);
+                this.status.enemy.shield = (this.status.enemy.shield || 0) + shieldVal;
+                msg = `${this.enemy.name} niệm động khẩu quyết, ngũ sắc thần quang bao quanh hóa thành Ngũ Hành Hộ Thể Linh Giáp (+${shieldVal} Giáp, giảm thương +10%)!`;
+                damage = 0;
+                break;
+            }
+            case 'GREEN_BAMBOO_SWORD':
+                msg = `${this.enemy.name} vỗ túi trữ vật triệu hoán Thanh Trúc Phong Vân Kiếm, hóa thành kiếm trận phong lôi vây khốn trảm kích!`;
+                damage = Math.floor(this.enemy.atk * 2.0);
+                defMult = 0.5; // Ignores 50% defense
+                if (Math.random() < 0.20) {
+                    this.status.player.stun = Math.max(this.status.player.stun, 1);
+                    msg += " Lôi điện chấn động làm ngươi bị TÊ LIỆT (Choáng 1 lượt)!";
+                }
+                break;
+            case 'VIRTUAL_SHADOW': {
+                const shieldVal = Math.floor(this.enemy.maxHp * 0.15);
+                this.status.enemy.shield = (this.status.enemy.shield || 0) + shieldVal;
+                msg = `${this.enemy.name} thi triển La Yên Bộ tạo ra vô số Huyễn Ảnh Phân Thân, ảo diệu phi phàm (+${shieldVal} Giáp ảo, tăng né tránh)!`;
+                damage = 0;
+                break;
+            }
+            case 'BEAST_SWALLOW':
+                msg = `${this.enemy.name} há to cái mồm khổng lồ như hố đen, thi triển thần thông Thôn Phệ Thiên Địa nhằm nuốt chửng nguyên khí của ngươi!`;
+                damage = Math.floor(this.enemy.atk * 2.5);
+                defMult = 0.4;
+                break;
             default:
                 msg = `${this.enemy.name} thi triển kỹ năng đặc thù!`;
         }
@@ -576,6 +615,13 @@ export class CombatEngine {
             const finalDmg = Math.max(1, Math.floor((damage - Math.floor((this.player.def * defMult) / 2)) * (1 - dr) * (1 - allRes)));
             this.player.hp -= finalDmg;
             this.addLog(msg + ` Gây ${finalDmg} sát thương.`);
+            
+            if (skillId === 'SOUL_DEVOUR') {
+                const heal = Math.floor(finalDmg * 0.60);
+                this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + heal);
+                this.addLog(`<span class="text-green-400">🩸 ${this.enemy.name} hấp thụ tinh khí thần hồn đối thủ, hồi phục +${heal} HP!</span>`);
+            }
+
             this.onUpdate('damage', { target: 'player', value: finalDmg, crit: true, actionType: 'skill', skillId: skillId });
         } else {
             this.addLog(msg);

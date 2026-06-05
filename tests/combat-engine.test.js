@@ -360,5 +360,29 @@ describe('CombatEngine mechanics', () => {
 
       randomSpy.mockRestore();
     });
+
+    it('should apply DEVIL_TRANSFORM skill boosting enemy ATK and DEF', () => {
+      const player = { name: 'Tu Sĩ', hp: 100, maxHp: 100, def: 50, advancedStats: {}, equipment: {} };
+      const enemy = { name: 'Ma Tu', hp: 100, maxHp: 100, atk: 50, def: 30, spd: 40 };
+      const engine = new CombatEngine(player, enemy, mockOnUpdate, mockOnEnd);
+      engine.isActive = true;
+
+      engine.enemyUseSkill('DEVIL_TRANSFORM');
+
+      expect(enemy.atk).toBe(70); // 50 * 1.4 = 70
+      expect(enemy.def).toBe(39); // 30 * 1.3 = 39
+    });
+
+    it('should apply SOUL_DEVOUR skill dealing damage and healing the enemy', () => {
+      const player = { name: 'Tu Sĩ', hp: 100, maxHp: 100, def: 10, advancedStats: {}, equipment: {} };
+      const enemy = { name: 'Ma Tu', hp: 50, maxHp: 100, atk: 50, def: 30, spd: 40 };
+      const engine = new CombatEngine(player, enemy, mockOnUpdate, mockOnEnd);
+      engine.isActive = true;
+
+      engine.enemyUseSkill('SOUL_DEVOUR');
+
+      expect(player.hp).toBe(26);
+      expect(enemy.hp).toBe(94);
+    });
   });
 });
