@@ -223,13 +223,13 @@ export const BEAST_TYPES = Object.freeze({
 });
 
 export const ROOT_QUALITIES = Object.freeze({
-    TAP:        createQuality('tap',       'Tạp',          '#9ca3af', { sortOrder: 1, multiplier: 0.5, chance: 0.0,   cssClass: 'pham' }),
-    HA_PHAM:    createQuality('ha_pham',   'Hạ phẩm',      '#4ade80', { sortOrder: 2, multiplier: 0.8, chance: 0.45,  cssClass: 'pham' }),
-    TRUNG_PHAM: createQuality('trung_pham','Trung phẩm',   '#3b82f6', { sortOrder: 3, multiplier: 1.2, chance: 0.30,  cssClass: 'hoang' }),
-    THUONG_PHAM:createQuality('thuong_pham','Thượng phẩm', '#a855f7', { sortOrder: 4, multiplier: 1.8, chance: 0.15,  cssClass: 'huyen' }),
-    DIA:        createQuality('dia',       'Địa',          '#f59e0b', { sortOrder: 5, multiplier: 2.5, chance: 0.07,  cssClass: 'dia' }),
-    THIEN:      createQuality('thien',     'Thiên',        '#ec4899', { sortOrder: 6, multiplier: 4.0, chance: 0.025, cssClass: 'thien' }),
-    TIEN:       createQuality('tien',      'Tiên',         '#ef4444', { sortOrder: 7, multiplier: 7.0, chance: 0.005, cssClass: 'tien' }),
+    TAP: createQuality('tap', 'Tạp', '#9ca3af', { sortOrder: 1, multiplier: 0.5, chance: 0.0, cssClass: 'pham' }),
+    HA_PHAM: createQuality('ha_pham', 'Hạ phẩm', '#4ade80', { sortOrder: 2, multiplier: 0.8, chance: 0.45, cssClass: 'pham' }),
+    TRUNG_PHAM: createQuality('trung_pham', 'Trung phẩm', '#3b82f6', { sortOrder: 3, multiplier: 1.2, chance: 0.30, cssClass: 'hoang' }),
+    THUONG_PHAM: createQuality('thuong_pham', 'Thượng phẩm', '#a855f7', { sortOrder: 4, multiplier: 1.8, chance: 0.15, cssClass: 'huyen' }),
+    DIA: createQuality('dia', 'Địa', '#f59e0b', { sortOrder: 5, multiplier: 2.5, chance: 0.07, cssClass: 'dia' }),
+    THIEN: createQuality('thien', 'Thiên', '#ec4899', { sortOrder: 6, multiplier: 4.0, chance: 0.025, cssClass: 'thien' }),
+    TIEN: createQuality('tien', 'Tiên', '#ef4444', { sortOrder: 7, multiplier: 7.0, chance: 0.005, cssClass: 'tien' }),
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -237,12 +237,12 @@ export const ROOT_QUALITIES = Object.freeze({
 // Dùng cho hệ thống creation khi roll linh căn (key = PHAM/LINH/DIA/THIEN/THANH/TIEN)
 // ─────────────────────────────────────────────────────────────────────────────
 export const ROOT_RARITY_ENUM = Object.freeze({
-    PHAM:  createQuality('PHAM',  'Phàm',  '#9ca3af', { sortOrder: 1, chance: 0.45,  multiplier: 1.0,  cssClass: 'pham' }),
-    LINH:  createQuality('LINH',  'Linh',  '#4ade80', { sortOrder: 2, chance: 0.30,  multiplier: 1.5,  cssClass: 'pham' }),
-    DIA:   createQuality('DIA',   'Địa',   '#3b82f6', { sortOrder: 3, chance: 0.15,  multiplier: 2.2,  cssClass: 'hoang' }),
-    THIEN: createQuality('THIEN', 'Thiên', '#ec4899', { sortOrder: 4, chance: 0.07,  multiplier: 3.5,  cssClass: 'thien' }),
-    THANH: createQuality('THANH', 'Thánh', '#f59e0b', { sortOrder: 5, chance: 0.025, multiplier: 6.0,  cssClass: 'thong-thien' }),
-    TIEN:  createQuality('TIEN',  'Tiên',  '#ffffff', { sortOrder: 6, chance: 0.005, multiplier: 12.0, cssClass: 'tien-khi' }),
+    PHAM: createQuality('PHAM', 'Phàm', '#9ca3af', { sortOrder: 1, chance: 0.45, multiplier: 1.0, cssClass: 'pham' }),
+    LINH: createQuality('LINH', 'Linh', '#4ade80', { sortOrder: 2, chance: 0.30, multiplier: 1.5, cssClass: 'pham' }),
+    DIA: createQuality('DIA', 'Địa', '#3b82f6', { sortOrder: 3, chance: 0.15, multiplier: 2.2, cssClass: 'hoang' }),
+    THIEN: createQuality('THIEN', 'Thiên', '#ec4899', { sortOrder: 4, chance: 0.07, multiplier: 3.5, cssClass: 'thien' }),
+    THANH: createQuality('THANH', 'Thánh', '#f59e0b', { sortOrder: 5, chance: 0.025, multiplier: 6.0, cssClass: 'thong-thien' }),
+    TIEN: createQuality('TIEN', 'Tiên', '#ffffff', { sortOrder: 6, chance: 0.005, multiplier: 12.0, cssClass: 'tien-khi' }),
 });
 
 export const MORALITY_SCALES = Object.freeze({
@@ -397,16 +397,16 @@ export const PHYSIQUE_STAGES = Object.freeze({
 });
 
 export const PHYSIQUE_CATEGORIES = Object.freeze({
-    'PHAM':   createQuality('PHAM',   'Phàm Thể',         '#9ca3af', { cssClass: 'pham' }),
-    'LINH':   createQuality('LINH',   'Linh Thể',         '#4ade80', { cssClass: 'pham' }),
-    'BAO':    createQuality('BAO',    'Bảo Thể',          '#3b82f6', { cssClass: 'hoang' }),
-    'CHIEN':  createQuality('CHIEN',  'Chiến Thể',        '#a855f7', { cssClass: 'huyen' }),
-    'THANH':  createQuality('THANH',  'Thánh Thể',        '#f59e0b', { cssClass: 'thien' }),
-    'DAO':    createQuality('DAO',    'Đạo Thể',          '#ec4899', { cssClass: 'tien' }),
-    'MA':     createQuality('MA',     'Ma Thể',           '#ef4444', { cssClass: 'linh-bao' }),
-    'HON':    createQuality('HON',    'Hồn Thể',          '#8b5cf6', { cssClass: 'phap-bao' }),
-    'YEU':    createQuality('YEU',    'Yêu Thể',          '#34d399', { cssClass: 'phap-khi' }),
-    'CAM_KY': createQuality('CAM_KY','Cấm Kỵ Thể Chất',  '#FFD700', { cssClass: 'danh-khi' }),
+    'PHAM': createQuality('PHAM', 'Phàm Thể', '#9ca3af', { cssClass: 'pham' }),
+    'LINH': createQuality('LINH', 'Linh Thể', '#4ade80', { cssClass: 'pham' }),
+    'BAO': createQuality('BAO', 'Bảo Thể', '#3b82f6', { cssClass: 'hoang' }),
+    'CHIEN': createQuality('CHIEN', 'Chiến Thể', '#a855f7', { cssClass: 'huyen' }),
+    'THANH': createQuality('THANH', 'Thánh Thể', '#f59e0b', { cssClass: 'thien' }),
+    'DAO': createQuality('DAO', 'Đạo Thể', '#ec4899', { cssClass: 'tien' }),
+    'MA': createQuality('MA', 'Ma Thể', '#ef4444', { cssClass: 'linh-bao' }),
+    'HON': createQuality('HON', 'Hồn Thể', '#8b5cf6', { cssClass: 'phap-bao' }),
+    'YEU': createQuality('YEU', 'Yêu Thể', '#34d399', { cssClass: 'phap-khi' }),
+    'CAM_KY': createQuality('CAM_KY', 'Cấm Kỵ Thể Chất', '#FFD700', { cssClass: 'danh-khi' }),
 });
 
 export const HOURS_ENUM = Object.freeze({
@@ -425,19 +425,19 @@ export const HOURS_ENUM = Object.freeze({
 });
 
 export const SEASONS_ENUM = Object.freeze({
-    SPRING: createQuality('spring', 'Mùa Xuân', '#4ade80', { 
+    SPRING: createQuality('spring', 'Mùa Xuân', '#4ade80', {
         bonus: { herbGrowth: 1.5, woodElement: 1.2, tvps: 1.2 },
         description: 'Vạn vật sinh sôi, linh thảo trưởng thành nhanh chóng. Linh khí dồi dào.'
     }),
-    SUMMER: createQuality('summer', 'Mùa Hạ', '#f87171', { 
+    SUMMER: createQuality('summer', 'Mùa Hạ', '#f87171', {
         bonus: { fireElement: 1.5, alchemySuccess: 1.1, tvps: 1.0 },
         description: 'Nắng gắt như thiêu, hỏa hệ linh lực bạo động.'
     }),
-    AUTUMN: createQuality('autumn', 'Mùa Thu', '#fbbf24', { 
+    AUTUMN: createQuality('autumn', 'Mùa Thu', '#fbbf24', {
         bonus: { breakthroughSuccess: 1.1, metalElement: 1.2, tvps: 1.5 },
         description: 'Khí trời mát mẻ, linh khí ổn định, thích hợp đột phá và tu luyện.'
     }),
-    WINTER: createQuality('winter', 'Mùa Đông', '#60a5fa', { 
+    WINTER: createQuality('winter', 'Mùa Đông', '#60a5fa', {
         bonus: { iceElement: 1.5, waterElement: 1.2, tvps: 0.8 },
         description: 'Băng giá bao trùm, linh khí lắng đọng, tu luyện chậm lại.'
     })
@@ -480,23 +480,23 @@ export const SPIRIT_STONE_ATTRIBUTES_ENUM = Object.freeze({
 // QI PURITY — Độ Tinh Khiết Khí Tức
 // ─────────────────────────────────────────────────────────────────────────────
 export const QI_PURITY_ENUM = Object.freeze({
-    TAP:        createQuality('TAP',        'Tạp Khí',   '#9ca3af', { sortOrder: 1, multiplier: 0.5, description: 'Chứa nhiều tạp chất, khó hấp thu.', cssClass: 'pham' }),
-    TINH_THUAN: createQuality('TINH_THUAN', 'Tinh Thuần','#60a5fa', { sortOrder: 2, multiplier: 1.0, description: 'Tinh khiết bình thường, dễ hấp thu.', cssClass: 'huyen' }),
-    CUC_PHAM:   createQuality('CUC_PHAM',   'Cực Phẩm',  '#f59e0b', { sortOrder: 3, multiplier: 2.0, description: 'Chất lượng cực cao, hấp thu nhanh gấp đôi.', cssClass: 'thien' }),
-    DAO:        createQuality('DAO',        'Đạo Vận',   '#FFD700', { sortOrder: 4, multiplier: 5.0, description: 'Mang theo đạo vận thiên địa, cực kỳ quý hiếm.', cssClass: 'danh-khi' }),
+    TAP: createQuality('TAP', 'Tạp Khí', '#9ca3af', { sortOrder: 1, multiplier: 0.5, description: 'Chứa nhiều tạp chất, khó hấp thu.', cssClass: 'pham' }),
+    TINH_THUAN: createQuality('TINH_THUAN', 'Tinh Thuần', '#60a5fa', { sortOrder: 2, multiplier: 1.0, description: 'Tinh khiết bình thường, dễ hấp thu.', cssClass: 'huyen' }),
+    CUC_PHAM: createQuality('CUC_PHAM', 'Cực Phẩm', '#f59e0b', { sortOrder: 3, multiplier: 2.0, description: 'Chất lượng cực cao, hấp thu nhanh gấp đôi.', cssClass: 'thien' }),
+    DAO: createQuality('DAO', 'Đạo Vận', '#FFD700', { sortOrder: 4, multiplier: 5.0, description: 'Mang theo đạo vận thiên địa, cực kỳ quý hiếm.', cssClass: 'danh-khi' }),
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DANGER LEVELS — Cấp Độ Nguy Hiểm Địa Điểm
 // ─────────────────────────────────────────────────────────────────────────────
 export const DANGER_LEVELS_ENUM = Object.freeze({
-    AN_TOAN:         createQuality('an_toan',          'An Toàn',             '#22c55e', { sortOrder: 1, cssClass: 'text-green-400' }),
-    HA_CAP:          createQuality('ha_cap',           'Hạ Cấp',              '#3b82f6', { sortOrder: 2, cssClass: 'text-blue-400' }),
-    TRUNG_CAP:       createQuality('trung_cap',        'Trung Cấp',           '#eab308', { sortOrder: 3, cssClass: 'text-yellow-400' }),
-    CAO_CAP:         createQuality('cao_cap',          'Cao Cấp',             '#f97316', { sortOrder: 4, cssClass: 'text-orange-400' }),
-    NGUY_HIEM:       createQuality('nguy_hiem',        'Nguy Hiểm',           '#ef4444', { sortOrder: 5, cssClass: 'text-red-400' }),
-    CUC_KY_NGUY_HIEM:createQuality('cuc_ky_nguy_hiem','Cực Kỳ Nguy Hiểm',    '#991b1b', { sortOrder: 6, cssClass: 'text-red-800' }),
-    TU_DIA:          createQuality('tu_dia',           'Tử Địa',              '#7e22ce', { sortOrder: 7, cssClass: 'text-purple-700' }),
+    AN_TOAN: createQuality('an_toan', 'An Toàn', '#22c55e', { sortOrder: 1, cssClass: 'text-green-400' }),
+    HA_CAP: createQuality('ha_cap', 'Hạ Cấp', '#3b82f6', { sortOrder: 2, cssClass: 'text-blue-400' }),
+    TRUNG_CAP: createQuality('trung_cap', 'Trung Cấp', '#eab308', { sortOrder: 3, cssClass: 'text-yellow-400' }),
+    CAO_CAP: createQuality('cao_cap', 'Cao Cấp', '#f97316', { sortOrder: 4, cssClass: 'text-orange-400' }),
+    NGUY_HIEM: createQuality('nguy_hiem', 'Nguy Hiểm', '#ef4444', { sortOrder: 5, cssClass: 'text-red-400' }),
+    CUC_KY_NGUY_HIEM: createQuality('cuc_ky_nguy_hiem', 'Cực Kỳ Nguy Hiểm', '#991b1b', { sortOrder: 6, cssClass: 'text-red-800' }),
+    TU_DIA: createQuality('tu_dia', 'Tử Địa', '#7e22ce', { sortOrder: 7, cssClass: 'text-purple-700' }),
 });
 
 
@@ -581,8 +581,8 @@ export const BEAST_LEVELS = Object.freeze({
 
 export const RACES_ENUM = Object.freeze({
     HUMAN: createQuality('HUMAN', 'Nhân Tộc', '#60a5fa', { cost: 0, icon: '👤', cssClass: 'text-blue-400', desc: 'Linh hồn hoàn chỉnh nhất, thích hợp tu luyện mọi loại công pháp. Tốc độ lĩnh ngộ ổn định.', bonus: { tvps: 1.0, soulExpSpeed: 1.1 } }),
-    YAO:   createQuality('YAO',   'Yêu Tộc',  '#34d399', { cost: 40, icon: '🦊', cssClass: 'text-emerald-400', desc: 'Hóa hình từ yêu thú, thân thể cực mạnh, thọ nguyên dài. Có khả năng thức tỉnh huyết mạch thần thú.', bloodline: 'LINH', bonus: { maxHp: 500, def: 50, maxAge: 1000, tvps: 0.9 } }),
-    DEMON: createQuality('DEMON', 'Ma Tộc',  '#ef4444', { cost: 60, icon: '👿', cssClass: 'text-red-400', desc: 'Chủng tộc của bản năng và sức mạnh hủy diệt. Tốc độ thăng tiến cực nhanh nhưng dễ bị tâm ma quấy phá.', bloodline: 'CHAN', bonus: { atk: 150, tvps: 1.3, karma: -200, maxAge: 500 } }),
+    YAO: createQuality('YAO', 'Yêu Tộc', '#34d399', { cost: 40, icon: '🦊', cssClass: 'text-emerald-400', desc: 'Hóa hình từ yêu thú, thân thể cực mạnh, thọ nguyên dài. Có khả năng thức tỉnh huyết mạch thần thú.', bloodline: 'LINH', bonus: { maxHp: 500, def: 50, maxAge: 1000, tvps: 0.9 } }),
+    DEMON: createQuality('DEMON', 'Ma Tộc', '#ef4444', { cost: 60, icon: '👿', cssClass: 'text-red-400', desc: 'Chủng tộc của bản năng và sức mạnh hủy diệt. Tốc độ thăng tiến cực nhanh nhưng dễ bị tâm ma quấy phá.', bloodline: 'CHAN', bonus: { atk: 150, tvps: 1.3, karma: -200, maxAge: 500 } }),
 });
 
 export const CREATION_BLOODLINES_ENUM = Object.freeze({
@@ -623,9 +623,9 @@ export const NPC_RELATIONSHIP_LEVELS_ENUM = Object.freeze({
 export const RACE_VISUALS = Object.freeze({
     HUMAN: { icon: RACES_ENUM.HUMAN.icon, color: RACES_ENUM.HUMAN.color },
     DEMON: { icon: RACES_ENUM.DEMON.icon, color: RACES_ENUM.DEMON.color },
-    YAO:   { icon: RACES_ENUM.YAO.icon,   color: RACES_ENUM.YAO.color },
+    YAO: { icon: RACES_ENUM.YAO.icon, color: RACES_ENUM.YAO.color },
     SPIRIT_BEAST: { icon: '🦊', color: '#34d399' },
-    DRAGON:       { icon: '🐲', color: '#fbbf24' },
+    DRAGON: { icon: '🐲', color: '#fbbf24' },
 });
 
 
@@ -825,12 +825,13 @@ export const COMBAT_EVENTS = Object.freeze({
 // SECT RANKS — Cấp Bậc Tông Môn
 // ─────────────────────────────────────────────────────────────────────────────
 export const SECT_RANKS_ENUM = Object.freeze({
-    NGOAI_MON:     createQuality('ngoai_mon',     'Ngoại Môn Đệ Tử',  '#9ca3af', { sortOrder: 0, minRealm: 1,  minContribution: 0,     salary: 50,   rankScore: 0 }),
-    NOI_MON:       createQuality('noi_mon',       'Nội Môn Đệ Tử',    '#4ade80', { sortOrder: 1, minRealm: 5,  minContribution: 500,   salary: 200,  rankScore: 1 }),
-    CHAN_TRUYEN:    createQuality('chan_truyen',    'Chân Truyền Đệ Tử','#3b82f6', { sortOrder: 2, minRealm: 14, minContribution: 2000,  salary: 500,  rankScore: 2 }),
-    TRUONG_LAO:    createQuality('truong_lao',    'Trưởng Lão',       '#a855f7', { sortOrder: 3, minRealm: 20, minContribution: 5000,  salary: 1500, rankScore: 3 }),
-    DAI_TRUONG_LAO:createQuality('dai_truong_lao','Đại Trưởng Lão',   '#f59e0b', { sortOrder: 4, minRealm: 30, minContribution: 10000, salary: 3000, rankScore: 4 }),
-    TONG_CHU:      createQuality('tong_chu',      'Tông Chủ',         '#ef4444', { sortOrder: 5, minRealm: 40, minContribution: 25000, salary: 5000, rankScore: 5 }),
+    NGOAI_MON: createQuality('ngoai_mon', 'Ngoại Môn Đệ Tử', '#9ca3af', { sortOrder: 0, minRealm: 1, minContribution: 0, salary: 50, rankScore: 0 }),
+    NOI_MON: createQuality('noi_mon', 'Nội Môn Đệ Tử', '#4ade80', { sortOrder: 1, minRealm: 5, minContribution: 500, salary: 200, rankScore: 1 }),
+    CHAN_TRUYEN: createQuality('chan_truyen', 'Chân Truyền Đệ Tử', '#3b82f6', { sortOrder: 2, minRealm: 14, minContribution: 2000, salary: 500, rankScore: 2 }),
+    TRUONG_LAO: createQuality('truong_lao', 'Trưởng Lão', '#a855f7', { sortOrder: 3, minRealm: 20, minContribution: 5000, salary: 1500, rankScore: 3 }),
+    DAI_TRUONG_LAO: createQuality('dai_truong_lao', 'Đại Trưởng Lão', '#f59e0b', { sortOrder: 4, minRealm: 30, minContribution: 10000, salary: 3000, rankScore: 4 }),
+    TONG_CHU: createQuality('tong_chu', 'Tông Chủ', '#ef4444', { sortOrder: 5, minRealm: 40, minContribution: 25000, salary: 5000, rankScore: 5 }),
+    LAO_TO: createQuality('lao_to', 'Lão Tổ', '#8b0000', { sortOrder: 6, minRealm: 50, minContribution: 50000, salary: 10000, rankScore: 6 }),
 });
 
 // Helper to safely get the name of a quality (handling string or object)
@@ -852,7 +853,7 @@ export const compareQuality = (q1, q2) => {
     const id2 = typeof q2 === 'object' ? q2.id : String(q2);
     const name1 = typeof q1 === 'object' ? q1.name : String(q1);
     const name2 = typeof q2 === 'object' ? q2.name : String(q2);
-    
+
     return id1.toLowerCase() === id2.toLowerCase() || name1.toLowerCase() === name2.toLowerCase();
 };
 
@@ -862,12 +863,12 @@ export const getQualityObject = (quality) => {
     if (typeof quality === 'object') return quality;
     const str = String(quality).toLowerCase();
     for (const group of [
-        CRAFTING_QUALITIES, DAN_DUOC_QUALITIES, PHAP_BAO_QUALITIES, CONG_PHAP_QUALITIES, 
-        DI_HOA_QUALITIES, DI_LOI_QUALITIES, LINH_THU_QUALITIES, 
-        ROOT_QUALITIES, ROOT_RARITY_ENUM, SPIRIT_STONE_GRADES, SPIRIT_STONE_QUALITIES, 
+        CRAFTING_QUALITIES, DAN_DUOC_QUALITIES, PHAP_BAO_QUALITIES, CONG_PHAP_QUALITIES,
+        DI_HOA_QUALITIES, DI_LOI_QUALITIES, LINH_THU_QUALITIES,
+        ROOT_QUALITIES, ROOT_RARITY_ENUM, SPIRIT_STONE_GRADES, SPIRIT_STONE_QUALITIES,
         PUPPET_GRADES, BEAST_BLOODLINES, LINH_THE_RARITIES,
-        PHYSIQUE_GRADES, PHYSIQUE_STAGES, PHYSIQUE_CATEGORIES, ALCHEMY_LEVELS, 
-        SMITHING_LEVELS, HOURS_ENUM, SEASONS_ENUM, 
+        PHYSIQUE_GRADES, PHYSIQUE_STAGES, PHYSIQUE_CATEGORIES, ALCHEMY_LEVELS,
+        SMITHING_LEVELS, HOURS_ENUM, SEASONS_ENUM,
         PHENOMENA_ENUM, SPIRIT_STONE_ATTRIBUTES_ENUM, NPC_RELATIONSHIP_LEVELS_ENUM,
         NPC_ROLES, NPC_PERSONALITIES_ENUM, NPC_GOALS_ENUM, NPC_SPECIAL_RELATIONS_ENUM,
         TALISMAN_LEVELS, PUPPET_MAKING_LEVELS, BEAST_LEVELS,
