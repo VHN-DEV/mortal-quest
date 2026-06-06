@@ -1,6 +1,6 @@
 <!-- Tab 3: Nhân Vật (NEW) -->
 <div id="screen-character" class="screen hidden flex flex-col h-full p-4 overflow-y-auto custom-scroll">
-    <h2 class="text-3xl font-charm text-cultivation-gold mb-6 text-center">Bản Tòa Trạng Thái</h2>
+    <h2 class="text-3xl font-charm text-cultivation-gold mb-6 text-center">Chân Thân Trạng Thái</h2>
 
     <!-- Identity Header Card (Top Meta Card) -->
     <div
@@ -51,7 +51,7 @@
         <div class="absolute -top-10 -left-10 w-24 h-24 bg-qi-blue/5 rounded-full blur-2xl pointer-events-none"></div>
         <h3
             class="text-xs font-ancient text-cultivation-gold mb-3 uppercase tracking-widest flex items-center gap-1.5 font-bold">
-            <i class="ph ph-heartbeat text-sm animate-pulse"></i> Đang Hoạt Động Trạng Thái
+            <i class="ph ph-heartbeat text-sm animate-pulse"></i> Hành Trì Hiệu Ứng
         </h3>
         <div id="char-status-effects-list" class="flex flex-wrap gap-2.5">
             <!-- Dynamic badges populated via CharacterScreen.js -->
@@ -90,7 +90,7 @@
             </div>
             <div class="absolute top-[84%] left-1.5 -translate-y-1/2 w-9 h-9 border border-white/20 bg-black/75 rounded-lg flex items-center justify-center equipment-slot z-10 transition-all hover:border-cultivation-gold/50"
                 data-slot="shoes" title="Hài/Bộ">
-                <i class="ph ph-sneaker text-gray-400 text-sm"></i>
+                <i class="ph ph-boot text-gray-400 text-sm"></i>
             </div>
             <!-- Right side -->
             <div class="absolute top-[16%] right-1.5 -translate-y-1/2 w-9 h-9 border border-white/20 bg-black/75 rounded-lg flex items-center justify-center equipment-slot z-10 transition-all hover:border-cultivation-gold/50"
@@ -107,7 +107,7 @@
             </div>
             <div class="absolute top-[84%] right-1.5 -translate-y-1/2 w-9 h-9 border border-white/20 bg-black/75 rounded-lg flex items-center justify-center equipment-slot z-10 transition-all hover:border-cultivation-gold/50"
                 data-slot="necklace" title="Anh Lạc">
-                <i class="ph ph-diamond text-gray-400 text-sm"></i>
+                <i class="ph ph-gemstone text-gray-400 text-sm"></i>
             </div>
         </div>
 
@@ -143,7 +143,7 @@
                         <div class="flex flex-col space-y-1.5">
                             <div class="flex justify-between items-center text-[9px]">
                                 <span class="text-gray-400 font-ancient flex items-center gap-1"><i
-                                        class="ph ph-lightning text-cyan-400"></i> Pháp Lực</span>
+                                        class="ph ph-sparkles text-cyan-400"></i> Pháp Lực</span>
                                 <span id="char-mana" class="text-cyan-400 font-bold font-mono">50 / 50</span>
                             </div>
                             <div class="h-1.5 w-full bg-black/30 rounded-full overflow-hidden border border-white/5">
@@ -171,7 +171,7 @@
                         <div class="flex flex-col space-y-1.5">
                             <div class="flex justify-between items-center text-[9px]">
                                 <span class="text-gray-400 font-ancient flex items-center gap-1"><i
-                                        class="ph ph-brain text-purple-400"></i> Thần Hải (Thần Thức)</span>
+                                        class="ph ph-eye text-purple-400"></i> Thần Hải (Thần Thức)</span>
                                 <span id="char-than-thuc" class="text-purple-400 font-bold font-mono">50 / 50</span>
                             </div>
                             <div class="h-1.5 w-full bg-black/30 rounded-full overflow-hidden border border-white/5">
@@ -210,7 +210,7 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-400 font-ancient flex items-center gap-1"><i
-                                        class="ph ph-activity text-emerald-400"></i> Né Tránh</span>
+                                        class="ph ph-person-simple-run text-emerald-400"></i> Né Tránh</span>
                                 <span id="char-dodge" class="text-emerald-400 font-mono font-bold">0%</span>
                             </div>
                         </div>
@@ -242,7 +242,7 @@
                                     1</span>
                             </div>
                             <div class="flex justify-between items-center text-[9px] text-gray-500">
-                                <span>Linh Lực Tích Tụ:</span>
+                                <span>Tu Vi Tích Lũy:</span>
                                 <span id="char-exp-details" class="font-mono">0 / 100</span>
                             </div>
                             <div class="h-1.5 w-full bg-black/30 rounded-full overflow-hidden border border-white/5">
@@ -266,7 +266,7 @@
                             </div>
                             <div class="flex justify-between items-start">
                                 <span class="text-gray-400 font-ancient flex items-center gap-1"><i
-                                        class="ph ph-hourglass-high text-amber-500 animate-pulse"></i> Thọ Nguyên</span>
+                                        class="ph ph-hourglass text-amber-500 animate-pulse"></i> Thọ Nguyên</span>
                                 <div class="flex flex-col items-end">
                                     <span id="char-age" class="text-white font-bold font-mono">18 / 100</span>
                                     <span id="char-remaining-age-container"></span>
@@ -274,7 +274,7 @@
                             </div>
                             <div class="flex justify-between items-center pt-1.5 border-t border-white/5 mt-1.5" title="Đan độc quá cao (>75) có thể gây bạo loạn kinh mạch và giảm 40% tỉ lệ đột phá.">
                                 <span class="text-gray-400 font-ancient flex items-center gap-1"><i
-                                        class="ph ph-virus text-purple-400"></i> Đan Độc</span>
+                                        class="ph ph-skull text-purple-400"></i> Đan Độc</span>
                                 <span id="char-dan-poison" class="text-purple-400 font-bold font-mono">0 / 100</span>
                             </div>
                             <div class="flex justify-between items-center" title="Giới hạn hấp thu đan dược trong ngày dựa theo cảnh giới của tu sĩ.">
@@ -306,7 +306,7 @@
                         <div class="flex flex-col space-y-1.5">
                             <div class="flex justify-between items-start">
                                 <span class="text-gray-400 font-ancient flex items-center gap-1"><i
-                                        class="ph ph-tree-structure"></i> Linh Căn Bản Mệnh</span>
+                                        class="ph ph-tree"></i> Linh Căn Bản Mệnh</span>
                                 <span id="char-root-name" class="font-bold text-right text-[10px]"></span>
                             </div>
                             <div id="char-root-elements"

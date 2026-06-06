@@ -89,7 +89,7 @@
                     <div class="flex justify-between items-end">
                         <div class="flex flex-col">
                             <span id="main-focus-bar-label"
-                                class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Tu Vi</span>
+                                class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Pháp Lực</span>
                             <span id="tu-vi-per-sec" class="text-[7px] text-qi-purple/60 italic"></span>
                         </div>
                         <span id="tu-vi-text" class="text-[10px] font-mono text-qi-blue">0 / 100</span>
@@ -105,8 +105,7 @@
                 <div id="body-bar-container" class="space-y-1.5 hidden">
                     <div class="flex justify-between items-end">
                         <div class="flex flex-col">
-                            <span class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Luyện Thể /
-                                Huyết Khí</span>
+                            <span class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Huyết Khí (Luyện Thể)</span>
                             <span id="body-per-sec" class="text-[7px] text-red-400/60 italic"></span>
                         </div>
                         <span id="body-text" class="text-[10px] font-mono text-red-400">0%</span>
@@ -122,8 +121,7 @@
                 <div id="soul-bar-container" class="space-y-1.5 hidden">
                     <div class="flex justify-between items-end">
                         <div class="flex flex-col">
-                            <span class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Thần Thức /
-                                Hồn Lực</span>
+                            <span class="text-[8px] text-gray-500 font-ancient uppercase tracking-widest">Thần Hồn (Thần Thức)</span>
                             <span id="soul-per-sec" class="text-[7px] text-purple-400/60 italic"></span>
                         </div>
                         <span id="soul-text" class="text-[10px] font-mono text-purple-400">0%</span>
@@ -151,14 +149,11 @@
                 <!-- Path Selectors (Sleek Tabs) -->
                 <div class="flex space-x-1 bg-black/40 p-1 rounded-xl border border-white/5 backdrop-blur-sm">
                     <button id="focus-tuvi"
-                        class="flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all bg-qi-blue/20 text-qi-blue border border-qi-blue/30 focus-tuvi">Pháp
-                        tu</button>
+                        class="flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all bg-qi-blue/20 text-qi-blue border border-qi-blue/30 focus-tuvi">Pháp Lực</button>
                     <button id="focus-body"
-                        class="flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all text-gray-500 border border-transparent hover:text-white">Luyện
-                        Thể</button>
+                        class="flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all text-gray-500 border border-transparent hover:text-white">Luyện Thể</button>
                     <button id="focus-soul"
-                        class="flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all text-gray-500 border border-transparent hover:text-white">Thần
-                        Thức</button>
+                        class="flex-grow py-2 rounded-lg text-[8px] font-ancient uppercase tracking-widest transition-all text-gray-500 border border-transparent hover:text-white">Thần Thức</button>
                 </div>
 
                 <!-- Main Interaction Area -->
@@ -166,8 +161,8 @@
                     <button id="cultivate-btn"
                         class="relative overflow-hidden w-full py-3 btn-premium rounded-2xl text-white font-bold tracking-[0.3em] font-ancient shadow-xl shadow-black/50 transition-all active:scale-95">
                         <span class="relative z-10 flex items-center justify-center" id="cultivate-btn-text">
-                            <i class="ph ph-sparkle mr-2 text-qi-blue"></i>
-                            THU NẠP LINH KHÍ
+                            <i class="ph ph-sparkle mr-2 text-qi-blue animate-pulse"></i>
+                            VẬN CHUYỂN CHU THIÊN
                         </span>
                         <div
                             class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shine">
@@ -177,7 +172,7 @@
                     <!-- Mini Auto Toggle Overlay -->
                     <div
                         class="absolute -top-3 -right-2 flex items-center space-x-2 bg-qi-ink/90 border border-white/10 rounded-full px-3 py-1.5 shadow-lg backdrop-blur-md z-10">
-                        <span class="text-[7px] text-gray-500 uppercase tracking-widest font-ancient">Auto</span>
+                        <span class="text-[7px] text-gray-500 uppercase tracking-widest font-ancient">Tự Vận</span>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="auto-cultivate-toggle" class="sr-only peer">
                             <div
@@ -190,7 +185,7 @@
                 <!-- Luyen The Pain Meter UI Panel -->
                 <div id="pain-meter-container" class="hidden w-full bg-black/40 p-2 rounded-xl border border-red-500/20 space-y-1">
                     <div class="flex justify-between items-center text-[8px] uppercase tracking-wider font-bold">
-                        <span class="text-red-400">🔥 Thống Khổ Nhục Thân (Pain Meter)</span>
+                        <span class="text-red-400">🔥 Thống Khổ Nhục Thân</span>
                         <span id="pain-value" class="text-red-400 font-mono">0%</span>
                     </div>
                     <div class="w-full bg-black/50 h-2 rounded-full overflow-hidden border border-red-500/10">
@@ -204,7 +199,7 @@
                 <!-- Than Thuc Focus Game UI Panel -->
                 <div id="focus-game-container" class="hidden w-full bg-black/40 p-2 rounded-xl border border-purple-500/20 space-y-1.5">
                     <div class="flex justify-between items-center text-[8px] uppercase tracking-wider font-bold">
-                        <span class="text-purple-400">🌌 Định Tâm Thần Thức (Divine Wave)</span>
+                        <span class="text-purple-400">🌌 Định Tâm Thần Hồn</span>
                         <span id="focus-status-text" class="text-red-400 font-mono uppercase tracking-widest text-[7.5px]">Lệch Hướng</span>
                     </div>
                     <!-- The wave container -->
@@ -229,7 +224,7 @@
                     <button id="seclusion-btn"
                         class="py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-300 font-ancient tracking-widest transition-all uppercase text-[9px] flex items-center justify-center active:scale-95 duration-300">
                         <i class="ph ph-moon mr-2 text-[13px] text-qi-purple/80"></i>
-                        <span>BẾ QUAN</span>
+                        <span>BẾ QUAN KHỔ TU</span>
                     </button>
                 </div>
 
@@ -238,32 +233,27 @@
                     class="hidden p-4 border border-qi-purple/30 rounded-2xl bg-black/60 space-y-3 shadow-[0_0_20px_rgba(159,122,234,0.15)] animate-fade-in shrink-0">
                     <div class="flex justify-between items-center border-b border-white/5 pb-2">
                         <span id="dai-vien-man-title"
-                            class="text-[9px] font-ancient uppercase tracking-wider text-qi-purple font-bold">Cảnh Giới
-                            Đại Viên Mãn</span>
+                            class="text-[9px] font-ancient uppercase tracking-wider text-qi-purple font-bold">Cảnh Giới Viên Mãn</span>
                         <span id="dai-vien-man-status"
-                            class="text-[7.5px] px-2 py-0.5 rounded bg-qi-purple/20 text-qi-purple border border-qi-purple/30 font-ancient tracking-widest font-black uppercase">Tích
-                            Lũy</span>
+                            class="text-[7.5px] px-2 py-0.5 rounded bg-qi-purple/20 text-qi-purple border border-qi-purple/30 font-ancient tracking-widest font-black uppercase">Tích Lũy</span>
                     </div>
 
                     <!-- Stats Grid -->
                     <div class="grid grid-cols-3 gap-2 py-1">
                         <div class="flex flex-col items-center p-1.5 rounded bg-white/[0.02] border border-white/5">
                             <span id="label-left-name"
-                                class="text-[6.5px] text-gray-500 font-ancient uppercase tracking-wider">Áp Lực Thiên
-                                Đạo</span>
+                                class="text-[6.5px] text-gray-500 font-ancient uppercase tracking-wider">Thiên Áp</span>
                             <span id="thien-dao-pressure"
                                 class="text-[9px] font-mono font-bold text-red-400 mt-0.5">0%</span>
                         </div>
                         <div class="flex flex-col items-center p-1.5 rounded bg-white/[0.02] border border-white/5">
                             <span id="label-center-name"
-                                class="text-[6.5px] text-gray-500 font-ancient uppercase tracking-wider">Căn Cơ Linh
-                                Lực</span>
+                                class="text-[6.5px] text-gray-500 font-ancient uppercase tracking-wider">Linh Hải Căn Cơ</span>
                             <span id="can-co-value" class="text-[9px] font-mono font-bold text-qi-blue mt-0.5">0%</span>
                         </div>
                         <div class="flex flex-col items-center p-1.5 rounded bg-white/[0.02] border border-white/5">
                             <span id="label-right-name"
-                                class="text-[6.5px] text-gray-500 font-ancient uppercase tracking-wider">Pháp Lực Tinh
-                                Thuần</span>
+                                class="text-[6.5px] text-gray-500 font-ancient uppercase tracking-wider">Chân Nguyên Tinh Thuần</span>
                             <span id="tinh-thuan-value"
                                 class="text-[9px] font-mono font-bold text-cultivation-gold mt-0.5">0</span>
                         </div>
@@ -273,18 +263,18 @@
                     <div class="flex flex-col space-y-2">
                         <button id="btn-dot-pha-ngay"
                             class="py-2 bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 rounded-xl text-white font-ancient font-black uppercase tracking-[0.2em] text-[9px] shadow-[0_0_15px_rgba(212,175,55,0.2)] transition-all active:scale-95">
-                            ⚡ ĐỘT PHÁ NGAY (Tỷ lệ: 0%)
+                            ⚡ NGHỊCH THIÊN ĐỘT PHÁ (Tỷ lệ: 0%)
                         </button>
                         <div id="dai-vien-man-sub-buttons" class="grid grid-cols-2 gap-2">
                             <button id="btn-cung-co-can-co" title="Chuyển hóa Linh Khí dư thừa thành Căn Cơ. Mỗi 2% Căn Cơ tăng +1% tỷ lệ Đột Phá thành công (Tối đa +50%). Cực kỳ an toàn!"
                                 class="py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-300 font-ancient uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95">
                                 <i class="ph ph-shield-check"></i>
-                                <span>Củng Cố Căn Cơ</span>
+                                <span>Ngưng Luyện Căn Cơ</span>
                             </button>
                             <button id="btn-nen-phap-luc" title="Nén ép linh khí tăng độ Tinh Thuần. Tăng tới +30% tỷ lệ Đột Phá VÀ tăng vĩnh viễn lên tới +15% thuộc tính (ATK, DEF, HP) khi đột phá thành công. Nguy cơ Chân Nguyên bạo động!"
                                 class="py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-300 font-ancient uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95">
                                 <i class="ph ph-stack"></i>
-                                <span>Nén Pháp Lực</span>
+                                <span>Nén Chân Nguyên</span>
                             </button>
                         </div>
                     </div>
@@ -299,7 +289,7 @@
                         <span
                             class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shine"></span>
                         <i class="ph ph-shield-star text-base text-amber-400"></i>
-                        <span id="main-cheat-system-name">Hệ Thống Cheat</span>
+                        <span id="main-cheat-system-name">BÀN TAY VÀNG</span>
                     </button>
                 </div>
 
