@@ -573,9 +573,9 @@ export class ShopController {
                         ? `<img src="${getAssetUrl(itemData.image)}" class="w-8 h-8 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)] hover:scale-105 transition-transform duration-300">` 
                         : `<span class="text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">${itemData.icon || ''}</span>`}
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 h-[32px] bg-black/70 border-t border-white/5 rounded-b-[10px] backdrop-blur-[2px] flex flex-col items-center justify-center z-10">
-                    <span class="text-[7.5px] font-sans font-bold quality-${qClass} truncate px-1 text-center w-full leading-tight">${itemData.name}</span>
-                    <span class="text-[7.5px] font-mono font-bold text-cultivation-gold leading-none mt-0.5">${Player.formatPrice(Math.floor(itemData.price * sellMult))}</span>
+                <div class="absolute bottom-0 left-0 right-0 h-[32px] bg-black/70 border-t border-white/5 rounded-b-[10px] backdrop-blur-[2px] flex flex-col items-center justify-center z-10 overflow-hidden px-1">
+                    <span class="text-[7.5px] font-sans font-bold quality-${qClass} leading-tight w-full text-center truncate whitespace-nowrap overflow-hidden block">${itemData.name}</span>
+                    <span class="text-[7px] font-mono font-bold text-cultivation-gold leading-none mt-0.5 whitespace-nowrap overflow-hidden truncate block w-full text-center">${Player.formatPrice(Math.floor(itemData.price * sellMult))}</span>
                 </div>
             `;
             el.onclick = () => {
