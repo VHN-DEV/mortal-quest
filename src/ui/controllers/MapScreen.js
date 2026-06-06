@@ -877,9 +877,8 @@ export class MapScreen {
             if (window.game.openMountain) window.game.openMountain();
             return;
         }
-        const SHOP_LOC_IDS = ['van_bao_cac', 'linh_bao_lau', 'van_bao_cac_linh_gioi', 'van_bao_cac_tien_gioi'];
-        if (SHOP_LOC_IDS.includes(loc.id)) {
-            if (window.game.openShop) window.game.openShop(null, loc.id);
+        if (loc.type === 'shop') {
+            if (window.game.openShop) window.game.openShop(null, loc.shopId || loc.id);
             return;
         }
         if (loc.special === 'tower') {
@@ -1101,17 +1100,18 @@ export class MapScreen {
         }
 
         // Special actions mapped to window.game functions
-        const SHOP_LOC_IDS_RENDER = ['van_bao_cac', 'linh_bao_lau', 'van_bao_cac_linh_gioi', 'van_bao_cac_tien_gioi'];
-        if (SHOP_LOC_IDS_RENDER.includes(loc.id)) {
+        if (loc.type === 'shop') {
             hasSpecial = true;
+            const targetShopId = loc.shopId || loc.id;
+            const showAuction = loc.shopId && loc.shopId.startsWith('van_bao_cac');
             this.elLocSpecialActions.innerHTML = `
-                <button onclick="window.game.openShop('buy', '${loc.id}')" class="py-3 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
+                <button onclick="window.game.openShop('buy', '${targetShopId}')" class="py-3 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
                     <i class="ph ph-shopping-cart text-lg mb-1"></i>TRAO ĐỔI
                 </button>
-                <button onclick="window.game.openShop('sell', '${loc.id}')" class="py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
+                <button onclick="window.game.openShop('sell', '${targetShopId}')" class="py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex flex-col items-center justify-center">
                     <i class="ph ph-currency-circle-dollar text-lg mb-1"></i>GIAO DỊCH
                 </button>
-                ${(loc.id === 'van_bao_cac' || loc.id === 'van_bao_cac_linh_gioi' || loc.id === 'van_bao_cac_tien_gioi') ? `
+                ${showAuction ? `
                 <button onclick="window.game.openAuction()" class="col-span-2 py-3 bg-qi-purple/10 border border-qi-purple/30 rounded-xl text-qi-purple text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
                     <i class="ph ph-hammer text-lg"></i><span>ĐẤU GIÁ</span>
                 </button>

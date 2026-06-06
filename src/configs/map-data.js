@@ -1682,6 +1682,8 @@ export const WORLDS = {
             {
                 id: "van_bao_cac",
                 name: "Vạn Bảo Các",
+                type: 'shop',
+                shopId: 'van_bao_cac',
                 minRealm: 0,
                 danger: "an_toan",
                 image: getLocImg("van_bao_cac"),
@@ -1698,6 +1700,8 @@ export const WORLDS = {
             {
                 id: "linh_bao_lau",
                 name: "Linh Bảo Lâu",
+                type: 'shop',
+                shopId: 'linh_bao_lau',
                 minRealm: 0,
                 danger: "an_toan",
                 image: getLocImg("linh_bao_lau"),
@@ -3245,6 +3249,8 @@ export const WORLDS = {
             {
                 id: "van_bao_cac_linh_gioi",
                 name: "Vạn Bảo Các (Linh Giới)",
+                type: 'shop',
+                shopId: 'van_bao_cac_linh_gioi',
                 minRealm: 0,
                 danger: "an_toan",
                 image: getLocImg("van_bao_cac"),
@@ -4649,6 +4655,7 @@ export const WORLDS = {
                 id: "van_bao_cac_tien_gioi",
                 name: "Vạn Bảo Các (Tiên Giới)",
                 type: 'shop',
+                shopId: 'van_bao_cac_tien_gioi',
                 minRealm: 0,
                 danger: "an_toan",
                 image: getLocImg("van_bao_cac"),
