@@ -6,7 +6,7 @@ import { getAssetUrl } from '../../configs/asset-data.js';
 import { getItemConnections } from '../../utils/item-connections.js';
 import { getTechniqueById, getSecretTechniqueById } from '../../configs/technique-data.js';
 import { BEASTS } from '../../configs/beast-data.js';
-import { getDisplayQuality, getQualityClass } from '../../utils/ui-utils.js';
+import { getDisplayQuality, getQualityClass, getQualityColor } from '../../utils/ui-utils.js';
 import { ITEM_TYPES_METADATA, GAME_STATS } from '../../configs/game-enums.js';
 
 /**
@@ -506,6 +506,72 @@ export class InventoryScreen {
         const playerItem = state.player.inventory.allItems.find(i => i.id === id);
         const displayQuality = (playerItem && playerItem.metadata && playerItem.metadata.quality) ? playerItem.metadata.quality : itemData.quality;
         const qClass = this.getQualityClass(displayQuality);
+        const qColor = getQualityColor(displayQuality);
+        const isRainbow = qClass === 'tien-khi' || qClass === 'tien';
+
+        // --- Theme the detail overlay to match quality color ---
+        const elDetailCard = document.querySelector('#item-detail > div:not(.absolute)');
+        if (elDetailCard) {
+            elDetailCard.style.borderColor = isRainbow ? 'transparent' : `${qColor}50`;
+            elDetailCard.style.boxShadow = `0 0 40px ${qColor}20, 0 25px 50px rgba(0,0,0,0.6)`;
+        }
+
+        // Top-left blob decoration
+        const elBlobTop = document.querySelector('#item-detail .absolute.-top-24.-left-24');
+        if (elBlobTop) {
+            elBlobTop.style.background = `${qColor}18`;
+        }
+        const elBlobBot = document.querySelector('#item-detail .absolute.-bottom-24.-right-24');
+        if (elBlobBot) {
+            elBlobBot.style.background = `${qColor}0d`;
+        }
+
+        // Icon container border & glow
+        const elIconContainer = document.getElementById('detail-icon-container');
+        if (elIconContainer) {
+            if (isRainbow) {
+                elIconContainer.className = `w-20 h-20 bg-white/5 rounded-3xl border-tien-khi border-2 flex items-center justify-center shadow-inner mb-4 relative overflow-hidden group`;
+                elIconContainer.style.borderColor = '';
+            } else {
+                elIconContainer.className = `w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center shadow-inner mb-4 relative overflow-hidden group`;
+                elIconContainer.style.border = `2px solid ${qColor}60`;
+                elIconContainer.style.boxShadow = `0 0 20px ${qColor}30, inset 0 0 10px ${qColor}10`;
+            }
+        }
+
+        // Type badge
+        const elDetailTypeBadge = document.getElementById('detail-type');
+        if (elDetailTypeBadge) {
+            if (isRainbow) {
+                elDetailTypeBadge.style.background = 'rgba(255,255,255,0.07)';
+                elDetailTypeBadge.style.borderColor = 'rgba(255,255,255,0.15)';
+                elDetailTypeBadge.style.color = '#fff';
+            } else {
+                elDetailTypeBadge.style.background = `${qColor}15`;
+                elDetailTypeBadge.style.borderColor = `${qColor}30`;
+                elDetailTypeBadge.style.color = qColor;
+            }
+        }
+
+        // Action buttons — use quality color
+        const btnUse = document.getElementById('btn-use-item');
+        if (btnUse) {
+            btnUse.style.background = `${qColor}15`;
+            btnUse.style.borderColor = `${qColor}30`;
+            btnUse.style.color = qColor;
+        }
+        const btnEquip = document.getElementById('btn-equip-item');
+        if (btnEquip) {
+            btnEquip.style.background = `${qColor}15`;
+            btnEquip.style.borderColor = `${qColor}30`;
+            btnEquip.style.color = qColor;
+        }
+        const btnBuy = document.getElementById('btn-buy-item');
+        if (btnBuy) {
+            btnBuy.style.background = `${qColor}15`;
+            btnBuy.style.borderColor = `${qColor}30`;
+            btnBuy.style.color = qColor;
+        }
 
         if (this.elDetailIcon) {
             if (itemData.image && getAssetUrl(itemData.image)) {
@@ -591,12 +657,19 @@ export class InventoryScreen {
         this.elDetailDesc.innerHTML = this.linkifyDescription(desc, id);
         if (this.elDetailStats) this.elDetailStats.innerHTML = '';
 
+        // Apply quality color to the description/stats container (parent of desc paragraph)
+        const elDescBox = this.elDetailDesc?.parentElement;
+        if (elDescBox) {
+            elDescBox.style.borderColor = `${qColor}25`;
+            elDescBox.style.boxShadow = `inset 0 0 20px ${qColor}08`;
+        }
+
         // Show stats for all equippable items, techniques, and consumables
         if (itemData.stats && this.elDetailStats) {
             Object.entries(itemData.stats).forEach(([key, val]) => {
                 const statEl = document.createElement('div');
                 statEl.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
-                statEl.innerHTML = `<span>${this.getStatLabel(key)}</span><span class="text-qi-blue font-mono">+${val}</span>`;
+                statEl.innerHTML = `<span>${this.getStatLabel(key)}</span><span class="font-mono font-bold" style="color:${qColor}">+${val}</span>`;
                 this.elDetailStats.appendChild(statEl);
             });
         } else if ((itemData.type === 'sach_cong_phap' || itemData.type === 'technique') && itemData.techniqueId && this.elDetailStats) {
