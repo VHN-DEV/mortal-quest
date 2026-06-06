@@ -187,6 +187,38 @@
                     </div>
                 </div>
 
+                <!-- Luyen The Pain Meter UI Panel -->
+                <div id="pain-meter-container" class="hidden w-full bg-black/40 p-2 rounded-xl border border-red-500/20 space-y-1">
+                    <div class="flex justify-between items-center text-[8px] uppercase tracking-wider font-bold">
+                        <span class="text-red-400">🔥 Thống Khổ Nhục Thân (Pain Meter)</span>
+                        <span id="pain-value" class="text-red-400 font-mono">0%</span>
+                    </div>
+                    <div class="w-full bg-black/50 h-2 rounded-full overflow-hidden border border-red-500/10">
+                        <div id="pain-progress" class="bg-gradient-to-r from-red-600 to-red-500 h-full w-0 transition-all duration-75"></div>
+                    </div>
+                    <div id="body-catalyst-warning" class="text-[7px] text-yellow-500 italic hidden leading-tight">
+                        ⚠️ Không có Yêu Huyết / Linh Dược hoặc môi trường Lôi/Hỏa, không thể rèn cốt!
+                    </div>
+                </div>
+
+                <!-- Than Thuc Focus Game UI Panel -->
+                <div id="focus-game-container" class="hidden w-full bg-black/40 p-2 rounded-xl border border-purple-500/20 space-y-1.5">
+                    <div class="flex justify-between items-center text-[8px] uppercase tracking-wider font-bold">
+                        <span class="text-purple-400">🌌 Định Tâm Thần Thức (Divine Wave)</span>
+                        <span id="focus-status-text" class="text-red-400 font-mono uppercase tracking-widest text-[7.5px]">Lệch Hướng</span>
+                    </div>
+                    <!-- The wave container -->
+                    <div class="relative w-full bg-black/60 h-6 rounded-lg border border-purple-500/10 overflow-hidden">
+                        <!-- Focus Zone (green region) -->
+                        <div id="focus-zone" class="absolute h-full bg-green-500/20 border-l border-r border-green-500/40 transition-all duration-300" style="left: 40%; width: 25%;"></div>
+                        <!-- Current Wave Value (white pulse indicator line/circle) -->
+                        <div id="wave-indicator" class="absolute top-0 bottom-0 w-1 bg-white shadow-[0_0_8px_#fff] transition-all duration-75" style="left: 0%;"></div>
+                    </div>
+                    <div class="text-[7px] text-gray-500 text-center leading-normal italic select-none">
+                        Nhấp/giữ vừa phải để giữ Vạch Trắng nằm trong Vùng Xanh
+                    </div>
+                </div>
+
                 <!-- Quick Actions Grid (Công Pháp & Bế Quan) -->
                 <div class="grid grid-cols-2 gap-3 w-full shrink-0">
                     <button onclick="document.getElementById('nav-technique').click()"

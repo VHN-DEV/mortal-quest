@@ -69,6 +69,22 @@ export class Game {
         this.giveupChase = this.giveupChase.bind(this);
         this.audioManager = audioManager;
         this.screens = {};
+
+        // Hold-cultivation state properties
+        this.cultivateHoldActive = false;
+        this.chuThienProgress = 0;
+        this.painValue = 0;
+        this.bodyBlocked = false;
+        this.lastBodyStepTime = 0;
+        
+        // Than Thuc wave oscillation and focus zone parameters
+        this.waveValue = 0;
+        this.waveDirection = 1;
+        this.focusZoneCenter = 50;
+        this.focusZoneWidth = 25;
+        this.focusZoneTarget = 50;
+        this.focusZoneDriftTimer = 0;
+        this.autoBodyCooling = false;
     }
 
     async init() {
@@ -188,13 +204,75 @@ export class Game {
         });
 
         const cultivateBtn = document.getElementById('cultivate-btn');
-        if (cultivateBtn) cultivateBtn.onclick = () => {
-            if (state.player.isSecluded) {
-                state.ui.toast("Đang bế quan, không thể tu luyện tích cực!", "warning");
-                return;
-            }
-            this.cultivate();
-        };
+        if (cultivateBtn) {
+            const startHold = (e) => {
+                if (e) {
+                    if (e.cancelable) e.preventDefault();
+                }
+                if (!state.player) return;
+                // Block if button is disabled (no technique)
+                if (cultivateBtn.disabled) return;
+                if (state.player.isSecluded) {
+                    state.ui.toast("Đang bế quan, không thể tu luyện tích cực!", "warning");
+                    return;
+                }
+                this.cultivateHoldActive = true;
+            };
+
+            const stopHold = (e) => {
+                this.cultivateHoldActive = false;
+            };
+
+            // Bind pointer and touch events
+            cultivateBtn.addEventListener('pointerdown', startHold);
+            cultivateBtn.addEventListener('touchstart', startHold, { passive: false });
+            
+            cultivateBtn.addEventListener('pointerup', stopHold);
+            cultivateBtn.addEventListener('pointerleave', stopHold);
+            cultivateBtn.addEventListener('touchend', stopHold);
+            cultivateBtn.addEventListener('touchcancel', stopHold);
+            
+            // Clear legacy click action to prevent conflict
+            cultivateBtn.onclick = null;
+        }
+
+        // Global Spacebar hold-to-cultivate listener (excluding input fields)
+        if (!this._spaceHoldBound) {
+            this._spaceHoldBound = true;
+            window.addEventListener('keydown', (e) => {
+                if (e.key === ' ' && !e.repeat) {
+                    const active = document.activeElement;
+                    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) {
+                        return; // Let typing work normally
+                    }
+                    if (state.ui && state.ui.currentScreenId === 'screen-main') {
+                        if (state.player) {
+                            const focus = state.player.cultivationFocus || 'tuvi';
+                            const hasTech = (focus === 'tuvi' && state.player.mainTechniqueId) ||
+                                            (focus === 'body' && state.player.mainBodyTechniqueId) ||
+                                            (focus === 'soul' && state.player.mainSoulTechniqueId);
+                            if (!hasTech) return; // No technique – silently ignore
+                            if (state.player.isSecluded) {
+                                state.ui.toast("Đang bế quan, không thể tu luyện tích cực!", "warning");
+                                return;
+                            }
+                            e.preventDefault();
+                            this.cultivateHoldActive = true;
+                        }
+                    }
+                }
+            });
+
+            window.addEventListener('keyup', (e) => {
+                if (e.key === ' ') {
+                    const active = document.activeElement;
+                    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) {
+                        return;
+                    }
+                    this.cultivateHoldActive = false;
+                }
+            });
+        }
 
         const breakthroughBtn = document.getElementById('breakthrough-btn');
         if (breakthroughBtn) breakthroughBtn.onclick = () => this.breakthrough();
@@ -547,6 +625,11 @@ export class Game {
         if (state.systems.social) state.systems.social.update(delta);
         if (state.systems.fate) state.systems.fate.checkTribulation();
         if (state.systems.treasure) state.systems.treasure.update(delta);
+
+        // Tam Tu hold-cultivation tick
+        if (state.ui && state.ui.currentScreenId === 'screen-main') {
+            this.updateCultivationHold(delta);
+        }
 
         if (state.player.hp <= 0 && !this._handlingDeath) {
             this._handlingDeath = true;
@@ -1941,6 +2024,231 @@ export class Game {
         } else if (state.autoCultivateInterval) {
             clearInterval(state.autoCultivateInterval);
             state.autoCultivateInterval = null;
+        }
+    }
+
+    /**
+     * ─────────────────────────────────────────────────────────────
+     *  TAM TU – Hold-Cultivation Tick (called every rAF frame)
+     *  delta = real seconds elapsed since last frame
+     * ─────────────────────────────────────────────────────────────
+     */
+    updateCultivationHold(delta) {
+        if (!state.player) return;
+
+        const focus = state.player.cultivationFocus || 'tuvi';
+
+        // ── Guard: no technique → lock everything ──
+        const hasTech = (focus === 'tuvi' && state.player.mainTechniqueId) ||
+                        (focus === 'body' && state.player.mainBodyTechniqueId) ||
+                        (focus === 'soul' && state.player.mainSoulTechniqueId);
+        if (!hasTech) {
+            this.cultivateHoldActive = false;
+            this.chuThienProgress = 0;
+            this.painValue = 0;
+            // Still let the wave oscillate so the panel looks alive, but no progress
+        }
+
+        const isHolding = this.cultivateHoldActive && !state.player.isSecluded && hasTech;
+
+        // ── Show / hide sub-panels depending on focus ──
+        const painContainer  = document.getElementById('pain-meter-container');
+        const focusContainer = document.getElementById('focus-game-container');
+        if (painContainer)  painContainer.classList.toggle('hidden', focus !== 'body');
+        if (focusContainer) focusContainer.classList.toggle('hidden', focus !== 'soul');
+
+        // ── Pháp Lực (tuvi) ──────────────────────────────────────
+        if (focus === 'tuvi') {
+            if (isHolding) {
+                // Auto-mode bypasses the hold mechanic
+                if (state.autoCultivateInterval) return;
+                // Fill speed: 100% in ~4 s
+                const fillRate = 25 * delta;
+                this.chuThienProgress = Math.min(100, this.chuThienProgress + fillRate);
+
+                if (this.chuThienProgress >= 100) {
+                    this.chuThienProgress = 0;
+                    this.cultivate();   // Award one full Chu Thiên
+                }
+            } else {
+                // Released – drain rapidly (100%→0% in ~0.6 s)
+                if (this.chuThienProgress > 0 && !state.autoCultivateInterval) {
+                    const wasFull = this.chuThienProgress >= 90;
+                    this.chuThienProgress = Math.max(0, this.chuThienProgress - 170 * delta);
+
+                    // Backlash if released in 90-99% window
+                    if (wasFull && this.chuThienProgress < 88 && !this._backlashThisCycle) {
+                        this._backlashThisCycle = true;
+                        if (Math.random() < 0.20) {
+                            const dmg = Math.floor(state.player.maxHp * 0.12);
+                            state.player.hp = Math.max(1, state.player.hp - dmg);
+                            state.ui.toast(`⚡ Chân nguyên phản phệ! Mất ${dmg} HP!`, 'error');
+                        }
+                    }
+                    if (this.chuThienProgress <= 0) {
+                        this.chuThienProgress = 0;
+                        this._backlashThisCycle = false;
+                    }
+                }
+            }
+        }
+
+        // ── Luyện Thể (body) ─────────────────────────────────────
+        else if (focus === 'body') {
+            // Check for catalyst: Yêu Huyết Mực, Yêu Thú Tinh Huyết, or fire/lightning env
+            const CATALYSTS = ['yeu_huyet_muc', 'yeu_thu_tinh_huyet', 'tam_tinh_hoa', 'bat_phong_tinh_huyet'];
+            const hasCatalyst = CATALYSTS.some(id => state.player.inventory.hasItem(id, 1));
+            const loc = state.player.location || {};
+            const envType = (loc.environmentType || loc.type || '').toLowerCase();
+            const hasEnv = envType.includes('hoa') || envType.includes('loi') || envType.includes('fire') || envType.includes('thunder');
+            this.bodyBlocked = !hasCatalyst && !hasEnv;
+
+            const warning = document.getElementById('body-catalyst-warning');
+            if (warning) warning.classList.toggle('hidden', !this.bodyBlocked);
+
+            if (isHolding && !this.bodyBlocked) {
+                // Step every 0.8s
+                this.lastBodyStepTime = (this.lastBodyStepTime || 0) + delta;
+                if (this.lastBodyStepTime >= 0.8) {
+                    this.lastBodyStepTime = 0;
+                    const stepSize = 25;   // 4 steps → 100%
+                    this.chuThienProgress = Math.min(100, this.chuThienProgress + stepSize);
+
+                    // Show floating feedback
+                    state.ui.toast(`💪 Tôi Cốt! (+${stepSize}% tiến độ)`, 'info');
+
+                    if (this.chuThienProgress >= 100) {
+                        this.chuThienProgress = 0;
+                        this.painValue = Math.max(0, this.painValue - 30);  // Relief
+                        // Consume one catalyst if no fire/lightning env
+                        if (!hasEnv) {
+                            for (const id of CATALYSTS) {
+                                if (state.player.inventory.hasItem(id, 1)) {
+                                    state.player.inventory.removeItem(id, 1);
+                                    state.ui.toast(`🔴 Tiêu thụ 1 ${id} để rèn thể.`, 'warning');
+                                    break;
+                                }
+                            }
+                        }
+                        this.cultivate();   // Full body cycle done
+                    }
+                }
+
+                // Pain meter rises while holding
+                this.painValue = Math.min(100, this.painValue + 8 * delta);
+
+                // Bạo Thể – pain overflow → damage + reset
+                if (this.painValue >= 100) {
+                    this.painValue = 0;
+                    this.chuThienProgress = 0;
+                    const dmg = Math.floor(state.player.maxHp * 0.15);
+                    state.player.hp = Math.max(1, state.player.hp - dmg);
+                    state.ui.toast(`💥 Bạo Thể! Thể xác quá tải – mất ${dmg} HP!`, 'error');
+                    this.cultivateHoldActive = false;
+                }
+            } else {
+                // Cool down pain when not holding
+                if (this.painValue > 0) {
+                    this.painValue = Math.max(0, this.painValue - 15 * delta);
+                }
+            }
+        }
+
+        // ── Thần Thức (soul) ─────────────────────────────────────
+        else if (focus === 'soul') {
+            // Oscillate the wave value
+            const waveSpeed = 35; // degrees per second
+            this.waveValue += this.waveDirection * waveSpeed * delta;
+            if (this.waveValue >= 100) { this.waveValue = 100; this.waveDirection = -1; }
+            if (this.waveValue <= 0)   { this.waveValue = 0;   this.waveDirection =  1; }
+
+            // Drift the focus zone target every 1.5–3 s
+            this.focusZoneDriftTimer += delta;
+            const driftInterval = 1.5 + Math.random() * 1.5;
+            if (this.focusZoneDriftTimer >= driftInterval) {
+                this.focusZoneDriftTimer = 0;
+                const half = this.focusZoneWidth / 2;
+                this.focusZoneTarget = half + Math.random() * (100 - this.focusZoneWidth);
+            }
+            // Smoothly slide the zone center toward target
+            const zoneSlide = 20 * delta;
+            if (Math.abs(this.focusZoneCenter - this.focusZoneTarget) < zoneSlide) {
+                this.focusZoneCenter = this.focusZoneTarget;
+            } else {
+                this.focusZoneCenter += (this.focusZoneTarget > this.focusZoneCenter ? 1 : -1) * zoneSlide;
+            }
+
+            // Check if wave is inside focus zone
+            const zoneLeft  = this.focusZoneCenter - this.focusZoneWidth / 2;
+            const zoneRight = this.focusZoneCenter + this.focusZoneWidth / 2;
+            const inZone = this.waveValue >= zoneLeft && this.waveValue <= zoneRight;
+
+            if (isHolding && inZone) {
+                // Progress only advances while inside zone while holding
+                this.chuThienProgress = Math.min(100, this.chuThienProgress + 18 * delta);
+                if (this.chuThienProgress >= 100) {
+                    this.chuThienProgress = 0;
+                    this.cultivate();   // Full soul cycle
+                }
+            } else if (!isHolding || !inZone) {
+                // Bleed back slowly if out of zone
+                this.chuThienProgress = Math.max(0, this.chuThienProgress - 6 * delta);
+            }
+        }
+
+        this.updateCultivationHoldUI(focus);
+    }
+
+    /**
+     * Renders the real-time hold-cultivation UI to the DOM at frame rate.
+     */
+    updateCultivationHoldUI(focus) {
+        // ── Pháp Lực: animate the meridian circle ring ──
+        if (focus === 'tuvi' || !focus) {
+            // Drive the meridian progress circle using existing renderMainStats hook
+            // We expose the in-progress Chu Thiên % through a lightweight property
+            state.player._chuThienHoldPct = this.chuThienProgress;
+        } else {
+            state.player._chuThienHoldPct = 0;
+        }
+
+        // ── Luyện Thể: Pain Meter ──
+        if (focus === 'body') {
+            const painBar   = document.getElementById('pain-progress');
+            const painLabel = document.getElementById('pain-value');
+            const pct = Math.round(this.painValue);
+            if (painBar)   painBar.style.width = `${pct}%`;
+            if (painBar)   painBar.style.background = pct > 70
+                ? 'linear-gradient(to right, #dc2626, #ef4444)'
+                : 'linear-gradient(to right, #b45309, #f59e0b)';
+            if (painLabel) painLabel.textContent = `${pct}%`;
+
+            // Body step progress — drive the blue ring temporarily
+            state.player._chuThienHoldPct = this.bodyBlocked ? 0 : this.chuThienProgress;
+        }
+
+        // ── Thần Thức: Wave + Focus Zone ──
+        if (focus === 'soul') {
+            const waveIndicator = document.getElementById('wave-indicator');
+            const focusZoneEl   = document.getElementById('focus-zone');
+            const statusText    = document.getElementById('focus-status-text');
+
+            const zoneLeft  = Math.max(0, this.focusZoneCenter - this.focusZoneWidth / 2);
+            const inZone    = this.waveValue >= zoneLeft && this.waveValue <= (this.focusZoneCenter + this.focusZoneWidth / 2);
+
+            if (waveIndicator) waveIndicator.style.left = `${this.waveValue}%`;
+            if (focusZoneEl) {
+                focusZoneEl.style.left  = `${zoneLeft}%`;
+                focusZoneEl.style.width = `${this.focusZoneWidth}%`;
+            }
+            if (statusText) {
+                statusText.textContent  = inZone ? 'Định Tâm ✓' : 'Lệch Hướng';
+                statusText.className    = inZone
+                    ? 'text-green-400 font-mono uppercase tracking-widest text-[7.5px]'
+                    : 'text-red-400 font-mono uppercase tracking-widest text-[7.5px]';
+            }
+
+            state.player._chuThienHoldPct = this.chuThienProgress;
         }
     }
 

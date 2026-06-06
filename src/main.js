@@ -645,6 +645,48 @@ window.renderMainStats = () => {
     updateCachedDashOffset('circle-body', 276.5 - (bodyPercent / 100) * 276.5, 276.5);
     updateCachedDashOffset('circle-soul', 251.3 - (soulPercent / 100) * 251.3, 251.3);
 
+    // ── Tam Tu: Hold-progress overlay arc ──────────────────────
+    const holdPct = player._chuThienHoldPct || 0;
+    const holdCircleIds = { tuvi: 'circle-tu-vi-hold', body: 'circle-body-hold', soul: 'circle-soul-hold' };
+    const holdCircumf   = { tuvi: 301.6, body: 276.5, soul: 251.3 };
+    const holdCircleId  = holdCircleIds[focus];
+    const holdCircumference = holdCircumf[focus] || 301.6;
+
+    if (holdCircleId) {
+        let holdEl = document.getElementById(holdCircleId);
+        // Create the overlay arc on first use
+        if (!holdEl) {
+            const parentCircle = document.getElementById(
+                focus === 'tuvi' ? 'circle-tu-vi' : focus === 'body' ? 'circle-body' : 'circle-soul'
+            );
+            if (parentCircle && parentCircle.parentNode) {
+                holdEl = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                holdEl.id = holdCircleId;
+                holdEl.setAttribute('cx', parentCircle.getAttribute('cx'));
+                holdEl.setAttribute('cy', parentCircle.getAttribute('cy'));
+                holdEl.setAttribute('r',  parentCircle.getAttribute('r'));
+                holdEl.setAttribute('fill', 'none');
+                holdEl.setAttribute('stroke-width', '3');
+                holdEl.setAttribute('stroke-linecap', 'round');
+                holdEl.style.transform = 'rotate(-90deg)';
+                holdEl.style.transformOrigin = '50% 50%';
+                holdEl.style.transition = 'stroke-dashoffset 0.06s linear';
+                holdEl.setAttribute('stroke-dasharray', holdCircumference);
+                holdEl.setAttribute('stroke-dashoffset', holdCircumference);
+                parentCircle.parentNode.appendChild(holdEl);
+            }
+        }
+        if (holdEl) {
+            const offset = holdCircumference - (holdPct / 100) * holdCircumference;
+            holdEl.setAttribute('stroke-dashoffset', offset.toFixed(2));
+            // Colour: gold when filling, orange-red when draining (progress > 0 but no hold)
+            const isActiveHold = window.game && window.game.cultivateHoldActive;
+            holdEl.setAttribute('stroke', isActiveHold
+                ? (focus === 'body' ? '#f97316' : focus === 'soul' ? '#a78bfa' : '#fbbf24')
+                : 'rgba(251,191,36,0.35)');
+        }
+    }
+
     let tuviBtnText = 'Pháp lực';
     if (mainPath === 'ma_dao') tuviBtnText = 'Ma khí';
     else if (mainPath === 'quy_dao') tuviBtnText = 'Âm khí';
@@ -694,6 +736,7 @@ window.renderMainStats = () => {
     });
 
     const elBtnCultivateText = getCachedEl('cultivate-btn-text');
+    const elBtnCultivateSelf = getCachedEl('cultivate-btn');
     if (elBtnCultivateText) {
         const cfg = focusMap[focus];
         const cycle = player.meridianCycles?.[focus] || { step: 0, count: 0 };
@@ -701,21 +744,79 @@ window.renderMainStats = () => {
         const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, player.race);
         const maxSteps = subRealms.length > 1 ? subRealms.length : 10;
 
-        const contentKey = `${focus}_${cycle.step}_${maxSteps}_${cycle.count}`;
+        // Check if player has a technique for this focus
+        const hasTech = (focus === 'tuvi' && player.mainTechniqueId) ||
+                        (focus === 'body' && player.mainBodyTechniqueId) ||
+                        (focus === 'soul' && player.mainSoulTechniqueId);
+
+        const contentKey = `${focus}_${cycle.step}_${maxSteps}_${cycle.count}_${hasTech ? '1' : '0'}`;
         if (mainStatsCache.lastValues.get('cultivate_btn_content') !== contentKey) {
             mainStatsCache.lastValues.set('cultivate_btn_content', contentKey);
-            elBtnCultivateText.innerHTML = `
-                <div class="flex flex-col items-center justify-center py-0.5 select-none">
-                    ${focus === 'tuvi' ? `
-                    <span class="text-[7.5px] text-cultivation-gold/90 font-mono tracking-[0.2em] font-black uppercase mb-0.5">
-                        Chu Thiên: ${cycle.step} / ${maxSteps} (Lũy kế: ${cycle.count})
-                    </span>
-                    ` : ''}
-                    <span class="text-xs font-bold tracking-[0.25em] flex items-center justify-center">
-                        <i class="ph ${cfg.icon} mr-2 text-glow"></i>${cfg.label}
-                    </span>
-                </div>
-            `;
+
+            if (!hasTech) {
+                // Locked state – no technique
+                elBtnCultivateText.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-0.5 select-none opacity-60">
+                        <span class="text-[7.5px] text-red-400/80 font-mono tracking-[0.2em] font-black uppercase mb-0.5">
+                            Chưa có công pháp
+                        </span>
+                        <span class="text-xs font-bold tracking-[0.25em] flex items-center justify-center text-gray-500">
+                            <i class="ph ph-lock mr-2"></i>PHONG ẤN
+                        </span>
+                    </div>
+                `;
+            } else {
+                elBtnCultivateText.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-0.5 select-none">
+                        ${focus === 'tuvi' ? `
+                        <span class="text-[7.5px] text-cultivation-gold/90 font-mono tracking-[0.2em] font-black uppercase mb-0.5">
+                            Chu Thiên: ${cycle.step} / ${maxSteps} (Lũy kế: ${cycle.count})
+                        </span>
+                        ` : ''}
+                        <span class="text-xs font-bold tracking-[0.25em] flex items-center justify-center">
+                            <i class="ph ${cfg.icon} mr-2 text-glow"></i>${cfg.label}
+                        </span>
+                    </div>
+                `;
+            }
+        }
+
+        // Disable/enable the button itself
+        if (elBtnCultivateSelf) {
+            const shouldDisable = !hasTech;
+            if (elBtnCultivateSelf.disabled !== shouldDisable) {
+                elBtnCultivateSelf.disabled = shouldDisable;
+                elBtnCultivateSelf.title = shouldDisable
+                    ? 'Ngươi cần học một công pháp phù hợp trước khi tu luyện!'
+                    : '';
+                elBtnCultivateSelf.style.opacity = shouldDisable ? '0.5' : '';
+                elBtnCultivateSelf.style.cursor  = shouldDisable ? 'not-allowed' : '';
+            }
+        }
+
+        // ── Disable Auto toggle when no technique ──
+        const elAutoToggle = getCachedEl('auto-cultivate-toggle');
+        if (elAutoToggle) {
+            const shouldLockAuto = !hasTech;
+            if (elAutoToggle.disabled !== shouldLockAuto) {
+                elAutoToggle.disabled = shouldLockAuto;
+                // If locking while auto was on, turn it off
+                if (shouldLockAuto && elAutoToggle.checked) {
+                    elAutoToggle.checked = false;
+                    if (window.game && typeof window.game.toggleAutoCultivate === 'function') {
+                        window.game.toggleAutoCultivate(false);
+                    }
+                }
+                // Dim the whole auto overlay when locked
+                const autoOverlay = elAutoToggle.closest('div');
+                if (autoOverlay) {
+                    autoOverlay.style.opacity = shouldLockAuto ? '0.4' : '';
+                    autoOverlay.style.cursor  = shouldLockAuto ? 'not-allowed' : '';
+                    autoOverlay.title = shouldLockAuto
+                        ? 'Ngươi cần học một công pháp trước!'
+                        : '';
+                }
+            }
         }
     }
 
