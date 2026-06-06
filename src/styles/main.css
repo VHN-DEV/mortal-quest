@@ -608,7 +608,7 @@ nav {
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
   animation: rainbow-border 3s linear infinite;
-  z-index: 0;
+  z-index: -1;
   pointer-events: none;
 }
 

@@ -3,14 +3,17 @@
     <div class="absolute inset-0 bg-black/85" onclick="ui.toggleOverlay('item-detail', false)">
     </div>
     <div
-        class="relative w-full max-w-sm bg-[#0a0c10] border border-white/10 rounded-[2rem] p-5 shadow-2xl animate-zoom-in overflow-hidden">
+        class="relative w-full max-w-sm bg-[#0a0c10] border border-white/10 rounded-[2rem] p-5 shadow-2xl animate-zoom-in">
         <!-- Close Button (Top Right) -->
         <button onclick="ui.toggleOverlay('item-detail', false)"
             class="absolute top-4 right-4 z-[30] w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-all active:scale-95">
             <span class="text-xs">✕</span>
         </button>
-        <div class="absolute -top-24 -left-24 w-48 h-48 bg-qi-blue/10 rounded-full blur-[80px]"></div>
-        <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-cultivation-gold/5 rounded-full blur-[80px]">
+        <!-- Blob decorations clipped inside card -->
+        <div class="absolute inset-0 rounded-[2rem] overflow-hidden pointer-events-none z-0">
+            <div id="detail-blob-top" class="absolute -top-24 -left-24 w-48 h-48 bg-qi-blue/10 rounded-full blur-[80px]"></div>
+            <div id="detail-blob-bot" class="absolute -bottom-24 -right-24 w-48 h-48 bg-cultivation-gold/5 rounded-full blur-[80px]">
+            </div>
         </div>
 
         <div class="flex flex-col items-center mb-6 relative z-10">
@@ -78,24 +81,24 @@
 
         <div class="flex space-x-3 relative z-10">
             <button id="btn-use-item"
-                class="flex-grow py-3 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue text-[10px] font-bold rounded-2xl active:scale-95 transition-all uppercase tracking-[0.15em] border border-qi-blue/20">
-                KÍCH HOẠT
+                class="flex-grow py-3 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue text-[10px] font-bold rounded-2xl active:scale-95 transition-all border border-qi-blue/20">
+                <span style="letter-spacing:0.12em; padding-left:0.12em">KÍCH HOẠT</span>
             </button>
             <button id="btn-crush-stone"
-                class="flex-grow py-3 bg-red-900/10 hover:bg-red-900/20 text-red-500 text-[10px] font-bold rounded-2xl active:scale-95 transition-all uppercase tracking-[0.15em] border border-red-900/20 hidden">
-                BÓP NÁT
+                class="flex-grow py-3 bg-red-900/10 hover:bg-red-900/20 text-red-500 text-[10px] font-bold rounded-2xl active:scale-95 transition-all border border-red-900/20 hidden">
+                <span style="letter-spacing:0.12em; padding-left:0.12em">BÓP NÁT</span>
             </button>
             <button id="btn-equip-item"
-                class="flex-grow py-3 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold text-[10px] font-bold rounded-2xl active:scale-95 transition-all uppercase tracking-[0.15em] border border-cultivation-gold/20 hidden">
-                TRANG BỊ
+                class="flex-grow py-3 bg-cultivation-gold/10 hover:bg-cultivation-gold/20 text-cultivation-gold text-[10px] font-bold rounded-2xl active:scale-95 transition-all border border-cultivation-gold/20 hidden">
+                <span style="letter-spacing:0.12em; padding-left:0.12em">TRANG BỊ</span>
             </button>
             <button id="btn-buy-item"
-                class="flex-grow py-3 bg-qi-purple/10 hover:bg-qi-purple/20 text-qi-purple text-[10px] font-bold rounded-2xl active:scale-95 transition-all uppercase tracking-[0.15em] border border-qi-purple/20 hidden">
-                TRAO ĐỔI
+                class="flex-grow py-3 bg-qi-purple/10 hover:bg-qi-purple/20 text-qi-purple text-[10px] font-bold rounded-2xl active:scale-95 transition-all border border-qi-purple/20 hidden">
+                <span style="letter-spacing:0.12em; padding-left:0.12em">TRAO ĐỔI</span>
             </button>
             <button id="btn-sell-item"
-                class="flex-grow py-3 bg-red-900/20 hover:bg-red-900/40 text-red-400 text-[10px] font-bold rounded-2xl active:scale-95 transition-all uppercase tracking-[0.15em] border border-red-500/20 hidden">
-                GIAO DỊCH
+                class="flex-grow py-3 bg-red-900/20 hover:bg-red-900/40 text-red-400 text-[10px] font-bold rounded-2xl active:scale-95 transition-all border border-red-500/20 hidden">
+                <span style="letter-spacing:0.12em; padding-left:0.12em">GIAO DỊCH</span>
             </button>
         </div>
     </div>

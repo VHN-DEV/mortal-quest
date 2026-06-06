@@ -512,18 +512,32 @@ export class InventoryScreen {
         // --- Theme the detail overlay to match quality color ---
         const elDetailCard = document.querySelector('#item-detail > div:not(.absolute)');
         if (elDetailCard) {
-            elDetailCard.style.borderColor = isRainbow ? 'transparent' : `${qColor}50`;
-            elDetailCard.style.boxShadow = `0 0 40px ${qColor}20, 0 25px 50px rgba(0,0,0,0.6)`;
+            // Remove any previously applied quality border classes
+            const prevQClasses = [...elDetailCard.classList].filter(c =>
+                c.startsWith('border-') && !['border'].includes(c)
+            );
+            elDetailCard.classList.remove(...prevQClasses);
+
+            if (isRainbow) {
+                elDetailCard.style.borderColor = 'transparent';
+                elDetailCard.style.borderWidth = '2px';
+                elDetailCard.classList.add('border-tien-khi');
+                elDetailCard.style.boxShadow = `0 0 50px rgba(255,255,255,0.12), 0 25px 50px rgba(0,0,0,0.6)`;
+            } else {
+                elDetailCard.style.borderColor = `${qColor}60`;
+                elDetailCard.style.borderWidth = '1.5px';
+                elDetailCard.style.boxShadow = `0 0 40px ${qColor}25, 0 25px 50px rgba(0,0,0,0.6)`;
+            }
         }
 
         // Top-left blob decoration
-        const elBlobTop = document.querySelector('#item-detail .absolute.-top-24.-left-24');
+        const elBlobTop = document.getElementById('detail-blob-top');
         if (elBlobTop) {
-            elBlobTop.style.background = `${qColor}18`;
+            elBlobTop.style.background = `radial-gradient(circle, ${qColor}25, transparent 70%)`;
         }
-        const elBlobBot = document.querySelector('#item-detail .absolute.-bottom-24.-right-24');
+        const elBlobBot = document.getElementById('detail-blob-bot');
         if (elBlobBot) {
-            elBlobBot.style.background = `${qColor}0d`;
+            elBlobBot.style.background = `radial-gradient(circle, ${qColor}15, transparent 70%)`;
         }
 
         // Icon container border & glow
