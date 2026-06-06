@@ -575,13 +575,35 @@ export class InventoryScreen {
             }
         }
 
+        // Dynamic text setup for buttons (before styling to preserve <span> element)
+        const isSpiritStone = itemData.type === 'linh_thach';
+        const isManual = itemData.type === 'sach_cong_phap' && itemData.action;
+
+        if (this.btnUseItem) {
+            const useText = isSpiritStone ? 'LUYỆN HÓA' : (isManual ? 'XEM' : ((itemData.type === 'sach_cong_phap' || itemData.type === 'dan_phuong' || itemData.type === 'don_phu') ? 'LĨNH NGỘ' : (itemData.type === 'trung_linh_thu' ? 'ẤP TRỨNG' : 'SỬ DỤNG')));
+            this.btnUseItem.innerHTML = `<span style="letter-spacing:0.12em; padding-left:0.12em">${useText}</span>`;
+        }
+
+        const mappedSlot = state.player.getEquipSlotForItemType
+            ? state.player.getEquipSlotForItemType(itemData.type)
+            : itemData.type;
+        const equippable = Object.prototype.hasOwnProperty.call(state.player.equipment, mappedSlot);
+
+        if (this.btnEquipItem) {
+            const equipText = itemData.type.includes('Artifact') ? 'KHỞI ĐỘNG' : 'TRANG BỊ';
+            this.btnEquipItem.innerHTML = `<span style="letter-spacing:0.12em; padding-left:0.12em">${equipText}</span>`;
+        }
+
         // Helper to style an action button with quality color
         const styleBtn = (btn) => {
             if (!btn) return;
             const span = btn.querySelector('span');
+            // Clean up previous rainbow class
+            btn.classList.remove('border-tien-khi');
+            btn.style.borderColor = '';
             if (isRainbow) {
                 btn.style.background = 'rgba(255,255,255,0.06)';
-                btn.style.borderColor = 'rgba(255,255,255,0.2)';
+                btn.classList.add('border-tien-khi');
                 btn.style.color = '';
                 if (span) span.className = 'quality-tien-khi';
             } else {
@@ -591,10 +613,10 @@ export class InventoryScreen {
                 if (span) span.className = '';
             }
         };
-        styleBtn(document.getElementById('btn-use-item'));
-        styleBtn(document.getElementById('btn-equip-item'));
-        styleBtn(document.getElementById('btn-buy-item'));
-        styleBtn(document.getElementById('btn-sell-item'));
+        styleBtn(this.btnUseItem);
+        styleBtn(this.btnEquipItem);
+        styleBtn(this.btnBuyItem);
+        styleBtn(this.btnSellItem);
 
         if (this.elDetailIcon) {
             if (itemData.image && getAssetUrl(itemData.image)) {
@@ -683,11 +705,24 @@ export class InventoryScreen {
         this.elDetailDesc.innerHTML = this.linkifyDescription(desc, id);
         if (this.elDetailStats) this.elDetailStats.innerHTML = '';
 
-        // Apply quality color to the description/stats container (parent of desc paragraph)
+        // Apply quality color to the description/stats container
         const elDescBox = this.elDetailDesc?.parentElement;
         if (elDescBox) {
-            elDescBox.style.borderColor = `${qColor}25`;
-            elDescBox.style.boxShadow = `inset 0 0 20px ${qColor}08`;
+            elDescBox.classList.remove('border-tien-khi');
+            if (isRainbow) {
+                // Use data-rainbow for outline animation (outline not clipped by overflow-y:auto)
+                elDescBox.dataset.rainbow = '1';
+                elDescBox.style.outline = '1.5px solid rgba(255,255,255,0.4)';
+                elDescBox.style.outlineOffset = '-1.5px';
+                elDescBox.style.borderColor = 'transparent';
+                elDescBox.style.boxShadow = 'inset 0 0 20px rgba(255,255,255,0.04)';
+            } else {
+                elDescBox.dataset.rainbow = '';
+                elDescBox.style.outline = 'none';
+                elDescBox.style.outlineOffset = '';
+                elDescBox.style.borderColor = `${qColor}30`;
+                elDescBox.style.boxShadow = `inset 0 0 20px ${qColor}08`;
+            }
         }
 
         // Show stats for all equippable items, techniques, and consumables
@@ -885,25 +920,11 @@ export class InventoryScreen {
             if (this.btnCrushStone) this.btnCrushStone.classList.add('hidden');
         }
 
-        const isSpiritStone = itemData.type === 'linh_thach';
-        const isManual = itemData.type === 'sach_cong_phap' && itemData.action;
 
         this.btnUseItem.classList.toggle('hidden', !(['dan_duoc', 'sach_cong_phap', 'linh_thach', 'trung_linh_thu', 'dan_phuong', 'don_phu'].includes(itemData.type)) || (fromShop && !isManual));
         if (this.btnCrushStone) this.btnCrushStone.classList.toggle('hidden', !isSpiritStone || fromShop || fromSell);
 
-        if (isSpiritStone) {
-            this.btnUseItem.textContent = 'LUYỆN HÓA';
-        } else {
-            this.btnUseItem.textContent = isManual ? 'XEM' : ((itemData.type === 'sach_cong_phap' || itemData.type === 'dan_phuong' || itemData.type === 'don_phu') ? 'LĨNH NGỘ' : (itemData.type === 'trung_linh_thu' ? 'ẤP TRỨNG' : 'SỬ DỤNG'));
-        }
-
-        const mappedSlot = state.player.getEquipSlotForItemType
-            ? state.player.getEquipSlotForItemType(itemData.type)
-            : itemData.type;
-        const equippable = Object.prototype.hasOwnProperty.call(state.player.equipment, mappedSlot);
-
         if (equippable) {
-            this.btnEquipItem.textContent = itemData.type.includes('Artifact') ? 'KHỞI ĐỘNG' : 'TRANG BỊ';
             this.buildEquipPreview(itemData, mappedSlot);
         }
         this.btnEquipItem.classList.toggle('hidden', !equippable);
