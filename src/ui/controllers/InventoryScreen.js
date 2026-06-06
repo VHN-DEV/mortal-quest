@@ -416,9 +416,9 @@ export class InventoryScreen {
                 ${categoryBadgeHtml}
                 ${quantityBadgeHtml}
                 <div class="absolute inset-0 pb-[22px] flex items-center justify-center z-10">
-                    ${(itemData.image && getAssetUrl(itemData.image)) 
-                        ? `<img src="${getAssetUrl(itemData.image)}" class="w-9 h-9 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)] hover:scale-105 transition-transform duration-300">` 
-                        : `<span class="text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">${itemData.icon || ''}</span>`}
+                    ${(itemData.image && getAssetUrl(itemData.image))
+                    ? `<img src="${getAssetUrl(itemData.image)}" class="w-9 h-9 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)] hover:scale-105 transition-transform duration-300">`
+                    : `<span class="text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">${itemData.icon || ''}</span>`}
                 </div>
                 <div class="absolute bottom-0 left-0 right-0 h-[22px] bg-black/70 border-t border-white/5 rounded-b-[10px] backdrop-blur-[2px] flex items-center justify-center z-10">
                     <span class="text-[8px] font-sans font-bold quality-${qClass} truncate px-1 text-center w-full leading-none">${itemData.name}</span>
@@ -540,16 +540,22 @@ export class InventoryScreen {
             elBlobBot.style.background = `radial-gradient(circle, ${qColor}15, transparent 70%)`;
         }
 
-        // Icon container border & glow
+        // Icon container — use box-shadow so it's NOT clipped by overflow-hidden
         const elIconContainer = document.getElementById('detail-icon-container');
         if (elIconContainer) {
+            elIconContainer.className = `w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mb-4 relative overflow-hidden group`;
             if (isRainbow) {
-                elIconContainer.className = `w-20 h-20 bg-white/5 rounded-3xl border-tien-khi border-2 flex items-center justify-center shadow-inner mb-4 relative overflow-hidden group`;
-                elIconContainer.style.borderColor = '';
+                elIconContainer.style.border = 'none';
+                elIconContainer.style.outline = '2px solid rgba(255,255,255,0.4)';
+                elIconContainer.style.outlineOffset = '1px';
+                elIconContainer.style.boxShadow = '0 0 30px rgba(255,255,255,0.2), inset 0 0 15px rgba(255,255,255,0.05)';
+                elIconContainer.dataset.rainbow = '1';
             } else {
-                elIconContainer.className = `w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center shadow-inner mb-4 relative overflow-hidden group`;
-                elIconContainer.style.border = `2px solid ${qColor}60`;
-                elIconContainer.style.boxShadow = `0 0 20px ${qColor}30, inset 0 0 10px ${qColor}10`;
+                elIconContainer.style.border = `2px solid ${qColor}70`;
+                elIconContainer.style.outline = 'none';
+                elIconContainer.style.outlineOffset = '';
+                elIconContainer.style.boxShadow = `0 0 20px ${qColor}35, inset 0 0 10px ${qColor}12`;
+                elIconContainer.dataset.rainbow = '';
             }
         }
 
@@ -557,35 +563,38 @@ export class InventoryScreen {
         const elDetailTypeBadge = document.getElementById('detail-type');
         if (elDetailTypeBadge) {
             if (isRainbow) {
-                elDetailTypeBadge.style.background = 'rgba(255,255,255,0.07)';
-                elDetailTypeBadge.style.borderColor = 'rgba(255,255,255,0.15)';
-                elDetailTypeBadge.style.color = '#fff';
+                elDetailTypeBadge.className = `quality-tien-khi px-3 py-0.5 text-[8px] font-bold uppercase tracking-widest rounded-full border border-white/20 bg-white/5`;
+                elDetailTypeBadge.style.color = '';
+                elDetailTypeBadge.style.background = '';
+                elDetailTypeBadge.style.borderColor = '';
             } else {
-                elDetailTypeBadge.style.background = `${qColor}15`;
-                elDetailTypeBadge.style.borderColor = `${qColor}30`;
+                elDetailTypeBadge.className = `px-3 py-0.5 text-[8px] font-bold uppercase tracking-widest rounded-full border`;
+                elDetailTypeBadge.style.background = `${qColor}18`;
+                elDetailTypeBadge.style.borderColor = `${qColor}35`;
                 elDetailTypeBadge.style.color = qColor;
             }
         }
 
-        // Action buttons — use quality color
-        const btnUse = document.getElementById('btn-use-item');
-        if (btnUse) {
-            btnUse.style.background = `${qColor}15`;
-            btnUse.style.borderColor = `${qColor}30`;
-            btnUse.style.color = qColor;
-        }
-        const btnEquip = document.getElementById('btn-equip-item');
-        if (btnEquip) {
-            btnEquip.style.background = `${qColor}15`;
-            btnEquip.style.borderColor = `${qColor}30`;
-            btnEquip.style.color = qColor;
-        }
-        const btnBuy = document.getElementById('btn-buy-item');
-        if (btnBuy) {
-            btnBuy.style.background = `${qColor}15`;
-            btnBuy.style.borderColor = `${qColor}30`;
-            btnBuy.style.color = qColor;
-        }
+        // Helper to style an action button with quality color
+        const styleBtn = (btn) => {
+            if (!btn) return;
+            const span = btn.querySelector('span');
+            if (isRainbow) {
+                btn.style.background = 'rgba(255,255,255,0.06)';
+                btn.style.borderColor = 'rgba(255,255,255,0.2)';
+                btn.style.color = '';
+                if (span) span.className = 'quality-tien-khi';
+            } else {
+                btn.style.background = `${qColor}15`;
+                btn.style.borderColor = `${qColor}35`;
+                btn.style.color = qColor;
+                if (span) span.className = '';
+            }
+        };
+        styleBtn(document.getElementById('btn-use-item'));
+        styleBtn(document.getElementById('btn-equip-item'));
+        styleBtn(document.getElementById('btn-buy-item'));
+        styleBtn(document.getElementById('btn-sell-item'));
 
         if (this.elDetailIcon) {
             if (itemData.image && getAssetUrl(itemData.image)) {
@@ -596,7 +605,10 @@ export class InventoryScreen {
         }
         if (this.elDetailName) {
             this.elDetailName.textContent = itemData.name;
-            this.elDetailName.className = `text-xl font-bold text-white font-charm mb-1 quality-${qClass}`;
+            // For rainbow: no text-white override, let quality-tien-khi gradient take over
+            this.elDetailName.className = isRainbow
+                ? `text-xl font-bold font-charm mb-1 quality-${qClass}`
+                : `text-xl font-bold font-charm mb-1 quality-${qClass}`;
         }
 
         const mappedQuality = getDisplayQuality(displayQuality, itemData.type);
@@ -914,7 +926,7 @@ export class InventoryScreen {
         if (connections.recipeFor) allConnections.push({ id: connections.recipeFor, label: 'Luyện chế ra', icon: '📜' });
 
         connections.ingredients.forEach(ing => {
-            allConnections.push({ id: ing.id, label: `Nguyên Liệu x${ing.quantity}`, icon: '🧪' });
+            allConnections.push({ id: ing.id, label: `Nguyên Liệu x${ing.quantity}`, icon: '🌿' });
         });
 
         connections.asMaterialIn.forEach(prod => {

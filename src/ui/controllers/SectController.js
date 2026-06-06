@@ -25,7 +25,7 @@ export class SectController {
 
         if (state.player.sectId) {
             const sect = getSectById(state.player.sectId);
-            
+
             // Check if player is viewing a detailed zone
             if (this.activeSectZone) {
                 this.renderSectZoneDetail(sect, this.activeSectZone);
@@ -42,7 +42,7 @@ export class SectController {
                 { id: 'dai_dien', name: 'Nghị Sự Chủ Điện', icon: '🏛️', desc: 'Bái kiến Tông Chủ thỉnh an, thỉnh giáo nghe giảng đạo pháp bậc cao.', badge: 'Chủ Điện', badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30' },
                 { id: 'tang_kinh_cac', name: 'Tàng Kinh Các', icon: '📚', desc: 'Nơi truyền công pháp & tàng thư võ học tông môn.', badge: 'Công Pháp', badgeColor: 'bg-qi-blue/20 text-qi-blue border-qi-blue/30' },
                 { id: 'tang_bao_cac', name: 'Tàng Bảo Các', icon: '💎', desc: 'Bảo khố tích trữ thần đan, dị bảo, linh thạch và trứng thú.', badge: 'Tàng Bảo', badgeColor: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
-                { id: 'luyen_dan', name: 'Luyện Đan Điện', icon: '🧪', desc: 'Sử dụng địa hỏa tông môn tăng tốc độ và cơ hội thành công luyện đan.', badge: 'Luyện Đan', badgeColor: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
+                { id: 'luyen_dan', name: 'Luyện Đan Điện', icon: '🌿', desc: 'Sử dụng địa hỏa tông môn tăng tốc độ và cơ hội thành công luyện đan.', badge: 'Luyện Đan', badgeColor: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
                 { id: 'luyen_khi', name: 'Luyện Khí Các (Thiên Công)', icon: '⚒️', desc: 'Thiết kế, chế tạo pháp bảo khôi lỗi bằng lò rèn hỏa mạch.', badge: 'Chế Khí', badgeColor: 'bg-qi-blue/20 text-qi-blue border-qi-blue/30' },
                 { id: 'linh_thu', name: 'Linh Thú Viên', icon: '🦁', desc: 'Nuôi dưỡng, thuần phục linh thú và linh trùng ngự thú.', badge: 'Ngự Thú', badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30' },
                 { id: 'duoc_vien', name: 'Linh Dược Dược Sơn', icon: '🌿', desc: 'Linh điền bồi dưỡng thảo dược thô sơ của môn phái.', badge: 'Dược Điền', badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30' },
@@ -202,7 +202,7 @@ export class SectController {
         };
 
         let contentHTML = '';
-        
+
         switch (zoneId) {
             case 'son_mon':
                 {
@@ -271,13 +271,13 @@ export class SectController {
                                 ${currentSectMissions.length > 0 ? `
                                     <div class="space-y-2 mb-4">
                                         ${currentSectMissions.map(m => {
-                                            const isAtLocation = !m.locationId || m.locationId === state.currentLocId;
-                                            const showActionBtn = m.type === 'kill' || m.type === 'boss';
-                                            let btnLabel = m.type === 'boss' ? 'TRUY SÁT' : 'SĂN BẮN';
-                                            let btnColor = m.type === 'boss' ? 'bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30' : 'bg-qi-purple/20 text-qi-purple border-qi-purple/30 hover:bg-qi-purple/30';
-                                            let btnAction = m.type === 'boss' ? `window.game.systems.sect.challengeMissionBoss('${m.id}'); window.game.screens.systems.renderSects();` : `window.game.systems.sect.huntMissionTarget('${m.id}'); window.game.screens.systems.renderSects();`;
+                        const isAtLocation = !m.locationId || m.locationId === state.currentLocId;
+                        const showActionBtn = m.type === 'kill' || m.type === 'boss';
+                        let btnLabel = m.type === 'boss' ? 'TRUY SÁT' : 'SĂN BẮN';
+                        let btnColor = m.type === 'boss' ? 'bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30' : 'bg-qi-purple/20 text-qi-purple border-qi-purple/30 hover:bg-qi-purple/30';
+                        let btnAction = m.type === 'boss' ? `window.game.systems.sect.challengeMissionBoss('${m.id}'); window.game.screens.systems.renderSects();` : `window.game.systems.sect.huntMissionTarget('${m.id}'); window.game.screens.systems.renderSects();`;
 
-                                            return `
+                        return `
                                                 <div class="p-2.5 bg-black/40 rounded-lg border border-qi-blue/30 space-y-2">
                                                     <div class="flex justify-between items-start">
                                                         <div class="flex-1 min-w-0 pr-2">
@@ -308,7 +308,7 @@ export class SectController {
                                                     ` : ''}
                                                 </div>
                                             `;
-                                        }).join('')}
+                    }).join('')}
                                     </div>
                                 ` : `
                                     <div class="text-[9px] text-gray-500 mb-4 bg-black/20 p-2 rounded border border-white/5 text-center">Không có nhiệm vụ nào đang thực hiện.</div>
@@ -318,14 +318,14 @@ export class SectController {
                                 <div class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Nhiệm Vụ Có Sẵn</div>
                                 <div class="space-y-2">
                                     ${availableMissions.map(m => {
-                                        const isAccepted = currentSectMissions.some(active => active.id === m.id);
-                                        let rewardText = `Cống hiến: +${m.reward.contribution || 0}`;
-                                        if (m.reward.lingShi) rewardText += ` · Linh Thạch: +${m.reward.lingShi}`;
-                                        if (m.reward.tuVi) rewardText += ` · Tu Vi: +${m.reward.tuVi}`;
-                                        if (m.reward.items && m.reward.items.length > 0) rewardText += ` · Đan dược: Có`;
-                                        if (m.reward.techniques && m.reward.techniques.length > 0) rewardText += ` · Công pháp: Có`;
-                                        
-                                        return `
+                        const isAccepted = currentSectMissions.some(active => active.id === m.id);
+                        let rewardText = `Cống hiến: +${m.reward.contribution || 0}`;
+                        if (m.reward.lingShi) rewardText += ` · Linh Thạch: +${m.reward.lingShi}`;
+                        if (m.reward.tuVi) rewardText += ` · Tu Vi: +${m.reward.tuVi}`;
+                        if (m.reward.items && m.reward.items.length > 0) rewardText += ` · Đan dược: Có`;
+                        if (m.reward.techniques && m.reward.techniques.length > 0) rewardText += ` · Công pháp: Có`;
+
+                        return `
                                             <div class="p-2 bg-black/40 rounded-lg border border-white/5 flex justify-between items-center ${isAccepted ? 'opacity-50' : ''}">
                                                 <div class="flex-1 min-w-0 pr-2">
                                                     <div class="text-[10px] font-bold text-white leading-normal break-words">${m.desc}</div>
@@ -337,7 +337,7 @@ export class SectController {
                                                 </button>
                                             </div>
                                         `;
-                                    }).join('') || '<div class="text-[9px] text-gray-500">Không có nhiệm vụ nào.</div>'}
+                    }).join('') || '<div class="text-[9px] text-gray-500">Không có nhiệm vụ nào.</div>'}
                                 </div>
                             </div>
 
@@ -517,14 +517,14 @@ export class SectController {
                     const items = window.game?.systems?.sect?.getLibraryItems() || [];
                     const currentRankScore = window.game?.systems?.sect?.getRank()?.rankScore || 0;
                     const rankNames = ['Ngoại Môn', 'Nội Môn', 'Chân Truyền', 'Trưởng Lão', 'Đại Trưởng Lão', 'Tông Chủ'];
-                    
+
                     let scripturesHTML = '';
                     items.filter(item => item.isTech).forEach(item => {
                         const isTech = item.isTech;
                         const hasLearned = isTech && (state.player.learnedTechniques.some(t => t.id === item.id) || state.player.learnedSecretTechniques.some(t => t.id === item.id));
                         const isLocked = currentRankScore < item.minRankScore;
                         const reqName = rankNames[item.minRankScore] || 'Cấp Cao';
-                        
+
                         let btnHTML = '';
                         if (hasLearned) {
                             btnHTML = `<span class="text-[8px] text-green-400 font-bold bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">ĐÃ HỌC</span>`;
@@ -535,12 +535,12 @@ export class SectController {
                                 <i class="ph ph-shopping-cart-simple mr-0.5"></i>${item.price} CH
                                </button>`;
                         }
-                        
+
                         const actualItem = isTech ? null : getItemById(item.id);
                         const itemName = item.name || actualItem?.name || item.id;
                         const itemDesc = isTech ? 'Bí kíp/Công pháp Tông Môn truyền thừa' : actualItem?.description || '';
                         const itemIcon = isTech ? '📖' : actualItem?.icon || '📦';
-                        
+
                         scripturesHTML += `
                             <div class="p-3 bg-black/30 rounded-xl border border-white/5 flex justify-between items-center space-x-2 ${isLocked ? 'opacity-50 grayscale' : ''}">
                                 <div class="flex-1">
@@ -570,13 +570,13 @@ export class SectController {
                     const items = window.game?.systems?.sect?.getLibraryItems() || [];
                     const currentRankScore = window.game?.systems?.sect?.getRank()?.rankScore || 0;
                     const rankNames = ['Ngoại Môn', 'Nội Môn', 'Chân Truyền', 'Trưởng Lão', 'Đại Trưởng Lão', 'Tông Chủ'];
-                    
+
                     let treasuresHTML = '';
                     items.filter(item => !item.isTech).forEach(item => {
                         const isTech = item.isTech;
                         const isLocked = currentRankScore < item.minRankScore;
                         const reqName = rankNames[item.minRankScore] || 'Cấp Cao';
-                        
+
                         let btnHTML = '';
                         if (isLocked) {
                             btnHTML = `<span class="text-[8px] text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20 flex flex-col items-center"><span>KHÓA</span><span class="text-[7px]">(${reqName})</span></span>`;
@@ -585,12 +585,12 @@ export class SectController {
                                 <i class="ph ph-shopping-cart-simple mr-0.5"></i>${item.price} CH
                                </button>`;
                         }
-                        
+
                         const actualItem = getItemById(item.id);
                         const itemName = item.name || actualItem?.name || item.id;
                         const itemDesc = actualItem?.description || 'Dị bảo tông môn quý giá';
                         const itemIcon = actualItem?.icon || '💎';
-                        
+
                         treasuresHTML += `
                             <div class="p-3 bg-black/30 rounded-xl border border-white/5 flex justify-between items-center space-x-2 ${isLocked ? 'opacity-50 grayscale' : ''}">
                                 <div class="flex-1">
@@ -813,7 +813,7 @@ export class SectController {
             { id: 'chap_su_duong', name: 'Chấp Sự Đường', icon: '📜' },
             { id: 'tang_kinh_cac', name: 'Tàng Kinh Các', icon: '📚' },
             { id: 'tang_bao_cac', name: 'Tàng Bảo Các', icon: '💎' },
-            { id: 'luyen_dan', name: 'Luyện Đan Điện', icon: '🧪' },
+            { id: 'luyen_dan', name: 'Luyện Đan Điện', icon: '🌿' },
             { id: 'luyen_khi', name: 'Luyện Khí Các (Thiên Công)', icon: '⚒️' },
             { id: 'linh_thu', name: 'Linh Thú Viên', icon: '🦁' },
             { id: 'duoc_vien', name: 'Linh Dược Dược Sơn', icon: '🌿' },
@@ -854,7 +854,7 @@ export class SectController {
 
     handleSectZoneAction(zoneId, actionId) {
         const currentDay = state.systems.time ? state.systems.time.totalDays : 0;
-        
+
         switch (actionId) {
             case 'vow_rules':
                 if (state.player.lastSectVowDay === currentDay) {
@@ -865,7 +865,7 @@ export class SectController {
                 state.player.tuVi = (state.player.tuVi || 0) + 15;
                 state.ui.toast("Ngươi chắp tay tuyên thệ tuân thủ Tông quy nghiêm nghị. Đạo tâm tu sĩ chấn chỉnh vững chắc! (+15 Tu vi)", "success");
                 break;
-                
+
             case 'reinforce_array':
                 if (state.player.mana < 50) {
                     state.ui.toast("Linh lực bất túc, không đủ 50 Linh Lực truyền pháp gia cố trận pháp!", "error");
@@ -1040,12 +1040,12 @@ export class SectController {
                     const enemy = EnemyGenerator.generate(state.player.realmId);
                     enemy.name = `Ảo Ảnh Thí Luyện (${enemy.realmName})`;
                     enemy.inventory = [];
-                    
+
                     state.ui.toast("Kích hoạt Ảo Ảnh Pháp Trận, trận chiến mở màn!", "info");
-                    
+
                     setTimeout(() => {
                         state.ui.toggleOverlay(document.getElementById('sects-overlay'), false);
-                        
+
                         window.game.startBattle(enemy, null, (isWin) => {
                             if (isWin) {
                                 state.player.sectContribution = (state.player.sectContribution || 0) + 50;
@@ -1053,7 +1053,7 @@ export class SectController {
                             } else {
                                 state.ui.toast("Khiêu chiến thất bại! Cố gắng ngộ đạo thêm hãy quay lại.", "error");
                             }
-                            
+
                             setTimeout(() => {
                                 state.ui.toggleOverlay(document.getElementById('sects-overlay'), true);
                                 window.game.screens.systems.renderSects();

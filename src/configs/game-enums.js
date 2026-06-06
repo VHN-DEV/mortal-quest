@@ -206,7 +206,7 @@ export const PUPPET_GRADES = Object.freeze({
 export const PUPPET_TYPES = Object.freeze({
     COMBAT: createQuality('COMBAT', 'Chiến Đấu', '#F44336', { icon: '⚔️' }),
     GUARD: createQuality('GUARD', 'Hộ Vệ', '#2196F3', { icon: '🛡️' }),
-    ALCHEMY: createQuality('ALCHEMY', 'Luyện Đan', '#4CAF50', { icon: '🧪' }),
+    ALCHEMY: createQuality('ALCHEMY', 'Luyện Đan', '#4CAF50', { icon: '🌿' }),
     MINING: createQuality('MINING', 'Khai Khoáng', '#FF9800', { icon: '⛏️' }),
     SCOUT: createQuality('SCOUT', 'Trinh Sát', '#9C27B0', { icon: '👁️' }),
     SMITHING: createQuality('SMITHING', 'Luyện Khí', '#795548', { icon: '⚒️' }),
