@@ -307,5 +307,273 @@ export const SHOPS = {
                 { id: 'thao_thiet_can_khon_dai', stock: 2, minVip: 1 }
             ]
         }
+    },
+    'van_bao_cac_linh_gioi': {
+        name: 'Vạn Bảo Các - Chi Nhánh Linh Giới',
+        sections: {
+            'dan_duoc': [
+                { id: 'hoi_linh_dan', stock: 200 },
+                { id: 'tieu_dao_qua', stock: 50 },
+                { id: 'hoa_nguyen_dan', stock: 20, minVip: 1 },
+                { id: 'ho_menh_chan_nguyen_dan', stock: 30, minVip: 1 },
+                { id: 'tu_cuc_ngo_dao_dan', stock: 10, minVip: 2 },
+                { id: 'thai_at_hoa_than_dan', stock: 5, minVip: 3 },
+                { id: 'co_quan_phuc_nguyen_dan', stock: 50, minVip: 1 },
+                { id: 'tich_coc_dan', stock: 5000 },
+                { id: 'ngo_dao_dan', stock: 30, minVip: 1 },
+                { id: 'thanh_tam_dan', stock: 50 },
+                { id: 'truc_co_dan', stock: 10, minVip: 1 },
+                { id: 'tien_ngoc', stock: 20, minVip: 2 },
+                { id: 'sinh_menh_thach', stock: 15, minVip: 1 }
+            ],
+            'luyen_dan': [
+                { id: 'dia_long_phan_thien_lu', stock: 5, minVip: 1 },
+                { id: 'thien_cuc_thai_hu_lu', stock: 3, minVip: 3 },
+                { id: 'dan_phuong_hoi_linh_dan', stock: 20 },
+                { id: 'dan_phuong_ngoc_de_dan', stock: 10 },
+                { id: 'dan_phuong_thanh_tam_dan', stock: 10 },
+                { id: 'dan_phuong_truc_co_dan', stock: 5, minVip: 1 },
+                { id: 'dan_phuong_bo_nguyen_dan', stock: 15 },
+                { id: 'phan_thien_dinh', stock: 3, minVip: 3 }
+            ],
+            'phap_bao': [
+                { id: 'hu_thien_dinh', stock: 1, minVip: 2 },
+                { id: 'phong_loi_si', stock: 2, minVip: 2 },
+                { id: 'vo_dinh_tieu_dao_cam', stock: 1, minVip: 3 },
+                { id: 'nguyen_tu_cuc_son', stock: 2, minVip: 2 },
+                { id: 'bac_cuc_nguyen_quang_cuc_son', stock: 2, minVip: 2 },
+                { id: 'hao_am_han_phach_cuc_son', stock: 2, minVip: 2 },
+                { id: 'thai_at_thanh_quang_cuc_son', stock: 2, minVip: 2 },
+                { id: 'am_duong_dai_ngu_hanh_cuc_son', stock: 2, minVip: 2 },
+                { id: 'ban_thach_dinh_nguyen_kiem', stock: 2, minVip: 3 },
+                { id: 'luc_duong_loi_hoa_kiem', stock: 2, minVip: 3 },
+                { id: 'tu_tuong_bo_de_kiem', stock: 2, minVip: 3 },
+                { id: 'tao_hoa_tien_dinh', stock: 1, minVip: 4 },
+                { id: 'quang_han_linh_ngoc_bat', stock: 2, minVip: 3 },
+                { id: 'that_tinh_ban_nguyet_thinh', stock: 2, minVip: 3 },
+                { id: 'to_nga_suong_nguyet_luan', stock: 2, minVip: 3 },
+                { id: 'thien_dao_bi', stock: 2, minVip: 3 },
+                { id: 'van_tinh_nho_quan', stock: 1, minVip: 4 },
+                { id: 'that_thai_huyen_nghien', stock: 1, minVip: 4 },
+                { id: 'te_hon_toa', stock: 1, minVip: 4 },
+                { id: 'huyen_kim_long_tu_kiem', stock: 2, minVip: 3 },
+                { id: 'ngoc_long_tuyen', stock: 1, minVip: 4 },
+                { id: 'truyen_dao_thanh_gian', stock: 1, minVip: 4 },
+                { id: 'thien_dao_than_thach', stock: 1, minVip: 5 },
+                { id: 'chuong_thien_binh', stock: 1, minVip: 5 }
+            ],
+            'nguyen_lieu': [
+                { id: 'tran_chau_linh_coc', stock: 50000 },
+                { id: 'thanh_lien_dia_tam_hoa', stock: 5, minVip: 1 },
+                { id: 'cuu_u_linh_tuyet_lien', stock: 20, minVip: 1 },
+                { id: 'da_xa_co_de', stock: 3, minVip: 3 },
+                { id: 'hu_vo_thon_viem', stock: 3, minVip: 3 },
+                { id: 'tinh_lien_yeu_hoa', stock: 3, minVip: 3 },
+                { id: 'kim_de_phan_thien_viem', stock: 5, minVip: 2 },
+                { id: 'sinh_linh_chi_diem', stock: 5, minVip: 2 },
+                { id: 'bat_hoang_pha_diet_diem', stock: 5, minVip: 2 },
+                { id: 'hon_don_tu_tieu', stock: 2, minVip: 4 },
+                { id: 'cuu_tiao_diet_the', stock: 2, minVip: 4 },
+                { id: 'thai_hu_hu_khong', stock: 2, minVip: 4 },
+                { id: 'dai_nhat_kim_o', stock: 3, minVip: 3 },
+                { id: 'huyen_am_cuu_u', stock: 3, minVip: 3 },
+                { id: 'thanh_min_at_moc', stock: 5, minVip: 2 },
+                { id: 'bac_minh_han_sat', stock: 5, minVip: 2 },
+                { id: 'thuong_pham_linh_thach', stock: 500 },
+                { id: 'cuc_pham_linh_thach', stock: 50, minVip: 2 },
+                { id: 'hoa_tinh_thach', stock: 100 },
+                { id: 'thien_dao_than_thach', stock: 2, minVip: 4 }
+            ],
+            'cong_phap': [
+                { id: 'phong_loi_quyet', stock: 5, minVip: 1 },
+                { id: 'phan_quyet_cong_phap', stock: 3, minVip: 2 },
+                { id: 'cuu_thien_van_loi_quyet_cong_phap', stock: 3, minVip: 2 },
+                { id: 'u_minh_huy_ngan', stock: 5, minVip: 1 },
+                { id: 'cuu_chuyen_kim_than', stock: 5, minVip: 1 },
+                { id: 'huyet_don_thuat', stock: 5, minVip: 1 }
+            ],
+            'tran_phap': [
+                { id: 'thai_cuc_huyen_tran_do', stock: 5, minVip: 1 },
+                { id: 'tran_do_tu_linh', stock: 20 }
+            ],
+            'phu_luc': [
+                { id: 'cuu_loi_diet_the_phu', stock: 10 },
+                { id: 'pha_khong_phu', stock: 30 },
+                { id: 'kim_cuong_phu', stock: 20 },
+                { id: 'phu_van_kim_cuong_phu', stock: 10 },
+                { id: 'phu_van_than_hanh_phu', stock: 10 },
+                { id: 'phu_van_thuan_di_phu', stock: 5, minVip: 2 }
+            ],
+            'luyen_khi': [
+                { id: 'tinh_kim', stock: 200 },
+                { id: 'huyen_thiet', stock: 500 },
+                { id: 'bach_nien_thiet_moc', stock: 20, minVip: 1 },
+                { id: 'luyen_khi_dai', stock: 5, minVip: 2 }
+            ],
+            'bi_tich': [
+                { id: 'di_hoa_bang', stock: 3 },
+                { id: 'di_loi_bang', stock: 3 },
+                { id: 'van_bao_luc', stock: 2 },
+                { id: 'tran_dao_thien_thu', stock: 2 },
+                { id: 'tinh_lien_yeu_hoa_chung', stock: 1, minVip: 3 },
+                { id: 'van_lac_tam_viem_chung', stock: 1, minVip: 2 },
+                { id: 'truyen_dao_thanh_gian', stock: 1, minVip: 4 },
+                { id: 'ban_ve_long_lan_giap', stock: 3, minVip: 1 },
+                { id: 'ban_ve_tinh_ha_phi_kiem', stock: 3, minVip: 1 }
+            ],
+            'linh_dien': [
+                { id: 'linh_chung_u_minh_hoa', stock: 20 },
+                { id: 'linh_chung_cuu_tich_chi', stock: 30 },
+                { id: 'linh_chung_ngan_tinh_thao', stock: 30 },
+                { id: 'linh_chung_cuu_u_linh_tuyet_lien', stock: 15, minVip: 1 }
+            ],
+            'ky_trung': [
+                { id: 'thien_phong_ngan_uynh_linh_noan', stock: 3, minVip: 2 },
+                { id: 'loi_bang_linh_noan', stock: 5, minVip: 1 },
+                { id: 'phe_kim_trung_linh_noan', stock: 5, minVip: 1 }
+            ],
+            'linh_thu': [
+                { id: 'linh_thu_dai_cao', stock: 5, minVip: 1 },
+                { id: 'giao_long_linh_noan', stock: 3, minVip: 2 },
+                { id: 'hac_xa_yeu_noan', stock: 5 },
+                { id: 'hoa_viem_linh_noan', stock: 5 }
+            ],
+            'tui_tru_vat': [
+                { id: 'can_khon_tui', stock: 10 },
+                { id: 'thao_thiet_can_khon_dai', stock: 5, minVip: 1 }
+            ]
+        }
+    },
+    'van_bao_cac_tien_gioi': {
+        name: 'Vạn Bảo Các - Chi Nhánh Tiên Giới',
+        sections: {
+            'dan_duoc': [
+                { id: 'thai_at_hoa_than_dan', stock: 50 },
+                { id: 'tu_cuc_ngo_dao_dan', stock: 50 },
+                { id: 'co_quan_phuc_nguyen_dan', stock: 200 },
+                { id: 'ho_menh_chan_nguyen_dan', stock: 100 },
+                { id: 'hoa_nguyen_dan', stock: 100 },
+                { id: 'tieu_dao_qua', stock: 200 },
+                { id: 'hoi_linh_dan', stock: 500 },
+                { id: 'tich_coc_dan', stock: 99999 },
+                { id: 'ngo_dao_dan', stock: 100 },
+                { id: 'tien_ngoc', stock: 100 },
+                { id: 'sinh_menh_thach', stock: 100 },
+                { id: 'hon_don_tinh_thach', stock: 5, minVip: 4 }
+            ],
+            'luyen_dan': [
+                { id: 'thien_cuc_thai_hu_lu', stock: 10 },
+                { id: 'dia_long_phan_thien_lu', stock: 20 },
+                { id: 'phan_thien_dinh', stock: 10 },
+                { id: 'dan_phuong_hoi_linh_dan', stock: 100 },
+                { id: 'dan_phuong_truc_co_dan', stock: 20 },
+                { id: 'dan_phuong_bo_nguyen_dan', stock: 50 }
+            ],
+            'phap_bao': [
+                { id: 'chuong_thien_binh', stock: 3, minVip: 2 },
+                { id: 'tao_hoa_tien_dinh', stock: 3, minVip: 2 },
+                { id: 'thien_dao_than_thach', stock: 5, minVip: 2 },
+                { id: 'truyen_dao_thanh_gian', stock: 5, minVip: 2 },
+                { id: 'hu_thien_dinh', stock: 3, minVip: 1 },
+                { id: 'ban_thach_dinh_nguyen_kiem', stock: 5, minVip: 1 },
+                { id: 'luc_duong_loi_hoa_kiem', stock: 5, minVip: 1 },
+                { id: 'tu_tuong_bo_de_kiem', stock: 5, minVip: 1 },
+                { id: 'quang_han_linh_ngoc_bat', stock: 5, minVip: 1 },
+                { id: 'that_tinh_ban_nguyet_thinh', stock: 5, minVip: 1 },
+                { id: 'to_nga_suong_nguyet_luan', stock: 5, minVip: 1 },
+                { id: 'nguyen_tu_cuc_son', stock: 5, minVip: 1 },
+                { id: 'bac_cuc_nguyen_quang_cuc_son', stock: 5, minVip: 1 },
+                { id: 'hao_am_han_phach_cuc_son', stock: 5, minVip: 1 },
+                { id: 'thai_at_thanh_quang_cuc_son', stock: 5, minVip: 1 },
+                { id: 'am_duong_dai_ngu_hanh_cuc_son', stock: 5, minVip: 1 },
+                { id: 'vo_dinh_tieu_dao_cam', stock: 3, minVip: 2 },
+                { id: 'van_tinh_nho_quan', stock: 3, minVip: 2 },
+                { id: 'that_thai_huyen_nghien', stock: 3, minVip: 2 },
+                { id: 'huyen_kim_long_tu_kiem', stock: 5, minVip: 1 },
+                { id: 'ngoc_long_tuyen', stock: 3, minVip: 2 },
+                { id: 'te_hon_toa', stock: 3, minVip: 2 },
+                { id: 'bo_thien_lang', stock: 3, minVip: 3 },
+                { id: 'thien_dao_bi', stock: 5, minVip: 1 }
+            ],
+            'nguyen_lieu': [
+                { id: 'cuc_pham_linh_thach', stock: 500 },
+                { id: 'tien_tinh', stock: 10, minVip: 3 },
+                { id: 'hon_don_tinh', stock: 3, minVip: 5 },
+                { id: 'thanh_lien_dia_tam_hoa', stock: 20 },
+                { id: 'cuu_u_linh_tuyet_lien', stock: 100 },
+                { id: 'da_xa_co_de', stock: 10, minVip: 2 },
+                { id: 'hu_vo_thon_viem', stock: 10, minVip: 2 },
+                { id: 'tinh_lien_yeu_hoa', stock: 10, minVip: 2 },
+                { id: 'kim_de_phan_thien_viem', stock: 15, minVip: 1 },
+                { id: 'sinh_linh_chi_diem', stock: 15, minVip: 1 },
+                { id: 'bat_hoang_pha_diet_diem', stock: 15, minVip: 1 },
+                { id: 'hon_don_tu_tieu', stock: 5, minVip: 3 },
+                { id: 'cuu_tiao_diet_the', stock: 5, minVip: 3 },
+                { id: 'thai_hu_hu_khong', stock: 5, minVip: 3 },
+                { id: 'dai_nhat_kim_o', stock: 8, minVip: 2 },
+                { id: 'huyen_am_cuu_u', stock: 8, minVip: 2 },
+                { id: 'thien_dao_than_thach', stock: 5, minVip: 3 },
+                { id: 'hoa_tinh_thach', stock: 500 }
+            ],
+            'cong_phap': [
+                { id: 'cuu_thien_van_loi_quyet_cong_phap', stock: 10 },
+                { id: 'phan_quyet_cong_phap', stock: 10 },
+                { id: 'phong_loi_quyet', stock: 20 },
+                { id: 'cuu_chuyen_kim_than', stock: 10 },
+                { id: 'u_minh_huy_ngan', stock: 10 },
+                { id: 'huyet_don_thuat', stock: 10 }
+            ],
+            'tran_phap': [
+                { id: 'thai_cuc_huyen_tran_do', stock: 20 },
+                { id: 'tran_do_tu_linh', stock: 50 }
+            ],
+            'phu_luc': [
+                { id: 'cuu_loi_diet_the_phu', stock: 50 },
+                { id: 'pha_khong_phu', stock: 100 },
+                { id: 'phu_van_kim_cuong_phu', stock: 30 },
+                { id: 'phu_van_than_hanh_phu', stock: 30 },
+                { id: 'phu_van_thuan_di_phu', stock: 20 }
+            ],
+            'luyen_khi': [
+                { id: 'tinh_kim', stock: 1000 },
+                { id: 'huyen_thiet', stock: 2000 },
+                { id: 'bach_nien_thiet_moc', stock: 100 },
+                { id: 'luyen_khi_dai', stock: 20 }
+            ],
+            'bi_tich': [
+                { id: 'di_hoa_bang', stock: 10 },
+                { id: 'di_loi_bang', stock: 10 },
+                { id: 'van_bao_luc', stock: 5 },
+                { id: 'tran_dao_thien_thu', stock: 5 },
+                { id: 'tinh_lien_yeu_hoa_chung', stock: 3, minVip: 2 },
+                { id: 'van_lac_tam_viem_chung', stock: 3, minVip: 2 },
+                { id: 'truyen_dao_thanh_gian', stock: 3, minVip: 2 },
+                { id: 'ban_ve_long_lan_giap', stock: 10 },
+                { id: 'ban_ve_tinh_ha_phi_kiem', stock: 10 }
+            ],
+            'linh_dien': [
+                { id: 'linh_chung_u_minh_hoa', stock: 100 },
+                { id: 'linh_chung_cuu_tich_chi', stock: 100 },
+                { id: 'linh_chung_ngan_tinh_thao', stock: 100 },
+                { id: 'linh_chung_cuu_u_linh_tuyet_lien', stock: 50 }
+            ],
+            'ky_trung': [
+                { id: 'thien_phong_ngan_uynh_linh_noan', stock: 10 },
+                { id: 'loi_bang_linh_noan', stock: 20 },
+                { id: 'phe_kim_trung_linh_noan', stock: 20 },
+                { id: 'bang_tam_linh_noan', stock: 15 }
+            ],
+            'linh_thu': [
+                { id: 'linh_thu_dai_cao', stock: 20 },
+                { id: 'giao_long_linh_noan', stock: 10 },
+                { id: 'hac_xa_yeu_noan', stock: 15 },
+                { id: 'hoa_viem_linh_noan', stock: 15 }
+            ],
+            'tui_tru_vat': [
+                { id: 'can_khon_tui', stock: 50 },
+                { id: 'thao_thiet_can_khon_dai', stock: 20 }
+            ]
+        }
     }
 };
+

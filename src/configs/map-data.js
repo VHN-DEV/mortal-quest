@@ -3241,6 +3241,22 @@ export const WORLDS = {
                 regionName: "Cấm Địa & Bí Cảnh Linh Giới",
                 subRegionId: "cam_dia_linh_gioi",
                 subRegionName: "Tẩy Tủy Trì (Chân Linh)"
+            },
+            {
+                id: "van_bao_cac_linh_gioi",
+                name: "Vạn Bảo Các (Linh Giới)",
+                minRealm: 0,
+                danger: "an_toan",
+                image: getLocImg("van_bao_cac"),
+                description: "Chi nhánh Linh Giới của thương hội liên giới Vạn Bảo Các, hàng hóa phong phú gấp bội Nhân Giới với vô số tiên phẩm linh bảo và đan dược cao cấp.",
+                resources: [],
+                energies: [],
+                elementQi: {},
+                eventProbs: { combat: 0, loot: 0, npc: 0, empty: 0 },
+                regionId: "linh_gioi_trung_tam",
+                regionName: "Linh Giới Trung Tâm",
+                subRegionId: "than_vuc_thanh_thanh",
+                subRegionName: "Thần Vực Thánh Thành"
             }
         ]
     },
@@ -4628,6 +4644,23 @@ export const WORLDS = {
                 regionName: "Hôi Giới",
                 subRegionId: "hoi_gioi",
                 subRegionName: "Tu La Vực"
+            },
+            {
+                id: "van_bao_cac_tien_gioi",
+                name: "Vạn Bảo Các (Tiên Giới)",
+                type: 'shop',
+                minRealm: 0,
+                danger: "an_toan",
+                image: getLocImg("van_bao_cac"),
+                description: "Tổng hành dinh tối cao của Vạn Bảo Các tại Tiên Giới — kho báu chứa đựng vô số tiên khí bảo vật, tiên đan thần phẩm và cổ bảo vô giá mà Nhân Giới chưa từng thấy.",
+                resources: [],
+                energies: [],
+                elementQi: {},
+                eventProbs: { combat: 0, loot: 0, npc: 0, empty: 0 },
+                regionId: "trung_tho_tien_vuc",
+                regionName: "Trung Thổ Tiên Vực",
+                subRegionId: "trung_tho_tien_vuc",
+                subRegionName: "Trung Thổ Tiên Vực"
             }
         ]
     }
