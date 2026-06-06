@@ -1331,9 +1331,10 @@ export class Game {
     }
 
     // --- Character Actions ---
-    cultivate() {
+    cultivate(efficiency = 1.0) {
         if (!state.player) return;
-        const result = state.player.cultivate();
+        const isManual = efficiency > 1.0;
+        const result = state.player.cultivate(efficiency);
         const message = result?.msg || result?.reason;
 
         if (state.autoCultivateInterval) {
@@ -1344,7 +1345,13 @@ export class Game {
                 if (message) state.ui.toast("Tự động tu luyện dừng lại: " + message, 'error');
             }
         } else {
-            if (message) state.ui.toast(message, result.success ? 'success' : 'error');
+            if (isManual && result.success) {
+                // Manual cycle: show a special bonus toast instead of the plain message
+                const focusLabel = result.type === 'tuvi' ? 'Linh Khí' : (result.type === 'body' ? 'Khí Huyết' : 'Thần Niệm');
+                state.ui.toast(`✨ Thủ Động Tu Luyện: +${Math.floor(result.gain).toLocaleString()} ${focusLabel} (x${efficiency.toFixed(1)} hiệu quả!)`, 'success');
+            } else {
+                if (message) state.ui.toast(message, result.success ? 'success' : 'error');
+            }
         }
 
         if (result.success && result.gain > 0) {
@@ -1361,7 +1368,8 @@ export class Game {
 
                 const btn = document.getElementById('cultivate-btn');
                 if (btn) {
-                    state.ui.showStatUpEffect(btn, `+${Math.floor(result.gain)} ${result.type === 'tuvi' ? 'Tu Vi' : (result.type === 'body' ? 'Khí Huyết' : 'Thần Niệm')}`);
+                    const gainLabel = `+${Math.floor(result.gain)} ${result.type === 'tuvi' ? 'Tu Vi' : (result.type === 'body' ? 'Khí Huyết' : 'Thần Niệm')}`;
+                    state.ui.showStatUpEffect(btn, isManual ? `⚡ ${gainLabel}` : gainLabel);
 
                     // Spawn particles from center of portrait to outward
                     const portrait = document.getElementById('aura-border');
@@ -1371,8 +1379,12 @@ export class Game {
                         const centerX = rect.left - appRect.left + rect.width / 2;
                         const centerY = rect.top - appRect.top + rect.height / 2;
 
-                        const count = state.player.isSecluded ? 5 : 15;
-                        const particleColor = result.type === 'tuvi' ? '#4FD1C5' : (result.type === 'body' ? '#F87171' : '#A78BFA');
+                        // More particles for manual cultivation to feel more satisfying
+                        const count = isManual ? 25 : (state.player.isSecluded ? 5 : 15);
+                        // Golden particles for manual bonus, normal color otherwise
+                        const particleColor = isManual
+                            ? '#FFD700'
+                            : (result.type === 'tuvi' ? '#4FD1C5' : (result.type === 'body' ? '#F87171' : '#A78BFA'));
 
                         state.ui.spawnQiParticles(centerX, centerY, count, particleColor);
                     }
@@ -2096,7 +2108,8 @@ export class Game {
 
                 if (this.chuThienProgress >= 100) {
                     this.chuThienProgress = 0;
-                    this.cultivate();   // Award one full Chu Thiên
+                    // Manual hold → 50% exp bonus over auto/passive cultivation
+                    this.cultivate(1.5);
                 }
             } else {
                 // Released – drain rapidly, and drain is faster at higher realms:
@@ -2161,6 +2174,7 @@ export class Game {
                         // Pain relief per cycle shrinks at higher realms (30 → 15)
                         const relief = 30 - 15 * diff;
                         this.painValue = Math.max(0, this.painValue - relief);
+                        // Manual hold cycle reward set below after catalyst check
                         // Consume one catalyst if no fire/lightning env
                         if (!hasEnv) {
                             for (const id of CATALYSTS) {
@@ -2171,7 +2185,8 @@ export class Game {
                                 }
                             }
                         }
-                        this.cultivate();   // Full body cycle done
+                        // Manual hold → 50% exp bonus
+                        this.cultivate(1.5);
                     }
                 }
 
@@ -2250,7 +2265,8 @@ export class Game {
                 this.chuThienProgress = Math.min(100, this.chuThienProgress + progressRate * delta);
                 if (this.chuThienProgress >= 100) {
                     this.chuThienProgress = 0;
-                    this.cultivate();   // Full soul cycle
+                    // Manual hold → 50% exp bonus
+                    this.cultivate(1.5);
                 }
             } else if (!isHolding || !inZone) {
                 // Bleed back faster when out of zone at higher realms:
