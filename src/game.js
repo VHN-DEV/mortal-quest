@@ -2033,6 +2033,28 @@ export class Game {
      *  delta = real seconds elapsed since last frame
      * ─────────────────────────────────────────────────────────────
      */
+    /**
+     * ─────────────────────────────────────────────────────────────
+     *  DIFFICULTY SCALING HELPER
+     *  Returns a factor in [0..1] representing how far the player
+     *  has progressed in the given cultivation path.
+     *  0 = Phàm nhân / starting level → easiest
+     *  1 = Maximum realm level → hardest
+     * ─────────────────────────────────────────────────────────────
+     */
+    _getCultivationDifficultyFactor(focus) {
+        if (!state.player) return 0;
+        // Max realm IDs from realm-data.js: tuvi=64, body=11, soul=10
+        if (focus === 'tuvi') {
+            return Math.min(1, (state.player.realmId || 0) / 64);
+        } else if (focus === 'body') {
+            return Math.min(1, (state.player.bodyRealmId || 0) / 11);
+        } else if (focus === 'soul') {
+            return Math.min(1, (state.player.soulRealmId || 0) / 10);
+        }
+        return 0;
+    }
+
     updateCultivationHold(delta) {
         if (!state.player) return;
 
@@ -2057,13 +2079,19 @@ export class Game {
         if (painContainer)  painContainer.classList.toggle('hidden', focus !== 'body');
         if (focusContainer) focusContainer.classList.toggle('hidden', focus !== 'soul');
 
+        // ── Realm-based Difficulty Factor (0=beginner, 1=peak) ──
+        const diff = this._getCultivationDifficultyFactor(focus);
+
         // ── Pháp Lực (tuvi) ──────────────────────────────────────
         if (focus === 'tuvi') {
             if (isHolding) {
                 // Auto-mode bypasses the hold mechanic
                 if (state.autoCultivateInterval) return;
-                // Fill speed: 100% in ~4 s
-                const fillRate = 25 * delta;
+
+                // Fill speed slows at higher realms:
+                //   Luyện Khí: ~4 s per cycle (fillRate=25/s)
+                //   Peak realm: ~10 s per cycle (fillRate=10/s)
+                const fillRate = (25 - 15 * diff) * delta;
                 this.chuThienProgress = Math.min(100, this.chuThienProgress + fillRate);
 
                 if (this.chuThienProgress >= 100) {
@@ -2071,16 +2099,24 @@ export class Game {
                     this.cultivate();   // Award one full Chu Thiên
                 }
             } else {
-                // Released – drain rapidly (100%→0% in ~0.6 s)
+                // Released – drain rapidly, and drain is faster at higher realms:
+                //   Luyện Khí: ~0.6 s drain (170/s)
+                //   Peak realm: ~0.35 s drain (280/s)
                 if (this.chuThienProgress > 0 && !state.autoCultivateInterval) {
+                    const drainRate = (170 + 110 * diff) * delta;
                     const wasFull = this.chuThienProgress >= 90;
-                    this.chuThienProgress = Math.max(0, this.chuThienProgress - 170 * delta);
+                    this.chuThienProgress = Math.max(0, this.chuThienProgress - drainRate);
 
-                    // Backlash if released in 90-99% window
+                    // Backlash if released in 90-99% window.
+                    // At higher realms the backlash damage scales up too.
                     if (wasFull && this.chuThienProgress < 88 && !this._backlashThisCycle) {
                         this._backlashThisCycle = true;
-                        if (Math.random() < 0.20) {
-                            const dmg = Math.floor(state.player.maxHp * 0.12);
+                        // Backlash chance rises from 20% → 40% at peak realm
+                        const backlashChance = 0.20 + 0.20 * diff;
+                        if (Math.random() < backlashChance) {
+                            // Damage factor scales 12% → 20% of maxHp
+                            const dmgFactor = 0.12 + 0.08 * diff;
+                            const dmg = Math.floor(state.player.maxHp * dmgFactor);
                             state.player.hp = Math.max(1, state.player.hp - dmg);
                             state.ui.toast(`⚡ Chân nguyên phản phệ! Mất ${dmg} HP!`, 'error');
                         }
@@ -2107,9 +2143,12 @@ export class Game {
             if (warning) warning.classList.toggle('hidden', !this.bodyBlocked);
 
             if (isHolding && !this.bodyBlocked) {
-                // Step every 0.8s
+                // Step interval slows at higher body realms:
+                //   Phàm Thể: every 0.8 s
+                //   Đạo Thể:  every 1.4 s
+                const stepInterval = 0.8 + 0.6 * diff;
                 this.lastBodyStepTime = (this.lastBodyStepTime || 0) + delta;
-                if (this.lastBodyStepTime >= 0.8) {
+                if (this.lastBodyStepTime >= stepInterval) {
                     this.lastBodyStepTime = 0;
                     const stepSize = 25;   // 4 steps → 100%
                     this.chuThienProgress = Math.min(100, this.chuThienProgress + stepSize);
@@ -2119,7 +2158,9 @@ export class Game {
 
                     if (this.chuThienProgress >= 100) {
                         this.chuThienProgress = 0;
-                        this.painValue = Math.max(0, this.painValue - 30);  // Relief
+                        // Pain relief per cycle shrinks at higher realms (30 → 15)
+                        const relief = 30 - 15 * diff;
+                        this.painValue = Math.max(0, this.painValue - relief);
                         // Consume one catalyst if no fire/lightning env
                         if (!hasEnv) {
                             for (const id of CATALYSTS) {
@@ -2134,37 +2175,56 @@ export class Game {
                     }
                 }
 
-                // Pain meter rises while holding
-                this.painValue = Math.min(100, this.painValue + 8 * delta);
+                // Pain meter rises faster at higher body realms:
+                //   Phàm Thể: 8/s  |  Đạo Thể: 18/s
+                const painRate = 8 + 10 * diff;
+                this.painValue = Math.min(100, this.painValue + painRate * delta);
 
                 // Bạo Thể – pain overflow → damage + reset
                 if (this.painValue >= 100) {
                     this.painValue = 0;
                     this.chuThienProgress = 0;
-                    const dmg = Math.floor(state.player.maxHp * 0.15);
+                    // Damage also scales: 15% → 25% of maxHp
+                    const dmgFactor = 0.15 + 0.10 * diff;
+                    const dmg = Math.floor(state.player.maxHp * dmgFactor);
                     state.player.hp = Math.max(1, state.player.hp - dmg);
                     state.ui.toast(`💥 Bạo Thể! Thể xác quá tải – mất ${dmg} HP!`, 'error');
                     this.cultivateHoldActive = false;
                 }
             } else {
-                // Cool down pain when not holding
+                // Cool down pain when not holding – slows at higher realms:
+                //   Phàm Thể: 15/s  |  Đạo Thể: 6/s
                 if (this.painValue > 0) {
-                    this.painValue = Math.max(0, this.painValue - 15 * delta);
+                    const coolRate = 15 - 9 * diff;
+                    this.painValue = Math.max(0, this.painValue - coolRate * delta);
                 }
             }
         }
 
         // ── Thần Thức (soul) ─────────────────────────────────────
         else if (focus === 'soul') {
-            // Oscillate the wave value
-            const waveSpeed = 35; // degrees per second
+            // Wave oscillates faster at higher soul realms:
+            //   Phàm hồn: 35°/s  |  Đạo Hồn: 70°/s
+            const waveSpeed = 35 + 35 * diff;
             this.waveValue += this.waveDirection * waveSpeed * delta;
             if (this.waveValue >= 100) { this.waveValue = 100; this.waveDirection = -1; }
             if (this.waveValue <= 0)   { this.waveValue = 0;   this.waveDirection =  1; }
 
-            // Drift the focus zone target every 1.5–3 s
+            // Focus zone shrinks at higher soul realms:
+            //   Phàm hồn: 25% wide  |  Đạo Hồn: 10% wide
+            const targetZoneWidth = Math.max(10, 25 - 15 * diff);
+            // Smoothly shrink the zone over time so players can see it getting tighter
+            if (Math.abs(this.focusZoneWidth - targetZoneWidth) > 0.1) {
+                this.focusZoneWidth += (targetZoneWidth > this.focusZoneWidth ? 1 : -1) * 2 * delta;
+                this.focusZoneWidth = Math.max(10, Math.min(25, this.focusZoneWidth));
+            }
+
+            // Zone drifts more frequently at higher realms:
+            //   Phàm hồn: every 1.5–3 s  |  Đạo Hồn: every 0.7–1.5 s
             this.focusZoneDriftTimer += delta;
-            const driftInterval = 1.5 + Math.random() * 1.5;
+            const minDrift = 1.5 - 0.8 * diff;
+            const maxDrift = 3.0 - 1.5 * diff;
+            const driftInterval = minDrift + Math.random() * (maxDrift - minDrift);
             if (this.focusZoneDriftTimer >= driftInterval) {
                 this.focusZoneDriftTimer = 0;
                 const half = this.focusZoneWidth / 2;
@@ -2184,15 +2244,19 @@ export class Game {
             const inZone = this.waveValue >= zoneLeft && this.waveValue <= zoneRight;
 
             if (isHolding && inZone) {
-                // Progress only advances while inside zone while holding
-                this.chuThienProgress = Math.min(100, this.chuThienProgress + 18 * delta);
+                // Progress rate slightly scales up at higher realms (reward for precision):
+                //   Phàm hồn: 18/s  |  Đạo Hồn: 24/s
+                const progressRate = 18 + 6 * diff;
+                this.chuThienProgress = Math.min(100, this.chuThienProgress + progressRate * delta);
                 if (this.chuThienProgress >= 100) {
                     this.chuThienProgress = 0;
                     this.cultivate();   // Full soul cycle
                 }
             } else if (!isHolding || !inZone) {
-                // Bleed back slowly if out of zone
-                this.chuThienProgress = Math.max(0, this.chuThienProgress - 6 * delta);
+                // Bleed back faster when out of zone at higher realms:
+                //   Phàm hồn: 6/s  |  Đạo Hồn: 14/s
+                const bleedRate = 6 + 8 * diff;
+                this.chuThienProgress = Math.max(0, this.chuThienProgress - bleedRate * delta);
             }
         }
 
