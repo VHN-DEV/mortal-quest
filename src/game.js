@@ -85,6 +85,8 @@ export class Game {
         this.focusZoneTarget = 50;
         this.focusZoneDriftTimer = 0;
         this.autoBodyCooling = false;
+        this.soulMinigamePauseTimer = 0;
+        this.soulMinigameTapResult = null;
     }
 
     async init() {
@@ -2228,37 +2230,45 @@ export class Game {
 
         // ── Thần Thức (soul) ─────────────────────────────────────
         else if (focus === 'soul') {
-            // Wave oscillates faster at higher soul realms:
-            //   Phàm hồn: 35°/s  |  Đạo Hồn: 70°/s
-            const waveSpeed = 35 + 35 * diff;
-            this.waveValue += this.waveDirection * waveSpeed * delta;
-            if (this.waveValue >= 100) { this.waveValue = 100; this.waveDirection = -1; }
-            if (this.waveValue <= 0)   { this.waveValue = 0;   this.waveDirection =  1; }
-
-            // Focus zone shrinks at higher soul realms:
-            //   Phàm hồn: 25% wide  |  Đạo Hồn: 10% wide
-            const targetZoneWidth = Math.max(10, 25 - 15 * diff);
-            // Smoothly shrink the zone over time so players can see it getting tighter
-            if (Math.abs(this.focusZoneWidth - targetZoneWidth) > 0.1) {
-                this.focusZoneWidth += (targetZoneWidth > this.focusZoneWidth ? 1 : -1) * 2 * delta;
-                this.focusZoneWidth = Math.max(10, Math.min(25, this.focusZoneWidth));
-            }
-
-            // Zone drifts and slides constantly:
-            if (this.focusZoneTarget === undefined) {
-                const half = this.focusZoneWidth / 2;
-                this.focusZoneTarget = half + Math.random() * (100 - this.focusZoneWidth);
-                this.focusZoneCenter = this.focusZoneTarget;
-            }
-
-            const zoneSpeed = 15 + 25 * diff; // Speed scales with difficulty
-            const zoneSlide = zoneSpeed * delta;
-            if (Math.abs(this.focusZoneCenter - this.focusZoneTarget) < zoneSlide) {
-                this.focusZoneCenter = this.focusZoneTarget;
-                const half = this.focusZoneWidth / 2;
-                this.focusZoneTarget = half + Math.random() * (100 - this.focusZoneWidth);
+            if (this.soulMinigamePauseTimer > 0) {
+                this.soulMinigamePauseTimer -= delta;
+                if (this.soulMinigamePauseTimer < 0) {
+                    this.soulMinigamePauseTimer = 0;
+                    this.soulMinigameTapResult = null;
+                }
             } else {
-                this.focusZoneCenter += (this.focusZoneTarget > this.focusZoneCenter ? 1 : -1) * zoneSlide;
+                // Wave oscillates faster at higher soul realms:
+                //   Phàm hồn: 35°/s  |  Đạo Hồn: 70°/s
+                const waveSpeed = 35 + 35 * diff;
+                this.waveValue += this.waveDirection * waveSpeed * delta;
+                if (this.waveValue >= 100) { this.waveValue = 100; this.waveDirection = -1; }
+                if (this.waveValue <= 0)   { this.waveValue = 0;   this.waveDirection =  1; }
+
+                // Focus zone shrinks at higher soul realms:
+                //   Phàm hồn: 25% wide  |  Đạo Hồn: 10% wide
+                const targetZoneWidth = Math.max(10, 25 - 15 * diff);
+                // Smoothly shrink the zone over time so players can see it getting tighter
+                if (Math.abs(this.focusZoneWidth - targetZoneWidth) > 0.1) {
+                    this.focusZoneWidth += (targetZoneWidth > this.focusZoneWidth ? 1 : -1) * 2 * delta;
+                    this.focusZoneWidth = Math.max(10, Math.min(25, this.focusZoneWidth));
+                }
+
+                // Zone drifts and slides constantly:
+                if (this.focusZoneTarget === undefined) {
+                    const half = this.focusZoneWidth / 2;
+                    this.focusZoneTarget = half + Math.random() * (100 - this.focusZoneWidth);
+                    this.focusZoneCenter = this.focusZoneTarget;
+                }
+
+                const zoneSpeed = 15 + 25 * diff; // Speed scales with difficulty
+                const zoneSlide = zoneSpeed * delta;
+                if (Math.abs(this.focusZoneCenter - this.focusZoneTarget) < zoneSlide) {
+                    this.focusZoneCenter = this.focusZoneTarget;
+                    const half = this.focusZoneWidth / 2;
+                    this.focusZoneTarget = half + Math.random() * (100 - this.focusZoneWidth);
+                } else {
+                    this.focusZoneCenter += (this.focusZoneTarget > this.focusZoneCenter ? 1 : -1) * zoneSlide;
+                }
             }
         }
 
@@ -2315,7 +2325,20 @@ export class Game {
                 waveValue: this.waveValue
             };
 
-            if (waveIndicator) waveIndicator.style.left = `${this.waveValue}%`;
+            if (waveIndicator) {
+                waveIndicator.style.left = `${this.waveValue}%`;
+                if (this.soulMinigamePauseTimer > 0) {
+                    if (this.soulMinigameTapResult === 'perfect') {
+                        waveIndicator.className = "absolute top-0 bottom-0 w-1 bg-yellow-400 shadow-[0_0_15px_#f59e0b] scale-x-[2.5] transition-all duration-75";
+                    } else if (this.soulMinigameTapResult === 'success') {
+                        waveIndicator.className = "absolute top-0 bottom-0 w-1 bg-green-400 shadow-[0_0_15px_#10b981] scale-x-150 transition-all duration-75";
+                    } else if (this.soulMinigameTapResult === 'fail') {
+                        waveIndicator.className = "absolute top-0 bottom-0 w-1 bg-red-500 shadow-[0_0_15px_#ef4444] scale-x-150 transition-all duration-75";
+                    }
+                } else {
+                    waveIndicator.className = "absolute top-0 bottom-0 w-1 bg-white shadow-[0_0_8px_#fff] transition-all duration-75";
+                }
+            }
             if (focusZoneEl) {
                 focusZoneEl.style.left  = `${zoneLeft}%`;
                 focusZoneEl.style.width = `${this.focusZoneWidth}%`;
@@ -2342,6 +2365,9 @@ export class Game {
         const focus = state.player.cultivationFocus || 'tuvi';
         if (focus !== 'soul') return;
 
+        // Ignore clicks/presses during the pause
+        if (this.soulMinigamePauseTimer > 0) return;
+
         if (!state.player.mainSoulTechniqueId) {
             state.ui.toast("Chưa trang bị Công Pháp Thần Hồn!", "warning");
             return;
@@ -2357,16 +2383,21 @@ export class Game {
 
         const inZone = wave >= zoneLeft && wave <= zoneRight;
 
+        // Freeze the wave indicator by setting the pause timer
+        this.soulMinigamePauseTimer = 0.8; // pause for 0.8 seconds
+
         if (inZone) {
             const perfectLeft  = snap ? snap.perfectLeft  : this.focusZoneCenter - this.focusZoneWidth * 0.25 / 2;
             const perfectRight = snap ? snap.perfectRight : this.focusZoneCenter + this.focusZoneWidth * 0.25 / 2;
             const isPerfect = wave >= perfectLeft && wave <= perfectRight;
 
             if (isPerfect) {
+                this.soulMinigameTapResult = 'perfect';
                 const step = 35;
                 this.chuThienProgress = Math.min(100, this.chuThienProgress + step);
                 state.ui.toast("🎯 Hoàn Mỹ Định Tâm! Thần Thức thăng hoa (+35% tiến độ)", "success");
             } else {
+                this.soulMinigameTapResult = 'success';
                 const step = 20;
                 this.chuThienProgress = Math.min(100, this.chuThienProgress + step);
                 state.ui.toast("✓ Định Tâm! Thần Thức ngưng tụ (+20% tiến độ)", "info");
@@ -2381,6 +2412,7 @@ export class Game {
                 this.cultivate(1.5);
             }
         } else {
+            this.soulMinigameTapResult = 'fail';
             this.chuThienProgress = 0;
             state.ui.toast("⚡ Chệch Hướng! Tâm thần hoảng loạn, tiến độ bị reset!", "error");
             
