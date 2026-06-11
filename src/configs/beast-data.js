@@ -23,7 +23,10 @@ export const BEASTS = {
         image: 'beasts/thanh_van_ly',
         description: 'Loại linh trùng nhỏ bé có khả năng cắn nuốt linh lực.',
         baseStats: { hp: 50, atk: 5, def: 2, spd: 15 },
-        abilities: ['Thôn Linh']
+        abilities: ['Thôn Linh'],
+        evolutions: [
+            { levelRequired: 20, toId: 'phe_kim_trung', newName: 'Phệ Kim Trùng', statMult: 2.5, materials: [{ id: 'huyen_thiet', quantity: 20 }] }
+        ]
     },
     'kim_tam': {
         id: 'kim_tam',
@@ -34,7 +37,10 @@ export const BEASTS = {
         image: 'beasts/thanh_nguu',
         description: 'Tằm vàng quý hiếm, tơ của nó là vật liệu luyện khí cực tốt.',
         baseStats: { hp: 120, atk: 10, def: 20, spd: 5 },
-        abilities: ['Kim Ti']
+        abilities: ['Kim Ti'],
+        evolutions: [
+            { levelRequired: 20, toId: 'bang_tam', newName: 'Băng Tàm', statMult: 2.2, materials: [{ id: 'linh_thu_dan', quantity: 15 }] }
+        ]
     },
     'thanh_van_hac': {
         id: 'thanh_van_hac',
@@ -45,7 +51,10 @@ export const BEASTS = {
         image: 'beasts/thanh_van_hac.webp',
         description: 'Linh hạc cưỡi mây, thường được các tu sĩ dùng làm tọa kỵ.',
         baseStats: { hp: 200, atk: 15, def: 10, spd: 40 },
-        abilities: ['Ngự Phong']
+        abilities: ['Ngự Phong'],
+        evolutions: [
+            { levelRequired: 20, toId: 'kim_giap_hac', newName: 'Kim Giáp Hạc', statMult: 2.0, materials: [{ id: 'linh_thu_dan', quantity: 10 }] }
+        ]
     },
     'xich_diem_lang': {
         id: 'xich_diem_lang',
@@ -56,7 +65,10 @@ export const BEASTS = {
         image: 'beasts/ac_long',
         description: 'Sói lửa vùng hỏa núi, tính tình hung dữ.',
         baseStats: { hp: 350, atk: 45, def: 15, spd: 30 },
-        abilities: ['Hỏa Trảo']
+        abilities: ['Hỏa Trảo'],
+        evolutions: [
+            { levelRequired: 20, toId: 'hoa_viem', newName: 'Hỏa Viêm Thú', statMult: 2.0, materials: [{ id: 'linh_thu_dan', quantity: 15 }] }
+        ]
     },
     'loi_duc_su': {
         id: 'loi_duc_su',
@@ -103,6 +115,17 @@ export const BEASTS = {
         evolutions: [
             { levelRequired: 50, toId: 'phe_kim_trung_vuong', newName: 'Phệ Kim Trùng Vương', statMult: 2.5, materials: [{ id: 'tinh_kim', quantity: 100 }] }
         ]
+    },
+    'phe_kim_trung_vuong': {
+        id: 'phe_kim_trung_vuong',
+        name: 'Phệ Kim Trùng Vương',
+        type: BEAST_TYPES.KY_TRUNG,
+        bloodline: BEAST_BLOODLINES.THANH,
+        icon: '👑',
+        image: 'beasts/phe_kim_trung_vuong.webp',
+        description: 'Kỳ trùng vương giả, vô cùng hung tợn, có thể cắn nuốt cả linh bảo hộ thể.',
+        baseStats: { hp: 1500, atk: 400, def: 500, spd: 120 },
+        abilities: ['Thôn Thệ Linh Bảo', 'Cắn Nuốt Vạn Vật']
     },
     'bang_tam': {
         id: 'bang_tam',

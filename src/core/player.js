@@ -242,7 +242,10 @@ export class Player {
 
         // Beast & Insect System
         this.beasts = [];
-        this.hatchingBeasts = [];
+        this.hatchingBeasts = [null, null, null];
+        this.activeBeast = null;
+        this.activeInsect = null;
+        this.bloodContractDebuffUntil = 0;
         this.beastLevel = 1;
         this.beastExp = 0;
         this.insectLevel = 1;
@@ -2505,6 +2508,26 @@ export class Player {
         // 3.5 Apply SET BONUSES
         this.applySetBonuses(equippedIds);
 
+        // Apply Active Beast and Active Insect Stats Contribution (10% of pet stats)
+        if (this.activeBeast) {
+            const beastObj = this.beasts.find(b => b.uniqueId === this.activeBeast);
+            if (beastObj && beastObj.stats) {
+                this.bonusStats.maxHp += Math.floor((beastObj.stats.hp || 0) * 0.1);
+                this.bonusStats.atk += Math.floor((beastObj.stats.atk || 0) * 0.1);
+                this.bonusStats.def += Math.floor((beastObj.stats.def || 0) * 0.1);
+                this.bonusStats.spd += Math.floor((beastObj.stats.spd || 0) * 0.1);
+            }
+        }
+        if (this.activeInsect) {
+            const insectObj = this.beasts.find(b => b.uniqueId === this.activeInsect);
+            if (insectObj && insectObj.stats) {
+                this.bonusStats.maxHp += Math.floor((insectObj.stats.hp || 0) * 0.1);
+                this.bonusStats.atk += Math.floor((insectObj.stats.atk || 0) * 0.1);
+                this.bonusStats.def += Math.floor((insectObj.stats.def || 0) * 0.1);
+                this.bonusStats.spd += Math.floor((insectObj.stats.spd || 0) * 0.1);
+            }
+        }
+
         // 4. Combine BASE and BONUS for final values
         this.maxHp = Math.max(1, (this.baseStats.maxHp || 0) + (this.bonusStats.maxHp || 0));
         this.maxMana = Math.max(1, (this.baseStats.maxMana || 0) + (this.bonusStats.maxMana || 0));
@@ -2835,6 +2858,25 @@ export class Player {
             this.spd = Math.floor(this.spd * tanTienMult);
             this.maxHp = Math.floor(this.maxHp * tanTienMult);
             this.maxMana = Math.floor(this.maxMana * tanTienMult);
+        }
+
+        // Apply Blood Contract Debuff (Temporary -5% Max HP)
+        if (this.bloodContractDebuffUntil && Date.now() < this.bloodContractDebuffUntil) {
+            this.maxHp = Math.max(1, Math.floor(this.maxHp * 0.95));
+        }
+
+        // Apply Soul Contract Penalty (-10 Divine Sense per active Soul-bound pet)
+        let soulContractCount = 0;
+        if (this.activeBeast) {
+            const beastObj = this.beasts.find(b => b.uniqueId === this.activeBeast);
+            if (beastObj && beastObj.contractType === 'soul') soulContractCount++;
+        }
+        if (this.activeInsect) {
+            const insectObj = this.beasts.find(b => b.uniqueId === this.activeInsect);
+            if (insectObj && insectObj.contractType === 'soul') soulContractCount++;
+        }
+        if (soulContractCount > 0) {
+            this.divineSense = Math.max(0, this.divineSense - (soulContractCount * 10));
         }
 
         this.hp = Math.min(this.hp, this.maxHp);
@@ -4408,6 +4450,9 @@ export class Player {
             insectExp: this.insectExp,
             beasts: [...this.beasts],
             hatchingBeasts: [...this.hatchingBeasts],
+            activeBeast: this.activeBeast,
+            activeInsect: this.activeInsect,
+            bloodContractDebuffUntil: this.bloodContractDebuffUntil,
             
             gardenPlots: JSON.parse(JSON.stringify(this.gardenPlots)),
             mountainSurvival: { ...this.mountainSurvival },
@@ -4918,7 +4963,10 @@ export class Player {
         this.insectLevel = data.insectLevel || 1;
         this.insectExp = data.insectExp || 0;
         this.beasts = data.beasts || [];
-        this.hatchingBeasts = data.hatchingBeasts || [];
+        this.hatchingBeasts = data.hatchingBeasts && data.hatchingBeasts.length === 3 ? data.hatchingBeasts : [null, null, null];
+        this.activeBeast = data.activeBeast || null;
+        this.activeInsect = data.activeInsect || null;
+        this.bloodContractDebuffUntil = data.bloodContractDebuffUntil || 0;
         
         if (data.gardenPlots) {
             this.gardenPlots = data.gardenPlots.map(p => {

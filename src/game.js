@@ -621,6 +621,7 @@ export class Game {
 
         if (state.systems.time) state.systems.time.update(delta);
         if (state.systems.garden) state.systems.garden.update(delta);
+        if (state.systems.beast) state.systems.beast.update(delta);
         if (state.systems.mission) state.systems.mission.update();
         if (state.systems.mining) state.systems.mining.processTimeEvents(delta / 60); // minutes
         if (state.systems.mountain && state.systems.mountain.isActive) state.systems.mountain.update(delta);
@@ -3521,6 +3522,106 @@ export class Game {
 
     openCraftingHub() {
         if (this.screens.systems) this.screens.systems.openCraftingHub();
+    }
+
+    startHatching(eggId, slotIndex) {
+        if (state.systems.beast) {
+            const res = state.systems.beast.startHatching(eggId, slotIndex);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success && this.screens.systems) {
+                this.screens.systems.renderBeast();
+            }
+            this.refreshUI();
+            return res;
+        }
+        return { success: false };
+    }
+
+    speedUpHatching(slotIndex, method) {
+        if (state.systems.beast) {
+            const res = state.systems.beast.speedUpHatching(slotIndex, method);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success && this.screens.systems) {
+                this.screens.systems.renderBeast();
+            }
+            this.refreshUI();
+            return res;
+        }
+        return { success: false };
+    }
+
+    claimHatchedBeast(slotIndex, contractType) {
+        if (state.systems.beast) {
+            const res = state.systems.beast.claimHatchedBeast(slotIndex, contractType);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success && this.screens.systems) {
+                this.screens.systems.renderBeast();
+            }
+            this.refreshUI();
+            return res;
+        }
+        return { success: false };
+    }
+
+    feedBeast(beastUniqueId, foodId) {
+        if (state.systems.beast) {
+            const res = state.systems.beast.feed(beastUniqueId, foodId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success && this.screens.systems) {
+                this.screens.systems.renderBeast();
+            }
+            this.refreshUI();
+            return res;
+        }
+        return { success: false };
+    }
+
+    feedBeastWithBeast(beastUniqueId, victimUniqueId) {
+        if (state.systems.beast) {
+            const res = state.systems.beast.feedBeastWithBeast(beastUniqueId, victimUniqueId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success && this.screens.systems) {
+                this.screens.systems.renderBeast();
+            }
+            this.refreshUI();
+            return res;
+        }
+        return { success: false };
+    }
+
+    equipBeast(beastUniqueId) {
+        if (state.systems.beast) {
+            const res = state.systems.beast.equipBeast(beastUniqueId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success && this.screens.systems) {
+                this.screens.systems.renderBeast();
+            }
+            this.refreshUI();
+            return res;
+        }
+        return { success: false };
+    }
+
+    evolveBeast(beastUniqueId, options = {}) {
+        if (state.systems.beast) {
+            const res = state.systems.beast.evolve(beastUniqueId, options);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success && this.screens.systems) {
+                this.screens.systems.renderBeast();
+            }
+            this.refreshUI();
+            return res;
+        }
+        return { success: false };
+    }
+
+    hatchBeast(eggId) {
+        const emptyIdx = state.player.hatchingBeasts.findIndex(s => s === null);
+        if (emptyIdx === -1) {
+            state.ui.toast("Tất cả lò ấp đều đã đầy! Hãy thu hoạch hoặc gia tốc trước.", "error");
+            return;
+        }
+        this.startHatching(eggId, emptyIdx);
     }
 
     cultivateTechnique(id, isSecret) {

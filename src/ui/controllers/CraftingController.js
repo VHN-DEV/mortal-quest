@@ -317,11 +317,67 @@ export class CraftingController {
             elExp.style.width = `${Math.min(100, (curExp / nextLevelExp) * 100)}%`;
         }
 
+        // Bind Click Evolve helper globally so it can be called from onclick
+        window.game.clickEvolveBeast = async (beastUniqueId) => {
+            const beast = state.player.beasts.find(b => b.uniqueId === beastUniqueId);
+            if (!beast) return;
+            const beastData = BEASTS[beast.id];
+            if (!beastData || !beastData.evolutions) return;
+            const evolution = beastData.evolutions.find(e => beast.level >= e.levelRequired);
+            if (!evolution) return;
+
+            if (evolution.levelRequired >= 50) {
+                const optionsList = [
+                    { id: 'cương_đới', name: '✊ Cương đới độ kiếp', desc: 'Chỉ dựa vào linh tính căn bản. Tỷ lệ thành công: 40%' }
+                ];
+                if (state.player.lingShi >= 5000) {
+                    optionsList.push({ id: 'lingshi', name: '🔮 Lập Phản Lôi Trận (-5,000 LT)', desc: 'Tăng +20% tỷ lệ thành công.' });
+                }
+                if (state.player.inventory.hasItem('da_lan_giap', 1)) {
+                    optionsList.push({ id: 'da_lan_giap', name: '🛡️ Tiêu hao Đá Lân Giáp', desc: 'Tăng +30% tỷ lệ thành công.' });
+                }
+                if (state.player.inventory.hasItem('long_lan_giap', 1)) {
+                    optionsList.push({ id: 'long_lan_giap', name: '🐉 Tiêu hao Long Lân Giáp', desc: 'Vảy rồng hộ thể, tăng +30% tỷ lệ thành công.' });
+                }
+                if (state.player.lingShi >= 5000 && state.player.inventory.hasItem('da_lan_giap', 1) && state.player.inventory.hasItem('han_ngoc_tuy', 1)) {
+                    optionsList.push({ id: 'all_da', name: '🌟 Lôi Trận + Đá Giáp + Hàn Ngọc Tủy', desc: 'Phòng hộ tối cao, tỷ lệ thành công: 95%' });
+                }
+                if (state.player.lingShi >= 5000 && state.player.inventory.hasItem('long_lan_giap', 1) && state.player.inventory.hasItem('han_ngoc_tuy', 1)) {
+                    optionsList.push({ id: 'all_long', name: '🔥 Lôi Trận + Long Lân Giáp + Hàn Ngọc Tủy', desc: 'Đầy đủ chuẩn bị nghịch thiên, tỷ lệ thành công: 95%' });
+                }
+
+                const choice = await state.ui.promptOptions(
+                    `⚡ HÓA HÌNH YÊU KIẾP: ĐỘ KIẾP TIẾN HÓA`,
+                    optionsList,
+                    `Tiến hóa lên ${evolution.newName || 'cấp mới'} yêu cầu linh thú vượt qua Yêu Kiếp lôi điện cuồng bạo. Ngươi muốn chuẩn bị hộ pháp thế nào?`
+                );
+
+                if (!choice) return;
+
+                const evolveOptions = {};
+                if (choice === 'lingshi') evolveOptions.useLingshi = true;
+                else if (choice === 'da_lan_giap') evolveOptions.useArmor = 'da_lan_giap';
+                else if (choice === 'long_lan_giap') evolveOptions.useArmor = 'long_lan_giap';
+                else if (choice === 'all_da') {
+                    evolveOptions.useLingshi = true;
+                    evolveOptions.useArmor = 'da_lan_giap';
+                    evolveOptions.useHanNgocTuy = true;
+                } else if (choice === 'all_long') {
+                    evolveOptions.useLingshi = true;
+                    evolveOptions.useArmor = 'long_lan_giap';
+                    evolveOptions.useHanNgocTuy = true;
+                }
+
+                window.game.evolveBeast(beastUniqueId, evolveOptions);
+            } else {
+                window.game.evolveBeast(beastUniqueId);
+            }
+        };
+
         // List View Rendering
         if (viewList && state.views.beast !== 'hatch') {
             viewList.innerHTML = '';
 
-            // Filter beasts based on tab
             const filteredBeasts = state.player.beasts.filter(beast => {
                 const data = BEASTS[beast.id];
                 if (!data) return false;
@@ -341,25 +397,168 @@ export class CraftingController {
                     const data = BEASTS[beast.id];
                     const lvlInfo = getBeastLevelInfo(beast.level);
                     const blood = BLOODLINES[beast.bloodline];
+                    const isActive = state.player.activeBeast === beast.uniqueId || state.player.activeInsect === beast.uniqueId;
+                    const isInjured = beast.status === 'injured';
 
                     const beastImg = ASSETS.beasts[beast.id];
 
+                    // Find food in player inventory
+                    const foodIds = ['linh_thu_dan', 'yeu_nhuc_tuoi', 'ha_pham_yeu_dan', 'trung_pham_yeu_dan'];
+                    if (state.views.beast === 'insect') {
+                        foodIds.push('huyen_thiet', 'tinh_kim');
+                    }
+                    
+                    let foodOptionsHtml = '';
+                    foodIds.forEach(fid => {
+                        const qty = state.player.inventory.getItemQuantity(fid);
+                        if (qty > 0) {
+                            const name = getItemById(fid)?.name || fid;
+                            foodOptionsHtml += `
+                                <button class="px-2 py-1 bg-qi-jade/10 text-qi-jade border border-qi-jade/20 rounded-md text-[9px]" 
+                                    onclick="window.game.feedBeast('${beast.uniqueId}', '${fid}')">
+                                    ${name} (${qty})
+                                </button>
+                            `;
+                        }
+                    });
+
+                    // Cannibalism options for insects
+                    let cannibalHtml = '';
+                    if (state.views.beast === 'insect') {
+                        const targets = state.player.beasts.filter(b => b.uniqueId !== beast.uniqueId && [BEAST_TYPES.LINH_TRUNG, BEAST_TYPES.KY_TRUNG].includes(BEASTS[b.id]?.type));
+                        if (targets.length > 0) {
+                            let selectHtml = `<select class="bg-black/30 border border-white/10 rounded px-1 text-[9px] text-white flex-grow mr-2" id="cannibal-select-${beast.uniqueId}">`;
+                            targets.forEach(t => {
+                                selectHtml += `<option value="${t.uniqueId}">${t.name} (Lvl ${t.level})</option>`;
+                            });
+                            selectHtml += `</select>`;
+                            cannibalHtml = `
+                                <div class="mt-2 flex items-center bg-purple-950/20 p-2 border border-purple-500/10 rounded-xl">
+                                    <span class="text-[9px] text-purple-400 font-bold mr-2 flex-shrink-0">🐾 CẮN NUỐT:</span>
+                                    ${selectHtml}
+                                    <button class="px-2 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-md text-[9px]"
+                                        onclick="const val = document.getElementById('cannibal-select-${beast.uniqueId}').value; if(val) window.game.feedBeastWithBeast('${beast.uniqueId}', val)">
+                                        NUỐT
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    // Evolution path check
+                    let evolutionHtml = '';
+                    if (data && data.evolutions) {
+                        const evo = data.evolutions.find(e => beast.level >= e.levelRequired);
+                        if (evo) {
+                            const isLoiKiep = evo.levelRequired >= 50;
+                            let matChecked = true;
+                            let matTextList = [];
+                            if (evo.materials) {
+                                evo.materials.forEach(m => {
+                                    const hasQty = state.player.inventory.getItemQuantity(m.id);
+                                    const mName = getItemById(m.id)?.name || m.id;
+                                    const meets = hasQty >= m.quantity;
+                                    if (!meets) matChecked = false;
+                                    matTextList.push(`<span class="${meets ? 'text-green-400' : 'text-red-400'}">${mName} (${hasQty}/${m.quantity})</span>`);
+                                });
+                            }
+
+                            evolutionHtml = `
+                                <div class="mt-3 p-3 bg-qi-jade/5 border border-qi-jade/10 rounded-2xl flex flex-col space-y-2">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] font-bold text-qi-jade">${isLoiKiep ? '⚡ THIÊN KIẾP ĐỘT PHÁ' : '✨ TIẾN HÓA BẢN THỂ'}</span>
+                                        <button class="px-3 py-1 bg-qi-jade text-black font-bold text-[9px] rounded-lg ${!matChecked ? 'opacity-50 cursor-not-allowed' : ''}" 
+                                            ${matChecked ? `onclick="window.game.clickEvolveBeast('${beast.uniqueId}')"` : ''}>
+                                            ${isLoiKiep ? 'ĐỘ KIẾP' : 'TIẾN HÓA'}
+                                        </button>
+                                    </div>
+                                    <p class="text-[9px] text-gray-400">Yêu cầu: Cấp ${evo.levelRequired} & ${matTextList.join(', ')}</p>
+                                </div>
+                            `;
+                        }
+                    }
+
                     const el = document.createElement('div');
-                    el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] flex items-center space-x-4';
+                    el.className = `p-4 border ${isActive ? 'border-qi-jade/30 bg-qi-jade/[0.02]' : 'border-white/5 bg-white/[0.02]'} rounded-2xl flex flex-col space-y-3`;
                     el.innerHTML = `
-                        <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center overflow-hidden border border-white/10 flex-shrink-0">
-                            ${beastImg ? `<img src="${beastImg}" class="w-full h-full object-cover">` : `<span class="text-3xl">${data?.icon || '🐾'}</span>`}
-                        </div>
-                        <div class="flex-grow">
-                            <div class="flex justify-between items-center">
-                                <h4 class="font-bold text-white">${beast.name}</h4>
-                                <span class="text-[9px] font-bold" style="color: ${blood.color}">${blood.name}</span>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center overflow-hidden border border-white/10 flex-shrink-0 relative">
+                                ${beastImg ? `<img src="${beastImg}" class="w-full h-full object-cover">` : `<span class="text-3xl">${data?.icon || '🐾'}</span>`}
+                                ${isActive ? `<span class="absolute top-0 right-0 bg-qi-jade text-black text-[7px] font-extrabold px-1 rounded-bl">XUẤT CHIẾN</span>` : ''}
                             </div>
-                            <div class="text-[9px] text-gray-500 mt-0.5">Cấp ${beast.level} (${lvlInfo.name})</div>
-                            <div class="w-full h-1 bg-white/5 rounded-full mt-1 overflow-hidden">
-                                <div class="h-full bg-qi-jade" style="width: ${(beast.exp / lvlInfo.expRequired) * 100}%"></div>
+                            <div class="flex-grow">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-bold text-white text-sm flex items-center space-x-2">
+                                        <span>${beast.name}</span>
+                                        ${isInjured ? `<span class="text-[9px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded font-normal animate-pulse">Trọng Thương</span>` : ''}
+                                    </h4>
+                                    <span class="text-[9px] font-bold" style="color: ${blood.color}">${blood.name}</span>
+                                </div>
+                                <div class="text-[9px] text-gray-500 mt-0.5">Cấp ${beast.level} (${lvlInfo.name}) | Khế ước: ${beast.contractType === 'blood' ? '🩸 Huyết Khế' : '🔮 Hồn Khế'}</div>
+                                <div class="w-full h-1.5 bg-white/5 rounded-full mt-2 overflow-hidden">
+                                    <div class="h-full bg-qi-jade" style="width: ${(beast.exp / lvlInfo.expRequired) * 100}%"></div>
+                                </div>
+                                <div class="flex justify-between text-[8px] text-gray-400 mt-1">
+                                    <span>Trung thành: ${beast.loyalty}/100</span>
+                                    <span>EXP: ${beast.exp}/${lvlInfo.expRequired}</span>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Beast Stats Grid -->
+                        <div class="grid grid-cols-4 gap-2 bg-white/[0.01] border border-white/5 rounded-xl p-2 text-center text-[9px]">
+                            <div>
+                                <span class="text-gray-500 block">Khí Huyết</span>
+                                <span class="text-red-400 font-bold">${beast.stats.hp}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block">Công Kích</span>
+                                <span class="text-yellow-400 font-bold">${beast.stats.atk}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block">Phòng Ngự</span>
+                                <span class="text-blue-400 font-bold">${beast.stats.def}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block">Tốc Độ</span>
+                                <span class="text-green-400 font-bold">${beast.stats.spd}</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-2 pt-1">
+                            <button class="flex-grow py-2 text-[10px] font-bold rounded-xl border ${isActive ? 'bg-qi-jade/10 text-qi-jade border-qi-jade/30' : 'bg-white/5 text-white border-white/10'}"
+                                onclick="window.game.equipBeast('${beast.uniqueId}')">
+                                ${isActive ? 'THU HỒI' : 'XUẤT CHIẾN'}
+                            </button>
+                        </div>
+
+                        <!-- Feeding Section -->
+                        <div class="mt-2 border-t border-white/5 pt-2">
+                            ${isInjured ? `
+                                <div class="bg-red-950/20 border border-red-500/15 rounded-xl p-2 flex flex-col space-y-2">
+                                    <p class="text-[9px] text-red-400">Lôi kiếp tổn thương nghiêm trọng, chọn đan dược chữa trị:</p>
+                                    <div class="flex space-x-2">
+                                        <button class="flex-grow py-1 bg-red-900/30 text-red-300 border border-red-900/50 rounded-lg text-[9px] font-bold"
+                                            onclick="window.game.feedBeast('${beast.uniqueId}', 'linh_thu_dan')">
+                                            Linh Thú Đan x5 (${state.player.inventory.getItemQuantity('linh_thu_dan')}/5)
+                                        </button>
+                                        <button class="flex-grow py-1 bg-emerald-900/30 text-emerald-300 border border-emerald-900/50 rounded-lg text-[9px] font-bold"
+                                            onclick="window.game.feedBeast('${beast.uniqueId}', 'han_ngoc_tuy')">
+                                            Hàn Ngọc Tủy x1 (${state.player.inventory.getItemQuantity('han_ngoc_tuy')}/1)
+                                        </button>
+                                    </div>
+                                </div>
+                            ` : `
+                                <span class="text-[9px] text-gray-500 block mb-1">Cho ăn nuôi dưỡng:</span>
+                                <div class="flex flex-wrap gap-1">
+                                    ${foodOptionsHtml || '<span class="text-[9px] text-gray-600 italic">Không có thức ăn thích hợp trong túi đồ...</span>'}
+                                </div>
+                            `}
+                        </div>
+
+                        ${cannibalHtml}
+                        ${evolutionHtml}
                     `;
                     viewList.appendChild(el);
                 });
@@ -369,27 +568,120 @@ export class CraftingController {
         // Hatch View
         if (viewHatch && state.views.beast === 'hatch') {
             viewHatch.innerHTML = '';
+
+            // Render Slots
+            const slotsContainer = document.createElement('div');
+            slotsContainer.className = 'space-y-3 bg-white/[0.01] border border-white/5 p-4 rounded-2xl mb-4';
+            slotsContainer.innerHTML = `<h3 class="text-xs font-bold text-qi-jade mb-3 flex items-center"><i class="ph ph-cube mr-1"></i> LÒ ẤP LINH THÚ</h3>`;
+
+            state.player.hatchingBeasts.forEach((slot, idx) => {
+                const slotEl = document.createElement('div');
+                slotEl.className = 'p-3 bg-black/40 border border-white/5 rounded-xl flex items-center justify-between';
+                if (!slot) {
+                    // Empty slot
+                    slotEl.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-white/5 rounded-xl border border-white/10 flex items-center justify-center text-gray-600">
+                                <span class="text-xl">🥚</span>
+                            </div>
+                            <div>
+                                <h4 class="text-[11px] font-bold text-gray-500">Lò ấp trống</h4>
+                                <p class="text-[9px] text-gray-600">Sẵn sàng đặt trứng</p>
+                            </div>
+                        </div>
+                        <div class="text-[9px] text-gray-500 italic">Đặt trứng từ kho bên dưới</div>
+                    `;
+                } else if (slot.status === 'hatching') {
+                    // Hatching progress
+                    const pct = Math.min(100, Math.floor(((slot.totalTime - slot.timeLeft) / slot.totalTime) * 100));
+                    const mins = Math.floor(slot.timeLeft / 60);
+                    const secs = Math.floor(slot.timeLeft % 60);
+                    slotEl.innerHTML = `
+                        <div class="flex-grow mr-4">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-[11px] font-bold text-white">${slot.name}</h4>
+                                <span class="text-[9px] text-yellow-400 font-bold">${mins}m ${secs}s</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-white/5 rounded-full mt-1.5 overflow-hidden">
+                                <div class="h-full bg-qi-jade" style="width: ${pct}%"></div>
+                            </div>
+                            <div class="flex justify-between text-[8px] text-gray-500 mt-1">
+                                <span>Tiến độ: ${pct}%</span>
+                                <span>Gia tốc:</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-1">
+                            <button class="px-2 py-1 bg-qi-jade/10 text-qi-jade border border-qi-jade/20 rounded text-[8px]" 
+                                onclick="window.game.speedUpHatching(${idx}, 'spirit_stone')">
+                                Linh thạch (-10m)
+                            </button>
+                            <button class="px-2 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded text-[8px]" 
+                                onclick="window.game.speedUpHatching(${idx}, 'spirit_dich')">
+                                Hàn Ngọc Tủy
+                            </button>
+                        </div>
+                    `;
+                } else if (slot.status === 'completed') {
+                    // Claim contract selection
+                    slotEl.innerHTML = `
+                        <div class="flex-grow mr-4">
+                            <h4 class="text-[11px] font-bold text-qi-jade flex items-center">
+                                <span class="animate-bounce mr-1">🐣</span> ${slot.name} đã ấp nở!
+                            </h4>
+                            <p class="text-[8px] text-gray-500 mt-0.5">Chọn loại khế ước để nhận thú nuôi:</p>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button class="px-2 py-1 bg-red-950/40 text-red-400 border border-red-500/20 rounded text-[8px] font-bold" 
+                                onclick="window.game.claimHatchedBeast(${idx}, 'blood')">
+                                Huyết Khế (-15% HP)
+                            </button>
+                            <button class="px-2 py-1 bg-cyan-950/40 text-cyan-400 border border-cyan-500/20 rounded text-[8px] font-bold" 
+                                onclick="window.game.claimHatchedBeast(${idx}, 'soul')">
+                                Hồn Khế (Thần Thức >= 10)
+                            </button>
+                        </div>
+                    `;
+                }
+                slotsContainer.appendChild(slotEl);
+            });
+            viewHatch.appendChild(slotsContainer);
+
+            // Render Eggs List in Inventory
+            const eggsContainer = document.createElement('div');
+            eggsContainer.innerHTML = `<h3 class="text-xs font-bold text-white mb-2"><i class="ph ph-bag-simple mr-1"></i> TRỨNG LINH THÚ TRONG TÚI</h3>`;
             const eggs = state.player.inventory.allItems.filter(i => getItemById(i.id).type === 'trung_linh_thu');
+            
             if (eggs.length === 0) {
-                viewHatch.innerHTML = '<div class="text-center py-10 text-gray-600 italic">Ngươi không có trứng linh thú nào...</div>';
+                eggsContainer.innerHTML += '<div class="text-center py-6 text-gray-600 italic">Ngươi không có trứng linh thú nào trong túi...</div>';
             } else {
                 eggs.forEach(egg => {
                     const item = getItemById(egg.id);
                     const el = document.createElement('div');
-                    el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] flex justify-between items-center';
+                    el.className = 'p-3 border border-white/5 rounded-xl bg-white/[0.01] flex justify-between items-center mb-2';
+                    
+                    // Slot placement options if there is an empty slot
+                    const emptyIdx = state.player.hatchingBeasts.findIndex(s => s === null);
+                    let actionButton = '';
+                    if (emptyIdx !== -1) {
+                        actionButton = `<button class="px-3 py-1.5 bg-qi-jade text-black text-[9px] font-bold rounded-lg" onclick="window.game.startHatching('${egg.id}', ${emptyIdx})">ẤP NỞ (LÒ ${emptyIdx + 1})</button>`;
+                    } else {
+                        actionButton = `<span class="text-[8px] text-gray-600 italic">Lò ấp đầy</span>`;
+                    }
+
                     el.innerHTML = `
                         <div class="flex items-center space-x-3">
-                            <div class="text-2xl">${item.icon}</div>
+                            <div class="text-2xl">${item.icon || '🥚'}</div>
                             <div>
-                                <h4 class="text-sm font-bold text-white">${item.name}</h4>
-                                <p class="text-[9px] text-gray-500">Số lượng: ${egg.quantity}</p>
+                                <h4 class="text-[11px] font-bold text-white">${item.name}</h4>
+                                <p class="text-[8px] text-gray-500">Số lượng: ${egg.quantity} | Ấp: ${Math.floor((item.hatchTime || 300) / 60)} phút</p>
                             </div>
                         </div>
-                        <button class="px-4 py-2 bg-qi-jade/10 text-qi-jade text-[10px] rounded-xl border border-qi-jade/20" onclick="window.game.hatchBeast('${egg.id}')">ẤP NỞ</button>
+                        ${actionButton}
                     `;
-                    viewHatch.appendChild(el);
+                    eggsContainer.appendChild(el);
                 });
             }
+            viewHatch.appendChild(eggsContainer);
         }
 
         // Events

@@ -409,6 +409,40 @@ export class CombatEngine {
                 }
             }
 
+            // [SPIRIT BEAST / STRANGE INSECT SUMMON ACTIONS]
+            if (this.player.activeBeast) {
+                const beast = this.player.beasts.find(b => b.uniqueId === this.player.activeBeast);
+                if (beast && beast.status === 'normal' && Math.random() < 0.35) {
+                    const beastDmg = Math.floor(beast.stats.atk * (1 + beast.level * 0.05));
+                    this.enemy.hp = Math.max(0, this.enemy.hp - beastDmg);
+                    this.addLog(`🐾 [Linh Thú] <span class="text-cyan-400 font-bold">${beast.name}</span> gầm vang xông lên, tung trảo gây <span class="text-red-400 font-bold">${beastDmg}</span> sát thương!`);
+                    this.onUpdate('damage', { target: 'enemy', value: beastDmg, actionType: 'beast_attack' });
+                    if (this.enemy.hp <= 0) {
+                        this.win();
+                        return;
+                    }
+                }
+            }
+
+            if (this.player.activeInsect) {
+                const insect = this.player.beasts.find(b => b.uniqueId === this.player.activeInsect);
+                if (insect && insect.status === 'normal' && Math.random() < 0.40) {
+                    const insectDmg = Math.floor(insect.stats.atk * (1 + insect.level * 0.05));
+                    this.enemy.hp = Math.max(0, this.enemy.hp - insectDmg);
+                    let debuffMsg = '';
+                    if (insect.id.includes('phe_kim') || insect.id.includes('phe_linh')) {
+                        this.enemy.def = Math.max(1, Math.floor(this.enemy.def * 0.95));
+                        debuffMsg = ' (Linh lực & Giáp của kẻ địch bị ăn mòn 5%)';
+                    }
+                    this.addLog(`🐞 [Kỳ Trùng] <span class="text-purple-400 font-bold">${insect.name}</span> bao vây cắn xé kẻ địch, gây <span class="text-red-400 font-bold">${insectDmg}</span> sát thương!${debuffMsg}`);
+                    this.onUpdate('damage', { target: 'enemy', value: insectDmg, actionType: 'insect_attack' });
+                    if (this.enemy.hp <= 0) {
+                        this.win();
+                        return;
+                    }
+                }
+            }
+
             // Check for Chanting
             if (this.playerChanting) {
                 this.playerChanting.turns--;
