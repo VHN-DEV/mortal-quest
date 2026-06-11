@@ -2428,6 +2428,104 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.DON_THUAT }
         ]
     },
+    'loi_kich_phu': {
+        id: 'loi_kich_phu',
+        name: 'Lôi Kích Phù',
+        image: 'items/talismans/loi_kich_phu',
+        type: ITEM_TYPES.PHU_LUC,
+        icon: '⚡',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 150,
+        description: 'Phù lục chứa sấm sét lực lượng, gây sát thương Lôi.',
+        effect: { type: 'damage', value: 300, element: 'thunder' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.CONG_KICH }
+        ]
+    },
+    'bang_tien_phu': {
+        id: 'bang_tien_phu',
+        name: 'Băng Tiễn Phù',
+        image: 'items/talismans/bang_tien_phu',
+        type: ITEM_TYPES.PHU_LUC,
+        icon: '❄️',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 250,
+        description: 'Triệu hồi băng tiễn, gây sát thương Băng.',
+        effect: { type: 'damage', value: 250, element: 'ice' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.CONG_KICH }
+        ]
+    },
+    'huyen_quy_thuan_phu': {
+        id: 'huyen_quy_thuan_phu',
+        name: 'Huyền Quy Thuẫn Phù',
+        image: 'items/talismans/huyen_quy_thuan_phu',
+        type: ITEM_TYPES.PHU_LUC,
+        icon: '🛡️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 800,
+        description: 'Triệu hồi thuẫn giáp Huyền Quy hộ thể, tăng mạnh Phòng Thủ & Né Tránh.',
+        effect: { type: EFFECT_TYPES.BUFF_TAM_THOI, stat: 'def', value: 150, duration: 4 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.PHONG_NGU }
+        ]
+    },
+    'dinh_than_phu': {
+        id: 'dinh_than_phu',
+        name: 'Định Thân Phù',
+        image: 'items/talismans/dinh_than_phu',
+        type: ITEM_TYPES.PHU_LUC,
+        icon: '🕸️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1000,
+        description: 'Tạm thời định thân giam cầm đối thủ, ngăn đối thủ hành động.',
+        effect: { type: 'control', statusEffect: 'dinh_than', duration: 2 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.TRAN_AP }
+        ]
+    },
+    'tran_hon_phu': {
+        id: 'tran_hon_phu',
+        name: 'Trấn Hồn Phù',
+        image: 'items/talismans/tran_hon_phu',
+        type: ITEM_TYPES.PHU_LUC,
+        icon: '👁️',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 3000,
+        description: 'Áp chế thần hồn đối thủ, khiến đối thủ bị định thân trong 2 lượt.',
+        effect: { type: 'control', statusEffect: 'nhiep_hon', duration: 2 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.TRAN_AP }
+        ]
+    },
+    'loi_hoa_phu': {
+        id: 'loi_hoa_phu',
+        name: 'Lôi Hỏa Phù',
+        image: 'items/talismans/loi_hoa_phu',
+        type: ITEM_TYPES.PHU_LUC,
+        icon: '💥',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 4500,
+        description: 'Kích hoạt bộc phát Lôi Hỏa chi lực, gây lượng lớn sát thương thuộc tính Hỏa/Lôi hỗn hợp.',
+        effect: { type: 'damage', value: 600, element: 'fire' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.CONG_KICH }
+        ]
+    },
+    'thien_loi_phu': {
+        id: 'thien_loi_phu',
+        name: 'Thiên Lôi Phù',
+        image: 'items/talismans/thien_loi_phu',
+        type: ITEM_TYPES.PHU_LUC,
+        icon: '⚡',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 8000,
+        description: 'Phù lục công kích cao cấp chứa đựng thiên lôi chi lực, gây lượng lớn sát thương Lôi.',
+        effect: { type: 'damage', value: 1200, element: 'thunder' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.CONG_KICH }
+        ]
+    },
 
     // --- PROFESSION SECRETS (BÍ PHÁP MỞ KHÓA NGHỀ NGHIỆP) ---
     'truong_sinh_dan': {

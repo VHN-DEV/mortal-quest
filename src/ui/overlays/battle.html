@@ -354,4 +354,35 @@
             </div>
         </div>
     </div>
+
+    <!-- Talisman Selection Modal -->
+    <div id="battle-talisman-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[1000] hidden opacity-0 transition-opacity duration-300">
+        <div class="w-[340px] bg-[#0d0f12]/95 border border-[#cca873]/30 rounded-3xl p-5 shadow-2xl relative flex flex-col max-h-[85vh] transform scale-95 transition-transform duration-300">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl">⚡</span>
+                    <div>
+                        <h3 class="text-sm font-bold text-[#cca873] tracking-wide">Thi Triển Phù Lục</h3>
+                        <p class="text-[9px] text-gray-500">Kích hoạt sức mạnh linh phù hỗ trợ chiến đấu</p>
+                    </div>
+                </div>
+                <button id="battle-talisman-close" class="text-gray-400 hover:text-white transition-colors p-1 bg-white/5 hover:bg-white/10 rounded-full">
+                    <i class="ph ph-x text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content (List of Talismans) -->
+            <div id="battle-talisman-list" class="flex-grow overflow-y-auto space-y-2.5 pr-1 max-h-[50vh]">
+                <!-- Will be populated dynamically -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="battle-talisman-empty" class="hidden flex flex-col items-center justify-center py-8 text-center">
+                <span class="text-3xl mb-2">🏮</span>
+                <p class="text-xs text-gray-400">Không có phù lục khả dụng!</p>
+                <p class="text-[9px] text-gray-500 mt-1 max-w-[200px]">Hãy chế tạo phù lục thông qua chức năng Phù Sư tại tông môn hoặc phường thị.</p>
+            </div>
+        </div>
+    </div>
 </div>

@@ -5,6 +5,8 @@ import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 import { gsap } from 'gsap';
 import { audioManager } from '../../utils/audio-manager.js';
 import { getSpeedItemsInInventory } from '../../core/combat-engine.js';
+import { getItemById } from '../../configs/item-data.js';
+import { getQualityColor } from '../../utils/ui-utils.js';
 
 /**
  * Quản lý giao diện và logic của màn hình Chiến Đấu.
@@ -88,6 +90,10 @@ export class BattleScreen {
 
         // Module 2: Combat event banner
         this.combatEventBanner = document.getElementById('combat-event-banner');
+
+        // Talisman Selection elements
+        this.playerTalismanModal = document.getElementById('battle-talisman-modal');
+        this.btnTalismanClose = document.getElementById('battle-talisman-close');
     }
 
     initEvents() {
@@ -104,7 +110,7 @@ export class BattleScreen {
         if (this.btnSkill) this.btnSkill.onclick = () => this.handleAction('skill');
         if (this.btnFlame) this.btnFlame.onclick = () => this.handleAction('flame');
         if (this.btnPotion) this.btnPotion.onclick = () => this.handleAction('potion');
-        if (this.btnTalisman) this.btnTalisman.onclick = () => this.handleAction('talisman');
+        if (this.btnTalisman) this.btnTalisman.onclick = () => this.showTalismanModal();
         if (this.btnBeast) this.btnBeast.onclick = () => this.handleAction('beast');
         if (this.btnFormation) this.btnFormation.onclick = () => this.handleAction('formation');
         if (this.btnPuppet) this.btnPuppet.onclick = () => this.handleAction('puppet');
@@ -127,6 +133,16 @@ export class BattleScreen {
         }
         if (this.btnCloseEnemyStats) {
             this.btnCloseEnemyStats.onclick = () => this.hideEnemyStats();
+        }
+        if (this.btnTalismanClose) {
+            this.btnTalismanClose.onclick = () => this.hideTalismanModal();
+        }
+        if (this.playerTalismanModal) {
+            this.playerTalismanModal.onclick = (e) => {
+                if (e.target === this.playerTalismanModal) {
+                    this.hideTalismanModal();
+                }
+            };
         }
     }
 
@@ -1046,13 +1062,128 @@ export class BattleScreen {
     }
 
     close() {
-        // Also ensure stats modal is hidden when combat closes
+        // Also ensure stats modal and talisman modal are hidden when combat closes
         this.hideEnemyStats();
+        this.hideTalismanModal();
         state.ui.toggleOverlay(this.overlay, false);
         const chaseOverlay = document.getElementById('chase-overlay');
         if (chaseOverlay) {
             state.ui.toggleOverlay(chaseOverlay, false);
         }
+    }
+
+    showTalismanModal() {
+        if (!this.playerTalismanModal) return;
+
+        const combat = state.currentCombat;
+        if (!combat) return;
+
+        // Filter talismans in inventory
+        const talismans = state.player.inventory.allItems.filter(i => {
+            const data = getItemById(i.id);
+            return data && (data.type === 'phu_luc' || data.type === 'talisman');
+        });
+
+        const listEl = document.getElementById('battle-talisman-list');
+        const emptyEl = document.getElementById('battle-talisman-empty');
+
+        if (talismans.length === 0) {
+            if (listEl) listEl.innerHTML = '';
+            if (emptyEl) emptyEl.classList.remove('hidden');
+        } else {
+            if (emptyEl) emptyEl.classList.add('hidden');
+            if (listEl) {
+                listEl.innerHTML = talismans.map(t => {
+                    const data = getItemById(t.id);
+                    const qualityName = t.metadata?.quality || 'Phàm Phẩm';
+                    const qColor = getQualityColor(qualityName);
+                    
+                    let desc = data.description || '';
+                    if (data.effect) {
+                        let mult = 1.0;
+                        if (qualityName === 'Hạ Phẩm') mult = 1.1;
+                        else if (qualityName === 'Trung Phẩm') mult = 1.25;
+                        else if (qualityName === 'Thượng Phẩm') mult = 1.5;
+                        else if (qualityName === 'Cực Phẩm') mult = 1.8;
+                        else if (qualityName === 'Hoàn Mỹ') mult = 2.2;
+                        else if (qualityName === 'Tiên Phẩm') mult = 3.0;
+
+                        if (data.effect.type === 'damage') {
+                            const val = Math.floor(data.effect.value * mult);
+                            const elem = data.effect.element === 'fire' ? 'Hỏa' : (data.effect.element === 'thunder' ? 'Lôi' : data.effect.element === 'ice' ? 'Băng' : 'Thường');
+                            desc = `Gây ${val} sát thương thuộc tính ${elem}.`;
+                        } else if (data.effect.type === 'temp_buff' || data.effect.type === 'buff') {
+                            const val = Math.floor(data.effect.value * mult);
+                            const dur = Math.floor(data.effect.duration * mult);
+                            desc = `Tăng ${val} Phòng Thủ & Né Tránh trong ${dur} lượt.`;
+                        } else if (data.effect.type === 'control') {
+                            const dur = Math.floor(data.effect.duration * mult);
+                            const name = data.effect.statusEffect === 'dinh_than' ? 'Định Thân' : 'Nhiếp Hồn';
+                            desc = `Khống chế kẻ địch trạng thái [${name}] trong ${dur} lượt.`;
+                        } else if (data.effect.type === 'escape') {
+                            desc = `Thoát khỏi trận chiến lập tức.`;
+                        }
+                    }
+
+                    return `
+                        <button data-id="${t.id}" data-meta='${JSON.stringify(t.metadata || {})}' 
+                            class="w-full flex items-center justify-between p-3 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-[#cca873]/50 hover:bg-white/[0.04] transition-all duration-200 active:scale-[0.98] text-left">
+                            <div class="flex items-center space-x-3">
+                                <div class="text-2xl p-1 bg-black/40 border border-white/5 rounded-xl flex items-center justify-center w-10 h-10 select-none">
+                                    ${data.icon || '📜'}
+                                </div>
+                                <div>
+                                    <div class="flex items-center space-x-1.5">
+                                        <span class="text-xs font-bold text-white">${data.name}</span>
+                                        <span class="text-[8px] font-semibold px-1 py-0.2 rounded border uppercase font-mono" style="color: ${qColor}; border-color: ${qColor}30; background-color: ${qColor}08;">
+                                            ${qualityName}
+                                        </span>
+                                    </div>
+                                    <p class="text-[9px] text-gray-400 mt-0.5 line-clamp-2 max-w-[185px]">${desc}</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-end justify-center">
+                                <span class="text-[10px] font-bold text-[#cca873] bg-[#cca873]/10 px-2 py-0.5 rounded-full font-mono">x${t.quantity}</span>
+                            </div>
+                        </button>
+                    `;
+                }).join('');
+
+                // Set click handlers
+                listEl.querySelectorAll('button[data-id]').forEach(btn => {
+                    btn.onclick = () => {
+                        const id = btn.dataset.id;
+                        const meta = JSON.parse(btn.dataset.meta || '{}');
+                        this.handleAction('talisman', { id, metadata: meta });
+                        this.hideTalismanModal();
+                    };
+                });
+            }
+        }
+
+        // Show modal with animation
+        this.playerTalismanModal.classList.remove('hidden');
+        setTimeout(() => {
+            this.playerTalismanModal.classList.remove('opacity-0');
+            const inner = this.playerTalismanModal.querySelector('.transform');
+            if (inner) {
+                inner.classList.remove('scale-95');
+                inner.classList.add('scale-100');
+            }
+        }, 10);
+    }
+
+    hideTalismanModal() {
+        if (!this.playerTalismanModal) return;
+        this.playerTalismanModal.classList.add('opacity-0');
+        const inner = this.playerTalismanModal.querySelector('.transform');
+        if (inner) {
+            inner.classList.remove('scale-100');
+            inner.classList.add('scale-95');
+        }
+        setTimeout(() => {
+            this.playerTalismanModal.classList.add('hidden');
+        }, 300);
     }
 
 

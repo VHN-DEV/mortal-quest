@@ -971,7 +971,7 @@ export class CombatEngine {
                 this.playerUsePotion();
                 break;
             case 'talisman':
-                this.playerUseTalisman();
+                this.playerUseTalisman(payload);
                 break;
             case 'beast':
                 this.playerSummonBeast();
@@ -1405,32 +1405,128 @@ export class CombatEngine {
         this.endPlayerTurn();
     }
 
-    playerUseTalisman() {
+    playerUseTalisman(payload) {
         if (!this.player.unlockedProfessions?.includes('talisman')) {
             this.addLog("Chưa lĩnh hội bí pháp Phù Lục, không thể dùng phù trong chiến đấu!");
             return;
         }
-        const talisman = this.player.inventory.allItems.find(i => getItemById(i.id)?.type === 'talisman');
-        if (!talisman) {
-            this.addLog("Không có phù lục khả dụng!");
+
+        if (!payload || !payload.id) {
+            this.addLog("Không tìm thấy phù lục nào khả dụng!");
             return;
         }
-        const data = getItemById(talisman.id);
-        this.player.inventory.removeItem(talisman.id, 1);
+
+        const data = getItemById(payload.id);
+        if (!data) {
+            this.addLog("Dữ liệu phù lục không hợp lệ!");
+            return;
+        }
+
+        const metadata = payload.metadata || {};
+        const quality = metadata.quality || 'Phàm Phẩm';
+
+        // Check if the item exists in player's inventory
+        const hasTalisman = this.player.inventory.allItems.some(i => i.id === payload.id && this.player.inventory.compareMetadata(i.metadata, metadata, payload.id));
+        if (!hasTalisman) {
+            this.addLog("Vật phẩm không tồn tại trong túi đồ!");
+            return;
+        }
+
+        // 20% failure/backlash probability
+        if (Math.random() < 0.20) {
+            // Backlash! Consume the talisman anyway
+            this.player.inventory.removeItem(payload.id, 1, metadata);
+            const level = data.level || 1;
+            const dmg = 30 * level;
+            this.player.hp = Math.max(1, this.player.hp - dmg);
+            this.addLog(`💥 <span class="text-red-500 font-bold">PHÙ PHẢN PHỆ!</span> Việc kích hoạt [${data.name}] bất ngờ thất bại, linh lực phản phệ gây ${dmg} sát thương lên bản thân!`);
+            this.onUpdate('damage', { target: 'player', value: dmg, crit: true, actionType: 'backlash' });
+            if (this.player.hp <= 1 && this.player.hp > 0) {
+                this.player.hp = 0;
+                this.lose();
+                return;
+            }
+            this.endPlayerTurn();
+            return;
+        }
+
+        // Success! Remove from inventory
+        this.player.inventory.removeItem(payload.id, 1, metadata);
+
+        // Quality Multipliers
+        let qualityMult = 1.0;
+        if (quality === 'Hạ Phẩm') qualityMult = 1.1;
+        else if (quality === 'Trung Phẩm') qualityMult = 1.25;
+        else if (quality === 'Thượng Phẩm') qualityMult = 1.5;
+        else if (quality === 'Cực Phẩm') qualityMult = 1.8;
+        else if (quality === 'Hoàn Mỹ') qualityMult = 2.2;
+        else if (quality === 'Tiên Phẩm') qualityMult = 3.0;
+
+        // Process effects
         if (data.effect?.type === 'damage') {
-            const dmg = data.effect.value || 120;
-            this.enemy.hp -= dmg;
-            this.addLog(`Bạn kích hoạt ${data.name}, gây ${dmg} sát thương.`);
+            const baseDmg = data.effect.value || 120;
+            const dmg = Math.floor(baseDmg * qualityMult);
+            this.enemy.hp = Math.max(0, this.enemy.hp - dmg);
+            
+            let elemText = '';
+            if (data.effect.element === 'fire') {
+                elemText = ' thuộc tính <span class="text-red-400 font-bold">Hỏa</span>';
+                if (Math.random() < 0.3) {
+                    this.addEnemyStatusEffect('hoa_doc');
+                }
+            } else if (data.effect.element === 'thunder') {
+                elemText = ' thuộc tính <span class="text-yellow-400 font-bold">Lôi</span>';
+                if (Math.random() < 0.3) {
+                    this.addEnemyStatusEffect('loi_phe');
+                }
+            } else if (data.effect.element === 'ice') {
+                elemText = ' thuộc tính <span class="text-cyan-400 font-bold">Băng</span>';
+                if (Math.random() < 0.3) {
+                    this.addEnemyStatusEffect('han_doc');
+                }
+            }
+
+            this.addLog(`⚡ Ngươi kích hoạt [${quality}] ${data.name}${elemText}, gây <span class="text-red-400 font-bold">${dmg}</span> sát thương lên đối thủ!`);
             this.onUpdate('damage', { target: 'enemy', value: dmg, crit: true, actionType: 'talisman' });
-        } else if (data.effect?.type === 'buff' && data.effect.stat === 'def') {
-            this.player.def += data.effect.value || 60;
-            this.addLog(`${data.name} bảo hộ thân thể, phòng ngự tăng tạm thời!`);
+
+            if (this.enemy.hp <= 0) {
+                this.win();
+                return;
+            }
+        } else if (data.effect?.type === 'temp_buff' || data.effect?.type === 'buff') {
+            if (data.effect.stat === 'def') {
+                const turns = Math.floor((data.effect.duration || 3) * qualityMult);
+                this.player.addStatusEffect('kim_cang_ho_the', turns * 15, 'Linh Phù');
+                this.addLog(`🛡️ Ngươi kích hoạt [${quality}] ${data.name}, linh lực hộ thể tăng mạnh Phòng thủ & Né tránh trong ${turns} lượt!`);
+            } else {
+                const turns = Math.floor((data.effect.duration || 3) * qualityMult);
+                this.player.addStatusEffect('kim_cang_ho_the', turns * 15, 'Linh Phù');
+                this.addLog(`✨ Ngươi kích hoạt [${quality}] ${data.name}, linh lực gia trì bản thân trong ${turns} lượt!`);
+            }
+            this.onUpdate('damage', { target: 'player', value: 0, crit: false, actionType: 'talisman' });
+        } else if (data.effect?.type === 'control') {
+            const statusEffectId = data.effect.statusEffect || 'dinh_than';
+            const turns = Math.floor((data.effect.duration || 2) * qualityMult);
+            this.addEnemyStatusEffect(statusEffectId);
+            this.status.enemy.stun = Math.max(this.status.enemy.stun, turns);
+            this.addLog(`🕸️ Ngươi kích hoạt [${quality}] ${data.name}, cấm chế khống chế khiến đối thủ bị tê liệt bất động trong ${turns} lượt!`);
+            this.onUpdate('damage', { target: 'enemy', value: 0, crit: false, actionType: 'talisman' });
         } else if (data.effect?.type === 'escape') {
-            this.addLog(`Ngươi dùng ${data.name} thoát chiến.`);
+            this.addLog(`💨 Ngươi kích hoạt [${quality}] ${data.name}, thân hình nhấp nháy, lập tức thuấn di đào tẩu khỏi trận chiến!`);
             this.isActive = false;
             this.onUpdate('end');
             setTimeout(() => this.onEnd('escape'), 1500);
             return;
+        } else {
+            const baseDmg = 150;
+            const dmg = Math.floor(baseDmg * qualityMult);
+            this.enemy.hp = Math.max(0, this.enemy.hp - dmg);
+            this.addLog(`✨ Ngươi kích hoạt [${quality}] ${data.name}, gây ${dmg} sát thương lên đối thủ!`);
+            this.onUpdate('damage', { target: 'enemy', value: dmg, crit: true, actionType: 'talisman' });
+            if (this.enemy.hp <= 0) {
+                this.win();
+                return;
+            }
         }
         this.endPlayerTurn();
     }
