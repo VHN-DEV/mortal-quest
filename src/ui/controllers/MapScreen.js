@@ -5,6 +5,7 @@ import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 import { logger } from '../../utils/logger.js';
 import { getRandomEvent } from '../../configs/event-data.js';
 import { SECTS } from '../../configs/sect-data.js';
+import { CLANS } from '../../configs/clan-data.js';
 import { Preferences } from '@capacitor/preferences';
 import { MINING_NODES } from '../../configs/mining-data.js';
 import { audioManager } from '../../utils/audio-manager.js';
@@ -1163,6 +1164,23 @@ export class MapScreen {
                     `;
                 }
                 this.elLocSpecialActions.innerHTML = buttonsHTML;
+            }
+        } else if (CLANS[loc.id]) {
+            hasSpecial = true;
+            const isMember = state.player.clanId === loc.id;
+
+            if (isMember) {
+                this.elLocSpecialActions.innerHTML = `
+                    <button onclick="window.game.openClan()" class="col-span-2 py-3 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                        <i class="ph ph-shield-chevron text-lg"></i><span>VÀO GIA TỘC</span>
+                    </button>
+                `;
+            } else {
+                this.elLocSpecialActions.innerHTML = `
+                    <button onclick="window.game.openClan()" class="col-span-2 py-3 bg-qi-blue/10 border border-qi-blue/30 rounded-xl text-qi-blue text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                        <i class="ph ph-eye text-lg"></i><span>GHÉ THĂM GIA TỘC</span>
+                    </button>
+                `;
             }
         } else if (loc.special === 'guild') {
             hasSpecial = true;

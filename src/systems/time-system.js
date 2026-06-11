@@ -2,6 +2,7 @@ import { HOURS, SEASONS, PHENOMENA } from '../configs/time-data.js';
 import { WORLDS } from '../configs/map-data.js';
 import { BEASTS } from '../configs/beast-data.js';
 import { SECTS, SECT_RANKS } from '../configs/sect-data.js';
+import { CLANS, CLAN_RANKS } from '../configs/clan-data.js';
 import { ITEMS } from '../configs/item-data.js';
 import { state } from '../state.js';
 
@@ -217,6 +218,69 @@ export class TimeSystem {
                     const secondPillName = ITEMS[secondPillId]?.name || secondPillId;
                     
                     this.ui.toast(`Tông môn ban phát đan dược cảnh giới ${realmNameText}: +${pillQty} ${pillRewardName}, +${secondPillQty} ${secondPillName}`, "success");
+                }
+            }
+        }
+
+        // Monthly resources from Clan (if character is a member of a clan)
+        if (this.player.clanId) {
+            const clanData = CLANS[this.player.clanId];
+            if (clanData) {
+                const rankKey = this.player.clanRank || 'ngoai_chi';
+                const rankInfo = CLAN_RANKS[rankKey];
+                const clanStipend = rankInfo && rankInfo.salary !== undefined ? rankInfo.salary : 60;
+                
+                this.player.addLingShi(clanStipend);
+                this.ui.toast(`Nhận bổng lộc tháng từ Gia tộc ${clanData.name} (${rankInfo?.name || 'Tộc Nhân Ngoại Chi'}): +${clanStipend} Linh Thạch`, "success");
+
+                // Cấp phát đan dược bổng lộc tương ứng với cảnh giới hiện tại (PNTT logic)
+                const realmId = this.player.realmId || 1;
+                let pillRewardId = 'ngung_khi_dan';
+                let pillQty = 1;
+                let secondPillId = 'tich_coc_dan';
+                let secondPillQty = 1;
+                let realmNameText = 'Luyện Khí';
+                
+                if (realmId <= 13) {
+                    pillRewardId = 'ngung_khi_dan';
+                    pillQty = 1;
+                    secondPillId = 'tich_coc_dan';
+                    secondPillQty = 2;
+                    realmNameText = 'Luyện Khí';
+                } else if (realmId <= 17) {
+                    pillRewardId = 'tu_vi_dan';
+                    pillQty = 1;
+                    secondPillId = 'bo_nguyen_dan';
+                    secondPillQty = 1;
+                    realmNameText = 'Trúc Cơ';
+                } else if (realmId <= 21) {
+                    pillRewardId = 'song_tu_dieu_dan';
+                    pillQty = 1;
+                    secondPillId = 'tieu_hoan_dan';
+                    secondPillQty = 1;
+                    realmNameText = 'Kết Đan';
+                } else if (realmId <= 25) {
+                    pillRewardId = 'ngo_dao_dan';
+                    pillQty = 1;
+                    secondPillId = 'lac_van_tien_dan';
+                    secondPillQty = 1;
+                    realmNameText = 'Nguyên Anh';
+                } else {
+                    pillRewardId = 'tu_cuc_ngo_dao_dan';
+                    pillQty = 1;
+                    secondPillId = 'dai_hoan_dan';
+                    secondPillQty = 1;
+                    realmNameText = 'Hóa Thần';
+                }
+                
+                if (this.player.inventory) {
+                    this.player.inventory.addItem(pillRewardId, pillQty);
+                    this.player.inventory.addItem(secondPillId, secondPillQty);
+                    
+                    const pillRewardName = ITEMS[pillRewardId]?.name || pillRewardId;
+                    const secondPillName = ITEMS[secondPillId]?.name || secondPillId;
+                    
+                    this.ui.toast(`Gia tộc ban phát đan dược cảnh giới ${realmNameText}: +${pillQty} ${pillRewardName}, +${secondPillQty} ${secondPillName}`, "success");
                 }
             }
         }

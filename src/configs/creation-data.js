@@ -196,11 +196,10 @@ export const CREATION_ORIGINS = {
     'no_nan': { id: 'no_nan', name: 'Nợ Nần Chồng Chất', cost: -50, desc: 'Gánh trên vai món nợ lớn của gia tộc.', resources: { lingShi: -500, items: [] }, monthlyResources: { lingShi: 0 } },
     'gia_toc': {
         id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 40,
-        desc: 'Sinh ra trong gia tộc tu tiên có truyền thừa. Khởi đầu tại tông môn/gia tộc được chọn, nhận công pháp và bổng lộc hàng tháng.',
+        desc: 'Sinh ra trong gia tộc tu tiên có truyền thừa. Khởi đầu tại gia tộc được chọn, nhận công pháp gia truyền và bổng lộc hàng tháng.',
         resources: { lingShi: 1000, items: [] },
         monthlyResources: { lingShi: 100, items: ['ngung_khi_dan'] },
-        requiresSectSelection: true,
-        sectFilter: 'righteous'
+        requiresClanSelection: true
     },
     'tong_mon': {
         id: 'tong_mon', name: 'Đệ Tử Tông Môn', cost: 60,
@@ -220,11 +219,10 @@ export const CREATION_ORIGINS = {
     },
     'dai_gia_toc': {
         id: 'dai_gia_toc', name: 'Đại Thế Gia', cost: 100,
-        desc: 'Con cháu thế gia danh tiếng, tài lực dồi dào. Khởi đầu tại đại tông môn với công pháp cao cấp và đãi ngộ hậu hĩ.',
+        desc: 'Con cháu thế gia danh tiếng, tài lực dồi dào. Khởi đầu tại gia tộc, nhận công pháp cao cấp của thế gia và đãi ngộ hậu hĩ.',
         resources: { lingShi: 10000, items: [] },
         monthlyResources: { lingShi: 1000, items: ['ngung_khi_dan', 'truc_co_dan'] },
-        requiresSectSelection: true,
-        sectFilter: 'righteous'
+        requiresClanSelection: true
     },
     'thu_nguyen_du_hanh_gia': {
         id: 'thu_nguyen_du_hanh_gia',

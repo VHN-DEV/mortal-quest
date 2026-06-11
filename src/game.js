@@ -450,6 +450,7 @@ export class Game {
             'close-mountain-btn': 'mountain-overlay',
             'close-tower-btn': 'tower-overlay',
             'close-sects-btn': 'sects-overlay',
+            'close-clans-btn': 'clans-overlay',
             'close-stats-btn': 'stats-modal',
             'btn-close-guide': 'guide-overlay',
             'btn-guide-got-it': 'guide-overlay'
@@ -2772,6 +2773,18 @@ export class Game {
         if (this.screens.systems) this.screens.systems.renderSects();
     }
 
+    openClan() {
+        state.ui.toggleOverlay(document.getElementById('clans-overlay'), true);
+        if (this.screens.systems) {
+            this.screens.systems.clanController.activeClanZone = null;
+            this.screens.systems.renderClans();
+        }
+    }
+
+    closeClan() {
+        state.ui.toggleOverlay(document.getElementById('clans-overlay'), false);
+    }
+
     async buySectScroll(itemId, cost) {
         if (!state.player) return;
         if ((state.player.sectContribution || 0) < cost) {
@@ -4259,6 +4272,13 @@ export class Game {
     selectCreationSect(sectId) {
         if (state.systems.creation) {
             state.systems.creation.selectSectForOrigin(sectId);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
+    selectCreationClan(clanId) {
+        if (state.systems.creation) {
+            state.systems.creation.selectClanForOrigin(clanId);
             if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
         }
     }

@@ -13,6 +13,7 @@ import { getRealmById, HUMAN_REALMS, getSubRealmsOfCurrent } from './configs/rea
 import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
 import { SEEDS } from './configs/garden-data.js';
 import { SECTS, getSectById } from './configs/sect-data.js';
+import { CLANS } from './configs/clan-data.js';
 import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS, CREATION_SYSTEMS } from './configs/creation-data.js';
 import { PHYSIQUES } from './configs/physique-data.js';
 import { GAME_STATS } from './configs/game-enums.js';
@@ -1748,13 +1749,19 @@ window.renderCreationScreen = () => {
         `;
     }
 
-    // --- Sect/Clan Picker (Hiện ra khi origin có requiresSectSelection) ---
+    // --- Sect/Clan Picker (Hiện ra khi origin có requiresSectSelection hoặc requiresClanSelection) ---
     const elSectPicker = document.getElementById('creation-sect-picker');
     const elSectList = document.getElementById('creation-sect-list');
     if (elSectPicker && elSectList) {
         const currentOrigin = CREATION_ORIGINS[sys.selectedOrigin];
+        const elSectHeader = elSectPicker.querySelector('h3');
+        const elSectDesc = elSectPicker.querySelector('p');
+
         if (currentOrigin?.requiresSectSelection) {
             elSectPicker.classList.remove('hidden');
+            if (elSectHeader) elSectHeader.innerHTML = '⚔️ Chọn Tông Môn Bái Nhập';
+            if (elSectDesc) elSectDesc.innerHTML = '<i class="ph ph-info mr-1"></i>Xuất thân của bạn liên kết với một tông môn cụ thể. Bạn sẽ <strong>khởi đầu tại tông môn đó</strong>, nhận <strong>công pháp bẩm sinh</strong> và <strong>bổng lộc hàng tháng</strong>.';
+
             // Lọc danh sách tông môn theo sectFilter
             const allSects = Object.values(SECTS);
             const filteredSects = allSects.filter(s => {
@@ -1775,6 +1782,33 @@ window.renderCreationScreen = () => {
                             ${active ? `<span class="text-[8px] bg-cultivation-gold/10 border border-cultivation-gold/20 text-cultivation-gold px-2 py-0.5 rounded uppercase font-bold tracking-wider flex items-center gap-1"><i class="ph ph-check-circle"></i> Đã Chọn</span>` : ''}
                         </div>
                         <div class="q-desc text-left text-gray-400 text-[9px] leading-relaxed">${s.description}</div>
+                        <div class="q-bonus-list flex flex-wrap gap-1 mt-1">
+                            ${techName ? `<span class="q-bonus-tag text-[8px]" style="color:#f59e0b;background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2)">📜 Công pháp: ${techName}</span>` : ''}
+                            <span class="q-bonus-tag text-[8px]" style="color:#60a5fa;background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.2)">⚔️ ${bonusStr}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } else if (currentOrigin?.requiresClanSelection) {
+            elSectPicker.classList.remove('hidden');
+            if (elSectHeader) elSectHeader.innerHTML = '🧬 Chọn Gia Tộc Tu Tiên';
+            if (elSectDesc) elSectDesc.innerHTML = '<i class="ph ph-info mr-1"></i>Xuất thân của bạn liên kết với một gia tộc cụ thể. Bạn sẽ <strong>khởi đầu tại gia tộc đó</strong>, nhận <strong>công pháp gia truyền</strong> và <strong>bổng lộc hàng tháng</strong>.';
+
+            // Lấy danh sách gia tộc
+            const allClans = Object.values(CLANS);
+            elSectList.innerHTML = allClans.map(c => {
+                const active = sys.selectedClanId === c.id;
+                const startingTech = c.libraryItems?.find(i => i.isTech && (i.minRankScore === undefined || i.minRankScore === 0));
+                const techName = startingTech?.name || startingTech?.id || null;
+                const bonusStr = Object.entries(c.bonus || {}).map(([k,v]) => `${k} +${v}`).slice(0, 3).join(' · ') || 'Huyết mạch chi lực';
+                return `
+                    <div onclick="window.game.selectCreationClan('${c.id}')"
+                        class="q-card cursor-pointer transition-all duration-300 ${active ? 'active text-cultivation-gold border-cultivation-gold shadow-[0_0_12px_rgba(212,175,55,0.15)]' : 'text-gray-400 border-white/10'} flex flex-col gap-2">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="q-title font-ancient font-bold ${active ? 'text-cultivation-gold' : 'text-white/80'}">${c.name}</div>
+                            ${active ? `<span class="text-[8px] bg-cultivation-gold/10 border border-cultivation-gold/20 text-cultivation-gold px-2 py-0.5 rounded uppercase font-bold tracking-wider flex items-center gap-1"><i class="ph ph-check-circle"></i> Đã Chọn</span>` : ''}
+                        </div>
+                        <div class="q-desc text-left text-gray-400 text-[9px] leading-relaxed">${c.description}</div>
                         <div class="q-bonus-list flex flex-wrap gap-1 mt-1">
                             ${techName ? `<span class="q-bonus-tag text-[8px]" style="color:#f59e0b;background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2)">📜 Công pháp: ${techName}</span>` : ''}
                             <span class="q-bonus-tag text-[8px]" style="color:#60a5fa;background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.2)">⚔️ ${bonusStr}</span>
@@ -1943,9 +1977,10 @@ window.renderCreationScreen = () => {
         const sys = state.systems.creation;
         const currentOrigin = CREATION_ORIGINS[sys?.selectedOrigin];
         const needsSect = currentOrigin?.requiresSectSelection && !sys?.selectedSectId;
-        btnStart.disabled = (sys?.points < 0) || needsSect;
+        const needsClan = currentOrigin?.requiresClanSelection && !sys?.selectedClanId;
+        btnStart.disabled = (sys?.points < 0) || needsSect || needsClan;
         btnStart.style.opacity = btnStart.disabled ? '0.5' : '1';
-        btnStart.title = needsSect ? 'Hãy chọn Tông Môn/Gia Tộc trước khi bắt đầu!' : '';
+        btnStart.title = needsSect ? 'Hãy chọn Tông Môn trước khi bắt đầu!' : (needsClan ? 'Hãy chọn Gia Tộc trước khi bắt đầu!' : '');
     }
 
     const btnCreationBack = document.getElementById('btn-creation-back');

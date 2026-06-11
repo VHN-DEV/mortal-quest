@@ -2,6 +2,7 @@ import { state } from '../../state.js';
 import { AlchemyController } from './AlchemyController.js';
 import { ShopController } from './ShopController.js';
 import { SectController } from './SectController.js';
+import { ClanController } from './ClanController.js';
 import { CraftingController } from './CraftingController.js';
 import { MountainController } from './MountainController.js';
 import { TechniqueController } from './TechniqueController.js';
@@ -19,6 +20,7 @@ export class SystemsScreen {
         this.alchemyController = new AlchemyController(this);
         this.shopController = new ShopController(this);
         this.sectController = new SectController(this);
+        this.clanController = new ClanController(this);
         this.craftingController = new CraftingController(this);
         this.mountainController = new MountainController(this);
         this.techniqueController = new TechniqueController(this);
@@ -206,6 +208,11 @@ export class SystemsScreen {
 
     handleSectZoneAction(zoneId, actionId) {
         this.sectController.handleSectZoneAction(zoneId, actionId);
+    }
+
+    // --- CLANS ---
+    renderClans() {
+        this.clanController.renderClans();
     }
 
     // --- SMITHING & CRAFTING ---

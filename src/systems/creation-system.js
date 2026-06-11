@@ -2,6 +2,7 @@ import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY
 import { WORLDS } from '../configs/map-data.js';
 import { Player } from '../core/player.js';
 import { SECTS } from '../configs/sect-data.js';
+import { CLANS } from '../configs/clan-data.js';
 import { getTechniqueById, getSecretTechniqueById } from '../configs/technique-data.js';
 
 const RANDOM_NAMES = [
@@ -42,7 +43,8 @@ export class CreationSystem {
         this.selectedArtifact = 'none';
         this.selectedCheatSystem = null;
         this.selectedStartingLocation = 'auto'; // Added starting location
-        this.selectedSectId = null; // Tông môn/gia tộc được chọn khi xuất thân yêu cầu
+        this.selectedSectId = null; // Tông môn được chọn khi xuất thân yêu cầu
+        this.selectedClanId = null; // Gia tộc được chọn khi xuất thân yêu cầu
         this.avatarFilterGender = 'all';
         this.avatarFilterRace = 'all';
 
@@ -73,11 +75,16 @@ export class CreationSystem {
         this.selectedOrigin = originId;
         this.startingLingShi = origin.resources.lingShi;
         this.selectedSectId = null; // Reset khi đổi xuất thân
+        this.selectedClanId = null; // Reset khi đổi xuất thân
         this.calculatePoints();
     }
 
     selectSectForOrigin(sectId) {
         this.selectedSectId = sectId;
+    }
+
+    selectClanForOrigin(clanId) {
+        this.selectedClanId = clanId;
     }
 
     selectArtifact(artifactId) {
@@ -751,7 +758,7 @@ export class CreationSystem {
             player.equipTitle(origin.startingTitle);
         }
 
-        // Apply Origin Sect (Tông Môn/Gia Tộc từ xuất thân)
+        // Apply Origin Sect (Tông Môn từ xuất thân)
         if (origin.requiresSectSelection && this.selectedSectId) {
             const sectData = SECTS[this.selectedSectId];
             if (sectData) {
@@ -764,6 +771,31 @@ export class CreationSystem {
 
                 // Cấp công pháp cơ bản của tông môn (isTech với minRankScore: 0)
                 const startingTech = sectData.libraryItems?.find(
+                    item => item.isTech && (item.minRankScore === undefined || item.minRankScore === 0)
+                );
+                if (startingTech) {
+                    const isMainTech = !!getTechniqueById(startingTech.id);
+                    if (isMainTech) {
+                        player.learnTechnique(startingTech.id);
+                    } else if (getSecretTechniqueById(startingTech.id)) {
+                        player.learnSecretTechnique(startingTech.id);
+                    }
+                }
+            }
+        }
+
+        // Apply Origin Clan (Gia Tộc từ xuất thân)
+        if (origin.requiresClanSelection && this.selectedClanId) {
+            const clanData = CLANS[this.selectedClanId];
+            if (clanData) {
+                // Gia nhập gia tộc ngay từ đầu
+                player.clanId = this.selectedClanId;
+                player.clanRank = 'ngoai_chi';
+                player.clanContribution = 0;
+                player.currentLocId = this.selectedClanId; // Đặt địa điểm xuất phát là tộc địa
+
+                // Cấp công pháp gia truyền cơ bản của gia tộc (isTech với minRankScore: 0)
+                const startingTech = clanData.libraryItems?.find(
                     item => item.isTech && (item.minRankScore === undefined || item.minRankScore === 0)
                 );
                 if (startingTech) {
@@ -847,7 +879,9 @@ export class CreationSystem {
                     startLocId = 'thien_ma_thanh'; // Capital city
                 }
             } else if (this.selectedRace === 'YAO') {
-                if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
+                if ((this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') && this.selectedClanId) {
+                    startLocId = this.selectedClanId;
+                } else if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
                     startLocId = 'thien_van_thanh';
                 } else if (this.selectedOrigin === 'tong_mon') {
                     startLocId = 'hoang_phong_coc';
@@ -860,7 +894,10 @@ export class CreationSystem {
                     startWorldId = 'linh_gioi';
                 }
             } else { // HUMAN
-                if ((this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc' || this.selectedOrigin === 'tong_mon') && this.selectedSectId) {
+                if ((this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') && this.selectedClanId) {
+                    startLocId = this.selectedClanId;
+                    startWorldId = 'nhan_gioi';
+                } else if ((this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc' || this.selectedOrigin === 'tong_mon') && this.selectedSectId) {
                     // Đặt vị trí tại tông môn cụ thể được chọn
                     startLocId = this.selectedSectId;
                     startWorldId = 'nhan_gioi';

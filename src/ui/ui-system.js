@@ -563,7 +563,7 @@ export class UISystem {
     resetUIState() {
         const overlays = [
             'map-location-view', 'map-explore-view', 'shop-overlay', 'guild-overlay',
-            'mountain-overlay', 'tower-overlay', 'sects-overlay', 'stats-modal',
+            'mountain-overlay', 'tower-overlay', 'sects-overlay', 'clans-overlay', 'stats-modal',
             'guide-overlay', 'modal-overlay', 'chase-overlay', 'ambush-overlay',
             'loot-screen-overlay', 'mining-overlay', 'location-detail-overlay'
         ];
