@@ -2528,6 +2528,19 @@ export class Player {
             }
         }
 
+        // Apply Deployed Puppet Stat Contribution (15% of puppet stats for COMBAT/GUARD mode)
+        const puppetItems = (this.inventory?.allItems || []).filter(i => i.id === 'khoi_loi' && i.metadata?.deployed);
+        puppetItems.forEach(puppet => {
+            const mode = puppet.metadata.mode || 'COMBAT';
+            if (mode === 'COMBAT' || mode === 'GUARD') {
+                const ps = puppet.metadata.stats || {};
+                this.bonusStats.maxHp += Math.floor((ps.hp  || 0) * 0.15);
+                this.bonusStats.atk   += Math.floor((ps.atk || 0) * 0.15);
+                this.bonusStats.def   += Math.floor((ps.def || 0) * 0.15);
+                this.bonusStats.spd   += Math.floor((ps.spd || 0) * 0.05);
+            }
+        });
+
         // 4. Combine BASE and BONUS for final values
         this.maxHp = Math.max(1, (this.baseStats.maxHp || 0) + (this.bonusStats.maxHp || 0));
         this.maxMana = Math.max(1, (this.baseStats.maxMana || 0) + (this.bonusStats.maxMana || 0));

@@ -443,6 +443,47 @@ export class CombatEngine {
                 }
             }
 
+            // [PUPPET COMBAT ACTIONS — Khôi Lỗi Sư]
+            const deployedPuppets = (this.player.inventory?.allItems || []).filter(
+                i => i.id === 'khoi_loi' && i.metadata?.deployed && i.metadata.durability > 0
+            );
+            for (const puppet of deployedPuppets) {
+                const meta = puppet.metadata;
+                const mode = meta.mode || 'COMBAT';
+                const pStats = meta.stats || {};
+
+                if (mode === 'COMBAT' && Math.random() < 0.45) {
+                    // Direct attack — scales with puppet ATK
+                    const puppetAtk = pStats.atk || 10;
+                    let puppetDmg = Math.max(1, Math.floor(puppetAtk - this.enemy.def * 0.3));
+                    if (meta.hasIntelligence && Math.random() < 0.20) {
+                        // Sentient puppet: DEF shred
+                        this.enemy.def = Math.max(1, Math.floor(this.enemy.def * 0.92));
+                        puppetDmg = Math.floor(puppetDmg * 1.3);
+                        this.addLog(`🤖⚡ [Khôi Lỗi Linh Trí] <span class="text-amber-300 font-bold">${meta.name}</span> vận khởi trận văn, bạo kích kẻ địch gây <span class="text-red-400 font-bold">${puppetDmg}</span> sát thương! Giáp kẻ địch bị phá vỡ 8%!`);
+                    } else {
+                        this.addLog(`🤖 [Khôi Lỗi] <span class="text-blue-300 font-bold">${meta.name}</span> tung quyền sắt oanh kích, gây <span class="text-red-400 font-bold">${puppetDmg}</span> sát thương!`);
+                    }
+                    this.enemy.hp = Math.max(0, this.enemy.hp - puppetDmg);
+                    this.onUpdate('damage', { target: 'enemy', value: puppetDmg, actionType: 'puppet_attack' });
+
+                    // Minor durability wear in combat
+                    meta.durability = Math.max(0, meta.durability - 0.2);
+
+                    if (this.enemy.hp <= 0) {
+                        this.win();
+                        return;
+                    }
+                } else if (mode === 'GUARD') {
+                    // Guard mode: each turn reduce incoming damage pool by absorbing a fraction based on DEF
+                    const shieldBonus = Math.floor((pStats.def || 0) * 0.10);
+                    if (shieldBonus > 0) {
+                        this.status.player.shield = (this.status.player.shield || 0) + shieldBonus;
+                        this.addLog(`🛡️ [Khôi Lỗi Hộ Vệ] <span class="text-teal-300 font-bold">${meta.name}</span> án thủ trước mặt, tạo thêm Linh Giáp +${shieldBonus}!`);
+                    }
+                }
+            }
+
             // Check for Chanting
             if (this.playerChanting) {
                 this.playerChanting.turns--;

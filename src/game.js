@@ -622,6 +622,7 @@ export class Game {
         if (state.systems.time) state.systems.time.update(delta);
         if (state.systems.garden) state.systems.garden.update(delta);
         if (state.systems.beast) state.systems.beast.update(delta);
+        if (state.systems.puppet) state.systems.puppet.update(delta);
         if (state.systems.mission) state.systems.mission.update();
         if (state.systems.mining) state.systems.mining.processTimeEvents(delta / 60); // minutes
         if (state.systems.mountain && state.systems.mountain.isActive) state.systems.mountain.update(delta);
@@ -3509,6 +3510,32 @@ export class Game {
             const res = state.systems.puppet.craft(typeId);
             state.ui.toast(res.msg, res.success ? 'success' : 'error');
             this.refreshUI();
+        }
+    }
+
+    deployPuppet(uniqueId) {
+        if (state.systems.puppet) {
+            const res = state.systems.puppet.deploy(uniqueId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+            if (this.screens.systems) this.screens.systems.renderPuppet();
+        }
+    }
+
+    repairPuppet(uniqueId) {
+        if (state.systems.puppet) {
+            const res = state.systems.puppet.repair(uniqueId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            this.refreshUI();
+            if (this.screens.systems) this.screens.systems.renderPuppet();
+        }
+    }
+
+    setPuppetMode(uniqueId, mode) {
+        if (state.systems.puppet) {
+            const res = state.systems.puppet.setMode(uniqueId, mode);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (this.screens.systems) this.screens.systems.renderPuppet();
         }
     }
 

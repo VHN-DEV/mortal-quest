@@ -7,7 +7,7 @@
                 <i class="ph ph-caret-left text-xl text-qi-blue"></i>
             </button>
             <div>
-                <h2 class="text-3xl font-charm text-qi-blue">Khôi Lỗi Đường</h2>
+                <h2 class="text-3xl font-ancient text-qi-blue">Khôi Lỗi Đường</h2>
                 <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mt-1">Cơ Quan Diệu Pháp</p>
             </div>
         </div>
@@ -22,7 +22,22 @@
             </div>
         </div>
     </div>
-    <div id="puppet-list" class="flex-grow overflow-y-auto space-y-4 custom-scroll pb-10">
+
+    <div class="flex space-x-2 mb-6 bg-black/40 p-1 rounded-2xl border border-white/5">
+        <button id="puppet-tab-craft"
+            class="flex-grow py-2 bg-qi-blue/10 text-qi-blue border border-qi-blue/20 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all">
+            Luyện Chế
+        </button>
+        <button id="puppet-tab-owned"
+            class="flex-grow py-2 text-gray-500 rounded-xl text-[10px] font-ancient uppercase tracking-widest transition-all">
+            Khôi Lỗi Sở Hữu
+        </button>
+    </div>
+
+    <div id="puppet-recipes-view" class="flex-grow overflow-y-auto space-y-4 custom-scroll pb-10">
         <!-- Puppet recipes will be here -->
+    </div>
+    <div id="puppet-owned-view" class="hidden flex-grow overflow-y-auto space-y-4 custom-scroll pb-10">
+        <!-- Owned puppets will be here -->
     </div>
 </div>

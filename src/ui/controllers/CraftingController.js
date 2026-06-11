@@ -144,69 +144,219 @@ export class CraftingController {
 
         const elLvl = document.getElementById('puppet-level-text');
         const elBar = document.getElementById('puppet-exp-bar');
-        const view = document.getElementById('puppet-list');
+        const viewRecipes = document.getElementById('puppet-recipes-view');
+        const viewOwned = document.getElementById('puppet-owned-view');
+        const tabCraft = document.getElementById('puppet-tab-craft');
+        const tabOwned = document.getElementById('puppet-tab-owned');
 
+        if (!state.views.puppet) state.views.puppet = 'craft';
+
+        // Update Views Visibility
+        if (state.views.puppet === 'owned') {
+            if (viewRecipes) viewRecipes.classList.add('hidden');
+            if (viewOwned) viewOwned.classList.remove('hidden');
+        } else {
+            if (viewRecipes) viewRecipes.classList.remove('hidden');
+            if (viewOwned) viewOwned.classList.add('hidden');
+        }
+
+        // Update Tab Styles
+        const activeClass = ['bg-qi-blue/10', 'text-qi-blue', 'border-qi-blue/20'];
+        const inactiveClass = ['bg-transparent', 'text-gray-500', 'border-transparent'];
+
+        [tabCraft, tabOwned].forEach(tab => {
+            if (tab) {
+                tab.classList.remove(...activeClass, ...inactiveClass);
+                const isActive = (tab === tabCraft && state.views.puppet === 'craft') ||
+                    (tab === tabOwned && state.views.puppet === 'owned');
+                tab.classList.add(...(isActive ? activeClass : inactiveClass));
+            }
+        });
+
+        // Update Level/Exp Display
         if (elLvl) elLvl.textContent = `Khôi Lỗi Sư - Cấp ${state.player.puppetLevel}`;
         if (elBar) {
             const nextLevelExp = Math.max(1, state.player.puppetLevel * 100 * Math.pow(1.5, state.player.puppetLevel - 1));
             elBar.style.width = `${Math.min(100, (state.player.puppetExp / nextLevelExp) * 100)}%`;
         }
 
-        if (view) {
-            view.innerHTML = '';
+        // Render Recipes View
+        if (viewRecipes && state.views.puppet === 'craft') {
+            viewRecipes.innerHTML = '';
             const known = PUPPET_RECIPES.filter(r => state.player.knownPuppetRecipes.includes(r.id));
 
             if (known.length === 0) {
-                view.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa có bản thiết kế khôi lỗi nào...</div>';
-                return;
-            }
+                viewRecipes.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa có bản thiết kế khôi lỗi nào...</div>';
+            } else {
+                known.forEach(recipe => {
+                    const el = document.createElement('div');
+                    el.className = 'p-5 border border-white/5 rounded-3xl bg-white/[0.02] space-y-4 group hover:border-qi-blue/30 transition-all';
 
-            known.forEach(recipe => {
-                const el = document.createElement('div');
-                el.className = 'p-5 border border-white/5 rounded-3xl bg-white/[0.02] space-y-4 group hover:border-qi-blue/30 transition-all';
-
-                let materialsHTML = '';
-                recipe.materials.forEach(mat => {
-                    const matItem = getItemById(mat.id);
-                    const count = state.player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
-                    const enough = count >= mat.quantity;
-                    materialsHTML += `
-                        <div class="flex justify-between items-center bg-black/20 p-2 rounded-xl border ${enough ? 'border-white/5' : 'border-red-500/20'}">
-                            <span class="text-[10px] text-gray-400">${matItem?.name || mat.id}</span>
-                            <span class="text-[10px] font-mono ${enough ? 'text-qi-jade' : 'text-red-500'}">${count}/${mat.quantity}</span>
-                        </div>
-                    `;
-                });
-
-                const locked = state.player.puppetLevel < recipe.skillLevel;
-
-                const puppetImg = ASSETS.puppets[recipe.id];
-
-                el.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center overflow-hidden border border-white/10 group-hover:scale-110 transition-transform">
-                                ${puppetImg ? `<img src="${puppetImg}" class="w-full h-full object-cover">` : '🤖'}
+                    let materialsHTML = '';
+                    recipe.materials.forEach(mat => {
+                        const matItem = getItemById(mat.id);
+                        const count = state.player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
+                        const enough = count >= mat.quantity;
+                        materialsHTML += `
+                            <div class="flex justify-between items-center bg-black/20 p-2 rounded-xl border ${enough ? 'border-white/5' : 'border-red-500/20'}">
+                                <span class="text-[10px] text-gray-400">${matItem?.name || mat.id}</span>
+                                <span class="text-[10px] font-mono ${enough ? 'text-qi-jade' : 'text-red-500'}">${count}/${mat.quantity}</span>
                             </div>
-                            <div>
-                                <h4 class="font-ancient text-white text-lg">${recipe.name}</h4>
-                                <div class="flex space-x-2 mt-1">
-                                    <span class="text-[8px] px-2 py-0.5 bg-qi-blue/10 text-qi-blue rounded-full border border-qi-blue/20 uppercase font-bold">${PUPPET_GRADES[recipe.grade].name}</span>
-                                    <span class="text-[8px] px-2 py-0.5 bg-white/5 text-gray-500 rounded-full border border-white/10 uppercase font-bold">${recipe.type}</span>
+                        `;
+                    });
+
+                    const locked = state.player.puppetLevel < recipe.skillLevel;
+                    const puppetImg = ASSETS.puppets[recipe.id];
+
+                    el.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center overflow-hidden border border-white/10 group-hover:scale-110 transition-transform">
+                                    ${puppetImg ? `<img src="${puppetImg}" class="w-full h-full object-cover">` : '🤖'}
+                                </div>
+                                <div>
+                                    <h4 class="font-ancient text-white text-lg">${recipe.name}</h4>
+                                    <div class="flex space-x-2 mt-1">
+                                        <span class="text-[8px] px-2 py-0.5 bg-qi-blue/10 text-qi-blue rounded-full border border-qi-blue/20 uppercase font-bold">${PUPPET_GRADES[recipe.grade].name}</span>
+                                        <span class="text-[8px] px-2 py-0.5 bg-white/5 text-gray-500 rounded-full border border-white/10 uppercase font-bold">${recipe.type}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            ${locked ?
+                            `<div class="text-[9px] text-red-500 font-bold uppercase py-2">Cần Cấp ${recipe.skillLevel}</div>` :
+                            `<button class="px-5 py-2.5 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue text-[10px] font-bold rounded-xl border border-qi-blue/20 active:scale-95 transition-all" onclick="window.game.craftPuppet('${recipe.id}')">LUYỆN CHẾ</button>`
+                        }
+                        </div>
+                        <p class="text-[10px] text-gray-500 italic leading-relaxed">${recipe.description}</p>
+                        <div class="grid grid-cols-2 gap-2">${materialsHTML}</div>
+                    `;
+                    viewRecipes.appendChild(el);
+                });
+            }
+        }
+
+        // Render Owned View
+        if (viewOwned && state.views.puppet === 'owned') {
+            viewOwned.innerHTML = '';
+            const owned = state.player.inventory.allItems.filter(i => i.id === 'khoi_loi' && i.metadata?.uniqueId);
+
+            if (owned.length === 0) {
+                viewOwned.innerHTML = '<div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa sở hữu khôi lỗi nào. Hãy chọn tab Luyện Chế để chế tạo khôi lỗi!</div>';
+            } else {
+                owned.forEach(puppet => {
+                    const meta = puppet.metadata;
+                    const stats = meta.stats || {};
+                    const isDeployed = meta.deployed || false;
+                    const mode = meta.mode || 'COMBAT';
+                    const durability = Math.floor(meta.durability !== undefined ? meta.durability : 100);
+                    const maxDurability = meta.maxDurability || 100;
+                    const hasIntel = meta.hasIntelligence || false;
+                    const puppetImg = ASSETS.puppets[meta.puppetId];
+                    
+                    // Mode display name mapping
+                    const modeNames = { COMBAT: 'Chiến Đấu', SCOUT: 'Trinh Thám', GATHER: 'Thu Thập', GUARD: 'Hộ Vệ' };
+                    
+                    // Calculate repair cost
+                    const missingDur = maxDurability - durability;
+                    const repairCost = Math.max(100, Math.floor(missingDur * 20 * (state.player.puppetLevel || 1)));
+
+                    const el = document.createElement('div');
+                    el.className = `p-4 border ${isDeployed ? 'border-qi-blue/30 bg-qi-blue/[0.02]' : 'border-white/5 bg-white/[0.02]'} rounded-2xl flex flex-col space-y-3`;
+
+                    // Generate Mode Selection HTML if deployed
+                    let modeSelectorHtml = '';
+                    if (isDeployed) {
+                        modeSelectorHtml = `
+                            <div class="mt-2 flex flex-col space-y-1.5 border-t border-white/5 pt-2">
+                                <span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Chế độ hoạt động:</span>
+                                <div class="grid grid-cols-4 gap-1">
+                                    ${['COMBAT', 'GUARD', 'GATHER', 'SCOUT'].map(m => {
+                                        const active = mode === m;
+                                        return `
+                                            <button class="py-1 text-[8px] font-bold rounded-lg border transition-all ${active ? 'bg-qi-blue/20 text-qi-blue border-qi-blue/30' : 'bg-transparent text-gray-500 border-white/5 hover:border-white/15'}"
+                                                onclick="window.game.setPuppetMode('${meta.uniqueId}', '${m}')">
+                                                ${modeNames[m]}
+                                            </button>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // Generate Repair Button if damaged
+                    let repairBtnHtml = '';
+                    if (durability < maxDurability) {
+                        const canAfford = state.player.lingShi >= repairCost;
+                        repairBtnHtml = `
+                            <button class="px-3 py-1.5 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/20 rounded-xl text-[9px] font-bold active:scale-95 transition-all ${!canAfford ? 'opacity-40 cursor-not-allowed' : ''}"
+                                ${canAfford ? `onclick="window.game.repairPuppet('${meta.uniqueId}')"` : ''}>
+                                SỬA CHỮA (-${repairCost} LT)
+                            </button>
+                        `;
+                    }
+
+                    el.innerHTML = `
+                        <div class="flex items-start space-x-4">
+                            <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center overflow-hidden border border-white/10 flex-shrink-0 relative">
+                                ${puppetImg ? `<img src="${puppetImg}" class="w-full h-full object-cover">` : `<span class="text-3xl">🤖</span>`}
+                                ${isDeployed ? `<span class="absolute top-0 right-0 bg-qi-blue text-black text-[7px] font-extrabold px-1 rounded-bl">XUẤT CHIẾN</span>` : ''}
+                            </div>
+                            <div class="flex-grow">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-bold text-white text-sm flex items-center space-x-2">
+                                        <span>${meta.name}</span>
+                                        ${hasIntel ? `<span class="text-[7px] bg-amber-500/20 text-amber-400 px-1 rounded border border-amber-500/30 uppercase tracking-widest font-extrabold">⚡ LINH TRÍ</span>` : ''}
+                                    </h4>
+                                    <span class="text-[8px] bg-white/5 text-gray-400 px-2 py-0.5 rounded-full border border-white/10 font-mono">${meta.quality}</span>
+                                </div>
+                                <div class="text-[9px] text-gray-500 mt-0.5">Trạng thái: ${isDeployed ? `Đang hoạt động [${modeNames[mode]}]` : 'Nghỉ ngơi'}</div>
+                                <div class="w-full h-1.5 bg-white/5 rounded-full mt-2 overflow-hidden border border-white/5">
+                                    <div class="h-full bg-gradient-to-r ${durability <= 20 ? 'from-red-500 to-orange-500 shadow-[0_0_4px_rgba(239,68,68,0.5)]' : 'from-qi-blue to-qi-purple shadow-[0_0_4px_rgba(0,191,255,0.4)]'}" 
+                                         style="width: ${(durability / maxDurability) * 100}%"></div>
+                                </div>
+                                <div class="flex justify-between text-[8px] text-gray-400 mt-1">
+                                    <span>Độ bền: ${durability}/${maxDurability}</span>
+                                    ${durability <= 20 ? '<span class="text-red-400 font-bold animate-pulse">⚠️ Sắp Hỏng</span>' : ''}
                                 </div>
                             </div>
                         </div>
-                        ${locked ?
-                        `<div class="text-[9px] text-red-500 font-bold uppercase py-2">Cần Cấp ${recipe.skillLevel}</div>` :
-                        `<button class="px-5 py-2.5 bg-qi-blue/10 hover:bg-qi-blue/20 text-qi-blue text-[10px] font-bold rounded-xl border border-qi-blue/20 active:scale-95 transition-all" onclick="window.game.craftPuppet('${recipe.id}')">LUYỆN CHẾ</button>`
-                    }
-                    </div>
-                    <p class="text-[10px] text-gray-500 italic leading-relaxed">${recipe.description}</p>
-                    <div class="grid grid-cols-2 gap-2">${materialsHTML}</div>
-                `;
-                view.appendChild(el);
-            });
+
+                        <!-- Puppet Stats Grid -->
+                        <div class="grid grid-cols-3 gap-2 bg-white/[0.01] border border-white/5 rounded-xl p-2 text-center text-[9px]">
+                            <div>
+                                <span class="text-gray-500 block">Khí Huyết</span>
+                                <span class="text-red-400 font-bold">${stats.hp || 0}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block">Công Kích</span>
+                                <span class="text-yellow-400 font-bold">${stats.atk || 0}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block">Phòng Ngự</span>
+                                <span class="text-blue-400 font-bold">${stats.def || 0}</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex items-center space-x-2 pt-1">
+                            <button class="flex-grow py-1.5 text-[9px] font-bold rounded-xl border transition-all active:scale-95 ${isDeployed ? 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20' : 'bg-qi-blue text-black border-qi-blue hover:opacity-90'}"
+                                onclick="window.game.deployPuppet('${meta.uniqueId}')">
+                                ${isDeployed ? 'THU HỒI' : 'XUẤT CHIẾN'}
+                            </button>
+                            ${repairBtnHtml}
+                        </div>
+
+                        ${modeSelectorHtml}
+                    `;
+                    viewOwned.appendChild(el);
+                });
+            }
         }
+
+        // Event Listeners for Tabs
+        if (tabCraft) tabCraft.onclick = () => { state.views.puppet = 'craft'; this.renderPuppet(); };
+        if (tabOwned) tabOwned.onclick = () => { state.views.puppet = 'owned'; this.renderPuppet(); };
     }
 
     renderTalisman() {
