@@ -102,4 +102,44 @@ describe('Character Creation - Origin and Sect Integration', () => {
     // Lương bổng tổng cộng = Linh thạch xuất thân (50) + Linh thạch chức vụ Trưởng Lão (1500) = 1550 Linh thạch.
     expect(player.lingShi).toBe(initialLingShi + 50 + 1500);
   });
+
+  it('should scale monthly sect pill stipend according to player cultivation realm', () => {
+    creationSystem.selectOrigin('tong_mon');
+    creationSystem.selectSectForOrigin('hoang_phong_coc');
+    creationSystem.points = 100;
+    creationSystem.playerName = 'Hàn Lập';
+    
+    const player = creationSystem.buildPlayer();
+    const timeSystem = new TimeSystem(player, mockUI);
+
+    // 1. Ở cảnh giới Luyện Khí (realmId = 1)
+    player.realmId = 1;
+    player.inventory.bags[0].items = []; // Clear inventory
+    timeSystem.onMonthChanged();
+    
+    // Đan dược bổng lộc tông môn cho Luyện Khí: ngung_khi_dan và tich_coc_dan
+    expect(player.inventory.getItemQuantity('ngung_khi_dan')).toBe(2); // 1 từ origin monthly resources + 1 từ tông môn
+    expect(player.inventory.getItemQuantity('tich_coc_dan')).toBe(2);
+
+    // 2. Ở cảnh giới Trúc Cơ (realmId = 14)
+    player.realmId = 14;
+    player.inventory.bags[0].items = []; // Clear inventory
+    timeSystem.onMonthChanged();
+    
+    // Đan dược bổng lộc tông môn cho Trúc Cơ: tu_vi_dan và bo_nguyen_dan, cộng thêm ngung_khi_dan từ origin (1 viên)
+    expect(player.inventory.getItemQuantity('tu_vi_dan')).toBe(1);
+    expect(player.inventory.getItemQuantity('bo_nguyen_dan')).toBe(1);
+    expect(player.inventory.getItemQuantity('ngung_khi_dan')).toBe(1); // Từ Origin
+    expect(player.inventory.getItemQuantity('tich_coc_dan')).toBe(0);
+
+    // 3. Ở cảnh giới Nguyên Anh (realmId = 22)
+    player.realmId = 22;
+    player.inventory.bags[0].items = []; // Clear inventory
+    timeSystem.onMonthChanged();
+    
+    // Đan dược bổng lộc tông môn cho Nguyên Anh: ngo_dao_dan và lac_van_tien_dan, cộng thêm ngung_khi_dan từ origin
+    expect(player.inventory.getItemQuantity('ngo_dao_dan')).toBe(1);
+    expect(player.inventory.getItemQuantity('lac_van_tien_dan')).toBe(1);
+    expect(player.inventory.getItemQuantity('ngung_khi_dan')).toBe(1); // Từ Origin
+  });
 });

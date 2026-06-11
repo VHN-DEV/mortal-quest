@@ -2,6 +2,7 @@ import { HOURS, SEASONS, PHENOMENA } from '../configs/time-data.js';
 import { WORLDS } from '../configs/map-data.js';
 import { BEASTS } from '../configs/beast-data.js';
 import { SECTS, SECT_RANKS } from '../configs/sect-data.js';
+import { ITEMS } from '../configs/item-data.js';
 import { state } from '../state.js';
 
 export class TimeSystem {
@@ -160,6 +161,63 @@ export class TimeSystem {
                 
                 this.player.addLingShi(sectStipend);
                 this.ui.toast(`Nhận bổng lộc tháng từ ${sectData.name} (${rankInfo?.name || 'Ngoại Môn Đệ Tử'}): +${sectStipend} Linh Thạch`, "success");
+
+                // Cấp phát đan dược bổng lộc tương ứng với cảnh giới hiện tại (PNTT logic)
+                const realmId = this.player.realmId || 1;
+                let pillRewardId = 'ngung_khi_dan';
+                let pillQty = 1;
+                let secondPillId = 'tich_coc_dan';
+                let secondPillQty = 1;
+                let realmNameText = 'Luyện Khí';
+                
+                if (realmId <= 13) {
+                    // Luyện Khí
+                    pillRewardId = 'ngung_khi_dan';
+                    pillQty = 1;
+                    secondPillId = 'tich_coc_dan';
+                    secondPillQty = 2;
+                    realmNameText = 'Luyện Khí';
+                } else if (realmId <= 17) {
+                    // Trúc Cơ
+                    pillRewardId = 'tu_vi_dan';
+                    pillQty = 1;
+                    secondPillId = 'bo_nguyen_dan';
+                    secondPillQty = 1;
+                    realmNameText = 'Trúc Cơ';
+                } else if (realmId <= 21) {
+                    // Kết Đan
+                    pillRewardId = 'song_tu_dieu_dan';
+                    pillQty = 1;
+                    secondPillId = 'tieu_hoan_dan';
+                    secondPillQty = 1;
+                    realmNameText = 'Kết Đan';
+                } else if (realmId <= 25) {
+                    // Nguyên Anh
+                    pillRewardId = 'ngo_dao_dan';
+                    pillQty = 1;
+                    secondPillId = 'lac_van_tien_dan';
+                    secondPillQty = 1;
+                    realmNameText = 'Nguyên Anh';
+                } else {
+                    // Hóa Thần trở lên
+                    pillRewardId = 'tu_cuc_ngo_dao_dan';
+                    pillQty = 1;
+                    secondPillId = 'dai_hoan_dan';
+                    secondPillQty = 1;
+                    realmNameText = 'Hóa Thần';
+                }
+                
+                // Add the pills to inventory
+                if (this.player.inventory) {
+                    this.player.inventory.addItem(pillRewardId, pillQty);
+                    this.player.inventory.addItem(secondPillId, secondPillQty);
+                    
+                    // Get pill names for notification
+                    const pillRewardName = ITEMS[pillRewardId]?.name || pillRewardId;
+                    const secondPillName = ITEMS[secondPillId]?.name || secondPillId;
+                    
+                    this.ui.toast(`Tông môn ban phát đan dược cảnh giới ${realmNameText}: +${pillQty} ${pillRewardName}, +${secondPillQty} ${secondPillName}`, "success");
+                }
             }
         }
         
