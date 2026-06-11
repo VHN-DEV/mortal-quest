@@ -489,28 +489,7 @@ export class Player {
     }
 
     getFormattedLingShi() {
-        const counts = {
-            'ha_pham_linh_thach': 0,
-            'trung_pham_linh_thach': 0,
-            'thuong_pham_linh_thach': 0,
-            'cuc_pham_linh_thach': 0
-        };
-
-        if (this.inventory) {
-            this.inventory.allItems.forEach(item => {
-                if (counts.hasOwnProperty(item.id)) {
-                    counts[item.id] += item.quantity;
-                }
-            });
-        }
-
-        let res = [];
-        if (counts['cuc_pham_linh_thach'] > 0) res.push(`<span class="grade-cuc">${counts['cuc_pham_linh_thach']} Cực</span>`);
-        if (counts['thuong_pham_linh_thach'] > 0) res.push(`<span class="grade-thuong">${counts['thuong_pham_linh_thach']} Thượng</span>`);
-        if (counts['trung_pham_linh_thach'] > 0) res.push(`<span class="grade-trung">${counts['trung_pham_linh_thach']} Trung</span>`);
-        if (counts['ha_pham_linh_thach'] > 0 || res.length === 0) res.push(`<span class="grade-ha">${counts['ha_pham_linh_thach']} Hạ</span>`);
-        
-        return res.join(' ');
+        return `${this.lingShi.toLocaleString()} <span class="text-cultivation-gold font-ancient text-[10px] ml-0.5">LT</span>`;
     }
 
     spendLingShi(amount) {
