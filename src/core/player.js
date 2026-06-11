@@ -1782,6 +1782,9 @@ export class Player {
 
     getBreakthroughSuccessRate(type = 'tuvi') {
         let baseRate = this.getStability();
+        // BUG-09 FIX: permanentBreakthroughBonus được lưu dưới dạng tỷ lệ (0.05 = 5%).
+        // Nhân *100 để chuyển sang % phù hợp với baseRate (là giá trị %).
+        // Đảm bảo giá trị trong item config dùng đơn vị ratio, ví dụ: breakthroughChance: 0.05
         if (this.permanentBreakthroughBonus) {
             baseRate += this.permanentBreakthroughBonus * 100;
         }
@@ -1863,7 +1866,8 @@ export class Player {
                 const diffBody = this.realmId - this.bodyRealmId;
                 const diffSoul = this.realmId - this.soulRealmId;
                 let extra = '';
-                if (diffBody > 5) { this.hp *= (0.5 + daoTamProt); extra += ' Thân thể không chịu nổi linh lực bạo tẩu!'; }
+                // BUG-04 FIX: Đảm bảo HP không về 0/âm sau penalty thứ hai
+                if (diffBody > 5) { this.hp = Math.max(1, Math.floor(this.hp * (0.5 + daoTamProt))); extra += ' Thân thể không chịu nổi linh lực bạo tẩu!'; }
                 if (diffSoul > 5) { this.stability -= 20 * (1 - daoTamProt); this.heartDemon += 10 * (1 - daoTamProt); extra += ' Tâm ma thừa cơ xâm nhập!'; }
                 this.addStatusEffect('tau_hoa_nhap_ma', 300, 'Đột Phá Thất Bại');
                 // Reset PNTT fields
@@ -2540,11 +2544,18 @@ export class Player {
         }
 
         // 4. Apply TITLE bonuses
+        // BUG-06 FIX: Title bonus phải áp dụng vào final stats (this.atk, this.maxHp...)
+        // thay vì this.baseStats vì baseStats đã được tính vào final stats ở dòng trên.
         if (this.fate.activeTitleId) {
             const title = TITLES.find(t => t.id === this.fate.activeTitleId);
             if (title && title.bonus) {
                 Object.entries(title.bonus).forEach(([key, val]) => {
-                    if (this.baseStats.hasOwnProperty(key)) this.baseStats[key] *= val;
+                    // Áp dụng vào final stats đã được tính
+                    if (key === 'atk') this.atk = Math.max(0, this.atk * val);
+                    else if (key === 'def') this.def = Math.max(0, this.def * val);
+                    else if (key === 'spd') this.spd = Math.max(1, this.spd * val);
+                    else if (key === 'maxHp') this.maxHp = Math.max(1, this.maxHp * val);
+                    else if (key === 'maxMana') this.maxMana = Math.max(1, this.maxMana * val);
                     else if (this.bonusStats.hasOwnProperty(key)) {
                         if (['tuViSpeed', 'bodyExpSpeed', 'soulExpSpeed'].includes(key)) {
                             this.bonusStats[key] *= val;
@@ -2627,6 +2638,8 @@ export class Player {
         });
 
         // Add Social System Bonuses
+        // BUG-02 FIX: Mentor bonus phải nhân vào tuViPerSecond trực tiếp vì
+        // bonusStats.tuViSpeed đã được áp dụng trước đó ở dòng 2620.
         if (typeof state !== 'undefined' && state.systems.social) {
             const social = state.systems.social;
             // Đạo lữ (Song Tu): Tăng 20% tốc độ tu luyện
@@ -2640,10 +2653,9 @@ export class Player {
                 }
             }
             
-            // Sư đồ: Tăng 15% tốc độ lĩnh ngộ (Trong thực tế có thể tăng exp luyện tập công pháp)
+            // Sư đồ: Áp dụng trực tiếp vào tuViPerSecond (đã finalized ở trên)
             if (social.bonds.mentor) {
-                // Giả sử có bonus cho mastery speed
-                this.bonusStats.tuViSpeed *= 1.05; // Tạm thời tăng nhẹ tu vi nếu là mentor
+                this.tuViPerSecond *= 1.05;
             }
         }
         
@@ -2909,15 +2921,16 @@ export class Player {
         const finalMult = masteryMult * qualityMult * attributeMult * stageMult;
 
         // Apply path-specific cultivation rate
+        // BUG-01 FIX: Dùng += thay vì = để cộng dồn, không ghi đè
         if (path === 'tuvi') {
             const baseTvps = masteryBonus?.tvps || techData.effects?.tvps || 0;
-            this.tuViPerSecond = baseTvps * finalMult;
+            this.tuViPerSecond += baseTvps * finalMult;
         } else if (path === 'body') {
             const baseBodyPs = masteryBonus?.bodyPs || techData.effects?.bodyPs || 0;
-            this.bodyExpPerSecond = baseBodyPs * finalMult;
+            this.bodyExpPerSecond += baseBodyPs * finalMult;
         } else if (path === 'soul') {
             const baseSoulPs = masteryBonus?.soulPs || techData.effects?.soulPs || 0;
-            this.soulExpPerSecond = baseSoulPs * finalMult;
+            this.soulExpPerSecond += baseSoulPs * finalMult;
         } else if (path === 'dual') {
             const baseTvps = masteryBonus?.tvps || techData.effects?.tvps || 0;
             this.tuViPerSecond += baseTvps * finalMult;

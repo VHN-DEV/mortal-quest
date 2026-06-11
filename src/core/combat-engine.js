@@ -10,17 +10,17 @@ export class CombatEngine {
     constructor(player, enemy, onUpdate, onEnd, ambushType = null, environment = 'NORMAL') {
         this.player = player;
         this.enemy = enemy || { name: 'Vô Danh Kẻ Địch', hp: 100, maxHp: 100, atk: 10, def: 10, spd: 10, inventory: [] };
-        
+
         if (typeof this.enemy === 'string') {
             console.error('CombatEngine: enemy is a string! This is a bug in the caller.', this.enemy);
             this.enemy = { name: 'Lỗi Dữ Liệu (' + this.enemy + ')', hp: 100, maxHp: 100, atk: 1, def: 1, spd: 1, inventory: [] };
         }
-        
+
         this.onUpdate = onUpdate;
         this.onEnd = onEnd;
-        this.ambushType = ambushType; 
+        this.ambushType = ambushType;
         this.environment = environment; // 'NORMAL', 'FIRE', 'ICE', 'DEMON_QI', 'SPIRITUAL_TIDE'
-        this.turn = 0; 
+        this.turn = 0;
         this.playerAmbushBonus = false;
         this.log = [];
         this.isActive = true;
@@ -38,15 +38,15 @@ export class CombatEngine {
 
         this.playerGauge = 0;
         this.enemyGauge = 0;
-        
+
         // --- Module 2: Thiên Địa Dị Biến (Combat Events) ---
         this.combatEventTurnCounter = 0;
         this.activeCombatEvents = new Set();  // IDs of currently active event bonuses
-        
+
         // --- Module 3: Đạo Tâm / Tâm Ma snapshot ---
         this.combatHeartDemon = Math.min(100, player.heartDemon || 0);
         this.combatDaoTam = Math.max(0, player.daoTam || 50);
-        
+
     }
 
     getEnemyMultiplier(statKey) {
@@ -92,7 +92,7 @@ export class CombatEngine {
     applyCombatStatusEffects(attacker, defender, isAttackerPlayer, damage, wasCrit) {
         if (isAttackerPlayer) {
             this.enemy.buffs = this.enemy.buffs || [];
-            
+
             // 1. Kiếm tu: accumulates "Nội Thương"
             if (this.player.specializedPaths?.sword?.realmId > 0) {
                 if (wasCrit || Math.random() < 0.35) {
@@ -125,13 +125,13 @@ export class CombatEngine {
             }
         } else {
             // Enemy attacking Player -> apply persistent player.addStatusEffect
-            
+
             // Standard chance: 20% to apply "noi_thuong_nhe"
             if (Math.random() < 0.20) {
                 this.player.addStatusEffect('noi_thuong_nhe', null, this.enemy.name);
                 this.addLog(`⚠️ Linh khí chấn động mạnh! Bản thân bị tổn thương kinh mạch, tích tụ trạng thái <span class="text-yellow-500 font-bold">[Nội Thương Nhẹ]</span>.`);
             }
-            
+
             // Critical hit: 45% chance to apply "Nội Thương" or "Kinh Mạch Tổn Thương"
             if (wasCrit && Math.random() < 0.45) {
                 if (Math.random() < 0.5) {
@@ -312,7 +312,7 @@ export class CombatEngine {
             const eSense = (this.enemy.perception || 10) * 0.1;
             const pSpd = Math.max(1, this.player.spd + pSense);
             const eSpd = Math.max(1, (this.enemy.spd + eSense) * this.getEnemyMultiplier('spd'));
-            
+
             // Give a head start based on relative speed
             if (pSpd >= eSpd) {
                 this.playerGauge = 50;
@@ -334,6 +334,10 @@ export class CombatEngine {
     nextTurn() {
         if (!this.isActive) return;
 
+        // BUG-08 FIX: Clear turn-based events ở đây để đảm bảo chính xác 1 lượt
+        // SAT_KHI_TU_TAP từ lượt trước được xóa ngay khi bắt đầu lượt mới
+        this.activeCombatEvents.delete('SAT_KHI_TU_TAP');
+
         const pSense = (this.player.advancedStats?.perception || 10) * 0.1;
         const eSense = (this.enemy.perception || 10) * 0.1;
         const pSpd = Math.max(1, this.player.spd + pSense);
@@ -344,7 +348,7 @@ export class CombatEngine {
             const timeToPlayer = (100 - this.playerGauge) / pSpd;
             const timeToEnemy = (100 - this.enemyGauge) / eSpd;
             const timeToTick = Math.min(timeToPlayer, timeToEnemy);
-            
+
             if (timeToTick <= 0 || isNaN(timeToTick) || timeToTick === Infinity) {
                 this.playerGauge += pSpd * 0.1;
                 this.enemyGauge += eSpd * 0.1;
@@ -364,7 +368,7 @@ export class CombatEngine {
         }
         this.processTurnStatus();
         if (!this.isActive) return;
-        
+
         this.onUpdate('turn', { turn: this.turn });
 
         if (this.turn === 1) {
@@ -387,7 +391,7 @@ export class CombatEngine {
                     this.player.mana = Math.min(this.player.maxMana, this.player.mana + dualManaRegen);
                     this.addLog(`☯️ [Song Tu] Huyết mạch âm dương hòa hợp, hồi phục +${dualManaRegen} linh lực!`);
                 }
-                
+
                 // Low-stability backlash check (< 30%)
                 if (this.player.stability < 30) {
                     if (Math.random() < 0.02) { // 2% chance per player turn start
@@ -409,7 +413,7 @@ export class CombatEngine {
             if (this.playerChanting) {
                 this.playerChanting.turns--;
                 this.addLog(`Đang tích tụ linh lực cho <span class="text-cultivation-gold">${this.playerChanting.name}</span>... (Còn ${this.playerChanting.turns} lượt)`);
-                
+
                 this.playerGauge = Math.max(0, this.playerGauge - 100);
                 if (this.playerChanting.turns <= 0) {
                     this.executeChanting();
@@ -438,7 +442,7 @@ export class CombatEngine {
         const chant = this.playerChanting;
         this.playerChanting = null;
         this.addLog(`<span class="text-cultivation-gold font-bold">NIỆM CHÚ HOÀN TẤT!</span> Ngươi thi triển ${chant.name}!`);
-        
+
         if (chant.type === 'secret') {
             this.playerSecretTechnique(chant.payload, true); // true to skip checks
         } else if (chant.type === 'skill') {
@@ -615,7 +619,7 @@ export class CombatEngine {
             const finalDmg = Math.max(1, Math.floor((damage - Math.floor((this.player.def * defMult) / 2)) * (1 - dr) * (1 - allRes)));
             this.player.hp -= finalDmg;
             this.addLog(msg + ` Gây ${finalDmg} sát thương.`);
-            
+
             if (skillId === 'SOUL_DEVOUR') {
                 const heal = Math.floor(finalDmg * 0.60);
                 this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + heal);
@@ -734,7 +738,7 @@ export class CombatEngine {
             this.isActive = true;
             this.enemyCannotEscape = true; // Lock enemy escape
             this.addLog("<span class='text-qi-blue font-bold'>Ngươi dồn lực truy kích, thành công giữ chân kẻ địch! Đối thủ không thể chạy trốn được nữa!</span>");
-            this.turn = 1; 
+            this.turn = 1;
             this.enemyGauge = Math.max(0, this.enemyGauge - 100);
             this.nextTurn();
             return true;
@@ -775,10 +779,10 @@ export class CombatEngine {
             if (!b) return false;
             const cat = (b.category || '').toLowerCase();
             const id = (b.id || '').toLowerCase();
-            return cat === 'poison' || cat === 'burn' || 
-                   id.includes('doc') || id.includes('hoa') || 
-                   id.includes('phe') || id.includes('tre') ||
-                   id === 'moc_doc' || id === 'hoa_doc' || id === 'han_doc' || id === 'loi_phe' || id === 'tho_tre';
+            return cat === 'poison' || cat === 'burn' ||
+                id.includes('doc') || id.includes('hoa') ||
+                id.includes('phe') || id.includes('tre') ||
+                id === 'moc_doc' || id === 'hoa_doc' || id === 'han_doc' || id === 'loi_phe' || id === 'tho_tre';
         };
 
         // 2. Tick down Player's persistent status effects (1 combat turn = 15 seconds)
@@ -842,7 +846,7 @@ export class CombatEngine {
                     this.enemy.hp = Math.max(0, this.enemy.hp - hpLoss);
                     this.addLog(`💥 ${this.enemy.name} chịu ảnh hưởng từ [${b.name}]: mất -${hpLoss} HP.`);
                     this.onUpdate('damage', { target: 'enemy', value: hpLoss, crit: false, actionType: 'dot' });
-                    
+
                     if (this.enemy.hp <= 0) {
                         this.enemy.hp = 0;
                         this.win();
@@ -869,7 +873,7 @@ export class CombatEngine {
         // --- Module 2: Tâm Ma Bạo Phát check (Module 3 mechanic triggered here) ---
         if (this.turn === 0 && this.combatHeartDemon > 50) {
             const hd = this.combatHeartDemon;
-            
+
             // 20% Thần Thức Hỗn Loạn (choáng lượt) when > 50
             if (Math.random() < 0.20) {
                 this.addLog(`⚠️ <span class="text-purple-400 font-ancient font-bold">THẦN THỨC HỖN LOẠN!</span> Tâm ma quấy nhiễu, thần hồn hoảng hốt, ngươi đứng yên không thể hành động!`);
@@ -986,7 +990,7 @@ export class CombatEngine {
 
         const suppression = this.calculateRealmSuppression(this.player, this.enemy);
         const racialBonus = this.calculateRacialSuppression(this.player, this.enemy);
-        
+
         // Environment bonus
         let envBonus = 1.0;
         if (this.environment === 'FIRE' && this.player.specializedPaths?.fire?.realmId > 0) envBonus = 1.2;
@@ -1005,7 +1009,7 @@ export class CombatEngine {
 
         const pierce = this.player.advancedStats.pierce || 0;
         const effectiveEnemyDef = Math.max(1, Math.floor(this.enemy.def * this.getEnemyMultiplier('def') * (1 - pierce)));
-        
+
         const eDr = this.enemy.advancedStats?.damageReduction || 0;
         const eAllRes = this.enemy.advancedStats?.allRes || 0;
         let damage = Math.max(1, Math.floor((this.player.atk - Math.floor(effectiveEnemyDef / 2)) * suppression * racialBonus * envBonus * elementalMult * (1 - eDr) * (1 - eAllRes)));
@@ -1024,7 +1028,7 @@ export class CombatEngine {
         const pSense = this.player.advancedStats?.perception || 10;
         const eSense = this.enemy.perception || 10;
         const hitChance = 0.85 + (pSense - eSense) * 0.005;
-        
+
         if (Math.random() > hitChance) {
             this.addLog(`<span class="text-gray-500">Hụt!</span> Đối phương ảo ảnh chớp nhoáng, né tránh đòn đánh.`);
             this.onUpdate('damage', { target: 'enemy', value: 0, crit: false, actionType: 'miss' });
@@ -1082,21 +1086,21 @@ export class CombatEngine {
             return;
         }
         this.player.mana -= costMana;
-        
+
         this.addLog("<span class='text-qi-blue font-ancient'>Kiếm Ý xung thiên!</span> Ngươi nhân kiếm hợp nhất, chém ra một kiếm tuyệt diệt.");
-        
+
         const suppression = this.calculateRealmSuppression(this.player, this.enemy);
         let swordIntentMult = 2.5;
         const damage = Math.floor(this.player.atk * swordIntentMult * suppression);
-        
+
         // Sword Intent ignores 80% defense
-        const effectiveEnemyDef = Math.floor(this.enemy.def * 0.2); 
-        
+        const effectiveEnemyDef = Math.floor(this.enemy.def * 0.2);
+
         // Kiếm Ý true damage scales with sword specialized path level
         const swordRealm = this.player.specializedPaths?.sword?.realmId || 0;
         const trueDmg = swordRealm * 15;
         const finalDmg = Math.max(1, damage - effectiveEnemyDef) + trueDmg;
-        
+
         this.enemy.hp -= finalDmg;
         if (trueDmg > 0) {
             this.addLog(`Kiếm quang xé rách hư không, gây <span class="text-red-500 font-bold">${finalDmg}</span> sát thương (chứa ${trueDmg} sát thương thực từ Kiếm Ý)!`);
@@ -1104,7 +1108,7 @@ export class CombatEngine {
             this.addLog(`Kiếm quang xé rách hư không, gây <span class="text-red-500 font-bold">${finalDmg}</span> sát thương!`);
         }
         this.onUpdate('damage', { target: 'enemy', value: finalDmg, crit: true, actionType: 'sword-intent' });
-        
+
         this.endPlayerTurn();
     }
 
@@ -1144,16 +1148,16 @@ export class CombatEngine {
     playerDefend() {
         this.playerDefending = true;
         this.addLog("Ngươi vận chuyển chân khí, hình thành hộ thân linh giáp.");
-        
+
         // Buddhist Path bonus: +10% max HP shield and light heal when defending
         const buddhistRealm = this.player.specializedPaths?.buddhist?.realmId || 0;
         if (buddhistRealm > 0) {
             const shieldAmt = Math.floor(this.player.maxHp * 0.1 * buddhistRealm);
             const healAmt = Math.floor(this.player.maxHp * 0.05 * buddhistRealm);
-            
+
             this.status.player.shield = (this.status.player.shield || 0) + shieldAmt;
             this.player.hp = Math.min(this.player.maxHp, this.player.hp + healAmt);
-            
+
             this.addLog(`☸️ [Phật Tu] Hộ Thể Kim Quang kích hoạt: Nhận +${shieldAmt} Giáp Hộ Thân và hồi phục +${healAmt} khí huyết!`);
         }
 
@@ -1172,11 +1176,11 @@ export class CombatEngine {
         this.addLog("<span class='text-qi-purple font-ancient'>Thần Thức Trấn Áp!</span> Ngươi giải phóng thần hải hồn lực khổng lồ oanh tạc thần hồn đối phương (tiêu hao -25 Thần Thức).");
 
         const suppression = this.calculateRealmSuppression(this.player, this.enemy);
-        
+
         // Soul Damage scales with maxThanThuc (Divine Sense capacity) and Soul Realm level
         const maxThanThuc = this.player.maxThanThuc || 50;
         const soulRealm = this.player.specializedPaths?.soul_path?.realmId || 1;
-        
+
         let damage = Math.floor((maxThanThuc * 1.5 + soulRealm * 35) * suppression);
         const finalDmg = Math.max(1, damage);
 
@@ -1250,7 +1254,7 @@ export class CombatEngine {
 
         // Enemy chase success chance
         let enemyChaseChance = 0.45 + ((enemySpd - (playerSpd + flightBonus)) / 100);
-        
+
         let enemyChaseBonus = 0;
         let enemyArtName = '';
         if (this.enemy.mainEscapeId) {
@@ -1403,7 +1407,7 @@ export class CombatEngine {
             this.addLog("Không có linh thạch để bóp nát!");
             return;
         }
-        
+
         const res = this.player.crushStone(stone.id, 1);
         if (res.success) {
             this.addLog(`Ngươi bóp nát <span class="text-qi-blue">${getItemById(stone.id).name}</span>, hồi phục ${res.gain} Linh Lực!`);
@@ -1427,7 +1431,7 @@ export class CombatEngine {
         const levelBonus = (beast.level || 1) * 5;
         const beastAtk = beast.stats?.atk || 50;
         const dmg = Math.max(1, Math.floor(beastAtk * 0.8 + levelBonus + (this.player.beastLevel || 1) * 10));
-        
+
         this.enemy.hp -= dmg;
         this.addLog(`Linh thú <span class="text-green-400">${beast.name}</span> (Cấp ${beast.level}) xuất chiến, gây ${dmg} sát thương!`);
         this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false, actionType: 'beast' });
@@ -1482,14 +1486,14 @@ export class CombatEngine {
             return;
         }
         let dmg = Math.max(1, Math.floor((corpse.stats?.atk || this.player.atk * 0.6) * 0.8 + (this.player.corpseLevel || 1) * 12));
-        
+
         if (this.player.mainPath === 'quy_dao') {
             dmg = Math.floor(dmg * 1.3);
             this.addLog(`👻 [Quỷ Đạo] Triệu hồi Thi Khôi cực hạn! Thi khôi ${corpse.name} hung mãnh oanh kích gây ${dmg} sát thương!`);
         } else {
             this.addLog(`Thi khôi ${corpse.name} hung mãnh công kích gây ${dmg} sát thương!`);
         }
-        
+
         this.enemy.hp -= dmg;
         this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false, actionType: 'corpse' });
         if (Math.random() < 0.2) {
@@ -1510,19 +1514,19 @@ export class CombatEngine {
             this.addLog("Chưa có kỳ trùng để điều khiển!");
             return;
         }
-        
+
         const lvl = insect.level || 1;
         const insectAtk = insect.stats?.atk || 40;
         const swarmDmg = Math.max(1, Math.floor(insectAtk * 0.6 + lvl * 15 + (this.player.insectLevel || 1) * 10));
-        
+
         this.enemy.hp -= swarmDmg;
         this.addLog(`Bầy kỳ trùng <span class="text-yellow-500">${insect.name}</span> (Cấp ${insect.level}) cắn xé, gây ${swarmDmg} sát thương!`);
         this.onUpdate('damage', { target: 'enemy', value: swarmDmg, crit: false, actionType: 'insect' });
-        
+
         // Hiệu ứng phụ: Độc (Burn)
         this.status.enemy.burn = Math.max(this.status.enemy.burn, 2);
         this.status.enemy.burnPower = Math.max(this.status.enemy.burnPower, (insect.stats?.atk || 10) * 0.2);
-        
+
         this.endPlayerTurn();
     }
 
@@ -1809,7 +1813,7 @@ export class CombatEngine {
         if (!this.isActive) return;
 
         this.triggerArtifacts('defense');
-        
+
         const suppression = this.calculateRealmSuppression(this.enemy, this.player);
         const pSense = this.player.advancedStats?.perception || 10;
         const eSense = this.enemy.perception || 10;
@@ -1833,7 +1837,7 @@ export class CombatEngine {
 
         // Apply Enemy Armor Penetration (pierce)
         const ePierce = this.enemy.advancedStats?.pierce || 0;
-        
+
         // [INSTABILITY DEFENSE PENALTY] Instability status reduces player's defense by 30%
         const instabilityMult = this.status.player.instability > 0 ? 0.7 : 1.0;
         const effectivePlayerDef = Math.floor(this.player.def * (1 - ePierce) * instabilityMult);
@@ -1850,13 +1854,13 @@ export class CombatEngine {
         const elementalMult = this.getElementalMultiplier(enemyElement, playerElement);
 
         const dr = this.player.advancedStats.damageReduction || 0;
-        
+
         // [SONG TU PASSIVE RESIST] Song Tu slot adds +10% all elemental resistances in combat
         let allRes = this.player.advancedStats.allRes || 0;
         if (this.player.mainDualId) {
             allRes += 0.10;
         }
-        
+
         const effectiveEnemyAtk = Math.max(1, Math.floor(this.enemy.atk * this.getEnemyMultiplier('atk')));
         let damage = Math.max(1, (effectiveEnemyAtk - Math.floor(effectivePlayerDef / 2)) * suppression * elementalMult * (1 - dr) * (1 - allRes));
 
@@ -1873,6 +1877,8 @@ export class CombatEngine {
 
         const isFatal = Math.random() < fatalChance;
         const isWeakness = !isFatal && (Math.random() < weaknessChance);
+        // BUG-03 FIX: Khai báo biến crit để dùng trong onUpdate và applyCombatStatusEffects
+        const crit = isFatal || isWeakness;
         const critDmg = this.enemy.advancedStats?.critDmg || 1.5;
 
         let attackMsg = "";
@@ -1951,7 +1957,7 @@ export class CombatEngine {
         }
 
         this.player.hp -= finalPlayerDamage;
-        
+
         this.addLog(attackMsg);
         this.onUpdate('damage', { target: 'player', value: finalPlayerDamage, crit, actionType: 'attack' });
 
@@ -2066,11 +2072,11 @@ export class CombatEngine {
                 break;
             }
         }
-        // Clear turn-based active events after 1 turn
-        if (key === 'SAT_KHI_TU_TAP') {
-            setTimeout(() => this.activeCombatEvents.delete('SAT_KHI_TU_TAP'), 100);
-        }
     }
+    // BUG-08 FIX: Track vía turn counter thay vì setTimeout để tránh race condition
+    // SAT_KHI_TU_TAP được clear ở nextTurn() sau mỗi lượt thông qua activeCombatEvents.
+    // setTimeout(100ms) không đồng bộ với luồng turn-based, gây race condition.
+    // Thay vào đó, đưa việc xóa event vào đầu nextTurn để đảm bảo chính xác 1 lượt.
 
     // ─────────────────────────────────────────────────────────────────────────
     // MODULE 3: Luyện Tâm (Meditate)
@@ -2084,11 +2090,11 @@ export class CombatEngine {
         this.combatHeartDemon = Math.max(0, this.combatHeartDemon - heartDemonReduce);
         this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
         this.player.thanThuc = Math.min(this.player.maxThanThuc || 50, (this.player.thanThuc || 0) + thanThucGain);
-        
+
         const label = this.player.getEnergyLabel ? this.player.getEnergyLabel() : 'Linh Lực';
         this.addLog(`🧘 <span class="text-purple-400 font-ancient">Luyện Tâm!</span> Ngươi thu tâm thần, hóa giải Tâm Ma (-${heartDemonReduce}), hồi ${label} +${manaGain}, hồi Thần Thức +${thanThucGain}.`);
         this.onUpdate('damage', { target: 'player', value: 0, crit: false, actionType: 'meditate' });
-        
+
         this.endPlayerTurn();
     }
 
@@ -2247,7 +2253,7 @@ export class CombatEngine {
 
 export function getSpeedItemsInInventory(player) {
     if (!player || !player.inventory || !player.inventory.allItems) return [];
-    
+
     const knownSpeedItems = {
         'phu_van_than_hanh_phu': { name: 'Thần Hành Phù', bonus: 30, icon: '📜' },
         'phu_van_thuan_di_phu': { name: 'Thuấn Di Phù', bonus: 50, icon: '📜' },
@@ -2260,11 +2266,11 @@ export function getSpeedItemsInInventory(player) {
     player.inventory.allItems.forEach(i => {
         const data = getItemById(i.id);
         if (!data) return;
-        
+
         let bonus = 0;
         let icon = data.icon || '💊';
         let name = data.name || '';
-        
+
         if (knownSpeedItems[i.id]) {
             bonus = knownSpeedItems[i.id].bonus;
             icon = knownSpeedItems[i.id].icon;
@@ -2278,7 +2284,7 @@ export function getSpeedItemsInInventory(player) {
         } else if (i.id.includes('than_hanh') || i.id.includes('thuan_di') || i.id.includes('pha_khong')) {
             bonus = 30;
         }
-        
+
         if (bonus > 0) {
             speedItems.push({
                 id: i.id,

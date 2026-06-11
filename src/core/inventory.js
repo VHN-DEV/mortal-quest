@@ -530,8 +530,13 @@ export class Inventory {
                     if (root.purity < 100) {
                         const oldPurity = root.purity;
                         root.purity = Math.min(100, oldPurity + 10);
-                        // Update the multiplier based on new purity scale
-                        root.multiplier = (root.multiplier / (oldPurity / 100)) * (root.purity / 100);
+                        // BUG-05 FIX: Guard trường hợp oldPurity = 0 để tránh chia cho 0
+                        if (oldPurity > 0) {
+                            root.multiplier = (root.multiplier / (oldPurity / 100)) * (root.purity / 100);
+                        } else {
+                            // oldPurity = 0, đặt multiplier theo purity mới
+                            root.multiplier = (root.purity / 100);
+                        }
                         msgParts.push(`Thanh lọc Linh Căn (Độ thuần khiết: ${oldPurity}% -> ${root.purity}%)`);
                     } else if (root.elements && root.elements.length > 1 && root.id !== 'thien_linh_can' && root.id !== 'di_linh_can') {
                         const oldType = root.type;
