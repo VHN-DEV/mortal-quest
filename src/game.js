@@ -2299,13 +2299,20 @@ export class Game {
             const statusText    = document.getElementById('focus-status-text');
 
             const zoneLeft  = Math.max(0, this.focusZoneCenter - this.focusZoneWidth / 2);
-            const zoneRight = this.focusZoneCenter + this.focusZoneWidth / 2;
+            const zoneRight = Math.min(100, this.focusZoneCenter + this.focusZoneWidth / 2);
             const inZone    = this.waveValue >= zoneLeft && this.waveValue <= zoneRight;
 
             const perfectWidth = this.focusZoneWidth * 0.25;
             const perfectLeft  = this.focusZoneCenter - perfectWidth / 2;
             const perfectRight = this.focusZoneCenter + perfectWidth / 2;
             const isPerfect    = this.waveValue >= perfectLeft && this.waveValue <= perfectRight;
+
+            // ✅ Snapshot the rendered zone so onSoulMinigameTap() uses what the player *sees*
+            this._renderedZone = {
+                left: zoneLeft, right: zoneRight,
+                perfectLeft, perfectRight,
+                waveValue: this.waveValue
+            };
 
             if (waveIndicator) waveIndicator.style.left = `${this.waveValue}%`;
             if (focusZoneEl) {
@@ -2339,16 +2346,19 @@ export class Game {
             return;
         }
 
-        const zoneLeft  = this.focusZoneCenter - this.focusZoneWidth / 2;
-        const zoneRight = this.focusZoneCenter + this.focusZoneWidth / 2;
-        const wave = this.waveValue;
+        // ✅ Use the last-rendered snapshot so hit detection matches what the player sees.
+        //    Fallback to live values if snapshot not yet available.
+        const snap = this._renderedZone;
+        const zoneLeft  = snap ? snap.left  : Math.max(0, this.focusZoneCenter - this.focusZoneWidth / 2);
+        const zoneRight = snap ? snap.right : Math.min(100, this.focusZoneCenter + this.focusZoneWidth / 2);
+        // Use the wave position from the snapshot for consistency
+        const wave = snap ? snap.waveValue : this.waveValue;
 
         const inZone = wave >= zoneLeft && wave <= zoneRight;
 
         if (inZone) {
-            const perfectWidth = this.focusZoneWidth * 0.25;
-            const perfectLeft = this.focusZoneCenter - perfectWidth / 2;
-            const perfectRight = this.focusZoneCenter + perfectWidth / 2;
+            const perfectLeft  = snap ? snap.perfectLeft  : this.focusZoneCenter - this.focusZoneWidth * 0.25 / 2;
+            const perfectRight = snap ? snap.perfectRight : this.focusZoneCenter + this.focusZoneWidth * 0.25 / 2;
             const isPerfect = wave >= perfectLeft && wave <= perfectRight;
 
             if (isPerfect) {
