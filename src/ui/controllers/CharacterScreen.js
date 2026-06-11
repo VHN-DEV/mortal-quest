@@ -44,27 +44,27 @@ export class CharacterScreen {
         this.elCharDaoTam = document.getElementById('char-dao-tam');
         this.elCharDanPoison = document.getElementById('char-dan-poison');
         this.elCharDailyPills = document.getElementById('char-daily-pills');
-        
+
         // Cultivation Main
         this.elCharRealmName = document.getElementById('char-realm-name');
         this.elCharRealmExpBar = document.getElementById('char-realm-exp-bar');
         this.elCharExpDetails = document.getElementById('char-exp-details');
-        
+
         // Realms (Bottom detail progress cards)
         this.elCharRealmTuvi = document.getElementById('char-realm-tuvi');
         this.elCharRealmBody = document.getElementById('char-realm-body');
         this.elCharRealmSoul = document.getElementById('char-realm-soul');
-        
+
         // Progress Bars
         this.elCharProgTuvi = document.getElementById('char-progress-tuvi');
         this.elCharProgBody = document.getElementById('char-progress-body');
         this.elCharProgSoul = document.getElementById('char-progress-soul');
-        
+
         // Exp Texts
         this.elCharExpTuvi = document.getElementById('char-exp-tuvi');
         this.elCharExpBody = document.getElementById('char-exp-body');
         this.elCharExpSoul = document.getElementById('char-exp-soul');
-        
+
         // Info
         this.elCharSectInfo = document.getElementById('char-sect-info');
         this.elCharRace = document.getElementById('char-race');
@@ -77,12 +77,12 @@ export class CharacterScreen {
         this.elRootPurity = document.getElementById('char-root-purity');
         this.elPhysique = document.getElementById('char-physique');
         this.elLuck = document.getElementById('char-luck');
-        
+
         // Techniques
         this.elMainTech = document.getElementById('char-main-technique');
         this.elMainBodyTech = document.getElementById('char-main-body-technique');
         this.elMainSoulTech = document.getElementById('char-main-soul-technique');
-        
+
         // Lists
         this.elCharPartyList = document.getElementById('char-party-list');
         this.elFormationList = document.getElementById('active-formations-list');
@@ -121,7 +121,7 @@ export class CharacterScreen {
         this.elBtnUpgradeNatal = document.getElementById('btn-upgrade-natal');
         this.elBtnBinhGiaiNatal = document.getElementById('btn-binh-giai-natal');
     }
-    
+
     initEvents() {
         const btnSaveExit = document.getElementById('btn-save-exit');
         if (btnSaveExit) {
@@ -255,25 +255,25 @@ export class CharacterScreen {
             const maxHp = state.player.maxHp || 100;
             this.elCharHp.textContent = `${Math.floor(hp)} / ${Math.floor(maxHp)}`;
         }
-        
+
         if (this.elCharHpBar) {
             const hp = state.player.hp || 0;
             const maxHp = state.player.maxHp || 100;
             this.elCharHpBar.style.width = `${Math.min(100, (hp / maxHp) * 100)}%`;
         }
-        
+
         if (this.elCharAtk) {
             const base = Math.floor(state.player.baseStats.atk || 0);
             const bonus = Math.floor(state.player.bonusStats.atk || 0);
             this.elCharAtk.innerHTML = `${base} <span class="text-[8px] opacity-60 ml-1">(+${bonus})</span>`;
         }
-        
+
         if (this.elCharDef) {
             const base = Math.floor(state.player.baseStats.def || 0);
             const bonus = Math.floor(state.player.bonusStats.def || 0);
             this.elCharDef.innerHTML = `${base} <span class="text-[8px] opacity-60 ml-1">(+${bonus})</span>`;
         }
-        
+
         if (this.elCharSpd) {
             const base = Math.floor(state.player.baseStats.spd || 0);
             const bonus = Math.floor(state.player.bonusStats.spd || 0);
@@ -327,7 +327,7 @@ export class CharacterScreen {
             const crit = state.player.advancedStats?.weaknessStrikeChance || state.player.advancedStats?.critRate || 0.05;
             this.elCharCritRate.textContent = `${Math.round(crit * 100)}%`;
             if (this.elCharCritRate.previousElementSibling) {
-                this.elCharCritRate.previousElementSibling.innerHTML = `<i class="ph ph-sparkles text-amber-500"></i> Tỷ Lệ Sơ Hở`;
+                this.elCharCritRate.previousElementSibling.innerHTML = `<i class="ph ph-target text-amber-500"></i> Tỷ Lệ Sơ Hở`;
             }
         }
 
@@ -340,11 +340,11 @@ export class CharacterScreen {
         const playerAge = state.player.age || 0;
         const maxAge = state.player.maxAge || 100;
         const remaining = Math.max(0, maxAge - Math.floor(playerAge));
-        
+
         if (this.elCharAge) {
             this.elCharAge.textContent = `${Math.floor(playerAge)} / ${maxAge} tuổi`;
         }
-        
+
         if (this.elCharRemainingAge) {
             const colorClass = remaining < 10 ? 'text-red-500 animate-pulse' : (remaining < 50 ? 'text-cultivation-gold' : 'text-gray-400');
             this.elCharRemainingAge.innerHTML = `
@@ -439,7 +439,7 @@ export class CharacterScreen {
             this.elCharRace.textContent = `${raceInfo.name} (${genderLabel})`;
             this.elCharRace.className = `text-xs font-bold race-${state.player.race.toLowerCase()}`;
         }
-        
+
         // Cultivation Path Info
         if (this.elCharCultivationPath) {
             const mainPath = state.player.mainPath || 'orthodox';
@@ -456,13 +456,13 @@ export class CharacterScreen {
         if (this.elCharGender) {
             this.elCharGender.textContent = getGenderLabel(state.player.gender);
         }
-        
+
         if (this.elCharTitle) {
             const activeTitleId = state.player.fate?.activeTitleId;
             const title = TITLES.find(t => t.id === activeTitleId);
             this.elCharTitle.textContent = title ? title.name : "Vô Danh";
         }
-        
+
         if (this.elCharDestinyRating) {
             this.elCharDestinyRating.textContent = state.player.destinyRating || "Phàm mệnh";
         }
@@ -495,7 +495,7 @@ export class CharacterScreen {
         if (this.elRootName && this.elRootElements && this.elRootPurity && state.player.spiritualRoot) {
             const root = state.player.spiritualRoot;
             const rarityName = root.rarityName || 'Phàm';
-            
+
             const defaultStyle = { color: '#ffffff', bg: 'rgba(255, 255, 255, 0.05)', border: 'rgba(255, 255, 255, 0.15)', shadow: 'transparent' };
 
             let elementsText = '';
@@ -517,10 +517,10 @@ export class CharacterScreen {
 
             // Set root name (type only, colored by rarity)
             this.elRootName.innerHTML = `<span style="color: ${root.color}; text-shadow: 0 0 8px ${root.color}40" class="font-ancient font-black text-[11px] tracking-wide">${root.type}</span>`;
-            
+
             // Set element pills
             this.elRootElements.innerHTML = elementsText;
-            
+
             // Set purity details
             this.elRootPurity.innerHTML = `<span class="bg-white/5 border border-white/5 px-1.5 py-0.5 rounded-md">Độ Tinh Khiết: <span class="font-bold text-qi-blue font-mono">${root.purity}%</span></span>`;
         }
@@ -530,18 +530,18 @@ export class CharacterScreen {
                 const physData = getPhysiqueById(phys.id);
                 const grade = PHYSIQUE_GRADES[physData.grade];
                 const stage = PHYSIQUE_STAGES[phys.stage];
-                
+
                 let text = `<span style="color: ${grade.color}">${physData.name}</span>`;
                 if (physData.grade !== 'PHAM') {
                     text += ` <span class="text-[8px] opacity-60">[${stage.name}]</span>`;
                 }
-                
+
                 if (!phys.awakened) {
                     text += ` <span class="text-[8px] text-red-500 font-bold">(CHƯA THỨC TỈNH)</span>`;
                 } else if (phys.phenomenonActive && physData.phenomenon) {
                     text += ` <i class="ph ph-sparkle text-cultivation-gold text-[8px]" title="Dị tượng: ${physData.phenomenon}"></i>`;
                 }
-                
+
                 this.elPhysique.innerHTML = text;
                 this.elPhysique.title = physData.desc;
             } else {
@@ -560,13 +560,13 @@ export class CharacterScreen {
 
         // Formations
         this.renderFormations();
-        
+
         // Energy (Qi)
         if (typeof window.game.renderEnergy === 'function') window.game.renderEnergy();
-        
+
         // Specialized Paths
         this.renderSpecializedPaths();
-        
+
         // Active Status Effects
         this.renderStatusEffects();
 
@@ -631,8 +631,8 @@ export class CharacterScreen {
                     this.elNatalStatsList.innerHTML = Object.entries(config.stats).map(([k, v]) => {
                         const scaledVal = v * scale;
                         const label = state.ui.getStatLabel(k);
-                        const displayVal = k.includes('Dmg') || k.includes('Absorb') || k.includes('Rate') 
-                            ? `+${(scaledVal * 100).toFixed(1)}%` 
+                        const displayVal = k.includes('Dmg') || k.includes('Absorb') || k.includes('Rate')
+                            ? `+${(scaledVal * 100).toFixed(1)}%`
                             : `+${Math.round(scaledVal)}`;
 
                         return `
@@ -654,22 +654,22 @@ export class CharacterScreen {
 
     renderSpecializedPaths() {
         if (!this.elSpecializedPaths || !state.player.specializedPaths) return;
-        
+
         let html = '';
 
         // Render Specialized Paths
         html += `<div>
             <h4 class="text-[10px] text-qi-blue font-ancient tracking-widest uppercase mb-2">Nhánh Tu Luyện</h4>
             <div class="grid grid-cols-2 gap-2">`;
-            
+
         const specializedIds = ['sword', 'soul_path', 'buddhist', 'confucian'];
         specializedIds.forEach(pid => {
             const pConfig = CULTIVATION_PATHS[pid];
             if (!pConfig) return;
-            
+
             const playerPath = state.player.specializedPaths[pid];
             const isUnlocked = playerPath && playerPath.realmId > 0;
-            
+
             if (isUnlocked) {
                 const realm = state.player.getCurrentRealm(pid);
                 const progress = Math.min(100, (playerPath.exp / realm.expRequired) * 100);
@@ -701,7 +701,7 @@ export class CharacterScreen {
                 const isRaceCompatible = !pConfig.races || pConfig.races.includes(state.player.race);
                 const mainPath = state.player.mainPath || 'orthodox';
                 const isMainPathCompatible = !pConfig.requiredMain || pConfig.requiredMain.length === 0 || pConfig.requiredMain.includes(mainPath);
-                
+
                 let btnHtml = '';
                 if (isRaceCompatible && isMainPathCompatible) {
                     btnHtml = `<button onclick="window.game.embarkPath('${pid}')" class="text-[8px] btn-gold px-2 py-0.5 rounded font-ancient">NHẬP ĐẠO</button>`;
@@ -744,11 +744,11 @@ export class CharacterScreen {
                 element.textContent = "Không";
                 return;
             }
-            
+
             const mastery = MASTERY_LEVELS.find(m => m.id === (entry.masteryLevel || 1));
             const stageLabel = tech.stageLabel || 'Tầng';
             const stageName = (tech.stageNames && tech.stageNames[entry.stage - 1]) ? tech.stageNames[entry.stage - 1] : `${stageLabel} ${entry.stage || 1}`;
-            
+
             element.textContent = `${tech.name} [${stageName}] (${mastery?.name || 'Nhập Môn'})`;
         } else {
             element.textContent = "Không";
@@ -832,7 +832,7 @@ export class CharacterScreen {
                 shadow: catEnum.shadowClass || ''
             } : { border: 'border-white/10', bg: 'bg-white/5', text: 'text-white', shadow: 'none' };
             const stacksLabel = b.stacks > 1 ? `<span class="ml-1 px-1 bg-black/60 rounded text-[7px] text-white font-bold font-mono">x${b.stacks}</span>` : '';
-            
+
             let durLabel = 'Vô Hạn';
             if (b.duration !== undefined && b.duration !== null && b.duration !== Infinity) {
                 const mins = Math.floor(b.duration / 60);
