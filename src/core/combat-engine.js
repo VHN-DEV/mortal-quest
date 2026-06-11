@@ -1973,6 +1973,7 @@ export class CombatEngine {
     }
 
     triggerArtifacts(phase) {
+        let needsRecalc = false;
         Object.entries(this.player.equipment).forEach(([slot, itemId]) => {
             if (!itemId || !slot.includes('Artifact')) return;
 
@@ -1995,14 +1996,25 @@ export class CombatEngine {
                     this.player.equipmentMetadata[slot] = { spirit: 0, level: 1, durability: 100 };
                 }
                 const meta = this.player.equipmentMetadata[slot];
+                const oldDurability = meta.durability;
                 meta.durability = Math.max(0, meta.durability - 1);
-                if (meta.durability === 0) {
-                    this.addLog(`<span class="text-red-400">[${item.name}]</span> đã bị tổn hại nghiêm trọng, mất linh tính!`);
+                
+                if (meta.durability !== oldDurability) {
+                    // Check if durability crossed the threshold of 20 (where 50% penalty applies) or hit 0
+                    if ((oldDurability >= 20 && meta.durability < 20) || (oldDurability > 0 && meta.durability === 0)) {
+                        needsRecalc = true;
+                    }
+                    if (meta.durability === 0) {
+                        this.addLog(`<span class="text-red-400">[${item.name}]</span> đã bị tổn hại nghiêm trọng, mất linh tính!`);
+                    }
                 }
             }
         });
 
-        this.player.calculateStats();
+        // BUG-07 FIX: Only recalculate stats if durability crossed a key threshold (like 20 or 0)
+        if (needsRecalc) {
+            this.player.calculateStats();
+        }
     }
 
 
