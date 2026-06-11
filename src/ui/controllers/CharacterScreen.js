@@ -120,6 +120,15 @@ export class CharacterScreen {
         this.elNatalStatsList = document.getElementById('natal-stats-list');
         this.elBtnUpgradeNatal = document.getElementById('btn-upgrade-natal');
         this.elBtnBinhGiaiNatal = document.getElementById('btn-binh-giai-natal');
+
+        // Radar Chart elements
+        this.elRadarPoly = document.getElementById('radar-value-poly');
+        this.elRadarDots = [];
+        this.elRadarVals = [];
+        for (let i = 0; i < 6; i++) {
+            this.elRadarDots.push(document.getElementById(`radar-dot-${i}`));
+            this.elRadarVals.push(document.getElementById(`radar-val-${i}`));
+        }
     }
 
     initEvents() {
@@ -650,6 +659,97 @@ export class CharacterScreen {
         } else {
             if (this.elNatalPanel) this.elNatalPanel.classList.add('hidden');
         }
+
+        // Render stats radar chart
+        this.updateRadarChart();
+    }
+
+    updateRadarChart() {
+        if (!this.elRadarPoly || !state.player) return;
+
+        // 1. Get raw stats
+        const atk = Math.floor((state.player.baseStats.atk || 0) + (state.player.bonusStats.atk || 0));
+        const def = Math.floor((state.player.baseStats.def || 0) + (state.player.bonusStats.def || 0));
+        const spd = Math.floor((state.player.baseStats.spd || 0) + (state.player.bonusStats.spd || 0));
+        const hp = Math.floor(state.player.hp || 100);
+        const maxHp = Math.floor(state.player.maxHp || 100);
+        const mana = Math.floor(state.player.mana || 50);
+        const maxMana = Math.floor(state.player.maxMana || 50);
+        const divine = Math.floor(state.player.divineSense || 10);
+
+        // 2. Scale stats to align them on a comparable visual range
+        const atk_val = atk;
+        const def_val = def * 2.0;      // Def is usually lower, scale it up
+        const spd_val = spd;
+        const hp_val = hp / 10.0;       // HP is higher, scale down
+        const mana_val = mana / 5.0;    // Mana is higher, scale down
+        const divine_val = divine * 1.5;// Soul/Divine sense scale
+
+        // 3. Find max value for relative scaling
+        const maxVal = Math.max(atk_val, def_val, spd_val, hp_val, mana_val, divine_val, 1);
+
+        // 4. Calculate ratios (minimum 0.15 to ensure the polygon doesn't collapse to 0)
+        const ratios = [
+            Math.max(0.15, atk_val / maxVal),
+            Math.max(0.15, def_val / maxVal),
+            Math.max(0.15, spd_val / maxVal),
+            Math.max(0.15, hp_val / maxVal),
+            Math.max(0.15, mana_val / maxVal),
+            Math.max(0.15, divine_val / maxVal)
+        ];
+
+        // Hexagon coordinates settings: Center = (140, 140), Max Radius = 80
+        const cx = 140;
+        const cy = 140;
+        const maxR = 80;
+        
+        // Step angles for 6 axes starting at 12 o'clock (-PI / 2)
+        const angles = [
+            -Math.PI / 2,                  // Axis 0: ATK (Top)
+            -Math.PI / 2 + Math.PI / 3,     // Axis 1: DEF (Top-Right)
+            -Math.PI / 2 + 2 * Math.PI / 3, // Axis 2: SPD (Bottom-Right)
+            -Math.PI / 2 + Math.PI,         // Axis 3: HP (Bottom)
+            -Math.PI / 2 + 4 * Math.PI / 3, // Axis 4: MP (Bottom-Left)
+            -Math.PI / 2 + 5 * Math.PI / 3  // Axis 5: SOUL (Top-Left)
+        ];
+
+        // Helper: format large numbers compactly
+        const fmt = (n) => n >= 10000 ? `${(n/1000).toFixed(1)}k` : n >= 1000 ? `${(n/1000).toFixed(1)}k` : String(n);
+
+        // Display values for each axis
+        const displayVals = [
+            fmt(atk),
+            fmt(def),
+            fmt(spd),
+            `${fmt(hp)}/${fmt(maxHp)}`,
+            `${fmt(mana)}/${fmt(maxMana)}`,
+            fmt(divine)
+        ];
+
+        const points = [];
+        for (let i = 0; i < 6; i++) {
+            const r = ratios[i] * maxR;
+            const x = cx + r * Math.cos(angles[i]);
+            const y = cy + r * Math.sin(angles[i]);
+            points.push({ x, y });
+
+            // Update dot position
+            const dot = this.elRadarDots[i];
+            if (dot) {
+                dot.setAttribute('cx', x.toFixed(1));
+                dot.setAttribute('cy', y.toFixed(1));
+            }
+
+            // Update value text
+            const valEl = this.elRadarVals[i];
+            if (valEl) {
+                valEl.textContent = displayVals[i];
+            }
+        }
+
+        // Generate points string for polygon
+        const pointsStr = points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+        this.elRadarPoly.setAttribute('points', pointsStr);
     }
 
     renderSpecializedPaths() {

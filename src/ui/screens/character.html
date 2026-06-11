@@ -163,7 +163,7 @@
                             <div class="h-1.5 w-full bg-black/30 rounded-full overflow-hidden border border-white/5">
                                 <div id="char-stamina-bar"
                                     class="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.4)]"
-                                     style="width: 100%"></div>
+                                    style="width: 100%"></div>
                             </div>
                         </div>
 
@@ -177,7 +177,7 @@
                             <div class="h-1.5 w-full bg-black/30 rounded-full overflow-hidden border border-white/5">
                                 <div id="char-than-thuc-bar"
                                     class="h-full bg-gradient-to-r from-purple-600 to-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.4)]"
-                                     style="width: 100%"></div>
+                                    style="width: 100%"></div>
                             </div>
                         </div>
 
@@ -272,12 +272,14 @@
                                     <span id="char-remaining-age-container"></span>
                                 </div>
                             </div>
-                            <div class="flex justify-between items-center pt-1.5 border-t border-white/5 mt-1.5" title="Đan độc quá cao (>75) có thể gây bạo loạn kinh mạch và giảm 40% tỉ lệ đột phá.">
+                            <div class="flex justify-between items-center pt-1.5 border-t border-white/5 mt-1.5"
+                                title="Đan độc quá cao (>75) có thể gây bạo loạn kinh mạch và giảm 40% tỉ lệ đột phá.">
                                 <span class="text-gray-400 font-ancient flex items-center gap-1"><i
                                         class="ph ph-skull text-purple-400"></i> Đan Độc</span>
                                 <span id="char-dan-poison" class="text-purple-400 font-bold font-mono">0 / 100</span>
                             </div>
-                            <div class="flex justify-between items-center" title="Giới hạn hấp thu đan dược trong ngày dựa theo cảnh giới của tu sĩ.">
+                            <div class="flex justify-between items-center"
+                                title="Giới hạn hấp thu đan dược trong ngày dựa theo cảnh giới của tu sĩ.">
                                 <span class="text-gray-400 font-ancient flex items-center gap-1"><i
                                         class="ph ph-pill text-cyan-400"></i> Hấp Thu Hôm Nay</span>
                                 <span id="char-daily-pills" class="text-cyan-400 font-bold font-mono">0 / 5</span>
@@ -318,18 +320,23 @@
 
                         <!-- Other potentials -->
                         <div class="grid grid-cols-1 gap-2 pt-2 border-t border-white/5">
-                            <div class="flex justify-between items-center p-2 bg-white/[0.02] border border-white/5 rounded-xl">
+                            <div
+                                class="flex justify-between items-center p-2 bg-white/[0.02] border border-white/5 rounded-xl">
                                 <span class="text-gray-400 font-ancient flex items-center gap-1"><i
                                         class="ph ph-barbell text-qi-purple"></i> Thể Chất</span>
                                 <span id="char-physique"
                                     class="font-bold text-qi-purple text-right min-w-0 max-w-[60%] leading-tight truncate"></span>
                             </div>
-                            <div class="flex justify-between items-center p-2 bg-white/[0.02] border border-white/5 rounded-xl">
+                            <div
+                                class="flex justify-between items-center p-2 bg-white/[0.02] border border-white/5 rounded-xl">
                                 <span class="text-gray-400 font-ancient flex items-center gap-1"><i
                                         class="ph ph-student text-cultivation-gold"></i> Ngộ Tính</span>
-                                <div id="char-comprehension" class="text-cultivation-gold font-bold flex items-center gap-1 flex-wrap justify-end"></div>
+                                <div id="char-comprehension"
+                                    class="text-cultivation-gold font-bold flex items-center gap-1 flex-wrap justify-end">
+                                </div>
                             </div>
-                            <div class="flex justify-between items-center p-2 bg-white/[0.02] border border-white/5 rounded-xl">
+                            <div
+                                class="flex justify-between items-center p-2 bg-white/[0.02] border border-white/5 rounded-xl">
                                 <span class="text-gray-400 font-ancient flex items-center gap-1"><i
                                         class="ph ph-clover text-amber-400"></i> Cơ Duyên</span>
                                 <span id="char-luck" class="font-mono font-bold text-amber-400">50</span>
@@ -338,6 +345,96 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Biểu Đồ Chỉ Số (Radar Chart Card) -->
+    <div
+        class="mb-6 bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-4 backdrop-blur-md relative shadow-lg shadow-black/20">
+        <div
+            class="absolute -top-10 -left-10 w-24 h-24 bg-cultivation-gold/5 rounded-full blur-2xl pointer-events-none">
+        </div>
+        <h3
+            class="text-xs font-ancient text-cultivation-gold mb-2 uppercase tracking-widest flex items-center gap-1.5 font-bold">
+            <i class="ph ph-chart-polar text-sm"></i> Ngũ Hành Lục Đạo Chỉ Số
+        </h3>
+
+        <div class="relative w-full flex items-center justify-center py-2">
+            <svg viewBox="0 0 280 280" style="width: 260px; height: 260px; display: block;">
+                <defs>
+                    <filter id="radar-glow" x="-30%" y="-30%" width="160%" height="160%">
+                        <feGaussianBlur stdDeviation="2.5" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                    <radialGradient id="radar-grad" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="rgba(212, 175, 55, 0.08)" />
+                        <stop offset="100%" stop-color="rgba(212, 175, 55, 0.38)" />
+                    </radialGradient>
+                </defs>
+
+                <!-- Grid hexagons (center 140,140 maxR=80) -->
+                <polygon points="140,60 209.3,100 209.3,180 140,220 70.7,180 70.7,100" fill="none"
+                    stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+                <polygon points="140,80 196.6,120 196.6,173 140,200 83.4,173 83.4,120" fill="none"
+                    stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+                <polygon points="140,100 182.6,122.5 182.6,167.5 140,190 97.4,167.5 97.4,122.5" fill="none"
+                    stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+                <polygon points="140,120 169.3,137.5 169.3,162.5 140,175 110.7,162.5 110.7,137.5" fill="none"
+                    stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+                <!-- Axis lines -->
+                <line x1="140" y1="140" x2="140" y2="60" stroke="rgba(255,255,255,0.12)" stroke-width="1"
+                    stroke-dasharray="3,3" />
+                <line x1="140" y1="140" x2="209.3" y2="100" stroke="rgba(255,255,255,0.12)" stroke-width="1"
+                    stroke-dasharray="3,3" />
+                <line x1="140" y1="140" x2="209.3" y2="180" stroke="rgba(255,255,255,0.12)" stroke-width="1"
+                    stroke-dasharray="3,3" />
+                <line x1="140" y1="140" x2="140" y2="220" stroke="rgba(255,255,255,0.12)" stroke-width="1"
+                    stroke-dasharray="3,3" />
+                <line x1="140" y1="140" x2="70.7" y2="180" stroke="rgba(255,255,255,0.12)" stroke-width="1"
+                    stroke-dasharray="3,3" />
+                <line x1="140" y1="140" x2="70.7" y2="100" stroke="rgba(255,255,255,0.12)" stroke-width="1"
+                    stroke-dasharray="3,3" />
+
+                <!-- Data polygon -->
+                <polygon id="radar-value-poly" points="140,140 140,140 140,140 140,140 140,140 140,140"
+                    fill="url(#radar-grad)" stroke="#d4af37" stroke-width="1.5" filter="url(#radar-glow)"
+                    style="transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);" />
+
+                <!-- Vertex dots -->
+                <circle id="radar-dot-0" cx="140" cy="140" r="3" fill="#d4af37" stroke="rgba(0,0,0,0.6)"
+                    stroke-width="1" style="transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);" />
+                <circle id="radar-dot-1" cx="140" cy="140" r="3" fill="#d4af37" stroke="rgba(0,0,0,0.6)"
+                    stroke-width="1" style="transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);" />
+                <circle id="radar-dot-2" cx="140" cy="140" r="3" fill="#d4af37" stroke="rgba(0,0,0,0.6)"
+                    stroke-width="1" style="transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);" />
+                <circle id="radar-dot-3" cx="140" cy="140" r="3" fill="#d4af37" stroke="rgba(0,0,0,0.6)"
+                    stroke-width="1" style="transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);" />
+                <circle id="radar-dot-4" cx="140" cy="140" r="3" fill="#d4af37" stroke="rgba(0,0,0,0.6)"
+                    stroke-width="1" style="transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);" />
+                <circle id="radar-dot-5" cx="140" cy="140" r="3" fill="#d4af37" stroke="rgba(0,0,0,0.6)"
+                    stroke-width="1" style="transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);" />
+
+                <!-- Labels + Values (all inside 0 0 280 280 viewBox) -->
+                <!-- Top (0): ATK -->
+                <text x="140" y="50" text-anchor="middle" style="fill:#f87171;font-size:9px;font-weight:700;">Công Kích</text>
+                <text id="radar-val-0" x="140" y="62" text-anchor="middle" style="fill:#fca5a5;font-size:8px;font-weight:600;">—</text>
+                <!-- Top-Right (1): DEF -->
+                <text x="218" y="97" text-anchor="start" style="fill:#60a5fa;font-size:9px;font-weight:700;">Phòng Ngự</text>
+                <text id="radar-val-1" x="218" y="109" text-anchor="start" style="fill:#93c5fd;font-size:8px;font-weight:600;">—</text>
+                <!-- Bottom-Right (2): SPD -->
+                <text x="218" y="181" text-anchor="start" style="fill:#34d399;font-size:9px;font-weight:700;">Thân Pháp</text>
+                <text id="radar-val-2" x="218" y="193" text-anchor="start" style="fill:#6ee7b7;font-size:8px;font-weight:600;">—</text>
+                <!-- Bottom (3): HP -->
+                <text x="140" y="235" text-anchor="middle" style="fill:#f43f5e;font-size:9px;font-weight:700;">Khí Huyết</text>
+                <text id="radar-val-3" x="140" y="247" text-anchor="middle" style="fill:#fb7185;font-size:8px;font-weight:600;">—</text>
+                <!-- Bottom-Left (4): MP -->
+                <text x="62" y="181" text-anchor="end" style="fill:#22d3ee;font-size:9px;font-weight:700;">Pháp Lực</text>
+                <text id="radar-val-4" x="62" y="193" text-anchor="end" style="fill:#67e8f9;font-size:8px;font-weight:600;">—</text>
+                <!-- Top-Left (5): SOUL -->
+                <text x="62" y="97" text-anchor="end" style="fill:#c084fc;font-size:9px;font-weight:700;">Thần Thức</text>
+                <text id="radar-val-5" x="62" y="109" text-anchor="end" style="fill:#d8b4fe;font-size:8px;font-weight:600;">—</text>
+            </svg>
         </div>
     </div>
 
@@ -449,58 +546,80 @@
     </div>
 
     <!-- PNTT Cultivation Panel -->
-    <div id="pntt-panel" class="hidden bg-black/40 p-4 rounded-2xl border border-cultivation-gold/20 space-y-4 shadow-lg mb-6 backdrop-blur-md">
-        <h3 class="text-xs font-ancient text-cultivation-gold uppercase tracking-[0.2em] border-b border-white/5 pb-2 flex justify-between items-center">
+    <div id="pntt-panel"
+        class="hidden bg-black/40 p-4 rounded-2xl border border-cultivation-gold/20 space-y-4 shadow-lg mb-6 backdrop-blur-md">
+        <h3
+            class="text-xs font-ancient text-cultivation-gold uppercase tracking-[0.2em] border-b border-white/5 pb-2 flex justify-between items-center">
             <span>仙 Tiên Giới Tu Hành</span>
-            <span id="char-tan-tien-badge" class="hidden text-[8px] bg-red-950 border border-red-500 text-red-400 px-1.5 py-0.5 rounded font-bold">TÁN TIÊN</span>
+            <span id="char-tan-tien-badge"
+                class="hidden text-[8px] bg-red-950 border border-red-500 text-red-400 px-1.5 py-0.5 rounded font-bold">TÁN
+                TIÊN</span>
         </h3>
 
         <!-- Nguyên Thần -->
         <div class="flex justify-between items-center text-[10px]">
-            <span class="text-gray-400 font-ancient flex items-center gap-1.5"><i class="ph ph-sparkles text-amber-500"></i> Nguyên Thần Cảnh Giới</span>
+            <span class="text-gray-400 font-ancient flex items-center gap-1.5"><i
+                    class="ph ph-sparkles text-amber-500"></i> Nguyên Thần Cảnh Giới</span>
             <span id="char-nguyen-than" class="text-amber-400 font-bold font-ancient">Chưa ngưng tụ</span>
         </div>
 
         <!-- Tiên Khiếu -->
         <div class="space-y-2 pt-2 border-t border-white/5">
             <div class="flex justify-between items-center text-[10px]">
-                <span class="text-gray-400 font-ancient flex items-center gap-1.5"><i class="ph ph-sun text-cyan-400"></i> Khai Thông Tiên Khiếu</span>
+                <span class="text-gray-400 font-ancient flex items-center gap-1.5"><i
+                        class="ph ph-sun text-cyan-400"></i> Khai Thông Tiên Khiếu</span>
                 <span id="char-tien-khieu" class="text-cyan-400 font-mono font-bold">0 / 108</span>
             </div>
-            <button id="btn-open-tien-khieu" class="w-full text-[9px] py-1.5 bg-cyan-950/40 hover:bg-cyan-900/40 border border-cyan-500/30 text-cyan-400 rounded-lg active:scale-95 transition-all">
+            <button id="btn-open-tien-khieu"
+                class="w-full text-[9px] py-1.5 bg-cyan-950/40 hover:bg-cyan-900/40 border border-cyan-500/30 text-cyan-400 rounded-lg active:scale-95 transition-all">
                 ✨ Khai Thông 1 Tiên Khiếu (1 Tiên Nguyên Thạch & Tu Vi)
             </button>
         </div>
 
         <!-- Pháp Tắc -->
         <div class="space-y-3 pt-2 border-t border-white/5">
-            <div class="text-[10px] text-gray-400 font-ancient flex items-center gap-1.5"><i class="ph ph-scroll text-purple-400"></i> Thiên Đạo Pháp Tắc</div>
+            <div class="text-[10px] text-gray-400 font-ancient flex items-center gap-1.5"><i
+                    class="ph ph-scroll text-purple-400"></i> Thiên Đạo Pháp Tắc</div>
             <div class="grid grid-cols-2 gap-2 text-[9px]">
-                <button class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all" data-law="loi">
+                <button
+                    class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all"
+                    data-law="loi">
                     <span class="text-yellow-400 font-ancient">⚡ Lôi Hệ</span>
                     <span id="law-loi-val" class="font-mono font-bold text-white">0%</span>
                 </button>
-                <button class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all" data-law="hoa">
+                <button
+                    class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all"
+                    data-law="hoa">
                     <span class="text-red-400 font-ancient">🔥 Hỏa Hệ</span>
                     <span id="law-hoa-val" class="font-mono font-bold text-white">0%</span>
                 </button>
-                <button class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all" data-law="thuy">
+                <button
+                    class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all"
+                    data-law="thuy">
                     <span class="text-cyan-400 font-ancient">💧 Thủy Hệ</span>
                     <span id="law-thuy-val" class="font-mono font-bold text-white">0%</span>
                 </button>
-                <button class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all" data-law="phong">
+                <button
+                    class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all"
+                    data-law="phong">
                     <span class="text-green-400 font-ancient">🍃 Phong Hệ</span>
                     <span id="law-phong-val" class="font-mono font-bold text-white">0%</span>
                 </button>
-                <button class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all" data-law="khong_gian">
+                <button
+                    class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all"
+                    data-law="khong_gian">
                     <span class="text-pink-400 font-ancient">🌌 Không Gian</span>
                     <span id="law-khong_gian-val" class="font-mono font-bold text-white">0%</span>
                 </button>
-                <button class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all" data-law="thoi_gian">
+                <button
+                    class="btn-comprehend-law flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all"
+                    data-law="thoi_gian">
                     <span class="text-amber-500 font-ancient">⏳ Thời Gian</span>
                     <span id="law-thoi_gian-val" class="font-mono font-bold text-white">0%</span>
                 </button>
-                <button class="btn-comprehend-law col-span-2 flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all" data-law="luan_hoi">
+                <button
+                    class="btn-comprehend-law col-span-2 flex justify-between items-center bg-white/[0.02] border border-white/5 hover:border-purple-500/40 p-2 rounded-lg transition-all"
+                    data-law="luan_hoi">
                     <span class="text-purple-400 font-ancient">☯️ Luân Hồi Pháp Tắc</span>
                     <span id="law-luan_hoi-val" class="font-mono font-bold text-white">0%</span>
                 </button>
@@ -512,36 +631,48 @@
     </div>
 
     <!-- Natal Dharma Treasure (Bản Mệnh Pháp Bảo) Panel -->
-    <div id="natal-treasure-panel" class="hidden bg-black/40 p-4 rounded-2xl border border-amber-500/20 space-y-4 shadow-lg mb-6 backdrop-blur-md">
-        <h3 class="text-xs font-ancient text-amber-400 uppercase tracking-[0.2em] border-b border-white/5 pb-2 flex justify-between items-center">
+    <div id="natal-treasure-panel"
+        class="hidden bg-black/40 p-4 rounded-2xl border border-amber-500/20 space-y-4 shadow-lg mb-6 backdrop-blur-md">
+        <h3
+            class="text-xs font-ancient text-amber-400 uppercase tracking-[0.2em] border-b border-white/5 pb-2 flex justify-between items-center">
             <span>✨ Bản Mệnh Pháp Bảo</span>
         </h3>
 
         <!-- Refinement Section (shown if no natal treasure is refined) -->
         <div id="natal-refine-section" class="space-y-3">
             <div class="text-[9.5px] text-gray-400 font-ancient italic">
-                Cảnh giới Kết Đan hoặc Tán Tiên trở lên có thể đem thiên tài địa bảo dung hợp tinh huyết, rèn đúc Bản Mệnh Pháp Bảo cùng trưởng thành.
+                Cảnh giới Kết Đan hoặc Tán Tiên trở lên có thể đem thiên tài địa bảo dung hợp tinh huyết, rèn đúc Bản
+                Mệnh Pháp Bảo cùng trưởng thành.
             </div>
             <div class="grid grid-cols-2 gap-2 text-[9px]">
-                <button class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all" data-id="thanh_truc_phong_van_kiem">
+                <button
+                    class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all"
+                    data-id="thanh_truc_phong_van_kiem">
                     <span class="text-xl">🗡️</span>
                     <span class="text-amber-400 font-bold font-ancient mt-1 text-[8.5px]">Thanh Trúc Kiếm</span>
                     <span class="text-[7px] text-gray-500 mt-0.5 text-center">Atk +250, Spd +30, Lôi +15%</span>
                     <span class="text-[7px] text-cyan-400 mt-1">200k LT & 1 Vạn Niên Thiết Mộc, 5 Tinh Kim</span>
                 </button>
-                <button class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all" data-id="vo_hinh_cham">
+                <button
+                    class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all"
+                    data-id="vo_hinh_cham">
                     <span class="text-xl">🪡</span>
                     <span class="text-amber-400 font-bold font-ancient mt-1 text-[8.5px]">Vô Hinh Châm</span>
                     <span class="text-[7px] text-gray-500 mt-0.5 text-center">Atk +180, Xuyên Giáp +50, Crit +10%</span>
                     <span class="text-[7px] text-cyan-400 mt-1">150k LT & 10 Tinh Kim</span>
                 </button>
-                <button class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all" data-id="ngu_hanh_huyet_ngung_phach">
+                <button
+                    class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all"
+                    data-id="ngu_hanh_huyet_ngung_phach">
                     <span class="text-xl">🔮</span>
                     <span class="text-amber-400 font-bold font-ancient mt-1 text-[8.5px]">Huyết Ngưng Phách</span>
-                    <span class="text-[7px] text-gray-500 mt-0.5 text-center">HP +1500, Def +80, Linh Lực Hấp Thu +10%</span>
+                    <span class="text-[7px] text-gray-500 mt-0.5 text-center">HP +1500, Def +80, Linh Lực Hấp Thu
+                        +10%</span>
                     <span class="text-[7px] text-cyan-400 mt-1">250k LT & 1 Vạn Niên Linh Nhu, 1 Huyết Linh Chi</span>
                 </button>
-                <button class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all" data-id="van_bao_phien">
+                <button
+                    class="btn-select-natal flex flex-col items-center bg-white/[0.02] border border-white/5 hover:border-amber-500/40 p-2.5 rounded-lg transition-all"
+                    data-id="van_bao_phien">
                     <span class="text-xl">🪭</span>
                     <span class="text-amber-400 font-bold font-ancient mt-1 text-[8.5px]">Vạn Bảo Phiến</span>
                     <span class="text-[7px] text-gray-500 mt-0.5 text-center">Atk +200, Def +50, Mana +500</span>
@@ -553,13 +684,19 @@
         <!-- Info Section (shown if natal treasure is refined) -->
         <div id="natal-info-section" class="hidden space-y-3">
             <div class="flex items-center space-x-3 bg-white/[0.02] p-2.5 rounded-xl border border-white/5">
-                <div id="natal-item-icon" class="text-3xl bg-black/45 w-12 h-12 rounded-lg flex items-center justify-center border border-amber-500/20 shadow-md">🗡️</div>
+                <div id="natal-item-icon"
+                    class="text-3xl bg-black/45 w-12 h-12 rounded-lg flex items-center justify-center border border-amber-500/20 shadow-md">
+                    🗡️</div>
                 <div class="flex-1">
                     <div class="flex justify-between items-center">
-                        <span id="natal-item-name" class="text-[10px] font-bold text-amber-400 font-ancient">Thanh Trúc Phong Vân Kiếm</span>
-                        <span id="natal-item-level" class="text-[8px] px-1.5 py-0.5 bg-amber-950 border border-amber-500/30 text-amber-300 rounded font-mono font-bold">CẤP 1</span>
+                        <span id="natal-item-name" class="text-[10px] font-bold text-amber-400 font-ancient">Thanh Trúc
+                            Phong Vân Kiếm</span>
+                        <span id="natal-item-level"
+                            class="text-[8px] px-1.5 py-0.5 bg-amber-950 border border-amber-500/30 text-amber-300 rounded font-mono font-bold">CẤP
+                            1</span>
                     </div>
-                    <div id="natal-item-desc" class="text-[8px] text-gray-500 mt-1 line-clamp-2">Bản mệnh phi kiếm do Hàn Lập luyện chế từ Vạn Niên Thiết Mộc.</div>
+                    <div id="natal-item-desc" class="text-[8px] text-gray-500 mt-1 line-clamp-2">Bản mệnh phi kiếm do
+                        Hàn Lập luyện chế từ Vạn Niên Thiết Mộc.</div>
                 </div>
             </div>
 
@@ -574,7 +711,8 @@
                     <span id="natal-nourish-boost" class="text-green-400 font-bold">+0% uy lực</span>
                 </div>
                 <div class="h-px bg-white/5 my-1.5"></div>
-                <div class="text-gray-500 text-[8px] uppercase font-bold mb-1">Thuộc tính cộng thêm (Đã nhân hệ số):</div>
+                <div class="text-gray-500 text-[8px] uppercase font-bold mb-1">Thuộc tính cộng thêm (Đã nhân hệ số):
+                </div>
                 <div id="natal-stats-list" class="space-y-1">
                     <!-- Dynamic stats lines go here -->
                 </div>
@@ -582,10 +720,13 @@
 
             <!-- Upgrade/Binh Giải actions -->
             <div class="flex gap-2">
-                <button id="btn-upgrade-natal" class="flex-1 py-2 bg-amber-950/40 hover:bg-amber-900/40 border border-amber-500/30 text-amber-400 rounded-lg text-[9px] active:scale-95 transition-all">
+                <button id="btn-upgrade-natal"
+                    class="flex-1 py-2 bg-amber-950/40 hover:bg-amber-900/40 border border-amber-500/30 text-amber-400 rounded-lg text-[9px] active:scale-95 transition-all">
                     🔥 Thối Hỏa Nâng Cấp (Tu Vi & Vạn Niên/Tiên Nguyên Thạch)
                 </button>
-                <button id="btn-binh-giai-natal" class="px-3 py-2 bg-red-950/30 hover:bg-red-900/30 border border-red-500/20 text-red-400 rounded-lg text-[9px] active:scale-95 transition-all" title="Binh Giải (Hủy bỏ pháp bảo, mất 30% HP/Mana)">
+                <button id="btn-binh-giai-natal"
+                    class="px-3 py-2 bg-red-950/30 hover:bg-red-900/30 border border-red-500/20 text-red-400 rounded-lg text-[9px] active:scale-95 transition-all"
+                    title="Binh Giải (Hủy bỏ pháp bảo, mất 30% HP/Mana)">
                     💀 Binh Giải
                 </button>
             </div>
