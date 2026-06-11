@@ -3,6 +3,7 @@ import { Player } from '../src/core/player.js';
 import { state } from '../src/state.js';
 import { getSecretTechniqueById } from '../src/configs/technique-data.js';
 import { getItemRequirements } from '../src/configs/artifact-data.js';
+import { getItemById } from '../src/configs/item-data.js';
 
 // Setup Mock UI and systems on state
 beforeEach(() => {
@@ -533,6 +534,85 @@ describe('Player class', () => {
       });
     });
   });
+
+  describe('Technique and Breakthrough Enforcement', () => {
+    it('should prevent tuvi breakthrough if mainTechniqueId is not equipped', () => {
+      const player = new Player();
+      player.realmId = 1;
+      player.tuVi = 1000;
+      player.mainTechniqueId = null;
+
+      const res = player.canBreakthrough('tuvi');
+      expect(res.can).toBe(false);
+      expect(res.reason).toContain('Chưa trang bị Công Pháp chủ chốt');
+    });
+
+    it('should allow tuvi breakthrough if mainTechniqueId is equipped', () => {
+      const player = new Player();
+      player.realmId = 1;
+      player.tuVi = 1000;
+      player.mainTechniqueId = 'truong_sinh_quyet';
+
+      const res = player.canBreakthrough('tuvi');
+      if (!res.can) {
+        expect(res.reason).not.toContain('Chưa trang bị Công Pháp chủ chốt');
+      }
+    });
+  });
+
+  describe('Spatial Bags Integration', () => {
+    it('should dynamically add and remove a bag tab when spatial artifact is equipped or unequipped', () => {
+      const player = new Player();
+      expect(player.inventory.bags.length).toBe(1);
+
+      player.equipment.phap_bao_khong_gian = 'ngoc_long_tuyen';
+      player.calculateStats();
+
+      expect(player.inventory.bags.length).toBe(2);
+      expect(player.inventory.bags[1].id).toBe('ngoc_long_tuyen');
+      expect(player.inventory.bags[1].type).toBe('artifact');
+
+      player.equipment.phap_bao_khong_gian = null;
+      player.calculateStats();
+
+      expect(player.inventory.bags.length).toBe(1);
+    });
+
+    it('should preserve items inside the spatial artifact metadata when unequipped and restore them when re-equipped', () => {
+      const player = new Player();
+      player.inventory.bags[0].items = [];
+      player.permanentStats.maxMana = 2000;
+      player.baseDivineSense = 600;
+      player.phapTac.loi = 10;
+      player.calculateStats();
+
+      player.inventory.addItem('ngoc_long_tuyen', 1);
+      const equipped = player.equip('ngoc_long_tuyen');
+      expect(equipped).toBe(true);
+      expect(player.equipment.phap_bao_khong_gian).toBe('ngoc_long_tuyen');
+      expect(player.inventory.bags.length).toBe(2);
+
+      const spatialBag = player.inventory.bags[1];
+      spatialBag.items.push({ id: 'tich_coc_dan', quantity: 5, metadata: {} });
+
+      const unequipped = player.unequip('phap_bao_khong_gian');
+      expect(unequipped).toBe(true);
+      expect(player.equipment.phap_bao_khong_gian).toBeNull();
+      expect(player.inventory.bags.length).toBe(1);
+
+      const ringInInventory = player.inventory.bags[0].items.find(i => i.id === 'ngoc_long_tuyen');
+      expect(ringInInventory).toBeDefined();
+      expect(ringInInventory.metadata.items).toBeDefined();
+      expect(ringInInventory.metadata.items.length).toBe(1);
+      expect(ringInInventory.metadata.items[0].id).toBe('tich_coc_dan');
+      expect(ringInInventory.metadata.items[0].quantity).toBe(5);
+
+      const reequipped = player.equip('ngoc_long_tuyen');
+      expect(reequipped).toBe(true);
+      expect(player.inventory.bags.length).toBe(2);
+      expect(player.inventory.bags[1].items.length).toBe(1);
+      expect(player.inventory.bags[1].items[0].id).toBe('tich_coc_dan');
+      expect(player.inventory.bags[1].items[0].quantity).toBe(5);
+    });
+  });
 });
-
-

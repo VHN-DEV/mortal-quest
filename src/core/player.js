@@ -1755,6 +1755,9 @@ export class Player {
 
         // Special requirements for Tu Vi breakthroughs
         if (type === 'tuvi') {
+            if (!this.mainTechniqueId) {
+                return { can: false, reason: "Chưa trang bị Công Pháp chủ chốt, không thể ngưng tụ linh khí đột phá!" };
+            }
             const nextRealmId = this.realmId + 1;
             // Example requirements from prompt
             if (nextRealmId === 18) { // Kết Đan
@@ -2858,6 +2861,8 @@ export class Player {
             this.bodyExpPerSecond = Math.max(0, this.bodyExpPerSecond * 0.1);
             this.soulExpPerSecond = Math.max(0, this.soulExpPerSecond * 0.1);
         }
+
+        this.updateSpatialBags();
     }
 
     applySetBonuses(equippedIds) {
@@ -3115,11 +3120,23 @@ export class Player {
                 state.ui.toast(`Cảnh báo: Tu vi/Thần thức chưa đủ để phát huy hết uy lực của ${item.name}! (Hiệu suất: ${(reqCheck.penaltyMultiplier * 100).toFixed(1)}%)`, "warning");
             }
 
+            const inventoryItem = this.inventory.allItems.find(i => i.id === itemId);
+            const itemMeta = inventoryItem ? inventoryItem.metadata : {};
+
             if (this.equipment[slot]) {
-                if (!this.inventory.addItem(this.equipment[slot], 1)) return false;
+                const oldItemId = this.equipment[slot];
+                const oldItemMeta = this.equipmentMetadata[slot] || {};
+                if (slot === 'phap_bao_khong_gian') {
+                    const currentArtifactBag = this.inventory.bags.find(b => b.type === 'artifact');
+                    if (currentArtifactBag) {
+                        oldItemMeta.items = currentArtifactBag.items;
+                    }
+                }
+                if (!this.inventory.addItem(oldItemId, 1, oldItemMeta)) return false;
             }
             this.equipment[slot] = itemId;
-            this.inventory.removeItem(itemId, 1);
+            this.equipmentMetadata[slot] = { ...itemMeta };
+            this.inventory.removeItem(itemId, 1, itemMeta);
             this.calculateStats();
             return true;
         }
@@ -3199,8 +3216,16 @@ export class Player {
     unequip(slot) {
         if (this.equipment[slot]) {
             const itemId = this.equipment[slot];
-            if (this.inventory.addItem(itemId, 1)) {
+            const meta = this.equipmentMetadata[slot] || {};
+            if (slot === 'phap_bao_khong_gian') {
+                const currentArtifactBag = this.inventory.bags.find(b => b.type === 'artifact');
+                if (currentArtifactBag) {
+                    meta.items = currentArtifactBag.items;
+                }
+            }
+            if (this.inventory.addItem(itemId, 1, meta)) {
                 this.equipment[slot] = null;
+                delete this.equipmentMetadata[slot];
                 this.calculateStats();
                 return true;
             }
@@ -4959,5 +4984,60 @@ export class Player {
         this.nextPeriodicTribulationYear = data.nextPeriodicTribulationYear || 0;
 
         this.calculateStats();
+    }
+
+    updateSpatialBags() {
+        if (!this.inventory || !this.inventory.bags) return;
+
+        const equippedId = this.equipment.phap_bao_khong_gian;
+        const currentArtifactBag = this.inventory.bags.find(b => b.type === 'artifact');
+
+        if (equippedId) {
+            const itemData = getItemById(equippedId);
+            if (itemData && itemData.stats && itemData.stats.slots) {
+                const slots = itemData.stats.slots;
+                const name = itemData.name;
+                
+                if (!this.equipmentMetadata.phap_bao_khong_gian) {
+                    this.equipmentMetadata.phap_bao_khong_gian = {};
+                }
+                const artifactMeta = this.equipmentMetadata.phap_bao_khong_gian;
+                if (!artifactMeta.items) {
+                    artifactMeta.items = [];
+                }
+
+                if (currentArtifactBag) {
+                    if (currentArtifactBag.id === equippedId) {
+                        currentArtifactBag.name = name;
+                        currentArtifactBag.slots = slots;
+                        artifactMeta.items = currentArtifactBag.items;
+                    } else {
+                        currentArtifactBag.id = equippedId;
+                        currentArtifactBag.name = name;
+                        currentArtifactBag.slots = slots;
+                        currentArtifactBag.items = artifactMeta.items;
+                    }
+                } else {
+                    this.inventory.addBag(name, slots, equippedId, 'artifact');
+                    const newBag = this.inventory.bags.find(b => b.id === equippedId && b.type === 'artifact');
+                    if (newBag) {
+                        newBag.items = artifactMeta.items;
+                    }
+                }
+            }
+        } else {
+            if (currentArtifactBag) {
+                if (this.equipmentMetadata.phap_bao_khong_gian) {
+                    this.equipmentMetadata.phap_bao_khong_gian.items = currentArtifactBag.items;
+                }
+                const index = this.inventory.bags.indexOf(currentArtifactBag);
+                if (index > -1) {
+                    this.inventory.bags.splice(index, 1);
+                }
+                if (this.inventory.currentBagIndex >= this.inventory.bags.length) {
+                    this.inventory.currentBagIndex = 0;
+                }
+            }
+        }
     }
 }

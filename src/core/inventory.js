@@ -41,7 +41,7 @@ export class Inventory {
     addItem(itemId, quantity = 1, metadata = {}) {
         // 1. Tìm xem có stack cũ không (trong tất cả các túi)
         for (const bag of this.bags) {
-            const existing = bag.items.find(i => i.id === itemId && this.compareMetadata(i.metadata, metadata));
+            const existing = bag.items.find(i => i.id === itemId && this.compareMetadata(i.metadata, metadata, itemId));
             if (existing) {
                 existing.quantity += quantity;
                 return true;
@@ -59,15 +59,23 @@ export class Inventory {
         return false; // Hết chỗ chứa trong tất cả các túi
     }
 
-    compareMetadata(m1, m2) {
-        if (!m1 && !m2) return true;
-        if (!m1 || !m2) return false;
+    compareMetadata(m1, m2, itemId) {
+        if (itemId) {
+            const itemData = getItemById(itemId);
+            if (itemData && itemData.type === 'dan_duoc') {
+                return true;
+            }
+        }
+        const isEmpty1 = !m1 || Object.keys(m1).length === 0;
+        const isEmpty2 = !m2 || Object.keys(m2).length === 0;
+        if (isEmpty1 && isEmpty2) return true;
+        if (isEmpty1 || isEmpty2) return false;
         return JSON.stringify(m1) === JSON.stringify(m2);
     }
 
-    removeItem(itemId, quantity = 1) {
+    removeItem(itemId, quantity = 1, metadata = null) {
         for (const bag of this.bags) {
-            const index = bag.items.findIndex(i => i.id === itemId);
+            const index = bag.items.findIndex(i => i.id === itemId && (metadata === null || this.compareMetadata(i.metadata, metadata, itemId)));
             if (index > -1) {
                 bag.items[index].quantity -= quantity;
                 if (bag.items[index].quantity <= 0) {
@@ -329,13 +337,13 @@ export class Inventory {
         return false;
     }
 
-    addBag(name, slots, id = 'new_bag') {
+    addBag(name, slots, id = 'new_bag', type = 'expand') {
         this.bags.push({
             id,
             name,
             slots,
             items: [],
-            type: 'expand'
+            type
         });
     }
 
@@ -357,7 +365,7 @@ export class Inventory {
         if (!item) return { success: false, msg: "Vật phẩm không tồn tại!" };
 
         // Check if stackable in target bag
-        const existing = toBag.items.find(i => i.id === item.id && this.compareMetadata(i.metadata, item.metadata));
+        const existing = toBag.items.find(i => i.id === item.id && this.compareMetadata(i.metadata, item.metadata, item.id));
         if (existing) {
             existing.quantity += item.quantity;
             fromBag.items.splice(itemIndex, 1);

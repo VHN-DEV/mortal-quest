@@ -307,4 +307,13 @@ describe('Inventory class', () => {
     expect(mockPlayer.unlockedProfessions).toContain('insect');
     expect(mockPlayer.beasts.some(b => b.id === 'phe_linh_trung')).toBe(true);
   });
+
+  it('should stack pills regardless of differing metadata', () => {
+    const inv = new Inventory({});
+    inv.addItem('tich_coc_dan', 1, { quality: 'Pháp Khí', poison: 10 });
+    inv.addItem('tich_coc_dan', 2, { quality: 'Linh Khí', poison: 5 });
+    
+    expect(inv.bags[0].items.length).toBe(1);
+    expect(inv.getItemQuantity('tich_coc_dan')).toBe(3);
+  });
 });

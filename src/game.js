@@ -216,7 +216,12 @@ export class Game {
                     state.ui.toast("Đang bế quan, không thể tu luyện tích cực!", "warning");
                     return;
                 }
-                this.cultivateHoldActive = true;
+                const focus = state.player.cultivationFocus || 'tuvi';
+                if (focus === 'soul') {
+                    this.onSoulMinigameTap();
+                } else {
+                    this.cultivateHoldActive = true;
+                }
             };
 
             const stopHold = (e) => {
@@ -257,7 +262,11 @@ export class Game {
                                 return;
                             }
                             e.preventDefault();
-                            this.cultivateHoldActive = true;
+                            if (focus === 'soul') {
+                                this.onSoulMinigameTap();
+                            } else {
+                                this.cultivateHoldActive = true;
+                            }
                         }
                     }
                 }
@@ -2234,45 +2243,21 @@ export class Game {
                 this.focusZoneWidth = Math.max(10, Math.min(25, this.focusZoneWidth));
             }
 
-            // Zone drifts more frequently at higher realms:
-            //   Phàm hồn: every 1.5–3 s  |  Đạo Hồn: every 0.7–1.5 s
-            this.focusZoneDriftTimer += delta;
-            const minDrift = 1.5 - 0.8 * diff;
-            const maxDrift = 3.0 - 1.5 * diff;
-            const driftInterval = minDrift + Math.random() * (maxDrift - minDrift);
-            if (this.focusZoneDriftTimer >= driftInterval) {
-                this.focusZoneDriftTimer = 0;
+            // Zone drifts and slides constantly:
+            if (this.focusZoneTarget === undefined) {
                 const half = this.focusZoneWidth / 2;
                 this.focusZoneTarget = half + Math.random() * (100 - this.focusZoneWidth);
+                this.focusZoneCenter = this.focusZoneTarget;
             }
-            // Smoothly slide the zone center toward target
-            const zoneSlide = 20 * delta;
+
+            const zoneSpeed = 15 + 25 * diff; // Speed scales with difficulty
+            const zoneSlide = zoneSpeed * delta;
             if (Math.abs(this.focusZoneCenter - this.focusZoneTarget) < zoneSlide) {
                 this.focusZoneCenter = this.focusZoneTarget;
+                const half = this.focusZoneWidth / 2;
+                this.focusZoneTarget = half + Math.random() * (100 - this.focusZoneWidth);
             } else {
                 this.focusZoneCenter += (this.focusZoneTarget > this.focusZoneCenter ? 1 : -1) * zoneSlide;
-            }
-
-            // Check if wave is inside focus zone
-            const zoneLeft  = this.focusZoneCenter - this.focusZoneWidth / 2;
-            const zoneRight = this.focusZoneCenter + this.focusZoneWidth / 2;
-            const inZone = this.waveValue >= zoneLeft && this.waveValue <= zoneRight;
-
-            if (isHolding && inZone) {
-                // Progress rate slightly scales up at higher realms (reward for precision):
-                //   Phàm hồn: 18/s  |  Đạo Hồn: 24/s
-                const progressRate = 18 + 6 * diff;
-                this.chuThienProgress = Math.min(100, this.chuThienProgress + progressRate * delta);
-                if (this.chuThienProgress >= 100) {
-                    this.chuThienProgress = 0;
-                    // Manual hold → 50% exp bonus
-                    this.cultivate(1.5);
-                }
-            } else if (!isHolding || !inZone) {
-                // Bleed back faster when out of zone at higher realms:
-                //   Phàm hồn: 6/s  |  Đạo Hồn: 14/s
-                const bleedRate = 6 + 8 * diff;
-                this.chuThienProgress = Math.max(0, this.chuThienProgress - bleedRate * delta);
             }
         }
 
@@ -2314,7 +2299,13 @@ export class Game {
             const statusText    = document.getElementById('focus-status-text');
 
             const zoneLeft  = Math.max(0, this.focusZoneCenter - this.focusZoneWidth / 2);
-            const inZone    = this.waveValue >= zoneLeft && this.waveValue <= (this.focusZoneCenter + this.focusZoneWidth / 2);
+            const zoneRight = this.focusZoneCenter + this.focusZoneWidth / 2;
+            const inZone    = this.waveValue >= zoneLeft && this.waveValue <= zoneRight;
+
+            const perfectWidth = this.focusZoneWidth * 0.25;
+            const perfectLeft  = this.focusZoneCenter - perfectWidth / 2;
+            const perfectRight = this.focusZoneCenter + perfectWidth / 2;
+            const isPerfect    = this.waveValue >= perfectLeft && this.waveValue <= perfectRight;
 
             if (waveIndicator) waveIndicator.style.left = `${this.waveValue}%`;
             if (focusZoneEl) {
@@ -2322,14 +2313,82 @@ export class Game {
                 focusZoneEl.style.width = `${this.focusZoneWidth}%`;
             }
             if (statusText) {
-                statusText.textContent  = inZone ? 'Định Tâm ✓' : 'Lệch Hướng';
-                statusText.className    = inZone
-                    ? 'text-green-400 font-mono uppercase tracking-widest text-[7.5px]'
-                    : 'text-red-400 font-mono uppercase tracking-widest text-[7.5px]';
+                if (isPerfect) {
+                    statusText.textContent  = 'Hoàn Mỹ 🎯';
+                    statusText.className    = 'text-yellow-400 font-mono uppercase tracking-widest text-[7.5px]';
+                } else if (inZone) {
+                    statusText.textContent  = 'Định Tâm ✓';
+                    statusText.className    = 'text-green-400 font-mono uppercase tracking-widest text-[7.5px]';
+                } else {
+                    statusText.textContent  = 'Lệch Hướng';
+                    statusText.className    = 'text-red-400 font-mono uppercase tracking-widest text-[7.5px]';
+                }
             }
 
             state.player._chuThienHoldPct = this.chuThienProgress;
         }
+    }
+
+    onSoulMinigameTap() {
+        if (!state.player) return;
+        const focus = state.player.cultivationFocus || 'tuvi';
+        if (focus !== 'soul') return;
+
+        if (!state.player.mainSoulTechniqueId) {
+            state.ui.toast("Chưa trang bị Công Pháp Thần Hồn!", "warning");
+            return;
+        }
+
+        const zoneLeft  = this.focusZoneCenter - this.focusZoneWidth / 2;
+        const zoneRight = this.focusZoneCenter + this.focusZoneWidth / 2;
+        const wave = this.waveValue;
+
+        const inZone = wave >= zoneLeft && wave <= zoneRight;
+
+        if (inZone) {
+            const perfectWidth = this.focusZoneWidth * 0.25;
+            const perfectLeft = this.focusZoneCenter - perfectWidth / 2;
+            const perfectRight = this.focusZoneCenter + perfectWidth / 2;
+            const isPerfect = wave >= perfectLeft && wave <= perfectRight;
+
+            if (isPerfect) {
+                const step = 35;
+                this.chuThienProgress = Math.min(100, this.chuThienProgress + step);
+                state.ui.toast("🎯 Hoàn Mỹ Định Tâm! Thần Thức thăng hoa (+35% tiến độ)", "success");
+            } else {
+                const step = 20;
+                this.chuThienProgress = Math.min(100, this.chuThienProgress + step);
+                state.ui.toast("✓ Định Tâm! Thần Thức ngưng tụ (+20% tiến độ)", "info");
+            }
+
+            if (window.audioManager && typeof window.audioManager.playSfx === 'function') {
+                window.audioManager.playSfx('click');
+            }
+
+            if (this.chuThienProgress >= 100) {
+                this.chuThienProgress = 0;
+                this.cultivate(1.5);
+            }
+        } else {
+            this.chuThienProgress = 0;
+            state.ui.toast("⚡ Chệch Hướng! Tâm thần hoảng loạn, tiến độ bị reset!", "error");
+            
+            if (window.audioManager && typeof window.audioManager.playSfx === 'function') {
+                window.audioManager.playSfx('backlash');
+            }
+
+            const focusContainer = document.getElementById('focus-game-container');
+            if (focusContainer) {
+                focusContainer.classList.remove('animate-shake');
+                void focusContainer.offsetWidth;
+                focusContainer.classList.add('animate-shake');
+                setTimeout(() => {
+                    focusContainer.classList.remove('animate-shake');
+                }, 400);
+            }
+        }
+        
+        this.updateCultivationHoldUI('soul');
     }
 
     /**
