@@ -484,7 +484,42 @@ export class CombatEngine {
                 }
             }
 
-            // Check for Chanting
+            // [CORPSE COMBAT ACTIONS — Luyện Thi Sư]
+            const deployedCorpses = (this.player.refinedCorpses || []).filter(c => c.deployed && c.mode === 'COMBAT');
+            for (const corpse of deployedCorpses) {
+                const corpseAtk = corpse.stats?.atk || 0;
+                if (corpseAtk > 0 && Math.random() < 0.40) {
+                    let corpseDmg = Math.max(1, Math.floor(corpseAtk - this.enemy.def * 0.25));
+                    // High-tier corpses (Thi Vương, Thi Hoàng) can use special abilities
+                    if ((corpse.id === 'thi_vuong' || corpse.id === 'thi_hoang') && Math.random() < 0.25) {
+                        // Âm Khí Vụ: dÒng ăn mòn giáp
+                        this.enemy.def = Math.max(1, Math.floor(this.enemy.def * 0.93));
+                        corpseDmg = Math.floor(corpseDmg * 1.4);
+                        this.addLog(`💀⚡ [${corpse.name}] <span class="text-red-300 font-bold">${corpse.name}</span> bùng phát Âm Khí Ma Hào, tấn công gây <span class="text-red-400 font-bold">${corpseDmg}</span> sát thương! Giáp kẻ địch bị ăn mòn 7%!`);
+                    } else {
+                        this.addLog(`🧟 [Thi Khôi] <span class="text-red-300 font-bold">${corpse.name}</span> lao vào tấn công bằng sức mạnh bất tử, gây <span class="text-red-400 font-bold">${corpseDmg}</span> sát thương!`);
+                    }
+                    this.enemy.hp = Math.max(0, this.enemy.hp - corpseDmg);
+                    this.onUpdate('damage', { target: 'enemy', value: corpseDmg, actionType: 'corpse_attack' });
+
+                    if (this.enemy.hp <= 0) {
+                        this.win();
+                        return;
+                    }
+                }
+            }
+
+            // [CORPSE GUARD MODE — Hộ Vệ]
+            const guardCorpses = (this.player.refinedCorpses || []).filter(c => c.deployed && c.mode === 'GUARD');
+            for (const corpse of guardCorpses) {
+                const shieldBonus = Math.floor((corpse.stats?.def || 0) * 0.08);
+                if (shieldBonus > 0) {
+                    this.status.player.shield = (this.status.player.shield || 0) + shieldBonus;
+                    this.addLog(`🛡️ [Thi Khôi Hộ Vệ] <span class="text-gray-300 font-bold">${corpse.name}</span> dàn hàng chắn đòn, tạo Âm Giáp +${shieldBonus}!`);
+                }
+            }
+
+
             if (this.playerChanting) {
                 this.playerChanting.turns--;
                 this.addLog(`Đang tích tụ linh lực cho <span class="text-cultivation-gold">${this.playerChanting.name}</span>... (Còn ${this.playerChanting.turns} lượt)`);

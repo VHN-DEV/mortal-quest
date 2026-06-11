@@ -5,7 +5,7 @@ import { PUPPET_RECIPES, PUPPET_GRADES } from '../../configs/puppet-data.js';
 import { TALISMAN_RECIPES, getTalismanLevelInfo } from '../../configs/talisman-data.js';
 import { BEASTS, BEAST_TYPES, BLOODLINES, getBeastLevelInfo } from '../../configs/beast-data.js';
 import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
-import { CORPSE_TYPES, getCorpseLevelInfo } from '../../configs/corpse-data.js';
+import { CORPSE_TYPES, CORPSE_EVOLUTIONS, CORPSE_MODES, getCorpseLevelInfo } from '../../configs/corpse-data.js';
 import { getFlameById, getAlchemyLevelInfo } from '../../configs/alchemy-data.js';
 
 export class CraftingController {
@@ -967,101 +967,257 @@ export class CraftingController {
         }
     }
 
+
     renderCorpse() {
         if (!state.player) return;
 
-        const view = document.getElementById('corpse-list');
+        // Elements
         const elLvl = document.getElementById('corpse-level-text');
         const elBar = document.getElementById('corpse-exp-bar');
+        const elMax = document.getElementById('corpse-max-text');
 
-        if (elLvl) elLvl.textContent = getCorpseLevelInfo(state.player.corpseLevel).name;
+        if (elLvl) elLvl.textContent = `Luyện Thi Sư - Cấp ${state.player.corpseLevel}`;
         if (elBar) {
-            const nextLevelExp = state.player.corpseLevel * 100 * Math.pow(1.5, state.player.corpseLevel - 1);
-            elBar.style.width = `${(state.player.corpseExp / nextLevelExp) * 100}%`;
+            const nextLevelExp = Math.max(1, state.player.corpseLevel * 100 * Math.pow(1.5, state.player.corpseLevel - 1));
+            elBar.style.width = `${Math.min(100, (state.player.corpseExp / nextLevelExp) * 100)}%`;
+        }
+        if (elMax) {
+            const maxCorpses = Math.floor(state.player.corpseLevel / 2) + 1;
+            const deployedCount = state.player.refinedCorpses.filter(c => c.deployed).length;
+            elMax.textContent = `Xuất chiến: ${deployedCount}/${maxCorpses}`;
         }
 
-        if (!view) return;
-        view.innerHTML = '';
+        if (!state.views.corpse) state.views.corpse = 'owned';
 
-        // Refined Corpses list (Active)
-        if (state.player.refinedCorpses.length > 0) {
-            const activeHeader = document.createElement('h3');
-            activeHeader.className = 'text-[10px] text-gray-500 uppercase tracking-widest mb-3 border-b border-white/5 pb-1';
-            activeHeader.textContent = 'Thi Hài Đang Khống Chế';
-            view.appendChild(activeHeader);
+        // Tab visiblity
+        const ownedView = document.getElementById('corpse-owned-view');
+        const craftView = document.getElementById('corpse-craft-view');
+        const tabOwned = document.getElementById('corpse-tab-owned');
+        const tabCraft = document.getElementById('corpse-tab-craft');
 
-            state.player.refinedCorpses.forEach((corpse, idx) => {
-                const corpseImg = ASSETS.corpses[corpse.id];
-                const el = document.createElement('div');
-                el.className = 'p-4 border border-red-900/30 rounded-2xl bg-red-900/5 mb-4 flex items-center space-x-4';
-                el.innerHTML = `
-                    <div class="w-12 h-12 bg-red-950/20 rounded-2xl flex items-center justify-center overflow-hidden border border-red-900/20 flex-shrink-0">
-                        ${corpseImg ? `<img src="${corpseImg}" class="w-full h-full object-cover">` : '<span class="text-3xl">🧟</span>'}
-                    </div>
-                    <div class="flex-grow">
-                        <div class="flex justify-between items-center">
-                            <h4 class="font-bold text-red-400">${corpse.name}</h4>
-                            <span class="text-[9px] px-2 py-0.5 bg-red-500/10 text-red-500 rounded border border-red-500/20 font-bold uppercase">${corpse.quality}</span>
-                        </div>
-                        <div class="text-[9px] text-gray-500 mt-1">Cấp ${corpse.level} | ATK: ${corpse.stats.atk} | HP: ${corpse.stats.hp}</div>
-                    </div>
-                `;
-                view.appendChild(el);
-            });
-        }
+        const activeClass = ['bg-red-900/20', 'text-red-400', 'border-red-900/30'];
+        const inactiveClass = ['bg-transparent', 'text-gray-500', 'border-transparent'];
 
-        const refiningHeader = document.createElement('h3');
-        refiningHeader.className = 'text-[10px] text-gray-500 uppercase tracking-widest mt-6 mb-3 border-b border-white/5 pb-1';
-        refiningHeader.textContent = 'Bản Vẽ Luyện Thi';
-        view.appendChild(refiningHeader);
+        [tabOwned, tabCraft].forEach(tab => {
+            if (!tab) return;
+            tab.classList.remove(...activeClass, ...inactiveClass);
+            const isActive = (tab === tabOwned && state.views.corpse === 'owned') ||
+                (tab === tabCraft && state.views.corpse === 'craft');
+            tab.classList.add(...(isActive ? activeClass : inactiveClass));
+        });
 
-        const known = Object.values(CORPSE_TYPES).filter(t => state.player.knownCorpseRecipes.includes(t.id));
+        if (ownedView) ownedView.classList.toggle('hidden', state.views.corpse !== 'owned');
+        if (craftView) craftView.classList.toggle('hidden', state.views.corpse !== 'craft');
 
-        if (known.length === 0) {
-            const empty = document.createElement('div');
-            empty.className = 'text-center py-6 text-gray-700 italic text-xs';
-            empty.textContent = 'Ngươi chưa có bí phương luyện thi nào...';
-            view.appendChild(empty);
-        } else {
-            known.forEach(type => {
-                const corpseImg = ASSETS.corpses[type.id];
-                const el = document.createElement('div');
-                el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 space-y-3';
+        // ========================
+        // OWNED VIEW
+        // ========================
+        if (ownedView && state.views.corpse === 'owned') {
+            ownedView.innerHTML = '';
 
-                let materialsHTML = '';
-                type.materials.forEach(mat => {
-                    const matItem = getItemById(mat.id);
-                    const count = state.player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
-                    materialsHTML += `<div class="text-[9px] ${count >= mat.quantity ? 'text-gray-400' : 'text-red-500'}">${matItem?.name || mat.id} x${mat.quantity} (${count})</div>`;
-                });
+            if (state.player.refinedCorpses.length === 0) {
+                ownedView.innerHTML = `
+                    <div class="text-center py-16 text-gray-600">
+                        <div class="text-5xl mb-4">🧟</div>
+                        <p class="italic text-xs">Ngươi chưa có thi khôi nào.<br>Hãy chuyển sang tab Luyện Chế để bắt đầu.</p>
+                    </div>`;
+            } else {
+                state.player.refinedCorpses.forEach((corpse) => {
+                    const isDeployed = corpse.deployed;
+                    const mode = corpse.mode || 'COMBAT';
+                    const corpseImg = ASSETS.corpses?.[corpse.id];
+                    const lvlPct = Math.min(100, Math.floor((corpse.exp / (corpse.nextLevelExp || 100)) * 100));
 
-                const locked = state.player.corpseLevel < type.level;
-                const successRate = Math.floor((0.7 - (type.level * 0.1) + (state.player.corpseLevel * 0.05)) * 100);
+                    const modeNames = { COMBAT: '⚔️ Chiến Đấu', GATHER: '🌿 Thu Thập', GUARD: '🛡️ Hộ Vệ', PATROL: '👁️ Tuần Tra' };
 
-                el.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-12 h-12 bg-red-950/20 rounded-2xl flex items-center justify-center overflow-hidden border border-red-900/20 flex-shrink-0 animate-pulse-subtle">
-                            ${corpseImg ? `<img src="${corpseImg}" class="w-full h-full object-cover">` : '<span class="text-3xl">🧟</span>'}
-                        </div>
-                        <div>
-                            <h4 class="font-ancient text-lg text-red-500">${type.name}</h4>
-                            <p class="text-[9px] text-gray-500 mt-1">${type.description}</p>
-                        </div>
-                    </div>
-                    ${locked ?
-                        `<span class="text-[8px] text-red-500 uppercase font-bold">Cần Cấp ${type.level}</span>` :
-                        `<button class="px-4 py-2 bg-red-900/20 text-red-400 text-[10px] font-bold rounded-xl border border-red-900/30" onclick="window.game.refineCorpse('${type.id}')">LUYỆN CHẾ</button>`
+                    // Find available foods
+                    const foodMap = [
+                        { itemId: 'yeu_thu_tinh_huyet', name: '🩸 Tinh Huyết', stat: 'atk' },
+                        { itemId: 'ma_thach_ha_pham', name: '🪨 Ma Thạch', stat: 'all' },
+                        { itemId: 'am_khi_tinh_tu', name: '💨 Âm Khí', stat: 'hp' },
+                        { itemId: 'thi_chau', name: '💠 Thi Châu', stat: 'def' }
+                    ];
+                    let feedOptionsHtml = '';
+                    foodMap.forEach(f => {
+                        const qty = state.player.inventory.getItemQuantity(f.itemId);
+                        if (qty > 0) {
+                            feedOptionsHtml += `
+                                <button class="px-2 py-1 bg-red-900/20 text-red-400 border border-red-900/30 rounded-md text-[9px]"
+                                    onclick="window.game.feedCorpse('${corpse.uniqueId}', '${f.itemId}')">
+                                    ${f.name} (${qty})
+                                </button>`;
+                        }
+                    });
+
+                    // Check evolution
+                    let evolutionHtml = '';
+                    const CORPSE_EVOLUTIONS_CHECK = {
+                        'thi_binh': { toId: 'thi_tuong', levelRequired: 5 },
+                        'thi_tuong': { toId: 'dong_giap_thi', levelRequired: 8 },
+                        'dong_giap_thi': { toId: 'ngan_giap_thi', levelRequired: 12 },
+                        'ngan_giap_thi': { toId: 'kim_giap_thi', levelRequired: 18 }
+                    };
+                    const evoData = CORPSE_EVOLUTIONS_CHECK[corpse.id];
+                    if (evoData) {
+                        const canEvo = corpse.level >= evoData.levelRequired;
+                        evolutionHtml = `
+                            <div class="mt-2 p-2 bg-red-950/20 border border-red-900/15 rounded-xl flex justify-between items-center">
+                                <span class="text-[9px] text-red-400">✨ Tiến hóa → ${CORPSE_TYPES[evoData.toId]?.name || evoData.toId}</span>
+                                <button class="px-3 py-1 bg-red-500/20 text-red-300 border border-red-500/30 rounded-md text-[9px] font-bold ${!canEvo ? 'opacity-40 cursor-not-allowed' : ''}"
+                                    ${canEvo ? `onclick="window.game.evolveCorpse('${corpse.uniqueId}')"` : ''}>
+                                    ${canEvo ? 'TIẾN HÓA' : `Cần Cấp ${evoData.levelRequired}`}
+                                </button>
+                            </div>`;
                     }
-                </div>
-                <div class="grid grid-cols-2 gap-2">${materialsHTML}</div>
-                <div class="flex justify-between items-center text-[8px] text-gray-500 italic">
-                    <span>Tỷ lệ thành công: ${successRate}%</span>
-                    <span>Phản phệ: ${(100 - successRate)}%</span>
-                </div>
-            `;
-                view.appendChild(el);
-            });
+
+                    // Mode selector if deployed
+                    let modeSelectorHtml = '';
+                    if (isDeployed) {
+                        const allModes = ['COMBAT', 'GATHER', 'GUARD', 'PATROL'];
+                        modeSelectorHtml = `
+                            <div class="mt-2 border-t border-white/5 pt-2">
+                                <p class="text-[9px] text-gray-500 uppercase tracking-wider mb-1">Chế độ hoạt động:</p>
+                                <div class="grid grid-cols-4 gap-1">
+                                    ${allModes.map(m => `
+                                        <button class="py-1 text-[8px] font-bold rounded-lg border transition-all ${mode === m ? 'bg-red-900/30 text-red-400 border-red-900/30' : 'bg-transparent text-gray-500 border-white/5 hover:border-white/15'}"
+                                            onclick="window.game.setCorpseMode('${corpse.uniqueId}', '${m}')">
+                                            ${modeNames[m]}
+                                        </button>`).join('')}
+                                </div>
+                            </div>`;
+                    }
+
+                    const el = document.createElement('div');
+                    el.className = `p-4 border ${isDeployed ? 'border-red-900/40 bg-red-950/[0.08]' : 'border-white/5 bg-white/[0.02]'} rounded-2xl mb-3 space-y-3`;
+                    el.innerHTML = `
+                        <div class="flex items-start space-x-4">
+                            <div class="w-14 h-14 bg-red-950/20 rounded-2xl flex items-center justify-center overflow-hidden border border-red-900/20 flex-shrink-0 relative">
+                                ${corpseImg ? `<img src="${corpseImg}" class="w-full h-full object-cover">` : `<span class="text-3xl">${corpse.icon || '🧟'}</span>`}
+                                ${isDeployed ? `<span class="absolute top-0 right-0 bg-red-700 text-white text-[7px] font-extrabold px-1 rounded-bl">XUẤT CHIẾN</span>` : ''}
+                            </div>
+                            <div class="flex-grow">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-bold text-red-400 text-sm">${corpse.name}</h4>
+                                    <span class="text-[8px] bg-red-900/20 text-red-500 px-2 py-0.5 rounded border border-red-900/20 font-bold uppercase">${corpse.quality}</span>
+                                </div>
+                                <div class="text-[9px] text-gray-500 mt-0.5">Cấp ${corpse.level} | ${isDeployed ? `[${modeNames[mode]}]` : 'Nghỉ ngơi'}</div>
+                                <div class="w-full h-1 bg-white/5 rounded-full mt-2 overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-red-900 to-red-600" style="width: ${lvlPct}%"></div>
+                                </div>
+                                <div class="flex justify-between text-[8px] text-gray-500 mt-0.5">
+                                    <span>EXP: ${corpse.exp}/${corpse.nextLevelExp || 100}</span>
+                                    <span>${lvlPct}%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-3 gap-2 bg-white/[0.01] border border-white/5 rounded-xl p-2 text-center text-[9px]">
+                            <div><span class="text-gray-500 block">Khí Huyết</span><span class="text-red-400 font-bold">${(corpse.stats.hp || 0).toLocaleString()}</span></div>
+                            <div><span class="text-gray-500 block">Công Kích</span><span class="text-yellow-400 font-bold">${(corpse.stats.atk || 0).toLocaleString()}</span></div>
+                            <div><span class="text-gray-500 block">Phòng Ngự</span><span class="text-blue-400 font-bold">${(corpse.stats.def || 0).toLocaleString()}</span></div>
+                        </div>
+
+                        <!-- Action buttons -->
+                        <div class="flex space-x-2">
+                            <button class="flex-grow py-1.5 text-[9px] font-bold rounded-xl border transition-all active:scale-95 ${isDeployed ? 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20' : 'bg-red-900/20 text-red-300 border-red-900/30 hover:bg-red-900/30'}"
+                                onclick="window.game.deployCorpse('${corpse.uniqueId}')">
+                                ${isDeployed ? 'THU HỒI' : 'XUẤT CHIẾN'}
+                            </button>
+                            <button class="px-3 py-1.5 bg-white/5 text-gray-400 border border-white/10 rounded-xl text-[9px] hover:bg-red-900/20 hover:text-red-400 transition-all active:scale-95"
+                                onclick="if(confirm('Tán diệt ${corpse.name}? Sẽ thu hồi 30% nguyên liệu.')) window.game.dismantleCorpse('${corpse.uniqueId}')">
+                                TÁN DIỆT
+                            </button>
+                        </div>
+
+                        <!-- Feed section -->
+                        ${feedOptionsHtml ? `
+                        <div class="border-t border-white/5 pt-2">
+                            <p class="text-[9px] text-gray-500 mb-1">Tế luyện nuôi dưỡng:</p>
+                            <div class="flex flex-wrap gap-1">${feedOptionsHtml}</div>
+                        </div>` : ''}
+
+                        ${evolutionHtml}
+                        ${modeSelectorHtml}
+                    `;
+                    ownedView.appendChild(el);
+                });
+            }
+        }
+
+        // ========================
+        // CRAFT VIEW
+        // ========================
+        if (craftView && state.views.corpse === 'craft') {
+            craftView.innerHTML = '';
+
+            const known = Object.values(CORPSE_TYPES).filter(t => state.player.knownCorpseRecipes.includes(t.id));
+
+            if (known.length === 0) {
+                craftView.innerHTML = `
+                    <div class="text-center py-16 text-gray-600">
+                        <div class="text-4xl mb-3">📜</div>
+                        <p class="italic text-xs">Ngươi chưa có bí phương luyện thi nào.<br>Hãy tìm kiếm sách pháp hoặc học từ sư phụ.</p>
+                    </div>`;
+            } else {
+                known.forEach(type => {
+                    const corpseImg = ASSETS.corpses?.[type.id];
+                    const el = document.createElement('div');
+                    el.className = 'p-4 border border-white/5 rounded-2xl bg-white/[0.02] mb-3 space-y-3';
+
+                    let materialsHTML = '';
+                    type.materials.forEach(mat => {
+                        const matItem = getItemById(mat.id);
+                        const count = state.player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
+                        const enough = count >= mat.quantity;
+                        materialsHTML += `
+                            <div class="flex justify-between items-center bg-black/20 p-1.5 rounded-lg border ${enough ? 'border-white/5' : 'border-red-500/20'}">
+                                <span class="text-[10px] text-gray-400">${matItem?.name || mat.id}</span>
+                                <span class="text-[10px] font-mono ${enough ? 'text-green-400' : 'text-red-500'}">${count}/${mat.quantity}</span>
+                            </div>`;
+                    });
+
+                    const locked = state.player.corpseLevel < type.level;
+                    const successRate = Math.floor(Math.max(10, Math.min(95, (0.7 - (type.level * 0.08) + (state.player.corpseLevel * 0.05)) * 100)));
+                    const maxCorpses = Math.floor(state.player.corpseLevel / 2) + 1;
+                    const atMax = state.player.refinedCorpses.length >= maxCorpses;
+
+                    el.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-red-950/20 rounded-2xl flex items-center justify-center overflow-hidden border border-red-900/20 flex-shrink-0">
+                                    ${corpseImg ? `<img src="${corpseImg}" class="w-full h-full object-cover">` : `<span class="text-3xl">${type.icon || '🧟'}</span>`}
+                                </div>
+                                <div>
+                                    <h4 class="font-ancient text-lg text-red-500">${type.name}</h4>
+                                    <p class="text-[9px] text-gray-500 mt-0.5">${type.description}</p>
+                                </div>
+                            </div>
+                            ${locked ? `<span class="text-[8px] text-red-500 uppercase font-bold">Cần Cấp ${type.level}</span>` :
+                            atMax ? `<span class="text-[8px] text-gray-500 uppercase font-bold">Đã đủ số lượng</span>` :
+                            `<button class="px-4 py-2 bg-red-900/20 text-red-400 text-[10px] font-bold rounded-xl border border-red-900/30 active:scale-95" onclick="window.game.refineCorpse('${type.id}')">LUYỆN CHẾ</button>`}
+                        </div>
+                        <!-- Base Stats Preview -->
+                        <div class="grid grid-cols-3 gap-2 bg-white/[0.01] border border-white/5 rounded-xl p-2 text-center text-[9px]">
+                            <div><span class="text-gray-500 block">HP</span><span class="text-red-400 font-bold">${(type.stats.hp).toLocaleString()}</span></div>
+                            <div><span class="text-gray-500 block">ATK</span><span class="text-yellow-400 font-bold">${(type.stats.atk).toLocaleString()}</span></div>
+                            <div><span class="text-gray-500 block">DEF</span><span class="text-blue-400 font-bold">${(type.stats.def).toLocaleString()}</span></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">${materialsHTML}</div>
+                        <div class="flex justify-between items-center text-[8px] text-gray-500 italic">
+                            <span>Tỷ lệ thành công: <span class="text-green-400 font-bold">${successRate}%</span></span>
+                            <span>Thu thập: <span class="text-yellow-400">${type.gatherBonus?.type || 'all'} x${type.gatherBonus?.multiplier?.toFixed(1) || '1.0'}</span></span>
+                        </div>
+                    `;
+                    craftView.appendChild(el);
+                });
+            }
         }
     }
+
+    setCorpseTab(tab) {
+        state.views.corpse = tab;
+        this.renderCorpse();
+    }
 }
+

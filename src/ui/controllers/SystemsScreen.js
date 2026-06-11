@@ -252,6 +252,10 @@ export class SystemsScreen {
         this.craftingController.renderCorpse();
     }
 
+    setCorpseTab(tab) {
+        this.craftingController.setCorpseTab(tab);
+    }
+
     // --- MOUNTAIN & GUILD ---
     renderGuild() {
         this.mountainController.renderGuild();

@@ -254,7 +254,7 @@ export class Player {
         // Corpse System
         this.corpseLevel = 1;
         this.corpseExp = 0;
-        this.refinedCorpses = [];
+        this.refinedCorpses = [];  // Array of { uniqueId, id, name, icon, quality, stats, level, exp, nextLevelExp, deployed, mode, gatherBonus }
         this.knownCorpseRecipes = [];
 
         // Unlock System
@@ -4968,7 +4968,15 @@ export class Player {
         
         this.corpseLevel = data.corpseLevel || 1;
         this.corpseExp = data.corpseExp || 0;
-        this.refinedCorpses = data.refinedCorpses || [];
+        this.refinedCorpses = (data.refinedCorpses || []).map(c => ({
+            ...c,
+            uniqueId: c.uniqueId || `corpse_${Date.now()}_${Math.floor(Math.random()*1000)}`,
+            deployed: c.deployed || false,
+            mode: c.mode || 'COMBAT',
+            level: c.level || 1,
+            exp: c.exp || 0,
+            nextLevelExp: c.nextLevelExp || 100
+        }));
         this.knownCorpseRecipes = data.knownCorpseRecipes || [];
         
         this.beastLevel = data.beastLevel || 1;

@@ -623,6 +623,12 @@ export class Game {
         if (state.systems.garden) state.systems.garden.update(delta);
         if (state.systems.beast) state.systems.beast.update(delta);
         if (state.systems.puppet) state.systems.puppet.update(delta);
+        if (state.systems.corpse) {
+            const gatherMsg = state.systems.corpse.tickGather(delta);
+            if (gatherMsg) {
+                state.ui.toast(gatherMsg, "info");
+            }
+        }
         if (state.systems.mission) state.systems.mission.update();
         if (state.systems.mining) state.systems.mining.processTimeEvents(delta / 60); // minutes
         if (state.systems.mountain && state.systems.mountain.isActive) state.systems.mountain.update(delta);
@@ -3652,6 +3658,75 @@ export class Game {
             return res;
         }
         return { success: false };
+    }
+
+    // ====================================================
+    // --- Corpse System Methods (Luyện Thi Sư) ---
+    // ====================================================
+
+    refineCorpse(typeId) {
+        if (!state.systems.corpse) return;
+        const res = state.systems.corpse.refine(typeId);
+        state.ui.toast(res.msg, res.success ? 'success' : 'error');
+        if (res.success && this.screens.systems) {
+            this.screens.systems.renderCorpse();
+        }
+        this.refreshUI();
+        return res;
+    }
+
+    deployCorpse(uniqueId) {
+        if (!state.systems.corpse) return;
+        const res = state.systems.corpse.deploy(uniqueId);
+        state.ui.toast(res.msg, res.success ? 'success' : 'error');
+        if (res.success && this.screens.systems) {
+            this.screens.systems.renderCorpse();
+        }
+        this.refreshUI();
+        return res;
+    }
+
+    setCorpseMode(uniqueId, mode) {
+        if (!state.systems.corpse) return;
+        const res = state.systems.corpse.setMode(uniqueId, mode);
+        state.ui.toast(res.msg, res.success ? 'success' : 'error');
+        if (res.success && this.screens.systems) {
+            this.screens.systems.renderCorpse();
+        }
+        return res;
+    }
+
+    feedCorpse(uniqueId, foodItemId) {
+        if (!state.systems.corpse) return;
+        const res = state.systems.corpse.feed(uniqueId, foodItemId);
+        state.ui.toast(res.msg, res.success ? 'success' : 'error');
+        if (res.success && this.screens.systems) {
+            this.screens.systems.renderCorpse();
+        }
+        this.refreshUI();
+        return res;
+    }
+
+    evolveCorpse(uniqueId) {
+        if (!state.systems.corpse) return;
+        const res = state.systems.corpse.evolve(uniqueId);
+        state.ui.toast(res.msg, res.success ? 'success' : 'error');
+        if (res.success && this.screens.systems) {
+            this.screens.systems.renderCorpse();
+        }
+        this.refreshUI();
+        return res;
+    }
+
+    dismantleCorpse(uniqueId) {
+        if (!state.systems.corpse) return;
+        const res = state.systems.corpse.dismantle(uniqueId);
+        state.ui.toast(res.msg, res.success ? 'success' : 'error');
+        if (res.success && this.screens.systems) {
+            this.screens.systems.renderCorpse();
+        }
+        this.refreshUI();
+        return res;
     }
 
     hatchBeast(eggId) {

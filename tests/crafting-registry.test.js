@@ -15,10 +15,10 @@ describe('Mortal Quest Crafting & Tower Registries', () => {
     });
 
     it('should look up corpse level names from CORPSE_LEVELS registry', () => {
-        const firstLevel = getCorpseLevelInfo(0);
+        const firstLevel = getCorpseLevelInfo(1);
         expect(firstLevel.name).toBe("Nhập Môn Thi Sư");
 
-        const secondLevel = getCorpseLevelInfo(1);
+        const secondLevel = getCorpseLevelInfo(2);
         expect(secondLevel.name).toBe("Nhất Giai Thi Sư");
 
         const maxLevel = getCorpseLevelInfo(99);

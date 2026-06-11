@@ -2724,7 +2724,151 @@ export const ITEMS = {
         ]
     },
 
-    // --- ORES & MINERALS ---
+    // --- THI HỆ ĐỒ VẬT (Corpse System Materials) ---
+    'am_khi_tinh_tu': {
+        id: 'am_khi_tinh_tu',
+        name: 'Âm Khí Tinh Tụ',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '💨',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 800,
+        description: 'Âm khí đặc quánh đã ngưng tụ thành thể, dùng để nuôi dưỡng thi khôi tăng cường khí huyết.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'thi_chau': {
+        id: 'thi_chau',
+        name: 'Thi Châu',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '💠',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1500,
+        description: 'Ngọc châu kết tinh từ âm khí trong xương tủy thi hài, dùng để tăng cường phòng ngự cho thi khôi.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'thi_dan': {
+        id: 'thi_dan',
+        name: 'Thi Đan',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '⚫',
+        quality: PHAP_BAO_QUALITIES.PHAP_BAO,
+        price: 12000,
+        description: 'Đan dược âm cực luyện chế từ âm khí thuần túy. Dùng trong luyện chế Ngân Giáp Thi và Kim Giáp Thi, giúp thi khôi đạt được sức mạnh phi thường.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
+        ]
+    },
+    'nguyen_anh_thi_the': {
+        id: 'nguyen_anh_thi_the',
+        name: 'Nguyên Anh Tu Sĩ Thi Thể',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '👤',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 100000,
+        description: 'Thi thể hoàn chỉnh của một Nguyên Anh tu sĩ đã trở thành xác vô hồn nhưng kinh mạch vẫn còn lưu thông. Cực kỳ quý hiếm, nguyên liệu chính để luyện chế Thi Vương.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'hoa_than_thi_the': {
+        id: 'hoa_than_thi_the',
+        name: 'Hóa Thần Tu Sĩ Thi Thể',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '💀',
+        quality: PHAP_BAO_QUALITIES.LINH_BAO,
+        price: 5000000,
+        description: 'Thi thể của Hóa Thần tu sĩ. Nguyên khí thiên địa ngấm sâu vào từng tế bào, sức mạnh tiềm ẩn kinh thiên. Nguyên liệu siêu hạn hữu để luyện chế Thi Hoàng.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'ma_thach_trung_pham': {
+        id: 'ma_thach_trung_pham',
+        name: 'Trung Phẩm Ma Thạch',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🪨',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2500,
+        description: 'Ma thạch cấp trung, âm khí nồng đậm hơn. Dùng để luyện chế thi khôi từ Thi Tướng trở lên.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_KHOANG, subSubcategory: 'di_khoang' }
+        ]
+    },
+    'ma_thach_thuong_pham': {
+        id: 'ma_thach_thuong_pham',
+        name: 'Thượng Phẩm Ma Thạch',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '⬛',
+        quality: PHAP_BAO_QUALITIES.PHAP_BAO,
+        price: 15000,
+        description: 'Ma thạch cấp cao, mang âm lực cực mạnh. Nguyên liệu thiết yếu cho thi khôi Kim Giáp cấp và cao hơn.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_KHOANG, subSubcategory: 'di_khoang' }
+        ]
+    },
+    'linh_tinh_thach': {
+        id: 'linh_tinh_thach',
+        name: 'Linh Tinh Thạch',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '✨',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 50000,
+        description: 'Tinh thạch linh thiêng kết tinh từ nguồn linh khí thuần túy thiên địa. Một trong số nguyên liệu hiếm nhất để luyện chế Thi Hoàng.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_KHOANG, subSubcategory: 'di_khoang' }
+        ]
+    },
+    'am_tinh_chi': {
+        id: 'am_tinh_chi',
+        name: 'Âm Tinh Chi',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🌑',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 30000,
+        description: 'Chi tinh được ngưng tụ từ nơi âm khí cực nặng, cực kỳ quý giá, cần thiết cho luyện chế Ngân Giáp Thi trở lên.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'tinh_ngan': {
+        id: 'tinh_ngan',
+        name: 'Tinh Ngân',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🥈',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3000,
+        description: 'Bạc thuần tinh không lẫn tạp chất, dùng trong luyện chế Ngân Giáp Thi và các loại đan dược cấp cao.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_KHOANG, subSubcategory: 'linh_kim' }
+        ]
+    },
+    // --- Thi Luyện Bí Thư (Corpse Book - Unlock) ---
+    'thi_luyen_bi_thu': {
+        id: 'thi_luyen_bi_thu',
+        name: 'Luyện Thi Bí Thư',
+        type: ITEM_TYPES.SACH_CONG_PHAP,
+        icon: '📕',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 50000,
+        description: 'Cổ thư bí ẩn ghi chép đầy đủ bí pháp của Luyện Thi Sư — từ thu thập thi thể, tế luyện thành thi khôi, đến nuôi dưỡng và điều khiển trong trận. Chứa bản vẽ luyện Thi Binh, Thi Tướng và Đồng Giáp Thi.',
+        effect: {
+            type: EFFECT_TYPES.HOC_NHIEU_CONG_THUC,
+            value: [
+                { type: EFFECT_TYPES.MO_KHOA_NGHE, profession: 'corpse' },
+                { type: EFFECT_TYPES.HOC_CONG_THUC_THI, value: 'thi_binh' },
+                { type: EFFECT_TYPES.HOC_CONG_THUC_THI, value: 'thi_tuong' },
+                { type: EFFECT_TYPES.HOC_CONG_THUC_THI, value: 'dong_giap_thi' }
+            ]
+        },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.BI_THUAT }
+        ]
+    },
+
+
     'van_nien_huyet_linh_chi': {
         id: 'van_nien_huyet_linh_chi',
         name: 'Vạn Niên Huyết Linh Chi',
