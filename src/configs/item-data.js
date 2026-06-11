@@ -7180,7 +7180,7 @@ export const ITEMS = {
         name: 'Phần Thiên Đỉnh',
         type: ITEM_TYPES.DAN_LU,
         icon: '鼎',
-        quality: PHAP_BAO_QUALITIES.HUYEN_THIEN,
+        quality: PHAP_BAO_QUALITIES.HUYEN_THIEN_CHI_BAO,
         price: 150000,
         description: 'Thần đỉnh đúc từ thiên ngoại thạch, nung nấu vạn hỏa chí cường giúp gia tăng thành đan suất.',
         effect: { type: EFFECT_TYPES.TRANG_BI_DAN_LU, value: 'phan_thien_dinh' },
@@ -7193,7 +7193,7 @@ export const ITEMS = {
         name: 'Hỗn Độn Lôi Tháp',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '🗼',
-        quality: PHAP_BAO_QUALITIES.HUYEN_THIEN,
+        quality: PHAP_BAO_QUALITIES.HUYEN_THIEN_CHI_BAO,
         price: 180000,
         description: 'Huyền thiên linh bảo Hỗn Độn Lôi Tháp, chứa đựng ngàn vạn tia lôi điện oanh kích thần ma.',
         stats: { atk: 3500, thunderDmg: 0.45, thunderRes: 0.3 },
@@ -7226,6 +7226,85 @@ export const ITEMS = {
         categories: [
             { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.TU_LUYEN }
         ]
+    },
+    'dien_dao_ngu_hanh_tran_ky': {
+        id: 'dien_dao_ngu_hanh_tran_ky',
+        name: 'Trận Đồ Điên Đảo Ngũ Hành Trận',
+        type: ITEM_TYPES.DAN_PHUONG,
+        icon: '🚩',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 8500,
+        description: 'Bản vẽ trận kỳ Điên Đảo Ngũ Hành Trận do Tân Như Âm tự tay luyện chế, có khả năng điên đảo ngũ hành, phòng thủ động phủ cực kỳ kiên cố.',
+        effect: { type: EFFECT_TYPES.HOC_TRAN_PHAP, value: 'dien_dao_ngu_hanh' },
+        categories: [
+            {
+                category: ITEM_CATEGORIES_ENUM.TRAN_PHAP.KEY,
+                subcategory: ITEM_CATEGORIES_ENUM.TRAN_PHAP.SUBCATEGORIES.KHON_TRAN
+            }
+        ]
+    },
+    'kim_dien_hoan': {
+        id: 'kim_dien_hoan',
+        name: 'Cổ Bảo Kim Diễn Hoàn',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '⭕',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 35000,
+        description: 'Cổ bảo công kích chí cường của Hàn Lập cướp từ tay Phong Nhạc tại Lục Liên Điện, có khả năng phân hóa thành hàng vạn vòng kim quang sát thương địch nhân.',
+        stats: { atk: 1800, goldDmg: 0.25 },
+        categories: [
+            {
+                category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY,
+                subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.CO_BAO
+            }
+        ]
+    },
+    'huyen_thien_tram_linh_kiem_manh_vo': {
+        id: 'huyen_thien_tram_linh_kiem_manh_vo',
+        name: 'Mảnh Vỡ Huyền Thiên Trảm Linh Kiếm',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🗡️',
+        quality: PHAP_BAO_QUALITIES.HUYEN_THIEN_CHI_BAO,
+        price: 120000,
+        description: 'Mảnh vỡ của thanh linh kiếm Chí Tôn đứng đầu bảng linh bảo Linh Giới, chứa đựng pháp tắc không gian tinh thuần bậc nhất.',
+        categories: [
+            {
+                category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY,
+                subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI
+            }
+        ]
+    },
+    'giao_long_lan': {
+        id: 'giao_long_lan',
+        name: 'Huyết Linh Giao Giáp Lân',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🛡️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 4500,
+        description: 'Lớp vảy ngược siêu cứng của Yêu thú cấp 7 Huyết Linh Giao, nguyên liệu cực tốt để rèn đúc khải giáp phòng ngự.',
+        categories: [
+            {
+                category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY,
+                subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.YEU_THU,
+                subSubcategory: 'da_long'
+            }
+        ]
+    },
+    'kim_phe_trung_tinh_noan': {
+        id: 'kim_phe_trung_tinh_noan',
+        name: 'Kim Phế Trùng Tinh Noãn',
+        type: ITEM_TYPES.TRUNG_LINH_THU,
+        beastId: 'kim_phe_trung',
+        icon: '🥚',
+        quality: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO,
+        price: 18000,
+        description: 'Trứng của kỳ trùng thượng cổ biến dị Kim Phế Trùng, có lớp vỏ ngoài cứng như kim cương và khả năng cắn nuốt mọi loại ngũ hành pháp thuật.',
+        categories: [
+            {
+                category: ITEM_CATEGORIES_ENUM.LINH_THU.KEY,
+                subcategory: ITEM_CATEGORIES_ENUM.LINH_THU.SUBCATEGORIES.TRUNG_KY_TRUNG
+            }
+        ]
     }
 };
 
@@ -7254,7 +7333,8 @@ const UNIQUE_ITEM_IDS = [
     'chan_vu_nho_quan_ta',
     'chan_vu_nho_quan_huu',
     'chan_vu_nho_quan_hoan_thien',
-    'bo_thien_lang'
+    'bo_thien_lang',
+    'kim_dien_hoan'
 ];
 UNIQUE_ITEM_IDS.forEach(id => {
     if (ITEMS[id]) {

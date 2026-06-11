@@ -585,7 +585,8 @@ export const SHOPS = {
             ],
             'phu_luc': [
                 { id: 'hoang_chi_phu', stock: 100 },
-                { id: 'chu_sa_linh_muc', stock: 50 }
+                { id: 'chu_sa_linh_muc', stock: 50 },
+                { id: 'than_hanh_phu', stock: 20 }
             ],
             'nguyen_lieu': [
                 { id: 'tich_coc_thao', stock: 100 },
@@ -598,7 +599,8 @@ export const SHOPS = {
         sections: {
             'tran_phap': [
                 { id: 'tran_do_tu_linh', stock: 10 },
-                { id: 'thai_cuc_huyen_tran_do', stock: 3, minVip: 1 }
+                { id: 'thai_cuc_huyen_tran_do', stock: 3, minVip: 1 },
+                { id: 'dien_dao_ngu_hanh_tran_ky', stock: 1, minVip: 2 }
             ],
             'phu_luc': [
                 { id: 'kim_cuong_phu', stock: 10 },
@@ -619,15 +621,20 @@ export const SHOPS = {
             'nguyen_lieu': [
                 { id: 'yeu_thu_tinh_huyet', stock: 50 },
                 { id: 'ha_pham_yeu_dan', stock: 50 },
-                { id: 'hoa_tinh_thach', stock: 20 }
+                { id: 'hoa_tinh_thach', stock: 20 },
+                { id: 'giao_long_lan', stock: 10 }
             ],
             'ky_trung': [
                 { id: 'phe_kim_trung_linh_noan', stock: 2, minVip: 1 },
-                { id: 'bang_tam_linh_noan', stock: 5 }
+                { id: 'bang_tam_linh_noan', stock: 5 },
+                { id: 'kim_phe_trung_tinh_noan', stock: 2, minVip: 2 }
             ],
             'linh_thu': [
                 { id: 'hac_xa_yeu_noan', stock: 3, minVip: 1 },
                 { id: 'hoa_viem_linh_noan', stock: 5 }
+            ],
+            'phap_bao': [
+                { id: 'kim_dien_hoan', stock: 1, minVip: 2 }
             ]
         }
     },
@@ -646,7 +653,9 @@ export const SHOPS = {
             ],
             'nguyen_lieu': [
                 { id: 'thien_dao_than_thach', stock: 2, minVip: 3 },
-                { id: 'cuc_pham_linh_thach', stock: 20 }
+                { id: 'cuc_pham_linh_thach', stock: 20 },
+                { id: 'huyen_thien_tram_linh_kiem_manh_vo', stock: 1, minVip: 3 },
+                { id: 'thien_nien_cuu_khuc_linh_sam', stock: 2, minVip: 2 }
             ],
             'bi_tich': [
                 { id: 'tinh_lien_yeu_hoa_chung', stock: 1, minVip: 2 },
