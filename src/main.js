@@ -1748,6 +1748,46 @@ window.renderCreationScreen = () => {
         `;
     }
 
+    // --- Sect/Clan Picker (Hiện ra khi origin có requiresSectSelection) ---
+    const elSectPicker = document.getElementById('creation-sect-picker');
+    const elSectList = document.getElementById('creation-sect-list');
+    if (elSectPicker && elSectList) {
+        const currentOrigin = CREATION_ORIGINS[sys.selectedOrigin];
+        if (currentOrigin?.requiresSectSelection) {
+            elSectPicker.classList.remove('hidden');
+            // Lọc danh sách tông môn theo sectFilter
+            const allSects = Object.values(SECTS);
+            const filteredSects = allSects.filter(s => {
+                if (currentOrigin.sectFilter === 'demonic') return !!s.isDemonic;
+                if (currentOrigin.sectFilter === 'righteous') return !s.isDemonic;
+                return true;
+            });
+            elSectList.innerHTML = filteredSects.map(s => {
+                const active = sys.selectedSectId === s.id;
+                const startingTech = s.libraryItems?.find(i => i.isTech && (i.minRankScore === undefined || i.minRankScore === 0));
+                const techName = startingTech?.name || startingTech?.id || null;
+                const bonusStr = Object.entries(s.bonus || {}).map(([k,v]) => `${k} +${v}`).slice(0, 3).join(' · ') || 'Pháp lực đặc biệt';
+                return `
+                    <div onclick="window.game.selectCreationSect('${s.id}')"
+                        class="q-card cursor-pointer transition-all duration-300 ${active ? 'active text-cultivation-gold border-cultivation-gold shadow-[0_0_12px_rgba(212,175,55,0.15)]' : 'text-gray-400 border-white/10'} flex flex-col gap-2">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="q-title font-ancient font-bold ${active ? 'text-cultivation-gold' : 'text-white/80'}">${s.name}</div>
+                            ${active ? `<span class="text-[8px] bg-cultivation-gold/10 border border-cultivation-gold/20 text-cultivation-gold px-2 py-0.5 rounded uppercase font-bold tracking-wider flex items-center gap-1"><i class="ph ph-check-circle"></i> Đã Chọn</span>` : ''}
+                        </div>
+                        <div class="q-desc text-left text-gray-400 text-[9px] leading-relaxed">${s.description}</div>
+                        <div class="q-bonus-list flex flex-wrap gap-1 mt-1">
+                            ${techName ? `<span class="q-bonus-tag text-[8px]" style="color:#f59e0b;background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2)">📜 Công pháp: ${techName}</span>` : ''}
+                            <span class="q-bonus-tag text-[8px]" style="color:#60a5fa;background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.2)">⚔️ ${bonusStr}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            elSectPicker.classList.add('hidden');
+            elSectList.innerHTML = '';
+        }
+    }
+
     // Starting Location Dropdown
     const elStartingLocation = document.getElementById('creation-starting-location-select');
     if (elStartingLocation) {
@@ -1900,8 +1940,12 @@ window.renderCreationScreen = () => {
     const btnStart = document.getElementById('creation-start-btn');
     if (btnStart) {
         btnStart.onclick = () => window.game.startCreationGame();
-        btnStart.disabled = sys.points < 0;
-        btnStart.style.opacity = sys.points < 0 ? '0.5' : '1';
+        const sys = state.systems.creation;
+        const currentOrigin = CREATION_ORIGINS[sys?.selectedOrigin];
+        const needsSect = currentOrigin?.requiresSectSelection && !sys?.selectedSectId;
+        btnStart.disabled = (sys?.points < 0) || needsSect;
+        btnStart.style.opacity = btnStart.disabled ? '0.5' : '1';
+        btnStart.title = needsSect ? 'Hãy chọn Tông Môn/Gia Tộc trước khi bắt đầu!' : '';
     }
 
     const btnCreationBack = document.getElementById('btn-creation-back');

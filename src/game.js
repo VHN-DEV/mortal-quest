@@ -4256,6 +4256,13 @@ export class Game {
         }
     }
 
+    selectCreationSect(sectId) {
+        if (state.systems.creation) {
+            state.systems.creation.selectSectForOrigin(sectId);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
     selectCreationCheatSystem(systemId) {
         if (state.systems.creation) {
             state.systems.creation.selectCheatSystem(systemId);
@@ -4308,9 +4315,16 @@ export class Game {
 
     async startCreationGame() {
         if (state.systems.creation) {
+            const sys = state.systems.creation;
+            const origin = CREATION_ORIGINS[sys.selectedOrigin];
+            if (origin?.requiresSectSelection && !sys.selectedSectId) {
+                state.ui.toast("Vui lòng chọn Tông Môn / Gia Tộc xuất thân trước khi bắt đầu!", "error");
+                return;
+            }
+
             const nameInput = document.getElementById('creation-name-input');
-            state.systems.creation.playerName = nameInput?.value || "Phàm Nhân";
-            const newPlayer = state.systems.creation.buildPlayer();
+            sys.playerName = nameInput?.value || "Phàm Nhân";
+            const newPlayer = sys.buildPlayer();
             if (newPlayer) {
                 // Reset map view preference for new journey
                 await Preferences.set({ key: 'mortal_quest_map_view', value: 'worlds' });

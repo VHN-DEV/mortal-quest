@@ -1,6 +1,7 @@
 import { HOURS, SEASONS, PHENOMENA } from '../configs/time-data.js';
 import { WORLDS } from '../configs/map-data.js';
 import { BEASTS } from '../configs/beast-data.js';
+import { SECTS, SECT_RANKS } from '../configs/sect-data.js';
 import { state } from '../state.js';
 
 export class TimeSystem {
@@ -140,6 +141,25 @@ export class TimeSystem {
             if (monthly.lingShi > 0) {
                 this.player.addLingShi(monthly.lingShi);
                 this.ui.toast(`Nhận bổng lộc hàng tháng từ ${this.player.origin.name}: +${monthly.lingShi} Linh Thạch`, "success");
+            }
+            if (monthly.items && monthly.items.length > 0) {
+                monthly.items.forEach(itemId => {
+                    this.player.inventory.addItem(itemId, 1);
+                });
+                this.ui.toast(`Nhận bổng lộc đan dược từ ${this.player.origin.name}: ${monthly.items.length} viên`, "success");
+            }
+        }
+
+        // Monthly resources from Sect (if character has pre-joined a sect/clan)
+        if (this.player.sectId) {
+            const sectData = SECTS[this.player.sectId];
+            if (sectData) {
+                const rankKey = this.player.sectRank || 'ngoai_mon';
+                const rankInfo = SECT_RANKS[rankKey];
+                const sectStipend = rankInfo && rankInfo.salary !== undefined ? rankInfo.salary : 50;
+                
+                this.player.addLingShi(sectStipend);
+                this.ui.toast(`Nhận bổng lộc tháng từ ${sectData.name} (${rankInfo?.name || 'Ngoại Môn Đệ Tử'}): +${sectStipend} Linh Thạch`, "success");
             }
         }
         

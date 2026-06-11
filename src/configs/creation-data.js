@@ -194,10 +194,38 @@ export const CREATION_ORIGINS = {
     'tan_tu': { id: 'tan_tu', name: 'Tán Tu', cost: 0, desc: 'Tự do tự tại, không có tài nguyên khởi đầu.', resources: { lingShi: 100, items: [] }, monthlyResources: { lingShi: 0 } },
     'vo_gia_cu': { id: 'vo_gia_cu', name: 'Vô Gia Cư', cost: -20, desc: 'Không nơi nương tựa, bắt đầu với hai bàn tay trắng.', resources: { lingShi: 0, items: [] }, monthlyResources: { lingShi: 0 } },
     'no_nan': { id: 'no_nan', name: 'Nợ Nần Chồng Chất', cost: -50, desc: 'Gánh trên vai món nợ lớn của gia tộc.', resources: { lingShi: -500, items: [] }, monthlyResources: { lingShi: 0 } },
-    'gia_toc': { id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 40, desc: 'Sinh ra trong gia tộc, có sẵn linh thạch và công pháp.', resources: { lingShi: 1000, items: ['truong_sinh_quyet_bi_tich', 'di_hoa_bang', 'di_loi_bang', 'chu_thien_linh_the_luc'] }, monthlyResources: { lingShi: 100 } },
-    'tong_mon': { id: 'tong_mon', name: 'Đệ Tử Tông Môn', cost: 60, desc: 'Được tông môn che chở, có pháp bảo phòng thân.', resources: { lingShi: 500, items: ['phi_kiem_go', 'tho_bo_pham_y'] }, monthlyResources: { lingShi: 50 } },
-    'ma_dao': { id: 'ma_dao', name: 'Hậu Nhân Ma Đạo', cost: 30, desc: 'Công pháp bá đạo nhưng bị chính đạo truy quét.', resources: { lingShi: 500, items: ['huyet_don_thuat'], karma: -50 }, monthlyResources: { lingShi: 0 } },
-    'dai_gia_toc': { id: 'dai_gia_toc', name: 'Đại Thế Gia', cost: 100, desc: 'Con cháu thế gia danh tiếng, tài lực dồi dào.', resources: { lingShi: 10000, items: ['ngung_khi_dan', 'ngung_khi_dan'] }, monthlyResources: { lingShi: 1000 } },
+    'gia_toc': {
+        id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 40,
+        desc: 'Sinh ra trong gia tộc tu tiên có truyền thừa. Khởi đầu tại tông môn/gia tộc được chọn, nhận công pháp và bổng lộc hàng tháng.',
+        resources: { lingShi: 1000, items: [] },
+        monthlyResources: { lingShi: 100, items: ['ngung_khi_dan'] },
+        requiresSectSelection: true,
+        sectFilter: 'righteous'
+    },
+    'tong_mon': {
+        id: 'tong_mon', name: 'Đệ Tử Tông Môn', cost: 60,
+        desc: 'Được tông môn che chở từ nhỏ, có nền tảng tu luyện bài bản. Khởi đầu tại tông môn, nhận công pháp và bổng lộc định kỳ.',
+        resources: { lingShi: 500, items: [] },
+        monthlyResources: { lingShi: 50, items: ['ngung_khi_dan'] },
+        requiresSectSelection: true,
+        sectFilter: 'righteous'
+    },
+    'ma_dao': {
+        id: 'ma_dao', name: 'Hậu Nhân Ma Đạo', cost: 30,
+        desc: 'Công pháp bá đạo nhưng bị chính đạo truy quét. Khởi đầu trong tông môn ma đạo, nhận ma công bẩm sinh.',
+        resources: { lingShi: 500, items: [], karma: -50 },
+        monthlyResources: { lingShi: 30, items: ['ngung_khi_dan'] },
+        requiresSectSelection: true,
+        sectFilter: 'demonic'
+    },
+    'dai_gia_toc': {
+        id: 'dai_gia_toc', name: 'Đại Thế Gia', cost: 100,
+        desc: 'Con cháu thế gia danh tiếng, tài lực dồi dào. Khởi đầu tại đại tông môn với công pháp cao cấp và đãi ngộ hậu hĩ.',
+        resources: { lingShi: 10000, items: [] },
+        monthlyResources: { lingShi: 1000, items: ['ngung_khi_dan', 'truc_co_dan'] },
+        requiresSectSelection: true,
+        sectFilter: 'righteous'
+    },
     'thu_nguyen_du_hanh_gia': {
         id: 'thu_nguyen_du_hanh_gia',
         name: 'Thứ Nguyên Du Hành Giả',

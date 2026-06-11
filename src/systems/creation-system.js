@@ -1,6 +1,8 @@
 import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS } from '../configs/creation-data.js';
 import { WORLDS } from '../configs/map-data.js';
 import { Player } from '../core/player.js';
+import { SECTS } from '../configs/sect-data.js';
+import { getTechniqueById, getSecretTechniqueById } from '../configs/technique-data.js';
 
 const RANDOM_NAMES = [
     'Lâm Phong', 'Mộc Vân', 'Hàn Tuyết', 'Sở Thiên', 'Diệp Trần', 'Vân Mộng', 'Tần Mặc', 'Bạch Ly', 'Tiêu Dao', 'Nguyệt Nhi'
@@ -40,6 +42,7 @@ export class CreationSystem {
         this.selectedArtifact = 'none';
         this.selectedCheatSystem = null;
         this.selectedStartingLocation = 'auto'; // Added starting location
+        this.selectedSectId = null; // Tông môn/gia tộc được chọn khi xuất thân yêu cầu
         this.avatarFilterGender = 'all';
         this.avatarFilterRace = 'all';
 
@@ -69,7 +72,12 @@ export class CreationSystem {
         if (!origin) return;
         this.selectedOrigin = originId;
         this.startingLingShi = origin.resources.lingShi;
+        this.selectedSectId = null; // Reset khi đổi xuất thân
         this.calculatePoints();
+    }
+
+    selectSectForOrigin(sectId) {
+        this.selectedSectId = sectId;
     }
 
     selectArtifact(artifactId) {
@@ -743,6 +751,32 @@ export class CreationSystem {
             player.equipTitle(origin.startingTitle);
         }
 
+        // Apply Origin Sect (Tông Môn/Gia Tộc từ xuất thân)
+        if (origin.requiresSectSelection && this.selectedSectId) {
+            const sectData = SECTS[this.selectedSectId];
+            if (sectData) {
+                // Gia nhập tông môn ngay từ đầu
+                player.sectId = this.selectedSectId;
+                player.sectRank = 'ngoai_mon';
+                player.sectContribution = 0;
+                player.activeSectMissions = [];
+                player.sectTournamentYear = -1;
+
+                // Cấp công pháp cơ bản của tông môn (isTech với minRankScore: 0)
+                const startingTech = sectData.libraryItems?.find(
+                    item => item.isTech && (item.minRankScore === undefined || item.minRankScore === 0)
+                );
+                if (startingTech) {
+                    const isMainTech = !!getTechniqueById(startingTech.id);
+                    if (isMainTech) {
+                        player.learnTechnique(startingTech.id);
+                    } else if (getSecretTechniqueById(startingTech.id)) {
+                        player.learnSecretTechnique(startingTech.id);
+                    }
+                }
+            }
+        }
+
         // Apply Cheat System
         player.cheatSystemId = this.selectedCheatSystem;
 
@@ -826,7 +860,14 @@ export class CreationSystem {
                     startWorldId = 'linh_gioi';
                 }
             } else { // HUMAN
-                if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
+                if ((this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc' || this.selectedOrigin === 'tong_mon') && this.selectedSectId) {
+                    // Đặt vị trí tại tông môn cụ thể được chọn
+                    startLocId = this.selectedSectId;
+                    startWorldId = 'nhan_gioi';
+                } else if (this.selectedOrigin === 'ma_dao' && this.selectedSectId) {
+                    startLocId = this.selectedSectId;
+                    startWorldId = 'nhan_gioi';
+                } else if (this.selectedOrigin === 'gia_toc' || this.selectedOrigin === 'dai_gia_toc') {
                     startLocId = 'thien_van_thanh';
                 } else if (this.selectedOrigin === 'tong_mon') {
                     startLocId = 'hoang_phong_coc';
