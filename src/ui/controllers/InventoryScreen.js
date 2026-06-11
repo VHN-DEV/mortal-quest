@@ -726,37 +726,70 @@ export class InventoryScreen {
         }
 
         // Show stats for all equippable items, techniques, and consumables
-        if (itemData.stats && this.elDetailStats) {
-            Object.entries(itemData.stats).forEach(([key, val]) => {
-                const statEl = document.createElement('div');
-                statEl.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
-                statEl.innerHTML = `<span>${this.getStatLabel(key)}</span><span class="font-mono font-bold" style="color:${qColor}">+${val}</span>`;
-                this.elDetailStats.appendChild(statEl);
-            });
-        } else if ((itemData.type === 'sach_cong_phap' || itemData.type === 'technique') && itemData.techniqueId && this.elDetailStats) {
-            const tech = getTechniqueById(itemData.techniqueId) || getSecretTechniqueById(itemData.techniqueId);
-            if (tech) {
-                // Add basic tech properties
-                if (tech.type) {
+        if (this.elDetailStats) {
+            this.elDetailStats.innerHTML = '';
+            // First, render metadata stats if present
+            if (playerItem && playerItem.metadata) {
+                const meta = playerItem.metadata;
+                if (meta.stage) {
                     const row = document.createElement('div');
                     row.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
-                    row.innerHTML = `<span>Phân loại</span><span class="text-white">${tech.type}</span>`;
+                    row.innerHTML = `<span>Giai Đoạn</span><span class="text-qi-jade font-bold">${meta.stage}</span>`;
                     this.elDetailStats.appendChild(row);
                 }
-                if (tech.element && tech.element !== 'Neutral') {
+                if (meta.age) {
                     const row = document.createElement('div');
                     row.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
-                    row.innerHTML = `<span>Ngũ hành</span><span class="text-white">${tech.element}</span>`;
+                    row.innerHTML = `<span>Dược Linh / Niên Thọ</span><span class="text-yellow-400 font-bold">${Math.floor(meta.age)} năm</span>`;
                     this.elDetailStats.appendChild(row);
                 }
-                // Add stats
-                if (tech.stats) {
-                    Object.entries(tech.stats).forEach(([key, val]) => {
+                if (meta.atkBonus) {
+                    const row = document.createElement('div');
+                    row.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                    row.innerHTML = `<span>Tăng Tấn Công (Vạn Năm)</span><span class="text-red-400 font-bold">+${meta.atkBonus}</span>`;
+                    this.elDetailStats.appendChild(row);
+                }
+                if (meta.thunderBonus) {
+                    const row = document.createElement('div');
+                    row.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                    row.innerHTML = `<span>Tà Phách Thần Lôi</span><span class="text-blue-400 font-bold">+${meta.thunderBonus}</span>`;
+                    this.elDetailStats.appendChild(row);
+                }
+            }
+
+            // Then render base stats
+            if (itemData.stats) {
+                Object.entries(itemData.stats).forEach(([key, val]) => {
+                    const statEl = document.createElement('div');
+                    statEl.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                    statEl.innerHTML = `<span>${this.getStatLabel(key)}</span><span class="font-mono font-bold" style="color:${qColor}">+${val}</span>`;
+                    this.elDetailStats.appendChild(statEl);
+                });
+            } else if ((itemData.type === 'sach_cong_phap' || itemData.type === 'technique') && itemData.techniqueId) {
+                const tech = getTechniqueById(itemData.techniqueId) || getSecretTechniqueById(itemData.techniqueId);
+                if (tech) {
+                    // Add basic tech properties
+                    if (tech.type) {
                         const row = document.createElement('div');
                         row.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
-                        row.innerHTML = `<span>Cộng thuộc tính (${this.getStatLabel(key)})</span><span class="text-qi-blue font-mono">+${val}</span>`;
+                        row.innerHTML = `<span>Phân loại</span><span class="text-white">${tech.type}</span>`;
                         this.elDetailStats.appendChild(row);
-                    });
+                    }
+                    if (tech.element && tech.element !== 'Neutral') {
+                        const row = document.createElement('div');
+                        row.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                        row.innerHTML = `<span>Ngũ hành</span><span class="text-white">${tech.element}</span>`;
+                        this.elDetailStats.appendChild(row);
+                    }
+                    // Add stats
+                    if (tech.stats) {
+                        Object.entries(tech.stats).forEach(([key, val]) => {
+                            const row = document.createElement('div');
+                            row.className = 'flex justify-between items-center text-[10px] text-gray-400 border-b border-white/5 py-1';
+                            row.innerHTML = `<span>Cộng thuộc tính (${this.getStatLabel(key)})</span><span class="text-qi-blue font-mono">+${val}</span>`;
+                            this.elDetailStats.appendChild(row);
+                        });
+                    }
                 }
                 // Add effects
                 if (tech.effects) {

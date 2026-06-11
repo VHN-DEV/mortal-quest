@@ -459,6 +459,19 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.LUYEN_KHI.KEY, subcategory: ITEM_CATEGORIES_ENUM.LUYEN_KHI.SUBCATEGORIES.BAN_VE }
         ]
     },
+    'ban_ve_thanh_truc_phong_van_kiem': {
+        id: 'ban_ve_thanh_truc_phong_van_kiem',
+        name: 'Bản Vẽ Thanh Trúc Phong Vân Kiếm',
+        type: ITEM_TYPES.DAN_PHUONG,
+        icon: '📜',
+        quality: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO,
+        price: 30000,
+        description: 'Bản vẽ rèn đúc [[thanh_truc_phong_van_kiem|Thanh Trúc Phong Vân Kiếm]] từ [[kim_loi_truc|Kim Lôi Trúc]] (đủ Vạn Năm).',
+        effect: { type: EFFECT_TYPES.HOC_CONG_THUC_REN, value: 'thanh_truc_phong_van_kiem' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.LUYEN_KHI.KEY, subcategory: ITEM_CATEGORIES_ENUM.LUYEN_KHI.SUBCATEGORIES.BAN_VE }
+        ]
+    },
 
     // --- TALISMAN PATTERNS ---
     'phu_van_hoa_cau_phu': {
@@ -2190,6 +2203,45 @@ export const ITEMS = {
         effect: { type: 'garden_boost', value: 1000 }, // Rút ngắn 1000 giây hoặc 100%?
         categories: [
             { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
+        ]
+    },
+    'linh_chung_kim_loi_truc': {
+        id: 'linh_chung_kim_loi_truc',
+        name: 'Kim Lôi Trúc Mẫu',
+        type: ITEM_TYPES.LINH_CHUNG,
+        icon: '🌱',
+        quality: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO,
+        price: 20000,
+        description: 'Mẫu hạt giống Kim Lôi Trúc quý hiếm vô ngần, chứa sinh cơ lôi điện vô tận. Đem gieo trồng ở linh điền lôi thuộc tính để đạt hiệu quả tốt nhất.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_DUOC, subSubcategory: '1000_nam' }
+        ]
+    },
+    'kim_loi_truc': {
+        id: 'kim_loi_truc',
+        name: 'Kim Lôi Trúc',
+        type: ITEM_TYPES.LINH_MOC,
+        icon: '🎋',
+        quality: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO,
+        price: 100000,
+        description: 'Thiên hạ đệ nhất linh mộc thân vàng óng ánh, tích tụ Tà Phách Thần Lôi khắc chế vạn ma tà vật.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_MOC, subSubcategory: 'loi' }
+        ]
+    },
+    'thanh_truc_phong_van_kiem': {
+        id: 'thanh_truc_phong_van_kiem',
+        name: 'Thanh Trúc Phong Vân Kiếm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        quality: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO,
+        image: 'items/artifacts/thanh-truc-phong-van-kiem',
+        icon: '🎋',
+        description: 'Bản mệnh phi kiếm của Hàn Lập, luyện chế từ Vạn Niên Kim Lôi Trúc, tích tụ Tà Phách Thần Lôi, có uy năng nghịch thiên phá vỡ hư không.',
+        price: 500000,
+        stats: { atk: 850, spd: 80, thunderDmg: 500 },
+        specialEffect: 'evil_ward_thunder',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.LINH_BAO }
         ]
     },
     'phe_kim_trung_linh_noan': {

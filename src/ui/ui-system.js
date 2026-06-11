@@ -1392,6 +1392,24 @@ export class UISystem {
 
         const displayQuality = getDisplayQuality(quality, item.type);
 
+        let metaHtml = '';
+        if (metadata && (metadata.age || metadata.stage || metadata.atkBonus || metadata.thunderBonus)) {
+            metaHtml = `<div class="mt-1.5 pt-1.5 border-t border-white/5 space-y-0.5 text-[8px]">`;
+            if (metadata.stage) {
+                metaHtml += `<div class="flex justify-between"><span class="text-gray-500">Giai Đoạn:</span><span class="text-qi-jade font-bold">${metadata.stage}</span></div>`;
+            }
+            if (metadata.age) {
+                metaHtml += `<div class="flex justify-between"><span class="text-gray-500">Dược Linh / Niên Thọ:</span><span class="text-yellow-400 font-bold">${Math.floor(metadata.age)} năm</span></div>`;
+            }
+            if (metadata.atkBonus) {
+                metaHtml += `<div class="flex justify-between"><span class="text-gray-500">Tăng Sức Tấn Công (Vạn Năm):</span><span class="text-red-400 font-bold">+${metadata.atkBonus}</span></div>`;
+            }
+            if (metadata.thunderBonus) {
+                metaHtml += `<div class="flex justify-between"><span class="text-gray-500">Tà Phách Thần Lôi (Vạn Năm):</span><span class="text-blue-400 font-bold">+${metadata.thunderBonus}</span></div>`;
+            }
+            metaHtml += `</div>`;
+        }
+
         this.elTooltip.innerHTML = `
             <div class="flex items-center space-x-2 mb-1">
                 <div class="text-xl">${item.icon || '📦'}</div>
@@ -1401,6 +1419,7 @@ export class UISystem {
                 </div>
             </div>
             <div class="text-[9px] text-gray-400 italic leading-tight">${item.description || ''}</div>
+            ${metaHtml}
             ${statsHtml}
             ${requirementsHtml}
         `;

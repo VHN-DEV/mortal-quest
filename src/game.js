@@ -3476,6 +3476,18 @@ export class Game {
         }
     }
 
+    async useSpiritualLiquid(index) {
+        if (state.systems.garden) {
+            const res = state.systems.garden.useSpiritualLiquid(index);
+            if (res.success) {
+                state.ui.toast(res.msg, 'success');
+            } else {
+                state.ui.toast(res.msg, 'error');
+            }
+            this.refreshUI();
+        }
+    }
+
     async drawTalisman(typeId) {
         if (state.systems.talisman) {
             const res = await state.systems.talisman.draw(typeId);

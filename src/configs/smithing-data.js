@@ -85,6 +85,18 @@ export const SMITHING_RECIPES = {
         type: 'bag_upgrade',
         extraSlots: 10,
         icon: '🎒'
+    },
+    'thanh_truc_phong_van_kiem': {
+        id: 'thanh_truc_phong_van_kiem',
+        name: 'Thanh Trúc Phong Vân Kiếm',
+        level: 4,
+        materials: [
+            { id: 'kim_loi_truc', quantity: 1 }
+        ],
+        baseSuccessRate: 0.35,
+        staminaCost: 150,
+        manaCost: 300,
+        expGain: 2500
     }
 };
 

@@ -137,6 +137,15 @@ export const SEEDS = [
         baseGrowthTime: 3600, // 60 minutes
         attributeReq: 'BANG',
         description: 'Tuyết liên cực hàn chỉ có thể nảy mầm trên linh điền Hàn Băng.'
+    },
+    {
+        id: 'linh_chung_kim_loi_truc',
+        name: 'Kim Lôi Trúc Mẫu',
+        herbId: 'kim_loi_truc',
+        grade: 'THIEN',
+        baseGrowthTime: 7200, // 2 hours
+        attributeReq: 'LOI',
+        description: 'Mẫu trúc quý hiếm bậc nhất thiên địa, chứa lôi điện chi lực uy lực vô biên.'
     }
 ];
 

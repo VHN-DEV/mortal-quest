@@ -157,18 +157,21 @@ export class AlchemyController {
                 const herbItem = getItemById(seed.herbId);
 
                 contentHTML += `
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-2xl border border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-2xl border border-white/10 flex-shrink-0">
                             ${herbItem?.icon || '🌱'}
                         </div>
-                        <div class="flex-grow">
-                            <h4 class="text-xs font-ancient text-white">${seed.name}</h4>
-                            <div class="flex items-center space-x-2 mt-1">
-                                <span class="text-[10px] text-qi-jade font-bold">${plot.stage}</span>
-                                <span class="text-[9px] text-gray-500">(${Math.floor(plot.age)} năm)</span>
+                        <div class="flex-grow min-w-0">
+                            <h4 class="text-xs font-ancient text-white truncate">${seed.name}</h4>
+                            <div class="flex items-center space-x-2 mt-1 flex-wrap gap-1">
+                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-qi-jade/10 text-qi-jade font-bold">${plot.stage}</span>
+                                <span class="text-[9px] text-gray-400 font-bold">${Math.floor(plot.age)} năm</span>
                             </div>
                         </div>
-                        <button class="px-3 py-1.5 bg-qi-jade/10 text-qi-jade text-[10px] font-bold rounded-xl border border-qi-jade/20 active:scale-95 transition-all" onclick="window.game.harvest(${index})">THU HOẠCH</button>
+                        <div class="flex flex-col space-y-1 flex-shrink-0">
+                            <button class="px-2 py-1 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 active:scale-95 text-[9px] font-bold rounded-xl border border-purple-500/20 transition-all" onclick="window.game.useSpiritualLiquid(${index})">🧪 LINH DỊCH</button>
+                            <button class="px-2 py-1 bg-qi-jade/10 text-qi-jade hover:bg-qi-jade/20 active:scale-95 text-[9px] font-bold rounded-xl border border-qi-jade/20 transition-all" onclick="window.game.harvest(${index})">THU HOẠCH</button>
+                        </div>
                     </div>
                 `;
             } else {

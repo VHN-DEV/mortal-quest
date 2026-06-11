@@ -22,10 +22,33 @@ export class SmithingSystem {
             return { success: false, msg: `Cần cấp Luyện Khí Sư ${recipe.level} để rèn vật phẩm này!` };
         }
 
+        // Special check for Thanh Trúc Phong Vân Kiếm: requires 1 Vạn Năm Kim Lôi Trúc (age >= 10000)
+        let vanNamBamboo = null;
+        if (recipeId === 'thanh_truc_phong_van_kiem') {
+            vanNamBamboo = this.player.inventory.allItems.find(item => 
+                item.id === 'kim_loi_truc' && 
+                item.metadata && 
+                item.metadata.age >= 10000
+            );
+            if (!vanNamBamboo) {
+                return { 
+                    success: false, 
+                    msg: 'Nguyên liệu không hợp lệ: Cần ít nhất 1 thân Kim Lôi Trúc đạt niên thọ Vạn Năm!' 
+                };
+            }
+        }
+
         // Check materials
         for (const mat of recipe.materials) {
-            if (!this.player.inventory.hasItem(mat.id, mat.quantity)) {
-                return { success: false, msg: `Không đủ nguyên liệu: ${getItemById(mat.id).name}` };
+            if (mat.id === 'kim_loi_truc') {
+                // If it is kim_loi_truc, we already checked that we have a vạn năm one
+                if (!vanNamBamboo) {
+                    return { success: false, msg: `Không đủ nguyên liệu: ${getItemById(mat.id).name} (Vạn Năm)` };
+                }
+            } else {
+                if (!this.player.inventory.hasItem(mat.id, mat.quantity)) {
+                    return { success: false, msg: `Không đủ nguyên liệu: ${getItemById(mat.id).name}` };
+                }
             }
         }
 
@@ -42,7 +65,11 @@ export class SmithingSystem {
         }
 
         // Consume
-        recipe.materials.forEach(mat => this.player.inventory.removeItem(mat.id, mat.quantity));
+        if (recipeId === 'thanh_truc_phong_van_kiem' && vanNamBamboo) {
+            this.player.inventory.removeItem('kim_loi_truc', 1, vanNamBamboo.metadata);
+        } else {
+            recipe.materials.forEach(mat => this.player.inventory.removeItem(mat.id, mat.quantity));
+        }
         this.player.stamina -= recipe.staminaCost;
         this.player.mana -= recipe.manaCost;
 
@@ -74,6 +101,11 @@ export class SmithingSystem {
             else if (qualityRoll > 0.8) { quality = CRAFTING_QUALITIES.TRUNG_PHAM.name; }
 
             const metadata = { quality, hasKhiLinh };
+            if (recipeId === 'thanh_truc_phong_van_kiem' && vanNamBamboo) {
+                metadata.age = vanNamBamboo.metadata.age;
+                metadata.atkBonus = Math.floor((vanNamBamboo.metadata.age - 10000) / 100);
+                metadata.thunderBonus = Math.floor((vanNamBamboo.metadata.age - 10000) / 50);
+            }
             
             if (recipe.type === 'bag_upgrade') {
                 this.player.inventory.upgradeBag(this.player.inventory.currentBagIndex, recipe.extraSlots);
@@ -89,7 +121,7 @@ export class SmithingSystem {
             if (this.player.addSmithingExp(recipe.expGain)) {
                  const nextInfo = getSmithingLevelInfo(this.player.smithingLevel);
                  this.ui.toast(`Đẳng cấp Luyện Khí Sư tăng lên ${nextInfo.name}!`, "success");
-            }
+             }
             return { 
                 success: true, 
                 msg: `Chúc mừng! Ngươi đã rèn thành công [${quality}] ${getItemById(recipe.id)?.name || recipe.name}!${hasKhiLinh ? ' VẬT PHẨM ĐÃ SINH RA KHÍ LINH!' : ''}` 

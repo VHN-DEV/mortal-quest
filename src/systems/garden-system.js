@@ -1,5 +1,6 @@
 import { SEEDS, FIELD_GRADES, FIELD_ATTRIBUTES, HERB_AGE_MILESTONES } from '../configs/garden-data.js';
 import { getItemById } from '../configs/item-data.js';
+import { state } from '../state.js';
 
 export class GardenSystem {
     constructor(player, ui) {
@@ -163,11 +164,22 @@ export class GardenSystem {
             return { success: false, msg: 'Ngươi không có Linh Dịch!' };
         }
 
+        const itemData = getItemById('linh_dich_chuong_thien_binh');
+        const years = itemData && itemData.effect && itemData.effect.value ? itemData.effect.value : 1000;
+
         this.player.inventory.removeItem('linh_dich_chuong_thien_binh', 1);
         
-        // Tăng mạnh tuổi thọ linh thảo (Ví dụ: +100 năm ngay lập tức)
-        plot.age += 100;
+        // Tăng mạnh tuổi thọ linh thảo
+        plot.age += years;
+
+        // Cập nhật mốc tuổi ngay lập tức
+        const currentMilestone = [...HERB_AGE_MILESTONES].reverse().find(m => plot.age >= m.years);
+        if (currentMilestone) {
+            plot.stage = currentMilestone.name;
+        } else {
+            plot.stage = 'Mầm';
+        }
         
-        return { success: true, msg: 'Linh Dịch đã ngấm vào đất, linh thảo lớn nhanh như thổi!' };
+        return { success: true, msg: `Linh Dịch đã ngấm vào đất, linh thảo lập tức tăng trưởng ${years} năm! (${plot.stage})` };
     }
 }

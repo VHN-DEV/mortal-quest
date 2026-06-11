@@ -202,7 +202,8 @@ export const SHOPS = {
                 { id: 'bi_phuong_luyen_che_dong_giap_thi', stock: 1, minVip: 2 },
                 { id: 'van_lac_tam_viem_chung', stock: 1, minVip: 4 },
                 { id: 'truyen_dao_thanh_gian', stock: 1, minVip: 5 },
-                { id: 'tinh_lien_yeu_hoa_chung', stock: 1, minVip: 5 }
+                { id: 'tinh_lien_yeu_hoa_chung', stock: 1, minVip: 5 },
+                { id: 'ban_ve_thanh_truc_phong_van_kiem', stock: 1, minVip: 3 }
             ],
             'linh_dien': [
                 { id: 'linh_chung_thanh_phuc_thao', stock: 100 },
@@ -216,7 +217,8 @@ export const SHOPS = {
                 { id: 'linh_chung_u_minh_hoa', stock: 5, minVip: 1 },
                 { id: 'linh_chung_cuu_tich_chi', stock: 10 },
                 { id: 'linh_chung_ngan_tinh_thao', stock: 10 },
-                { id: 'linh_chung_cuu_u_linh_tuyet_lien', stock: 5, minVip: 1 }
+                { id: 'linh_chung_cuu_u_linh_tuyet_lien', stock: 5, minVip: 1 },
+                { id: 'linh_chung_kim_loi_truc', stock: 1, minVip: 2 }
             ],
             'ky_trung': [
                 { id: 'phe_kim_trung_linh_noan', stock: 1, minVip: 2 },
@@ -419,13 +421,15 @@ export const SHOPS = {
                 { id: 'van_lac_tam_viem_chung', stock: 1, minVip: 2 },
                 { id: 'truyen_dao_thanh_gian', stock: 1, minVip: 4 },
                 { id: 'ban_ve_long_lan_giap', stock: 3, minVip: 1 },
-                { id: 'ban_ve_tinh_ha_phi_kiem', stock: 3, minVip: 1 }
+                { id: 'ban_ve_tinh_ha_phi_kiem', stock: 3, minVip: 1 },
+                { id: 'ban_ve_thanh_truc_phong_van_kiem', stock: 5, minVip: 1 }
             ],
             'linh_dien': [
                 { id: 'linh_chung_u_minh_hoa', stock: 20 },
                 { id: 'linh_chung_cuu_tich_chi', stock: 30 },
                 { id: 'linh_chung_ngan_tinh_thao', stock: 30 },
-                { id: 'linh_chung_cuu_u_linh_tuyet_lien', stock: 15, minVip: 1 }
+                { id: 'linh_chung_cuu_u_linh_tuyet_lien', stock: 15, minVip: 1 },
+                { id: 'linh_chung_kim_loi_truc', stock: 5, minVip: 1 }
             ],
             'ky_trung': [
                 { id: 'thien_phong_ngan_uynh_linh_noan', stock: 3, minVip: 2 },
@@ -549,13 +553,15 @@ export const SHOPS = {
                 { id: 'van_lac_tam_viem_chung', stock: 3, minVip: 2 },
                 { id: 'truyen_dao_thanh_gian', stock: 3, minVip: 2 },
                 { id: 'ban_ve_long_lan_giap', stock: 10 },
-                { id: 'ban_ve_tinh_ha_phi_kiem', stock: 10 }
+                { id: 'ban_ve_tinh_ha_phi_kiem', stock: 10 },
+                { id: 'ban_ve_thanh_truc_phong_van_kiem', stock: 10 }
             ],
             'linh_dien': [
                 { id: 'linh_chung_u_minh_hoa', stock: 100 },
                 { id: 'linh_chung_cuu_tich_chi', stock: 100 },
                 { id: 'linh_chung_ngan_tinh_thao', stock: 100 },
-                { id: 'linh_chung_cuu_u_linh_tuyet_lien', stock: 50 }
+                { id: 'linh_chung_cuu_u_linh_tuyet_lien', stock: 50 },
+                { id: 'linh_chung_kim_loi_truc', stock: 20 }
             ],
             'ky_trung': [
                 { id: 'thien_phong_ngan_uynh_linh_noan', stock: 10 },
