@@ -568,10 +568,89 @@ export const SHOPS = {
                 { id: 'giao_long_linh_noan', stock: 10 },
                 { id: 'hac_xa_yeu_noan', stock: 15 },
                 { id: 'hoa_viem_linh_noan', stock: 15 }
+            ]
+        }
+    },
+    'thai_nam_tieu_hoi': {
+        name: 'Thái Nam Tiểu Hội - Tán Tu Họp Chợ',
+        sections: {
+            'dan_duoc': [
+                { id: 'ngung_khi_dan', stock: 30 },
+                { id: 'tich_coc_dan', stock: 500 },
+                { id: 'hoi_huyet_dan', stock: 50 }
             ],
-            'tui_tru_vat': [
-                { id: 'can_khon_tui', stock: 50 },
-                { id: 'thao_thiet_can_khon_dai', stock: 20 }
+            'phap_bao': [
+                { id: 'phi_kiem_go', stock: 10 },
+                { id: 'tho_bo_pham_y', stock: 5 }
+            ],
+            'phu_luc': [
+                { id: 'hoang_chi_phu', stock: 100 },
+                { id: 'chu_sa_linh_muc', stock: 50 }
+            ],
+            'nguyen_lieu': [
+                { id: 'tich_coc_thao', stock: 100 },
+                { id: 'tran_chau_linh_coc', stock: 200 }
+            ]
+        }
+    },
+    'te_van_cac': {
+        name: 'Tề Vân Các - Trận Pháp Các',
+        sections: {
+            'tran_phap': [
+                { id: 'tran_do_tu_linh', stock: 10 },
+                { id: 'thai_cuc_huyen_tran_do', stock: 3, minVip: 1 }
+            ],
+            'phu_luc': [
+                { id: 'kim_cuong_phu', stock: 10 },
+                { id: 'pha_khong_phu', stock: 10 },
+                { id: 'truc_phu_but', stock: 2 }
+            ],
+            'cong_phap': [
+                { id: 'han_thuy_quyet', stock: 2 },
+                { id: 'hau_tho_cong', stock: 2 },
+                { id: 'canh_kim_quyet', stock: 2 },
+                { id: 'thanh_moc_tam_kinh', stock: 2 }
+            ]
+        }
+    },
+    'luc_lien_dien': {
+        name: 'Lục Liên Điện - Yêu Thú Thương Hội',
+        sections: {
+            'nguyen_lieu': [
+                { id: 'yeu_thu_tinh_huyet', stock: 50 },
+                { id: 'ha_pham_yeu_dan', stock: 50 },
+                { id: 'hoa_tinh_thach', stock: 20 }
+            ],
+            'ky_trung': [
+                { id: 'phe_kim_trung_linh_noan', stock: 2, minVip: 1 },
+                { id: 'bang_tam_linh_noan', stock: 5 }
+            ],
+            'linh_thu': [
+                { id: 'hac_xa_yeu_noan', stock: 3, minVip: 1 },
+                { id: 'hoa_viem_linh_noan', stock: 5 }
+            ]
+        }
+    },
+    'hach_lien_thuong_minh': {
+        name: 'Hách Liên Thương Minh - Siêu Cấp Thương Hội',
+        sections: {
+            'dan_duoc': [
+                { id: 'tu_cuc_ngo_dao_dan', stock: 5, minVip: 2 },
+                { id: 'thai_at_hoa_than_dan', stock: 3, minVip: 3 },
+                { id: 'ho_menh_chan_nguyen_dan', stock: 10, minVip: 1 }
+            ],
+            'phap_bao': [
+                { id: 'chuong_thien_binh', stock: 1, minVip: 4 },
+                { id: 'tao_hoa_tien_dinh', stock: 1, minVip: 3 },
+                { id: 'bat_linh_xich', stock: 1, minVip: 1 }
+            ],
+            'nguyen_lieu': [
+                { id: 'thien_dao_than_thach', stock: 2, minVip: 3 },
+                { id: 'cuc_pham_linh_thach', stock: 20 }
+            ],
+            'bi_tich': [
+                { id: 'tinh_lien_yeu_hoa_chung', stock: 1, minVip: 2 },
+                { id: 'van_lac_tam_viem_chung', stock: 1, minVip: 2 }
             ]
         }
     }
