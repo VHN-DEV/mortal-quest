@@ -463,6 +463,7 @@ export const ITEMS = {
     // --- TALISMAN PATTERNS ---
     'phu_van_hoa_cau_phu': {
         id: 'phu_van_hoa_cau_phu',
+        image: 'items/talismans/phu_van_hoa_cau_phu',
         name: 'Phù Văn Hỏa Cầu Phù',
         type: ITEM_TYPES.DON_PHU,
         icon: '📜',
@@ -511,6 +512,7 @@ export const ITEMS = {
     },
     'phu_van_thuan_di_phu': {
         id: 'phu_van_thuan_di_phu',
+        image: 'items/talismans/phu_van_thuan_di_phu',
         name: 'Phù Văn Thuấn Di Phù',
         type: ITEM_TYPES.DON_PHU,
         icon: '📜',
@@ -545,6 +547,7 @@ export const ITEMS = {
     // --- FORMATION DIAGRAMS ---
     'tran_do_tu_linh_tran': {
         id: 'tran_do_tu_linh_tran',
+        image: 'items/techniques/tran_do_tu_linh_tran',
         name: 'Trận Đồ Tụ Linh Trận',
         type: ITEM_TYPES.DAN_PHUONG,
         icon: '📜',
@@ -995,6 +998,7 @@ export const ITEMS = {
     },
     'tinh_ha_phi_kiem': {
         id: 'tinh_ha_phi_kiem',
+        image: 'items/equipments/tinh_ha_phi_kiem',
         name: 'Tinh Hà Phi Kiếm',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         quality: PHAP_BAO_QUALITIES.PHAP_BAO,
@@ -1025,6 +1029,7 @@ export const ITEMS = {
     // --- Cự Kiếm Môn: giáp trọng cương kiện ---
     'cu_kiem_trong_giap': {
         id: 'cu_kiem_trong_giap',
+        image: 'items/equipments/cu_kiem_trong_giap',
         name: 'Cự Kiếm Trọng Giáp',
         type: ITEM_TYPES.PHAP_BAO_THU,
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
@@ -1140,18 +1145,18 @@ export const ITEMS = {
         ]
     },
 
-    // --- Linh Thú Sơn: ấn linh thú ---
-    'linh_thu_ung_hieu_an': {
-        id: 'linh_thu_ung_hieu_an',
-        name: 'Linh Thú Ứng Hiệu Ấn',
-        type: ITEM_TYPES.DAN_DUOC,
-        icon: '🐾',
-        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+    // --- Linh Thú Sơn: Khôi lỗi thằn lằn ---
+    'tich_dich_khoi_loi': {
+        id: 'tich_dich_khoi_loi',
+        image: 'items/puppets/tich_dich_khoi_loi',
+        name: 'Tích Dịch Khôi Lỗi',
+        type: ITEM_TYPES.KHOI_LOI,
+        icon: '🦎',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
         price: 1200,
-        description: 'Ấn tín linh thú bí truyền của Linh Thú Sơn, chứa đựng thú ý khiến mọi linh thú bản năng thần phục. Sử dụng tăng 30% tỷ lệ thành công khi thu phục linh thú trong 24 giờ.',
-        effect: { type: EFFECT_TYPES.BUFF_TAM_THOI, stat: 'beastSuccess', value: 0.3, duration: 86400000 },
+        description: 'Khôi lỗi thằn lằn sơ cấp do Hàn Lập chế tạo, chuyên dùng để thám thính địa hình và dò đường.',
         categories: [
-            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.KHAC }
+            { category: ITEM_CATEGORIES_ENUM.KHOI_LOI.KEY, subcategory: ITEM_CATEGORIES_ENUM.KHOI_LOI.SUBCATEGORIES.LINH_KHOI }
         ]
     },
 
@@ -1240,6 +1245,7 @@ export const ITEMS = {
     // --- Quỷ Linh Môn: cốt liệu & độc đan bá đạo ---
     'van_hon_cot': {
         id: 'van_hon_cot',
+        image: 'items/ores/van_hon_cot',
         name: 'Vạn Hồn Cốt',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🦴',
@@ -1349,6 +1355,7 @@ export const ITEMS = {
     // Trang bị
     'phi_kiem_go': {
         id: 'phi_kiem_go',
+        image: 'items/equipments/phi_kiem_go',
         name: 'Phi Kiếm Gỗ',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         quality: PHAP_BAO_QUALITIES.PHAM_KHI,
@@ -1430,6 +1437,7 @@ export const ITEMS = {
     },
     'ho_tam_kinh': {
         id: 'ho_tam_kinh',
+        image: 'items/equipments/ho_tam_kinh',
         name: 'Hộ Tâm Kính',
         type: ITEM_TYPES.PHAP_BAO_THU,
         quality: PHAP_BAO_QUALITIES.CO_BAO,
@@ -1478,6 +1486,7 @@ export const ITEMS = {
     },
     'thuong_co_truyen_tong_lenh': {
         id: 'thuong_co_truyen_tong_lenh',
+        image: 'items/artifacts/thuong_co_truyen_tong_lenh',
         name: 'Thượng Cổ Truyền Tống Lệnh',
         type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
         quality: PHAP_BAO_QUALITIES.CO_BAO,
@@ -1508,6 +1517,7 @@ export const ITEMS = {
     },
     'tu_linh_chau': {
         id: 'tu_linh_chau',
+        image: 'items/artifacts/tu_linh_chau',
         name: 'Tụ Linh Châu',
         type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
         quality: PHAP_BAO_QUALITIES.TIEN_KHI,
@@ -1524,6 +1534,7 @@ export const ITEMS = {
     },
     'khoi_linh_tran_ban': {
         id: 'khoi_linh_tran_ban',
+        image: 'items/techniques/khoi_linh_tran_ban',
         name: 'Khởi Linh Trận Bàn',
         type: ITEM_TYPES.PHAP_BAO_TRAN,
         quality: PHAP_BAO_QUALITIES.PHAP_KHI,
@@ -1540,6 +1551,7 @@ export const ITEMS = {
     },
     'hon_dang_co': {
         id: 'hon_dang_co',
+        image: 'items/equipments/hon_dang_co',
         name: 'Hồn Đăng Cổ',
         type: ITEM_TYPES.PHAP_BAO_HON,
         quality: PHAP_BAO_QUALITIES.CO_BAO,
@@ -2168,6 +2180,7 @@ export const ITEMS = {
     },
     'linh_dich_chuong_thien_binh': {
         id: 'linh_dich_chuong_thien_binh',
+        image: 'items/herbs/linh_dich_chuong_thien_binh',
         name: 'Linh Dịch (Chưởng Thiên Bình)',
         type: ITEM_TYPES.DAN_DUOC,
         quality: PHAP_BAO_QUALITIES.TIEN_KHI,
@@ -2221,7 +2234,8 @@ export const ITEMS = {
 
     // --- TALISMAN PAPERS (GIẤY PHÙ) ---
     'hoang_chi_phu': {
-        id: 'hoang_chi_phu', name: 'Hoàng Chỉ Phù', type: ITEM_TYPES.NGUYEN_LIEU, icon: '📜', quality: PHAP_BAO_QUALITIES.PHAM_KHI, price: 10, description: 'Giấy phù vàng cơ bản.', categories: [
+        id: 'hoang_chi_phu',
+        image: 'items/talismans/hoang_chi_phu', name: 'Hoàng Chỉ Phù', type: ITEM_TYPES.NGUYEN_LIEU, icon: '📜', quality: PHAP_BAO_QUALITIES.PHAM_KHI, price: 10, description: 'Giấy phù vàng cơ bản.', categories: [
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
         ]
     },
@@ -2432,6 +2446,7 @@ export const ITEMS = {
     // --- TALISMAN TECHNIQUES (BÍ PHÁP) ---
     'thien_loi_phu_quyen': {
         id: 'thien_loi_phu_quyen',
+        image: 'items/techniques/thien_loi_phu_quyen',
         name: 'Thiên Lôi Phù Quyển',
         type: ITEM_TYPES.DON_PHU,
         icon: '⚡',
@@ -2587,6 +2602,7 @@ export const ITEMS = {
     },
     'yeu_thu_cot': {
         id: 'yeu_thu_cot',
+        image: 'items/ores/yeu_thu_cot',
         name: 'Yêu Thú Cốt',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🦴',
@@ -3332,6 +3348,7 @@ export const ITEMS = {
     },
     'ngu_thu_nang': {
         id: 'ngu_thu_nang',
+        image: 'items/equipments/ngu_thu_nang',
         name: 'Ngự Thú Nang',
         type: ITEM_TYPES.LINH_THU_DAI,
         icon: '👜',
@@ -4157,6 +4174,7 @@ export const ITEMS = {
     },
     'han_ngoc_thach': {
         id: 'han_ngoc_thach',
+        image: 'items/ores/han_ngoc_thach',
         name: 'Hàn Ngọc Thạch',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '💎',
@@ -4243,6 +4261,7 @@ export const ITEMS = {
     },
     'thien_long_nha': {
         id: 'thien_long_nha',
+        image: 'items/ores/thien_long_nha',
         name: 'Thiên Long Nha',
         type: ITEM_TYPES.NGUYEN_LIEU,
         icon: '🦷',
@@ -4662,6 +4681,7 @@ export const ITEMS = {
     },
     'bach_linh_hoa_lo': {
         id: 'bach_linh_hoa_lo',
+        image: 'items/cauldrons/bach_linh_hoa_lo',
         name: 'Bách Linh Hóa Lò',
         type: ITEM_TYPES.KHI_BO,
         icon: '🏮',
@@ -4675,6 +4695,7 @@ export const ITEMS = {
     },
     'van_linh_phu_bai': {
         id: 'van_linh_phu_bai',
+        image: 'items/talismans/van_linh_phu_bai',
         name: 'Vạn Linh Phù Bài',
         type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
         icon: '🀄',
@@ -4688,6 +4709,7 @@ export const ITEMS = {
     },
     'huyen_thien_kinh_luan': {
         id: 'huyen_thien_kinh_luan',
+        image: 'items/equipments/huyen_thien_kinh_luan',
         name: 'Huyền Thiên Kinh Luân',
         type: ITEM_TYPES.PHAP_BAO_KHONG_GIAN,
         icon: '🌀',
@@ -4714,6 +4736,7 @@ export const ITEMS = {
     },
     'song_long_bao_thap': {
         id: 'song_long_bao_thap',
+        image: 'items/equipments/song_long_bao_thap',
         name: 'Song Long Bảo Tháp',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '🗼',
@@ -4874,6 +4897,7 @@ export const ITEMS = {
     },
     'than_hoang_giap': {
         id: 'than_hoang_giap',
+        image: 'items/equipments/than_hoang_giap',
         name: 'Thần Hoàng Giáp',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '🥋',
@@ -5251,6 +5275,7 @@ export const ITEMS = {
     },
     'ha_pham_hoi_linh_dan': {
         id: 'ha_pham_hoi_linh_dan',
+        image: 'items/pills/ha_pham_hoi_linh_dan',
         name: 'Hạ Phẩm Hồi Linh Đan',
         type: ITEM_TYPES.DAN_DUOC,
         icon: '🧪',
@@ -5508,6 +5533,7 @@ export const ITEMS = {
     },
     'linh_gioi_phi_thang_luc': {
         id: 'linh_gioi_phi_thang_luc',
+        image: 'items/techniques/linh_gioi_phi_thang_luc',
         name: 'Linh Giới Phi Thăng Lục',
         type: ITEM_TYPES.NGOC_GIAN,
         icon: '📜',
@@ -5858,6 +5884,7 @@ export const ITEMS = {
     },
     'u_minh_quy_viem_kiem': {
         id: 'u_minh_quy_viem_kiem',
+        image: 'items/equipments/u_minh_quy_viem_kiem',
         name: 'U Minh Quỷ Viêm Kiếm',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '⚔️',
@@ -5962,6 +5989,7 @@ export const ITEMS = {
     },
     'than_nong_dinh': {
         id: 'than_nong_dinh',
+        image: 'items/cauldrons/than_nong_dinh',
         name: 'Thần Nông Đan Đỉnh',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '🏺',
@@ -6040,6 +6068,7 @@ export const ITEMS = {
     },
     'linh_thu_ho_co': {
         id: 'linh_thu_ho_co',
+        image: 'items/equipments/linh_thu_ho_co',
         name: 'Linh Thú Hộ Cổ',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '⭕',
@@ -6300,6 +6329,7 @@ export const ITEMS = {
     },
     'thien_sat_ma_giap': {
         id: 'thien_sat_ma_giap',
+        image: 'items/equipments/thien_sat_ma_giap',
         name: 'Thiên Sát Ma Giáp',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
@@ -6352,6 +6382,7 @@ export const ITEMS = {
     },
     'hap_huyet_trung_tui': {
         id: 'hap_huyet_trung_tui',
+        image: 'items/equipments/hap_huyet_trung_tui',
         name: 'Hấp Huyết Trùng Túi',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '🎒',
@@ -6458,6 +6489,7 @@ export const ITEMS = {
     },
     'bang_suong_cham': {
         id: 'bang_suong_cham',
+        image: 'items/equipments/bang_suong_cham',
         name: 'Băng Sương Châm',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '針',
@@ -6471,6 +6503,7 @@ export const ITEMS = {
     },
     'linh_thu_bi_y': {
         id: 'linh_thu_bi_y',
+        image: 'items/equipments/linh_thu_bi_y',
         name: 'Linh Thú Bì Y',
         type: ITEM_TYPES.GIAP_BAO,
         icon: '🥋',
@@ -6562,6 +6595,7 @@ export const ITEMS = {
     },
     'huyen_loi_chau': {
         id: 'huyen_loi_chau',
+        image: 'items/artifacts/huyen_loi_chau',
         name: 'Huyền Lôi Châu',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '🔮',
@@ -6704,6 +6738,7 @@ export const ITEMS = {
     },
     'hu_vo_than_kinh': {
         id: 'hu_vo_than_kinh',
+        image: 'items/equipments/hu_vo_than_kinh',
         name: 'Hư Vô Thần Kính',
         type: ITEM_TYPES.PHAP_BAO_THU,
         icon: '🪞',
@@ -7177,6 +7212,7 @@ export const ITEMS = {
     // --- OTHER STUFF ---
     'phan_thien_dinh': {
         id: 'phan_thien_dinh',
+        image: 'items/cauldrons/phan_thien_dinh',
         name: 'Phần Thiên Đỉnh',
         type: ITEM_TYPES.DAN_LU,
         icon: '鼎',
@@ -7190,6 +7226,7 @@ export const ITEMS = {
     },
     'hon_don_loi_thap': {
         id: 'hon_don_loi_thap',
+        image: 'items/equipments/hon_don_loi_thap',
         name: 'Hỗn Độn Lôi Tháp',
         type: ITEM_TYPES.PHAP_BAO_CONG,
         icon: '🗼',
@@ -7203,6 +7240,7 @@ export const ITEMS = {
     },
     'phan_quyet_cong_phap': {
         id: 'phan_quyet_cong_phap',
+        image: 'items/techniques/phan_quyet_cong_phap',
         name: 'Phần Quyết (Bí Tịch)',
         type: ITEM_TYPES.SACH_CONG_PHAP,
         icon: '📖',
@@ -7305,7 +7343,209 @@ export const ITEMS = {
                 subcategory: ITEM_CATEGORIES_ENUM.LINH_THU.SUBCATEGORIES.TRUNG_KY_TRUNG
             }
         ]
-    }
+    },
+
+    'chu_sa_linh_but': {
+        id: 'chu_sa_linh_but',
+        name: 'Chu Sa Linh Bút',
+        type: ITEM_TYPES.BUT_VE_PHU,
+        icon: '🖌️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1200,
+        description: 'Bút vẽ phù lục làm bằng lông đuôi linh hồ và ngọc bích, tăng tỷ lệ vẽ phù lục thành công.',
+        image: 'items/equipments/chu_sa_linh_but',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.PHU_CU }
+        ]
+    },
+    'giao_long_nha': {
+        id: 'giao_long_nha',
+        name: 'Giao Long Nha',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🦷',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1500,
+        description: 'Răng nhọn sắc bén của Giao Long cấp cao, chứa thủy độc kịch liệt, nguyên liệu chế tác binh khí cực phẩm.',
+        image: 'items/ores/giao_long_nha',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.YEU_THU, subSubcategory: 'yeu_nanh' }
+        ]
+    },
+    'linh_duoc_ho_lo': {
+        id: 'linh_duoc_ho_lo',
+        name: 'Linh Dược Hồ Lô',
+        type: ITEM_TYPES.PHAP_BAO_PHU_TRO,
+        icon: '🍶',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 3000,
+        description: 'Hồ lô chứa đan dược quý hiếm, có thể bảo quản dược tính lâu dài không bị suy giảm.',
+        image: 'items/artifacts/linh_duoc_ho_lo',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'quy_giap': {
+        id: 'quy_giap',
+        name: 'Quy Giáp',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🐢',
+        quality: PHAP_BAO_QUALITIES.PHAM_KHI,
+        price: 400,
+        description: 'Mai rùa linh quy dày nặng, cực kỳ cứng cáp, nguyên liệu hàng đầu để chế tác tấm khiên hoặc giáp bảo phòng ngự.',
+        image: 'items/ores/quy_giap',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.YEU_THU, subSubcategory: 'da_long' }
+        ]
+    },
+    'mi_anh_tram': {
+        id: 'mi_anh_tram',
+        name: 'Mị Ảnh Trâm',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '📍',
+        quality: PHAP_BAO_QUALITIES.PHAP_BAO,
+        price: 8000,
+        description: 'Trâm cài tóc màu lam ngọc, công kích quỷ dị xuất thần nhập hóa, khiến đối thủ khó lòng phòng bị.',
+        image: 'items/equipments/mi_anh_tram',
+        stats: { "atk": 350, "speed": 10 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.PHAP_BAO_SUB }
+        ]
+    },
+    'tu_kim_ho_lo': {
+        id: 'tu_kim_ho_lo',
+        name: 'Tử Kim Hồ Lô',
+        type: ITEM_TYPES.PHAP_BAO_CONG,
+        icon: '🏺',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 25000,
+        description: 'Cổ bảo hồ lô màu tử kim, tương truyền có khả năng hút đối thủ vào trong và hóa thành vũng máu trong ba khắc.',
+        image: 'items/artifacts/tu_kim_ho_lo',
+        stats: { "atk": 1200 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.CO_BAO }
+        ]
+    },
+    'ngoc_linh_chuong': {
+        id: 'ngoc_linh_chuong',
+        name: 'Ngọc Linh Chuông',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🔔',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2500,
+        description: 'Chuông ngọc hộ mệnh tự động phát ra âm thanh hộ thể bảo vệ chủ nhân khi chịu công kích thần hồn.',
+        image: 'items/equipments/ngoc_linh_chuong',
+        stats: { "def": 80, "mdef": 120 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'dong_linh': {
+        id: 'dong_linh',
+        name: 'Đồng Linh',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🔔',
+        quality: PHAP_BAO_QUALITIES.PHAM_KHI,
+        price: 300,
+        description: 'Chiếc chuông đồng nhỏ phát ra âm thanh thanh thúy, có tác dụng định thần, phòng ngự sơ cấp.',
+        image: 'items/equipments/dong_linh',
+        stats: { "def": 15, "mdef": 20 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.PHAP_KHI }
+        ]
+    },
+    'tho_tran_ky': {
+        id: 'tho_tran_ky',
+        name: 'Thổ Trận Kỳ',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🚩',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1000,
+        description: 'Trận kỳ mang nồng đậm thổ linh khí, dùng để bố trí Ngũ Hành Trận Pháp thuộc tính Thổ.',
+        image: 'items/artifacts/tho_tran_ky',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'thuy_tran_ky': {
+        id: 'thuy_tran_ky',
+        name: 'Thủy Trận Kỳ',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🚩',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1000,
+        description: 'Trận kỳ mang nồng đậm thủy linh khí, dùng để bố trí Ngũ Hành Trận Pháp thuộc tính Thủy.',
+        image: 'items/artifacts/thuy_tran_ky',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'moc_tran_ky': {
+        id: 'moc_tran_ky',
+        name: 'Mộc Trận Kỳ',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🚩',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1000,
+        description: 'Trận kỳ mang nồng đậm mộc linh khí, dùng để bố trí Ngũ Hành Trận Pháp thuộc tính Mộc.',
+        image: 'items/artifacts/moc_tran_ky',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'hoa_tran_ky': {
+        id: 'hoa_tran_ky',
+        name: 'Hỏa Trận Kỳ',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🚩',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1000,
+        description: 'Trận kỳ mang nồng đậm hỏa linh khí, dùng để bố trí Ngũ Hành Trận Pháp thuộc tính Hỏa.',
+        image: 'items/artifacts/hoa_tran_ky',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'kim_tran_ky': {
+        id: 'kim_tran_ky',
+        name: 'Kim Trận Kỳ',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🚩',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1000,
+        description: 'Trận kỳ mang nồng đậm kim linh khí, dùng để bố trí Ngũ Hành Trận Pháp thuộc tính Kim.',
+        image: 'items/artifacts/kim_tran_ky',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'ho_menh_khoa': {
+        id: 'ho_menh_khoa',
+        name: 'Hộ Mệnh Khóa',
+        type: ITEM_TYPES.PHAP_BAO_THU,
+        icon: '🔒',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1500,
+        description: 'Khóa hộ mệnh làm từ linh ngọc, tăng phòng ngự và hộ thân cho tu sĩ khi đi thám hiểm bí cảnh.',
+        image: 'items/artifacts/ho_menh_khoa',
+        stats: { "def": 50, "mdef": 50 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
+    'linh_tieu_mao': {
+        id: 'linh_tieu_mao',
+        name: 'Linh Tiêu Mão',
+        type: ITEM_TYPES.NON_MAO,
+        icon: '👑',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2000,
+        description: 'Mũ linh tiêu thanh nhã, gia tăng tốc độ ngưng tụ linh khí và bảo vệ hộ thân khỏi độc khí.',
+        image: 'items/equipments/linh_tieu_mao',
+        stats: { "def": 30, "mdef": 40 },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
+        ]
+    },
 };
 
 // Mark unique items

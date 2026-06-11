@@ -262,7 +262,6 @@ export const SECTS = {
         libraryItems: [
             { id: 'ngung_khi_dan', price: 50, type: 'contribution', minRankScore: 0 },
             { id: 'ngu_thu_quyet', price: 400, type: 'contribution', minRankScore: 0 },
-            { id: 'linh_thu_ung_hieu_an', price: 700, type: 'contribution', minRankScore: 0 },
             { id: 'linh_thu_son_cong_phap', name: 'Linh Thú Vạn Thú Quyết', price: 600, type: 'contribution', minRankScore: 0, isTech: true },
             { id: 'truc_co_dan', price: 200, type: 'contribution', minRankScore: 0 },
             { id: 'thanh_van_ly_thu_linh_noan', price: 3000, type: 'contribution', minRankScore: 1 },
