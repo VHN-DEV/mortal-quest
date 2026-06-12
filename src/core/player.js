@@ -465,7 +465,10 @@ export class Player {
 
         const specialThreshold = 100;
 
-        if (highestPath === 'orthodox' && highestVal <= specialThreshold) {
+        if (this.race === 'HUMAN' && this.realmId === 0) {
+            displayPathName = 'Không';
+            mainPathId = 'orthodox';
+        } else if (highestPath === 'orthodox' && highestVal <= specialThreshold) {
             displayPathName = 'Tạp Tu';
             mainPathId = 'orthodox';
         } else {

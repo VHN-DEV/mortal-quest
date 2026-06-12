@@ -2,8 +2,16 @@ import { describe, it, expect } from 'vitest';
 import { Player } from '../src/core/player.js';
 
 describe('Dao Thong System Tests', () => {
-  it('should default to Tap Tu for a new human player', () => {
+  it('should default to Không for a new human player (Phàm nhân)', () => {
     const player = new Player({ race: 'HUMAN' });
+    player.calculateStats();
+    expect(player.daoThong).toBe('Không');
+    expect(player.mainPath).toBe('orthodox');
+  });
+
+  it('should default to Tạp Tu for a human cultivator (realmId > 0) with no techniques', () => {
+    const player = new Player({ race: 'HUMAN' });
+    player.realmId = 1; // Luyện Khí Sơ Kỳ
     player.calculateStats();
     expect(player.daoThong).toBe('Tạp Tu');
     expect(player.mainPath).toBe('orthodox');
@@ -25,6 +33,7 @@ describe('Dao Thong System Tests', () => {
 
   it('should identify orthodox cultivator upon learning orthodox technique', () => {
     const player = new Player({ race: 'HUMAN' });
+    player.realmId = 1;
     // Add an orthodox technique: Trường Xuân Nạp Khí Quyết (HOANG_GIAI)
     // HOANG_GIAI yields 50 base points. MasteryLevel 3 (Đại thành) yields 2.5x multiplier.
     // Total points = 50 * 2.5 = 125. Since 100 base + 125 = 225 (> 100 threshold), it should resolve to Đạo Môn (Pháp Tu).
@@ -42,6 +51,7 @@ describe('Dao Thong System Tests', () => {
 
   it('should identify Quỷ Tu if ghost-related techniques dominate', () => {
     const player = new Player({ race: 'HUMAN' });
+    player.realmId = 1;
     // Learn U Minh Huy Ngạn (HUYEN_GIAI, contains "U Minh")
     // HUYEN_GIAI yields 150 base points. MasteryLevel 4 (Viên mãn) yields 4x multiplier.
     // Total points = 150 * 4 = 600.
@@ -59,6 +69,7 @@ describe('Dao Thong System Tests', () => {
 
   it('should identify Thể Tu if body refining techniques dominate', () => {
     const player = new Player({ race: 'HUMAN' });
+    player.realmId = 1;
     // Learn Cửu Chuyển Kim Thân Quyết (HUYEN_GIAI, Luyện Thể)
     // HUYEN_GIAI yields 150 base. MasteryLevel 4 (Viên mãn) yields 4x multiplier.
     // Total points = 600.
@@ -76,6 +87,7 @@ describe('Dao Thong System Tests', () => {
 
   it('should identify dual-cultivator path (Song Tu) if two paths are balanced', () => {
     const player = new Player({ race: 'HUMAN' });
+    player.realmId = 1;
     // Path 1: Thể Tu: Cửu Chuyển Kim Thân Quyết (HUYEN_GIAI, Luyện Thể) -> 600 points
     player.learnedTechniques.push({
       id: 'cuu_chuyen_kim_than',
