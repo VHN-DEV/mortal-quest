@@ -11,7 +11,7 @@ import { Preferences } from '@capacitor/preferences';
 import { Capacitor } from '@capacitor/core';
 import { getSectById, SECTS } from './configs/sect-data.js';
 import { getRealmById } from './configs/realm-data.js';
-import { CREATION_SYSTEMS } from './configs/creation-data.js';
+import { CREATION_SYSTEMS, CREATION_ORIGINS } from './configs/creation-data.js';
 
 // Screens will be loaded dynamically
 import { logger } from './utils/logger.js';
