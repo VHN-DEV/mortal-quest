@@ -14,7 +14,7 @@ beforeEach(() => {
 
 describe('PNTT Dynamic Item Effects', () => {
   it('should permanently increase player divine sense and max mana when consuming Linh Chi Tiên Thảo', () => {
-    const player = new Player();
+    const player = new Player({ realmId: 1 });
     player.baseDivineSense = 100;
     player.divineSense = 100;
     player.baseStats.maxMana = 1000;
@@ -34,7 +34,7 @@ describe('PNTT Dynamic Item Effects', () => {
   });
 
   it('should purify and increase spiritual root purity when below 100%', () => {
-    const player = new Player();
+    const player = new Player({ realmId: 1 });
     player.spiritualRoot = {
       id: 'song_linh_can',
       type: 'Song Linh Căn (Kim - Thủy) (Cân Bằng)',
@@ -57,7 +57,7 @@ describe('PNTT Dynamic Item Effects', () => {
   });
 
   it('should refine, strip an element, and upgrade spiritual root classification when purity is 100%', () => {
-    const player = new Player();
+    const player = new Player({ realmId: 1 });
     player.spiritualRoot = {
       id: 'tam_linh_can',
       type: 'Tam Linh Căn (Kim - Mộc - Thủy) (Cân Bằng)',
@@ -85,7 +85,7 @@ describe('PNTT Dynamic Item Effects', () => {
   });
 
   it('should know or discover worlds when using specific discovery items', () => {
-    const player = new Player();
+    const player = new Player({ realmId: 1 });
     const inventory = player.inventory;
 
     // Use Linh Giới Phi Thăng Lục to know Linh Giới

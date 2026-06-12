@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Player } from '../src/core/player.js';
 import { FormationSystem } from '../src/systems/formation-system.js';
 import { TimeSystem } from '../src/systems/time-system.js';
@@ -61,6 +61,7 @@ describe('Formation Master (Trận Pháp Sư) Unit Tests', () => {
         state.player = player;
 
         timeSystem = new TimeSystem(player);
+        vi.spyOn(Math, 'random').mockReturnValue(0);
     });
 
     it('should normalize formation IDs correctly', () => {

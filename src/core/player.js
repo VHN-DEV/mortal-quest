@@ -16,7 +16,7 @@ import { getTechniqueTypeSlug } from '../configs/display-mappers.js';
 import { getStatusEffectById, STATUS_EFFECT_TEMPLATES } from '../configs/status-effect-data.js';
 
 export class Player {
-    constructor() {
+    constructor(initData = {}) {
         this.name = "Phàm Nhân";
         this.gender = "male";
         this.avatar = "player_male";
@@ -358,6 +358,7 @@ export class Player {
         this.tamSuyState = 'none'; // 'none' | 'nhuc_than_suy' | 'nguyen_than_suy' | 'phap_tac_suy'
         this.nextPeriodicTribulationYear = 0;
         this.natalTreasure = null;
+        Object.assign(this, initData);
     }
 
     get spiritRoot() {

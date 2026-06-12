@@ -15,6 +15,10 @@ export class BeastSystem {
             return { success: false, msg: 'Vị trí lò ấp không hợp lệ!' };
         }
 
+        if (this.player.realmId < 1) {
+            return { success: false, msg: 'Cảnh giới phàm nhân chưa có linh lực, không thể ấp trứng linh thú!' };
+        }
+
         if (this.player.hatchingBeasts[slotIndex] !== null) {
             return { success: false, msg: 'Lò ấp này đã có trứng đang ấp!' };
         }

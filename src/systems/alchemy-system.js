@@ -84,6 +84,10 @@ export class AlchemySystem {
 
     async craft(recipeId) {
         if (this.isCrafting) return;
+
+        if (this.player.realmId < 1) {
+            return { success: false, msg: 'Cảnh giới phàm nhân chưa có linh lực, không thể điều khiển lò luyện đan!' };
+        }
         
         const recipe = getRecipeById(recipeId);
         if (!recipe) return { success: false, msg: 'Đan phương không tồn tại!' };

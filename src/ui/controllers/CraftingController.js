@@ -92,6 +92,11 @@ export class CraftingController {
     openCrafting(type) {
         if (!state.player) return;
 
+        if (state.player.realmId < 1) {
+            state.ui.toast("Ngươi vẫn là phàm nhân, chưa tu luyện linh lực, thần thức chưa mở, làm sao hành nghề bách nghệ!", "error");
+            return;
+        }
+
         // Bách nghệ block
         const isUnlocked = state.player.unlockedProfessions.includes(type);
         if (!isUnlocked) {
@@ -112,7 +117,7 @@ export class CraftingController {
         const screenId = screens[type];
         if (screenId) {
             state.ui.switchScreen(screenId);
-            if (type === 'alchemy' && this.parentScreen.alchemyController) this.parentScreen.alchemyController.renderAlchemy();
+            if (type === 'alchemy' && this.parentScreen && this.parentScreen.alchemyController) this.parentScreen.alchemyController.renderAlchemy();
             if (type === 'smithing') this.renderSmithing();
             if (type === 'talisman') this.renderTalisman();
             if (type === 'formation') this.renderFormation();

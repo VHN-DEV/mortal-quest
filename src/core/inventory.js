@@ -105,6 +105,69 @@ export class Inventory {
         const itemInInv = allItems.find(i => i.id === itemId);
         if (!itemInInv || itemInInv.quantity < quantity) return false;
 
+        // PNTT Logic: Check if player is a Mortal (realmId < 1) trying to use cultivator-only items
+        if (this.player.realmId < 1) {
+            // 1. Jade Slip Check
+            if (itemData.type === 'ngoc_gian') {
+                if (typeof state !== 'undefined' && state.ui && state.ui.toast) {
+                    state.ui.toast("Ngươi vẫn là phàm nhân, chưa khai mở Thần Thức, không thể đọc hiểu Ngọc Giản này!", "error");
+                }
+                return false;
+            }
+
+            // 2. Secret Techniques / Spells
+            if (itemData.type === 'sach_cong_phap' && itemData.secretId) {
+                if (typeof state !== 'undefined' && state.ui && state.ui.toast) {
+                    state.ui.toast("Ngươi chưa tu luyện pháp lực, không thể tham ngộ bí thuật thần thông này!", "error");
+                }
+                return false;
+            }
+
+            // 3. Professions / Bách nghệ
+            const effectType = itemData.effect?.type;
+            const subEffects = effectType === EFFECT_TYPES.HOC_NHIEU_CONG_THUC ? (itemData.effect.value || []) : [];
+            const hasProfessionSubEffect = subEffects.some(se => 
+                se.type === EFFECT_TYPES.MO_KHOA_NGHE ||
+                se.type === EFFECT_TYPES.HOC_CONG_THUC_DAN ||
+                se.type === EFFECT_TYPES.HOC_CONG_THUC_REN ||
+                se.type === EFFECT_TYPES.HOC_CONG_THUC_PHU ||
+                se.type === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI ||
+                se.type === EFFECT_TYPES.HOC_CONG_THUC_THI ||
+                se.type === EFFECT_TYPES.HOC_TRAN_PHAP
+            );
+
+            const isProfessionBook = effectType === EFFECT_TYPES.MO_KHOA_NGHE ||
+                effectType === EFFECT_TYPES.HOC_CONG_THUC_DAN ||
+                effectType === EFFECT_TYPES.HOC_CONG_THUC_REN ||
+                effectType === EFFECT_TYPES.HOC_CONG_THUC_PHU ||
+                effectType === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI ||
+                effectType === EFFECT_TYPES.HOC_CONG_THUC_THI ||
+                effectType === EFFECT_TYPES.HOC_TRAN_PHAP ||
+                itemData.type === 'dan_phuong' ||
+                itemData.type === 'don_phu' ||
+                hasProfessionSubEffect;
+
+            if (isProfessionBook) {
+                if (typeof state !== 'undefined' && state.ui && state.ui.toast) {
+                    state.ui.toast("Chưa học công pháp tu luyện linh lực, không thể lĩnh hội bách nghệ hay đan phương/pháp trận!", "error");
+                }
+                return false;
+            }
+
+            // 4. Strange Fire / Lightning (Dị Hỏa / Dị Lôi)
+            const isStrangeElement = itemData.type === 'di_hoa' || 
+                itemData.type === 'di_loi' || 
+                effectType === EFFECT_TYPES.LUYEN_HOA_DI_HOA || 
+                effectType === EFFECT_TYPES.LUYEN_HOA_DI_LOI;
+
+            if (isStrangeElement) {
+                if (typeof state !== 'undefined' && state.ui && state.ui.toast) {
+                    state.ui.toast("Phàm nhân nhục nhãn phàm thai, tự ý luyện hóa dị hỏa/dị lôi sẽ bị thiêu rụi ngay lập tức!", "error");
+                }
+                return false;
+            }
+        }
+
         if (itemData.type === 'dan_duoc' && itemData.effect) {
             const isPill = itemId.endsWith('_dan') || (itemData.name && itemData.name.includes('Đan'));
             if (isPill) {

@@ -76,6 +76,10 @@ export class FormationSystem {
         const formation = this.formations[normId];
         if (!formation) return { success: false, msg: 'Trận pháp không xác định!' };
 
+        if (this.player.realmId < 1) {
+            return { success: false, msg: 'Cảnh giới phàm nhân chưa có linh lực, không thể thiết lập trận pháp!' };
+        }
+ 
         if (this.player.activeFormations.some(af => this._normalizeId(af.id) === normId)) {
             return { success: false, msg: 'Trận pháp này đã được kích hoạt!' };
         }

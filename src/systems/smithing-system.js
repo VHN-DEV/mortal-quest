@@ -10,6 +10,10 @@ export class SmithingSystem {
     }
 
     async forge(recipeId) {
+        if (this.player.realmId < 1) {
+            return { success: false, msg: 'Cảnh giới phàm nhân chưa có linh lực, không thể luyện chế pháp khí!' };
+        }
+
         const recipe = SMITHING_RECIPES[recipeId];
         if (!recipe) return { success: false, msg: 'Bản thiết kế không tồn tại!' };
 

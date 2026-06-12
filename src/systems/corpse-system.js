@@ -14,6 +14,10 @@ export class CorpseSystem {
     // LUYỆN CHẾ THI KHÔI
     // =============================================
     refine(typeId) {
+        if (this.player.realmId < 1) {
+            return { success: false, msg: "Cảnh giới phàm nhân chưa có linh lực, không thể luyện thi!" };
+        }
+
         const type = CORPSE_TYPES[typeId];
         if (!type) return { success: false, msg: "Loại thi hài không tồn tại!" };
 

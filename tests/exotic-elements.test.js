@@ -9,9 +9,8 @@ import { ITEM_TYPES } from '../src/configs/item-classification.js';
 describe('Exotic Flames & Lightnings Integration Tests', () => {
   let player;
   let shopSystem;
-
   beforeEach(() => {
-    player = new Player();
+    player = new Player({ realmId: 1 });
     player.vipLevel = 5; // bypass VIP restrictions
     player.addLingShi(100000000); // give enough currency
     shopSystem = new ShopSystem(player);

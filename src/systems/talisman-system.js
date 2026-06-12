@@ -9,6 +9,10 @@ export class TalismanSystem {
     }
 
     async draw(recipeId) {
+        if (this.player.realmId < 1) {
+            return { success: false, msg: 'Cảnh giới phàm nhân chưa có linh lực, không thể vẽ linh phù!' };
+        }
+
         const recipe = TALISMAN_RECIPES[recipeId];
         if (!recipe) return { success: false, msg: 'Bí pháp không tồn tại!' };
         

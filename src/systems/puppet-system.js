@@ -39,6 +39,10 @@ export class PuppetSystem {
         const recipe = PUPPET_RECIPES.find(r => r.id === recipeId);
         if (!recipe) return { success: false, msg: 'Bản vẽ không tồn tại!' };
 
+        if (this.player.realmId < 1) {
+            return { success: false, msg: 'Cảnh giới phàm nhân chưa có linh lực, không thể chế tạo khôi lỗi!' };
+        }
+ 
         if (!this.player.knownPuppetRecipes.includes(recipeId)) {
             return { success: false, msg: 'Ngươi chưa có bản thiết kế của khôi lỗi này!' };
         }
