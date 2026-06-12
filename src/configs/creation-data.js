@@ -197,14 +197,14 @@ export const CREATION_ORIGINS = {
     'gia_toc': {
         id: 'gia_toc', name: 'Gia Tộc Tu Tiên', cost: 40,
         desc: 'Sinh ra trong gia tộc tu tiên có truyền thừa. Khởi đầu tại gia tộc được chọn, nhận công pháp gia truyền và bổng lộc hàng tháng.',
-        resources: { lingShi: 1000, items: [] },
+        resources: { lingShi: 1000, items: ['linh_hu_tui', 'ngung_khi_dan', 'ngung_khi_dan'] },
         monthlyResources: { lingShi: 100, items: ['ngung_khi_dan'] },
         requiresClanSelection: true
     },
     'tong_mon': {
         id: 'tong_mon', name: 'Đệ Tử Tông Môn', cost: 60,
         desc: 'Được tông môn che chở từ nhỏ, có nền tảng tu luyện bài bản. Khởi đầu tại tông môn, nhận công pháp và bổng lộc định kỳ.',
-        resources: { lingShi: 500, items: [] },
+        resources: { lingShi: 500, items: ['linh_hu_tui', 'ngung_khi_dan'] },
         monthlyResources: { lingShi: 50, items: ['ngung_khi_dan'] },
         requiresSectSelection: true,
         sectFilter: 'righteous'
@@ -212,7 +212,7 @@ export const CREATION_ORIGINS = {
     'ma_dao': {
         id: 'ma_dao', name: 'Hậu Nhân Ma Đạo', cost: 30,
         desc: 'Công pháp bá đạo nhưng bị chính đạo truy quét. Khởi đầu trong tông môn ma đạo, nhận ma công bẩm sinh.',
-        resources: { lingShi: 500, items: [], karma: -50 },
+        resources: { lingShi: 500, items: ['linh_hu_tui', 'ngung_khi_dan'], karma: -50 },
         monthlyResources: { lingShi: 30, items: ['ngung_khi_dan'] },
         requiresSectSelection: true,
         sectFilter: 'demonic'
@@ -220,7 +220,7 @@ export const CREATION_ORIGINS = {
     'dai_gia_toc': {
         id: 'dai_gia_toc', name: 'Đại Thế Gia', cost: 100,
         desc: 'Con cháu thế gia danh tiếng, tài lực dồi dào. Khởi đầu tại gia tộc, nhận công pháp cao cấp của thế gia và đãi ngộ hậu hĩ.',
-        resources: { lingShi: 10000, items: [] },
+        resources: { lingShi: 10000, items: ['can_khon_tui', 'ngung_khi_dan', 'ngung_khi_dan', 'truc_co_dan'] },
         monthlyResources: { lingShi: 1000, items: ['ngung_khi_dan', 'truc_co_dan'] },
         requiresClanSelection: true
     },

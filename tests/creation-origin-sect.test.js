@@ -142,4 +142,33 @@ describe('Character Creation - Origin and Sect Integration', () => {
     expect(player.inventory.getItemQuantity('lac_van_tien_dan')).toBe(1);
     expect(player.inventory.getItemQuantity('ngung_khi_dan')).toBe(1); // Từ Origin
   });
+
+  it('should initialize player starting realm and items based on origin and race', () => {
+    creationSystem.mode = 'scenario';
+    // 1. Tán tu human starting realm should be 0
+    creationSystem.selectOrigin('tan_tu');
+    creationSystem.playerName = 'Tán Tu Nhân';
+    let player = creationSystem.buildPlayer();
+    expect(player.realmId).toBe(0);
+    expect(player.inventory.hasItem('linh_hu_tui')).toBe(false);
+
+    // 2. Gia tộc human starting realm should be 1, and have linh_hu_tui
+    creationSystem.selectOrigin('gia_toc');
+    creationSystem.selectClanForOrigin('yen_gia_bao');
+    player = creationSystem.buildPlayer();
+    expect(player.realmId).toBe(1);
+    expect(player.inventory.hasItem('linh_hu_tui')).toBe(true);
+
+    // 3. Đại thế gia human starting realm should be 3, and have can_khon_tui
+    creationSystem.selectOrigin('dai_gia_toc');
+    creationSystem.selectClanForOrigin('yen_gia_bao');
+    player = creationSystem.buildPlayer();
+    expect(player.realmId).toBe(3);
+    expect(player.inventory.hasItem('can_khon_tui')).toBe(true);
+
+    // 4. Hồi quy giả human starting realm should be 5
+    creationSystem.selectOrigin('hoi_quy_gia');
+    player = creationSystem.buildPlayer();
+    expect(player.realmId).toBe(5);
+  });
 });

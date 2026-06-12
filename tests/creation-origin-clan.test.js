@@ -85,9 +85,9 @@ describe('Character Creation - Origin and Clan Integration', () => {
     expect(player.lingShi).toBe(initialLingShi + expectedLingShiGained);
 
     // Verify pills rewards
-    // ngung_khi_dan should have been received from origin (1), sect (1), clan (1) -> total 3
+    // ngung_khi_dan: 2 starting items + 3 received from origin (1), sect (1), clan (1) -> total 5
     const ngungKhiDanQty = player.inventory.getItemQuantity('ngung_khi_dan');
-    expect(ngungKhiDanQty).toBe(3);
+    expect(ngungKhiDanQty).toBe(5);
 
     // tich_coc_dan should have been received from sect (2), clan (2) -> total 4
     const tichCocDanQty = player.inventory.getItemQuantity('tich_coc_dan');
