@@ -795,8 +795,8 @@ export const WORLDS = {
                 eventProbs: { combat: 0, loot: 0, npc: 0, empty: 0 },
                 regionId: "mo_lan_thao_nguyen",
                 regionName: "Mộ Lan Thảo Nguyên",
-                subRegionId: "nhan_gioi",
-                subRegionName: "Nhân Giới"
+                subRegionId: "mo_lan_toc",
+                subRegionName: "Mộ Lan Lãnh Địa"
             },
             {
                 id: "mo_lan_toc_doanh_dia",
@@ -1339,8 +1339,8 @@ export const WORLDS = {
                 eventProbs: { combat: 0, loot: 0, npc: 0, empty: 0 },
                 regionId: "loan_tinh_hai",
                 regionName: "Loạn Tinh Hải",
-                subRegionId: "nhan_gioi",
-                subRegionName: "Nhân Giới"
+                subRegionId: "loan_tinh_hai_sub",
+                subRegionName: "Vùng Biển Tu Tiên"
             },
             {
                 id: "noi_hai_loc",
@@ -1634,8 +1634,8 @@ export const WORLDS = {
                 eventProbs: { combat: 0, loot: 0, npc: 0, empty: 0 },
                 regionId: "vo_bien_hai",
                 regionName: "Vô Biên Hải",
-                subRegionId: "nhan_gioi",
-                subRegionName: "Nhân Giới"
+                subRegionId: "vo_bien_hai_sub",
+                subRegionName: "Vô Biên Hải Vực"
             },
             {
                 id: "ngu_long_hai",
@@ -1650,8 +1650,8 @@ export const WORLDS = {
                 eventProbs: { combat: 0, loot: 0, npc: 0, empty: 0 },
                 regionId: "ngu_long_hai",
                 regionName: "Ngũ Long Hải",
-                subRegionId: "nhan_gioi",
-                subRegionName: "Nhân Giới"
+                subRegionId: "ngu_long_hai_sub",
+                subRegionName: "Vùng Biển Ngũ Long"
             },
             {
                 id: "khong_gian_tiet_diem",
@@ -1666,8 +1666,8 @@ export const WORLDS = {
                 eventProbs: { combat: 0, loot: 0, npc: 0, empty: 0 },
                 regionId: "khong_gian_tiet_diem",
                 regionName: "Không Gian Tiết Điểm",
-                subRegionId: "nhan_gioi",
-                subRegionName: "Nhân Giới"
+                subRegionId: "khe_nut_khong_gian",
+                subRegionName: "Vết Nứt Không Gian"
             },
             {
                 id: "thanh_van_tran",

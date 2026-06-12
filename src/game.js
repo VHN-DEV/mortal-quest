@@ -3254,6 +3254,35 @@ export class Game {
         state.ui.switchScreen('screen-mining', null);
     }
 
+    ascendToSpiritRealm() {
+        if (!state.player) return;
+
+        // 1. Kiểm tra cảnh giới (Hóa Thần Sơ Kỳ trở lên, realmId >= 26)
+        if (state.player.realmId < 26) {
+            state.ui.alert("Cảnh giới chưa đủ để phi thăng Linh Giới! Nhục thân ngươi quá yếu ớt, nếu cưỡng ép vượt giới diện sẽ lập tức bị áp lực không gian xé rách thành bụi phấn. Yêu cầu tối thiểu đạt: Hóa Thần Sơ Kỳ trở lên.", "Giới Hạn Cảnh Giới");
+            return;
+        }
+
+        // 2. Kiểm tra vật phẩm hộ thân (Thượng Cổ Truyền Tống Lệnh hoặc Phá Không Phù)
+        const hasToken = state.player.inventory?.allItems?.some(i => i.id === 'thuong_co_truyen_tong_lenh');
+        const hasTalisman = state.player.inventory?.allItems?.some(i => i.id === 'pha_khong_phu');
+
+        if (!hasToken && !hasTalisman) {
+            state.ui.alert("Vết nứt không gian tràn ngập không gian loạn lưu vô cùng nguy hiểm. Để an toàn vượt qua, ngươi cần có [Thượng Cổ Truyền Tống Lệnh] hoặc tiêu hao [Phá Không Phù] làm hộ trướng che chở nhục thân!", "Thiếu Vật Phẩm Hộ Thân");
+            return;
+        }
+
+        // 3. Thực hiện phi thăng
+        // Mở khóa Linh Giới (thêm vào discoveredWorlds)
+        state.player.discoverWorld('linh_gioi');
+
+        // Bắt đầu di chuyển xuyên giới diện tới Phi Thăng Đài trong Linh Giới
+        const success = state.systems.travel.startTravel('phi_thang_dai');
+        if (success) {
+            state.ui.alert("Ngươi bước vào vết nứt không gian. Xung quanh là bóng tối vô tận và luồng cuồng phong không gian xé rách dữ dội. Nhờ có pháp bảo hộ thân cùng tu vi Hóa Thần, ngươi vững vàng tiến sâu vào thông đạo hướng tới Linh Giới!", "Bắt Đầu Phi Thăng");
+        }
+    }
+
     // --- System Actions ---
     buyItem(itemId, quantity = 1) {
         if (state.systems.shop) {

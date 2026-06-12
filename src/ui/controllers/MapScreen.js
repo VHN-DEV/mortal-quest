@@ -1203,6 +1203,13 @@ export class MapScreen {
                     <i class="ph ph-mountains text-lg"></i><span>VÀO ĐẠI SƠN</span>
                 </button>
             `;
+        } else if (loc.id === 'khong_gian_tiet_diem' || loc.id === 'phi_thang_thong_dao') {
+            hasSpecial = true;
+            this.elLocSpecialActions.innerHTML = `
+                <button onclick="window.game.ascendToSpiritRealm()" class="col-span-2 py-3 bg-cyan-900/20 border border-cyan-500/30 rounded-xl text-cyan-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2 animate-pulse">
+                    <i class="ph ph-sparkles text-lg"></i><span>PHI THĂNG LINH GIỚI</span>
+                </button>
+            `;
         }
 
         // Add Mining button if there are mining nodes here
