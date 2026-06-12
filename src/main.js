@@ -1301,7 +1301,7 @@ window.renderCreationScreen = () => {
     if (elLingShiInput) {
         elLingShiInput.value = sys.startingLingShi;
         elLingShiInput.onchange = (e) => {
-            const val = parseInt(e.target.value) || 0;
+            const val = Math.max(0, parseInt(e.target.value) || 0);
             sys.startingLingShi = val;
             sys.calculatePoints();
             window.renderCreationScreen();
@@ -1333,8 +1333,8 @@ window.renderCreationScreen = () => {
         `).join('');
         elStartingRealmSelect.value = String(sys.startingRealmId ?? 0);
         elStartingRealmSelect.onchange = (e) => {
-            sys.startingRealmId = parseInt(e.target.value, 10);
-            if (isNaN(sys.startingRealmId)) sys.startingRealmId = 0;
+            const val = parseInt(e.target.value, 10);
+            sys.startingRealmId = (val >= 0 && val <= 64) ? val : 0;
         };
     }
 
@@ -1371,7 +1371,7 @@ window.renderCreationScreen = () => {
     if (elAgeInput) {
         elAgeInput.value = sys.playerAge;
         elAgeInput.onchange = (e) => {
-            sys.playerAge = parseInt(e.target.value) || 18;
+            sys.playerAge = Math.max(10, Math.min(100, parseInt(e.target.value) || 18));
             window.renderCreationScreen();
         };
     }

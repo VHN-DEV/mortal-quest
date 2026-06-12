@@ -45,4 +45,24 @@ describe('Character Creation Difficulty Levels', () => {
     creationSystem.selectDifficulty('invalid_difficulty');
     expect(creationSystem.selectedDifficulty).toBe('thuong');
   });
+
+  it('should prevent buildPlayer if custom points are negative', () => {
+    creationSystem.mode = 'custom';
+    creationSystem.selectDifficulty('cuc_kho'); // 50 points
+    creationSystem.startingLingShi = 10000; // Costs 100 points
+    
+    // Call buildPlayer - should return null because points calculated will be negative
+    const player = creationSystem.buildPlayer();
+    expect(player).toBeNull();
+  });
+
+  it('should recalculate points inside buildPlayer to avoid outdated state bypass', () => {
+    creationSystem.mode = 'custom';
+    creationSystem.selectDifficulty('cuc_kho'); // 50 points
+    creationSystem.points = 100; // Artificially set points to positive value to mimic bypass attempt
+    creationSystem.startingLingShi = 10000; // Costs 100 points
+
+    const player = creationSystem.buildPlayer();
+    expect(player).toBeNull(); // Recalculation should correctly trigger and block player build
+  });
 });

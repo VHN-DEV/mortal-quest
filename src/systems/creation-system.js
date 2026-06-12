@@ -700,6 +700,7 @@ export class CreationSystem {
     }
 
     buildPlayer() {
+        this.calculatePoints();
         if (this.points < 0 && this.mode === 'custom') return null;
 
         const player = new Player();
