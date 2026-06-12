@@ -1776,60 +1776,71 @@ window.renderCreationScreen = () => {
             if (elSectHeader) elSectHeader.innerHTML = '⚔️ Chọn Tông Môn Bái Nhập';
             if (elSectDesc) elSectDesc.innerHTML = '<i class="ph ph-info mr-1"></i>Xuất thân của bạn liên kết với một tông môn cụ thể. Bạn sẽ <strong>khởi đầu tại tông môn đó</strong>, nhận <strong>công pháp bẩm sinh</strong> và <strong>bổng lộc hàng tháng</strong>.';
 
-            // Lọc danh sách tông môn theo sectFilter
-            const allSects = Object.values(SECTS);
-            const filteredSects = allSects.filter(s => {
-                if (currentOrigin.sectFilter === 'demonic') return !!s.isDemonic;
-                if (currentOrigin.sectFilter === 'righteous') return !s.isDemonic;
-                return true;
-            });
-            elSectList.innerHTML = filteredSects.map(s => {
-                const active = sys.selectedSectId === s.id;
+            const s = SECTS[sys.selectedSectId];
+            if (s) {
                 const startingTech = s.libraryItems?.find(i => i.isTech && (i.minRankScore === undefined || i.minRankScore === 0));
                 const techName = startingTech?.name || startingTech?.id || null;
                 const bonusStr = Object.entries(s.bonus || {}).map(([k,v]) => `${k} +${v}`).slice(0, 3).join(' · ') || 'Pháp lực đặc biệt';
-                return `
-                    <div onclick="window.game.selectCreationSect('${s.id}')"
-                        class="q-card cursor-pointer transition-all duration-300 ${active ? 'active text-cultivation-gold border-cultivation-gold shadow-[0_0_12px_rgba(212,175,55,0.15)]' : 'text-gray-400 border-white/10'} flex flex-col gap-2">
+                elSectList.innerHTML = `
+                    <div onclick="window.openCreationSelectionModal('sect')" 
+                        class="q-card active text-cultivation-gold border-cultivation-gold w-full cursor-pointer hover:bg-white/[0.02] transition-all flex flex-col gap-2 relative">
                         <div class="flex justify-between items-start gap-2">
-                            <div class="q-title font-ancient font-bold ${active ? 'text-cultivation-gold' : 'text-white/80'}">${s.name}</div>
-                            ${active ? `<span class="text-[8px] bg-cultivation-gold/10 border border-cultivation-gold/20 text-cultivation-gold px-2 py-0.5 rounded uppercase font-bold tracking-wider flex items-center gap-1"><i class="ph ph-check-circle"></i> Đã Chọn</span>` : ''}
+                            <div class="q-title text-cultivation-gold font-ancient font-bold">${s.name}</div>
+                            <span class="text-[8px] bg-cultivation-gold/10 border border-cultivation-gold/20 text-cultivation-gold px-2 py-0.5 rounded uppercase font-bold tracking-wider flex items-center gap-1 select-none">
+                                Thay đổi <i class="ph ph-caret-right ml-0.5"></i>
+                            </span>
                         </div>
-                        <div class="q-desc text-left text-gray-400 text-[9px] leading-relaxed">${s.description}</div>
-                        <div class="q-bonus-list flex flex-wrap gap-1 mt-1">
+                        <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1">${s.description}</div>
+                        <div class="q-bonus-list flex flex-wrap gap-1 mt-2">
                             ${techName ? `<span class="q-bonus-tag text-[8px]" style="color:#f59e0b;background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2)">📜 Công pháp: ${techName}</span>` : ''}
                             <span class="q-bonus-tag text-[8px]" style="color:#60a5fa;background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.2)">⚔️ ${bonusStr}</span>
                         </div>
                     </div>
                 `;
-            }).join('');
+            } else {
+                elSectList.innerHTML = `
+                    <div onclick="window.openCreationSelectionModal('sect')" 
+                        class="q-card text-gray-400 border-dashed border-white/20 w-full cursor-pointer hover:bg-white/[0.02] transition-all flex flex-col gap-2 justify-center items-center py-4">
+                        <span class="text-[10px] font-ancient font-bold text-gray-500 uppercase tracking-wider">Chưa Chọn Tông Môn</span>
+                        <span class="text-[8px] text-gray-600">Nhấp để mở danh sách bái nhập</span>
+                    </div>
+                `;
+            }
         } else if (currentOrigin?.requiresClanSelection) {
             elSectPicker.classList.remove('hidden');
             if (elSectHeader) elSectHeader.innerHTML = '🧬 Chọn Gia Tộc Tu Tiên';
             if (elSectDesc) elSectDesc.innerHTML = '<i class="ph ph-info mr-1"></i>Xuất thân của bạn liên kết với một gia tộc cụ thể. Bạn sẽ <strong>khởi đầu tại gia tộc đó</strong>, nhận <strong>công pháp gia truyền</strong> và <strong>bổng lộc hàng tháng</strong>.';
 
-            // Lấy danh sách gia tộc
-            const allClans = Object.values(CLANS);
-            elSectList.innerHTML = allClans.map(c => {
-                const active = sys.selectedClanId === c.id;
+            const c = CLANS[sys.selectedClanId];
+            if (c) {
                 const startingTech = c.libraryItems?.find(i => i.isTech && (i.minRankScore === undefined || i.minRankScore === 0));
                 const techName = startingTech?.name || startingTech?.id || null;
                 const bonusStr = Object.entries(c.bonus || {}).map(([k,v]) => `${k} +${v}`).slice(0, 3).join(' · ') || 'Huyết mạch chi lực';
-                return `
-                    <div onclick="window.game.selectCreationClan('${c.id}')"
-                        class="q-card cursor-pointer transition-all duration-300 ${active ? 'active text-cultivation-gold border-cultivation-gold shadow-[0_0_12px_rgba(212,175,55,0.15)]' : 'text-gray-400 border-white/10'} flex flex-col gap-2">
+                elSectList.innerHTML = `
+                    <div onclick="window.openCreationSelectionModal('clan')" 
+                        class="q-card active text-cultivation-gold border-cultivation-gold w-full cursor-pointer hover:bg-white/[0.02] transition-all flex flex-col gap-2 relative">
                         <div class="flex justify-between items-start gap-2">
-                            <div class="q-title font-ancient font-bold ${active ? 'text-cultivation-gold' : 'text-white/80'}">${c.name}</div>
-                            ${active ? `<span class="text-[8px] bg-cultivation-gold/10 border border-cultivation-gold/20 text-cultivation-gold px-2 py-0.5 rounded uppercase font-bold tracking-wider flex items-center gap-1"><i class="ph ph-check-circle"></i> Đã Chọn</span>` : ''}
+                            <div class="q-title text-cultivation-gold font-ancient font-bold">${c.name}</div>
+                            <span class="text-[8px] bg-cultivation-gold/10 border border-cultivation-gold/20 text-cultivation-gold px-2 py-0.5 rounded uppercase font-bold tracking-wider flex items-center gap-1 select-none">
+                                Thay đổi <i class="ph ph-caret-right ml-0.5"></i>
+                            </span>
                         </div>
-                        <div class="q-desc text-left text-gray-400 text-[9px] leading-relaxed">${c.description}</div>
-                        <div class="q-bonus-list flex flex-wrap gap-1 mt-1">
+                        <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1">${c.description}</div>
+                        <div class="q-bonus-list flex flex-wrap gap-1 mt-2">
                             ${techName ? `<span class="q-bonus-tag text-[8px]" style="color:#f59e0b;background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2)">📜 Công pháp: ${techName}</span>` : ''}
                             <span class="q-bonus-tag text-[8px]" style="color:#60a5fa;background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.2)">⚔️ ${bonusStr}</span>
                         </div>
                     </div>
                 `;
-            }).join('');
+            } else {
+                elSectList.innerHTML = `
+                    <div onclick="window.openCreationSelectionModal('clan')" 
+                        class="q-card text-gray-400 border-dashed border-white/20 w-full cursor-pointer hover:bg-white/[0.02] transition-all flex flex-col gap-2 justify-center items-center py-4">
+                        <span class="text-[10px] font-ancient font-bold text-gray-500 uppercase tracking-wider">Chưa Chọn Gia Tộc</span>
+                        <span class="text-[8px] text-gray-600">Nhấp để mở danh sách gia tộc</span>
+                    </div>
+                `;
+            }
         } else {
             elSectPicker.classList.add('hidden');
             elSectList.innerHTML = '';
@@ -2199,6 +2210,60 @@ window.openCreationSelectionModal = (type) => {
                     </div>
                 `;
             }).join('');
+    } else if (type === 'sect') {
+        title = 'Chọn Tông Môn Bái Nhập';
+        subtitle = 'Gia nhập đại phái tu tiên khởi đầu tu luyện';
+        const currentOrigin = CREATION_ORIGINS[sys.selectedOrigin];
+        const allSects = Object.values(SECTS);
+        const filteredSects = allSects.filter(s => {
+            if (currentOrigin?.sectFilter === 'demonic') return !!s.isDemonic;
+            if (currentOrigin?.sectFilter === 'righteous') return !s.isDemonic;
+            return true;
+        });
+        html = filteredSects.map(s => {
+            const active = sys.selectedSectId === s.id;
+            const startingTech = s.libraryItems?.find(i => i.isTech && (i.minRankScore === undefined || i.minRankScore === 0));
+            const techName = startingTech?.name || startingTech?.id || null;
+            const bonusStr = Object.entries(s.bonus || {}).map(([k,v]) => `${k} +${v}`).slice(0, 3).join(' · ') || 'Pháp lực đặc biệt';
+            return `
+                <div onclick="window.game.selectCreationSect('${s.id}'); window.game.closeCreationSelectionModal();" 
+                    class="q-card cursor-pointer transition-all duration-300 ${active ? 'active border-cultivation-gold/80 shadow-[0_0_15px_rgba(212,175,55,0.15)] text-cultivation-gold' : 'text-gray-400 border-white/10'}">
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="q-title font-ancient font-bold ${active ? 'text-cultivation-gold' : 'text-white/80'}">${s.name}</div>
+                        ${active ? `<span class="text-[8px] bg-cultivation-gold/10 border border-cultivation-gold/20 text-cultivation-gold px-2 py-0.5 rounded uppercase font-bold tracking-wider flex items-center gap-1"><i class="ph ph-check-circle"></i> Đã Chọn</span>` : ''}
+                    </div>
+                    <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1.5">${s.description}</div>
+                    <div class="q-bonus-list flex flex-wrap gap-1 mt-2">
+                        ${techName ? `<span class="q-bonus-tag text-[8px]" style="color:#f59e0b;background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2)">📜 Công pháp: ${techName}</span>` : ''}
+                        <span class="q-bonus-tag text-[8px]" style="color:#60a5fa;background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.2)">⚔️ ${bonusStr}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } else if (type === 'clan') {
+        title = 'Chọn Gia Tộc Tu Tiên';
+        subtitle = 'Kế thừa huyết mạch và gia tài của tu tiên thế gia';
+        const allClans = Object.values(CLANS);
+        html = allClans.map(c => {
+            const active = sys.selectedClanId === c.id;
+            const startingTech = c.libraryItems?.find(i => i.isTech && (i.minRankScore === undefined || i.minRankScore === 0));
+            const techName = startingTech?.name || startingTech?.id || null;
+            const bonusStr = Object.entries(c.bonus || {}).map(([k,v]) => `${k} +${v}`).slice(0, 3).join(' · ') || 'Huyết mạch chi lực';
+            return `
+                <div onclick="window.game.selectCreationClan('${c.id}'); window.game.closeCreationSelectionModal();" 
+                    class="q-card cursor-pointer transition-all duration-300 ${active ? 'active border-cultivation-gold/80 shadow-[0_0_15px_rgba(212,175,55,0.15)] text-cultivation-gold' : 'text-gray-400 border-white/10'}">
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="q-title font-ancient font-bold ${active ? 'text-cultivation-gold' : 'text-white/80'}">${c.name}</div>
+                        ${active ? `<span class="text-[8px] bg-cultivation-gold/10 border border-cultivation-gold/20 text-cultivation-gold px-2 py-0.5 rounded uppercase font-bold tracking-wider flex items-center gap-1"><i class="ph ph-check-circle"></i> Đã Chọn</span>` : ''}
+                    </div>
+                    <div class="q-desc text-left text-gray-400 text-[9.5px] leading-relaxed mt-1.5">${c.description}</div>
+                    <div class="q-bonus-list flex flex-wrap gap-1 mt-2">
+                        ${techName ? `<span class="q-bonus-tag text-[8px]" style="color:#f59e0b;background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2)">📜 Công pháp: ${techName}</span>` : ''}
+                        <span class="q-bonus-tag text-[8px]" style="color:#60a5fa;background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.2)">⚔️ ${bonusStr}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     titleEl.textContent = title;

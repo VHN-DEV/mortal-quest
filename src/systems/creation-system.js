@@ -77,6 +77,24 @@ export class CreationSystem {
         this.startingLingShi = origin.resources.lingShi;
         this.selectedSectId = null; // Reset khi đổi xuất thân
         this.selectedClanId = null; // Reset khi đổi xuất thân
+
+        if (origin.requiresSectSelection) {
+            const allSects = Object.values(SECTS);
+            const filteredSects = allSects.filter(s => {
+                if (origin.sectFilter === 'demonic') return !!s.isDemonic;
+                if (origin.sectFilter === 'righteous') return !s.isDemonic;
+                return true;
+            });
+            if (filteredSects.length > 0) {
+                this.selectedSectId = filteredSects[0].id;
+            }
+        } else if (origin.requiresClanSelection) {
+            const allClans = Object.values(CLANS);
+            if (allClans.length > 0) {
+                this.selectedClanId = allClans[0].id;
+            }
+        }
+
         this.calculatePoints();
     }
 
