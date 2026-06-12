@@ -4859,3 +4859,77 @@ export const getTravelRoute = (fromLocId, toLocId) => {
         requirements
     };
 };
+
+export const getLocationRealmRange = (worldId, locId) => {
+    const world = WORLDS[worldId] || WORLDS['nhan_gioi'];
+    const loc = world?.locations.find(l => l.id === locId);
+
+    // minRealm
+    let minRealm = 0;
+    if (loc && typeof loc.minRealm === 'number') {
+        minRealm = loc.minRealm;
+    } else if (world && typeof world.minRealm === 'number') {
+        minRealm = world.minRealm;
+    }
+
+    // maxRealmLimit of the world
+    const maxWorldLimit = world?.maxRealmLimit || 29;
+
+    // danger level multiplier/span
+    const dangerKey = loc?.danger || 'ha_cap';
+    const dangerObj = DANGER_LEVELS[dangerKey];
+    const dangerOrder = dangerObj?.sortOrder || 1;
+
+    let minOffset = 0;
+    let maxOffset = 2;
+    switch (dangerOrder) {
+        case 1: minOffset = 0; maxOffset = 1; break; // An toan
+        case 2: minOffset = 0; maxOffset = 3; break; // Ha cap
+        case 3: minOffset = 1; maxOffset = 6; break; // Trung cap
+        case 4: minOffset = 2; maxOffset = 9; break; // Cao cap
+        case 5: minOffset = 4; maxOffset = 13; break; // Nguy hiem
+        case 6: minOffset = 6; maxOffset = 17; break; // Cuc ky nguy hiem
+        case 7: minOffset = 8; maxOffset = 22; break; // Tu dia
+    }
+
+    let minTarget = minRealm + minOffset;
+    let maxTarget = minRealm + maxOffset;
+
+    // Check if location has an explicit maxRealm limit
+    if (loc && typeof loc.maxRealm === 'number') {
+        maxTarget = Math.min(maxTarget, loc.maxRealm);
+    }
+
+    return {
+        min: minTarget,
+        max: maxTarget,
+        maxWorldLimit
+    };
+};
+
+export const generateRandomRealm = (worldId, locId) => {
+    const range = getLocationRealmRange(worldId, locId);
+
+    // Check for high-realm descending event
+    const rand = Math.random();
+    if (worldId === 'nhan_gioi') {
+        if (rand < 0.005) { // 0.5% chance for Tiên Giới entity
+            const realRealm = 42 + Math.floor(Math.random() * 19);
+            return realRealm;
+        } else if (rand < 0.02) { // 1.5% chance for Linh Giới entity
+            const realRealm = 30 + Math.floor(Math.random() * 12);
+            return realRealm;
+        }
+    } else if (worldId === 'linh_gioi' || worldId === 'ma_gioi' || worldId === 'song_song') {
+        if (rand < 0.015) { // 1.5% chance for Tiên Giới entity
+            const realRealm = 42 + Math.floor(Math.random() * 19);
+            return realRealm;
+        }
+    }
+
+    // Normal spawn: random between range.min and range.max
+    const span = range.max - range.min;
+    const chosenRealm = range.min + Math.floor(Math.random() * (span + 1));
+    return chosenRealm;
+};
+

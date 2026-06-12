@@ -2,6 +2,7 @@ import { getRealmById, RACE_DATA } from '../configs/realm-data.js';
 import { ASSETS } from '../configs/asset-data.js';
 import { SECTS } from '../configs/sect-data.js';
 import { state } from '../state.js';
+import { WORLDS, findWorldIdByLocId, getLocationRealmRange, generateRandomRealm } from '../configs/map-data.js';
 
 export const SECT_GEAR = {
     'thien_kiem_tong': {
@@ -132,13 +133,25 @@ export class Enemy {
         return this.realmId;
     }
 
-    constructor(realmId, typeData) {
+    constructor(realmId, typeData, worldId = 'nhan_gioi') {
         this.realmId = realmId;
         this.race = typeData.race || 'HUMAN';
         this.typeData = typeData;
+        this.worldId = worldId;
+
+        const effectiveRealm = (this.worldId && WORLDS[this.worldId]?.maxRealmLimit && this.realmId > WORLDS[this.worldId].maxRealmLimit)
+            ? WORLDS[this.worldId].maxRealmLimit
+            : this.realmId;
 
         const realm = getRealmById(this.realmId, 'tuvi', this.race);
-        this.realmName = realm.name;
+        const suppressedRealm = getRealmById(effectiveRealm, 'tuvi', this.race);
+
+        if (this.realmId > effectiveRealm) {
+            this.realmName = `${realm.name} -> ${suppressedRealm.name}`;
+        } else {
+            this.realmName = realm.name;
+        }
+
         this.name = `${typeData.name} (${this.realmName})`;
         this.image = typeData.img;
         this.statMult = typeData.statMult;
@@ -171,10 +184,10 @@ export class Enemy {
             dsBonus -= 10; // Mất đi thần trí
         }
 
-        const baseVal = 40 + this.realmId * 2;
+        const baseVal = 40 + effectiveRealm * 2;
         const varianceVal = () => Math.floor(Math.random() * 15) - 7;
 
-        this.comprehension = Math.max(5, Math.floor(10 + this.realmId * 0.5 + compBonus + (Math.random() * 6 - 3)));
+        this.comprehension = Math.max(5, Math.floor(10 + effectiveRealm * 0.5 + compBonus + (Math.random() * 6 - 3)));
         this.heartDemon = Math.max(0, Math.floor(Math.random() * 20 + hdBonus));
         this.daoTam = Math.max(10, Math.floor(baseVal + dtBonus + varianceVal()));
         this.divineSense = Math.max(10, Math.floor(baseVal + dsBonus + varianceVal()));
@@ -187,7 +200,14 @@ export class Enemy {
         const raceInfo = RACE_DATA[this.race] || RACE_DATA.HUMAN;
         const raceMults = raceInfo.statMult;
 
-        const baseMultiplier = Math.pow(1.8, this.realmId - 1) * this.statMult;
+        const effectiveRealm = (this.worldId && WORLDS[this.worldId]?.maxRealmLimit && this.realmId > WORLDS[this.worldId].maxRealmLimit)
+            ? WORLDS[this.worldId].maxRealmLimit
+            : this.realmId;
+
+        let baseMultiplier = Math.pow(1.8, effectiveRealm - 1) * this.statMult;
+        if (this.realmId > effectiveRealm) {
+            baseMultiplier *= 1.2; // 1.2x stats bonus for high-realm entity under suppression
+        }
         const variance = 0.9 + Math.random() * 0.2;
 
         // Keep HP & Mana percentage
@@ -198,17 +218,17 @@ export class Enemy {
         let baseHp = 100 * baseMultiplier * raceMults.hp;
         let baseAtk = 10 * baseMultiplier * raceMults.atk;
         let baseDef = 5 * baseMultiplier * raceMults.def;
-        let baseSpd = (15 + (this.realmId * 5)) * raceMults.spd;
+        let baseSpd = (15 + (effectiveRealm * 5)) * raceMults.spd;
         let baseMana = 50 * baseMultiplier;
 
         // 1. Simulated Luyện Thể (Body Realm)
         let bodyLevel = 1;
         if (this.race === 'DRAGON' || this.race === 'ZOMBIE') {
-            bodyLevel = Math.max(1, Math.floor(this.realmId * 1.2));
+            bodyLevel = Math.max(1, Math.floor(effectiveRealm * 1.2));
         } else if (this.race === 'DEMON' || this.race === 'SPIRIT_BEAST') {
-            bodyLevel = Math.max(1, Math.floor(this.realmId * 1.0));
+            bodyLevel = Math.max(1, Math.floor(effectiveRealm * 1.0));
         } else if (this.race === 'HUMAN') {
-            bodyLevel = Math.max(1, Math.floor(this.realmId * 0.8));
+            bodyLevel = Math.max(1, Math.floor(effectiveRealm * 0.8));
         }
         const bodyMult = bodyLevel > 0 ? Math.pow(1.2, bodyLevel - 1) : 1.0;
         const bodyHpBonus = 100 * Math.max(0, bodyLevel - 1) * bodyMult;
@@ -220,11 +240,11 @@ export class Enemy {
         // 2. Simulated Thần Hồn (Soul Realm)
         let soulLevel = 1;
         if (this.race === 'GHOST') {
-            soulLevel = Math.max(1, Math.floor(this.realmId * 1.3));
+            soulLevel = Math.max(1, Math.floor(effectiveRealm * 1.3));
         } else if (this.race === 'HUMAN' || this.race === 'DEMON') {
-            soulLevel = Math.max(1, Math.floor(this.realmId * 0.9));
+            soulLevel = Math.max(1, Math.floor(effectiveRealm * 0.9));
         } else {
-            soulLevel = Math.max(1, Math.floor(this.realmId * 0.6));
+            soulLevel = Math.max(1, Math.floor(effectiveRealm * 0.6));
         }
         const soulMult = soulLevel > 0 ? Math.pow(1.15, soulLevel - 1) : 1.0;
         const soulManaBonus = 60 * Math.max(0, soulLevel - 1) * soulMult;
@@ -238,11 +258,11 @@ export class Enemy {
         baseDef *= (1 + (this.physiqueTalent / 500));
 
         // 3. Simulated Công Pháp (Techniques) Multipliers
-        const techMult = 1.0 + (this.realmId * 0.18) * this.statMult;
+        const techMult = 1.0 + (effectiveRealm * 0.18) * this.statMult;
         baseHp *= techMult;
         baseAtk *= techMult;
         baseDef *= techMult;
-        baseSpd *= (1.0 + (this.realmId * 0.03));
+        baseSpd *= (1.0 + (effectiveRealm * 0.03));
 
         this.maxHp = Math.floor(baseHp * variance);
         this.atk = Math.floor(baseAtk * variance);
@@ -286,15 +306,15 @@ export class Enemy {
         };
 
         // Base advanced stats scaled by cultivation realm
-        this.advancedStats.critRate += this.realmId * 0.01;
-        this.advancedStats.weaknessStrikeChance += this.realmId * 0.01;
-        this.advancedStats.critDmg += this.realmId * 0.02;
-        this.advancedStats.pierce += this.realmId * 0.008;
+        this.advancedStats.critRate += effectiveRealm * 0.01;
+        this.advancedStats.weaknessStrikeChance += effectiveRealm * 0.01;
+        this.advancedStats.critDmg += effectiveRealm * 0.02;
+        this.advancedStats.pierce += effectiveRealm * 0.008;
         this.advancedStats.damageReduction = 1 - (1 / (1 + (bodyLevel * 0.05))); // Match player DR formula
 
         // Racial advanced stats adjustments
         if (this.race === 'DEMON') {
-            this.advancedStats.lifeSteal += 0.05 + this.realmId * 0.005;
+            this.advancedStats.lifeSteal += 0.05 + effectiveRealm * 0.005;
         } else if (this.race === 'DRAGON') {
             this.advancedStats.damageReduction += 0.1;
             this.advancedStats.thunderDmg += 0.2;
@@ -337,7 +357,7 @@ export class Enemy {
         // 4. Natural Arsenal Scaling for Beasts (who don't wear gear)
         const isHumanoid = ['HUMAN', 'DEMON'].includes(this.race);
         if (!isHumanoid) {
-            const gearMult = Math.pow(1.8, this.realmId - 1);
+            const gearMult = Math.pow(1.8, effectiveRealm - 1);
             this.atk += Math.round(15 * gearMult * variance);
             this.def += Math.round(10 * gearMult * variance);
             this.maxHp += Math.round(80 * gearMult * variance);
@@ -350,7 +370,7 @@ export class Enemy {
 }
 
 export class EnemyGenerator {
-    static generate(playerRealmId) {
+    static generate(locIdOrRealmId, worldId = null, isBoss = false) {
         const types = [
             { name: 'Yêu Lang', img: ASSETS.enemies.wolf, statMult: 0.8, race: 'SPIRIT_BEAST' },
             { name: 'Hắc Hổ', img: ASSETS.enemies.black_tiger, statMult: 1.0, race: 'SPIRIT_BEAST' },
@@ -370,13 +390,32 @@ export class EnemyGenerator {
             { name: 'Thất Thái Thiên Long', img: ASSETS.enemies.that_thai_thien_long, statMult: 2.7, race: 'DRAGON' }
         ];
 
-        const targetRealm = Math.max(1, playerRealmId + Math.floor(Math.random() * 5) - 2);
-        const typeData = types[Math.floor(Math.random() * types.length)];
+        let targetRealm;
+        let finalWorldId = worldId || state?.currentWorldId || 'nhan_gioi';
 
-        const enemy = new Enemy(targetRealm, typeData);
+        if (typeof locIdOrRealmId === 'number') {
+            targetRealm = locIdOrRealmId;
+        } else if (typeof locIdOrRealmId === 'string') {
+            const locId = locIdOrRealmId;
+            if (!worldId) {
+                finalWorldId = findWorldIdByLocId(locId) || finalWorldId;
+            }
+            if (isBoss) {
+                const range = getLocationRealmRange(finalWorldId, locId);
+                targetRealm = range.max;
+            } else {
+                targetRealm = generateRandomRealm(finalWorldId, locId);
+            }
+        } else {
+            // Fallback
+            targetRealm = Math.max(1, (state?.player?.realmId || 1) + Math.floor(Math.random() * 5) - 2);
+        }
+
+        const typeData = types[Math.floor(Math.random() * types.length)];
+        const enemy = new Enemy(targetRealm, typeData, finalWorldId);
 
         // Intercept for Sect Guard spawning at Sect Gates or random assignment
-        const currentLocId = state?.currentLocId || '';
+        const currentLocId = typeof locIdOrRealmId === 'string' ? locIdOrRealmId : (state?.currentLocId || '');
         const sect = SECTS[currentLocId];
         if (sect && (enemy.race === 'HUMAN' || enemy.race === 'DEMON')) {
             enemy.sectId = sect.id;

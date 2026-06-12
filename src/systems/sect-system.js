@@ -496,7 +496,7 @@ export class SectSystem {
         if (window.game) {
             const worldId = findWorldIdByLocId(window.state.currentLocId);
             const loc = getLocationById(worldId, window.state.currentLocId);
-            const enemy = EnemyGenerator.generate(loc?.dangerLevel || 1);
+            const enemy = EnemyGenerator.generate(window.state.currentLocId, worldId);
             enemy.race = 'SPIRIT_BEAST';
             enemy.name = `Yêu Thú Chỉ Định (${enemy.realmName})`;
             
@@ -524,22 +524,23 @@ export class SectSystem {
         }
         
         if (window.game) {
-            const enemy = {
-                id: 'sect_mission_boss_' + mission.id,
-                name: mission.targetName || mission.target,
-                realmId: mission.bossRealmId || Math.max(1, this.player.realmId + 1),
-                hp: mission.bossStats?.hp || (1000 * (mission.bossRealmId || this.player.realmId || 1)),
-                maxHp: mission.bossStats?.hp || (1000 * (mission.bossRealmId || this.player.realmId || 1)),
-                atk: mission.bossStats?.atk || (80 * (mission.bossRealmId || this.player.realmId || 1)),
-                def: mission.bossStats?.def || (40 * (mission.bossRealmId || this.player.realmId || 1)),
-                spd: mission.bossStats?.spd || (15 + (mission.bossRealmId || this.player.realmId || 1)),
-                skills: [
-                    { name: 'Sát Chiêu Môn Quy', damage: 1.5, type: 'phys' },
-                    { name: 'Ma Khí Cuồng Bạo', damage: 1.8, type: 'dark' }
-                ],
-                isBoss: true,
-                inventory: []
-            };
+            const worldId = findWorldIdByLocId(window.state?.currentLocId) || window.state?.currentWorldId || 'nhan_gioi';
+            const bossRealm = mission.bossRealmId || Math.max(1, this.player.realmId + 1);
+            const enemy = EnemyGenerator.generate(bossRealm, worldId, true);
+            
+            enemy.id = 'sect_mission_boss_' + mission.id;
+            enemy.name = `${mission.targetName || mission.target} (${enemy.realmName})`;
+            
+            if (mission.bossStats) {
+                enemy.hp = mission.bossStats.hp;
+                enemy.maxHp = mission.bossStats.hp;
+                enemy.atk = mission.bossStats.atk;
+                enemy.def = mission.bossStats.def;
+                enemy.spd = mission.bossStats.spd;
+            }
+            
+            enemy.isBoss = true;
+            enemy.inventory = [];
             
             this.ui.toast(`Bắt đầu chiến đấu với ${enemy.name}!`, "info");
             
@@ -632,7 +633,7 @@ export class SectSystem {
                 this.player.sectWarExpiresDay = currentDay + 14;
 
                 const enemyRealm = Math.max(1, this.player.realmId + 1);
-                const enemy = EnemyGenerator.generate(enemyRealm);
+                const enemy = EnemyGenerator.generate(enemyRealm, window.state?.currentWorldId);
                 enemy.name = `Chiến Binh ${enemySectName}`;
                 enemy.inventory = [];
 
@@ -844,7 +845,7 @@ export class SectSystem {
         let opponentRealm = this.player.realmId + (tState.currentRound - 2); 
         if (opponentRealm < 1) opponentRealm = 1;
         
-        const enemy = EnemyGenerator.generate(opponentRealm);
+        const enemy = EnemyGenerator.generate(opponentRealm, window.state?.currentWorldId);
         enemy.name = `Đồng Môn Sư ${tState.currentRound === 3 ? 'Huynh' : 'Đệ'}`;
         enemy.inventory = []; // No normal loot
         

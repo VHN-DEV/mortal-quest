@@ -199,7 +199,7 @@ export class NPCScreen {
                             <span class="text-sm font-bold text-white truncate">${npc.name}</span>
                             ${npc.specialRelation ? `<i class="ph ph-heart-straight text-red-400 text-xs flex-none"></i>` : ''}
                         </div>
-                        <div class="text-[10px] text-gray-500 mt-0.5">${realm.name}</div>
+                        <div class="text-[10px] text-gray-500 mt-0.5">${npc.realmName}</div>
                         <!-- Mini relationship bar -->
                         <div class="mt-2 h-1 rounded-full overflow-hidden bg-white/5">
                             <div class="h-full rounded-full transition-all duration-500"
@@ -358,7 +358,7 @@ export class NPCScreen {
                         <div class="flex flex-wrap gap-1.5 mt-2">
                             <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase"
                                 style="background: rgba(79,209,197,0.1); border: 1px solid rgba(79,209,197,0.2); color: #4fd1c5;">
-                                ${realm.name}
+                                ${npc.realmName}
                             </span>
                             <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase bg-white/5 border border-white/10 text-gray-400">
                                 ${getGenderLabel(npc.gender)} · ${npc.age} Tuổi

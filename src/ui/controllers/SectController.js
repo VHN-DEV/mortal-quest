@@ -1037,7 +1037,7 @@ export class SectController {
                     return;
                 }
                 {
-                    const enemy = EnemyGenerator.generate(state.player.realmId);
+                    const enemy = EnemyGenerator.generate(state.player.realmId, state.currentWorldId);
                     enemy.name = `Ảo Ảnh Thí Luyện (${enemy.realmName})`;
                     enemy.inventory = [];
 

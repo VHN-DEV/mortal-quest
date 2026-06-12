@@ -283,7 +283,7 @@ export class MountainSystem {
             id: beast.id
         };
         
-        const enemy = new Enemy(beast.level + (isNpc ? 5 : 0), enemyData);
+        const enemy = new Enemy(beast.level + (isNpc ? 5 : 0), enemyData, state.currentWorldId);
         this.ui.toast(`${isNpc ? 'Tu sĩ phục kích' : 'Yêu thú xuất hiện'}: ${enemyData.name}!`, "warning");
         
         if (window?.game?.startBattle) {
@@ -336,7 +336,7 @@ export class MountainSystem {
             img: ASSETS.enemies.dragon, // Boss visual
             statMult: 5.0, // High multiplier for bosses
             isBoss: true
-        });
+        }, state.currentWorldId);
 
         this.ui.toast(`PHỤC KÍCH: ${bossData.name} xuất hiện!`, "error");
         

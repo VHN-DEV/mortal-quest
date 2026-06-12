@@ -3947,7 +3947,7 @@ export class Game {
 
     handleCombatEncounter(worldId, locId, onEnd = null, overrideImage = null, ambushMode = 'normal', cell = null, prevPos = null) {
         const loc = getLocationById(worldId, locId);
-        const enemy = EnemyGenerator.generate(loc?.dangerLevel || 1);
+        const enemy = EnemyGenerator.generate(locId, worldId);
         if (overrideImage) enemy.image = overrideImage;
 
         const playerSense = state.player.divineSense || 50;

@@ -1,12 +1,12 @@
 import { NPC_TEMPLATES, NPC_PERSONALITIES, NPC_GOALS, NPC_RELATIONSHIP_LEVELS, NPC_SPECIAL_RELATIONS, SPECIAL_NPCS } from '../configs/npc-data.js';
 import { getRealmById } from '../configs/realm-data.js';
 import { CREATION_ROOTS, CREATION_PHYSIQUES } from '../configs/creation-data.js';
-import { WORLDS } from '../configs/map-data.js';
+import { WORLDS, findWorldIdByLocId, getLocationRealmRange, generateRandomRealm } from '../configs/map-data.js';
 import { NPCAI } from './npc-ai.js';
 import { NPC_ROLES } from '../configs/game-enums.js';
 
 export class NPC {
-    constructor(templateId, realmId) {
+    constructor(templateId, realmId, worldId = 'nhan_gioi') {
         const isSpecial = SPECIAL_NPCS && SPECIAL_NPCS[templateId];
         const template = isSpecial ? SPECIAL_NPCS[templateId] : NPC_TEMPLATES[templateId];
         
@@ -19,6 +19,7 @@ export class NPC {
         this.gender = (rawGender === 'Nam' || rawGender === 'male') ? 'male' : 'female';
         this.age = isSpecial ? (100 + Math.floor(Math.random() * 200)) : (18 + Math.floor(Math.random() * 100));
         this.portrait = template.portrait;
+        this.name = isSpecial ? template.name : this.generateName();
         
         // Character Traits
         this.personalityIds = isSpecial ? [template.personality] : template.personalities;
@@ -46,7 +47,7 @@ export class NPC {
         // Schedule & Location
         this.activity = 'Tu luyện';
         this.currentLocId = null;
-        this.currentWorldId = 'nhan_gioi';
+        this.currentWorldId = worldId;
         
         // Relatives (Karma System)
         this.relatives = [];
@@ -57,6 +58,16 @@ export class NPC {
         this.generateInitialInventory();
 
         this.calculateStats();
+    }
+
+    get realmName() {
+        const realRealm = getRealmById(this.realmId);
+        const world = WORLDS[this.currentWorldId];
+        if (world && world.maxRealmLimit && this.realmId > world.maxRealmLimit) {
+            const maxRealm = getRealmById(world.maxRealmLimit);
+            return `${realRealm.name} -> ${maxRealm.name}`;
+        }
+        return realRealm.name;
     }
 
     generateInitialInventory() {
@@ -108,7 +119,14 @@ export class NPC {
     }
 
     calculateStats() {
-        const realmMultiplier = Math.pow(1.6, this.realmId - 1);
+        const effectiveRealm = (this.currentWorldId && WORLDS[this.currentWorldId]?.maxRealmLimit && this.realmId > WORLDS[this.currentWorldId].maxRealmLimit)
+            ? WORLDS[this.currentWorldId].maxRealmLimit
+            : this.realmId;
+
+        let realmMultiplier = Math.pow(1.6, effectiveRealm - 1);
+        if (this.realmId > effectiveRealm) {
+            realmMultiplier *= 1.2; // 1.2x stats bonus for high-realm entity under suppression
+        }
         
         this.maxHp = 150 * realmMultiplier;
         this.atk = 15 * realmMultiplier;
@@ -379,10 +397,24 @@ export class NPCSystem {
         }
     }
 
-    generate(templateId, realmId, locationId, worldId = 'nhan_gioi') {
-        const npc = new NPC(templateId, realmId);
+    generate(templateId, realmId, locationId, worldId = null) {
+        let finalWorldId = worldId;
+        if (!finalWorldId && locationId) {
+            finalWorldId = findWorldIdByLocId(locationId) || 'nhan_gioi';
+        } else if (!finalWorldId) {
+            finalWorldId = 'nhan_gioi';
+        }
+
+        let finalRealmId = realmId;
+        if (finalRealmId === undefined || finalRealmId === null) {
+            finalRealmId = generateRandomRealm(finalWorldId, locationId);
+        }
+
+        const npc = new NPC(templateId, finalRealmId, finalWorldId);
         npc.currentLocId = locationId;
-        npc.currentWorldId = worldId;
+        npc.currentWorldId = finalWorldId;
+        npc.calculateStats();
+
         this.npcs.push(npc);
         return npc;
     }
@@ -400,6 +432,7 @@ export class NPCSystem {
                     const newLoc = NPCAI.decideMovement(npc, world.locations);
                     if (newLoc) {
                         npc.currentLocId = newLoc;
+                        npc.calculateStats();
                     }
                 }
             }

@@ -2217,7 +2217,7 @@ export class MapScreen {
                             this.updateEventDisplay(`👤 [SÁT CƠ BÙNG PHÁT] Ngươi đột ngột ra tay, phi kiếm biến thành cầu vồng dài đánh lén ${npcName}!`);
                             setTimeout(() => {
                                 const targetRealm = Math.max(1, state.player.realmId + Math.floor(Math.random() * 3) - 1);
-                                const npcEnemy = new Enemy(targetRealm, { name: npcName, img: overrideImage, statMult: 1.2, race: 'HUMAN' });
+                                const npcEnemy = new Enemy(targetRealm, { name: npcName, img: overrideImage, statMult: 1.2, race: 'HUMAN' }, state.currentWorldId);
                                 EnemyGenerator.populateLoot(npcEnemy);
 
                                 // Guaranteed high quality drops for successful robbing
@@ -2277,9 +2277,8 @@ export class MapScreen {
                 case 'boss': {
                     this.updateEventDisplay(`🏛️ [CẤM ĐIỆN BOSS] Trấn thủ Mật cảnh Mộc Nhân Vương / Cổ Thần Thú xuất thế! Sát khí đè nặng linh thức!`);
                     setTimeout(() => {
-                        const loc = getLocationById(this.viewedWorldId || state.currentWorldId, state.currentLocId);
-                        const dangerLvl = Math.min(10, (loc.dangerLevel || 1) + 2);
-                        const bossEnemy = EnemyGenerator.generate(dangerLvl);
+                        const worldId = this.viewedWorldId || state.currentWorldId;
+                        const bossEnemy = EnemyGenerator.generate(state.currentLocId, worldId, true);
 
                         bossEnemy.name = `👑 THỦ LĨNH: ` + bossEnemy.name;
                         bossEnemy.hp = Math.floor(bossEnemy.hp * 1.8);

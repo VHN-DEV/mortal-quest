@@ -548,26 +548,26 @@ export class ClanController {
             
             // Trigger combat with low level rogue cultivator
             const playerRealm = state.player.realmId || 1;
-            const enemy = EnemyGenerator.generateByRealm(
-                Math.max(1, playerRealm - 2), 
-                'rogue_ambusher', 
-                'Tán Tu Cướp Quặng'
-            );
+            const enemyRealm = Math.max(1, playerRealm - 2);
+            const enemy = EnemyGenerator.generate(enemyRealm, state.currentWorldId);
+            enemy.name = `Tán Tu Cướp Quặng (${enemy.realmName})`;
             
-            window.game.startCombat(enemy, {
-                onWin: () => {
+            state.ui.toggleOverlay(document.getElementById('clans-overlay'), false);
+            window.game.startBattle(enemy, null, (win) => {
+                if (win) {
                     const extraLingShi = 50 + Math.floor(Math.random() * 50);
                     state.player.addLingShi(extraLingShi);
                     state.player.clanContribution = (state.player.clanContribution || 0) + 12;
                     state.ui.toast(`⚔️ Chiến thắng! Ngươi đánh đuổi tên cướp và thu giữ tài sản của hắn: +${extraLingShi} Linh Thạch, +12 Cống Hiến Gia Tộc!`, "success");
-                    this.renderClans();
-                },
-                onLose: () => {
+                } else {
                     const lost = Math.min(state.player.lingShi, 80);
                     state.player.lingShi -= lost;
                     state.ui.toast(`⚔️ Bị đánh bại! Ngươi bị cướp mất ${lost} Linh Thạch trong mỏ!`, "error");
-                    this.renderClans();
                 }
+                setTimeout(() => {
+                    state.ui.toggleOverlay(document.getElementById('clans-overlay'), true);
+                    this.renderClans();
+                }, 1000);
             });
         } else {
             const mined = 10 + Math.floor(Math.random() * 20);
