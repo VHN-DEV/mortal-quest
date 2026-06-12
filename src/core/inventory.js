@@ -323,6 +323,69 @@ export class Inventory {
             }
             this.removeItem(itemId, quantity);
             return true;
+        } else if (itemData.type === 'phu_luc') {
+            if (itemId === 'thuan_di_phu') {
+                const currentWorldId = state.currentWorldId || 'nhan_gioi';
+                const world = getWorlds()[currentWorldId];
+                if (!world) {
+                    state.ui.toast("Không thể định vị giới diện hiện tại!", "error");
+                    return false;
+                }
+                const possibleLocs = world.locations.filter(loc => {
+                    const minLocked = this.player.realmId < (loc.minRealm || 0);
+                    const maxLocked = loc.maxRealm !== undefined && this.player.realmId > loc.maxRealm;
+                    const currentLoc = world.locations.find(l => l.id === state.currentLocId);
+                    const sameRegion = currentLoc && loc.regionId === currentLoc.regionId;
+                    return loc.id !== state.currentLocId && !minLocked && !maxLocked && sameRegion;
+                });
+                if (possibleLocs.length === 0) {
+                    state.ui.toast("Không tìm thấy địa điểm dịch chuyển phù hợp trong khu vực này!", "error");
+                    return false;
+                }
+                const randomLoc = possibleLocs[Math.floor(Math.random() * possibleLocs.length)];
+                this.removeItem(itemId, 1);
+                state.systems.travel.teleport(randomLoc.id);
+                return true;
+            } else if (itemId === 'dai_dich_chuyen_phu') {
+                const currentWorldId = state.currentWorldId || 'nhan_gioi';
+                const world = getWorlds()[currentWorldId];
+                if (!world) {
+                    state.ui.toast("Không thể định vị giới diện hiện tại!", "error");
+                    return false;
+                }
+                const possibleLocs = world.locations.filter(loc => {
+                    const minLocked = this.player.realmId < (loc.minRealm || 0);
+                    const maxLocked = loc.maxRealm !== undefined && this.player.realmId > loc.maxRealm;
+                    const currentLoc = world.locations.find(l => l.id === state.currentLocId);
+                    const currentRegion = currentLoc ? currentLoc.regionId : '';
+                    if (currentRegion !== 'loan_tinh_hai' && loc.regionId === 'loan_tinh_hai') {
+                        const atTeleport = state.currentLocId === 'thuong_co_truyen_tong_tran_thien_nam';
+                        if (!atTeleport) return false;
+                    }
+                    return loc.id !== state.currentLocId && !minLocked && !maxLocked;
+                });
+                if (possibleLocs.length === 0) {
+                    state.ui.toast("Không tìm thấy địa điểm dịch chuyển khả dụng!", "error");
+                    return false;
+                }
+                if (state.ui && typeof state.ui.showTeleportSelection === 'function') {
+                    state.ui.showTeleportSelection(possibleLocs, (selectedLocId) => {
+                        this.removeItem(itemId, 1);
+                        state.systems.travel.teleport(selectedLocId);
+                    });
+                    const detailOverlay = document.getElementById('inventory-detail-overlay');
+                    const guideOverlay = document.getElementById('guide-overlay');
+                    if (detailOverlay) state.ui.toggleOverlay(detailOverlay, false);
+                    if (guideOverlay) state.ui.toggleOverlay(guideOverlay, false);
+                    state.ui.switchScreen('screen-adventure');
+                } else {
+                    state.ui.toast("Không thể kích hoạt pháp trận chọn tọa độ!", "error");
+                }
+                return true;
+            } else {
+                state.ui.toast("Phù lục này chỉ có thể sử dụng trong chiến đấu hoặc không thể kích hoạt trực tiếp từ túi đồ!", "warning");
+                return false;
+            }
         } else if (itemData.type === 'linh_thach') {
             const ss = state.systems.spiritStone;
             if (ss) {

@@ -165,6 +165,7 @@ export const SHOPS = {
                 { id: 'hoa_cau_phu', stock: 20 },
                 { id: 'kim_cuong_phu', stock: 5, minVip: 1 },
                 { id: 'pha_khong_phu', stock: 5 },
+                { id: 'dai_dich_chuyen_phu', stock: 2, minVip: 2 },
                 { id: 'cuu_loi_diet_the_phu', stock: 3, minVip: 2 }
             ],
             'luyen_khi': [
@@ -285,7 +286,8 @@ export const SHOPS = {
             'phu_luc': [
                 { id: 'hoa_cau_phu', stock: 50 },
                 { id: 'kim_cuong_phu', stock: 10 },
-                { id: 'pha_khong_phu', stock: 10 }
+                { id: 'pha_khong_phu', stock: 10 },
+                { id: 'dai_dich_chuyen_phu', stock: 2, minVip: 1 }
             ],
             'luyen_khi': [
                 { id: 'huyen_thiet', stock: 100 },
@@ -404,7 +406,8 @@ export const SHOPS = {
                 { id: 'kim_cuong_phu', stock: 20 },
                 { id: 'phu_van_kim_cuong_phu', stock: 10 },
                 { id: 'phu_van_than_hanh_phu', stock: 10 },
-                { id: 'phu_van_thuan_di_phu', stock: 5, minVip: 2 }
+                { id: 'phu_van_thuan_di_phu', stock: 5, minVip: 2 },
+                { id: 'dai_dich_chuyen_phu', stock: 5, minVip: 1 }
             ],
             'luyen_khi': [
                 { id: 'tinh_kim', stock: 200 },
@@ -536,7 +539,8 @@ export const SHOPS = {
                 { id: 'pha_khong_phu', stock: 100 },
                 { id: 'phu_van_kim_cuong_phu', stock: 30 },
                 { id: 'phu_van_than_hanh_phu', stock: 30 },
-                { id: 'phu_van_thuan_di_phu', stock: 20 }
+                { id: 'phu_van_thuan_di_phu', stock: 20 },
+                { id: 'dai_dich_chuyen_phu', stock: 10 }
             ],
             'luyen_khi': [
                 { id: 'tinh_kim', stock: 1000 },
@@ -611,6 +615,7 @@ export const SHOPS = {
             'phu_luc': [
                 { id: 'kim_cuong_phu', stock: 10 },
                 { id: 'pha_khong_phu', stock: 10 },
+                { id: 'dai_dich_chuyen_phu', stock: 2 },
                 { id: 'truc_phu_but', stock: 2 }
             ],
             'cong_phap': [

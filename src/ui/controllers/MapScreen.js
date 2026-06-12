@@ -1210,6 +1210,13 @@ export class MapScreen {
                     <i class="ph ph-sparkles text-lg"></i><span>PHI THĂNG LINH GIỚI</span>
                 </button>
             `;
+        } else if (loc.id === 'thuong_co_truyen_tong_tran_thien_nam' || loc.id === 'thuong_co_truyen_tong_tran_loan_tinh_hai') {
+            hasSpecial = true;
+            this.elLocSpecialActions.innerHTML = `
+                <button onclick="window.game.activateAncientTeleport()" class="col-span-2 py-3 bg-violet-900/20 border border-violet-500/30 rounded-xl text-violet-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2 animate-pulse">
+                    <i class="ph ph-spiral text-lg"></i><span>KÍCH HOẠT TRUYỀN TỐNG TRẬN</span>
+                </button>
+            `;
         }
 
         // Add Mining button if there are mining nodes here

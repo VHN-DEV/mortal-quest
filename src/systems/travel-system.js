@@ -89,7 +89,7 @@ export class TravelSystem {
             const fromLoc = getLocationById(fromLocWorldId, fromLocId);
             const isAlreadyThere = fromLoc && fromLoc.regionId === 'loan_tinh_hai';
             if (!isAlreadyThere) {
-                const atTeleport = fromLocId === 'thuong_co_truyen_tong_tran';
+                const atTeleport = fromLocId === 'thuong_co_truyen_tong_tran_thien_nam' || fromLocId === 'thuong_co_truyen_tong_tran_loan_tinh_hai';
                 const hasTalisman = this.player.inventory && (
                     this.player.inventory.hasItem('pha_khong_phu') ||
                     this.player.inventory.hasItem('thuan_di_phu') ||
@@ -328,5 +328,32 @@ export class TravelSystem {
         this.isTraveling = false;
         this.ui.toast("Hành trình bị hủy bỏ, bạn quay lại điểm xuất phát.", "warning");
         this.ui.hideTravelOverlay();
+    }
+
+    teleport(toLocId) {
+        if (this.isTraveling) return false;
+        const toWorldId = findWorldIdByLocId(toLocId);
+        if (!toWorldId) return false;
+
+        state.currentWorldId = toWorldId;
+        state.currentLocId = toLocId;
+
+        if (this.player) {
+            if (!this.player.discoveredWorlds) {
+                this.player.discoveredWorlds = ['nhan_gioi'];
+            }
+            if (toWorldId && !this.player.discoveredWorlds.includes(toWorldId)) {
+                this.player.discoveredWorlds.push(toWorldId);
+            }
+        }
+
+        if (window.game && window.game.saveGame) window.game.saveGame();
+
+        this.ui.toast(`Không gian vặn vẹo! Đạo hữu đã được truyền tống đến ${findLocationName(toLocId)}!`, "success");
+
+        if (window.game && window.game.screens && window.game.screens.map) {
+            window.game.screens.map.startExploration(toLocId, true, true);
+        }
+        return true;
     }
 }

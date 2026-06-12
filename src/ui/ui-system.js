@@ -314,6 +314,54 @@ export class UISystem {
         };
     }
 
+    showTeleportSelection(locations, onConfirm) {
+        let html = `
+            <div class="teleport-selection-container max-h-[300px] overflow-y-auto pr-2 mt-4 space-y-2 border border-slate-700/50 p-3 rounded-lg bg-slate-900/80">
+                <p class="text-xs text-slate-400 mb-2 italic">Hãy lựa chọn tọa độ cần dịch chuyển tới (chỉ giới hạn trong cùng giới diện):</p>
+        `;
+        
+        locations.forEach(loc => {
+            html += `
+                <button class="teleport-target-btn w-full flex items-center justify-between p-2 rounded border border-slate-700 hover:border-cultivation-gold hover:bg-slate-800 transition duration-150 text-left bg-slate-950/60" data-loc-id="${loc.id}">
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200 hover:text-cultivation-gold">${loc.name}</div>
+                        <div class="text-[10px] text-slate-400">${loc.description || ''}</div>
+                    </div>
+                    <div class="text-[10px] text-cultivation-gold ml-2 shrink-0 border border-cultivation-gold/30 px-1 py-0.5 rounded bg-cultivation-gold/5">
+                        KÍCH HOẠT
+                    </div>
+                </button>
+            `;
+        });
+        
+        html += `</div>`;
+
+        this.showModal({
+            title: "Đại Dịch Chuyển Trận",
+            message: html,
+            icon: 'ph-map-pin',
+            showCancel: true,
+            cancelText: "HỦY BỎ"
+        });
+
+        if (this.modalBtnConfirm) {
+            this.modalBtnConfirm.style.display = 'none';
+        }
+
+        setTimeout(() => {
+            const btns = this.modalOverlay.querySelectorAll('.teleport-target-btn');
+            btns.forEach(btn => {
+                btn.onclick = () => {
+                    const locId = btn.getAttribute('data-loc-id');
+                    this.toggleOverlay(this.modalOverlay, false);
+                    if (this.modalBtnConfirm) this.modalBtnConfirm.onclick = null;
+                    if (this.modalBtnCancel) this.modalBtnCancel.onclick = null;
+                    if (onConfirm) onConfirm(locId);
+                };
+            });
+        }, 50);
+    }
+
     /**
      * Show a prompt with an input field
      */

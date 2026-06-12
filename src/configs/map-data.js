@@ -429,6 +429,22 @@ export const WORLDS = {
                 subRegionName: "Việt Quốc"
             },
             {
+                id: "thuong_co_truyen_tong_tran_thien_nam",
+                name: "Thượng Cổ Truyền Tống Trận (Thiên Nam)",
+                minRealm: 0,
+                danger: "an_toan",
+                image: getLocImg("thuong_co_truyen_tong_tran"),
+                description: "Trận pháp dịch chuyển cổ xưa kết nối Việt Quốc (Thiên Nam) và Loạn Tinh Hải. Cần Thượng Cổ Truyền Tống Lệnh để kích hoạt.",
+                resources: [],
+                energies: [],
+                elementQi: {},
+                eventProbs: { combat: 0, loot: 0, npc: 0, empty: 0 },
+                regionId: "thien_nam",
+                regionName: "Thiên Nam",
+                subRegionId: "viet_quoc",
+                subRegionName: "Việt Quốc"
+            },
+            {
                 id: "nguyen_vu_quoc",
                 name: "Nguyên Vũ Quốc",
                 minRealm: 0,
@@ -1964,12 +1980,12 @@ export const WORLDS = {
                 subRegionName: "Ngoại Hải"
             },
             {
-                id: "thuong_co_truyen_tong_tran",
-                name: "Thượng Cổ Truyền Tống Trận",
+                id: "thuong_co_truyen_tong_tran_loan_tinh_hai",
+                name: "Thượng Cổ Truyền Tống Trận (Loạn Tinh Hải)",
                 minRealm: 0,
                 danger: "an_toan",
                 image: getLocImg("thuong_co_truyen_tong_tran"),
-                description: "Trận pháp dịch chuyển cổ xưa bị hư hại nặng nề, kết nối Việt Quốc và Loạn Tinh Hải.",
+                description: "Trận pháp dịch chuyển cổ xưa kết nối Loạn Tinh Hải và Việt Quốc (Thiên Nam). Cần Thượng Cổ Truyền Tống Lệnh để kích hoạt.",
                 resources: [],
                 energies: [],
                 elementQi: {},

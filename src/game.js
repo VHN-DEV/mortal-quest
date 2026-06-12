@@ -3283,6 +3283,49 @@ export class Game {
         }
     }
 
+    activateAncientTeleport() {
+        if (!state.player) return;
+
+        const currentLocId = state.currentLocId;
+        let targetLocId = '';
+
+        if (currentLocId === 'thuong_co_truyen_tong_tran_thien_nam') {
+            targetLocId = 'thuong_co_truyen_tong_tran_loan_tinh_hai';
+        } else if (currentLocId === 'thuong_co_truyen_tong_tran_loan_tinh_hai') {
+            targetLocId = 'thuong_co_truyen_tong_tran_thien_nam';
+        } else {
+            state.ui.toast("Ngươi phải đứng ở Thượng Cổ Truyền Tống Trận mới có thể kích hoạt dịch chuyển!", "error");
+            return;
+        }
+
+        // 1. Kiểm tra Thượng Cổ Truyền Tống Lệnh (Ancient Teleportation Token)
+        const hasToken = state.player.inventory?.allItems?.some(i => i.id === 'thuong_co_truyen_tong_lenh');
+        if (!hasToken) {
+            state.ui.alert("Kích hoạt Thượng Cổ Truyền Tống Trận sẽ tạo ra một lực cản áp lực không gian khổng lồ. Nếu không có [Thượng Cổ Truyền Tống Lệnh] để hộ thân, đạo hữu sẽ bị lực lượng không gian xé rách nhục thân mà chết ngay lập tức!", "Thiếu Truyền Tống Lệnh");
+            return;
+        }
+
+        // 2. Kiểm tra Linh Thạch tiêu hao (yêu cầu 100 Linh Thạch)
+        if (typeof state.player.spendLingShi === 'function') {
+            if (!state.player.spendLingShi(100)) {
+                state.ui.toast("Không đủ Linh Thạch để kích hoạt trận pháp! Yêu cầu 100 Linh Thạch.", "error");
+                return;
+            }
+        } else {
+            if ((state.player.lingShi || 0) < 100) {
+                state.ui.toast("Không đủ Linh Thạch để kích hoạt trận pháp! Yêu cầu 100 Linh Thạch.", "error");
+                return;
+            }
+            state.player.lingShi -= 100;
+        }
+
+        // 3. Thực hiện truyền tống tức thời qua TravelSystem.teleport
+        const success = state.systems.travel.teleport(targetLocId);
+        if (success) {
+            state.ui.alert("Linh thạch khảm vào các mắt trận sáng rực lên. Một luồng hào quang phóng thẳng lên trời, cuốn lấy thân hình ngươi rồi biến mất. Khi mở mắt ra, đạo hữu đã đứng ở bờ bên kia của biển rộng!", "Kích Hoạt Truyền Tống Trận");
+        }
+    }
+
     // --- System Actions ---
     buyItem(itemId, quantity = 1) {
         if (state.systems.shop) {

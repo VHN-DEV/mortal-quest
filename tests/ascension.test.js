@@ -83,4 +83,93 @@ describe('Ascension System Tests', () => {
             "Bắt Đầu Phi Thăng"
         );
     });
+
+    describe('Ancient Teleportation Array Tests', () => {
+        beforeEach(() => {
+            mockTravel.teleport = vi.fn().mockReturnValue(true);
+            player.inventory.addItem('ha_pham_linh_thach', 200);
+        });
+
+        it('should block teleportation if player lacks Thượng Cổ Truyền Tống Lệnh', () => {
+            state.currentLocId = 'thuong_co_truyen_tong_tran_thien_nam';
+            gameInstance.activateAncientTeleport();
+
+            expect(mockUi.alert).toHaveBeenCalledWith(
+                expect.stringContaining("Nếu không có [Thượng Cổ Truyền Tống Lệnh] để hộ thân"),
+                "Thiếu Truyền Tống Lệnh"
+            );
+            expect(mockTravel.teleport).not.toHaveBeenCalled();
+        });
+
+        it('should block teleportation if player has token but lacks enough Linh Thạch (100 required)', () => {
+            state.currentLocId = 'thuong_co_truyen_tong_tran_thien_nam';
+            player.inventory.addItem('thuong_co_truyen_tong_lenh', 1);
+            const item = player.inventory.allItems.find(i => i.id === 'ha_pham_linh_thach');
+            if (item) item.quantity = 50;
+
+            gameInstance.activateAncientTeleport();
+
+            expect(mockUi.toast).toHaveBeenCalledWith(
+                expect.stringContaining("Không đủ Linh Thạch để kích hoạt trận pháp"),
+                "error"
+            );
+            expect(mockTravel.teleport).not.toHaveBeenCalled();
+        });
+
+        it('should successfully teleport from Thiên Nam to Loạn Tinh Hải and deduct 100 Linh Thạch', () => {
+            state.currentLocId = 'thuong_co_truyen_tong_tran_thien_nam';
+            player.inventory.addItem('thuong_co_truyen_tong_lenh', 1);
+            const item = player.inventory.allItems.find(i => i.id === 'ha_pham_linh_thach');
+            if (item) item.quantity = 150;
+
+            gameInstance.activateAncientTeleport();
+
+            expect(player.lingShi).toBe(50);
+            expect(mockTravel.teleport).toHaveBeenCalledWith('thuong_co_truyen_tong_tran_loan_tinh_hai');
+            expect(mockUi.alert).toHaveBeenCalledWith(
+                expect.stringContaining("Linh thạch khảm vào các mắt trận sáng rực lên"),
+                "Kích Hoạt Truyền Tống Trận"
+            );
+        });
+
+        it('should successfully teleport from Loạn Tinh Hải to Thiên Nam and deduct 100 Linh Thạch', () => {
+            state.currentLocId = 'thuong_co_truyen_tong_tran_loan_tinh_hai';
+            player.inventory.addItem('thuong_co_truyen_tong_lenh', 1);
+            const item = player.inventory.allItems.find(i => i.id === 'ha_pham_linh_thach');
+            if (item) item.quantity = 100;
+
+            gameInstance.activateAncientTeleport();
+
+            expect(player.lingShi).toBe(0);
+            expect(mockTravel.teleport).toHaveBeenCalledWith('thuong_co_truyen_tong_tran_thien_nam');
+        });
+    });
+
+    describe('Talisman Usage Tests', () => {
+        beforeEach(() => {
+            mockTravel.teleport = vi.fn().mockReturnValue(true);
+            state.currentLocId = 'thai_nam_coc';
+            state.currentWorldId = 'nhan_gioi';
+            mockUi.showTeleportSelection = vi.fn();
+        });
+
+        it('should allow using thuan_di_phu to teleport to a random location in the same region', () => {
+            player.inventory.addItem('thuan_di_phu', 2);
+            
+            const success = player.inventory.useItem('thuan_di_phu', 1);
+
+            expect(success).toBe(true);
+            expect(player.inventory.hasItem('thuan_di_phu')).toBe(true); // 1 left
+            expect(mockTravel.teleport).toHaveBeenCalled();
+        });
+
+        it('should trigger target selection when using dai_dich_chuyen_phu', () => {
+            player.inventory.addItem('dai_dich_chuyen_phu', 1);
+
+            const success = player.inventory.useItem('dai_dich_chuyen_phu', 1);
+
+            expect(success).toBe(true);
+            expect(mockUi.showTeleportSelection).toHaveBeenCalled();
+        });
+    });
 });

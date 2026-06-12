@@ -1027,7 +1027,7 @@ export class InventoryScreen {
         }
 
 
-        this.btnUseItem.classList.toggle('hidden', !(['dan_duoc', 'sach_cong_phap', 'linh_thach', 'trung_linh_thu', 'dan_phuong', 'don_phu', 'tui_tru_vat'].includes(itemData.type)) || (fromShop && !isManual));
+        this.btnUseItem.classList.toggle('hidden', !(['dan_duoc', 'sach_cong_phap', 'linh_thach', 'trung_linh_thu', 'dan_phuong', 'don_phu', 'tui_tru_vat', 'phu_luc'].includes(itemData.type)) || (fromShop && !isManual));
         if (this.btnCrushStone) this.btnCrushStone.classList.toggle('hidden', !isSpiritStone || fromShop || fromSell);
 
         if (equippable) {

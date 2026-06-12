@@ -2422,8 +2422,22 @@ export const ITEMS = {
         icon: '⚡',
         quality: PHAP_BAO_QUALITIES.LINH_KHI,
         price: 2000,
-        description: 'Dịch chuyển tức thời thoát khỏi nguy hiểm.',
+        description: 'Dịch chuyển tức thời thoát khỏi nguy hiểm, bay đến một vị trí ngẫu nhiên trong giới diện hiện tại.',
         effect: { type: 'escape' },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.DON_THUAT }
+        ]
+    },
+    'dai_dich_chuyen_phu': {
+        id: 'dai_dich_chuyen_phu',
+        name: 'Đại Dịch Chuyển Phù',
+        image: 'items/talismans/dai_dich_chuyen_phu',
+        type: ITEM_TYPES.PHU_LUC,
+        icon: '🌀',
+        quality: PHAP_BAO_QUALITIES.PHAP_BAO,
+        price: 8000,
+        description: 'Phù lục cấp cao cho phép tùy chọn địa điểm dịch chuyển tức thời trong cùng giới diện.',
+        effect: { type: 'teleport_select' },
         categories: [
             { category: ITEM_CATEGORIES_ENUM.PHU_LUC.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHU_LUC.SUBCATEGORIES.DON_THUAT }
         ]
