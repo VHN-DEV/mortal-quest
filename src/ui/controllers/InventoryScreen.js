@@ -128,8 +128,40 @@ export class InventoryScreen {
                         state.ui.toggleOverlay(this.elItemDetail, false);
                     }
                     window.game.refreshUI();
-                } else if (state.selectedItemId) {
-                    state.ui.toast('Không thể luyện hóa/sử dụng vật phẩm này lúc này.', 'error');
+                } else if (state.selectedItemId && itemData) {
+                    let failVerb = 'sử dụng';
+                    const effectType = itemData.effect?.type;
+                    const subEffects = effectType === EFFECT_TYPES.HOC_NHIEU_CONG_THUC ? (itemData.effect.value || []) : [];
+                    const hasProfessionSubEffect = subEffects.some(se => 
+                        se.type === EFFECT_TYPES.MO_KHOA_NGHE ||
+                        se.type === EFFECT_TYPES.HOC_CONG_THUC_DAN ||
+                        se.type === EFFECT_TYPES.HOC_CONG_THUC_REN ||
+                        se.type === EFFECT_TYPES.HOC_CONG_THUC_PHU ||
+                        se.type === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI ||
+                        se.type === EFFECT_TYPES.HOC_CONG_THUC_THI ||
+                        se.type === EFFECT_TYPES.HOC_TRAN_PHAP
+                    );
+                    const isProfessionBook = effectType === EFFECT_TYPES.MO_KHOA_NGHE ||
+                        effectType === EFFECT_TYPES.HOC_CONG_THUC_DAN ||
+                        effectType === EFFECT_TYPES.HOC_CONG_THUC_REN ||
+                        effectType === EFFECT_TYPES.HOC_CONG_THUC_PHU ||
+                        effectType === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI ||
+                        effectType === EFFECT_TYPES.HOC_CONG_THUC_THI ||
+                        effectType === EFFECT_TYPES.HOC_TRAN_PHAP ||
+                        itemData.type === 'dan_phuong' ||
+                        itemData.type === 'don_phu' ||
+                        hasProfessionSubEffect;
+
+                    if (itemData.type === 'linh_thach' || itemData.type === 'dan_duoc' || itemData.type === 'di_hoa' || itemData.type === 'di_loi' || effectType === EFFECT_TYPES.LUYEN_HOA_DI_HOA || effectType === EFFECT_TYPES.LUYEN_HOA_DI_LOI) {
+                        failVerb = 'luyện hóa';
+                    } else if (itemData.type === 'trung_linh_thu') {
+                        failVerb = 'ấp';
+                    } else if (itemData.type === 'ngoc_gian' || isProfessionBook) {
+                        failVerb = 'lĩnh ngộ';
+                    } else if (itemData.type === 'sach_cong_phap') {
+                        failVerb = 'tham ngộ';
+                    }
+                    state.ui.toast(`Không thể ${failVerb} vật phẩm này lúc này.`, 'error');
                 }
             };
         }
@@ -579,8 +611,45 @@ export class InventoryScreen {
         const isSpiritStone = itemData.type === 'linh_thach';
         const isManual = itemData.type === 'sach_cong_phap' && itemData.action;
 
+        const effectType = itemData.effect?.type;
+        const subEffects = effectType === EFFECT_TYPES.HOC_NHIEU_CONG_THUC ? (itemData.effect.value || []) : [];
+        const hasProfessionSubEffect = subEffects.some(se => 
+            se.type === EFFECT_TYPES.MO_KHOA_NGHE ||
+            se.type === EFFECT_TYPES.HOC_CONG_THUC_DAN ||
+            se.type === EFFECT_TYPES.HOC_CONG_THUC_REN ||
+            se.type === EFFECT_TYPES.HOC_CONG_THUC_PHU ||
+            se.type === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI ||
+            se.type === EFFECT_TYPES.HOC_CONG_THUC_THI ||
+            se.type === EFFECT_TYPES.HOC_TRAN_PHAP
+        );
+
+        const isProfessionBook = effectType === EFFECT_TYPES.MO_KHOA_NGHE ||
+            effectType === EFFECT_TYPES.HOC_CONG_THUC_DAN ||
+            effectType === EFFECT_TYPES.HOC_CONG_THUC_REN ||
+            effectType === EFFECT_TYPES.HOC_CONG_THUC_PHU ||
+            effectType === EFFECT_TYPES.HOC_CONG_THUC_KHOI_LOI ||
+            effectType === EFFECT_TYPES.HOC_CONG_THUC_THI ||
+            effectType === EFFECT_TYPES.HOC_TRAN_PHAP ||
+            itemData.type === 'dan_phuong' ||
+            itemData.type === 'don_phu' ||
+            hasProfessionSubEffect;
+
+        let useText = 'SỬ DỤNG';
+        if (isSpiritStone || itemData.type === 'dan_duoc' || itemData.type === 'di_hoa' || itemData.type === 'di_loi' || effectType === EFFECT_TYPES.LUYEN_HOA_DI_HOA || effectType === EFFECT_TYPES.LUYEN_HOA_DI_LOI) {
+            useText = 'LUYỆN HÓA';
+        } else if (itemData.type === 'trung_linh_thu') {
+            useText = 'ẤP TRỨNG';
+        } else if (itemData.type === 'ngoc_gian' || isProfessionBook) {
+            useText = 'LĨNH NGỘ';
+        } else if (itemData.type === 'sach_cong_phap') {
+            if (isManual) {
+                useText = 'XEM';
+            } else {
+                useText = 'THAM NGỘ';
+            }
+        }
+
         if (this.btnUseItem) {
-            const useText = isSpiritStone ? 'LUYỆN HÓA' : (isManual ? 'XEM' : ((itemData.type === 'sach_cong_phap' || itemData.type === 'dan_phuong' || itemData.type === 'don_phu') ? 'LĨNH NGỘ' : (itemData.type === 'trung_linh_thu' ? 'ẤP TRỨNG' : 'SỬ DỤNG')));
             this.btnUseItem.innerHTML = `<span style="letter-spacing:0.12em; padding-left:0.12em">${useText}</span>`;
         }
 
@@ -590,7 +659,11 @@ export class InventoryScreen {
         const equippable = Object.prototype.hasOwnProperty.call(state.player.equipment, mappedSlot);
 
         if (this.btnEquipItem) {
-            const equipText = itemData.type.includes('Artifact') ? 'KHỞI ĐỘNG' : 'TRANG BỊ';
+            const isPhapBao = itemData.type.startsWith('phap_bao_') || 
+                              itemData.type.includes('Artifact') || 
+                              itemData.type === 'vu_khi' || 
+                              itemData.type === 'giap_bao';
+            const equipText = isPhapBao ? 'LUYỆN HÓA' : 'TRANG BỊ';
             this.btnEquipItem.innerHTML = `<span style="letter-spacing:0.12em; padding-left:0.12em">${equipText}</span>`;
         }
 
