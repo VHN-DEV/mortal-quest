@@ -4,17 +4,13 @@ import { Game } from './game.js';
 import { gsap } from 'gsap';
 
 // Legacy / Specialized Logic Imports (Will be modularized later)
-import { EnemyGenerator, Enemy } from './core/enemy.js';
-import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
-import { getWorlds, getLocationById, findLocationName, DANGER_LEVELS, WORLDS } from './configs/map-data.js';
+import { getLocationById, findLocationName, DANGER_LEVELS, WORLDS } from './configs/map-data.js';
 import { ASSETS, preloadAssets, getAssetUrl } from './configs/asset-data.js';
 import { getRealmById, HUMAN_REALMS, getSubRealmsOfCurrent } from './configs/realm-data.js';
-import { ALCHEMY_RECIPES } from './configs/alchemy-data.js';
-import { SEEDS } from './configs/garden-data.js';
-import { SECTS, getSectById } from './configs/sect-data.js';
+import { SECTS, BONUS_LABELS } from './configs/sect-data.js';
 import { CLANS } from './configs/clan-data.js';
-import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS, CREATION_SYSTEMS } from './configs/creation-data.js';
+import { CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS, CREATION_SYSTEMS } from './configs/creation-data.js';
 import { PHYSIQUES } from './configs/physique-data.js';
 import { GAME_STATS } from './configs/game-enums.js';
 import { TITLES } from './configs/fate-data.js';
@@ -649,8 +645,8 @@ window.renderMainStats = () => {
     // ── Tam Tu: Hold-progress overlay arc ──────────────────────
     const holdPct = player._chuThienHoldPct || 0;
     const holdCircleIds = { tuvi: 'circle-tu-vi-hold', body: 'circle-body-hold', soul: 'circle-soul-hold' };
-    const holdCircumf   = { tuvi: 301.6, body: 276.5, soul: 251.3 };
-    const holdCircleId  = holdCircleIds[focus];
+    const holdCircumf = { tuvi: 301.6, body: 276.5, soul: 251.3 };
+    const holdCircleId = holdCircleIds[focus];
     const holdCircumference = holdCircumf[focus] || 301.6;
 
     if (holdCircleId) {
@@ -665,7 +661,7 @@ window.renderMainStats = () => {
                 holdEl.id = holdCircleId;
                 holdEl.setAttribute('cx', parentCircle.getAttribute('cx'));
                 holdEl.setAttribute('cy', parentCircle.getAttribute('cy'));
-                holdEl.setAttribute('r',  parentCircle.getAttribute('r'));
+                holdEl.setAttribute('r', parentCircle.getAttribute('r'));
                 holdEl.setAttribute('fill', 'none');
                 holdEl.setAttribute('stroke-width', '3');
                 holdEl.setAttribute('stroke-linecap', 'round');
@@ -747,8 +743,8 @@ window.renderMainStats = () => {
 
         // Check if player has a technique for this focus
         const hasTech = (focus === 'tuvi' && player.mainTechniqueId) ||
-                        (focus === 'body' && player.mainBodyTechniqueId) ||
-                        (focus === 'soul' && player.mainSoulTechniqueId);
+            (focus === 'body' && player.mainBodyTechniqueId) ||
+            (focus === 'soul' && player.mainSoulTechniqueId);
 
         const contentKey = `${focus}_${cycle.step}_${maxSteps}_${cycle.count}_${hasTech ? '1' : '0'}`;
         if (mainStatsCache.lastValues.get('cultivate_btn_content') !== contentKey) {
@@ -791,7 +787,7 @@ window.renderMainStats = () => {
                     ? 'Ngươi cần học một công pháp phù hợp trước khi tu luyện!'
                     : '';
                 elBtnCultivateSelf.style.opacity = shouldDisable ? '0.5' : '';
-                elBtnCultivateSelf.style.cursor  = shouldDisable ? 'not-allowed' : '';
+                elBtnCultivateSelf.style.cursor = shouldDisable ? 'not-allowed' : '';
             }
         }
 
@@ -812,7 +808,7 @@ window.renderMainStats = () => {
                 const autoOverlay = elAutoToggle.closest('div');
                 if (autoOverlay) {
                     autoOverlay.style.opacity = shouldLockAuto ? '0.4' : '';
-                    autoOverlay.style.cursor  = shouldLockAuto ? 'not-allowed' : '';
+                    autoOverlay.style.cursor = shouldLockAuto ? 'not-allowed' : '';
                     autoOverlay.title = shouldLockAuto
                         ? 'Ngươi cần học một công pháp trước!'
                         : '';
@@ -835,7 +831,7 @@ window.renderMainStats = () => {
     // Unified Cultivation State Panel for Tu Vi, Luyện Thể (Body) & Thần Thức (Soul)
     const elDaiVienManPanel = getCachedEl('dai-vien-man-panel');
     if (elDaiVienManPanel) {
-        const isStateActive = 
+        const isStateActive =
             (focus === 'tuvi' && player.tuViState !== 'accumulating') ||
             (focus === 'body' && player.bodyState !== 'accumulating') ||
             (focus === 'soul' && player.soulState !== 'accumulating');
@@ -878,17 +874,15 @@ window.renderMainStats = () => {
                 const btnCungCo = getCachedEl('btn-cung-co-can-co');
                 if (btnCungCo) {
                     const active = player.tuViState === 'consolidating';
-                    btnCungCo.className = `py-1.5 rounded-xl uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95 border ${
-                        active ? 'bg-qi-blue/20 text-qi-blue border-qi-blue/50 font-bold font-black' : 'bg-white/5 text-gray-300 border-white/10'
-                    }`;
+                    btnCungCo.className = `py-1.5 rounded-xl uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95 border ${active ? 'bg-qi-blue/20 text-qi-blue border-qi-blue/50 font-bold font-black' : 'bg-white/5 text-gray-300 border-white/10'
+                        }`;
                 }
 
                 const btnNen = getCachedEl('btn-nen-phap-luc');
                 if (btnNen) {
                     const active = player.tuViState === 'condensing';
-                    btnNen.className = `py-1.5 rounded-xl uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95 border ${
-                        active ? 'bg-qi-purple/20 text-qi-purple border-qi-purple/50 font-bold font-black' : 'bg-white/5 text-gray-300 border-white/10'
-                    }`;
+                    btnNen.className = `py-1.5 rounded-xl uppercase tracking-wider text-[8px] flex items-center justify-center space-x-1 transition-all active:scale-95 border ${active ? 'bg-qi-purple/20 text-qi-purple border-qi-purple/50 font-bold font-black' : 'bg-white/5 text-gray-300 border-white/10'
+                        }`;
                 }
             } else if (focus === 'body') {
                 if (titleEl) titleEl.textContent = 'Cảnh Giới Luyện Thể Cực Hạn';
@@ -898,7 +892,7 @@ window.renderMainStats = () => {
 
                 updateCachedText('thien-dao-pressure', `${player.khi_huyet_ap_luc.toFixed(1)}%`);
                 updateCachedText('can-co-value', `${player.physiqueTalent || 50}`);
-                
+
                 const bodyRealm = player.getCurrentRealm('body');
                 const pct = bodyRealm ? Math.min(150, Math.floor((player.bodyExp / bodyRealm.expRequired) * 100)) : 100;
                 updateCachedText('tinh-thuan-value', `${pct}%`);
@@ -1230,7 +1224,7 @@ window.renderCreationScreen = () => {
         const sumFlat = (key) => (raceBonus[key] || 0) + (rootBonus[key] || 0) + (physBonus[key] || 0) + (traitBonus[key] || 0) + (elementBonus[key] || 0);
 
         // Multiplier logic for TVPS & Qi Absorb (dynamic based on element proportions balance)
-        const rootMult = realmLevel > 0 
+        const rootMult = realmLevel > 0
             ? (root.bonus?.qiAbsorb || 1.0) * ROOT_RARITY[sys.rootRarity].multiplier * (sys.rootPurity / 100) * classInfo.multiplierScale
             : 1.0;
         const tvpsBonus = (raceBonus.tvps || 1) * (realmLevel > 0 ? rootMult : 1) * (physBonus.tvps || 1) * (traitBonus.tvps || 1) * (elementBonus.tvps || 1);
@@ -1780,7 +1774,7 @@ window.renderCreationScreen = () => {
             if (s) {
                 const startingTech = s.libraryItems?.find(i => i.isTech && (i.minRankScore === undefined || i.minRankScore === 0));
                 const techName = startingTech?.name || startingTech?.id || null;
-                const bonusStr = Object.entries(s.bonus || {}).map(([k,v]) => `${k} +${v}`).slice(0, 3).join(' · ') || 'Pháp lực đặc biệt';
+                const bonusStr = Object.entries(s.bonus || {}).map(([k, v]) => `${BONUS_LABELS[k] || k} +${v}`).slice(0, 3).join(' · ') || 'Pháp lực đặc biệt';
                 elSectList.innerHTML = `
                     <div onclick="window.openCreationSelectionModal('sect')" 
                         class="q-card active text-cultivation-gold border-cultivation-gold w-full cursor-pointer hover:bg-white/[0.02] transition-all flex flex-col gap-2 relative">
@@ -1815,7 +1809,7 @@ window.renderCreationScreen = () => {
             if (c) {
                 const startingTech = c.libraryItems?.find(i => i.isTech && (i.minRankScore === undefined || i.minRankScore === 0));
                 const techName = startingTech?.name || startingTech?.id || null;
-                const bonusStr = Object.entries(c.bonus || {}).map(([k,v]) => `${k} +${v}`).slice(0, 3).join(' · ') || 'Huyết mạch chi lực';
+                const bonusStr = Object.entries(c.bonus || {}).map(([k, v]) => `${BONUS_LABELS[k] || k} +${v}`).slice(0, 3).join(' · ') || 'Huyết mạch chi lực';
                 elSectList.innerHTML = `
                     <div onclick="window.openCreationSelectionModal('clan')" 
                         class="q-card active text-cultivation-gold border-cultivation-gold w-full cursor-pointer hover:bg-white/[0.02] transition-all flex flex-col gap-2 relative">
@@ -2224,7 +2218,7 @@ window.openCreationSelectionModal = (type) => {
             const active = sys.selectedSectId === s.id;
             const startingTech = s.libraryItems?.find(i => i.isTech && (i.minRankScore === undefined || i.minRankScore === 0));
             const techName = startingTech?.name || startingTech?.id || null;
-            const bonusStr = Object.entries(s.bonus || {}).map(([k,v]) => `${k} +${v}`).slice(0, 3).join(' · ') || 'Pháp lực đặc biệt';
+            const bonusStr = Object.entries(s.bonus || {}).map(([k, v]) => `${BONUS_LABELS[k] || k} +${v}`).slice(0, 3).join(' · ') || 'Pháp lực đặc biệt';
             return `
                 <div onclick="window.game.selectCreationSect('${s.id}'); window.game.closeCreationSelectionModal();" 
                     class="q-card cursor-pointer transition-all duration-300 ${active ? 'active border-cultivation-gold/80 shadow-[0_0_15px_rgba(212,175,55,0.15)] text-cultivation-gold' : 'text-gray-400 border-white/10'}">
@@ -2248,7 +2242,7 @@ window.openCreationSelectionModal = (type) => {
             const active = sys.selectedClanId === c.id;
             const startingTech = c.libraryItems?.find(i => i.isTech && (i.minRankScore === undefined || i.minRankScore === 0));
             const techName = startingTech?.name || startingTech?.id || null;
-            const bonusStr = Object.entries(c.bonus || {}).map(([k,v]) => `${k} +${v}`).slice(0, 3).join(' · ') || 'Huyết mạch chi lực';
+            const bonusStr = Object.entries(c.bonus || {}).map(([k, v]) => `${BONUS_LABELS[k] || k} +${v}`).slice(0, 3).join(' · ') || 'Huyết mạch chi lực';
             return `
                 <div onclick="window.game.selectCreationClan('${c.id}'); window.game.closeCreationSelectionModal();" 
                     class="q-card cursor-pointer transition-all duration-300 ${active ? 'active border-cultivation-gold/80 shadow-[0_0_15px_rgba(212,175,55,0.15)] text-cultivation-gold' : 'text-gray-400 border-white/10'}">

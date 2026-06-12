@@ -28,6 +28,24 @@ export const GRANDMASTER_REWARDS = [
     { id: 'gm_insight', weight: 10, desc: 'Thái Thượng chỉ điểm đạo lý, Ngộ tính đột phá', effect: (p) => { p.comprehension = Math.min(100, (p.comprehension || 10) + 5); return '+5 Ngộ Tính'; } },
 ];
 
+export const BONUS_LABELS = {
+    atk: 'Tấn Công',
+    def: 'Phòng Thủ',
+    spd: 'Tốc Độ',
+    maxHp: 'Máu Tối Đa',
+    crit: 'Tỷ Lệ Chí Mạng',
+    critDmg: 'Sát Thương Chí Mạng',
+    comprehension: 'Độ Ngộ',
+    tuViSpeed: 'Tốc Độ Tu Luyện',
+    maxEnergy: 'Năng Lượng Tối Đa',
+    energyRegen: 'Hồi Năng Lượng',
+    cultivation: 'Tu Vi',
+    luck: 'Vận May',
+    charm: 'Ngoại Hình',
+    mana: 'Ma Lực',
+    manaRegen: 'Hồi Ma Lực',
+};
+
 export const SECTS = {
     // --- Original 3 Sects ---
     'thien_kiem_tong': {
