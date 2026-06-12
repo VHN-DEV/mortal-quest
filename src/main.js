@@ -1198,7 +1198,7 @@ window.renderCreationScreen = () => {
         };
 
         const raceBonus = CREATION_RACES[sys.selectedRace]?.bonus || {};
-        const rootBonus = CREATION_ROOTS[sys.selectedRoot]?.bonus || {};
+        const rootBonus = realmLevel > 0 ? (CREATION_ROOTS[sys.selectedRoot]?.bonus || {}) : {};
         const physBonus = PHYSIQUES[sys.selectedPhysique]?.bonus || {};
         const traitBonus = sys.selectedTraits.reduce((acc, traitId) => {
             const bonus = CREATION_TRAITS[traitId]?.bonus || {};
@@ -1213,7 +1213,7 @@ window.renderCreationScreen = () => {
         }, {});
 
         // Elemental bonuses
-        const elementBonus = sys.selectedRootElements.reduce((acc, elName) => {
+        const elementBonus = realmLevel > 0 ? sys.selectedRootElements.reduce((acc, elName) => {
             const el = ROOT_ELEMENTS[elName] || SPECIAL_ELEMENTS[elName];
             if (el && el.bonus) {
                 Object.entries(el.bonus).forEach(([k, v]) => {
@@ -1225,14 +1225,16 @@ window.renderCreationScreen = () => {
                 });
             }
             return acc;
-        }, {});
+        }, {}) : {};
 
         const sumFlat = (key) => (raceBonus[key] || 0) + (rootBonus[key] || 0) + (physBonus[key] || 0) + (traitBonus[key] || 0) + (elementBonus[key] || 0);
 
         // Multiplier logic for TVPS & Qi Absorb (dynamic based on element proportions balance)
-        const rootMult = (root.bonus?.qiAbsorb || 1.0) * ROOT_RARITY[sys.rootRarity].multiplier * (sys.rootPurity / 100) * classInfo.multiplierScale;
-        const tvpsBonus = (raceBonus.tvps || 1) * rootMult * (physBonus.tvps || 1) * (traitBonus.tvps || 1) * (elementBonus.tvps || 1);
-        const qiBonus = (raceBonus.qiAbsorb || 1) * (root.bonus?.qiAbsorb || 1.0) * (physBonus.qiAbsorb || 1) * (traitBonus.qiAbsorb || 1) * (elementBonus.qiAbsorb || 1);
+        const rootMult = realmLevel > 0 
+            ? (root.bonus?.qiAbsorb || 1.0) * ROOT_RARITY[sys.rootRarity].multiplier * (sys.rootPurity / 100) * classInfo.multiplierScale
+            : 1.0;
+        const tvpsBonus = (raceBonus.tvps || 1) * (realmLevel > 0 ? rootMult : 1) * (physBonus.tvps || 1) * (traitBonus.tvps || 1) * (elementBonus.tvps || 1);
+        const qiBonus = (raceBonus.qiAbsorb || 1) * (realmLevel > 0 ? (root.bonus?.qiAbsorb || 1.0) : 1.0) * (physBonus.qiAbsorb || 1) * (traitBonus.qiAbsorb || 1) * (elementBonus.qiAbsorb || 1);
 
         const previewStats = [
             { label: 'Công', value: Math.floor(base.atk + sumFlat('atk')), color: 'text-red-400' },

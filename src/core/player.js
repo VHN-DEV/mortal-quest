@@ -2428,7 +2428,7 @@ export class Player {
 
 
         // 2.3 Apply SPIRITUAL ROOT bonuses
-        if (this.spiritualRoot) {
+        if (this.spiritualRoot && realmLevel > 0) {
             if (this.spiritualRoot.multiplier) this.bonusStats.tuViSpeed *= this.spiritualRoot.multiplier;
             if (this.spiritualRoot.bonus) {
                 const b = this.spiritualRoot.bonus;
