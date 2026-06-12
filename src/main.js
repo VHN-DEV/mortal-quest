@@ -1274,7 +1274,7 @@ window.renderCreationScreen = () => {
             return `
                 <div class="rounded-xl border border-white/10 bg-black/35 px-2 py-2 text-center transition-all hover:border-white/20">
                     <div class="text-[7px] text-gray-500 uppercase tracking-tighter mb-0.5">${stat.label}</div>
-                    <div class="text-[10px] md:text-xs font-bold ${isBoosted ? stat.color : 'text-gray-400'}">${text}</div>
+                    <div class="text-[10px] md:text-xs font-bold ${stat.color}">${text}${isBoosted ? ' <span class="text-[7px] text-qi-jade font-normal">▲</span>' : ''}</div>
                 </div>
             `;
         }).join('');
