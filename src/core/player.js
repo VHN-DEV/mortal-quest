@@ -2485,6 +2485,11 @@ export class Player {
         // Apply Physique Talent
         this.baseStats.maxHp *= (1 + ((this.physiqueTalent || 50) / 200));
         this.baseStats.def *= (1 + ((this.physiqueTalent || 50) / 500));
+        this.baseStats.atk *= (1 + (((this.physiqueTalent || 50) - 50) / 200));
+        this.baseStats.spd *= (1 + (((this.physiqueTalent || 50) - 50) / 300));
+
+        // Apply Soul/Spirit (Thần Hồn) to Max Mana
+        this.baseStats.maxMana *= (1 + (((this.divineSense || 50) - 50) / 200));
 
         // Apply Comprehension
         this.bonusStats.tuViSpeed *= (1 + ((this.getComprehension() || 50) / 200));

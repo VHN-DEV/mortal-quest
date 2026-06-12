@@ -1184,12 +1184,12 @@ window.renderCreationScreen = () => {
         const realmMult = realmLevel > 0 ? Math.pow(1.8, realmLevel - 1) : 1.0;
 
         const base = {
-            atk: (10 + (realmLevel * 5)) * realmMult,
-            def: (5 + (realmLevel * 2)) * realmMult,
-            maxHp: (100 + (realmLevel * 20)) * realmMult,
-            mana: (50 + (realmLevel * 50)) * realmMult,
-            spd: (15 + (realmLevel * 5)) * realmMult,
-            luck: 50,
+            atk: (10 + (realmLevel * 5)) * realmMult * (1 + (((sys.talents.physique || 50) - 50) / 200)),
+            def: (5 + (realmLevel * 2)) * realmMult * (1 + ((sys.talents.physique || 50) / 500)),
+            maxHp: (100 + (realmLevel * 20)) * realmMult * (1 + ((sys.talents.physique || 50) / 200)),
+            mana: (50 + (realmLevel * 50)) * realmMult * (1 + (((sys.talents.divineSense || 50) - 50) / 200)),
+            spd: (15 + (realmLevel * 5)) * realmMult * (1 + (((sys.talents.physique || 50) - 50) / 300)),
+            luck: sys.talents.luck || 50,
             karma: 0,
             maxAge: 100 + (realmLevel * 50),
             critRate: 0.05,

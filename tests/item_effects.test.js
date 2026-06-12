@@ -30,7 +30,7 @@ describe('PNTT Dynamic Item Effects', () => {
     // Assert stats are permanently increased
     expect(player.divineSense).toBe(150); // 100 + 50
     expect(player.bonusStats.maxMana).toBe(200); // bonus is exactly +200
-    expect(player.maxMana).toBe(250); // base (50 at starting realm) + bonus (200) = 250
+    expect(player.maxMana).toBe(275); // base (50 * 1.5 due to 150 divineSense) + bonus (200) = 275
   });
 
   it('should purify and increase spiritual root purity when below 100%', () => {
