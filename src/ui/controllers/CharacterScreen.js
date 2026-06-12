@@ -69,6 +69,7 @@ export class CharacterScreen {
         this.elCharSectInfo = document.getElementById('char-sect-info');
         this.elCharRace = document.getElementById('char-race');
         this.elCharCultivationPath = document.getElementById('char-cultivation-path');
+        this.elCharDaoThongList = document.getElementById('char-daothong-list');
         this.elCharGender = document.getElementById('char-gender');
         this.elCharTitle = document.getElementById('char-title');
         this.elCharDestinyRating = document.getElementById('char-destiny-rating');
@@ -451,15 +452,71 @@ export class CharacterScreen {
 
         // Cultivation Path Info
         if (this.elCharCultivationPath) {
-            const mainPath = state.player.mainPath || 'orthodox';
-            const pathName = {
-                orthodox: 'Chính Thống',
-                ma_dao: 'Ma Đạo',
-                quy_dao: 'Quỷ Đạo',
-                yeu_tu: 'Yêu Tu'
-            }[mainPath] || 'Chính Thống';
-            this.elCharCultivationPath.textContent = pathName;
-            this.elCharCultivationPath.className = `text-xs font-bold path-${mainPath}`;
+            const dtInfo = state.player.calculateDaoThong();
+            this.elCharCultivationPath.textContent = dtInfo.displayPathName;
+            this.elCharCultivationPath.className = `text-xs font-bold path-${dtInfo.mainPathId}`;
+        }
+
+        // Dao Thong Points List Info
+        if (this.elCharDaoThongList) {
+            const dtInfo = state.player.calculateDaoThong();
+            const pathNames = {
+                orthodox: 'Đạo Môn (Pháp Tu)',
+                ma_dao: 'Ma Tu',
+                quy_dao: 'Quỷ Tu',
+                yeu_tu: 'Yêu Tu',
+                sword: 'Kiếm Tu',
+                body: 'Thể Tu',
+                soul_path: 'Hồn Tu',
+                buddhist: 'Phật Tu',
+                confucian: 'Nho Tu'
+            };
+            const pathColors = {
+                orthodox: 'text-qi-blue',
+                ma_dao: 'text-red-500',
+                quy_dao: 'text-purple-400',
+                yeu_tu: 'text-green-400',
+                sword: 'text-amber-400',
+                body: 'text-orange-400',
+                soul_path: 'text-pink-400',
+                buddhist: 'text-yellow-400',
+                confucian: 'text-blue-400'
+            };
+            const pathBgColors = {
+                orthodox: 'bg-qi-blue',
+                ma_dao: 'bg-red-500',
+                quy_dao: 'bg-purple-400',
+                yeu_tu: 'bg-green-400',
+                sword: 'bg-amber-400',
+                body: 'bg-orange-400',
+                soul_path: 'bg-pink-400',
+                buddhist: 'bg-yellow-400',
+                confucian: 'bg-blue-400'
+            };
+
+            const maxVal = Math.max(...Object.values(dtInfo.points), 1);
+
+            let listHtml = '';
+            Object.entries(dtInfo.points).forEach(([pid, val]) => {
+                if (val === 0) return;
+                const name = pathNames[pid] || pid;
+                const colorClass = pathColors[pid] || 'text-white';
+                const bgClass = pathBgColors[pid] || 'bg-white';
+                const pct = Math.min(100, (val / maxVal) * 100);
+
+                listHtml += `
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="${colorClass} font-ancient font-bold uppercase tracking-wider">${name}</span>
+                            <span class="text-gray-400 font-mono font-bold">${Math.round(val)} điểm</span>
+                        </div>
+                        <div class="h-1 w-full bg-black/40 rounded-full overflow-hidden">
+                            <div class="h-full ${bgClass} opacity-80" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            this.elCharDaoThongList.innerHTML = listHtml || '<div class="text-[8px] text-gray-500 italic text-center">Chưa tích lũy Đạo Thống điểm</div>';
         }
 
         if (this.elCharGender) {

@@ -22,6 +22,8 @@ export class Player {
         this.avatar = "player_male";
         this.race = 'HUMAN'; // HUMAN, SPIRIT_BEAST, DEMON, etc.
         this.mainPath = null; // orthodox, ma_dao, quy_dao, yeu_tu (resolved in calculateStats)
+        this.daoThong = 'Tạp Tu';
+        this.daoThongPoints = {};
         this.realmId = 0;
         this.tuVi = 0;
         this.buffs = []; // Array of { id, type, value, endTime }
@@ -32,7 +34,7 @@ export class Player {
         this.totalSpent = 0;
         this.vipLevel = 0;
         this.spiritStoneSettings = {
-            autoUsePriority: ['HA', 'TRUNG', 'THUONG', 'CUC'],
+            autoUsePriority: ['HA', 'TRUNG', 'THUONG', 'CUC', 'TIEN_NGOC'],
             lockCucPham: true,
             minReserve: 0
         };
@@ -359,6 +361,169 @@ export class Player {
         this.nextPeriodicTribulationYear = 0;
         this.natalTreasure = null;
         Object.assign(this, initData);
+    }
+
+    calculateDaoThong() {
+        const points = {
+            orthodox: 0,
+            ma_dao: 0,
+            quy_dao: 0,
+            yeu_tu: 0,
+            sword: 0,
+            body: 0,
+            soul_path: 0,
+            buddhist: 0,
+            confucian: 0
+        };
+
+        if (this.race === 'YAO') points.yeu_tu += 100;
+        else if (this.race === 'DEMON') points.ma_dao += 100;
+        else points.orthodox += 100;
+
+        const qualityPointMult = {
+            'Phàm Giai': 20, 'PHAM_GIAI': 20,
+            'Hoàng Giai': 50, 'HOANG_GIAI': 50,
+            'Huyền Giai': 150, 'HUYEN_GIAI': 150,
+            'Địa Giai': 400, 'DIA_GIAI': 400,
+            'Thiên Giai': 1000, 'THIEN_GIAI': 1000,
+            'Linh Giai': 2500, 'LINH_GIAI': 2500,
+            'Thánh Giai': 6000, 'THANH_GIAI': 6000,
+            'Tiên Giai': 15000, 'TIEN_GIAI': 15000,
+            'Đế Giai': 40000, 'DE_GIAI': 40000,
+            'Đạo Giai': 100000, 'DAO_GIAI': 100000
+        };
+
+        if (this.learnedTechniques) {
+            this.learnedTechniques.forEach(lt => {
+                const tech = getTechniqueById(lt.id);
+                if (!tech) return;
+
+                const name = tech.name || '';
+                const desc = tech.description || '';
+                const type = tech.type || '';
+                const elem = tech.element || '';
+                
+                const baseVal = qualityPointMult[tech.quality] || 30;
+                const masteryMult = lt.masteryLevel ? [0, 1.0, 1.5, 2.5, 4.0, 6.0][lt.masteryLevel] || 1.0 : 1.0;
+                const techPoints = baseVal * masteryMult;
+
+                if (name.toLowerCase().includes('kiếm') || desc.toLowerCase().includes('kiếm')) {
+                    points.sword += techPoints;
+                } else if (name.toLowerCase().includes('phật') || desc.toLowerCase().includes('phật môn') || name.toLowerCase().includes('như lai') || name.toLowerCase().includes('minh vương')) {
+                    points.buddhist += techPoints;
+                } else if (name.toLowerCase().includes('nho') || desc.toLowerCase().includes('nho môn') || name.toLowerCase().includes('chính khí') || name.toLowerCase().includes('văn khí')) {
+                    points.confucian += techPoints;
+                } else if (name.toLowerCase().includes('ma') || desc.toLowerCase().includes('ma đạo') || name.toLowerCase().includes('phệ huyết') || name.toLowerCase().includes('thiên sát') || elem === 'Yin' || elem === 'Ma') {
+                    points.ma_dao += techPoints;
+                } else if (name.toLowerCase().includes('quỷ') || desc.toLowerCase().includes('quỷ đạo') || desc.toLowerCase().includes('âm khí') || name.toLowerCase().includes('u minh') || name.toLowerCase().includes('huyền âm')) {
+                    points.quy_dao += techPoints;
+                } else if (name.toLowerCase().includes('yêu') || desc.toLowerCase().includes('linh thú') || desc.toLowerCase().includes('yêu thú') || name.toLowerCase().includes('vạn thú')) {
+                    points.yeu_tu += techPoints;
+                } else if (type === 'Luyện Thể') {
+                    points.body += techPoints;
+                } else if (type === 'Thần Thức') {
+                    points.soul_path += techPoints;
+                } else {
+                    points.orthodox += techPoints;
+                }
+            });
+        }
+
+        if (this.learnedSecretTechniques) {
+            this.learnedSecretTechniques.forEach(lst => {
+                const tech = getSecretTechniqueById(lst.id);
+                if (!tech) return;
+
+                const name = tech.name || '';
+                const desc = tech.description || '';
+                
+                const baseVal = qualityPointMult[tech.quality] || 15;
+                const masteryMult = lst.masteryLevel ? [0, 1.0, 1.5, 2.5, 4.0, 6.0][lst.masteryLevel] || 1.0 : 1.0;
+                const techPoints = baseVal * masteryMult * 0.5;
+
+                if (name.toLowerCase().includes('kiếm') || desc.toLowerCase().includes('kiếm')) {
+                    points.sword += techPoints;
+                } else if (name.toLowerCase().includes('phật') || desc.toLowerCase().includes('phật môn')) {
+                    points.buddhist += techPoints;
+                } else if (name.toLowerCase().includes('ma') || desc.toLowerCase().includes('ma đạo') || name.toLowerCase().includes('sát')) {
+                    points.ma_dao += techPoints;
+                } else if (name.toLowerCase().includes('quỷ') || desc.toLowerCase().includes('quỷ đạo') || name.toLowerCase().includes('âm')) {
+                    points.quy_dao += techPoints;
+                }
+            });
+        }
+
+        const sortedPaths = Object.entries(points).sort((a, b) => b[1] - a[1]);
+        const highestPath = sortedPaths[0][0];
+        const highestVal = sortedPaths[0][1];
+
+        const secondPath = sortedPaths[1][0];
+        const secondVal = sortedPaths[1][1];
+
+        let displayPathName = 'Tạp Tu';
+        let mainPathId = 'orthodox';
+
+        const specialThreshold = 100;
+
+        if (highestPath === 'orthodox' && highestVal <= specialThreshold) {
+            displayPathName = 'Tạp Tu';
+            mainPathId = 'orthodox';
+        } else {
+            if (secondVal >= specialThreshold && secondVal >= highestVal * 0.7) {
+                const pathLabels = {
+                    orthodox: 'Đạo Môn',
+                    ma_dao: 'Ma Tu',
+                    quy_dao: 'Quỷ Tu',
+                    yeu_tu: 'Yêu Tu',
+                    sword: 'Kiếm Tu',
+                    body: 'Thể Tu',
+                    soul_path: 'Hồn Tu',
+                    buddhist: 'Phật Tu',
+                    confucian: 'Nho Tu'
+                };
+                displayPathName = `${pathLabels[highestPath]} - ${pathLabels[secondPath]} Song Tu`;
+                if (highestPath === 'ma_dao' || secondPath === 'ma_dao') mainPathId = 'ma_dao';
+                else if (highestPath === 'quy_dao' || secondPath === 'quy_dao') mainPathId = 'quy_dao';
+                else if (highestPath === 'yeu_tu' || secondPath === 'yeu_tu') mainPathId = 'yeu_tu';
+                else mainPathId = 'orthodox';
+            } else {
+                if (highestPath === 'orthodox') {
+                    displayPathName = 'Đạo Môn (Pháp Tu)';
+                    mainPathId = 'orthodox';
+                } else if (highestPath === 'ma_dao') {
+                    displayPathName = 'Ma Tu';
+                    mainPathId = 'ma_dao';
+                } else if (highestPath === 'quy_dao') {
+                    displayPathName = 'Quỷ Tu';
+                    mainPathId = 'quy_dao';
+                } else if (highestPath === 'yeu_tu') {
+                    displayPathName = 'Yêu Tu';
+                    mainPathId = 'yeu_tu';
+                } else if (highestPath === 'sword') {
+                    displayPathName = 'Kiếm Tu';
+                    mainPathId = 'orthodox';
+                } else if (highestPath === 'body') {
+                    displayPathName = 'Thể Tu';
+                    mainPathId = 'orthodox';
+                } else if (highestPath === 'soul_path') {
+                    displayPathName = 'Hồn Tu';
+                    mainPathId = 'orthodox';
+                } else if (highestPath === 'buddhist') {
+                    displayPathName = 'Phật Tu';
+                    mainPathId = 'orthodox';
+                } else if (highestPath === 'confucian') {
+                    displayPathName = 'Nho Tu';
+                    mainPathId = 'orthodox';
+                }
+            }
+        }
+
+        return {
+            points,
+            highestPath,
+            displayPathName,
+            mainPathId
+        };
     }
 
     get spiritRoot() {
@@ -2561,12 +2726,11 @@ export class Player {
         this.def = Math.max(0, (this.baseStats.def || 0) + (this.bonusStats.def || 0));
         this.spd = Math.max(1, (this.baseStats.spd || 0) + (this.bonusStats.spd || 0));
 
-        // Resolve mainPath defaults if null
-        if (!this.mainPath) {
-            if (this.race === 'YAO') this.mainPath = 'yeu_tu';
-            else if (this.race === 'DEMON') this.mainPath = 'ma_dao';
-            else this.mainPath = 'orthodox';
-        }
+        // Calculate Dao Thong points and dynamic main path
+        const dtInfo = this.calculateDaoThong();
+        this.mainPath = dtInfo.mainPathId;
+        this.daoThong = dtInfo.displayPathName;
+        this.daoThongPoints = dtInfo.points;
 
         // Apply path-based stat modifiers
         if (this.mainPath === 'ma_dao') {
