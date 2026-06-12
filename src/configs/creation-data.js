@@ -89,8 +89,8 @@ export const CREATION_ROOTS = {
 export const SECONDARY_TALENTS = {
     'comprehension': { id: 'comprehension', name: 'Ngộ Tính', desc: 'Ảnh hưởng tốc độ lĩnh ngộ công pháp và hiệu quả tu luyện.' },
     'luck': { id: 'luck', name: 'Khí Vận', desc: 'Ảnh hưởng tỷ lệ gặp kỳ ngộ hiếm và may mắn trong chiến đấu.' },
-    'daoTam': { id: 'daoTam', name: 'Đạo Tâm', desc: 'Kháng tâm ma, ổn định linh lực khi đột phá.' },
-    'divineSense': { id: 'divineSense', name: 'Thần Thức', desc: 'Khả năng khống chế pháp bảo và thám sai bí cảnh.' },
+    'daoTam': { id: 'daoTam', name: 'Ý Chí', desc: 'Kháng tâm ma, tinh thần cương nghị chống đỡ khi tu luyện và đột phá.' },
+    'divineSense': { id: 'divineSense', name: 'Thần Hồn', desc: 'Sức mạnh linh hồn thiên phú, quyết định phạm vi Thần Thức và khả năng khống chế pháp bảo sau này.' },
     'physique': { id: 'physique', name: 'Căn Cốt', desc: 'Ảnh hưởng HP, thể lực và sức chống chịu nhục thân.' }
 };
 
