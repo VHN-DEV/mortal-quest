@@ -10,7 +10,7 @@ export class SpiritStoneSystem {
     constructor(player, ui) {
         this.player = player;
         this.ui = ui;
-        
+
         // Cấu hình mặc định nếu chưa có
         if (!this.player.spiritStoneSettings) {
             this.player.spiritStoneSettings = {
@@ -84,12 +84,12 @@ export class SpiritStoneSystem {
 
         const grade = SPIRIT_STONE_GRADES[item.grade];
         const attr = SPIRIT_STONE_ATTRIBUTES[item.attribute || 'NORMAL'];
-        const quality = SPIRIT_STONE_QUALITIES[item.quality_tier || 'BINH_THUONG']; 
+        const quality = SPIRIT_STONE_QUALITIES[item.quality_tier || 'BINH_THUONG'];
 
         // Tính toán hiệu quả
         // Cấp càng cao linh lực càng tinh thuần
-        const baseQi = grade.multiplier * 10; 
-        
+        const baseQi = grade.multiplier * 10;
+
         // Bonus thuộc tính: Nếu thuộc tính linh thạch trùng với linh căn của người chơi
         let attrBonus = 1.0;
         if (item.attribute !== 'NORMAL') {
@@ -109,14 +109,14 @@ export class SpiritStoneSystem {
         if (es) {
             const qiType = this.mapAttributeToQiType(item.attribute);
             const result = es.absorbQi(qiType, totalQi, item.quality_tier || 'TINH_THUAN');
-            
+
             if (result.success) {
                 this.player.inventory.removeItem(itemId, count);
                 // Tạo phế thạch (chỉ cấp thấp mới để lại phế thạch, cấp cao hóa hư không)
                 if (['HA', 'TRUNG'].includes(item.grade)) {
                     this.player.inventory.addItem('phe_linh_thach', count);
                 }
-                
+
                 this.ui?.toast(`Hấp thụ ${count} viên ${item.name}, nhận ${Math.floor(result.gain)} linh khí.`, 'success');
                 return { success: true };
             } else {
@@ -140,10 +140,10 @@ export class SpiritStoneSystem {
         const grade = SPIRIT_STONE_GRADES[item.grade];
         // Hồi phục Mana dựa trên phẩm cấp
         const manaGain = grade.multiplier * 5 * count;
-        
+
         this.player.mana = Math.min(this.player.maxMana, this.player.mana + manaGain);
         this.player.inventory.removeItem(itemId, count);
-        
+
         if (['HA', 'TRUNG'].includes(item.grade)) {
             this.player.inventory.addItem('phe_linh_thach', count);
         }
@@ -192,9 +192,7 @@ export class SpiritStoneSystem {
             case 'TRUNG': return 'trung_pham_linh_thach';
             case 'THUONG': return 'thuong_pham_linh_thach';
             case 'CUC': return 'cuc_pham_linh_thach';
-            case 'TIEN': return 'tien_tinh';
-            case 'HON_DON': return 'hon_don_tinh';
-            case 'HONG_MONG': return 'hong_mong_linh_tinh';
+            case 'TIEN': return 'tien_ngoc';
             default: return 'ha_pham_linh_thach';
         }
     }
@@ -205,7 +203,7 @@ export class SpiritStoneSystem {
             'FIRE': 'viem_khi',
             'ICE': 'han_khi',
             'LIGHTNING': 'loi_khi',
-            'WOOD': 'linh_khi', 
+            'WOOD': 'linh_khi',
             'METAL': 'linh_khi', // Placeholder
             'EARTH': 'linh_khi', // Placeholder
             'DEMON': 'ma_khi',

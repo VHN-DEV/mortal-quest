@@ -15,7 +15,7 @@ export class SpiritStoneUI {
         this.elBalance = document.getElementById('spirit-stone-balance');
         this.elHeaderLT = document.getElementById('header-lingshi-container');
         this.btnClose = document.getElementById('close-spirit-stone-btn');
-        
+
         this.chkLockCuc = document.getElementById('ss-lock-cuc');
         this.chkAutoLow = document.getElementById('ss-auto-low');
     }
@@ -41,8 +41,8 @@ export class SpiritStoneUI {
         if (this.chkAutoLow) {
             this.chkAutoLow.onchange = (e) => {
                 if (state.player) {
-                    state.player.spiritStoneSettings.autoUsePriority = e.target.checked 
-                        ? ['HA', 'TRUNG', 'THUONG', 'CUC'] 
+                    state.player.spiritStoneSettings.autoUsePriority = e.target.checked
+                        ? ['HA', 'TRUNG', 'THUONG', 'CUC']
                         : ['THUONG', 'TRUNG', 'HA', 'CUC'];
                     this.render();
                 }
@@ -83,10 +83,36 @@ export class SpiritStoneUI {
 
         // Render detailed per-grade balance in a beautiful way
         const gradeConfig = [
-            { id: 'cuc_pham_linh_thach', label: 'Cực Phẩm', cls: 'text-pink-400 font-bold', icon: '🔴' },
-            { id: 'thuong_pham_linh_thach', label: 'Thượng Phẩm', cls: 'text-cultivation-gold font-bold', icon: '🟡' },
-            { id: 'trung_pham_linh_thach', label: 'Trung Phẩm', cls: 'text-qi-purple font-bold', icon: '🟣' },
-            { id: 'ha_pham_linh_thach', label: 'Hạ Phẩm', cls: 'text-qi-blue font-bold', icon: '⚪' }
+            {
+                id: 'tien_ngoc',
+                label: 'Tiên Ngọc',
+                cls: 'text-red-400 font-bold',
+                icon: '仙'
+            },
+            {
+                id: 'cuc_pham_linh_thach',
+                label: 'Cực Phẩm',
+                cls: 'text-pink-400 font-bold',
+                icon: '極'
+            },
+            {
+                id: 'thuong_pham_linh_thach',
+                label: 'Thượng Phẩm',
+                cls: 'text-yellow-400 font-bold',
+                icon: '上'
+            },
+            {
+                id: 'trung_pham_linh_thach',
+                label: 'Trung Phẩm',
+                cls: 'text-purple-400 font-bold',
+                icon: '中'
+            },
+            {
+                id: 'ha_pham_linh_thach',
+                label: 'Hạ Phẩm',
+                cls: 'text-cyan-300 font-bold',
+                icon: '下'
+            }
         ];
 
         const counts = {};

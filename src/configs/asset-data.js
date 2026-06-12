@@ -134,7 +134,7 @@ export const ASSETS = {
         han_vien: getAssetUrl('portraits/han_vien'),
         lan_anh: getAssetUrl('portraits/lan_anh'),
         minh_nguyet: getAssetUrl('portraits/minh_nguyet'),
-                bach_thanh_anh: getAssetUrl('portraits/bach_thanh_anh'),
+        bach_thanh_anh: getAssetUrl('portraits/bach_thanh_anh'),
 
         // New Special NPCs
         dong_ninh: getAssetUrl('portraits/dong_ninh'),
@@ -302,6 +302,7 @@ export const ASSETS = {
     items: createAssetProxy({
         spirit_stone: getAssetUrl('items/ores/spirit_stone'),
         healing_pill: getAssetUrl('items/pills/healing_pill'),
+        tien_ngoc: getAssetUrl('items/ores/tien_ngoc'),
         cuc_pham_linh_thach: getAssetUrl('items/ores/cuc_pham_linh_thach'),
         ha_pham_linh_thach: getAssetUrl('items/ores/ha_pham_linh_thach'),
         trung_pham_linh_thach: getAssetUrl('items/ores/trung_pham_linh_thach'),

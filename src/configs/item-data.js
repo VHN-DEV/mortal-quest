@@ -1661,6 +1661,22 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_KHOANG, subSubcategory: 'tinh_thach' }
         ]
     },
+    'tien_ngoc': {
+        id: 'tien_ngoc',
+        name: 'Tiên Ngọc',
+        type: ITEM_TYPES.LINH_THACH,
+        grade: 'CUC',
+        attribute: 'NORMAL',
+        image: 'items/ores/tien_ngoc',
+        icon: '🌌',
+        quality: PHAP_BAO_QUALITIES.LINH_BAO,
+        price: 1000000,
+        weight: 0.1,
+        description: 'Cực kỳ hiếm thấy, chứa đựng linh lực hóa lỏng vô tận.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.LINH_KHOANG, subSubcategory: 'tinh_thach' }
+        ]
+    },
     'cuc_pham_linh_thach': {
         id: 'cuc_pham_linh_thach',
         name: 'Cực Phẩm Linh Thạch',

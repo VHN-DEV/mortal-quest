@@ -181,9 +181,7 @@ export const SPIRIT_STONE_GRADES = Object.freeze({
     TRUNG: createQuality('TRUNG', 'Trung Phẩm Linh Thạch', '#a855f7', { shortName: 'Trung', value: 100, multiplier: 100, nextGrade: 'THUONG', cssClass: 'text-qi-purple' }),
     THUONG: createQuality('THUONG', 'Thượng Phẩm Linh Thạch', '#f6ad55', { shortName: 'Thượng', value: 10000, multiplier: 10000, nextGrade: 'CUC', cssClass: 'text-cultivation-gold' }),
     CUC: createQuality('CUC', 'Cực Phẩm Linh Thạch', '#f472b6', { shortName: 'Cực', value: 1000000, multiplier: 1000000, nextGrade: 'TIEN', cssClass: 'text-pink-400' }),
-    TIEN: createQuality('TIEN', 'Tiên Tinh', '#10b981', { shortName: 'Tiên', value: 100000000, multiplier: 100000000, nextGrade: 'HON_DON', cssClass: 'text-emerald-400' }),
-    HON_DON: createQuality('HON_DON', 'Hỗn Độn Tinh', '#6366f1', { shortName: 'Hỗn', value: 10000000000, multiplier: 10000000000, nextGrade: 'HONG_MONG', cssClass: 'text-indigo-400' }),
-    HONG_MONG: createQuality('HONG_MONG', 'Hồng Mông Linh Tinh', '#a855f7', { shortName: 'Hồng', value: 1000000000000, multiplier: 1000000000000, nextGrade: null, cssClass: 'text-purple-500' })
+    TIEN: createQuality('TIEN', 'Tiên Ngọc', '#10b981', { shortName: 'Tiên', value: 100000000, multiplier: 100000000, nextGrade: null, cssClass: 'text-emerald-400' }),
 });
 
 export const SPIRIT_STONE_QUALITIES = Object.freeze({

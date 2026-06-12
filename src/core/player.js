@@ -26,7 +26,7 @@ export class Player {
         this.tuVi = 0;
         this.buffs = []; // Array of { id, type, value, endTime }
         this.pendingEvents = [];
-        
+
         // --- Cấu trúc Linh Thạch mới (Dựa trên vật phẩm) ---
         // this.lingShi sẽ được tính toán động từ Inventory
         this.totalSpent = 0;
@@ -42,7 +42,7 @@ export class Player {
         this.bodyExp = 0;
         this.soulRealmId = 0;
         this.soulExp = 0;
-        
+
         // Multi-Path Advancement
         this.specializedPaths = {
             sword: { realmId: 0, exp: 0, name: 'Kiếm Tu' },
@@ -52,7 +52,7 @@ export class Player {
         };
 
         this.cultivationFocus = 'tuvi'; // 'tuvi', 'body', 'soul', 'sword', etc.
-        
+
         // Base Stats (Stored for UI display "Base (+Bonus)")
         this.baseStats = {
             atk: 10, def: 5, spd: 10, maxHp: 100, maxMana: 50, stamina: 100
@@ -60,34 +60,34 @@ export class Player {
         this.bonusStats = {
             atk: 0, def: 0, spd: 0, maxHp: 0, maxMana: 0, tuViSpeed: 1, bodyExpSpeed: 1, soulExpSpeed: 1
         };
-        
+
         this.maxHp = 100;
         this.hp = 100;
         this.maxMana = 50;
         this.mana = 50;
         this.maxStamina = 100;
         this.stamina = 100;
-        
+
         this.atk = 10;
         this.def = 5;
         this.spd = 10;
-        
+
         this.tuViPerSecond = 0;
         this.bodyExpPerSecond = 0;
         this.soulExpPerSecond = 0;
-        
+
         // Meridian cycles progress for Tu Vi, Luyện Thể, and Thần Thức
         this.meridianCycles = {
             tuvi: { step: 0, count: 0 },
             body: { step: 0, count: 0 },
             soul: { step: 0, count: 0 }
         };
-        
+
         // Equipment slots (Expanded for Artifact System)
         this.equipment = {
             head: null,
             necklace: null,
-            weapon: null,    
+            weapon: null,
             armor: null,
             accessory: null,
             shoes: null,
@@ -100,10 +100,10 @@ export class Player {
             phap_bao_phu_tro: null,  // Phụ trợ pháp bảo
             phap_bao_hon: null      // Hồn đạo pháp bảo
         };
-        
+
         this.inventory = new Inventory(this);
         this.lastUpdate = Date.now();
-        
+
         // Sect info
         this.sectId = null;
         this.sectContribution = 0;
@@ -168,7 +168,7 @@ export class Player {
         this.deviationTime = 0;     // Remaining duration of deviation (Tẩu Hỏa Nhập Ma)
         this.karma = 0; // -1000 to 1000
         this.baseKarma = 0;
-        
+
         // Alchemy System
         this.alchemyLevel = 1;
         this.alchemyExp = 0;
@@ -190,7 +190,7 @@ export class Player {
             { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' }
         ];
         this.mountainSurvival = { oxygen: 100, toxicity: 0 };
-        
+
         // --- Fate System (Nhân Quả - Danh Tiếng - Thiện Ác) ---
         this.fate = {
             reputation: 0,
@@ -201,7 +201,7 @@ export class Player {
             titles: [],
             activeTitleId: null
         };
-        
+
         this.isSecluded = false;
         this.party = [];
 
@@ -216,7 +216,7 @@ export class Player {
         this.puppetLevel = 1;
         this.puppetExp = 0;
         this.knownPuppetRecipes = [];
-        
+
         // Smithing System
         this.smithingLevel = 1;
         this.smithingExp = 0;
@@ -271,9 +271,9 @@ export class Player {
         this.advancedStats = {
             pierce: 0,
             soulPierce: 0,
-            critRate: 0.05, 
-            critDmg: 1.5,   
-            fireDmg: 1.0,   
+            critRate: 0.05,
+            critDmg: 1.5,
+            fireDmg: 1.0,
             waterDmg: 1.0,
             thunderDmg: 1.0,
             woodDmg: 1.0,
@@ -283,7 +283,7 @@ export class Player {
             iceDmg: 1.0,
             poisonDmg: 1.0,
             swordDmg: 1.0,
-            qiAbsorb: 1.0,  
+            qiAbsorb: 1.0,
             lifeSteal: 0,
             soulRepress: 0,
             daoVun: 0,
@@ -449,9 +449,10 @@ export class Player {
             'ha_pham_linh_thach': 1,
             'trung_pham_linh_thach': 100,
             'thuong_pham_linh_thach': 10000,
-            'cuc_pham_linh_thach': 1000000
+            'cuc_pham_linh_thach': 1000000,
+            'tien_ngoc': 100000000,
         };
-        
+
         this.inventory.allItems.forEach(item => {
             if (mappings[item.id]) {
                 total += item.quantity * mappings[item.id];
@@ -471,10 +472,10 @@ export class Player {
         if (amount <= 0) return html ? `<span class="grade-ha">0 Hạ</span>` : '0 Hạ';
 
         const denoms = [
-            { val: 1000000, label: 'Cực',   cls: 'grade-cuc' },
-            { val: 10000,   label: 'Thượng', cls: 'grade-thuong' },
-            { val: 100,     label: 'Trung',  cls: 'grade-trung' },
-            { val: 1,       label: 'Hạ',     cls: 'grade-ha' }
+            { val: 1000000, label: 'Cực', cls: 'grade-cuc' },
+            { val: 10000, label: 'Thượng', cls: 'grade-thuong' },
+            { val: 100, label: 'Trung', cls: 'grade-trung' },
+            { val: 1, label: 'Hạ', cls: 'grade-ha' }
         ];
 
         let remaining = Math.floor(amount);
@@ -505,7 +506,8 @@ export class Player {
             'HA': { id: 'ha_pham_linh_thach', val: 1 },
             'TRUNG': { id: 'trung_pham_linh_thach', val: 100 },
             'THUONG': { id: 'thuong_pham_linh_thach', val: 10000 },
-            'CUC': { id: 'cuc_pham_linh_thach', val: 1000000 }
+            'CUC': { id: 'cuc_pham_linh_thach', val: 1000000 },
+            'TIEN_NGOC': { id: 'tien_ngoc', val: 100000000 }
         };
 
         // Calculate total value of non-Cực Phẩm stones
@@ -519,19 +521,19 @@ export class Player {
 
         for (const gradeId of priority) {
             if (gradeId === 'CUC' && this.spiritStoneSettings?.lockCucPham && amount < 1000000 && nonCucValue >= remaining) continue;
-            
+
             const info = mappings[gradeId];
             const item = this.inventory.allItems.find(i => i.id === info.id);
-            
+
             if (item && item.quantity > 0) {
                 const totalValAvailable = item.quantity * info.val;
                 if (totalValAvailable >= remaining) {
                     const countToUse = Math.ceil(remaining / info.val);
                     const overpaid = (countToUse * info.val) - remaining;
-                    
+
                     this.inventory.removeItem(info.id, countToUse);
                     remaining = 0;
-                    
+
                     if (overpaid > 0) {
                         this.addLingShi(overpaid);
                     }
@@ -554,9 +556,10 @@ export class Player {
 
     addLingShi(amount) {
         if (amount <= 0) return;
-        
+
         let remaining = amount;
         const mappings = [
+            { id: 'tien_ngoc', val: 100000000 },
             { id: 'cuc_pham_linh_thach', val: 1000000 },
             { id: 'thuong_pham_linh_thach', val: 10000 },
             { id: 'trung_pham_linh_thach', val: 100 },
@@ -596,7 +599,7 @@ export class Player {
 
     refineSpiritStone(itemId) {
         if (!this.inventory.hasItem(itemId, 1)) return { success: false, msg: "Không có linh thạch này." };
-        
+
         const item = getItemById(itemId);
         if (!item || item.type !== 'spirit_stone') return { success: false, msg: "Vật phẩm không phải linh thạch." };
 
@@ -604,7 +607,8 @@ export class Player {
             'ha_pham_linh_thach': { gain: 50, msg: "Hấp thu linh khí từ Hạ Phẩm Linh Thạch." },
             'trung_pham_linh_thach': { gain: 5000, msg: "Luyện hóa Trung Phẩm Linh Thạch, linh lực tràn đầy!" },
             'thuong_pham_linh_thach': { gain: 500000, msg: "Thượng Phẩm Linh Thạch tan chảy, tu vi tăng mạnh!" },
-            'cuc_pham_linh_thach': { gain: 50000000, msg: "Cực Phẩm Linh Thạch! Đại đạo chí giản, tu vi tiến triển cực nhanh!" }
+            'cuc_pham_linh_thach': { gain: 50000000, msg: "Cực Phẩm Linh Thạch! Đại đạo chí giản, tu vi tiến triển cực nhanh!" },
+            'tien_ngoc': { gain: 500000000, msg: "Tiên Ngọc!" }
         };
 
         const config = mappings[itemId];
@@ -613,7 +617,7 @@ export class Player {
         this.inventory.removeItem(itemId, 1);
         const gain = config.gain * (this.advancedStats.qiAbsorb || 1.0);
         this.tuVi += gain;
-        
+
         return { success: true, msg: config.msg + ` (Tu vi +${Math.floor(gain).toLocaleString()})`, gain };
     }
 
@@ -656,7 +660,7 @@ export class Player {
                 id = currentWorld.maxRealmLimit;
             }
         }
-        
+
         if (type === 'body') return BODY_REALMS.find(r => r.id === id) || BODY_REALMS[0];
         if (type === 'soul') return SOUL_REALMS.find(r => r.id === id) || SOUL_REALMS[0];
         if (type === 'sword') return SWORD_PATH_REALMS.find(r => r.id === id) || SWORD_PATH_REALMS[0];
@@ -669,7 +673,7 @@ export class Player {
         if (mainPath === 'ma_dao') list = DEMON_REALMS;
         else if (mainPath === 'quy_dao') list = GHOST_REALMS;
         else if (mainPath === 'yeu_tu') list = SPIRIT_BEAST_REALMS;
-        
+
         let found = list.find(r => r.id === id);
         if (!found) {
             const maxRealm = list[list.length - 1];
@@ -695,7 +699,7 @@ export class Player {
         let stabilityMult = 1.0;
         if (this.stability > 90) stabilityMult = 1.2;
         else if (this.stability < 40) stabilityMult = 0.8;
-        
+
         // 3. Independent progression for all three paths
         const focus = this.cultivationFocus || 'tuvi';
 
@@ -749,7 +753,7 @@ export class Player {
         } else if (focus === 'soul') {
             this._updateSoulVienManState(realm, exp, delta);
         }
-        
+
         // 6. Regen
         let regenMult = 1.0;
         if (this.stability < 20) regenMult = 0.2; // Heart Demon suppresses regen
@@ -1235,10 +1239,10 @@ export class Player {
         // Stability decreases if Tu Vi is too far ahead of Body or Soul
         const avgOthers = (this.bodyRealmId + this.soulRealmId) / 2;
         const diff = this.realmId - avgOthers;
-        
+
         let targetStability = 100;
         if (diff > 2) targetStability = 100 - (diff - 2) * 10;
-        
+
         const mainPath = this.mainPath || 'orthodox';
         if (mainPath === 'ma_dao') {
             targetStability -= 15;
@@ -1249,13 +1253,13 @@ export class Player {
         // Smooth transition
         let decayRate = 0.1;
         let recoveryRate = 0.05;
-        
+
         if (this.specializedPaths?.buddhist?.realmId > 0) {
             decayRate *= 0.5;
             recoveryRate *= 2.0;
             targetStability = Math.min(100, targetStability + 10);
         }
-        
+
         if (mainPath === 'ma_dao') {
             decayRate *= 1.5;
         }
@@ -1289,10 +1293,10 @@ export class Player {
 
     updateBuffs(delta) {
         if (!this.buffs || this.buffs.length === 0) return;
-        
+
         const now = Date.now();
         const beforeCount = this.buffs.length;
-        
+
         this.buffs.forEach(b => {
             if (b.duration !== undefined && b.duration !== null && b.duration !== Infinity) {
                 b.duration = Math.max(0, b.duration - delta);
@@ -1307,7 +1311,7 @@ export class Player {
             }
             return b.endTime > now;
         });
-        
+
         if (this.buffs.length !== beforeCount) {
             this.calculateStats();
         }
@@ -1411,9 +1415,9 @@ export class Player {
         if (npc) {
             npc.hp = 0;
             npcSystem.handleKarmaFallout(npc, this);
-            
+
             // Add sin for killing an NPC (can be modified based on morality)
-            this.addKarma(50, 0); 
+            this.addKarma(50, 0);
 
             // Loot NPC
             let lootMsg = '';
@@ -1434,7 +1438,7 @@ export class Player {
             if (npcSystem.addNews) {
                 npcSystem.addNews(`[Sát Trận] ${this.name} đã nhẫn tâm tiêu diệt ${npc.name}, cướp sạch tài sản!`);
             }
-            
+
             this.pendingEvents.push({
                 type: 'npc_killed',
                 msg: `Bạn đã tiêu diệt ${npc.name}. Nhân quả đã được gieo xuống... ${lootMsg ? `\nThu hoạch: ${lootMsg}` : ''}`
@@ -1461,12 +1465,12 @@ export class Player {
 
     cultivate(efficiency = 1.0) {
         const focus = this.cultivationFocus || 'tuvi';
-        
+
         // Require technique to cultivate
-        const hasTech = (focus === 'tuvi' && this.mainTechniqueId) || 
-                        (focus === 'body' && this.mainBodyTechniqueId) || 
-                        (focus === 'soul' && this.mainSoulTechniqueId);
-        
+        const hasTech = (focus === 'tuvi' && this.mainTechniqueId) ||
+            (focus === 'body' && this.mainBodyTechniqueId) ||
+            (focus === 'soul' && this.mainSoulTechniqueId);
+
         if (!hasTech) {
             return { success: false, reason: "Ngươi chưa có công pháp phù hợp để dẫn dắt linh lực!" };
         }
@@ -1481,14 +1485,14 @@ export class Player {
         if (this.stamina >= cost.stamina && this.mana >= cost.mana) {
             this.stamina -= cost.stamina;
             this.mana -= cost.mana;
-            
+
             // Influence of Spiritual Root (1.0 to 3.0x)
             const rootMult = (this.spiritualRoot && this.spiritualRoot.multiplier) ? this.spiritualRoot.multiplier : 1.0;
             const luckBonus = ((this.luck || 50) / 100) * 0.2; // Max 20% bonus from luck
-            
+
             // Random variance (0.9x to 1.1x)
             const variance = 0.9 + Math.random() * 0.2;
-            
+
             const totalMult = rootMult * (1 + luckBonus) * variance * efficiency;
 
             let gain = 0;
@@ -1524,13 +1528,13 @@ export class Player {
             const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, this.race, this.mainPath);
             const maxSteps = subRealms.length > 1 ? subRealms.length : 10;
             cycle.step = (cycle.step + 1) % maxSteps;
-            
+
             let cycleCompleted = false;
             let cycleBonus = 0;
             if (cycle.step === 0) {
                 cycle.count++;
                 cycleCompleted = true;
-                
+
                 // Award cycle completion bonus: equivalent to 10 seconds of passive gains
                 const baseRates = {
                     tuvi: this.tuViPerSecond,
@@ -1539,7 +1543,7 @@ export class Player {
                 };
                 const baseRate = baseRates[focus] || 1;
                 cycleBonus = baseRate * 12 * totalMult;
-                
+
                 if (focus === 'tuvi') {
                     this.tuVi += cycleBonus;
                 } else if (focus === 'body') {
@@ -1552,23 +1556,23 @@ export class Player {
 
             let msg = '';
             if (focus === 'tuvi') {
-                msg = cycleCompleted 
-                    ? `Chu thiên đại tuần hoàn hoàn tất! Lĩnh ngộ đại đạo (+${Math.floor(cycleBonus).toLocaleString()} Exp)` 
+                msg = cycleCompleted
+                    ? `Chu thiên đại tuần hoàn hoàn tất! Lĩnh ngộ đại đạo (+${Math.floor(cycleBonus).toLocaleString()} Exp)`
                     : "Tu luyện thành công.";
             } else if (focus === 'body') {
-                msg = cycleCompleted 
-                    ? `Tôi cốt viên mãn! Tôi Thể Hoàn Tất (+${Math.floor(cycleBonus).toLocaleString()} Exp)` 
+                msg = cycleCompleted
+                    ? `Tôi cốt viên mãn! Tôi Thể Hoàn Tất (+${Math.floor(cycleBonus).toLocaleString()} Exp)`
                     : "Tôi cốt thành công.";
             } else if (focus === 'soul') {
-                msg = cycleCompleted 
-                    ? `Tụ hồn ngưng tụ! Thần Niệm Thông Đạt (+${Math.floor(cycleBonus).toLocaleString()} Exp)` 
+                msg = cycleCompleted
+                    ? `Tụ hồn ngưng tụ! Thần Niệm Thông Đạt (+${Math.floor(cycleBonus).toLocaleString()} Exp)`
                     : "Định thần thành công.";
             }
 
-            return { 
-                success: true, 
-                msg, 
-                gain, 
+            return {
+                success: true,
+                msg,
+                gain,
                 type: focus,
                 cycleCompleted,
                 cycleBonus,
@@ -1581,14 +1585,14 @@ export class Player {
 
     absorbBubble(rawName, type = 'tuvi', sizeMult = 1.0) {
         const focus = type;
-        
+
         // Influence of Spiritual Root (1.0 to 3.0x)
         const rootMult = (this.spiritualRoot && this.spiritualRoot.multiplier) ? this.spiritualRoot.multiplier : 1.0;
         const luckBonus = ((this.luck || 50) / 100) * 0.2; // Max 20% bonus from luck
         const totalMult = rootMult * (1 + luckBonus);
-        
+
         let elementMult = 1.0;
-        
+
         // Different multipliers and logic per focus type
         if (focus === 'tuvi') {
             // Check element match via elements array (more reliable than name string matching)
@@ -1610,7 +1614,7 @@ export class Player {
                 elementMult = 1.3;
             }
         }
-        
+
         // Minimum gain = 2% of current realm requirement scaled by bubble size
         const bubbleRealm = this.getCurrentRealm(focus);
         const minBubbleGain = Math.max(1, Math.floor((bubbleRealm.expRequired || 500) * 0.02 * sizeMult));
@@ -1631,7 +1635,7 @@ export class Player {
             baseExp = Math.max(minBubbleGain, baseSpecRate * 3 * totalMult * elementMult * sizeMult);
             this.specializedPaths[focus].exp += baseExp;
         }
-        
+
         // Increment cultivation steps
         if (!this.meridianCycles) {
             this.meridianCycles = {
@@ -1650,13 +1654,13 @@ export class Player {
         const subRealms = getSubRealmsOfCurrent(currentRealmId, focus, this.race, this.mainPath);
         const maxSteps = subRealms.length > 1 ? subRealms.length : 10;
         cycle.step = (cycle.step + 1) % maxSteps;
-        
+
         let cycleCompleted = false;
         let cycleBonus = 0;
         if (cycle.step === 0) {
             cycle.count++;
             cycleCompleted = true;
-            
+
             // Award cycle completion bonus
             const baseRates = {
                 tuvi: this.tuViPerSecond,
@@ -1665,7 +1669,7 @@ export class Player {
             };
             const baseRate = baseRates[focus] || 1;
             cycleBonus = baseRate * 12 * totalMult * elementMult;
-            
+
             if (focus === 'tuvi') {
                 this.tuVi += cycleBonus;
             } else if (focus === 'body') {
@@ -1675,7 +1679,7 @@ export class Player {
             }
         }
         this.meridianCycles[focus] = cycle;
-        
+
         // Formulate custom lore-friendly success messages
         let msg = '';
         if (focus === 'tuvi') {
@@ -1691,7 +1695,7 @@ export class Player {
                 ? `Định thần ${rawName}! Thần Niệm Thông Đạt (+${Math.floor(cycleBonus).toLocaleString()} Exp)`
                 : `Tụ hợp ${rawName} hồn quang (+${Math.floor(baseExp).toLocaleString()} Exp)`;
         }
-        
+
         return {
             success: true,
             gain: baseExp,
@@ -1760,13 +1764,13 @@ export class Player {
         // 3-tier breakthrough system: 100% / 120% / 150%
         const pct = currentExp / realm.expRequired;
         let tier = null;
-        if (pct >= 1.5)      tier = 'tuyet_dinh'; // Tuyệt Đỉnh
+        if (pct >= 1.5) tier = 'tuyet_dinh'; // Tuyệt Đỉnh
         else if (pct >= 1.2) tier = 'cuc_han';    // Cực Hạn
         else if (pct >= 1.0) tier = 'vien_man';   // Viên Mãn
 
         const tierNames = {
-            vien_man:   '🟡 Viên Mãn (100%)',
-            cuc_han:    '🟠 Cực Hạn (120%)',
+            vien_man: '🟡 Viên Mãn (100%)',
+            cuc_han: '🟠 Cực Hạn (120%)',
             tuyet_dinh: '🔴 Tuyệt Đỉnh (150%)'
         };
 
@@ -1931,13 +1935,17 @@ export class Player {
                 this.def = Math.round(this.def * (1 + bonus));
                 this.maxHp = Math.round(this.maxHp * (1 + bonus));
                 this.hp = this.maxHp;
-                this.pendingEvents.push({ type: 'seclusion_event', eventType: 'insight',
-                    msg: `💎 [NGƯNG TỤ TINH ANH] Đột phá thành công! Pháp lực tinh thuần nâng căn cơ phi thường! (+${((pureRatio * 0.15 + tierBonus) * 100).toFixed(1)}% thuộc tính)` });
+                this.pendingEvents.push({
+                    type: 'seclusion_event', eventType: 'insight',
+                    msg: `💎 [NGƯNG TỤ TINH ANH] Đột phá thành công! Pháp lực tinh thuần nâng căn cơ phi thường! (+${((pureRatio * 0.15 + tierBonus) * 100).toFixed(1)}% thuộc tính)`
+                });
             } else if (tierBonus > 0) {
                 this.maxHp = Math.round(this.maxHp * (1 + tierBonus));
                 this.hp = this.maxHp;
-                this.pendingEvents.push({ type: 'seclusion_event', eventType: 'insight',
-                    msg: `✨ [${tier === 'cuc_han' ? 'CỰC HẠN' : 'TUYỆT ĐỈNH'}] Nền tảng vững chắc giúp cảnh giới mới thăng hoa! (+${(tierBonus * 100).toFixed(0)}% HP)` });
+                this.pendingEvents.push({
+                    type: 'seclusion_event', eventType: 'insight',
+                    msg: `✨ [${tier === 'cuc_han' ? 'CỰC HẠN' : 'TUYỆT ĐỈNH'}] Nền tảng vững chắc giúp cảnh giới mới thăng hoa! (+${(tierBonus * 100).toFixed(0)}% HP)`
+                });
             }
 
             // Reset Tu Vi fields
@@ -1956,8 +1964,10 @@ export class Player {
             this.maxHp = Math.round(this.maxHp * (1 + hpBonus));
             this.hp = this.maxHp;
             if (hpBonus > 0.05) {
-                this.pendingEvents.push({ type: 'seclusion_event', eventType: 'body_breakthrough',
-                    msg: `🔴 [NHỤC THÂN THUẾ BIẾN] Thuế Biến thành công! Nhục thân tái sinh mạnh mẽ hơn! (Max HP +${(hpBonus * 100).toFixed(0)}%)` });
+                this.pendingEvents.push({
+                    type: 'seclusion_event', eventType: 'body_breakthrough',
+                    msg: `🔴 [NHỤC THÂN THUẾ BIẾN] Thuế Biến thành công! Nhục thân tái sinh mạnh mẽ hơn! (Max HP +${(hpBonus * 100).toFixed(0)}%)`
+                });
             }
 
             // Reset Body fields
@@ -1976,8 +1986,10 @@ export class Player {
             const demonReduced = Math.floor(10 + divineBonus * 50);
             this.heartDemon = Math.max(0, this.heartDemon - demonReduced);
             if (divineBonus > 0.05) {
-                this.pendingEvents.push({ type: 'seclusion_event', eventType: 'soul_breakthrough',
-                    msg: `🌌 [THẦN HỒN LỘT XÁC] Thần hồn lột xác thành công! Thần thức đột phá thăng hoa! (Thần Thức +${(divineBonus * 100).toFixed(0)}%, Tâm Ma -${demonReduced})` });
+                this.pendingEvents.push({
+                    type: 'seclusion_event', eventType: 'soul_breakthrough',
+                    msg: `🌌 [THẦN HỒN LỘT XÁC] Thần hồn lột xác thành công! Thần thức đột phá thăng hoa! (Thần Thức +${(divineBonus * 100).toFixed(0)}%, Tâm Ma -${demonReduced})`
+                });
             }
 
             // Reset Soul fields
@@ -2005,7 +2017,7 @@ export class Player {
     getEnvironmentalQiMultiplier() {
         if (typeof state === 'undefined') return 1.0;
         const locId = state.currentLocId || 'thanh_van_tran';
-        
+
         let loc = null;
         for (const world of Object.values(WORLDS)) {
             loc = world.locations.find(l => l.id === locId);
@@ -2031,7 +2043,7 @@ export class Player {
                 });
             }
         }
-        
+
         if (Object.keys(proportions).length === 0) {
             // Default Phàm Nhân or no root (balanced elements)
             proportions = { 'Kim': 0.2, 'Mộc': 0.2, 'Thủy': 0.2, 'Hỏa': 0.2, 'Thổ': 0.2 };
@@ -2071,11 +2083,11 @@ export class Player {
 
         // Calculate environmental Qi absorption based on local distribution
         let totalAbsorbedQi = 0;
-        
+
         // Sum up Qi absorption for each of player's root elements
         Object.entries(proportions).forEach(([elName, elPct]) => {
             let pct = elementQi[elName] || 0;
-            
+
             // If it's a mutated element and the direct element is low, try absorbing from base elements at reduced efficiency
             if (mutatedBases[elName]) {
                 let basePctSum = 0;
@@ -2092,18 +2104,18 @@ export class Player {
 
             // Get elemental Qi from composition grid
             let elQi = areaConcentration * (pct / 20);
-            
+
             // Baseline very thin Qi if not present in the location at all
             if (pct === 0) {
                 elQi = 0.5;
             }
-            
+
             totalAbsorbedQi += elQi * elPct;
         });
 
         // Normalize the multiplier: standard starter town has Qi = 10 -> mult = 1.0
         const mult = totalAbsorbedQi / 10;
-        
+
         // Keep within safe minimum bound so it never completely freezes
         return Math.max(0.02, mult);
     }
@@ -2139,7 +2151,7 @@ export class Player {
         this.bonusStats = {
             atk: 0, def: 0, spd: 0, maxHp: 0, maxMana: 0,
             tuViSpeed: 1, bodyExpSpeed: 1, soulExpSpeed: 1,
-            maxAge: 0 
+            maxAge: 0
         };
 
         if (this.permanentStats) {
@@ -2150,7 +2162,7 @@ export class Player {
             if (this.permanentStats.spd) this.bonusStats.spd += this.permanentStats.spd;
             if (this.permanentStats.tuViSpeed) this.bonusStats.tuViSpeed += this.permanentStats.tuViSpeed;
         }
-        
+
         this.advancedStats = {
             pierce: 0, soulPierce: 0,
             weaknessStrikeChance: 0.05, fatalStrikeChance: 0.02, critDmg: 1.5,
@@ -2171,7 +2183,7 @@ export class Player {
 
         // 1. Calculate BASE STATS (from Realms)
         const realmMult = realmLevel > 0 ? Math.pow(1.8, realmLevel - 1) : 1.0;
-        
+
         const raceInfo = RACE_DATA[this.race || 'HUMAN'] || RACE_DATA.HUMAN;
         const raceMults = raceInfo.statMult;
 
@@ -2281,7 +2293,7 @@ export class Player {
                     }
                 });
             }
-            
+
             // Apply Mutated Bonus
             if (this.spiritualRoot.mutatedElement) {
                 const mutData = SPECIAL_ELEMENTS[this.spiritualRoot.mutatedElement];
@@ -2412,7 +2424,7 @@ export class Player {
             // For life-bound items, they are always recognized. For others, check recognizedItems list.
             const isLifeBound = item.isLifeBound === true;
             const isRecognized = isLifeBound || (this.recognizedItems && this.recognizedItems.includes(itemId)) || item.isRecognized !== false;
-            
+
             // Check dynamic stats requirements
             const reqCheck = this.checkItemRequirements(item);
             let mult = (isRecognized ? 1.0 : 0.3) * reqCheck.penaltyMultiplier; // 70% penalty if not recognized, scaled by requirements met ratio
@@ -2535,10 +2547,10 @@ export class Player {
             const mode = puppet.metadata.mode || 'COMBAT';
             if (mode === 'COMBAT' || mode === 'GUARD') {
                 const ps = puppet.metadata.stats || {};
-                this.bonusStats.maxHp += Math.floor((ps.hp  || 0) * 0.15);
-                this.bonusStats.atk   += Math.floor((ps.atk || 0) * 0.15);
-                this.bonusStats.def   += Math.floor((ps.def || 0) * 0.15);
-                this.bonusStats.spd   += Math.floor((ps.spd || 0) * 0.05);
+                this.bonusStats.maxHp += Math.floor((ps.hp || 0) * 0.15);
+                this.bonusStats.atk += Math.floor((ps.atk || 0) * 0.15);
+                this.bonusStats.def += Math.floor((ps.def || 0) * 0.15);
+                this.bonusStats.spd += Math.floor((ps.spd || 0) * 0.05);
             }
         });
 
@@ -2682,20 +2694,20 @@ export class Player {
             // Đạo lữ (Song Tu): Tăng 20% tốc độ tu luyện
             if (social.bonds.daoLu) {
                 this.tuViPerSecond *= 1.2;
-                
+
                 // Thêm buff đặc biệt nếu ở cùng vị trí (Check trong update hoặc calculateStats)
                 const daoLu = state.systems.npc.npcs.find(n => n.id === social.bonds.daoLu);
                 if (daoLu && daoLu.location === this.currentLocId) {
                     this.tuViPerSecond *= 1.1; // Thêm 10% khi ở gần
                 }
             }
-            
+
             // Sư đồ: Áp dụng trực tiếp vào tuViPerSecond (đã finalized ở trên)
             if (social.bonds.mentor) {
                 this.tuViPerSecond *= 1.05;
             }
         }
-        
+
         // Add Energy (Qi) System Bonuses
         const energySystemRef = state?.systems?.energy;
         if (energySystemRef && typeof energySystemRef.getStatBonuses === 'function') {
@@ -2706,19 +2718,19 @@ export class Player {
             this.maxMana += energyBonuses.mana || 0;
             this.spd += energyBonuses.spd || 0;
         }
-        
+
         // Apply Environmental Qi Multiplier to Cultivation Speed
         this.tuViPerSecond *= this.getEnvironmentalQiMultiplier();
-        
+
         // Apply Pill Toxicity penalty (Up to 35% cultivation speed reduction at 100 toxicity)
         if (this.danPoison > 0) {
             const toxicitySpeedPenalty = Math.max(0.3, 1 - (this.danPoison || 0) * 0.005);
             this.tuViPerSecond *= toxicitySpeedPenalty;
         }
-        
+
         // --- 7 CULTIVATION PATHS (CLASSES) SYSTEM ---
         this.cultivationPath = null;
-        
+
         // Kiếm Tu (Sword Cultivator)
         if (this.mainTechniqueId === 'thanh_nguyen_kiem_quyet') {
             this.cultivationPath = 'Kiếm Tu';
@@ -2755,14 +2767,14 @@ export class Player {
             this.advancedStats.dodge += 0.15;
             this.def = Math.floor(this.def * 1.2);
         }
-        
+
         // Thể Tu (Body Cultivator) - Secondary or primary based on main body technique
         if (this.mainBodyTechniqueId && ['cuu_chuyen_kim_than', 'minh_vuong_quyet', 'man_nguu_kinh'].includes(this.mainBodyTechniqueId)) {
             if (!this.cultivationPath) this.cultivationPath = 'Thể Tu';
             this.maxHp = Math.floor(this.maxHp * 1.3);
             this.advancedStats.damageReduction = (this.advancedStats.damageReduction || 0) + 0.20;
         }
-        
+
         // Hồn Tu (Soul Cultivator) - Secondary or primary based on main soul technique
         if (this.mainSoulTechniqueId && ['dai_dien_quyet', 'u_minh_huy_ngan', 'duong_than_quyet'].includes(this.mainSoulTechniqueId)) {
             if (!this.cultivationPath) this.cultivationPath = 'Hồn Tu';
@@ -2778,7 +2790,7 @@ export class Player {
                 this.def = Math.floor(this.def * 1.15);
             }
         }
-        
+
         // --- DEVIATION (TẨU HỎA NHẬP MA) DEBUFF ---
         if (this.deviationTime > 0) {
             this.atk = Math.max(1, Math.floor(this.atk * 0.5));
@@ -2789,10 +2801,10 @@ export class Player {
         // 5. Finalize Secondary Stats
         const baseLifespan = raceInfo.baseLifespan || 100;
         const raceFactor = baseLifespan / 100;
-        
+
         let realmAgeBonus = 0;
         const rId = this.realmId;
-        
+
         if (rId === 0) {
             realmAgeBonus = 0;
         } else if (rId >= 1 && rId <= 13) {
@@ -2814,7 +2826,7 @@ export class Player {
         } else {
             realmAgeBonus = 99999900;
         }
-        
+
         this.maxAge = Math.floor(baseLifespan + realmAgeBonus * raceFactor + this.bonusStats.maxAge + (this.permanentLifespanBonus || 0));
 
         // --- PHÀM NHÂN TU TIÊN STAT BONUSES ---
@@ -2948,7 +2960,7 @@ export class Player {
         // Use stage-specific bonuses if defined
         const masteryBonus = techData.masteryBonuses ? techData.masteryBonuses[masteryLevel] : null;
         const masteryMult = MASTERY_LEVELS.find(m => m.id === masteryLevel)?.multiplier || 1.0;
-        
+
         // Attribute matching logic
         let attributeMult = 1.0;
         if (this.spiritualRoot) {
@@ -2966,7 +2978,7 @@ export class Player {
             } else if (techData.element) {
                 // Legacy element match (50% bonus if technique matches spiritual root element)
                 const rootId = this.spiritualRoot.id || '';
-                if (rootId === 'thien_linh_can' || 
+                if (rootId === 'thien_linh_can' ||
                     (this.spiritualRoot.elements && this.spiritualRoot.elements.includes(techData.element))) {
                     attributeMult = 1.5;
                 }
@@ -2994,7 +3006,7 @@ export class Player {
             const baseTvps = masteryBonus?.tvps || techData.effects?.tvps || 0;
             this.tuViPerSecond += baseTvps * finalMult;
         }
-        
+
         // Apply stat bonuses from technique
         if (techData.stats) {
             if (techData.stats.atk) this.bonusStats.atk += techData.stats.atk * finalMult;
@@ -3209,16 +3221,16 @@ export class Player {
         // 3. Check special owned professions/tools
         if (this.currentCauldron === itemId) return true;
         if (this.ownedCauldrons && this.ownedCauldrons.includes(itemId)) return true;
-        
+
         if (this.currentTalismanPen === itemId) return true;
         if (this.ownedTalismanPens && this.ownedTalismanPens.includes(itemId)) return true;
-        
+
         if (this.smithingTool === itemId) return true;
         if (this.ownedSmithingTools && this.ownedSmithingTools.includes(itemId)) return true;
-        
+
         if (this.currentFlame === itemId) return true;
         if (this.ownedFlames && this.ownedFlames.includes(itemId)) return true;
-        
+
         return false;
     }
 
@@ -3229,22 +3241,22 @@ export class Player {
     recognizeArtifact(slot) {
         const itemId = this.equipment[slot];
         if (!itemId) return { success: false, msg: "Không có pháp bảo ở ô này!" };
-        
+
         // This is tricky because we don't store individual item instances with state in the equipment object yet.
         // We'll need a way to track if the *equipped* item is recognized.
         // For now, let's assume if it's in equipment, we can "recognize" it.
         // In a real system, we'd need to update the item metadata in inventory OR a separate equipment state.
-        
+
         if (this.hp < this.maxHp * 0.5) return { success: false, msg: "Trạng thái suy kiệt, không thể hiến tế tinh huyết!" };
-        
+
         this.hp -= this.maxHp * 0.3; // Cost 30% HP
         this.mana = 0; // Drain all mana
-        
+
         // Mark as recognized - we'll need to store this in a persistent way.
         // For this demo, let's add a list of recognized items to player.
         if (!this.recognizedItems) this.recognizedItems = [];
         if (!this.recognizedItems.includes(itemId)) this.recognizedItems.push(itemId);
-        
+
         this.calculateStats();
         return { success: true, msg: "Nhận chủ thành công! Cảm nhận được sự liên kết tâm linh với pháp bảo." };
     }
@@ -3252,10 +3264,10 @@ export class Player {
     repairArtifact(slot) {
         const itemId = this.equipment[slot];
         if (!itemId) return { success: false, msg: "Không có pháp bảo ở ô này!" };
-        
+
         const cost = 500; // Fixed cost for now
         if (this.lingShi < cost) return { success: false, msg: "Không đủ Linh Thạch để sửa chữa!" };
-        
+
         this.spendLingShi(cost);
         // Durability logic would go here if we tracked instance state
         return { success: true, msg: "Sửa chữa hoàn tất! Linh tính của pháp bảo đã khôi phục." };
@@ -3297,7 +3309,7 @@ export class Player {
         const masteryLevel = secret?.masteryLevel || 1;
         const secretData = getSecretTechniqueById('dan_dao_chan_giai');
         const bonus = secretData?.masteryBonuses?.[masteryLevel]?.alchemyExpBonus || 1.0;
-        
+
         this.alchemyExp += amount * bonus;
         const nextLevelExp = this.alchemyLevel * 100 * Math.pow(1.5, this.alchemyLevel - 1);
         if (this.alchemyExp >= nextLevelExp) {
@@ -3487,13 +3499,13 @@ export class Player {
                         const amount = effect.stamina <= 1 ? Math.floor(this.maxStamina * effect.stamina) : effect.stamina;
                         this.stamina = Math.min(this.maxStamina, this.stamina + amount);
                     }
-                    
+
                     // Also cure some internal injuries (nội thương)
                     let injuryCured = false;
                     const noiThuongNhe = this.getStatusEffect('noi_thuong_nhe');
                     const noiThuong = this.getStatusEffect('noi_thuong');
                     const trongThuong = this.getStatusEffect('trong_thuong');
-                    
+
                     if (noiThuongNhe) {
                         if (noiThuongNhe.stacks > 1) {
                             noiThuongNhe.stacks--;
@@ -3516,7 +3528,7 @@ export class Player {
                         }
                         injuryCured = true;
                     }
-                    
+
                     success = true;
                     if (injuryCured) {
                         msg = `Sử dụng ${item.name}, khí huyết dồi dào, nội thương của ngươi đã dịu đi đáng kể!`;
@@ -3601,11 +3613,11 @@ export class Player {
     getTechniqueComprehensionInfo(techId) {
         const tech = getTechniqueById(techId) || getSecretTechniqueById(techId) || (this.customTechniques || []).find(t => t.id === techId);
         if (!tech) return { baseTime: 60, difficultyName: 'Phổ Thông', element: 'Neutral', type: 'linh_luc' };
-        
+
         const quality = tech.quality || 'Phàm Giai';
         let baseTime = 60;
         let difficultyName = 'Phổ Thông';
-        
+
         if (tech.comprehendDifficulty) {
             baseTime = tech.comprehendDifficulty.baseTime;
             difficultyName = tech.comprehendDifficulty.difficultyName;
@@ -3621,9 +3633,9 @@ export class Player {
             else if (quality.includes('Đế')) { baseTime = 57600; difficultyName = 'Đế Khó'; }
             else if (quality.includes('Đạo')) { baseTime = 115200; difficultyName = 'Vô Thượng'; }
         }
-        
-        return { 
-            baseTime, 
+
+        return {
+            baseTime,
             difficultyName,
             element: tech.element || 'Neutral',
             type: getTechniqueTypeSlug(tech.type || 'linh_luc')
@@ -3631,10 +3643,10 @@ export class Player {
     }
 
     startComprehendingTechnique(techId, isSecret = false) {
-        const learned = isSecret 
+        const learned = isSecret
             ? this.learnedSecretTechniques.some(t => t.id === techId)
             : this.learnedTechniques.some(t => t.id === techId);
-        
+
         if (learned) {
             return { success: false, msg: `Ngươi đã lĩnh ngộ ${isSecret ? 'bí thuật' : 'công pháp'} này từ trước rồi!` };
         }
@@ -3644,10 +3656,10 @@ export class Player {
             return { success: false, msg: `Ngươi đang trong quá trình lĩnh ngộ ${isSecret ? 'bí thuật' : 'công pháp'} này rồi!` };
         }
 
-        const techData = isSecret 
-            ? getSecretTechniqueById(techId) 
+        const techData = isSecret
+            ? getSecretTechniqueById(techId)
             : (getTechniqueById(techId) || (this.customTechniques || []).find(t => t.id === techId));
-            
+
         if (!techData) {
             return { success: false, msg: "Không tìm thấy thông tin bí tịch!" };
         }
@@ -3663,9 +3675,9 @@ export class Player {
             isSecret: isSecret
         });
 
-        return { 
-            success: true, 
-            msg: `Bắt đầu tham ngộ « ${techData.name} »! Độ khó: ${info.difficultyName}.` 
+        return {
+            success: true,
+            msg: `Bắt đầu tham ngộ « ${techData.name} »! Độ khó: ${info.difficultyName}.`
         };
     }
 
@@ -3676,17 +3688,17 @@ export class Player {
         const current = this.comprehendingTechniques[0];
         if (!current) return;
 
-        const techData = current.isSecret 
-            ? getSecretTechniqueById(current.id) 
+        const techData = current.isSecret
+            ? getSecretTechniqueById(current.id)
             : (getTechniqueById(current.id) || (this.customTechniques || []).find(t => t.id === current.id));
-            
+
         if (!techData) {
             this.comprehendingTechniques.shift();
             return;
         }
 
         const tier = this.getComprehensionTier();
-        
+
         // 1. NGỘ TÍNH (Savvy / Comprehension)
         let savvySpeed = 1.0;
         if (tier.id === 'dan_don') savvySpeed = 0.5;
@@ -3702,7 +3714,7 @@ export class Player {
         let rootMult = 1.0;
         let rootBonusText = '';
         const techElement = techData.element || 'Neutral';
-        
+
         if (this.spiritualRoot) {
             if (techElement === 'Neutral') {
                 if (this.spiritualRoot.id === 'thien_linh_can' || this.spiritualRoot.id === 'ngu_hanh_linh_can') {
@@ -3718,7 +3730,7 @@ export class Player {
                         elPct = 1.0 / this.spiritualRoot.elements.length;
                     }
                 }
-                
+
                 if (elPct > 0) {
                     if (this.spiritualRoot.id === 'thien_linh_can') {
                         rootMult = 2.5;
@@ -3742,12 +3754,12 @@ export class Player {
 
         // 3. THẦN HỒN / THẦN THỨC (Soul / Divine Sense)
         const soulMod = 1.0 + (this.divineSense || 0) / 200; // e.g. 100 points = +50% speed
-        
+
         // 4. THỂ CHẤT (Physique) for Luyện Thể techniques
         let physiqueMult = 1.0;
         let physiqueBonusText = '';
         const isBodyRefining = getTechniqueTypeSlug(techData.type) === 'luyen_the';
-        
+
         if (isBodyRefining && this.physique && this.physique.id) {
             const premiumPhysiques = ['hoang_co_thanh_the', 'kim_cuong_bao_the', 'van_menh_hu_vo', 'thon_thien_the', 'tu_la_huyet_the', 'chan_long_the', 'dau_chien_thanh_the', 'hon_don_the', 'tien_thien_thanh_the_dao_thai', 'vinh_hang_tien_the'];
             const elementPhysiquesMap = {
@@ -3756,7 +3768,7 @@ export class Player {
                 'thuy_linh_the': 'Thủy',
                 'thai_duong_thanh_the': 'Hỏa'
             };
-            
+
             if (premiumPhysiques.includes(this.physique.id)) {
                 physiqueMult = 2.5;
                 physiqueBonusText = 'Thánh Thể/Cực Đạo Thể Luyện Thể (+150%)';
@@ -3798,7 +3810,7 @@ export class Player {
 
         // --- Calculate Combined Speed Multiplier ---
         let speedMult = savvySpeed * rootMult * soulMod * physiqueMult * meridianMult * bloodlineMult;
-        
+
         // Safety cap: minimum 0.05x speed
         speedMult = Math.max(0.05, speedMult);
 
@@ -3819,7 +3831,7 @@ export class Player {
 
         // --- BACKLASH CHECKS ---
         const quality = techData.quality || 'Phàm Giai';
-        
+
         // Minimum divine sense requirements
         let minDivineSense = 0;
         if (quality.includes('Huyền')) minDivineSense = 30;
@@ -3928,7 +3940,7 @@ export class Player {
             let hiddenSkillMsg = '';
             // Base chance 25% for Thiên Tài, 80% for Yêu Nghiệt, scaled by Luck
             const hiddenRewardChance = (tier.id === 'yeu_nghiet' ? 0.8 : (tier.id === 'thien_tai' ? 0.25 : 0.05)) * (1 + (this.luck || 50) / 150);
-            
+
             if (Math.random() < hiddenRewardChance) {
                 const tpReward = Math.floor(Math.random() * 16) + 15; // 15 to 30 Technique Points
                 this.techniquePoints = (this.techniquePoints || 0) + tpReward;
@@ -3946,7 +3958,7 @@ export class Player {
     learnTechnique(techId, qualityId = 'BINH_THUONG') {
         const existing = this.learnedTechniques.find(t => t.id === techId);
         if (existing) return false;
-        
+
         const techData = getTechniqueById(techId);
         if (!techData) return false;
 
@@ -3982,7 +3994,7 @@ export class Player {
             mastery: 0,
             masteryLevel: 1
         });
-        
+
         // Auto-equip if slot available
         if (this.equippedSecretTechniqueIds.length < 3) {
             this.equippedSecretTechniqueIds.push(secretId);
@@ -3996,10 +4008,10 @@ export class Player {
         if (!entry) return null;
 
         entry.mastery += amount;
-        
+
         const currentLevel = entry.masteryLevel || 1;
         const nextLevel = MASTERY_LEVELS.find(m => m.id === currentLevel + 1);
-        
+
         if (nextLevel && entry.mastery >= nextLevel.threshold) {
             entry.masteryLevel = nextLevel.id;
             this.calculateStats();
@@ -4023,21 +4035,21 @@ export class Player {
     breakthroughSecretTechnique(id) {
         const secret = this.learnedSecretTechniques.find(s => s.id === id);
         const data = getSecretTechniqueById(id);
-        
+
         if (!secret || !data) return { success: false, msg: "Không tìm thấy bí pháp." };
-        
+
         const maxStage = data.maxStage || 1;
         if (secret.stage >= maxStage) {
             return { success: false, msg: "Bí pháp đã đạt đại viên mãn, không thể đột phá thêm." };
         }
-        
+
         if (secret.masteryLevel < 4) {
             return { success: false, msg: "Cần đạt đến cảnh giới Viên Mãn mới có thể đột phá tầng tiếp theo." };
         }
 
         // Cost calculation (can be adjusted)
         const costTuVi = secret.stage * 5000 * (data.quality === 'Địa' ? 2 : data.quality === 'Thiên' ? 5 : 1);
-        
+
         if (this.tuVi < costTuVi) {
             return { success: false, msg: `Chưa đủ Tu Vi để đột phá. Cần: ${costTuVi.toLocaleString()} Tu Vi.` };
         }
@@ -4048,30 +4060,30 @@ export class Player {
         secret.masteryLevel = 1; // Reset to Nhập Môn at new layer
 
         this.calculateStats();
-        return { 
-            success: true, 
+        return {
+            success: true,
             msg: `Chúc mừng! Ngươi đã đột phá ${data.name} lên Tầng ${secret.stage}!`,
             stage: secret.stage
         };
     }
 
     // --- Physique Methods ---
-    
+
     awakePhysique() {
         if (!this.physique || this.physique.awakened) return { success: false, msg: "Thể chất đã thức tỉnh hoặc không tồn tại." };
-        
+
         const physData = getPhysiqueById(this.physique.id);
         if (!physData.needAwaken) return { success: false, msg: "Thể chất này không cần thức tỉnh đặc biệt." };
 
         // Requirements could be added here (e.g., item, realm)
         this.physique.awakened = true;
         this.physique.phenomenonActive = true;
-        
+
         this.calculateStats();
-        return { 
-            success: true, 
-            msg: `Thức tỉnh thành công: ${physData.name}!`, 
-            phenomenon: physData.phenomenon 
+        return {
+            success: true,
+            msg: `Thức tỉnh thành công: ${physData.name}!`,
+            phenomenon: physData.phenomenon
         };
     }
 
@@ -4089,7 +4101,7 @@ export class Player {
 
         this.physique.id = nextPhysId;
         this.physique.stage = 'SO_KHAI'; // Reset stage for new physique
-        
+
         this.calculateStats();
         return { success: true, msg: `Thể chất đã tiến hóa thành: ${nextPhysData.name}!` };
     }
@@ -4097,11 +4109,11 @@ export class Player {
     gainPhysiqueExp(amount) {
         if (!this.physique) return;
         this.physique.exp += amount;
-        
+
         // Simple level up logic for stages
         const stageOrder = ['SO_KHAI', 'TIEU_THANH', 'DAI_THANH', 'VIEN_MAN', 'HOAN_MY'];
         const currentIndex = stageOrder.indexOf(this.physique.stage);
-        
+
         const expRequired = 1000 * Math.pow(5, currentIndex);
         if (this.physique.exp >= expRequired && currentIndex < stageOrder.length - 1) {
             this.physique.exp -= expRequired;
@@ -4121,7 +4133,7 @@ export class Player {
         // Fetch technique data
         let techData = null;
         let isSecret = false;
-        
+
         // 1. Check if it's a learned cultivation technique
         const learnedTech = this.learnedTechniques.find(t => t.id === id);
         if (learnedTech) {
@@ -4130,7 +4142,7 @@ export class Player {
                 techData = this.customTechniques.find(t => t.id === id);
             }
         }
-        
+
         // 2. Check if it's a learned secret technique
         if (!techData) {
             const learnedSecret = this.learnedSecretTechniques.find(s => s.id === id);
@@ -4147,15 +4159,15 @@ export class Player {
         if (isSecret) {
             // Secret techniques equip logic (giới hạn 3 bí pháp)
             if (this.equippedSecretTechniqueIds && this.equippedSecretTechniqueIds.includes(id)) {
-                 return { success: false, msg: "Bí pháp này đã được trang bị rồi." };
+                return { success: false, msg: "Bí pháp này đã được trang bị rồi." };
             }
             if (!this.equippedSecretTechniqueIds) this.equippedSecretTechniqueIds = [];
             if (this.equippedSecretTechniqueIds.length >= 3) {
-                 if (method !== 'equip_secret') {
-                     return { requireConfirmation: true, type: 'secret', msg: "Ngươi đã trang bị tối đa 3 bí pháp. Muốn thay thế bí pháp cũ nhất không?" };
-                 } else {
-                     this.equippedSecretTechniqueIds.shift();
-                 }
+                if (method !== 'equip_secret') {
+                    return { requireConfirmation: true, type: 'secret', msg: "Ngươi đã trang bị tối đa 3 bí pháp. Muốn thay thế bí pháp cũ nhất không?" };
+                } else {
+                    this.equippedSecretTechniqueIds.shift();
+                }
             }
             this.equippedSecretTechniqueIds.push(id);
             if (typeof this.calculateStats === 'function') this.calculateStats();
@@ -4199,10 +4211,10 @@ export class Player {
         }
 
         if (currentMainId && !method) {
-            return { 
-                requireConfirmation: true, 
+            return {
+                requireConfirmation: true,
                 type: 'cultivation',
-                msg: `Thay đổi công pháp chủ tu rất nguy hiểm do pháp lực xung đột. Đạo hữu muốn chọn cách thức nào để đổi công pháp?` 
+                msg: `Thay đổi công pháp chủ tu rất nguy hiểm do pháp lực xung đột. Đạo hữu muốn chọn cách thức nào để đổi công pháp?`
             };
         }
 
@@ -4280,7 +4292,7 @@ export class Player {
             return false;
         }
         this.knownWorlds.push(worldId);
-        
+
         // Auto-save the game when discovery state changes
         if (window.game && typeof window.game.saveGame === 'function') {
             window.game.saveGame();
@@ -4303,16 +4315,16 @@ export class Player {
         if (!this.knownWorlds) {
             this.knownWorlds = ['nhan_gioi'];
         }
-        
+
         const alreadyDiscovered = this.discoveredWorlds.includes(worldId);
-        
+
         if (!alreadyDiscovered) {
             this.discoveredWorlds.push(worldId);
         }
         if (!this.knownWorlds.includes(worldId)) {
             this.knownWorlds.push(worldId);
         }
-        
+
         if (!alreadyDiscovered) {
             // Auto-save the game when discovery state changes
             if (window.game && typeof window.game.saveGame === 'function') {
@@ -4350,13 +4362,13 @@ export class Player {
             maxStamina: this.maxStamina,
             lastUpdate: this.lastUpdate || Date.now(),
             playTime: this.playTime || 0,
-            
+
             // Stats
             baseStats: { ...this.baseStats },
             bonusStats: { ...this.bonusStats },
             stats: { ...this.stats },
             advancedStats: { ...this.advancedStats },
-            
+
             // Realms & Exp
             bodyRealmId: this.bodyRealmId,
             bodyExp: this.bodyExp,
@@ -4369,7 +4381,7 @@ export class Player {
                 body: { step: 0, count: 0 },
                 soul: { step: 0, count: 0 }
             })),
-            
+
             // Background & Destiny
             spiritualRoot: this.spiritualRoot,
             spiritRoot: this.spiritRoot ? [...this.spiritRoot] : [],
@@ -4396,13 +4408,13 @@ export class Player {
             fate: JSON.parse(JSON.stringify(this.fate)),
             cheatSystemId: this.cheatSystemId,
             natalTreasure: this.natalTreasure ? JSON.parse(JSON.stringify(this.natalTreasure)) : null,
-            
+
             // Resources
             spiritStoneSettings: { ...this.spiritStoneSettings },
             totalSpent: this.totalSpent,
             vipLevel: this.vipLevel,
             inventory: this.inventory.save(),
-            
+
             // Techniques
             mainTechniqueId: this.mainTechniqueId,
             mainBodyTechniqueId: this.mainBodyTechniqueId,
@@ -4417,7 +4429,7 @@ export class Player {
             techniquePoints: this.techniquePoints,
             customTechniques: [...(this.customTechniques || [])],
             deviationTime: this.deviationTime || 0,
-            
+
             // Professions & Systems
             unlockedProfessions: [...this.unlockedProfessions],
             alchemyLevel: this.alchemyLevel,
@@ -4432,32 +4444,32 @@ export class Player {
             danPoison: this.danPoison,
             pillResistance: { ...this.pillResistance },
             dailyPillStats: { ...this.dailyPillStats },
-            
+
             smithingLevel: this.smithingLevel,
             smithingExp: this.smithingExp,
             smithingTool: this.smithingTool,
             knownSmithingRecipes: [...this.knownSmithingRecipes],
-            
+
             talismanLevel: this.talismanLevel,
             talismanExp: this.talismanExp,
             currentTalismanPen: this.currentTalismanPen,
             knownTalismanRecipes: [...this.knownTalismanRecipes],
-            
+
             formationLevel: this.formationLevel,
             formationExp: this.formationExp,
             activeFormations: [...this.activeFormations],
             formationSlots: this.formationSlots,
             knownFormations: [...this.knownFormations],
-            
+
             puppetLevel: this.puppetLevel,
             puppetExp: this.puppetExp,
             knownPuppetRecipes: [...this.knownPuppetRecipes],
-            
+
             corpseLevel: this.corpseLevel,
             corpseExp: this.corpseExp,
             refinedCorpses: [...this.refinedCorpses],
             knownCorpseRecipes: [...this.knownCorpseRecipes],
-            
+
             beastLevel: this.beastLevel,
             beastExp: this.beastExp,
             insectLevel: this.insectLevel,
@@ -4467,15 +4479,15 @@ export class Player {
             activeBeast: this.activeBeast,
             activeInsect: this.activeInsect,
             bloodContractDebuffUntil: this.bloodContractDebuffUntil,
-            
+
             gardenPlots: JSON.parse(JSON.stringify(this.gardenPlots)),
             mountainSurvival: { ...this.mountainSurvival },
-            
+
             miningState: { ...this.miningState },
             equipment: { ...this.equipment },
             equipmentMetadata: { ...this.equipmentMetadata },
             recognizedItems: [...this.recognizedItems],
-            
+
             // Social & Organization
             sectId: this.sectId,
             sectContribution: this.sectContribution,
@@ -4484,11 +4496,11 @@ export class Player {
             sectTournamentYear: this.sectTournamentYear,
             knownNPCs: { ...this.knownNPCs },
             party: [...this.party],
-            
+
             // Energy & Environment
             qiAccumulated: { ...this.qiAccumulated },
             currentEnvironmentalQi: this.currentEnvironmentalQi ? { ...this.currentEnvironmentalQi } : null,
-            
+
             // Misc
             buffs: [...this.buffs],
             isSecluded: this.isSecluded,
@@ -4509,7 +4521,7 @@ export class Player {
             tanTienKiếpCount: this.tanTienKiếpCount || 0,
             tamSuyState: this.tamSuyState || 'none',
             nextPeriodicTribulationYear: this.nextPeriodicTribulationYear || 0,
-            
+
             // External systems data
             npcData: (typeof state !== 'undefined' && state.systems.npc) ? state.systems.npc.saveData() : null,
             socialData: (typeof state !== 'undefined' && state.systems.social) ? state.systems.social.getData() : null
@@ -4847,7 +4859,7 @@ export class Player {
         this.maxAge = data.maxAge || this.maxAge;
         this.permanentLifespanBonus = data.permanentLifespanBonus || 0;
         this.path = data.path || this.path;
-        
+
         // Vitals
         this.maxHp = data.maxHp || this.maxHp;
         this.hp = data.hp !== undefined ? data.hp : this.maxHp;
@@ -4855,7 +4867,7 @@ export class Player {
         this.mana = data.mana !== undefined ? data.mana : this.maxMana;
         this.maxStamina = data.maxStamina || this.maxStamina;
         this.stamina = data.stamina !== undefined ? data.stamina : this.maxStamina;
-        
+
         this.lastUpdate = data.lastUpdate || Date.now();
         this.playTime = data.playTime || 0;
         this.createdAt = data.createdAt || Date.now();
@@ -4865,7 +4877,7 @@ export class Player {
         if (data.bonusStats) this.bonusStats = { ...this.bonusStats, ...data.bonusStats };
         if (data.stats) this.stats = { ...this.stats, ...data.stats };
         if (data.advancedStats) this.advancedStats = { ...this.advancedStats, ...data.advancedStats };
-        
+
         // Realms
         this.bodyRealmId = data.bodyRealmId || 1;
         this.bodyExp = data.bodyExp || 0;
@@ -4886,7 +4898,7 @@ export class Player {
         this.origin = data.origin || null;
         this.talents = data.talents || [];
         this.destinyRating = data.destinyRating || "Phàm mệnh";
-        
+
         this.baseLuck = data.baseLuck !== undefined ? data.baseLuck : (data.luck || 50);
         this.luck = data.luck || 50;
         this.baseKarma = data.baseKarma !== undefined ? data.baseKarma : (data.karma || 0);
@@ -4911,12 +4923,12 @@ export class Player {
         if (data.spiritStoneSettings) this.spiritStoneSettings = { ...this.spiritStoneSettings, ...data.spiritStoneSettings };
         this.totalSpent = data.totalSpent || 0;
         this.vipLevel = data.vipLevel || 0;
-        
+
 
         if (data.inventory) {
             this.inventory.load(data.inventory);
         }
-        
+
         // Techniques
         this.mainTechniqueId = data.mainTechniqueId || null;
         this.mainBodyTechniqueId = data.mainBodyTechniqueId || null;
@@ -4931,7 +4943,7 @@ export class Player {
         this.techniquePoints = data.techniquePoints || 0;
         this.customTechniques = data.customTechniques || [];
         this.deviationTime = data.deviationTime || 0;
-        
+
         // Professions
         this.unlockedProfessions = Array.isArray(data.unlockedProfessions) ? data.unlockedProfessions : [];
         this.alchemyLevel = data.alchemyLevel || 1;
@@ -4946,32 +4958,32 @@ export class Player {
         this.danPoison = data.danPoison || 0;
         this.pillResistance = data.pillResistance || {};
         this.dailyPillStats = data.dailyPillStats || { day: 0, count: 0 };
-        
+
         this.smithingLevel = data.smithingLevel || 1;
         this.smithingExp = data.smithingExp || 0;
         this.smithingTool = data.smithingTool || null;
         this.knownSmithingRecipes = data.knownSmithingRecipes || [];
-        
+
         this.talismanLevel = data.talismanLevel || 1;
         this.talismanExp = data.talismanExp || 0;
         this.currentTalismanPen = data.currentTalismanPen || null;
         this.knownTalismanRecipes = data.knownTalismanRecipes || [];
-        
+
         this.formationLevel = data.formationLevel || 1;
         this.formationExp = data.formationExp || 0;
         this.activeFormations = data.activeFormations || [];
         this.formationSlots = data.formationSlots || 1;
         this.knownFormations = data.knownFormations || [];
-        
+
         this.puppetLevel = data.puppetLevel || 1;
         this.puppetExp = data.puppetExp || 0;
         this.knownPuppetRecipes = data.knownPuppetRecipes || [];
-        
+
         this.corpseLevel = data.corpseLevel || 1;
         this.corpseExp = data.corpseExp || 0;
         this.refinedCorpses = (data.refinedCorpses || []).map(c => ({
             ...c,
-            uniqueId: c.uniqueId || `corpse_${Date.now()}_${Math.floor(Math.random()*1000)}`,
+            uniqueId: c.uniqueId || `corpse_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
             deployed: c.deployed || false,
             mode: c.mode || 'COMBAT',
             level: c.level || 1,
@@ -4979,7 +4991,7 @@ export class Player {
             nextLevelExp: c.nextLevelExp || 100
         }));
         this.knownCorpseRecipes = data.knownCorpseRecipes || [];
-        
+
         this.beastLevel = data.beastLevel || 1;
         this.beastExp = data.beastExp || 0;
         this.insectLevel = data.insectLevel || 1;
@@ -4989,7 +5001,7 @@ export class Player {
         this.activeBeast = data.activeBeast || null;
         this.activeInsect = data.activeInsect || null;
         this.bloodContractDebuffUntil = data.bloodContractDebuffUntil || 0;
-        
+
         if (data.gardenPlots) {
             this.gardenPlots = data.gardenPlots.map(p => {
                 if (p === null) return { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' };
@@ -4997,20 +5009,20 @@ export class Player {
             });
         }
         if (data.mountainSurvival) this.mountainSurvival = { ...this.mountainSurvival, ...data.mountainSurvival };
-        
+
         this.miningState = data.miningState || this.miningState;
         if (data.equipment) {
-            const defaultEquipment = { 
-                head: null, necklace: null, weapon: null, armor: null, accessory: null, 
-                phap_bao_cong: null, phap_bao_thu: null, phap_bao_phi_hanh: null, 
-                phap_bao_khong_gian: null, phap_bao_tran: null, phap_bao_phu_tro: null, 
-                phap_bao_hon: null, shoes: null 
+            const defaultEquipment = {
+                head: null, necklace: null, weapon: null, armor: null, accessory: null,
+                phap_bao_cong: null, phap_bao_thu: null, phap_bao_phi_hanh: null,
+                phap_bao_khong_gian: null, phap_bao_tran: null, phap_bao_phu_tro: null,
+                phap_bao_hon: null, shoes: null
             };
             this.equipment = { ...defaultEquipment, ...data.equipment };
         }
         this.equipmentMetadata = data.equipmentMetadata || {};
         this.recognizedItems = data.recognizedItems || [];
-        
+
         // Organization
         this.sectId = data.sectId || null;
         this.sectContribution = data.sectContribution || 0;
@@ -5019,15 +5031,15 @@ export class Player {
         this.sectTournamentYear = data.sectTournamentYear || -1;
         this.knownNPCs = data.knownNPCs || {};
         this.party = data.party || [];
-        
+
         // Energy & Environment
         this.qiAccumulated = data.qiAccumulated || {};
         this.currentEnvironmentalQi = data.currentEnvironmentalQi || null;
-        
+
         // Misc
         this.buffs = data.buffs || [];
         this.isSecluded = data.isSecluded || false;
-        
+
         this.currentWorldId = data.currentWorldId || 'nhan_gioi';
         this.currentLocId = data.currentLocId || 'thanh_van_tran';
         this.explorationProgress = data.explorationProgress || 0;
@@ -5059,7 +5071,7 @@ export class Player {
             if (itemData && itemData.stats && itemData.stats.slots) {
                 const slots = itemData.stats.slots;
                 const name = itemData.name;
-                
+
                 if (!this.equipmentMetadata.phap_bao_khong_gian) {
                     this.equipmentMetadata.phap_bao_khong_gian = {};
                 }

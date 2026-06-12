@@ -7,7 +7,7 @@ export const MINING_NODE_GRADES = {
     'TRUNG': { id: 'TRUNG', name: 'Trung Cấp Linh Mạch', baseProduction: 50, items: ['trung_pham_linh_thach', 'hoa_linh_thach', 'bang_linh_thach'], danger: 0.3 },
     'CAO': { id: 'CAO', name: 'Cao Cấp Linh Mạch', baseProduction: 200, items: ['thuong_pham_linh_thach', 'loi_linh_thach', 'moc_linh_thach'], danger: 0.5 },
     'CUC': { id: 'CUC', name: 'Cực Phẩm Linh Mạch', baseProduction: 1000, items: ['cuc_pham_linh_thach', 'ma_linh_thach'], danger: 0.8 },
-    'TIEN': { id: 'TIEN', name: 'Tiên Linh Mạch', baseProduction: 5000, items: ['tien_tinh'], danger: 1.0 }
+    'TIEN': { id: 'TIEN', name: 'Tiên Linh Mạch', baseProduction: 5000, items: ['tien_ngoc'], danger: 1.0 }
 };
 
 export const MINING_NODES = [
