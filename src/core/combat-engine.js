@@ -409,6 +409,42 @@ export class CombatEngine {
                 }
             }
 
+            // [FORMATION SETUP/ACTIVE ACTIONS — Trận Pháp Sư]
+            if (this.player.activeFormations && this.player.activeFormations.length > 0) {
+                let isStatsDirty = false;
+                this.player.activeFormations.forEach(active => {
+                    if (active.setupTimeRemaining > 0) {
+                        active.setupTimeRemaining = Math.max(0, active.setupTimeRemaining - 1);
+                        if (active.setupTimeRemaining === 0) {
+                            this.addLog(`⚡ Trận pháp <span class="text-qi-blue font-bold">[${active.name}]</span> đã bố trí hoàn tất và phát huy hiệu lực!`);
+                            isStatsDirty = true;
+                        } else {
+                            this.addLog(`⏳ Trận pháp <span class="text-amber-500 animate-pulse">[${active.name}]</span> đang được bố trí (còn ${Math.ceil(active.setupTimeRemaining)} lượt)...`);
+                        }
+                    } else {
+                        // Periodic combat effects of active formations
+                        const normId = active.id;
+                        if (normId === 'tran_do_sat_kiem_tran' && Math.random() < 0.35) {
+                            const bonusDmg = Math.max(10, Math.floor(this.player.atk * 0.25));
+                            this.enemy.hp = Math.max(0, this.enemy.hp - bonusDmg);
+                            this.addLog(`⚔️ <span class="text-qi-blue font-bold">[${active.name}]</span> kích hoạt kiếm quang oanh kích kẻ địch, gây <span class="text-red-400 font-bold">${bonusDmg}</span> sát thương!`);
+                            this.onUpdate('damage', { target: 'enemy', value: bonusDmg, actionType: 'formation' });
+                        } else if (normId === 'tran_do_tu_linh_tran' && Math.random() < 0.5) {
+                            const mpRegen = Math.floor(this.player.maxMana * 0.05);
+                            this.player.mana = Math.min(this.player.maxMana, this.player.mana + mpRegen);
+                            this.addLog(`🌀 <span class="text-qi-blue font-bold">[${active.name}]</span> tụ tập thiên địa linh khí, hồi phục +${mpRegen} MP!`);
+                        } else if ((normId === 'tran_do_ho_tong_dai_tran' || normId === 'dien_dao_ngu_hanh_tran_ky') && Math.random() < 0.4) {
+                            const shieldVal = Math.floor(this.player.maxHp * 0.08);
+                            this.status.player.shield = (this.status.player.shield || 0) + shieldVal;
+                            this.addLog(`🛡️ <span class="text-qi-blue font-bold">[${active.name}]</span> ngưng tụ ngũ hành linh giáp bảo hộ (+${shieldVal} Giáp)!`);
+                        }
+                    }
+                });
+                if (isStatsDirty && this.player.calculateStats) {
+                    this.player.calculateStats();
+                }
+            }
+
             // [SPIRIT BEAST / STRANGE INSECT SUMMON ACTIONS]
             if (this.player.activeBeast) {
                 const beast = this.player.beasts.find(b => b.uniqueId === this.player.activeBeast);
@@ -1644,23 +1680,66 @@ export class CombatEngine {
         this.endPlayerTurn();
     }
 
-    playerActivateFormation() {
+    async playerActivateFormation() {
         if (!this.player.unlockedProfessions?.includes('formation')) {
             this.addLog("Chưa lĩnh hội Trận Đạo, không thể triển khai trận pháp!");
             return;
         }
-        const cost = 15;
-        if (this.player.mana < cost) {
-            this.addLog("Không đủ linh lực để khởi động trận pháp!");
+
+        const known = this.player.knownFormations || [];
+        if (known.length === 0) {
+            this.addLog("Ngươi chưa lĩnh ngộ bất kỳ trận pháp nào!");
             return;
         }
-        this.player.mana -= cost;
-        const levelBonus = (this.player.formationLevel || 1) * 20;
-        const dmg = Math.max(1, Math.floor(this.player.atk * 1.2 + levelBonus));
-        this.enemy.hp -= dmg;
-        this.addLog(`Bạn bố trí trận pháp áp chế chiến trường, gây ${dmg} sát thương.`);
-        this.onUpdate('damage', { target: 'enemy', value: dmg, crit: false, actionType: 'formation' });
-        this.endPlayerTurn();
+
+        // Generate choices for known formations
+        const options = known.map(fid => {
+            const fSystem = window.game?.systems?.formation;
+            const normId = fSystem ? fSystem._normalizeId(fid) : fid;
+            const fData = fSystem ? fSystem.formations[normId] : null;
+            if (!fData) return null;
+
+            const isActive = this.player.activeFormations.some(af => (fSystem ? fSystem._normalizeId(af.id) : af.id) === normId);
+            return {
+                label: `${fData.name} ${isActive ? '(Đang hoạt động)' : ''} — Tiêu hao ${fData.manaCost} MP, ${fData.staminaCost} Thể lực`,
+                value: normId,
+                icon: 'ph-circles-three'
+            };
+        }).filter(o => o !== null);
+
+        if (options.length === 0) {
+            this.addLog("Ngươi chưa lĩnh ngộ bất kỳ trận pháp nào!");
+            return;
+        }
+
+        const chosenId = await window.game.state.ui.promptOptions(
+            '☯️ TRIỂN KHAI TRẬN PHÁP',
+            options,
+            'Chọn trận pháp muốn bố trí trong trận chiến này (cần 10 lượt để trận pháp chín muồi):'
+        );
+
+        if (!chosenId) return;
+
+        const fSystem = window.game?.systems?.formation;
+        if (!fSystem) return;
+
+        const res = fSystem.activateFormation(chosenId);
+        if (res.success) {
+            this.addLog(`☯️ <span class="text-qi-blue font-bold">BẮT ĐẦU BỐ TRÍ:</span> ${res.msg}`);
+            this.endPlayerTurn();
+        } else {
+            this.addLog(`⚠️ <span class="text-red-500">${res.msg}</span>`);
+            if (res.msg.includes('phản phệ')) {
+                const damage = parseInt(res.msg.match(/\d+/)?.[0] || '100');
+                this.onUpdate('damage', { target: 'player', value: damage, crit: true, actionType: 'backlash' });
+                if (this.player.hp <= 0) {
+                    this.player.hp = 0;
+                    this.lose();
+                    return;
+                }
+                this.endPlayerTurn();
+            }
+        }
     }
 
     playerSummonPuppet() {

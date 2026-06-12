@@ -70,6 +70,12 @@ export class TimeSystem {
             mSystem.processTimeEvents(minutes);
         }
 
+        // Update Formation system
+        const fSystem = state.systems.formation;
+        if (fSystem) {
+            fSystem.update(minutes);
+        }
+
         // Age the player (simplified: 1 game year = some age increment)
         // Let's say 1 game year = 1 year of life
         const yearsPassed = this.getYear() - oldYear;

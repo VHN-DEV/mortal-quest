@@ -919,10 +919,13 @@ export class CraftingController {
             state.player.activeFormations.forEach(af => {
                 const el = document.createElement('div');
                 el.className = 'p-4 border border-qi-purple/30 rounded-2xl bg-qi-purple/5 mb-4 flex justify-between items-center';
+                const statusText = af.setupTimeRemaining > 0 
+                    ? `<span class="text-amber-500 animate-pulse">Đang bố trí (${Math.ceil(af.setupTimeRemaining)} phút)...</span>` 
+                    : '<span class="text-qi-purple font-bold">Đang kích hoạt...</span>';
                 el.innerHTML = `
                     <div>
                         <h4 class="font-bold text-qi-purple">${af.name}</h4>
-                        <p class="text-[9px] text-gray-500 mt-1">Đang kích hoạt...</p>
+                        <p class="text-[9px] mt-1">${statusText}</p>
                     </div>
                     <button class="px-4 py-2 bg-red-500/10 text-red-500 text-[10px] rounded-xl border border-red-500/20" onclick="window.game.deactivateFormation('${af.id}')">THU HỒI</button>
                 `;
