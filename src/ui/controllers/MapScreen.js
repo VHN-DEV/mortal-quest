@@ -467,7 +467,7 @@ export class MapScreen {
                     const currentLoc = getLocationById(state.currentWorldId, state.currentLocId);
                     const isAlreadyThere = currentLoc && currentLoc.regionId === 'loan_tinh_hai';
                     if (!isAlreadyThere) {
-                        const atTeleport = state.currentLocId === 'thuong_co_truyen_tong_tran';
+                        const atTeleport = state.currentLocId === 'thuong_co_truyen_tong_tran_thien_nam' || state.currentLocId === 'thuong_co_truyen_tong_tran_loan_tinh_hai';
                         const hasTalisman = state.player.inventory && (
                             state.player.inventory.hasItem('pha_khong_phu') ||
                             state.player.inventory.hasItem('thuan_di_phu') ||

@@ -348,8 +348,10 @@
                         <p class="text-[10px] text-gray-400 leading-relaxed">
                             Việc di chuyển giữa các đại lục yêu cầu cảnh giới tối thiểu. Đối với những vùng biển rộng lớn ngoài khơi xa:
                         </p>
-                        <div class="p-3 bg-red-500/5 rounded-xl border border-red-500/10 text-[9px] text-gray-500 space-y-1.5 leading-relaxed">
-                            <div><span class="text-white font-bold">🌊 Vượt Biên Loạn Tinh Hải:</span> Đạo hữu phải ở tại <span class="text-white font-semibold">Thượng Cổ Truyền Tống Trận</span>, hoặc sở hữu <span class="text-white font-semibold">Phi Chu</span> (Ngu Phong Phi Chu, Thanh Phong Linh Chu), hoặc có mang theo <span class="text-white font-semibold">Truyền Tống Phù</span> (Phá Không Phù, Thuấn Di Phù) trong rương hành lý để vượt biển.</div>
+                        <div class="p-3 bg-red-500/5 rounded-xl border border-red-500/10 text-[9px] text-gray-500 space-y-2 leading-relaxed">
+                            <div><span class="text-white font-bold">🌊 Vượt Biên Loạn Tinh Hải:</span> Đạo hữu có thể sử dụng <span class="text-white font-semibold">Thượng Cổ Truyền Tống Trận</span> để đi lại giữa Việt Quốc (Thiên Nam) và Loạn Tinh Hải (Ngoại Hải). Yêu cầu sở hữu <span class="text-cultivation-gold font-bold">Thượng Cổ Truyền Tống Lệnh</span> để chống áp lực không gian dữ dội và tiêu hao <span class="text-white font-semibold">100 Linh Thạch</span> làm phí kích hoạt linh trận.</div>
+                            <div><span class="text-white font-bold">📜 Dịch Chuyển Linh Phù:</span> Sử dụng <span class="text-white font-semibold">Thuấn Di Phù</span> để dịch chuyển ngẫu nhiên đến một địa điểm đã mở khóa trong vùng, hoặc sử dụng <span class="text-white font-semibold">Đại Dịch Chuyển Phù</span> để chọn tọa độ đích bất kỳ trong cùng một giới diện.</div>
+                            <div><span class="text-white font-bold">🚢 Phi Chu Vượt Biển:</span> Sở hữu Phi Chu (<span class="text-white font-semibold">Ngu Phong Phi Chu</span> hoặc <span class="text-white font-semibold">Thanh Phong Linh Chu</span>) cũng cho phép vượt biển an toàn.</div>
                         </div>
                     </div>
 
@@ -409,10 +411,14 @@
 
                 <!-- Tab 5: Đại Giới Khung -->
                 <div id="tab-world" class="guide-tab-pane hidden space-y-4 animate-fade-in">
-                    <p class="text-[10px] text-gray-400 leading-relaxed text-center italic">
-                        "Tam giới mênh mông, chư thiên vô tận. Sơ đồ cây phân cấp dưới đây phản ánh toàn bộ kết cấu giới
-                        diện đại lục hiện hữu trong trò chơi."
-                    </p>
+                    <div class="flex justify-between items-center border border-white/5 bg-white/5 p-3 rounded-2xl">
+                        <p class="text-[10px] text-gray-400 leading-relaxed italic pr-2">
+                            "Tam giới mênh mông, chư thiên vô tận. Sơ đồ cây phân cấp dưới đây phản ánh toàn bộ kết cấu giới diện đại lục hiện hữu trong trò chơi."
+                        </p>
+                        <button id="btn-download-world-tree" class="px-3 py-1.5 bg-cultivation-gold/15 hover:bg-cultivation-gold/30 border border-cultivation-gold/40 text-cultivation-gold rounded-xl text-[9px] font-ancient flex items-center space-x-1 shrink-0 transition-all">
+                            <i class="ph ph-download-simple text-xs"></i><span>TẢI SƠ ĐỒ</span>
+                        </button>
+                    </div>
                     <div id="guide-world-tree"
                         class="p-4 bg-black/40 rounded-2xl border border-white/5 space-y-3 text-[11px] max-h-[300px] overflow-y-auto custom-scrollbar">
                         <div class="text-gray-500 text-center py-4">Đang cảm ứng chư thiên giới diện...</div>

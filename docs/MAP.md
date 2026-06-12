@@ -22,6 +22,7 @@ Nhân Giới [Giới Diện]
 │
 │ ├── Việt Quốc [Quốc Gia]
 │ │
+│ │ ├── Thượng Cổ Truyền Tống Trận (Thiên Nam) [Trận Pháp Cổ]
 │ │ ├── Kính Châu [Châu]
 │ │ │
 │ │ │ ├── Thanh Ngưu Trấn [Thị Trấn]
@@ -159,6 +160,7 @@ Nhân Giới [Giới Diện]
 │ │ └── Hư Thiên Điện [Thượng Cổ Bí Cảnh]
 │ │
 │ ├── Ngoại Hải
+│ │ ├── Thượng Cổ Truyền Tống Trận (Loạn Tinh Hải) [Trận Pháp Cổ]
 │ │ ├── Kỳ Uyên Đảo
 │ │ ├── Giao Long Đảo [Yêu Tộc Lãnh Địa]
 │ │ └── Vụ Hải

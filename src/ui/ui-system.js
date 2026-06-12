@@ -1667,7 +1667,7 @@ export class UISystem {
                                 : null;
                             const isAlreadyThere = currentLoc && currentLoc.regionId === 'loan_tinh_hai';
                             if (!isAlreadyThere) {
-                                const atTeleport = state.currentLocId === 'thuong_co_truyen_tong_tran';
+                                const atTeleport = state.currentLocId === 'thuong_co_truyen_tong_tran_thien_nam' || state.currentLocId === 'thuong_co_truyen_tong_tran_loan_tinh_hai';
                                 const hasTalisman = state.player?.inventory && (
                                     state.player.inventory.hasItem('pha_khong_phu') ||
                                     state.player.inventory.hasItem('thuan_di_phu') ||
@@ -1825,6 +1825,86 @@ export class UISystem {
         const defaultBtn = overlay.querySelector('.guide-tab-btn[data-tab="tab-intro"]');
         if (defaultBtn) {
             defaultBtn.click();
+        }
+
+        const btnDownload = overlay.querySelector('#btn-download-world-tree');
+        if (btnDownload) {
+            btnDownload.onclick = () => {
+                this.downloadWorldTree();
+            };
+        }
+    }
+
+    downloadWorldTree() {
+        try {
+            const worlds = getWorlds();
+            let text = `# CẤU TRÚC THẾ GIỚI (WORLD TREE) - MORTAL QUEST\n\n`;
+            
+            for (const [worldId, world] of Object.entries(worlds)) {
+                text += `${world.name} [Giới Diện]\n`;
+                
+                const regions = {};
+                world.locations.forEach(loc => {
+                    const rName = loc.regionName || 'Bí Cảnh Khác';
+                    const sName = loc.subRegionName || 'Phân Khu Khác';
+                    if (!regions[rName]) regions[rName] = {};
+                    if (!regions[rName][sName]) regions[rName][sName] = [];
+                    regions[rName][sName].push(loc);
+                });
+                
+                const rKeys = Object.keys(regions);
+                rKeys.forEach((rName, rIdx) => {
+                    const isLastRegion = rIdx === rKeys.length - 1;
+                    const rPrefix = isLastRegion ? '└── ' : '├── ';
+                    const rChildPrefix = isLastRegion ? '    ' : '│   ';
+                    
+                    text += `${rPrefix}${rName} [Khu Vực]\n`;
+                    
+                    const subregions = regions[rName];
+                    const sKeys = Object.keys(subregions);
+                    sKeys.forEach((sName, sIdx) => {
+                        const hasSubregion = sName !== 'Phân Khu Khác' && sName !== rName;
+                        const isLastSub = sIdx === sKeys.length - 1;
+                        
+                        let currentPrefix = rChildPrefix;
+                        if (hasSubregion) {
+                            const sPrefix = isLastSub ? '└── ' : '├── ';
+                            text += `${rChildPrefix}${sPrefix}${sName} [Phân Khu]\n`;
+                            currentPrefix += isLastSub ? '    ' : '│   ';
+                        }
+                        
+                        const locs = subregions[sName];
+                        locs.forEach((loc, lIdx) => {
+                            const isLastLoc = lIdx === locs.length - 1;
+                            const lPrefix = isLastLoc ? '└── ' : '├── ';
+                            
+                            let realmText = '';
+                            if (loc.minRealm) {
+                                const realmObj = getRealmById(loc.minRealm);
+                                if (realmObj) realmText = ` (Cần: ${realmObj.name})`;
+                            }
+                            
+                            text += `${currentPrefix}${lPrefix}${loc.name}${realmText}\n`;
+                        });
+                    });
+                    
+                    text += `${rChildPrefix}\n`;
+                });
+                
+                text += `\n=========================================================\n\n`;
+            }
+            
+            const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mortal_quest_world_tree.md';
+            a.click();
+            URL.revokeObjectURL(url);
+            this.toast("Đã tải xuống cấu trúc thế giới!", "success");
+        } catch (err) {
+            console.error(err);
+            this.toast("Không thể tải xuống cấu trúc thế giới!", "error");
         }
     }
 
