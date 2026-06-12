@@ -4476,6 +4476,13 @@ export class Game {
         }
     }
 
+    selectCreationDifficulty(difficulty) {
+        if (state.systems.creation) {
+            state.systems.creation.selectDifficulty(difficulty);
+            if (typeof window.renderCreationScreen === 'function') window.renderCreationScreen();
+        }
+    }
+
     selectCreationAvatar(avatar) {
         if (state.systems.creation) {
             state.systems.creation.playerAvatar = avatar;

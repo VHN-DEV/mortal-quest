@@ -9,6 +9,14 @@ export const CREATION_CONFIG = {
     MAX_DISADVANTAGES: 3
 };
 
+export const CREATION_DIFFICULTIES = Object.freeze({
+    'cuc_de': { id: 'cuc_de', name: 'Cực Dễ', points: 1000, desc: 'Thích hợp cho trải nghiệm Thiên Kiêu Chí Tôn tối thượng.' },
+    'de': { id: 'de', name: 'Dễ', points: 850, desc: 'Tài nguyên phong phú, dễ dàng đắp nặn tiên cơ lý tưởng.' },
+    'thuong': { id: 'thuong', name: 'Thường', points: 500, desc: 'Tu tiên cơ bản, cần cân nhắc phân bổ tài nguyên hợp lý.' },
+    'kho': { id: 'kho', name: 'Khó', points: 150, desc: 'Trải nghiệm gốc của Phàm Nhân Tu Tiên, tu hành gian nan.' },
+    'cuc_kho': { id: 'cuc_kho', name: 'Cực Khó', points: 50, desc: 'Nghịch cảnh cầu sinh, chỉ dành cho đại năng khiêu chiến.' }
+});
+
 export const BLOODLINES = Object.freeze(Object.values(CREATION_BLOODLINES_ENUM).reduce((acc, q) => {
     acc[q.id] = { id: q.id, name: q.name, multiplier: q.multiplier };
     return acc;

@@ -93,7 +93,20 @@
                     <span id="creation-points-note" class="text-[8px] text-gray-500">Điểm dùng để tùy chỉnh
                         xuất thân/tài nguyên.</span>
                 </div>
-                <div id="creation-points-value" class="text-xl md:text-2xl font-bold font-mono text-qi-blue">100</div>
+                <div class="flex items-center space-x-3">
+                    <div id="creation-difficulty-wrapper" class="flex flex-col text-right">
+                        <label class="text-[8px] text-gray-500 uppercase tracking-widest">Độ Khó</label>
+                        <select id="creation-difficulty-select"
+                            class="bg-black/60 border border-white/10 rounded-lg p-1 text-[10px] text-qi-blue font-ancient outline-none focus:border-qi-blue/50 cursor-pointer">
+                            <option value="cuc_de">Cực Dễ (1000đ)</option>
+                            <option value="de">Dễ (850đ)</option>
+                            <option value="thuong">Thường (500đ)</option>
+                            <option value="kho">Khó (150đ)</option>
+                            <option value="cuc_kho">Cực Khó (50đ)</option>
+                        </select>
+                    </div>
+                    <div id="creation-points-value" class="text-xl md:text-2xl font-bold font-mono text-qi-blue">100</div>
+                </div>
             </div>
 
 

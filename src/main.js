@@ -1313,6 +1313,18 @@ window.renderCreationScreen = () => {
         elPoints.className = `text-xl md:text-2xl font-bold font-mono ${sys.points < 0 ? 'text-red-500' : 'text-qi-blue'}`;
     }
 
+    const elDifficultySelect = document.getElementById('creation-difficulty-select');
+    const elDifficultyWrapper = document.getElementById('creation-difficulty-wrapper');
+    if (elDifficultyWrapper) {
+        elDifficultyWrapper.classList.toggle('hidden', sys.mode !== 'custom');
+    }
+    if (elDifficultySelect) {
+        elDifficultySelect.value = sys.selectedDifficulty || 'thuong';
+        elDifficultySelect.onchange = (e) => {
+            window.game.selectCreationDifficulty(e.target.value);
+        };
+    }
+
     const elStartingRealmSelect = document.getElementById('creation-starting-realm-select');
     if (elStartingRealmSelect) {
         const availableRealms = HUMAN_REALMS.filter(realm => realm.id <= 64);

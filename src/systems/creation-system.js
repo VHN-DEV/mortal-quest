@@ -1,4 +1,4 @@
-import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS } from '../configs/creation-data.js';
+import { CREATION_CONFIG, CREATION_RACES, CREATION_ROOTS, ROOT_RARITY, SECONDARY_TALENTS, CREATION_PHYSIQUES, CREATION_ORIGINS, CREATION_TRAITS, CREATION_SCENARIOS, ROOT_ELEMENTS, SPECIAL_ELEMENTS, CREATION_ARTIFACTS, CREATION_DIFFICULTIES } from '../configs/creation-data.js';
 import { WORLDS } from '../configs/map-data.js';
 import { Player } from '../core/player.js';
 import { SECTS } from '../configs/sect-data.js';
@@ -25,7 +25,8 @@ export class CreationSystem {
 
     reset() {
         this.mode = 'custom';
-        this.points = CREATION_CONFIG.BASE_POINTS;
+        this.selectedDifficulty = 'thuong';
+        this.points = CREATION_DIFFICULTIES[this.selectedDifficulty].points;
         this.selectedRace = 'HUMAN';
         this.rootTab = 'normal';
         this.selectedRoot = 'ngu_hanh_linh_can';
@@ -487,7 +488,8 @@ export class CreationSystem {
     }
 
     calculatePoints() {
-        let total = CREATION_CONFIG.BASE_POINTS;
+        const basePoints = CREATION_DIFFICULTIES[this.selectedDifficulty]?.points || 500;
+        let total = basePoints;
 
         // Race cost
         total -= CREATION_RACES[this.selectedRace].cost;
@@ -518,6 +520,13 @@ export class CreationSystem {
 
         this.points = total;
         return total;
+    }
+
+    selectDifficulty(difficultyId) {
+        if (CREATION_DIFFICULTIES[difficultyId]) {
+            this.selectedDifficulty = difficultyId;
+            this.calculatePoints();
+        }
     }
 
     getTalentValue(talentId) {
@@ -578,8 +587,10 @@ export class CreationSystem {
     }
 
     rollRandom() {
+        const savedDifficulty = this.selectedDifficulty || 'thuong';
         this.reset();
         this.mode = 'custom';
+        this.selectedDifficulty = savedDifficulty;
 
         this.playerName = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)];
         this.playerGender = Math.random() < 0.5 ? 'male' : 'female';
@@ -603,6 +614,7 @@ export class CreationSystem {
         // Roll Purity
         this.rootPurity = Math.floor(Math.random() * 71) + 30; // 30-100
 
+        const rootKeys = Object.keys(CREATION_ROOTS);
         this.selectedRoot = rootKeys[Math.floor(Math.random() * rootKeys.length)];
         // Dị linh căn is now generated via recipes naturally, so we convert random di_linh_can rolls into a valid pair
         if (this.selectedRoot === 'di_linh_can') {
