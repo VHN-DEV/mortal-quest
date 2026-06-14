@@ -102,4 +102,44 @@ describe('PNTT Divine Sense and Cultivation Concealment', () => {
       expect(npc.getDisplayPhysique()).not.toBe('???');
     });
   });
+
+  describe('Grid Cell Enemy Cache & Concealment Inspection', () => {
+    it('should correctly initialize and reuse the enemy object on the grid cell', () => {
+      const cell = {
+        type: 'guard',
+        status: 'unlocked',
+        resolved: false,
+        enemy: null
+      };
+
+      // Create a dummy enemy and assign to cell
+      const typeData = { name: 'Thần Thú Quỷ Dực', race: 'SPIRIT_BEAST' };
+      const enemy = new Enemy(8, typeData);
+      cell.enemy = enemy;
+      state.player.divineSense = 200;
+
+      expect(cell.enemy).toBe(enemy);
+      expect(cell.enemy.name).toContain('Thần Thú Quỷ Dực');
+      expect(cell.enemy.isRealmConcealed()).toBe(false);
+    });
+
+    it('should handle concealment properly when checking cached cell enemy', () => {
+      const cell = {
+        type: 'npc_event',
+        status: 'unlocked',
+        resolved: false,
+        enemy: null
+      };
+
+      const typeData = { name: 'Kỳ Nhân Ẩn Cư', race: 'HUMAN' };
+      const enemy = new Enemy(15, typeData);
+      enemy.divineSense = 70;
+      enemy.equippedConcealmentId = 'quy_nguyen_thu_tuc_cong';
+      cell.enemy = enemy;
+
+      // Player divine sense is 50, enemy's concealment adds 50 threshold to 70 -> 120 > 50, so concealed
+      expect(cell.enemy.isRealmConcealed()).toBe(true);
+      expect(cell.enemy.getDisplayName()).toBe('Kỳ Nhân Ẩn Cư (Tu Vi: ???)');
+    });
+  });
 });

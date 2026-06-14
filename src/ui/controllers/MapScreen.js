@@ -1911,8 +1911,83 @@ export class MapScreen {
             return;
         }
 
-        // Kiểm tra tính kề cạnh (chỉ đi lên, xuống, trái, phải)
         const distance = Math.abs(playerPos.x - x) + Math.abs(playerPos.y - y);
+
+        // [MỚI] Thăm dò thần thức khi nhấn vào Yêu Thú hoặc Kỳ Nhân đã lộ sương mù (unlocked) và chưa xong (resolved = false)
+        if ((cell.type === 'guard' || cell.type === 'boss' || cell.type === 'npc_event') && !cell.resolved) {
+            if (!cell.enemy) {
+                if (cell.type === 'guard') {
+                    const beastIdx = cell.beastIdx !== undefined ? cell.beastIdx : ((x * 7 + y * 13) % BEAST_IMAGES.length);
+                    const overrideImage = getAssetUrl(BEAST_IMAGES[beastIdx]);
+                    cell.enemy = EnemyGenerator.generate(state.currentLocId, this.viewedWorldId || state.currentWorldId);
+                    cell.enemy.image = overrideImage;
+                } else if (cell.type === 'boss') {
+                    const worldId = this.viewedWorldId || state.currentWorldId;
+                    cell.enemy = EnemyGenerator.generate(state.currentLocId, worldId, true);
+                    cell.enemy.name = `👑 THỦ LĨNH: ` + cell.enemy.name;
+                    cell.enemy.hp = Math.floor(cell.enemy.hp * 1.8);
+                    cell.enemy.maxHp = cell.enemy.hp;
+                    cell.enemy.atk = Math.floor(cell.enemy.atk * 1.3);
+                    const beastIdx = cell.beastIdx !== undefined ? cell.beastIdx : ((x * 7 + y * 13) % BEAST_IMAGES.length);
+                    cell.enemy.image = getAssetUrl(BEAST_IMAGES[beastIdx]);
+                } else if (cell.type === 'npc_event') {
+                    const npcName = cell.npcName || "Cổ nhân di tích";
+                    const npcIdx = cell.npcIdx !== undefined ? cell.npcIdx : ((x * 5 + y * 11) % NPC_IMAGES.length);
+                    const overrideImage = getAssetUrl(NPC_IMAGES[npcIdx]);
+                    const targetRealm = Math.max(1, state.player.realmId + Math.floor(Math.random() * 3) - 1);
+                    cell.enemy = new Enemy(targetRealm, { name: npcName, img: overrideImage, statMult: 1.2, race: 'HUMAN' }, state.currentWorldId);
+                    EnemyGenerator.populateLoot(cell.enemy);
+                    cell.enemy.inventory.push({ id: 'linh_thao_cuc_pham', quantity: 1 + Math.floor(Math.random() * 2) });
+                    if (Math.random() < 0.4) {
+                        cell.enemy.inventory.push({ id: 'hoa_nguyen_dan', quantity: 1 });
+                    }
+                }
+            }
+
+            const enemy = cell.enemy;
+            const isConcealed = enemy.isRealmConcealed();
+            const displayName = enemy.getDisplayName();
+            const realmText = isConcealed ? 'Không thể nhìn thấu (Ẩn nặc)' : enemy.realmName;
+            const raceText = enemy.race === 'HUMAN' ? 'Nhân Tộc' : (enemy.race === 'DEMON' ? 'Ma Tộc' : (enemy.race === 'DRAGON' ? 'Long Tộc' : (enemy.race === 'ZOMBIE' ? 'Thi Tộc' : (enemy.race === 'GHOST' ? 'Quỷ Tộc' : 'Yêu Thú'))));
+
+            let description = ``;
+            if (isConcealed) {
+                description = `Thần thức quét qua phát hiện khí tức dao động bất định.\n\nCảnh giới: ${realmText}\nChủng tộc: ${raceText}\n\n[Cảnh báo]: Đối thủ đang sử dụng công pháp hoặc bảo vật che giấu tu vi. Hãy cẩn trọng đề phòng!`;
+            } else {
+                description = `Thần thức thăm dò rõ ràng thực lực đối phương.\n\nCảnh giới: ${realmText}\nChủng tộc: ${raceText}\nThần thức: ${enemy.divineSense || 50}`;
+            }
+
+            if (distance !== 1 && distance !== 0) {
+                // Thăm dò từ xa
+                await state.ui.promptOptions(
+                    `Thần Thức Thăm Dò: ${displayName}`,
+                    [{ id: 'close', text: 'Thu hồi Thần Thức', icon: 'ph-eye-slash' }],
+                    description + `\n\n(Vị trí này ở xa, hãy di chuyển lại gần để tương tác/chiến đấu)`,
+                    enemy.image
+                );
+                return;
+            } else if (distance === 1) {
+                // Lựa chọn tiến tới nghênh chiến / tương tác
+                const actionText = cell.type === 'npc_event' ? 'Tiến tới & Gặp gỡ' : 'Tiến tới & Nghênh chiến';
+                const actionIcon = cell.type === 'npc_event' ? 'ph-chat-circle-dots' : 'ph-swords';
+
+                const choice = await state.ui.promptOptions(
+                    `Thần Thức Thăm Dò: ${displayName}`,
+                    [
+                        { id: 'engage', text: actionText, icon: actionIcon },
+                        { id: 'close', text: 'Lặng lẽ né tránh', icon: 'ph-wind' }
+                    ],
+                    description + `\n\nĐạo hữu muốn tiến tới để giải quyết sự kiện này chứ?`,
+                    enemy.image
+                );
+
+                if (choice !== 'engage') {
+                    return;
+                }
+            }
+        }
+
+        // Kiểm tra tính kề cạnh để di chuyển bình thường
         if (distance !== 1 && distance !== 0) {
             state.ui.toast('Vị trí này cách quá xa vùng thần thức hiện tại!', 'warning');
             return;
@@ -2216,14 +2291,14 @@ export class MapScreen {
                         } else if (choice === 'rob') {
                             this.updateEventDisplay(`👤 [SÁT CƠ BÙNG PHÁT] Ngươi đột ngột ra tay, phi kiếm biến thành cầu vồng dài đánh lén ${npcName}!`);
                             setTimeout(() => {
-                                const targetRealm = Math.max(1, state.player.realmId + Math.floor(Math.random() * 3) - 1);
-                                const npcEnemy = new Enemy(targetRealm, { name: npcName, img: overrideImage, statMult: 1.2, race: 'HUMAN' }, state.currentWorldId);
-                                EnemyGenerator.populateLoot(npcEnemy);
-
-                                // Guaranteed high quality drops for successful robbing
-                                npcEnemy.inventory.push({ id: 'linh_thao_cuc_pham', quantity: 1 + Math.floor(Math.random() * 2) });
-                                if (Math.random() < 0.4) {
-                                    npcEnemy.inventory.push({ id: 'hoa_nguyen_dan', quantity: 1 });
+                                const npcEnemy = cell.enemy || new Enemy(Math.max(1, state.player.realmId + Math.floor(Math.random() * 3) - 1), { name: npcName, img: overrideImage, statMult: 1.2, race: 'HUMAN' }, state.currentWorldId);
+                                if (!cell.enemy) {
+                                    EnemyGenerator.populateLoot(npcEnemy);
+                                    npcEnemy.inventory.push({ id: 'linh_thao_cuc_pham', quantity: 1 + Math.floor(Math.random() * 2) });
+                                    if (Math.random() < 0.4) {
+                                        npcEnemy.inventory.push({ id: 'hoa_nguyen_dan', quantity: 1 });
+                                    }
+                                    cell.enemy = npcEnemy;
                                 }
 
                                 window.game.startBattle(npcEnemy, null, (win) => {
@@ -2278,15 +2353,16 @@ export class MapScreen {
                     this.updateEventDisplay(`🏛️ [CẤM ĐIỆN BOSS] Trấn thủ Mật cảnh Mộc Nhân Vương / Cổ Thần Thú xuất thế! Sát khí đè nặng linh thức!`);
                     setTimeout(() => {
                         const worldId = this.viewedWorldId || state.currentWorldId;
-                        const bossEnemy = EnemyGenerator.generate(state.currentLocId, worldId, true);
-
-                        bossEnemy.name = `👑 THỦ LĨNH: ` + bossEnemy.name;
-                        bossEnemy.hp = Math.floor(bossEnemy.hp * 1.8);
-                        bossEnemy.maxHp = bossEnemy.hp;
-                        bossEnemy.atk = Math.floor(bossEnemy.atk * 1.3);
-
-                        const beastIdx = cell.beastIdx !== undefined ? cell.beastIdx : ((x * 7 + y * 13) % BEAST_IMAGES.length);
-                        bossEnemy.image = getAssetUrl(BEAST_IMAGES[beastIdx]);
+                        const bossEnemy = cell.enemy || EnemyGenerator.generate(state.currentLocId, worldId, true);
+                        if (!cell.enemy) {
+                            bossEnemy.name = `👑 THỦ LĨNH: ` + bossEnemy.name;
+                            bossEnemy.hp = Math.floor(bossEnemy.hp * 1.8);
+                            bossEnemy.maxHp = bossEnemy.hp;
+                            bossEnemy.atk = Math.floor(bossEnemy.atk * 1.3);
+                            const beastIdx = cell.beastIdx !== undefined ? cell.beastIdx : ((x * 7 + y * 13) % BEAST_IMAGES.length);
+                            bossEnemy.image = getAssetUrl(BEAST_IMAGES[beastIdx]);
+                            cell.enemy = bossEnemy;
+                        }
 
                         window.game.startBattle(bossEnemy, null, async (win) => {
                             if (win) {
@@ -2295,7 +2371,7 @@ export class MapScreen {
                                 this.updateExplorationUI();
                                 this.renderGridMap();
 
-                                const bossTuVi = dangerLvl * 600;
+                                const bossTuVi = bossEnemy.realmId * 600;
                                 state.player.addTuVi(bossTuVi);
 
                                 const rewards = ['dan_kinh_mach', 'dan_linh_nguyen', 'chan_vu_nho_quan_ta', 'chan_vu_nho_quan_huu', 'linh_thao_cuc_pham'];
