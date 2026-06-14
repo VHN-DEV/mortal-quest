@@ -1215,6 +1215,23 @@ export class CombatEngine {
             logMsg = `Ngươi ${verb}, gây <span class="text-white">${finalDamage}</span> sát thương.`;
         }
 
+        let lightningDamage = 0;
+        let lightningLog = '';
+        if (this.player.natalTreasure && this.player.natalTreasure.id === 'thanh_truc_phong_van_kiem') {
+            const ev = this.player.natalTreasure.evolutionState || 'NONE';
+            if (ev === 'KIEM_LINH' || ev === 'TIEN_KHI') {
+                const eRace = this.enemy.race || 'NEUTRAL';
+                if (eRace === 'DEMON' || eRace === 'GHOST') {
+                    lightningDamage = Math.floor(finalDamage * 0.3);
+                    lightningLog = `⚡ <span class="text-yellow-400 font-bold">[Tịch Tà Thần Lôi]</span> khắc chế tà ma bùng phát, oanh kích thêm <span class="text-yellow-300 font-bold">${lightningDamage}</span> sát thương lôi điện!`;
+                }
+            }
+        }
+        if (lightningDamage > 0) {
+            finalDamage += lightningDamage;
+            logMsg += `<br>${lightningLog}`;
+        }
+
         this.enemy.hp -= finalDamage;
         this.addLog(logMsg);
         this.onUpdate('damage', { target: 'enemy', value: finalDamage, crit: isCritReport, actionType: 'attack' });

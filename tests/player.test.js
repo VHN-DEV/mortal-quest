@@ -367,7 +367,7 @@ describe('Player class', () => {
       const player = new Player();
       player.realmId = 18; // Kết Đan
       player.inventory.addItem('ha_pham_linh_thach', 200000);
-      player.inventory.addItem('van_nien_thiet_moc', 1);
+      player.inventory.addItem('kim_loi_truc', 1, { age: 10000, stage: 'Vạn Năm' });
       player.inventory.addItem('tinh_kim', 5);
 
       // Refine
@@ -394,6 +394,93 @@ describe('Player class', () => {
       expect(player.natalTreasure).toBeNull();
       expect(player.hp).toBe(700); // 30% loss
       expect(player.mana).toBe(350); // 30% loss
+    });
+  });
+
+  describe('Thanh Trúc Phong Vân Kiếm Progression Systems', () => {
+    it('should expand sword count successfully with Kim Lôi Trúc and Linh Thạch requirements', () => {
+      const player = new Player();
+      player.realmId = 18; // Kết Đan
+      player.inventory.addItem('ha_pham_linh_thach', 1000000);
+      player.inventory.addItem('kim_loi_truc', 1, { age: 10000, stage: 'Vạn Năm' });
+      player.inventory.addItem('tinh_kim', 5);
+      
+      player.refineNatalTreasure('thanh_truc_phong_van_kiem');
+      expect(player.natalTreasure.swordsCount).toBe(12);
+
+      let res = player.expandThanhTrucSwords();
+      expect(res.success).toBe(false);
+      expect(res.msg).toContain('Vạn Niên Kim Lôi Trúc');
+
+      player.inventory.addItem('kim_loi_truc', 1, { age: 10000, stage: 'Vạn Năm' });
+      res = player.expandThanhTrucSwords();
+      expect(res.success).toBe(true);
+      expect(player.natalTreasure.swordsCount).toBe(24);
+      expect(player.inventory.getItemQuantity('kim_loi_truc')).toBe(0);
+    });
+
+    it('should infuse materials up to cap of 10 and apply appropriate stat bonuses', () => {
+      const player = new Player();
+      player.realmId = 18;
+      player.inventory.addItem('ha_pham_linh_thach', 1000000);
+      player.inventory.addItem('kim_loi_truc', 1, { age: 10000, stage: 'Vạn Năm' });
+      player.inventory.addItem('tinh_kim', 5);
+      player.refineNatalTreasure('thanh_truc_phong_van_kiem');
+
+      player.inventory.addItem('canh_tinh', 12);
+      
+      for (let i = 0; i < 10; i++) {
+        const res = player.infuseThanhTrucMaterial('canh_tinh');
+        expect(res.success).toBe(true);
+      }
+      expect(player.natalTreasure.infusions.canh_tinh).toBe(10);
+      expect(player.inventory.getItemQuantity('canh_tinh')).toBe(2);
+
+      const failRes = player.infuseThanhTrucMaterial('canh_tinh');
+      expect(failRes.success).toBe(false);
+      expect(failRes.msg).toContain('đạt giới hạn');
+    });
+
+    it('should evolve through stages (KIEM_TAM, KIEM_LINH, TIEN_KHI) with correct conditions', () => {
+      const player = new Player();
+      player.realmId = 18;
+      player.inventory.addItem('ha_pham_linh_thach', 10000000);
+      player.inventory.addItem('kim_loi_truc', 1, { age: 10000, stage: 'Vạn Năm' });
+      player.inventory.addItem('tinh_kim', 5);
+      player.refineNatalTreasure('thanh_truc_phong_van_kiem');
+
+      let res = player.evolveThanhTrucSwords();
+      expect(res.success).toBe(false);
+      expect(res.msg).toContain('Cảnh giới Cấp 5');
+
+      player.natalTreasure.level = 5;
+      player.natalTreasure.nourishYears = 50;
+
+      res = player.evolveThanhTrucSwords();
+      expect(res.success).toBe(true);
+      expect(player.natalTreasure.evolutionState).toBe('KIEM_TAM');
+
+      res = player.evolveThanhTrucSwords();
+      expect(res.success).toBe(false);
+      expect(res.msg).toContain('Huyền Thiên Kiếm Linh');
+
+      player.inventory.addItem('huyen_thien_kiem_linh', 1);
+      res = player.evolveThanhTrucSwords();
+      expect(res.success).toBe(true);
+      expect(player.natalTreasure.evolutionState).toBe('KIEM_LINH');
+
+      res = player.evolveThanhTrucSwords();
+      expect(res.success).toBe(false);
+      expect(res.msg).toContain('phi thăng Tiên Giới');
+
+      player.realmId = 42; // Chân Tiên
+      player.inventory.addItem('tien_nguyen_thach', 10);
+      player.inventory.addItem('hoc_van_tinh_kim', 1);
+      player.inventory.addItem('lang_tien_van_thach', 1);
+
+      res = player.evolveThanhTrucSwords();
+      expect(res.success).toBe(true);
+      expect(player.natalTreasure.evolutionState).toBe('TIEN_KHI');
     });
   });
 

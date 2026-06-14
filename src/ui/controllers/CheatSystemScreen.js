@@ -98,6 +98,13 @@ export class CheatSystemScreen {
             <div class="space-y-4">
                 ${subContent}
             </div>
+
+            <!-- Debug Testing Area -->
+            <div class="pt-4 border-t border-white/5 text-center">
+                <button id="btn-cheat-thanhtruc-debug" class="w-full py-2 bg-rose-950/40 hover:bg-rose-900/40 border border-rose-500/30 text-rose-300 rounded-xl text-[8px] font-bold active:scale-95 transition-all">
+                    🛠️ [Thử Nghiệm] Nhận Trữ Vật Thử Nghiệm Thanh Trúc
+                </button>
+            </div>
         `;
 
         // Bind inner actions
@@ -110,6 +117,21 @@ export class CheatSystemScreen {
     bindActions() {
         const cheatSys = state.systems.cheat;
         if (!cheatSys) return;
+
+        const btnThanhTrucDebug = document.getElementById('btn-cheat-thanhtruc-debug');
+        if (btnThanhTrucDebug) {
+            btnThanhTrucDebug.onclick = async () => {
+                const res = await cheatSys.addThanhTrucTestingBundle();
+                state.ui.toast(res.msg, res.success ? 'success' : 'error');
+                if (res.success) {
+                    audioManager.playSfx('success');
+                    this.render();
+                    if (window.game && typeof window.game.refreshUI === 'function') {
+                        window.game.refreshUI();
+                    }
+                }
+            };
+        }
 
         const btnSign = document.getElementById('cheat-action-signin');
         if (btnSign) {

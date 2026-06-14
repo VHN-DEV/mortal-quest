@@ -735,6 +735,54 @@
                 </div>
             </div>
 
+            <!-- Thanh Trúc Phong Vân Kiếm Progression Panel -->
+            <div id="thanhtruc-progression-panel" class="hidden bg-black/20 p-2.5 rounded-xl border border-amber-500/20 space-y-3">
+                <div class="text-[9px] font-ancient text-amber-400 uppercase tracking-wider border-b border-white/5 pb-1 flex justify-between">
+                    <span>⚡ Tiến Cấp Thanh Trúc Phong Vân Kiếm</span>
+                </div>
+
+                <!-- Swords Count Expansion -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between text-[8px] text-gray-400">
+                        <span>Số lượng kiếm trận:</span>
+                        <span id="thanhtruc-swords-count" class="font-bold text-amber-300">12 khẩu</span>
+                    </div>
+                    <button id="btn-thanhtruc-expand" class="w-full py-1.5 bg-yellow-950/40 hover:bg-yellow-900/40 border border-yellow-500/30 text-yellow-300 rounded text-[8px] active:scale-95 transition-all">
+                        🗡️ Khai Triển Bộ Kiếm (Tiêu hao Kim Lôi Trúc vạn năm & Linh Thạch)
+                    </button>
+                </div>
+
+                <!-- Material Infusions (Khảm nạm) -->
+                <div class="space-y-2 pt-1 border-t border-white/5">
+                    <div class="text-[8px] text-gray-400 font-ancient">Khảm Nạm Tài Liệu (Tối đa 10 tầng/loại):</div>
+                    <div class="grid grid-cols-3 gap-1 text-[7.5px]">
+                        <button id="btn-infuse-canh-tinh" class="py-1 bg-white/[0.02] border border-white/5 hover:border-amber-500/30 rounded text-center text-gray-300 active:scale-95 transition-all">
+                            ✨ Canh Tinh (<span id="infuse-canh_tinh-val">0</span>/10)
+                            <div class="text-[6px] text-gray-500 mt-0.5">+150 Atk, +1% Xuyên</div>
+                        </button>
+                        <button id="btn-infuse-luyen-tinh" class="py-1 bg-white/[0.02] border border-white/5 hover:border-amber-500/30 rounded text-center text-gray-300 active:scale-95 transition-all">
+                            💎 Luyện Tinh (<span id="infuse-luyen_tinh-val">0</span>/10)
+                            <div class="text-[6px] text-gray-500 mt-0.5">+100 Def, +2% Kháng</div>
+                        </button>
+                        <button id="btn-infuse-huyen-ngoc" class="py-1 bg-white/[0.02] border border-white/5 hover:border-amber-500/30 rounded text-center text-gray-300 active:scale-95 transition-all">
+                            ❄️ Huyền Ngọc (<span id="infuse-van_nien_huyen_ngoc-val">0</span>/10)
+                            <div class="text-[6px] text-gray-500 mt-0.5">+15% Băng, +1% Né</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Evolution State -->
+                <div class="space-y-1.5 pt-1 border-t border-white/5">
+                    <div class="flex justify-between text-[8px] text-gray-400">
+                        <span>Cảnh giới kiếm ý:</span>
+                        <span id="thanhtruc-evolution-state" class="font-bold text-cyan-400">Chưa Khai Mở</span>
+                    </div>
+                    <button id="btn-thanhtruc-evolve" class="w-full py-1.5 bg-cyan-950/40 hover:bg-cyan-900/40 border border-cyan-500/30 text-cyan-300 rounded text-[8px] active:scale-95 transition-all">
+                        🌀 Đột Phá Kiếm Ý (Kiếm Tâm / Kiếm Linh / Tiên Khí)
+                    </button>
+                </div>
+            </div>
+
             <!-- Upgrade/Binh Giải actions -->
             <div class="flex gap-2">
                 <button id="btn-upgrade-natal"

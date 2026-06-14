@@ -132,13 +132,13 @@ export const NATAL_TREASURE_CONFIGS = {
     'thanh_truc_phong_van_kiem': {
         id: 'thanh_truc_phong_van_kiem',
         name: 'Thanh Trúc Phong Vân Kiếm',
-        description: 'Bản mệnh phi kiếm do Hàn Lập luyện chế từ Vạn Niên Thiết Mộc. Ẩn chứa thần thông Phách Lôi và biến hóa khôn lường.',
+        description: 'Bản mệnh phi kiếm do Hàn Lập luyện chế từ Kim Lôi Trúc vạn năm thọ mệnh. Ẩn chứa thần thông Tịch Tà Thần Lôi khắc chế tà ma.',
         icon: '🗡️',
         stats: { atk: 250, spd: 30, thunderDmg: 0.15 },
         costs: {
             spiritStones: 200000,
             materials: {
-                'van_nien_thiet_moc': 1,
+                'kim_loi_truc': 1,
                 'tinh_kim': 5
             }
         }

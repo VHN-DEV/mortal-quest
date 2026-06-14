@@ -253,6 +253,110 @@ export class CharacterScreen {
                 }
             };
         }
+
+        // Thanh Trúc Phong Vân Kiếm Event Bindings
+        const btnThanhTrucExpand = document.getElementById('btn-thanhtruc-expand');
+        if (btnThanhTrucExpand) {
+            btnThanhTrucExpand.onclick = async () => {
+                if (state.player && typeof state.player.expandThanhTrucSwords === 'function') {
+                    const currentCount = state.player.natalTreasure?.swordsCount || 12;
+                    let targetCount = 24;
+                    let reqBamboos = 1;
+                    let reqStones = 500000;
+                    if (currentCount === 24) {
+                        targetCount = 36;
+                        reqBamboos = 2;
+                        reqStones = 1000000;
+                    } else if (currentCount === 36) {
+                        targetCount = 72;
+                        reqBamboos = 3;
+                        reqStones = 2000000;
+                    }
+
+                    state.ui.showConfirm(`Khai Triển Kiếm Trận`, `Tiến hành khai triển bộ kiếm lên ${targetCount} khẩu phi kiếm? Tiêu hao ${reqBamboos}x Vạn Niên Kim Lôi Trúc và ${reqStones.toLocaleString()} Linh Thạch.`, async () => {
+                        const res = state.player.expandThanhTrucSwords();
+                        if (res.success) {
+                            if (window.game && typeof window.game.saveGame === 'function') {
+                                await window.game.saveGame();
+                            }
+                            if (window.game && typeof window.game.refreshUI === 'function') {
+                                window.game.refreshUI();
+                            }
+                            state.ui.toast(res.msg, "success");
+                        } else {
+                            state.ui.toast(res.msg, "error");
+                        }
+                    });
+                }
+            };
+        }
+
+        const bindInfusionButton = (btnId, matId, label) => {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.onclick = async () => {
+                    if (state.player && typeof state.player.infuseThanhTrucMaterial === 'function') {
+                        state.ui.showConfirm(`Khảm Nạm Phi Kiếm`, `Đạo hữu có muốn khảm nạm 1x ${label} vào phi kiếm?`, async () => {
+                            const res = state.player.infuseThanhTrucMaterial(matId);
+                            if (res.success) {
+                                if (window.game && typeof window.game.saveGame === 'function') {
+                                    await window.game.saveGame();
+                                }
+                                if (window.game && typeof window.game.refreshUI === 'function') {
+                                    window.game.refreshUI();
+                                }
+                                state.ui.toast(res.msg, "success");
+                            } else {
+                                state.ui.toast(res.msg, "error");
+                            }
+                        });
+                    }
+                };
+            }
+        };
+
+        bindInfusionButton('btn-infuse-canh-tinh', 'canh_tinh', 'Canh Tinh');
+        bindInfusionButton('btn-infuse-luyen-tinh', 'luyen_tinh', 'Luyện Tinh');
+        bindInfusionButton('btn-infuse-huyen-ngoc', 'van_nien_huyen_ngoc', 'Vạn Niên Huyền Ngọc');
+
+        const btnThanhTrucEvolve = document.getElementById('btn-thanhtruc-evolve');
+        if (btnThanhTrucEvolve) {
+            btnThanhTrucEvolve.onclick = async () => {
+                if (state.player && typeof state.player.evolveThanhTrucSwords === 'function') {
+                    const evState = state.player.natalTreasure?.evolutionState || 'NONE';
+                    let title = '';
+                    let desc = '';
+                    if (evState === 'NONE') {
+                        title = 'Ngộ Đạo Kiếm Tâm';
+                        desc = 'Khơi gợi tâm linh cảm ứng giữa nhân vật và phi kiếm, nâng cấp lên [Kiếm Tâm Thông Linh] (Yêu cầu nuôi dưỡng 50+ năm, Pháp bảo Cấp 5). Đạo hữu chắc chắn thực hiện?';
+                    } else if (evState === 'KIEM_TAM') {
+                        title = 'Thức Tỉnh Kiếm Linh';
+                        desc = 'Dung hợp Huyền Thiên ý chí giúp kiếm linh thức tỉnh (Tiêu hao 1x Huyền Thiên Kiếm Linh và 500k Linh Thạch). Đạo hữu chắc chắn thực hiện?';
+                    } else if (evState === 'KIEM_LINH') {
+                        title = 'Thăng Hoa Tiên Khí';
+                        desc = 'Dung nhập quy tắc thiên đạo thăng hoa phi kiếm thành Tiên Khí (Yêu cầu phi thăng Tiên Giới, tiêu hao 10x Tiên Nguyên Thạch, 1x Hộc Văn Tinh Kim, 1x Lang Tiển Vân Thạch và 1M Linh Thạch). Đạo hữu chắc chắn thực hiện?';
+                    } else {
+                        state.ui.toast("Phi kiếm đã đạt cảnh giới tối cao!", "info");
+                        return;
+                    }
+
+                    state.ui.showConfirm(title, desc, async () => {
+                        const res = state.player.evolveThanhTrucSwords();
+                        if (res.success) {
+                            if (window.game && typeof window.game.saveGame === 'function') {
+                                await window.game.saveGame();
+                            }
+                            if (window.game && typeof window.game.refreshUI === 'function') {
+                                window.game.refreshUI();
+                            }
+                            state.ui.toast(res.msg, "success");
+                        } else {
+                            state.ui.toast(res.msg, "error");
+                        }
+                    });
+                }
+            };
+        }
     }
 
     render() {
@@ -692,10 +796,24 @@ export class CharacterScreen {
                 if (this.elNatalStatsList && config && config.stats) {
                     const lvl = t.level || 1;
                     const nourish = t.nourishYears || 0;
-                    const scale = 1.0 + (lvl - 1) * 0.25 + nourish * 0.05;
+                    let scale = 1.0 + (lvl - 1) * 0.25 + nourish * 0.05;
 
-                    this.elNatalStatsList.innerHTML = Object.entries(config.stats).map(([k, v]) => {
-                        const scaledVal = v * scale;
+                    let swordsMultiplier = 1.0;
+                    let evolutionMultiplier = 1.0;
+                    if (t.id === 'thanh_truc_phong_van_kiem') {
+                        const sc = t.swordsCount || 12;
+                        if (sc === 24) swordsMultiplier = 1.2;
+                        else if (sc === 36) swordsMultiplier = 1.4;
+                        else if (sc === 72) swordsMultiplier = 2.0;
+
+                        const ev = t.evolutionState || 'NONE';
+                        if (ev === 'TIEN_KHI') {
+                            evolutionMultiplier = 2.0;
+                        }
+                    }
+
+                    let statsHtml = Object.entries(config.stats).map(([k, v]) => {
+                        const scaledVal = v * scale * swordsMultiplier * evolutionMultiplier;
                         const label = state.ui.getStatLabel(k);
                         const displayVal = k.includes('Dmg') || k.includes('Absorb') || k.includes('Rate')
                             ? `+${(scaledVal * 100).toFixed(1)}%`
@@ -708,10 +826,109 @@ export class CharacterScreen {
                             </div>
                         `;
                     }).join('');
+
+                    if (t.id === 'thanh_truc_phong_van_kiem') {
+                        const inf = t.infusions || { canh_tinh: 0, luyen_tinh: 0, van_nien_huyen_ngoc: 0 };
+                        if (inf.canh_tinh > 0) {
+                            statsHtml += `
+                                <div class="flex justify-between text-gray-500">
+                                    <span class="uppercase">Khảm Canh Tinh (Atk)</span>
+                                    <span class="text-amber-400 font-bold font-mono">+${inf.canh_tinh * 150}</span>
+                                </div>
+                                <div class="flex justify-between text-gray-500">
+                                    <span class="uppercase">Khảm Canh Tinh (Xuyên Giáp)</span>
+                                    <span class="text-amber-400 font-bold font-mono">+${inf.canh_tinh * 1}%</span>
+                                </div>
+                            `;
+                        }
+                        if (inf.luyen_tinh > 0) {
+                            statsHtml += `
+                                <div class="flex justify-between text-gray-500">
+                                    <span class="uppercase">Khảm Luyện Tinh (Def)</span>
+                                    <span class="text-amber-400 font-bold font-mono">+${inf.luyen_tinh * 100}</span>
+                                </div>
+                                <div class="flex justify-between text-gray-500">
+                                    <span class="uppercase">Khảm Luyện Tinh (Kháng Nguyên Tố)</span>
+                                    <span class="text-amber-400 font-bold font-mono">+${inf.luyen_tinh * 2}%</span>
+                                </div>
+                            `;
+                        }
+                        if (inf.van_nien_huyen_ngoc > 0) {
+                            statsHtml += `
+                                <div class="flex justify-between text-gray-500">
+                                    <span class="uppercase">Khảm Huyền Ngọc (Băng Sát)</span>
+                                    <span class="text-amber-400 font-bold font-mono">+${(inf.van_nien_huyen_ngoc * 15).toFixed(0)}%</span>
+                                </div>
+                                <div class="flex justify-between text-gray-500">
+                                    <span class="uppercase">Khảm Huyền Ngọc (Né Tránh)</span>
+                                    <span class="text-amber-400 font-bold font-mono">+${inf.van_nien_huyen_ngoc * 1}%</span>
+                                </div>
+                            `;
+                        }
+
+                        const ev = t.evolutionState || 'NONE';
+                        if (ev === 'KIEM_TAM' || ev === 'KIEM_LINH' || ev === 'TIEN_KHI') {
+                            statsHtml += `
+                                <div class="flex justify-between text-gray-500">
+                                    <span class="uppercase">Kiếm Ý (Thân Pháp)</span>
+                                    <span class="text-cyan-400 font-bold font-mono">+50</span>
+                                </div>
+                                <div class="flex justify-between text-gray-500">
+                                    <span class="uppercase">Kiếm Ý (Bạo Kích)</span>
+                                    <span class="text-cyan-400 font-bold font-mono">+5%</span>
+                                </div>
+                            `;
+                        }
+                        if (ev === 'KIEM_LINH' || ev === 'TIEN_KHI') {
+                            statsHtml += `
+                                <div class="flex justify-between text-yellow-500">
+                                    <span class="uppercase">Tịch Tà Thần Lôi</span>
+                                    <span class="text-yellow-400 font-bold font-mono">Khắc Chế Tà Ma (30% Lôi Điện Sát Thương)</span>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    this.elNatalStatsList.innerHTML = statsHtml;
+                }
+
+                // Toggle and update Thanh Trúc progression sub-panel
+                const elThanhTrucPanel = document.getElementById('thanhtruc-progression-panel');
+                if (elThanhTrucPanel) {
+                    if (t.id === 'thanh_truc_phong_van_kiem') {
+                        elThanhTrucPanel.classList.remove('hidden');
+
+                        const scCountEl = document.getElementById('thanhtruc-swords-count');
+                        if (scCountEl) {
+                            scCountEl.textContent = `${t.swordsCount || 12} khẩu`;
+                        }
+
+                        const inf = t.infusions || { canh_tinh: 0, luyen_tinh: 0, van_nien_huyen_ngoc: 0 };
+                        const canhValEl = document.getElementById('infuse-canh_tinh-val');
+                        if (canhValEl) canhValEl.textContent = inf.canh_tinh || 0;
+                        const luyenValEl = document.getElementById('infuse-luyen_tinh-val');
+                        if (luyenValEl) luyenValEl.textContent = inf.luyen_tinh || 0;
+                        const huyenValEl = document.getElementById('infuse-van_nien_huyen_ngoc-val');
+                        if (huyenValEl) huyenValEl.textContent = inf.van_nien_huyen_ngoc || 0;
+
+                        const evStateEl = document.getElementById('thanhtruc-evolution-state');
+                        if (evStateEl) {
+                            const ev = t.evolutionState || 'NONE';
+                            let displayState = 'Chưa Khai Mở';
+                            if (ev === 'KIEM_TAM') displayState = 'Kiếm Tâm Thông Linh';
+                            else if (ev === 'KIEM_LINH') displayState = 'Kiếm Linh Thức Tỉnh';
+                            else if (ev === 'TIEN_KHI') displayState = 'Tiên Khí Pháp Bảo';
+                            evStateEl.textContent = displayState;
+                        }
+                    } else {
+                        elThanhTrucPanel.classList.add('hidden');
+                    }
                 }
             } else {
                 if (this.elNatalRefineSection) this.elNatalRefineSection.classList.remove('hidden');
                 if (this.elNatalInfoSection) this.elNatalInfoSection.classList.add('hidden');
+                const elThanhTrucPanel = document.getElementById('thanhtruc-progression-panel');
+                if (elThanhTrucPanel) elThanhTrucPanel.classList.add('hidden');
             }
         } else {
             if (this.elNatalPanel) this.elNatalPanel.classList.add('hidden');

@@ -7870,6 +7870,102 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.PHAP_BAO.KEY, subcategory: ITEM_CATEGORIES_ENUM.PHAP_BAO.SUBCATEGORIES.DINH_GIAI }
         ]
     },
+    'kim_loi_truc': {
+        id: 'kim_loi_truc',
+        name: 'Kim Lôi Trúc',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🎋',
+        quality: PHAP_BAO_QUALITIES.THONG_THIEN_LINH_BAO,
+        price: 50000,
+        description: 'Thân cây Kim Lôi Trúc tích tụ lôi điện chi lực, có khả năng bộc phát Tịch Tà Thần Lôi cực kỳ tinh thuần khắc chế tà ma ngoại đạo.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'canh_tinh': {
+        id: 'canh_tinh',
+        name: 'Canh Tinh',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '✨',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 30000,
+        description: 'Vật chất sắc bén bậc nhất nhân giới, tăng mạnh thuộc tính tấn công và xuyên giáp của phi kiếm.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'luyen_tinh': {
+        id: 'luyen_tinh',
+        name: 'Luyện Tinh',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '💎',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 30000,
+        description: 'Chất tinh túy luyện ra từ đất đá cực độ kiên cố, tăng mạnh phòng ngự và hỏa kháng.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'van_nien_huyen_ngoc': {
+        id: 'van_nien_huyen_ngoc',
+        name: 'Vạn Niên Huyền Ngọc',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '❄️',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 35000,
+        description: 'Khối ngọc cực hàn vạn năm dưới đáy sông băng, tỏa ra khí tức băng giá giúp gia tăng băng sát và thân pháp né tránh.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'huyen_thien_kiem_linh': {
+        id: 'huyen_thien_kiem_linh',
+        name: 'Huyền Thiên Kiếm Linh',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '👻',
+        quality: PHAP_BAO_QUALITIES.LINH_BAO,
+        price: 100000,
+        description: 'Tinh linh kiếm ý sinh ra từ Huyền Thiên bảo vật, chất xúc tác tối cao để đánh thức Kiếm Linh.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'hoc_van_tinh_kim': {
+        id: 'hoc_van_tinh_kim',
+        name: 'Hộc Văn Tinh Kim',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🪙',
+        quality: PHAP_BAO_QUALITIES.TIEN_KHI,
+        price: 200000,
+        description: 'Vật liệu tinh kim của Tiên giới, khắc ghi thiên đạo văn lộ tự nhiên, dùng để thăng hoa phi kiếm thành Tiên Khí.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'lang_tien_van_thach': {
+        id: 'lang_tien_van_thach',
+        name: 'Lang Tiển Vân Thạch',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '☁️',
+        quality: PHAP_BAO_QUALITIES.TIEN_KHI,
+        price: 200000,
+        description: 'Khối tường vân thạch thu được ở Tiên giới Lang Tiển phủ, nhẹ tựa tơ hồng giúp phi kiếm đạt trạng thái xuất quỷ nhập thần.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
+    'tien_nguyen_thach': {
+        id: 'tien_nguyen_thach',
+        name: 'Tiên Nguyên Thạch',
+        type: ITEM_TYPES.NGUYEN_LIEU,
+        icon: '🪐',
+        quality: PHAP_BAO_QUALITIES.TIEN_KHI,
+        price: 150000,
+        description: 'Tinh thạch chứa tiên nguyên lực dồi dào, là cội nguồn của mọi pháp bảo tiên gia.',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
+        ]
+    },
 };
 
 // Mark unique items

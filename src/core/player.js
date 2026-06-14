@@ -2661,10 +2661,34 @@ export class Player {
                 const nourish = this.natalTreasure.nourishYears || 0;
                 // Level scaling: +25% per level above 1
                 // Nourishment scaling: +5% per year
-                const scale = 1.0 + (lvl - 1) * 0.25 + nourish * 0.05;
+                let scale = 1.0 + (lvl - 1) * 0.25 + nourish * 0.05;
+
+                // Handle Thanh Trúc Phong Vân Kiếm custom progression scaling
+                let swordsMultiplier = 1.0;
+                let evolutionMultiplier = 1.0;
+                if (this.natalTreasure.id === 'thanh_truc_phong_van_kiem') {
+                    const sc = this.natalTreasure.swordsCount || 12;
+                    if (sc === 24) swordsMultiplier = 1.2;
+                    else if (sc === 36) swordsMultiplier = 1.4;
+                    else if (sc === 72) swordsMultiplier = 2.0;
+
+                    const ev = this.natalTreasure.evolutionState || 'NONE';
+                    if (ev === 'TIEN_KHI') {
+                        evolutionMultiplier = 2.0;
+                    }
+
+                    // Apply active evolution bonuses
+                    if (ev === 'KIEM_TAM' || ev === 'KIEM_LINH' || ev === 'TIEN_KHI') {
+                        this.bonusStats.spd += 50;
+                        this.advancedStats.weaknessStrikeChance += 0.05;
+                    }
+                    if (ev === 'KIEM_LINH' || ev === 'TIEN_KHI') {
+                        this.advancedStats.thunderDmg *= 1.2;
+                    }
+                }
 
                 Object.entries(config.stats).forEach(([key, val]) => {
-                    const scaledVal = val * scale;
+                    let scaledVal = val * scale * swordsMultiplier * evolutionMultiplier;
                     if (key === 'atk') this.bonusStats.atk += scaledVal;
                     else if (key === 'def') this.bonusStats.def += scaledVal;
                     else if (key === 'spd') this.bonusStats.spd += scaledVal;
@@ -2680,7 +2704,7 @@ export class Player {
                     else if (this.advancedStats.hasOwnProperty(key)) {
                         const multKeys = ['qiAbsorb', 'fireDmg', 'waterDmg', 'thunderDmg', 'woodDmg', 'earthDmg', 'windDmg', 'metalDmg', 'iceDmg', 'poisonDmg', 'swordDmg', 'skillDmg', 'dotDmg', 'techniqueMastery'];
                         if (multKeys.includes(key)) {
-                            this.advancedStats[key] *= (1.0 + val * scale);
+                            this.advancedStats[key] *= (1.0 + val * scale * swordsMultiplier * evolutionMultiplier);
                         } else {
                             this.advancedStats[key] += scaledVal;
                         }
@@ -2688,6 +2712,17 @@ export class Player {
                         this.bonusStats[key] += scaledVal;
                     }
                 });
+
+                // Apply infusions for Thanh Trúc Phong Vân Kiếm
+                if (this.natalTreasure.id === 'thanh_truc_phong_van_kiem') {
+                    const inf = this.natalTreasure.infusions || { canh_tinh: 0, luyen_tinh: 0, van_nien_huyen_ngoc: 0 };
+                    this.bonusStats.atk += (inf.canh_tinh || 0) * 150;
+                    this.advancedStats.pierce += (inf.canh_tinh || 0) * 1;
+                    this.bonusStats.def += (inf.luyen_tinh || 0) * 100;
+                    this.advancedStats.allRes += (inf.luyen_tinh || 0) * 2;
+                    this.advancedStats.iceDmg += (inf.van_nien_huyen_ngoc || 0) * 0.15;
+                    this.advancedStats.dodge += (inf.van_nien_huyen_ngoc || 0) * 0.01;
+                }
             }
         }
 
@@ -4863,10 +4898,30 @@ export class Player {
 
         // Check Materials
         const missing = [];
-        for (const [matId, qty] of Object.entries(config.costs.materials)) {
-            const hasQty = this.inventory ? this.inventory.getItemQuantity(matId) : 0;
-            if (hasQty < qty) {
-                missing.push(`${qty}x ${getItemById(matId)?.name || matId}`);
+        let matureBamboo = null;
+
+        if (treasureId === 'thanh_truc_phong_van_kiem') {
+            const matureBamboos = this.inventory ? this.inventory.allItems.filter(i => i.id === 'kim_loi_truc' && i.metadata && i.metadata.age >= 10000) : [];
+            if (matureBamboos.length === 0) {
+                missing.push(`1x Kim Lôi Trúc (Thọ mệnh 10,000+ năm)`);
+            } else {
+                matureBamboo = matureBamboos[0];
+            }
+
+            // Check other materials except kim_loi_truc
+            for (const [matId, qty] of Object.entries(config.costs.materials)) {
+                if (matId === 'kim_loi_truc') continue;
+                const hasQty = this.inventory ? this.inventory.getItemQuantity(matId) : 0;
+                if (hasQty < qty) {
+                    missing.push(`${qty}x ${getItemById(matId)?.name || matId}`);
+                }
+            }
+        } else {
+            for (const [matId, qty] of Object.entries(config.costs.materials)) {
+                const hasQty = this.inventory ? this.inventory.getItemQuantity(matId) : 0;
+                if (hasQty < qty) {
+                    missing.push(`${qty}x ${getItemById(matId)?.name || matId}`);
+                }
             }
         }
 
@@ -4878,8 +4933,16 @@ export class Player {
         const success = this.spendLingShi(config.costs.spiritStones);
         if (!success) return { success: false, msg: "Khấu trừ Linh Thạch thất bại!" };
 
-        for (const [matId, qty] of Object.entries(config.costs.materials)) {
-            this.inventory.removeItem(matId, qty);
+        if (treasureId === 'thanh_truc_phong_van_kiem') {
+            this.inventory.removeItem('kim_loi_truc', 1, matureBamboo.metadata);
+            for (const [matId, qty] of Object.entries(config.costs.materials)) {
+                if (matId === 'kim_loi_truc') continue;
+                this.inventory.removeItem(matId, qty);
+            }
+        } else {
+            for (const [matId, qty] of Object.entries(config.costs.materials)) {
+                this.inventory.removeItem(matId, qty);
+            }
         }
 
         // Create natal treasure
@@ -4889,7 +4952,10 @@ export class Player {
             level: 1,
             nourishYears: 0,
             description: config.description,
-            icon: config.icon
+            icon: config.icon,
+            swordsCount: 12,
+            infusions: { canh_tinh: 0, luyen_tinh: 0, van_nien_huyen_ngoc: 0 },
+            evolutionState: 'NONE'
         };
 
         this.calculateStats();
@@ -4961,6 +5027,169 @@ export class Player {
             success: true,
             msg: `💥 Binh Giải thành công! Bản Mệnh Pháp Bảo ${treasureName} đã tan biến. Linh hải chấn động dữ dội, ngươi mất đi 30% Sinh Mệnh và Linh Lực!`
         };
+    }
+
+    expandThanhTrucSwords() {
+        if (!this.natalTreasure || this.natalTreasure.id !== 'thanh_truc_phong_van_kiem') {
+            return { success: false, msg: "Ngươi không trang bị Thanh Trúc Phong Vân Kiếm!" };
+        }
+
+        const currentCount = this.natalTreasure.swordsCount || 12;
+        if (currentCount >= 72) {
+            return { success: false, msg: "Bộ phi kiếm đã đạt số lượng tối đa (72 khẩu)!" };
+        }
+
+        let targetCount = 24;
+        let reqBamboos = 1;
+        let reqStones = 500000;
+
+        if (currentCount === 24) {
+            targetCount = 36;
+            reqBamboos = 2;
+            reqStones = 1000000;
+        } else if (currentCount === 36) {
+            targetCount = 72;
+            reqBamboos = 3;
+            reqStones = 2000000;
+        }
+
+        const matureBamboos = this.inventory ? this.inventory.allItems.filter(i => i.id === 'kim_loi_truc' && i.metadata && i.metadata.age >= 10000) : [];
+        const totalAvailable = matureBamboos.reduce((sum, item) => sum + item.quantity, 0);
+
+        if (totalAvailable < reqBamboos) {
+            return { success: false, msg: `Thiếu Vạn Niên Kim Lôi Trúc! Cần ${reqBamboos}x cây thọ mệnh 10,000+ năm (Hiện có ${totalAvailable}x).` };
+        }
+
+        if (this.lingShi < reqStones) {
+            return { success: false, msg: `Không đủ Linh Thạch! Cần ${reqStones.toLocaleString()} Linh Thạch.` };
+        }
+
+        // Deduct materials & stones
+        let deducted = 0;
+        for (const item of matureBamboos) {
+            const toDeduct = Math.min(reqBamboos - deducted, item.quantity);
+            this.inventory.removeItem('kim_loi_truc', toDeduct, item.metadata);
+            deducted += toDeduct;
+            if (deducted >= reqBamboos) break;
+        }
+        this.spendLingShi(reqStones);
+
+        this.natalTreasure.swordsCount = targetCount;
+        this.calculateStats();
+
+        return {
+            success: true,
+            msg: `⚡ Chúc mừng! Ngươi đã mở rộng bộ kiếm thành công lên ${targetCount} khẩu phi kiếm!`
+        };
+    }
+
+    infuseThanhTrucMaterial(matId) {
+        if (!this.natalTreasure || this.natalTreasure.id !== 'thanh_truc_phong_van_kiem') {
+            return { success: false, msg: "Ngươi không trang bị Thanh Trúc Phong Vân Kiếm!" };
+        }
+
+        if (!this.natalTreasure.infusions) {
+            this.natalTreasure.infusions = { canh_tinh: 0, luyen_tinh: 0, van_nien_huyen_ngoc: 0 };
+        }
+
+        const key = matId === 'van_nien_huyen_ngoc' ? 'van_nien_huyen_ngoc' : matId;
+        const currentStack = this.natalTreasure.infusions[key] || 0;
+
+        if (currentStack >= 10) {
+            return { success: false, msg: "Vật phẩm khảm nạm đã đạt giới hạn tối đa (10 tầng)!" };
+        }
+
+        const matName = getItemById(matId)?.name || matId;
+        if (!this.inventory.hasItem(matId, 1)) {
+            return { success: false, msg: `Thiếu vật phẩm khảm nạm: Cần 1x ${matName}!` };
+        }
+
+        this.inventory.removeItem(matId, 1);
+        this.natalTreasure.infusions[key] = currentStack + 1;
+        this.calculateStats();
+
+        return {
+            success: true,
+            msg: `✨ Khảm nạm thành công! ${matName} đã dung nhập phi kiếm (Tầng ${currentStack + 1}/10).`
+        };
+    }
+
+    evolveThanhTrucSwords() {
+        if (!this.natalTreasure || this.natalTreasure.id !== 'thanh_truc_phong_van_kiem') {
+            return { success: false, msg: "Ngươi không trang bị Thanh Trúc Phong Vân Kiếm!" };
+        }
+
+        const evState = this.natalTreasure.evolutionState || 'NONE';
+
+        if (evState === 'NONE') {
+            // NONE -> KIEM_TAM
+            const nourish = this.natalTreasure.nourishYears || 0;
+            const lvl = this.natalTreasure.level || 1;
+            if (nourish < 50 || lvl < 5) {
+                return { success: false, msg: `Chưa đạt yêu cầu tâm linh cảm ứng! Cần nuôi dưỡng 50+ năm (Hiện tại: ${nourish} năm) và Pháp bảo đạt Cảnh giới Cấp 5 (Hiện tại: Cấp ${lvl}).` };
+            }
+
+            this.natalTreasure.evolutionState = 'KIEM_TAM';
+            this.calculateStats();
+            return {
+                success: true,
+                msg: "🌀 Ngộ đạo thành công! Thanh Trúc Phong Vân Kiếm đạt cảnh giới [Kiếm Tâm Thông Linh], tăng mạnh Thân pháp và Tỉ lệ Bạo kích!"
+            };
+        } else if (evState === 'KIEM_TAM') {
+            // KIEM_TAM -> KIEM_LINH
+            if (!this.inventory.hasItem('huyen_thien_kiem_linh', 1)) {
+                return { success: false, msg: "Thiếu nguyên liệu tiến hóa: Cần 1x Huyền Thiên Kiếm Linh!" };
+            }
+            if (this.lingShi < 500000) {
+                return { success: false, msg: "Không đủ Linh Thạch! Cần 500,000 Linh Thạch." };
+            }
+
+            this.inventory.removeItem('huyen_thien_kiem_linh', 1);
+            this.spendLingShi(500000);
+            this.natalTreasure.evolutionState = 'KIEM_LINH';
+            this.calculateStats();
+
+            return {
+                success: true,
+                msg: "👻 Kiếm Linh Thức Tỉnh! Huyền Thiên Kiếm Linh đã dung hợp vào phi kiếm. Thanh Trúc Phong Vân Kiếm đã khai mở thần chí, tăng mạnh Lôi Công thuộc tính!"
+            };
+        } else if (evState === 'KIEM_LINH') {
+            // KIEM_LINH -> TIEN_KHI
+            const isUpperRealm = this.realmId >= 42 || this.isTanTien;
+            if (!isUpperRealm) {
+                return { success: false, msg: "Chỉ khi phi thăng Tiên Giới (hoặc tu vi đạt Tiên Nhân) mới có thể dung hợp quy tắc thiên đạo thăng hoa thành Tiên Khí!" };
+            }
+
+            const reqNguyens = 10;
+            const hasNguyens = this.inventory ? this.inventory.getItemQuantity('tien_nguyen_thach') : 0;
+            if (hasNguyens < reqNguyens) {
+                return { success: false, msg: `Thiếu Tiên Nguyên Thạch! Cần ${reqNguyens}x viên (Hiện có ${hasNguyens}x).` };
+            }
+            if (!this.inventory.hasItem('hoc_van_tinh_kim', 1)) {
+                return { success: false, msg: "Thiếu Hộc Văn Tinh Kim!" };
+            }
+            if (!this.inventory.hasItem('lang_tien_van_thach', 1)) {
+                return { success: false, msg: "Thiếu Lang Tiển Vân Thạch!" };
+            }
+            if (this.lingShi < 1000000) {
+                return { success: false, msg: "Không đủ Linh Thạch! Cần 1,000,000 Linh Thạch." };
+            }
+
+            this.inventory.removeItem('tien_nguyen_thach', reqNguyens);
+            this.inventory.removeItem('hoc_van_tinh_kim', 1);
+            this.inventory.removeItem('lang_tien_van_thach', 1);
+            this.spendLingShi(1000000);
+
+            this.natalTreasure.evolutionState = 'TIEN_KHI';
+            this.calculateStats();
+
+            return {
+                success: true,
+                msg: "🪐 Thiên Đạo Quy Tắc! Thanh Trúc Phong Vân Kiếm dung hợp Lôi Điện Pháp Tắc thành công, thăng hoa vượt bậc thành Tiên Khí Pháp Bảo! Sát thương cơ bản nhân đôi!"
+            };
+        }
+
+        return { success: false, msg: "Thanh phi kiếm này đã đạt tới cảnh giới tiến hóa cao nhất!" };
     }
 
     convertMainPath(newPathId) {

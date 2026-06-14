@@ -426,4 +426,29 @@ export class CheatSystem {
         if (data.locationState) this.locationState = { ...this.locationState, ...data.locationState };
         this.claimStyle = data.claimStyle || this.claimStyle;
     }
+
+    async addThanhTrucTestingBundle() {
+        if (!this.player) return { success: false, msg: "Không tìm thấy thông tin nhân vật!" };
+
+        const itemsToGive = [
+            { id: 'canh_tinh', qty: 5 },
+            { id: 'luyen_tinh', qty: 5 },
+            { id: 'van_nien_huyen_ngoc', qty: 5 },
+            { id: 'huyen_thien_kiem_linh', qty: 1 },
+            { id: 'hoc_van_tinh_kim', qty: 2 },
+            { id: 'lang_tien_van_thach', qty: 2 },
+            { id: 'tien_nguyen_thach', qty: 15 },
+            { id: 'linh_chung_kim_loi_truc', qty: 2 },
+            { id: 'linh_dich_chuong_thien_binh', qty: 5 }
+        ];
+
+        for (const item of itemsToGive) {
+            await window.game.receiveItem(item.id, item.qty);
+        }
+
+        this.player.lingShi += 1000000;
+        await window.game.receiveItem('kim_loi_truc', 1, { age: 10000, stage: 'Vạn Năm' });
+
+        return { success: true, msg: "Nhận trọn bộ vật phẩm thử nghiệm Thanh Trúc Phong Vân Kiếm thành công!" };
+    }
 }
