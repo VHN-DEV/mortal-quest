@@ -1,3 +1,4 @@
+import { state } from '../state.js';
 import { NPC_TEMPLATES, NPC_PERSONALITIES, NPC_GOALS, NPC_RELATIONSHIP_LEVELS, NPC_SPECIAL_RELATIONS, SPECIAL_NPCS } from '../configs/npc-data.js';
 import { getRealmById } from '../configs/realm-data.js';
 import { CREATION_ROOTS, CREATION_PHYSIQUES } from '../configs/creation-data.js';
@@ -57,6 +58,23 @@ export class NPC {
         this.lingShi = 0;
         this.generateInitialInventory();
 
+        // Assign concealment technique
+        this.equippedConcealmentId = null;
+        if (this.realmId >= 3) {
+            const roll = Math.random();
+            if (this.type === 'thuong_nhan') {
+                if (roll < 0.4) {
+                    this.equippedConcealmentId = this.realmId >= 12 ? 'quy_nguyen_thu_tuc_cong' : 'liem_khi_quyet';
+                }
+            } else {
+                if (roll < 0.15) {
+                    this.equippedConcealmentId = 'liem_khi_quyet';
+                } else if (roll < 0.2 && this.realmId >= 12) {
+                    this.equippedConcealmentId = 'quy_nguyen_thu_tuc_cong';
+                }
+            }
+        }
+
         this.calculateStats();
     }
 
@@ -68,6 +86,43 @@ export class NPC {
             return `${realRealm.name} -> ${maxRealm.name}`;
         }
         return realRealm.name;
+    }
+
+    isRealmConcealed() {
+        if (!state || !state.player) return false;
+
+        const playerSense = state.player.divineSense || 50;
+        const baseVal = 40 + this.realmId * 2;
+        const enemySense = this.divineSense || baseVal;
+
+        // 1. If NPC has concealment
+        if (this.equippedConcealmentId === 'liem_khi_quyet' || this.equippedConcealmentId === 'quy_nguyen_thu_tuc_cong') {
+            const threshold = this.equippedConcealmentId === 'quy_nguyen_thu_tuc_cong' ? 50 : 20;
+            if (playerSense < enemySense + threshold) {
+                return true;
+            }
+        }
+
+        // 2. If NPC does NOT have concealment, but their cultivation realm is higher than player's:
+        if (this.realmId > state.player.realmId) {
+            if (playerSense < enemySense) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    getDisplayRealm() {
+        return this.isRealmConcealed() ? 'Ẩn giấu' : this.realmName;
+    }
+
+    getDisplayRoot() {
+        return this.isRealmConcealed() ? '???' : (CREATION_ROOTS[this.rootId]?.name || 'Phàm Căn');
+    }
+
+    getDisplayPhysique() {
+        return this.isRealmConcealed() ? '???' : (CREATION_PHYSIQUES[this.physiqueId]?.name || 'Phàm Thể');
     }
 
     generateInitialInventory() {

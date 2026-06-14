@@ -133,6 +133,38 @@ export class Enemy {
         return this.realmId;
     }
 
+    isRealmConcealed() {
+        if (!state || !state.player) return false;
+
+        const playerSense = state.player.divineSense || 50;
+        const enemySense = this.divineSense || this.maxThanThuc || this.perception || 50;
+
+        // 1. If enemy has an active concealment technique
+        if (this.equippedConcealmentId === 'liem_khi_quyet' || this.equippedConcealmentId === 'quy_nguyen_thu_tuc_cong') {
+            const threshold = this.equippedConcealmentId === 'quy_nguyen_thu_tuc_cong' ? 50 : 20;
+            if (playerSense < enemySense + threshold) {
+                return true;
+            }
+        }
+
+        // 2. If enemy does NOT have a concealment technique, but their cultivation realm is higher than player's:
+        if (this.realmId > state.player.realmId) {
+            if (playerSense < enemySense) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    getDisplayName() {
+        if (this.isRealmConcealed()) {
+            const baseName = (this.typeData && this.typeData.name) ? this.typeData.name : 'Vô Danh Đối Thủ';
+            return `${baseName} (Tu Vi: ???)`;
+        }
+        return this.name;
+    }
+
     constructor(realmId, typeData, worldId = 'nhan_gioi') {
         this.realmId = realmId;
         this.race = typeData.race || 'HUMAN';

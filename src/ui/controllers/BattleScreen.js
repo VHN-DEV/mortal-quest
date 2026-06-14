@@ -167,13 +167,17 @@ export class BattleScreen {
                 state.ui.toggleOverlay(this.overlay, true);
                 audioManager.playBgm('battle');
                 if (this.btnEscape) this.btnEscape.classList.remove('hidden');
-                this.enemyName.textContent = combat.enemy.name;
+                this.enemyName.textContent = combat.enemy.getDisplayName ? combat.enemy.getDisplayName() : combat.enemy.name;
                 if (this.playerName) this.playerName.textContent = state.player.name;
                 if (this.playerImg) {
                     const portraitKey = state.player.avatar || (['female', 'Nữ'].includes(state.player.gender) ? 'cultivator_female' : 'cultivator_male');
                     this.playerImg.src = ASSETS.portraits[portraitKey] || ASSETS.portraits.player;
                 }
-                if (this.enemyRealm) this.enemyRealm.textContent = combat.enemy.realmName || 'Vô Danh';
+                if (this.enemyRealm) {
+                    this.enemyRealm.textContent = (combat.enemy.isRealmConcealed && combat.enemy.isRealmConcealed())
+                        ? 'Không thể nhìn thấu'
+                        : (combat.enemy.realmName || 'Vô Danh');
+                }
                 if (this.enemyImg) this.enemyImg.src = combat.enemy.image || ASSETS.enemies.wolf;
                 if (this.battleBg) {
                     const loc = state.player.currentLocationId;
@@ -960,7 +964,10 @@ export class BattleScreen {
         const raceEl = document.getElementById('enemy-stats-race');
         
         if (imgEl) imgEl.src = enemy.image || ASSETS.enemies.wolf;
-        if (nameEl) nameEl.textContent = enemy.name;
+        
+        const isConcealed = enemy.isRealmConcealed && enemy.isRealmConcealed();
+
+        if (nameEl) nameEl.textContent = isConcealed ? enemy.getDisplayName() : enemy.name;
         
         const races = {
             'HUMAN': 'Nhân Tộc',
@@ -979,75 +986,82 @@ export class BattleScreen {
         const spdEl = document.getElementById('enemy-stats-spd');
         const senseEl = document.getElementById('enemy-stats-sense');
 
-        if (hpEl) hpEl.textContent = `${Math.floor(enemy.hp)}/${Math.floor(enemy.maxHp)}`;
+        if (hpEl) hpEl.textContent = isConcealed ? '??? / ???' : `${Math.floor(enemy.hp)}/${Math.floor(enemy.maxHp)}`;
         if (manaEl) {
             const label = enemy.getEnergyLabel ? enemy.getEnergyLabel() : (enemy.realmId > 17 ? 'Chân Nguyên' : 'Linh Lực');
             if (manaEl.previousElementSibling) {
                 manaEl.previousElementSibling.textContent = label;
             }
-            manaEl.textContent = `${Math.floor(enemy.mana)}/${Math.floor(enemy.maxMana)}`;
+            manaEl.textContent = isConcealed ? '??? / ???' : `${Math.floor(enemy.mana)}/${Math.floor(enemy.maxMana)}`;
         }
-        if (atkEl) atkEl.textContent = Math.floor(enemy.atk);
-        if (defEl) defEl.textContent = Math.floor(enemy.def);
-        if (spdEl) spdEl.textContent = Math.floor(enemy.spd);
-        if (senseEl) senseEl.textContent = Math.floor(enemy.divineSense || enemy.maxThanThuc || enemy.perception || 50);
+        if (atkEl) atkEl.textContent = isConcealed ? '???' : Math.floor(enemy.atk);
+        if (defEl) defEl.textContent = isConcealed ? '???' : Math.floor(enemy.def);
+        if (spdEl) spdEl.textContent = isConcealed ? '???' : Math.floor(enemy.spd);
+        if (senseEl) senseEl.textContent = isConcealed ? '???' : Math.floor(enemy.divineSense || enemy.maxThanThuc || enemy.perception || 50);
 
         const comprehensionEl = document.getElementById('enemy-stats-comprehension');
         const physiqueEl = document.getElementById('enemy-stats-physique');
         const daotamEl = document.getElementById('enemy-stats-daotam');
         const heartdemonEl = document.getElementById('enemy-stats-heartdemon');
 
-        if (comprehensionEl) comprehensionEl.textContent = Math.floor(enemy.comprehension || 10);
-        if (physiqueEl) physiqueEl.textContent = Math.floor(enemy.physiqueTalent || 50);
-        if (daotamEl) daotamEl.textContent = Math.floor(enemy.daoTam || 50);
-        if (heartdemonEl) heartdemonEl.textContent = `${Math.floor(enemy.heartDemon || 0)}%`;
+        if (comprehensionEl) comprehensionEl.textContent = isConcealed ? '???' : Math.floor(enemy.comprehension || 10);
+        if (physiqueEl) physiqueEl.textContent = isConcealed ? '???' : Math.floor(enemy.physiqueTalent || 50);
+        if (daotamEl) daotamEl.textContent = isConcealed ? '???' : Math.floor(enemy.daoTam || 50);
+        if (heartdemonEl) heartdemonEl.textContent = isConcealed ? '???' : `${Math.floor(enemy.heartDemon || 0)}%`;
 
-        // Populate advanced stats
         const advContainer = document.getElementById('enemy-advanced-stats-container');
         if (advContainer) {
-            const advStats = enemy.advancedStats || {};
+            if (isConcealed) {
+                advContainer.innerHTML = `
+                    <div class="text-[10px] text-center text-yellow-500/80 py-4 font-ancient">
+                        Thần thức bất lực, không thể thăm dò chi tiết!
+                    </div>
+                `;
+            } else {
+                const advStats = enemy.advancedStats || {};
 
-            const labels = {
-                critRate: { label: 'Tỷ lệ sơ hở', val: (v) => `${Math.round((advStats.weaknessStrikeChance || v) * 100)}%`, color: 'text-red-400' },
-                critDmg: { label: 'Sát thương sơ hở', val: (v) => `${v.toFixed(1)}x`, color: 'text-red-500' },
-                pierce: { label: 'Xuyên giáp', val: (v) => `${Math.round(v * 100)}%`, color: 'text-yellow-400' },
-                damageReduction: { label: 'Giảm sát thương', val: (v) => `${Math.round(v * 100)}%`, color: 'text-qi-jade' },
-                lifeSteal: { label: 'Hút máu', val: (v) => `${Math.round(v * 100)}%`, color: 'text-red-600' }
-            };
+                const labels = {
+                    critRate: { label: 'Tỷ lệ sơ hở', val: (v) => `${Math.round((advStats.weaknessStrikeChance || v) * 100)}%`, color: 'text-red-400' },
+                    critDmg: { label: 'Sát thương sơ hở', val: (v) => `${v.toFixed(1)}x`, color: 'text-red-500' },
+                    pierce: { label: 'Xuyên giáp', val: (v) => `${Math.round(v * 100)}%`, color: 'text-yellow-400' },
+                    damageReduction: { label: 'Giảm sát thương', val: (v) => `${Math.round(v * 100)}%`, color: 'text-qi-jade' },
+                    lifeSteal: { label: 'Hút máu', val: (v) => `${Math.round(v * 100)}%`, color: 'text-red-600' }
+                };
 
-            let advHtml = '';
-            Object.entries(labels).forEach(([key, cfg]) => {
-                const val = advStats[key] || 0;
-                if (val > 0 || key === 'critRate' || key === 'critDmg') {
-                    advHtml += `
-                        <div class="flex justify-between items-center py-1 border-b border-white/[0.02]">
-                            <span class="text-gray-500 text-[9px]">${cfg.label}</span>
-                            <span class="font-bold ${cfg.color} font-mono text-[9px]">${cfg.val(val)}</span>
-                        </div>
-                    `;
-                }
-            });
+                let advHtml = '';
+                Object.entries(labels).forEach(([key, cfg]) => {
+                    const val = advStats[key] || 0;
+                    if (val > 0 || key === 'critRate' || key === 'critDmg') {
+                        advHtml += `
+                            <div class="flex justify-between items-center py-1 border-b border-white/[0.02]">
+                                <span class="text-gray-500 text-[9px]">${cfg.label}</span>
+                                <span class="font-bold ${cfg.color} font-mono text-[9px]">${cfg.val(val)}</span>
+                            </div>
+                        `;
+                    }
+                });
 
-            // Element multipliers
-            const elementLabels = {
-                fireDmg: { label: 'Hỏa Sát', color: 'text-orange-400' },
-                waterDmg: { label: 'Thủy Sát', color: 'text-blue-400' },
-                thunderDmg: { label: 'Lôi Sát', color: 'text-purple-400' },
-                poisonDmg: { label: 'Độc Sát', color: 'text-green-400' }
-            };
-            Object.entries(elementLabels).forEach(([key, cfg]) => {
-                const val = advStats[key] || 1.0;
-                if (val > 1.0) {
-                    advHtml += `
-                        <div class="flex justify-between items-center py-1 border-b border-white/[0.02]">
-                            <span class="text-gray-500 text-[9px]">${cfg.label}</span>
-                            <span class="font-bold ${cfg.color} font-mono text-[9px]">+${Math.round((val - 1) * 100)}%</span>
-                        </div>
-                    `;
-                }
-            });
+                // Element multipliers
+                const elementLabels = {
+                    fireDmg: { label: 'Hỏa Sát', color: 'text-orange-400' },
+                    waterDmg: { label: 'Thủy Sát', color: 'text-blue-400' },
+                    thunderDmg: { label: 'Lôi Sát', color: 'text-purple-400' },
+                    poisonDmg: { label: 'Độc Sát', color: 'text-green-400' }
+                };
+                Object.entries(elementLabels).forEach(([key, cfg]) => {
+                    const val = advStats[key] || 1.0;
+                    if (val > 1.0) {
+                        advHtml += `
+                            <div class="flex justify-between items-center py-1 border-b border-white/[0.02]">
+                                <span class="text-gray-500 text-[9px]">${cfg.label}</span>
+                                <span class="font-bold ${cfg.color} font-mono text-[9px]">+${Math.round((val - 1) * 100)}%</span>
+                            </div>
+                        `;
+                    }
+                });
 
-            advContainer.innerHTML = advHtml || '<p class="text-center text-gray-600 text-[8px] py-2">Không có thuộc tính đặc biệt</p>';
+                advContainer.innerHTML = advHtml || '<p class="text-center text-gray-600 text-[8px] py-2">Không có thuộc tính đặc biệt</p>';
+            }
         }
 
         if (this.enemyStatsModal) {
