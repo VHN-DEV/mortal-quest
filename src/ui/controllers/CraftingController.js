@@ -292,11 +292,10 @@ export class CraftingController {
                     // Generate Repair Button if damaged
                     let repairBtnHtml = '';
                     if (durability < maxDurability) {
-                        const canAfford = state.player.lingShi >= repairCost;
                         repairBtnHtml = `
-                            <button class="px-3 py-1.5 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/20 rounded-xl text-[9px] font-bold active:scale-95 transition-all ${!canAfford ? 'opacity-40 cursor-not-allowed' : ''}"
-                                ${canAfford ? `onclick="window.game.repairPuppet('${meta.uniqueId}')"` : ''}>
-                                SỬA CHỮA (-${repairCost} LT)
+                            <button class="px-3 py-1.5 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/20 rounded-xl text-[9px] font-bold active:scale-95 transition-all"
+                                onclick="window.game.repairPuppet('${meta.uniqueId}')">
+                                SỬA CHỮA (Cần NL & LT)
                             </button>
                         `;
                     }

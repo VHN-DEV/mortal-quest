@@ -164,14 +164,37 @@ export class PuppetSystem {
     // ─── REPAIR ───────────────────────────────────────────────────────────────
 
     /**
-     * Repair by spending LingShi. Cost scales with puppet stats.
+     * Repair by spending LingShi and 1x compatible material. Cost scales with puppet stats.
      */
-    repair(uniqueId) {
+    repair(uniqueId, materialId = null) {
         const puppet = this._getAllPuppets().find(p => p.metadata?.uniqueId === uniqueId);
         if (!puppet) return { success: false, msg: 'Không tìm thấy khôi lỗi!' };
 
         const meta = puppet.metadata;
         if (meta.durability >= meta.maxDurability) return { success: false, msg: 'Khôi lỗi đang ở trạng thái hoàn hảo!' };
+
+        // Xác định nguyên liệu tương thích từ bản vẽ chế tạo
+        const recipe = PUPPET_RECIPES.find(r => r.id === meta.puppetId);
+        let compatibleMatIds = recipe 
+            ? recipe.materials.map(m => m.id).filter(id => !id.includes('linh_thach'))
+            : ['huyen_thiet'];
+
+        if (compatibleMatIds.length === 0) {
+            compatibleMatIds = ['huyen_thiet'];
+        }
+
+        // Tự động tìm nguyên liệu nếu chưa chỉ định
+        if (!materialId) {
+            materialId = compatibleMatIds.find(id => this.player.inventory.hasItem(id, 1));
+            if (!materialId) {
+                const matNames = compatibleMatIds.map(id => getItemById(id)?.name || id).join(', ');
+                return { success: false, msg: `Thiếu nguyên liệu sửa chữa khôi lỗi! Cần 1x nguyên liệu tương thích (${matNames}).` };
+            }
+        }
+
+        if (!this.player.inventory.hasItem(materialId, 1)) {
+            return { success: false, msg: `Thiếu nguyên liệu sửa chữa: 1x ${getItemById(materialId)?.name || materialId}!` };
+        }
 
         const missingDur = meta.maxDurability - meta.durability;
         const cost = Math.max(100, Math.floor(missingDur * 20 * (this.player.puppetLevel || 1)));
@@ -180,9 +203,10 @@ export class PuppetSystem {
             return { success: false, msg: `Cần ${cost.toLocaleString()} Linh Thạch để sửa chữa!` };
         }
 
+        this.player.inventory.removeItem(materialId, 1);
         this.player.spendLingShi(cost);
         meta.durability = meta.maxDurability;
-        return { success: true, msg: `Đã sửa chữa [${meta.name}] — tốn ${cost.toLocaleString()} Linh Thạch!` };
+        return { success: true, msg: `Đã sửa chữa [${meta.name}] — tiêu hao 1x ${getItemById(materialId).name} và ${cost.toLocaleString()} Linh Thạch!` };
     }
 
     // ─── AUTO GAME LOOP TICK ──────────────────────────────────────────────────

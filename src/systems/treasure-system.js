@@ -1,5 +1,7 @@
 import { getItemById } from '../configs/item-data.js';
-import { ARTIFACT_TIERS, ARTIFACT_QUALITIES, ARTIFACT_STATS } from '../configs/artifact-data.js';
+import { ARTIFACT_TIERS, ARTIFACT_QUALITIES, ARTIFACT_STATS, NATAL_TREASURE_CONFIGS } from '../configs/artifact-data.js';
+import { SMITHING_RECIPES } from '../configs/smithing-data.js';
+import { getFlameById } from '../configs/alchemy-data.js';
 
 /**
  * Hệ thống Pháp Bảo chuyên sâu.
@@ -94,7 +96,13 @@ export class TreasureSystem {
     /**
      * Sửa chữa Pháp Bảo (Repair)
      */
-    repair(slot) {
+    /**
+     * Sửa chữa Pháp Bảo (Repair)
+     * @param {string} slot - Vị trí trang bị
+     * @param {string} method - 'dan_fire' | 'forge' | 'hire'
+     * @param {string|null} materialId - Vật liệu dùng để thối hỏa sửa chữa
+     */
+    repair(slot, method = 'hire', materialId = null) {
         const itemId = this.player.equipment[slot];
         if (!itemId) return { success: false, msg: 'Không có pháp bảo để sửa chữa.' };
 
@@ -105,12 +113,95 @@ export class TreasureSystem {
         const meta = this.player.equipmentMetadata[slot];
         if (meta.durability >= 100) return { success: false, msg: 'Độ bền đã ở mức tối đa.' };
 
-        const cost = (100 - meta.durability) * 5; // 5 linh thạch mỗi điểm độ bền
-        if (this.player.spendLingShi(cost)) {
-            meta.durability = 100;
-            return { success: true, msg: `Sửa chữa thành công! Tiêu tốn ${cost} Linh Thạch.` };
+        // Xác định nguyên liệu tương thích
+        let compatibleMatIds = [];
+        const recipe = SMITHING_RECIPES[itemId];
+        if (recipe) {
+            compatibleMatIds = recipe.materials.map(m => m.id);
+        } else {
+            const natalConfig = NATAL_TREASURE_CONFIGS[itemId];
+            if (natalConfig && natalConfig.costs && natalConfig.costs.materials) {
+                compatibleMatIds = Object.keys(natalConfig.costs.materials);
+            } else {
+                compatibleMatIds = ['huyen_thiet', 'tinh_kim'];
+            }
         }
-        return { success: false, msg: 'Không đủ Linh Thạch để sửa chữa.' };
+
+        // Loại bỏ Linh Thạch khỏi danh sách nguyên liệu
+        compatibleMatIds = compatibleMatIds.filter(id => !id.includes('linh_thach'));
+
+        // Nếu không truyền materialId và không phải dan_fire, tự động tìm nguyên liệu có sẵn
+        if (!materialId && method !== 'dan_fire') {
+            materialId = compatibleMatIds.find(id => this.player.inventory.hasItem(id, 1));
+            if (!materialId) {
+                const matNames = compatibleMatIds.map(id => getItemById(id)?.name || id).join(', ');
+                return { success: false, msg: `Thiếu nguyên liệu sửa chữa! Cần 1x nguyên liệu tương thích (${matNames}).` };
+            }
+        }
+
+        const pointsNeeded = 100 - meta.durability;
+
+        if (method === 'dan_fire') {
+            if (this.player.realmId < 18) {
+                return { success: false, msg: 'Cảnh giới chưa đạt Kết Đan Kỳ, chưa thể ngưng tụ Đan Hỏa để tự ôn dưỡng pháp bảo!' };
+            }
+            if (meta.durability < 80) {
+                return { success: false, msg: 'Pháp bảo bị hư hại quá nặng (dưới 80%), Đan Hỏa không thể tự khôi phục, cần phải rèn sửa!' };
+            }
+            const staminaCost = pointsNeeded * 5;
+            const manaCost = pointsNeeded * 20;
+            if (this.player.stamina < staminaCost || this.player.mana < manaCost) {
+                return { success: false, msg: `Không đủ trạng thái để ôn dưỡng (Cần ${staminaCost} Thể lực, ${manaCost} Linh lực)!` };
+            }
+            this.player.stamina -= staminaCost;
+            this.player.mana -= manaCost;
+            meta.durability = 100;
+            this.player.calculateStats();
+            return { success: true, msg: `Dùng Đan Hỏa ôn dưỡng thành công! Độ bền khôi phục lên 100% (Tiêu hao ${staminaCost} Thể lực, ${manaCost} Linh lực).` };
+        }
+
+        if (method === 'forge') {
+            const flame = getFlameById(this.player.currentFlame);
+            const tool = getItemById(this.player.smithingTool);
+            if (!flame || !tool) {
+                return { success: false, msg: 'Ngươi cần có Linh Hỏa và Dụng Cụ Rèn được trang bị để tự rèn sửa pháp bảo!' };
+            }
+            const requiredLevel = recipe ? recipe.level : 1;
+            if (this.player.smithingLevel < requiredLevel) {
+                return { success: false, msg: `Cấp Luyện Khí Sư chưa đủ để tự rèn sửa pháp khí/pháp bảo này (Yêu cầu cấp ${requiredLevel})!` };
+            }
+            if (!this.player.inventory.hasItem(materialId, 1)) {
+                return { success: false, msg: `Không đủ nguyên liệu sửa chữa trong túi: 1x ${getItemById(materialId)?.name || materialId}!` };
+            }
+            const cost = pointsNeeded * 2;
+            if (this.player.lingShi < cost) {
+                return { success: false, msg: `Cần ${cost} Linh Thạch để mua dung môi rèn sửa!` };
+            }
+
+            this.player.inventory.removeItem(materialId, 1);
+            this.player.spendLingShi(cost);
+            meta.durability = 100;
+            this.player.calculateStats();
+            return { success: true, msg: `Tự rèn sửa pháp bảo thành công! Tiêu hao 1x ${getItemById(materialId).name} và ${cost} Linh Thạch.` };
+        }
+
+        if (method === 'hire') {
+            if (!this.player.inventory.hasItem(materialId, 1)) {
+                return { success: false, msg: `Không đủ nguyên liệu sửa chữa trong túi: 1x ${getItemById(materialId)?.name || materialId}!` };
+            }
+            const cost = pointsNeeded * 15;
+            if (this.player.lingShi < cost) {
+                return { success: false, msg: `Không đủ Linh Thạch để thuê sửa chữa (Cần ${cost} Linh Thạch)!` };
+            }
+
+            this.player.inventory.removeItem(materialId, 1);
+            this.player.spendLingShi(cost);
+            meta.durability = 100;
+            this.player.calculateStats();
+            return { success: true, msg: `Thuê Luyện Khí Sư sửa chữa thành công! Tiêu hao 1x ${getItemById(materialId).name} và ${cost} Linh Thạch.` };
+        }
+
+        return { success: false, msg: 'Phương thức sửa chữa không hợp lệ.' };
     }
 
     /**

@@ -42,9 +42,7 @@ export class TreasureScreen {
 
         if (this.btnRepair) {
             this.btnRepair.onclick = () => {
-                const res = state.systems.treasure.repair(this.currentSlot);
-                state.ui.toast(res.msg, res.success ? 'success' : 'error');
-                this.render();
+                window.game.repairTreasure(this.currentSlot);
             };
         }
 

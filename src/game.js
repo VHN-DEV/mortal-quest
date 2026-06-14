@@ -3600,12 +3600,193 @@ export class Game {
         }
     }
 
-    repairPuppet(uniqueId) {
-        if (state.systems.puppet) {
-            const res = state.systems.puppet.repair(uniqueId);
+    async repairPuppet(uniqueId) {
+        if (!state.systems.puppet) return;
+
+        // Find the puppet
+        const puppets = state.player.inventory.allItems.filter(i => i.id === 'khoi_loi' && i.metadata?.uniqueId === uniqueId);
+        if (puppets.length === 0) {
+            state.ui.toast('Không tìm thấy khôi lỗi!', 'error');
+            return;
+        }
+        const puppet = puppets[0];
+        const meta = puppet.metadata;
+        if (meta.durability >= meta.maxDurability) {
+            state.ui.toast('Khôi lỗi đang ở trạng thái hoàn hảo!', 'warning');
+            return;
+        }
+
+        // Find compatible materials
+        const { PUPPET_RECIPES } = await import('./configs/puppet-data.js');
+        const recipe = PUPPET_RECIPES.find(r => r.id === meta.puppetId);
+        let compatibleMatIds = recipe 
+            ? recipe.materials.map(m => m.id).filter(id => !id.includes('linh_thach'))
+            : ['huyen_thiet'];
+
+        if (compatibleMatIds.length === 0) compatibleMatIds = ['huyen_thiet'];
+
+        // Get owned materials
+        const ownedMatIds = compatibleMatIds.filter(id => state.player.inventory.hasItem(id, 1));
+        const { getItemById } = await import('./configs/item-data.js');
+
+        if (ownedMatIds.length === 0) {
+            const matNamesStr = compatibleMatIds.map(id => getItemById(id)?.name || id).join(', ');
+            state.ui.toast(`Thiếu nguyên liệu sửa chữa khôi lỗi! Cần 1x nguyên liệu tương thích (${matNamesStr}).`, 'error');
+            return;
+        }
+
+        const missingDur = meta.maxDurability - meta.durability;
+        const cost = Math.max(100, Math.floor(missingDur * 20 * (state.player.puppetLevel || 1)));
+
+        // Build prompt options
+        const options = ownedMatIds.map(matId => {
+            const item = getItemById(matId);
+            return {
+                id: matId,
+                label: `Sử dụng 1x ${item?.name || matId}`,
+                icon: 'ph-wrench'
+            };
+        });
+
+        const chosenMatId = await state.ui.promptOptions(
+            `Sửa Chữa Khôi Lỗi: ${meta.name}`,
+            options,
+            `Độ bền hiện tại: ${Math.floor(meta.durability)}% / ${meta.maxDurability}%.<br>Chi phí sửa chữa: 1x nguyên liệu đã chọn + ${cost.toLocaleString()} Linh Thạch.`
+        );
+
+        if (!chosenMatId) return; // User cancelled
+
+        const res = state.systems.puppet.repair(uniqueId, chosenMatId);
+        state.ui.toast(res.msg, res.success ? 'success' : 'error');
+        this.refreshUI();
+        if (this.screens.systems) this.screens.systems.renderPuppet();
+    }
+
+    async repairTreasure(slot) {
+        const itemId = state.player.equipment[slot];
+        if (!itemId) {
+            state.ui.toast('Không có pháp bảo để sửa chữa.', 'error');
+            return;
+        }
+
+        const meta = state.player.equipmentMetadata[slot];
+        if (!meta || meta.durability >= 100) {
+            state.ui.toast('Pháp bảo vẫn còn hoàn hảo.', 'warning');
+            return;
+        }
+
+        const { getItemById } = await import('./configs/item-data.js');
+        const { SMITHING_RECIPES } = await import('./configs/smithing-data.js');
+        const { NATAL_TREASURE_CONFIGS } = await import('./configs/artifact-data.js');
+
+        // Determine compatible materials
+        let compatibleMatIds = [];
+        const recipe = SMITHING_RECIPES[itemId];
+        if (recipe) {
+            compatibleMatIds = recipe.materials.map(m => m.id);
+        } else {
+            const natalConfig = NATAL_TREASURE_CONFIGS[itemId];
+            if (natalConfig && natalConfig.costs && natalConfig.costs.materials) {
+                compatibleMatIds = Object.keys(natalConfig.costs.materials);
+            } else {
+                compatibleMatIds = ['huyen_thiet', 'tinh_kim'];
+            }
+        }
+        compatibleMatIds = compatibleMatIds.filter(id => !id.includes('linh_thach'));
+
+        // Get owned compatible materials
+        const ownedMatIds = compatibleMatIds.filter(id => state.player.inventory.hasItem(id, 1));
+        const pointsNeeded = 100 - meta.durability;
+
+        // Build options
+        const options = [];
+
+        // 1. Dan Fire (Only available if realmId >= 18 and durability >= 80)
+        const canDanFire = state.player.realmId >= 18;
+        const isMinorWear = meta.durability >= 80;
+        const danFireStamina = pointsNeeded * 5;
+        const danFireMana = pointsNeeded * 20;
+
+        if (canDanFire) {
+            options.push({
+                id: 'dan_fire',
+                label: `🔥 Tự Ôn Dưỡng bằng Đan Hỏa (Thể lực -${danFireStamina}, Linh lực -${danFireMana})`,
+                icon: 'ph-fire',
+                disabled: !isMinorWear
+            });
+        }
+
+        // 2. Forge & Hire options per owned material
+        const requiredSmithingLevel = recipe ? recipe.level : 1;
+        const hasSmithingSkills = state.player.smithingLevel >= requiredSmithingLevel;
+        const hasForgeTools = state.player.currentFlame && state.player.smithingTool;
+        
+        ownedMatIds.forEach(matId => {
+            const item = getItemById(matId);
+            const forgeCost = pointsNeeded * 2;
+            const hireCost = pointsNeeded * 15;
+
+            // Self-forge option
+            options.push({
+                id: `forge:${matId}`,
+                label: `🔨 Tự Rèn Sửa [1x ${item?.name || matId}] (-${forgeCost} LT)`,
+                icon: 'ph-hammer'
+            });
+
+            // Hire option
+            options.push({
+                id: `hire:${matId}`,
+                label: `🤝 Thuê Sửa Chữa [1x ${item?.name || matId}] (-${hireCost} LT)`,
+                icon: 'ph-handshake'
+            });
+        });
+
+        // If no owned materials, add a disabled option to inform user
+        if (ownedMatIds.length === 0) {
+            const matNames = compatibleMatIds.map(id => getItemById(id)?.name || id).join(' hoặc ');
+            options.push({
+                id: 'no_materials',
+                label: `⚠️ Cần 1x nguyên liệu tương thích để sửa (${matNames})`,
+                icon: 'ph-warning',
+                disabled: true
+            });
+        }
+
+        const choice = await state.ui.promptOptions(
+            `Sửa Chữa Pháp Bảo: ${getItemById(itemId)?.name || itemId}`,
+            options.filter(opt => !opt.disabled),
+            `Hãy chọn phương thức khôi phục pháp bảo của bạn (Độ bền hiện tại: ${meta.durability}%):`
+        );
+
+        if (!choice) return;
+
+        let res;
+        if (choice === 'dan_fire') {
+            if (!isMinorWear) {
+                state.ui.toast('Pháp bảo bị hư hại quá nặng, Đan Hỏa không thể tự khôi phục!', 'error');
+                return;
+            }
+            res = state.systems.treasure.repair(slot, 'dan_fire');
+        } else if (choice.startsWith('forge:')) {
+            if (!hasForgeTools) {
+                state.ui.toast('Ngươi cần trang bị Dụng Cụ Rèn và Linh Hỏa để tự rèn!', 'error');
+                return;
+            }
+            if (!hasSmithingSkills) {
+                state.ui.toast(`Cấp Luyện Khí Sư chưa đủ (Yêu cầu cấp ${requiredSmithingLevel})!`, 'error');
+                return;
+            }
+            const matId = choice.split(':')[1];
+            res = state.systems.treasure.repair(slot, 'forge', matId);
+        } else if (choice.startsWith('hire:')) {
+            const matId = choice.split(':')[1];
+            res = state.systems.treasure.repair(slot, 'hire', matId);
+        }
+
+        if (res) {
             state.ui.toast(res.msg, res.success ? 'success' : 'error');
             this.refreshUI();
-            if (this.screens.systems) this.screens.systems.renderPuppet();
+            if (this.screens.treasure) this.screens.treasure.render();
         }
     }
 
