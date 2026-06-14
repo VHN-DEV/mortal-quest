@@ -59,8 +59,8 @@ describe('PNTT Lore Accuracy', () => {
       randomSpy.mockRestore();
     });
 
-    it('should scale Tịch Tà Thần Lôi by 20% at KIEM_TAM state against GHOST', () => {
-      const player = createPlayerWithSwords('KIEM_TAM');
+    it('should scale Tịch Tà Thần Lôi by 20% at LINH_BAO state against GHOST', () => {
+      const player = createPlayerWithSwords('LINH_BAO');
       const enemy = { name: 'Lệ Quỷ', hp: 1000, maxHp: 1000, atk: 50, def: 20, spd: 50, realmId: 14, race: 'GHOST' };
       const engine = new CombatEngine(player, enemy, vi.fn(), vi.fn());
       

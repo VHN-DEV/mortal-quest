@@ -441,7 +441,7 @@ describe('Player class', () => {
       expect(failRes.msg).toContain('đạt giới hạn');
     });
 
-    it('should evolve through stages (KIEM_TAM, KIEM_LINH, TIEN_KHI) with correct conditions', () => {
+    it('should evolve through stages (LINH_BAO, KIEM_LINH, TIEN_KHI) with correct conditions', () => {
       const player = new Player();
       player.realmId = 18;
       player.inventory.addItem('ha_pham_linh_thach', 10000000);
@@ -451,14 +451,14 @@ describe('Player class', () => {
 
       let res = player.evolveThanhTrucSwords();
       expect(res.success).toBe(false);
-      expect(res.msg).toContain('Cảnh giới Cấp 5');
+      expect(res.msg).toContain('Cấp 5');
 
       player.natalTreasure.level = 5;
       player.natalTreasure.nourishYears = 50;
 
       res = player.evolveThanhTrucSwords();
       expect(res.success).toBe(true);
-      expect(player.natalTreasure.evolutionState).toBe('KIEM_TAM');
+      expect(player.natalTreasure.evolutionState).toBe('LINH_BAO');
 
       res = player.evolveThanhTrucSwords();
       expect(res.success).toBe(false);

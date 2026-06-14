@@ -1222,7 +1222,7 @@ export class CombatEngine {
             const eRace = this.enemy.race || 'NEUTRAL';
             if (eRace === 'DEMON' || eRace === 'GHOST') {
                 let multiplier = 0.15;
-                if (ev === 'KIEM_TAM') multiplier = 0.20;
+                if (ev === 'LINH_BAO') multiplier = 0.20;
                 else if (ev === 'KIEM_LINH') multiplier = 0.30;
                 else if (ev === 'TIEN_KHI') multiplier = 0.45;
 

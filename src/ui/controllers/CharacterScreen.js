@@ -327,9 +327,9 @@ export class CharacterScreen {
                     let title = '';
                     let desc = '';
                     if (evState === 'NONE') {
-                        title = 'Ngộ Đạo Kiếm Tâm';
-                        desc = 'Khơi gợi tâm linh cảm ứng giữa nhân vật và phi kiếm, nâng cấp lên [Kiếm Tâm Thông Linh] (Yêu cầu nuôi dưỡng 50+ năm, Pháp bảo Cấp 5). Đạo hữu chắc chắn thực hiện?';
-                    } else if (evState === 'KIEM_TAM') {
+                        title = 'Thăng Hoa Linh Bảo';
+                        desc = 'Ôn dưỡng và kích hoạt linh tính phi kiếm, nâng cấp lên [Thông Thiên Linh Bảo] (Yêu cầu nuôi dưỡng 50+ năm, Pháp bảo Cấp 5). Đạo hữu chắc chắn thực hiện?';
+                    } else if (evState === 'LINH_BAO') {
                         title = 'Thức Tỉnh Kiếm Linh';
                         desc = 'Dung hợp Huyền Thiên ý chí giúp kiếm linh thức tỉnh (Tiêu hao 1x Huyền Thiên Kiếm Linh và 500k Linh Thạch). Đạo hữu chắc chắn thực hiện?';
                     } else if (evState === 'KIEM_LINH') {
@@ -867,14 +867,14 @@ export class CharacterScreen {
                         }
 
                         const ev = t.evolutionState || 'NONE';
-                        if (ev === 'KIEM_TAM' || ev === 'KIEM_LINH' || ev === 'TIEN_KHI') {
+                        if (ev === 'LINH_BAO' || ev === 'KIEM_LINH' || ev === 'TIEN_KHI') {
                             statsHtml += `
                                 <div class="flex justify-between text-gray-500">
-                                    <span class="uppercase">Kiếm Ý (Thân Pháp)</span>
+                                    <span class="uppercase">Linh Bảo (Thân Pháp)</span>
                                     <span class="text-cyan-400 font-bold font-mono">+50</span>
                                 </div>
                                 <div class="flex justify-between text-gray-500">
-                                    <span class="uppercase">Kiếm Ý (Bạo Kích)</span>
+                                    <span class="uppercase">Linh Bảo (Bạo Kích)</span>
                                     <span class="text-cyan-400 font-bold font-mono">+5%</span>
                                 </div>
                             `;
@@ -915,7 +915,7 @@ export class CharacterScreen {
                         if (evStateEl) {
                             const ev = t.evolutionState || 'NONE';
                             let displayState = 'Chưa Khai Mở';
-                            if (ev === 'KIEM_TAM') displayState = 'Kiếm Tâm Thông Linh';
+                            if (ev === 'LINH_BAO') displayState = 'Thông Thiên Linh Bảo';
                             else if (ev === 'KIEM_LINH') displayState = 'Kiếm Linh Thức Tỉnh';
                             else if (ev === 'TIEN_KHI') displayState = 'Tiên Khí Pháp Bảo';
                             evStateEl.textContent = displayState;

@@ -2678,7 +2678,7 @@ export class Player {
                     }
 
                     // Apply active evolution bonuses
-                    if (ev === 'KIEM_TAM' || ev === 'KIEM_LINH' || ev === 'TIEN_KHI') {
+                    if (ev === 'LINH_BAO' || ev === 'KIEM_LINH' || ev === 'TIEN_KHI') {
                         this.bonusStats.spd += 50;
                         this.advancedStats.weaknessStrikeChance += 0.05;
                     }
@@ -5122,21 +5122,21 @@ export class Player {
         const evState = this.natalTreasure.evolutionState || 'NONE';
 
         if (evState === 'NONE') {
-            // NONE -> KIEM_TAM
+            // NONE -> LINH_BAO
             const nourish = this.natalTreasure.nourishYears || 0;
             const lvl = this.natalTreasure.level || 1;
             if (nourish < 50 || lvl < 5) {
-                return { success: false, msg: `Chưa đạt yêu cầu tâm linh cảm ứng! Cần nuôi dưỡng 50+ năm (Hiện tại: ${nourish} năm) và Pháp bảo đạt Cảnh giới Cấp 5 (Hiện tại: Cấp ${lvl}).` };
+                return { success: false, msg: `Chưa tích lũy đủ linh tính để thăng hoa Linh Bảo! Cần nuôi dưỡng 50+ năm (Hiện tại: ${nourish} năm) và Pháp bảo đạt Cấp 5 (Hiện tại: Cấp ${lvl}).` };
             }
 
-            this.natalTreasure.evolutionState = 'KIEM_TAM';
+            this.natalTreasure.evolutionState = 'LINH_BAO';
             this.calculateStats();
             return {
                 success: true,
-                msg: "🌀 Ngộ đạo thành công! Thanh Trúc Phong Vân Kiếm đạt cảnh giới [Kiếm Tâm Thông Linh], tăng mạnh Thân pháp và Tỉ lệ Bạo kích!"
+                msg: "🌀 Ôn dưỡng thành công! Thanh Trúc Phong Vân Kiếm đã thăng hoa thành [Thông Thiên Linh Bảo], tăng mạnh Thân pháp và Tỉ lệ Bạo kích!"
             };
-        } else if (evState === 'KIEM_TAM') {
-            // KIEM_TAM -> KIEM_LINH
+        } else if (evState === 'LINH_BAO') {
+            // LINH_BAO -> KIEM_LINH
             if (!this.inventory.hasItem('huyen_thien_kiem_linh', 1)) {
                 return { success: false, msg: "Thiếu nguyên liệu tiến hóa: Cần 1x Huyền Thiên Kiếm Linh!" };
             }
