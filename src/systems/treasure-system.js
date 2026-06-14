@@ -2,6 +2,7 @@ import { getItemById } from '../configs/item-data.js';
 import { ARTIFACT_TIERS, ARTIFACT_QUALITIES, ARTIFACT_STATS, NATAL_TREASURE_CONFIGS } from '../configs/artifact-data.js';
 import { SMITHING_RECIPES } from '../configs/smithing-data.js';
 import { getFlameById } from '../configs/alchemy-data.js';
+import { state } from '../state.js';
 
 /**
  * Hệ thống Pháp Bảo chuyên sâu.
@@ -243,14 +244,21 @@ export class TreasureSystem {
             }
 
             const data = this.player.artifactData.chuong_thien_binh;
-            // Mỗi 10 phút game sinh 1 giọt linh dịch (tỉ lệ 1/600 progress mỗi giây delta)
-            // Giả sử 1 giây thực = 1 phút game? Tùy TimeSystem.
-            // Ở đây dùng một hằng số tạm thời: 1 giọt mỗi 5 phút thực (300s)
-            data.progress += delta;
-            if (data.progress >= 300) {
-                data.progress -= 300;
-                this.player.inventory.addItem('linh_dich_chuong_thien_binh', 1);
-                if (this.ui) this.ui.toast("Chưởng Thiên Bình đã ngưng tụ được 1 giọt Linh Dịch!", "success");
+            
+            // Theo đúng thế giới quan Phàm Nhân Tu Tiên, Chưởng Thiên Bình chỉ hấp thu tinh hoa tinh thần ban đêm
+            const timeSystem = state.systems && state.systems.time;
+            const isNight = timeSystem ? timeSystem.isNight() : true;
+
+            if (isNight) {
+                // Mỗi 10 phút game sinh 1 giọt linh dịch (tỉ lệ 1/600 progress mỗi giây delta)
+                // Giả sử 1 giây thực = 1 phút game? Tùy TimeSystem.
+                // Ở đây dùng một hằng số tạm thời: 1 giọt mỗi 5 phút thực (300s)
+                data.progress += delta;
+                if (data.progress >= 300) {
+                    data.progress -= 300;
+                    this.player.inventory.addItem('linh_dich_chuong_thien_binh', 1);
+                    if (this.ui) this.ui.toast("Chưởng Thiên Bình hấp thu tinh hoa tinh thần ngưng tụ được 1 giọt Linh Dịch!", "success");
+                }
             }
         }
     }

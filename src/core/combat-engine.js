@@ -1219,12 +1219,15 @@ export class CombatEngine {
         let lightningLog = '';
         if (this.player.natalTreasure && this.player.natalTreasure.id === 'thanh_truc_phong_van_kiem') {
             const ev = this.player.natalTreasure.evolutionState || 'NONE';
-            if (ev === 'KIEM_LINH' || ev === 'TIEN_KHI') {
-                const eRace = this.enemy.race || 'NEUTRAL';
-                if (eRace === 'DEMON' || eRace === 'GHOST') {
-                    lightningDamage = Math.floor(finalDamage * 0.3);
-                    lightningLog = `⚡ <span class="text-yellow-400 font-bold">[Tịch Tà Thần Lôi]</span> khắc chế tà ma bùng phát, oanh kích thêm <span class="text-yellow-300 font-bold">${lightningDamage}</span> sát thương lôi điện!`;
-                }
+            const eRace = this.enemy.race || 'NEUTRAL';
+            if (eRace === 'DEMON' || eRace === 'GHOST') {
+                let multiplier = 0.15;
+                if (ev === 'KIEM_TAM') multiplier = 0.20;
+                else if (ev === 'KIEM_LINH') multiplier = 0.30;
+                else if (ev === 'TIEN_KHI') multiplier = 0.45;
+
+                lightningDamage = Math.floor(finalDamage * multiplier);
+                lightningLog = `⚡ <span class="text-yellow-400 font-bold">[Tịch Tà Thần Lôi]</span> khắc chế tà ma bùng phát, oanh kích thêm <span class="text-yellow-300 font-bold">${lightningDamage}</span> sát thương lôi điện!`;
             }
         }
         if (lightningDamage > 0) {
