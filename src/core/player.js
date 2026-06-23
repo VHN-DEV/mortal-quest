@@ -9,7 +9,7 @@ import { PHYSIQUE_GRADES, PHYSIQUE_STAGES } from '../configs/game-enums.js';
 import { ARTIFACT_SETS, getItemRequirements, NATAL_TREASURE_CONFIGS } from '../configs/artifact-data.js';
 import { CREATION_TRAITS, ROOT_ELEMENTS, SPECIAL_ELEMENTS } from '../configs/creation-data.js';
 import { TITLES } from '../configs/fate-data.js';
-import { getLocationById, WORLDS } from '../configs/map-data.js';
+import { getLocationById, WORLDS, findWorldIdByLocId } from '../configs/map-data.js';
 import { getSectById } from '../configs/sect-data.js';
 import { CULTIVATION_PATHS } from '../configs/cultivation-paths.js';
 import { getTechniqueTypeSlug } from '../configs/display-mappers.js';
@@ -186,11 +186,7 @@ export class Player {
         this.ownedCauldrons = [];
         this.alchemyReputation = 0;
         this.currentAlchemyRoom = null;
-        this.gardenPlots = [
-            { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' },
-            { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' },
-            { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' }
-        ];
+        this.abodes = [];
         this.mountainSurvival = { oxygen: 100, toxicity: 0 };
 
         // --- Fate System (Nhân Quả - Danh Tiếng - Thiện Ác) ---
@@ -361,6 +357,20 @@ export class Player {
         this.nextPeriodicTribulationYear = 0;
         this.natalTreasure = null;
         Object.assign(this, initData);
+    }
+
+    get gardenPlots() {
+        const currentLoc = state.currentLocId || 'thanh_van_tran';
+        const abode = this.abodes ? this.abodes.find(a => a.locationId === currentLoc) : null;
+        return abode ? abode.gardenPlots : null;
+    }
+
+    set gardenPlots(val) {
+        const currentLoc = state.currentLocId || 'thanh_van_tran';
+        let abode = this.abodes ? this.abodes.find(a => a.locationId === currentLoc) : null;
+        if (abode) {
+            abode.gardenPlots = val;
+        }
     }
 
     calculateDaoThong() {
@@ -4687,7 +4697,7 @@ export class Player {
             activeInsect: this.activeInsect,
             bloodContractDebuffUntil: this.bloodContractDebuffUntil,
 
-            gardenPlots: JSON.parse(JSON.stringify(this.gardenPlots)),
+            abodes: JSON.parse(JSON.stringify(this.abodes || [])),
             mountainSurvival: { ...this.mountainSurvival },
 
             miningState: { ...this.miningState },
@@ -5403,11 +5413,24 @@ export class Player {
         this.activeInsect = data.activeInsect || null;
         this.bloodContractDebuffUntil = data.bloodContractDebuffUntil || 0;
 
-        if (data.gardenPlots) {
-            this.gardenPlots = data.gardenPlots.map(p => {
-                if (p === null) return { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' };
-                return p;
-            });
+        this.abodes = data.abodes || [];
+        if (data.gardenPlots && Array.isArray(data.gardenPlots) && data.gardenPlots.some(p => p && p.seedId)) {
+            const locId = data.currentLocId || 'thanh_van_tran';
+            let abode = this.abodes.find(a => a.locationId === locId);
+            if (!abode) {
+                abode = {
+                    id: 'abode_' + locId + '_' + Date.now(),
+                    locationId: locId,
+                    name: 'Động Phủ ' + (getLocationById(findWorldIdByLocId(locId) || 'nhan_gioi', locId)?.name || 'Vô Danh'),
+                    gardenPlots: data.gardenPlots.map(p => {
+                        if (p === null) return { grade: 'PHAM', attribute: 'NORMAL', seedId: null, age: 0, status: 'empty' };
+                        return p;
+                    }),
+                    defensiveFormation: null,
+                    puppets: []
+                };
+                this.abodes.push(abode);
+            }
         }
         if (data.mountainSurvival) this.mountainSurvival = { ...this.mountainSurvival, ...data.mountainSurvival };
 

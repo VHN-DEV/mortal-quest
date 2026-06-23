@@ -4,7 +4,7 @@ import { SaveSystem, utf8_to_hex, hex_to_utf8 } from './core/save-system.js';
 import { UISystem } from './ui/ui-system.js';
 import { ASSETS } from './configs/asset-data.js';
 import { EnemyGenerator } from './core/enemy.js';
-import { getLocationById, getWorlds } from './configs/map-data.js';
+import { getLocationById, getWorlds, findWorldIdByLocId } from './configs/map-data.js';
 import { CombatEngine } from './core/combat-engine.js';
 import { getItemById } from './configs/item-data.js';
 import { Preferences } from '@capacitor/preferences';
@@ -48,6 +48,8 @@ import { MissionSystem } from './systems/MissionSystem.js';
 import { MissionScreen } from './ui/controllers/MissionScreen.js';
 import { CheatSystem } from './systems/CheatSystem.js';
 import { CheatSystemScreen } from './ui/controllers/CheatSystemScreen.js';
+import { DongPhuSystem } from './systems/DongPhuSystem.js';
+import { DongPhuScreen } from './ui/controllers/DongPhuScreen.js';
 
 function slugifyName(name) {
     if (!name) return 'VoDanh';
@@ -144,6 +146,7 @@ export class Game {
         this.screens.mission = new MissionScreenImport();
         this.screens.loot = new LootScreen();
         this.screens.cheat = new CheatSystemScreen();
+        this.screens.dongPhu = new DongPhuScreen();
 
         state.systems.creation = new CreationSystem();
 
@@ -702,6 +705,7 @@ export class Game {
         }
         if (this.screens.spiritStone) this.screens.spiritStone.render();
         if (this.screens.mining) this.screens.mining.render();
+        if (this.screens.dongPhu) this.screens.dongPhu.render();
 
         // Update Cheat System button
         const elSystemContainer = document.getElementById('main-cheat-system-container');
@@ -1153,7 +1157,8 @@ export class Game {
             travel: new TravelSystem(player, state.ui),
             sect: new SectSystem(player, state.ui),
             mission: new MissionSystem(),
-            cheat: new CheatSystem(player, state.ui)
+            cheat: new CheatSystem(player, state.ui),
+            dongPhu: new DongPhuSystem(player, state.ui)
         });
 
         state.systems.mission.init();
@@ -3252,6 +3257,79 @@ export class Game {
     openMining() {
         if (this.screens.mining) this.screens.mining.render();
         state.ui.switchScreen('screen-mining', null);
+    }
+
+    openDongPhu(locationId) {
+        if (this.screens.dongPhu) {
+            this.screens.dongPhu.open(locationId);
+        }
+    }
+
+    createDongPhu(locationId) {
+        if (state.systems.dongPhu) {
+            const res = state.systems.dongPhu.createAbode(locationId);
+            if (res.success) {
+                this.refreshUI();
+                if (this.screens.map) {
+                    const worldId = findWorldIdByLocId(locationId) || state.currentWorldId || 'nhan_gioi';
+                    const loc = getLocationById(worldId, locationId);
+                    if (loc) this.screens.map.renderSpecialActions(loc);
+                }
+            } else {
+                state.ui.toast(res.msg, 'error');
+            }
+        }
+    }
+
+    deployFormation(locationId, diagramId) {
+        if (state.systems.dongPhu) {
+            const item = state.player.inventory.allItems.find(i => i.id === diagramId);
+            if (!item) {
+                state.ui.toast('Không tìm thấy trận đồ này!', 'error');
+                return;
+            }
+            const res = state.systems.dongPhu.deployFormation(locationId, item);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success) {
+                this.refreshUI();
+            }
+        }
+    }
+
+    undeployFormation(locationId) {
+        if (state.systems.dongPhu) {
+            const res = state.systems.dongPhu.undeployFormation(locationId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success) {
+                this.refreshUI();
+            }
+        }
+    }
+
+    deployPuppet(locationId, puppetUniqueId) {
+        if (state.systems.dongPhu) {
+            const res = state.systems.dongPhu.deployPuppet(locationId, puppetUniqueId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success) {
+                this.refreshUI();
+            }
+        }
+    }
+
+    undeployPuppet(locationId, puppetUniqueId) {
+        if (state.systems.dongPhu) {
+            const res = state.systems.dongPhu.undeployPuppet(locationId, puppetUniqueId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success) {
+                this.refreshUI();
+            }
+        }
+    }
+
+    setDongPhuTab(tab) {
+        if (this.screens.dongPhu) {
+            this.screens.dongPhu.setTab(tab);
+        }
     }
 
     ascendToSpiritRealm() {

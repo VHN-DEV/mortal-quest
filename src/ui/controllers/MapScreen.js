@@ -1230,6 +1230,29 @@ export class MapScreen {
             this.elLocSpecialActions.appendChild(btnMining);
         }
 
+        // Cave Abode (Động Phủ) Actions
+        if (state.systems.dongPhu && state.systems.dongPhu.canBuildAbodeAt(loc.id)) {
+            hasSpecial = true;
+            const hasAbode = state.player.abodes && state.player.abodes.some(a => a.locationId === loc.id);
+            const btnDongPhu = document.createElement('button');
+            if (hasAbode) {
+                btnDongPhu.className = "col-span-2 py-3 bg-qi-jade/10 border border-qi-jade/30 rounded-xl text-qi-jade text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2 mt-2 transition-all hover:bg-qi-jade/20";
+                btnDongPhu.innerHTML = '<i class="ph ph-house-line text-lg"></i><span>VÀO ĐỘNG PHỦ</span>';
+                btnDongPhu.onclick = () => window.game.openDongPhu(loc.id);
+            } else {
+                const isEligible = state.player.realmId >= 14;
+                if (isEligible) {
+                    btnDongPhu.className = "col-span-2 py-3 bg-amber-600/10 border border-amber-500/30 rounded-xl text-amber-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2 mt-2 transition-all hover:bg-amber-500/20";
+                    btnDongPhu.innerHTML = '<i class="ph ph-plus-circle text-lg animate-pulse"></i><span>KHAI HOANG ĐỘNG PHỦ (5k LT)</span>';
+                    btnDongPhu.onclick = () => window.game.createDongPhu(loc.id);
+                } else {
+                    btnDongPhu.className = "col-span-2 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-500 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2 mt-2 opacity-50 cursor-not-allowed";
+                    btnDongPhu.innerHTML = '<i class="ph ph-lock text-lg"></i><span>ĐỘNG PHỦ (YÊU CẦU TRÚC CƠ)</span>';
+                }
+            }
+            this.elLocSpecialActions.appendChild(btnDongPhu);
+        }
+
         state.ui.toggleOverlay(this.elLocSpecialActions, hasSpecial);
     }
 

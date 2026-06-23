@@ -32,7 +32,8 @@ class GameState {
             spiritStone: null,
             treasure: null,
             fate: null,
-            travel: null
+            travel: null,
+            dongPhu: null
         };
 
         // Trạng thái hiện tại

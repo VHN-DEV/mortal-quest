@@ -1,0 +1,96 @@
+<!-- Cave Abode (Động Phủ) Overlay -->
+<div id="dong-phu-overlay" class="hidden overlay-full animate-fade-in bg-[#03060a] z-[150] overflow-hidden">
+    <!-- Background Glow Effects -->
+    <div class="absolute inset-0 opacity-15 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-qi-jade rounded-full blur-[140px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-amber-500 rounded-full blur-[140px]"></div>
+    </div>
+
+    <div class="relative z-10 flex flex-col h-full">
+        <!-- Header -->
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-black/40">
+            <div>
+                <h2 id="dong-phu-title" class="text-xl font-ancient text-qi-jade uppercase tracking-widest">Động Phủ Tu Luyện</h2>
+                <div class="flex items-center space-x-2 mt-1">
+                    <i class="ph ph-map-pin text-xs text-gray-500"></i>
+                    <span id="dong-phu-loc-text" class="text-[9px] text-gray-400 font-bold">Thái Nhạc Sơn Mạch</span>
+                </div>
+            </div>
+            <button onclick="state.ui.toggleOverlay(document.getElementById('dong-phu-overlay'), false)"
+                class="p-2 hover:bg-white/5 rounded-full transition-colors">
+                <i class="ph ph-x text-xl text-gray-500"></i>
+            </button>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex p-3 space-x-1.5 bg-black/60 border-b border-white/5">
+            <button id="dong-phu-tab-garden" onclick="window.game.setDongPhuTab('garden')"
+                class="flex-1 py-2.5 bg-qi-jade/10 text-qi-jade border border-qi-jade/20 rounded-xl text-[9px] font-ancient uppercase tracking-wider font-bold transition-all">
+                Linh Điền
+            </button>
+            <button id="dong-phu-tab-formation" onclick="window.game.setDongPhuTab('formation')"
+                class="flex-1 py-2.5 text-gray-500 rounded-xl text-[9px] font-ancient uppercase tracking-wider font-bold transition-all">
+                Trận Pháp
+            </button>
+            <button id="dong-phu-tab-puppet" onclick="window.game.setDongPhuTab('puppet')"
+                class="flex-1 py-2.5 text-gray-500 rounded-xl text-[9px] font-ancient uppercase tracking-wider font-bold transition-all">
+                Khôi Lỗi
+            </button>
+        </div>
+
+        <!-- Scrollable Content Area -->
+        <div class="flex-grow overflow-y-auto p-4 space-y-4 custom-scroll" id="dong-phu-content">
+            <!-- View: Garden plots -->
+            <div id="dong-phu-garden-view" class="space-y-4">
+                <div class="grid grid-cols-1 gap-4" id="dong-phu-garden-plots">
+                    <!-- Dynamic Garden Plots -->
+                </div>
+            </div>
+
+            <!-- View: Formation -->
+            <div id="dong-phu-formation-view" class="hidden space-y-4">
+                <!-- Formation State Card -->
+                <div id="dong-phu-formation-status" class="p-4 border rounded-3xl bg-white/5 border-white/5 flex flex-col space-y-3">
+                    <!-- Dynamic Active Formation Info -->
+                </div>
+                <!-- Available Formations list -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-ancient text-gray-400 uppercase tracking-widest pl-1">Trận Đồ Trong Túi</h3>
+                    <div id="dong-phu-formations-list" class="space-y-2">
+                        <!-- Dynamic Available Formations in inventory -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: Puppet -->
+            <div id="dong-phu-puppet-view" class="hidden space-y-4">
+                <!-- Deployed Puppets -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-ancient text-gray-400 uppercase tracking-widest pl-1">Khôi Lỗi Trấn Hộ (Tối đa 3)</h3>
+                    <div id="dong-phu-deployed-puppets" class="grid grid-cols-1 gap-3">
+                        <!-- Dynamic Deployed Puppets cards -->
+                    </div>
+                </div>
+                <!-- Available Puppets in inventory -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-ancient text-gray-400 uppercase tracking-widest pl-1">Khôi Lỗi Trong Túi</h3>
+                    <div id="dong-phu-puppets-list" class="space-y-2">
+                        <!-- Dynamic Available Puppets in inventory -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Stats Info -->
+        <div class="p-4 border-t border-white/5 bg-black/60 flex justify-between items-center">
+            <div class="flex flex-col">
+                <span class="text-[7px] text-gray-500 uppercase tracking-widest">Linh Khí Địa Điểm</span>
+                <span id="dong-phu-spiritual-qi" class="text-[11px] text-qi-jade font-mono font-bold">Phong Phú</span>
+            </div>
+            <div class="text-right">
+                <span class="text-[7px] text-gray-500 uppercase tracking-widest">Phòng Ngự Động Phủ</span>
+                <div id="dong-phu-defense-rating" class="text-[11px] text-amber-400 font-mono font-bold">0</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -8,49 +8,49 @@ export class GardenSystem {
         this.ui = ui;
     }
 
-    /**
-     * Cập nhật tăng trưởng linh thảo
-     * delta: thời gian trôi qua tính bằng giây
-     */
     update(delta) {
-        if (!this.player.gardenPlots) return;
+        if (!this.player.abodes || !Array.isArray(this.player.abodes)) return;
 
-        this.player.gardenPlots.forEach(plot => {
-            if (plot && plot.status === 'growing') {
-                const seed = SEEDS.find(s => s.id === plot.seedId);
-                if (!seed) return;
+        this.player.abodes.forEach(abode => {
+            if (!abode.gardenPlots) return;
 
-                // Tính toán tốc độ tăng trưởng
-                let growthSpeed = 1.0;
-                
-                // Thưởng từ phẩm cấp điền
-                const gradeInfo = FIELD_GRADES[plot.grade] || FIELD_GRADES.PHAM;
-                growthSpeed *= gradeInfo.speedMult;
+            abode.gardenPlots.forEach(plot => {
+                if (plot && plot.status === 'growing') {
+                    const seed = SEEDS.find(s => s.id === plot.seedId);
+                    if (!seed) return;
 
-                // Thưởng từ thuộc tính (X2 nếu khớp)
-                if (seed.attributeReq !== 'NORMAL') {
-                    if (plot.attribute === seed.attributeReq) {
-                        growthSpeed *= 2.0;
-                    } else if (plot.attribute !== 'NORMAL') {
-                        // Khác thuộc tính (Xung khắc)
-                        growthSpeed *= 0.2;
-                    } else {
-                        // Điền thường trồng thảo có thuộc tính
-                        growthSpeed *= 0.7;
+                    // Tính toán tốc độ tăng trưởng
+                    let growthSpeed = 1.0;
+                    
+                    // Thưởng từ phẩm cấp điền
+                    const gradeInfo = FIELD_GRADES[plot.grade] || FIELD_GRADES.PHAM;
+                    growthSpeed *= gradeInfo.speedMult;
+
+                    // Thưởng từ thuộc tính (X2 nếu khớp)
+                    if (seed.attributeReq !== 'NORMAL') {
+                        if (plot.attribute === seed.attributeReq) {
+                            growthSpeed *= 2.0;
+                        } else if (plot.attribute !== 'NORMAL') {
+                            // Khác thuộc tính (Xung khắc)
+                            growthSpeed *= 0.2;
+                        } else {
+                            // Điền thường trồng thảo có thuộc tính
+                            growthSpeed *= 0.7;
+                        }
+                    }
+
+                    // Cập nhật tuổi (age tính bằng giây "ảo")
+                    // Giả sử 1 "năm" dược liệu = 10 giây gốc
+                    const yearsGained = (delta * growthSpeed) / 10;
+                    plot.age += yearsGained;
+
+                    // Cập nhật mốc tuổi
+                    const currentMilestone = HERB_AGE_MILESTONES.find(m => plot.age >= m.years && (!HERB_AGE_MILESTONES[HERB_AGE_MILESTONES.indexOf(m)+1] || plot.age < HERB_AGE_MILESTONES[HERB_AGE_MILESTONES.indexOf(m)+1].years));
+                    if (currentMilestone) {
+                        plot.stage = currentMilestone.name;
                     }
                 }
-
-                // Cập nhật tuổi (age tính bằng giây "ảo")
-                // Giả sử 1 "năm" dược liệu = 10 giây gốc
-                const yearsGained = (delta * growthSpeed) / 10;
-                plot.age += yearsGained;
-
-                // Cập nhật mốc tuổi
-                const currentMilestone = HERB_AGE_MILESTONES.find(m => plot.age >= m.years && (!HERB_AGE_MILESTONES[HERB_AGE_MILESTONES.indexOf(m)+1] || plot.age < HERB_AGE_MILESTONES[HERB_AGE_MILESTONES.indexOf(m)+1].years));
-                if (currentMilestone) {
-                    plot.stage = currentMilestone.name;
-                }
-            }
+            });
         });
     }
 

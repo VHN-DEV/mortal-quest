@@ -7,6 +7,8 @@ import { BEASTS, BEAST_TYPES, BLOODLINES, getBeastLevelInfo } from '../../config
 import { ASSETS, getAssetUrl } from '../../configs/asset-data.js';
 import { CORPSE_TYPES, CORPSE_EVOLUTIONS, CORPSE_MODES, getCorpseLevelInfo } from '../../configs/corpse-data.js';
 import { getFlameById, getAlchemyLevelInfo } from '../../configs/alchemy-data.js';
+import { SECTS } from '../../configs/sect-data.js';
+import { CLANS } from '../../configs/clan-data.js';
 
 export class CraftingController {
     constructor(parentScreen) {
@@ -94,6 +96,16 @@ export class CraftingController {
 
         if (state.player.realmId < 1) {
             state.ui.toast("Ngươi vẫn là phàm nhân, chưa tu luyện linh lực, thần thức chưa mở, làm sao hành nghề bách nghệ!", "error");
+            return;
+        }
+
+        // Check if player is at an eligible location (Cave Abode, Sect, or Clan) (PNTT logic)
+        const hasLocalAbode = state.player.abodes && state.player.abodes.some(a => a.locationId === state.currentLocId);
+        const isSectBase = SECTS && SECTS[state.currentLocId];
+        const isClanBase = CLANS && CLANS[state.currentLocId];
+        
+        if (!hasLocalAbode && !isSectBase && !isClanBase) {
+            state.ui.toast("Không thể hành nghề bách nghệ tại đây! Cần ở trong Động Phủ của mình hoặc tại Tông Môn/Gia Tộc có linh mạch cố định.", "error");
             return;
         }
 

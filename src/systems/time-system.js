@@ -293,6 +293,11 @@ export class TimeSystem {
         
         // Scan for Secret Realms opening this month
         this.checkSecretRealms();
+
+        // Check for Cave Abode attacks
+        if (state.systems.dongPhu && Math.random() < 0.10) {
+            state.systems.dongPhu.triggerAttackEvent();
+        }
     }
 
     onYearChanged() {
