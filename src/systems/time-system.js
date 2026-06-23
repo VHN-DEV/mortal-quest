@@ -76,6 +76,32 @@ export class TimeSystem {
             fSystem.update(minutes);
         }
 
+        // Tick Spirit Wine aging (agingTime is in real seconds; tickRate=10s per game hour=12 min)
+        // Each game-minute = (tickRate ms / 12) / 1000 real seconds = ~0.833s
+        // Convert: realSecondsElapsed = minutes * (this.tickRate / 1000 / 12)
+        if (state.player && state.player.agingWines && state.player.agingWines.length > 0) {
+            const realSecondsPerGameMin = this.tickRate / 1000 / 12;
+            const realSecondsElapsed = minutes * realSecondsPerGameMin;
+            const ready = [];
+            const stillAging = [];
+            state.player.agingWines.forEach(vat => {
+                vat._elapsedSeconds = (vat._elapsedSeconds || 0) + realSecondsElapsed;
+                if (vat._elapsedSeconds >= vat.agingTime) {
+                    ready.push(vat);
+                } else {
+                    stillAging.push(vat);
+                }
+            });
+            state.player.agingWines = stillAging;
+            ready.forEach(vat => {
+                if (state.player.inventory) {
+                    state.player.inventory.addItem(vat.recipeId, vat.quantity || 1);
+                }
+                const itemName = ITEMS[vat.recipeId]?.name || vat.recipeId;
+                this.ui.toast(`🍷 [Linh Tửu Hoàn Thành] ${itemName} đã ủ xong, đã chuyển vào túi đồ!`, 'success');
+            });
+        }
+
         // Age the player (simplified: 1 game year = some age increment)
         // Let's say 1 game year = 1 year of life
         const yearsPassed = this.getYear() - oldYear;

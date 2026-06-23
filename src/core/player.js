@@ -255,6 +255,23 @@ export class Player {
         this.refinedCorpses = [];  // Array of { uniqueId, id, name, icon, quality, stats, level, exp, nextLevelExp, deployed, mode, gatherBonus }
         this.knownCorpseRecipes = [];
 
+        // Linh Thực Sư System (Spirit Planter - decoupled from Alchemy)
+        this.linhThucLevel = 1;
+        this.linhThucExp = 0;
+
+        // Linh Tửu System (Spirit Wine)
+        this.spiritWineLevel = 1;
+        this.spiritWineExp = 0;
+        this.knownWineRecipes = [];
+        this.agingWines = []; // Array of { recipeId, startMinute, agingTime, quantity }
+
+        // Cấm Chế System (Formation Locks)
+        this.camCheLevel = 1;
+        this.camCheExp = 0;
+        this.knownCamCheRecipes = [];
+
+        // Linh Văn System removed (dropped profession)
+
         // Unlock System
         this.unlockedProfessions = []; // Start with empty to follow the doc.
 
@@ -3654,6 +3671,54 @@ export class Player {
         return false;
     }
 
+    addLinhThucExp(amount) {
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'linh_thuc_kinh');
+        const masteryLevel = secret?.masteryLevel || 1;
+        const secretData = getSecretTechniqueById('linh_thuc_kinh');
+        const bonus = secretData?.masteryBonuses?.[masteryLevel]?.linhThucExpBonus || 1.0;
+
+        this.linhThucExp += amount * bonus;
+        const nextLevelExp = this.linhThucLevel * 100 * Math.pow(1.5, this.linhThucLevel - 1);
+        if (this.linhThucExp >= nextLevelExp) {
+            this.linhThucExp -= nextLevelExp;
+            this.linhThucLevel++;
+            return true;
+        }
+        return false;
+    }
+
+    addSpiritWineExp(amount) {
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'co_phuong_linh_tuu');
+        const masteryLevel = secret?.masteryLevel || 1;
+        const secretData = getSecretTechniqueById('co_phuong_linh_tuu');
+        const bonus = secretData?.masteryBonuses?.[masteryLevel]?.spiritWineExpBonus || 1.0;
+
+        this.spiritWineExp += amount * bonus;
+        const nextLevelExp = this.spiritWineLevel * 100 * Math.pow(1.5, this.spiritWineLevel - 1);
+        if (this.spiritWineExp >= nextLevelExp) {
+            this.spiritWineExp -= nextLevelExp;
+            this.spiritWineLevel++;
+            return true;
+        }
+        return false;
+    }
+
+    addCamCheExp(amount) {
+        const secret = this.learnedSecretTechniques.find(s => s.id === 'thien_dia_cam_phap');
+        const masteryLevel = secret?.masteryLevel || 1;
+        const secretData = getSecretTechniqueById('thien_dia_cam_phap');
+        const bonus = secretData?.masteryBonuses?.[masteryLevel]?.arrayExpBonus || 1.0;
+
+        this.camCheExp += amount * bonus;
+        const nextLevelExp = this.camCheLevel * 100 * Math.pow(1.5, this.camCheLevel - 1);
+        if (this.camCheExp >= nextLevelExp) {
+            this.camCheExp -= nextLevelExp;
+            this.camCheLevel++;
+            return true;
+        }
+        return false;
+    }
+
     useItem(itemId) {
         const item = getItemById(itemId);
         if (!item || item.type !== ITEM_TYPES.DAN_DUOC) return { success: false, msg: "Vật phẩm không thể sử dụng!" };
@@ -4702,6 +4767,17 @@ export class Player {
             activeInsect: this.activeInsect,
             bloodContractDebuffUntil: this.bloodContractDebuffUntil,
 
+            // New Professions
+            linhThucLevel: this.linhThucLevel,
+            linhThucExp: this.linhThucExp,
+            spiritWineLevel: this.spiritWineLevel,
+            spiritWineExp: this.spiritWineExp,
+            knownWineRecipes: [...this.knownWineRecipes],
+            agingWines: JSON.parse(JSON.stringify(this.agingWines || [])),
+            camCheLevel: this.camCheLevel,
+            camCheExp: this.camCheExp,
+            knownCamCheRecipes: [...this.knownCamCheRecipes],
+
             abodes: JSON.parse(JSON.stringify(this.abodes || [])),
             mountainSurvival: { ...this.mountainSurvival },
 
@@ -5385,6 +5461,17 @@ export class Player {
         this.currentTalismanPen = data.currentTalismanPen || null;
         this.knownTalismanRecipes = data.knownTalismanRecipes || [];
 
+        // New Professions
+        this.linhThucLevel = data.linhThucLevel || 1;
+        this.linhThucExp = data.linhThucExp || 0;
+        this.spiritWineLevel = data.spiritWineLevel || 1;
+        this.spiritWineExp = data.spiritWineExp || 0;
+        this.knownWineRecipes = data.knownWineRecipes || [];
+        this.agingWines = data.agingWines || [];
+        this.camCheLevel = data.camCheLevel || 1;
+        this.camCheExp = data.camCheExp || 0;
+        this.knownCamCheRecipes = data.knownCamCheRecipes || [];
+
         this.formationLevel = data.formationLevel || 1;
         this.formationExp = data.formationExp || 0;
         this.activeFormations = data.activeFormations || [];
@@ -5419,6 +5506,8 @@ export class Player {
         this.bloodContractDebuffUntil = data.bloodContractDebuffUntil || 0;
 
         this.abodes = data.abodes || [];
+        // Migration: ensure all loaded abodes have defensiveCamChe field
+        this.abodes.forEach(a => { if (a.defensiveCamChe === undefined) a.defensiveCamChe = null; });
         if (data.gardenPlots && Array.isArray(data.gardenPlots) && data.gardenPlots.some(p => p && p.seedId)) {
             const locId = data.currentLocId || 'thanh_van_tran';
             let abode = this.abodes.find(a => a.locationId === locId);
@@ -5432,6 +5521,7 @@ export class Player {
                         return p;
                     }),
                     defensiveFormation: null,
+                    defensiveCamChe: null,
                     puppets: []
                 };
                 this.abodes.push(abode);

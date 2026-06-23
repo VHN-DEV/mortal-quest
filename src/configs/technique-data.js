@@ -985,6 +985,52 @@ export const SECRET_TECHNIQUES = {
             4: { insectExpBonus: 2.0, insectSuccess: 1.3, insectPower: 1.5, twinInsectChance: 0.2 }
         }
     },
+    'linh_thuc_kinh': {
+        id: 'linh_thuc_kinh',
+        name: 'Linh Thực Kinh',
+        type: 'profession',
+        quality: CONG_PHAP_QUALITIES.HUYEN_GIAI,
+        icon: '📜',
+        description: 'Tăng cường hiểu biết về linh thực. Mỗi tầng giúp tăng tốc độ sinh trưởng và sản lượng linh dược thu hoạch.',
+        maxStage: 9,
+        masteryBonuses: {
+            1: { linhThucExpBonus: 1.0 },
+            2: { linhThucExpBonus: 1.2, plantSpeed: 1.05 },
+            3: { linhThucExpBonus: 1.5, plantSpeed: 1.15, doubleHarvest: 0.1 },
+            4: { linhThucExpBonus: 2.0, plantSpeed: 1.3, doubleHarvest: 0.25 }
+        }
+    },
+    'co_phuong_linh_tuu': {
+        id: 'co_phuong_linh_tuu',
+        name: 'Cổ Phương Linh Tửu',
+        type: 'profession',
+        quality: CONG_PHAP_QUALITIES.HUYEN_GIAI,
+        icon: '📜',
+        description: 'Tăng cường hiểu biết về chưng cất linh tửu. Mỗi tầng giúp tăng chất lượng linh tửu và tỷ lệ ủ thành công.',
+        maxStage: 9,
+        masteryBonuses: {
+            1: { spiritWineExpBonus: 1.0 },
+            2: { spiritWineExpBonus: 1.2, wineSuccess: 1.05 },
+            3: { spiritWineExpBonus: 1.5, wineSuccess: 1.15, doubleWine: 0.1 },
+            4: { spiritWineExpBonus: 2.0, wineSuccess: 1.3, doubleWine: 0.25 }
+        }
+    },
+    'thien_dia_cam_phap': {
+        id: 'thien_dia_cam_phap',
+        name: 'Thiên Địa Cấm Pháp',
+        type: 'profession',
+        quality: CONG_PHAP_QUALITIES.HUYEN_GIAI,
+        icon: '📜',
+        description: 'Tăng cường hiểu biết về cấm chế thuật. Mỗi tầng giúp tăng hiệu lực cấm chế động phủ và tỷ lệ thiết lập thành công.',
+        maxStage: 9,
+        masteryBonuses: {
+            1: { arrayExpBonus: 1.0 },
+            2: { arrayExpBonus: 1.2, arraySuccess: 1.05 },
+            3: { arrayExpBonus: 1.5, arraySuccess: 1.15, camCheDefense: 1.2 },
+            4: { arrayExpBonus: 2.0, arraySuccess: 1.3, camCheDefense: 1.5 }
+        }
+    },
+
     'thanh_nguyen_kiem_mang': {
         id: 'thanh_nguyen_kiem_mang',
         name: 'Thanh Nguyên Kiếm Mang',
@@ -1334,6 +1380,10 @@ export const SKILL_MAP = {
     'tran_dao_thien_thu': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
     'van_thu_ngu_phap': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
     'thien_trung_bi_luc': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'linh_thuc_kinh': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'co_phuong_linh_tuu': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+    'thien_dia_cam_phap': { category: 'Pháp Thuật', subCategory: 'Phụ Trợ' },
+
 
     // === THẦN THÔNG ===
     'thanh_nguyen_kiem_mang': { category: 'Thần Thông', subCategory: 'Bản Mệnh' },
@@ -1393,7 +1443,8 @@ export const getSecretTechniqueById = (id) => {
         const supportManuals = [
             'dan_dao_chan_giai', 'luyen_khi_tong_cuong', 'thai_thuong_phu_kinh',
             'co_quan_linh_ky', 'cuu_u_luyen_thi_thuat', 'tran_dao_thien_thu',
-            'van_thu_ngu_phap', 'thien_trung_bi_luc'
+            'van_thu_ngu_phap', 'thien_trung_bi_luc',
+            'linh_thuc_kinh', 'co_phuong_linh_tuu', 'thien_dia_cam_phap'
         ];
 
         if (supportManuals.includes(id) || id.includes('luyen_dan') || id.includes('luyen_khi') || id.includes('phu_luc')) {

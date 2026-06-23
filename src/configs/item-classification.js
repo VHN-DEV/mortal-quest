@@ -785,6 +785,8 @@ export const EFFECT_TYPES = {
     HOC_CONG_THUC_PHU: 'learn_talisman_recipe',
     HOC_CONG_THUC_KHOI_LOI: 'learn_puppet_recipe',
     HOC_CONG_THUC_THI: 'learn_corpse_recipe',
+    HOC_CONG_THUC_RUOU: 'learn_wine_recipe',
+    HOC_CONG_THUC_CAM_CHE: 'learn_cam_che_recipe',
     HOC_TRAN_PHAP: 'learn_formation',
     HOC_KY_THUAT: 'learn_technique',
     HOC_BI_THUAT: 'learn_secret',

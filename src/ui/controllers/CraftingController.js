@@ -123,7 +123,10 @@ export class CraftingController {
             formation: 'screen-formation',
             beast: 'screen-beast',
             puppet: 'screen-puppet',
-            corpse: 'screen-corpse'
+            corpse: 'screen-corpse',
+            linh_thuc: 'screen-linh-thuc',
+            linh_tuu: 'screen-linh-tuu',
+            cam_che: 'screen-cam-che'
         };
 
         const screenId = screens[type];
@@ -136,11 +139,18 @@ export class CraftingController {
             if (type === 'beast') this.renderBeast();
             if (type === 'puppet') this.renderPuppet();
             if (type === 'corpse') this.renderCorpse();
+            if (type === 'linh_thuc' && this.parentScreen?.spiritPlanterController) this.parentScreen.spiritPlanterController.render();
+            if (type === 'linh_tuu' && this.parentScreen?.spiritWineController) this.parentScreen.spiritWineController.render();
+            if (type === 'cam_che' && this.parentScreen?.camCheController) this.parentScreen.camCheController.render();
         }
     }
 
     openCraftingHub() {
-        const craftingScreens = ['screen-alchemy', 'screen-talisman', 'screen-smithing', 'screen-formation', 'screen-corpse', 'screen-beast', 'screen-puppet'];
+        const craftingScreens = [
+            'screen-alchemy', 'screen-talisman', 'screen-smithing', 'screen-formation',
+            'screen-corpse', 'screen-beast', 'screen-puppet',
+            'screen-linh-thuc', 'screen-linh-tuu', 'screen-cam-che'
+        ];
         craftingScreens.forEach(id => {
             const el = document.getElementById(id);
             if (el) {
@@ -867,7 +877,10 @@ export class CraftingController {
             { id: 'puppet', key: 'puppet', name: 'Khôi Lỗi Sư', level: state.player.puppetLevel, exp: state.player.puppetExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) },
             { id: 'corpse', key: 'corpse', name: 'Luyện Thi Sư', level: state.player.corpseLevel, exp: state.player.corpseExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) },
             { id: 'beast', key: 'beast', name: 'Ngự Thú Sư', level: state.player.beastLevel, exp: state.player.beastExp, getLevelInfo: getBeastLevelInfo },
-            { id: 'insect', key: 'insect', name: 'Khu Trùng Sư', level: state.player.insectLevel, exp: state.player.insectExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) }
+            { id: 'insect', key: 'insect', name: 'Khu Trùng Sư', level: state.player.insectLevel, exp: state.player.insectExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) },
+            { id: 'linh-thuc', key: 'linh_thuc', name: 'Linh Thực Sư', level: state.player.linhThucLevel, exp: state.player.linhThucExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) },
+            { id: 'linh-tuu', key: 'linh_tuu', name: 'Linh Tửu Sư', level: state.player.spiritWineLevel, exp: state.player.spiritWineExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) },
+            { id: 'cam-che', key: 'cam_che', name: 'Cấm Chế Sư', level: state.player.camCheLevel, exp: state.player.camCheExp, getLevelInfo: (lvl) => ({ name: `Cấp ${lvl}` }) }
         ];
 
         professions.forEach(prof => {
@@ -876,10 +889,10 @@ export class CraftingController {
 
             if (!levelEl || !cardEl) return;
 
-            const isUnlocked = state.player.unlockedProfessions.includes(prof.id);
+            const isUnlocked = state.player.unlockedProfessions.includes(prof.key);
 
             // Re-bind onclick to handle both locked state and opening
-            cardEl.onclick = () => window.game.openCrafting(prof.id);
+            cardEl.onclick = () => window.game.openCrafting(prof.key);
 
             const biPhapMap = {
                 'alchemy': 'Đan Đạo Chân Giải',
@@ -889,7 +902,10 @@ export class CraftingController {
                 'puppet': 'Cơ Quan Linh Kỹ',
                 'corpse': 'Cửu U Luyện Thi Thuật',
                 'beast': 'Vạn Thú Ngự Pháp',
-                'insect': 'Thiên Trùng Bí Lục'
+                'insect': 'Thiên Trùng Bí Lục',
+                'linh_thuc': 'Linh Thực Kinh',
+                'linh_tuu': 'Cổ Phương Linh Tửu',
+                'cam_che': 'Thiên Địa Cấm Pháp'
             };
 
             if (isUnlocked) {

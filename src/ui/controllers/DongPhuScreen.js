@@ -31,6 +31,8 @@ export class DongPhuScreen {
         this.elGardenPlots = document.getElementById('dong-phu-garden-plots');
         this.elFormationStatus = document.getElementById('dong-phu-formation-status');
         this.elFormationsList = document.getElementById('dong-phu-formations-list');
+        this.elCamCheStatus = document.getElementById('dong-phu-cam-che-status');
+        this.elCamCheList = document.getElementById('dong-phu-cam-che-list');
         this.elDeployedPuppets = document.getElementById('dong-phu-deployed-puppets');
         this.elPuppetsList = document.getElementById('dong-phu-puppets-list');
         
@@ -174,11 +176,13 @@ export class DongPhuScreen {
     }
 
     renderFormation(abode) {
-        if (!this.elFormationStatus || !this.elFormationsList) return;
+        if (!this.elFormationStatus || !this.elFormationsList || !this.elCamCheStatus || !this.elCamCheList) return;
         this.elFormationStatus.innerHTML = '';
         this.elFormationsList.innerHTML = '';
+        this.elCamCheStatus.innerHTML = '';
+        this.elCamCheList.innerHTML = '';
 
-        // Active Formation Card
+        // --- Active Formation Card ---
         if (abode.defensiveFormation) {
             const form = abode.defensiveFormation;
             const itemData = getItemById(form.id);
@@ -233,6 +237,64 @@ export class DongPhuScreen {
                 </div>
                 `;
                 this.elFormationsList.appendChild(el);
+            });
+        }
+
+        // --- Active Cấm Chế Card ---
+        if (abode.defensiveCamChe) {
+            const cam = abode.defensiveCamChe;
+            const itemData = getItemById(cam.id);
+            this.elCamCheStatus.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">${itemData?.icon || '🔒'}</span>
+                        <div>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider">${cam.name}</h4>
+                            <span class="text-[9px] text-qi-jade block font-semibold mt-0.5">Sức phòng thủ: +${cam.stats?.camChePower || 100}</span>
+                        </div>
+                    </div>
+                    <button class="px-3.5 py-1.5 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-xl border border-red-500/20 text-[9px] font-bold tracking-widest transition-all"
+                        onclick="window.game.undeployCamChe('${this.activeLocationId}')">THU HỒI</button>
+                </div>
+            `;
+        } else {
+            this.elCamCheStatus.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-6 space-y-2">
+                    <span class="text-3xl opacity-30">🔒</span>
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Chưa Triển Khai Cấm Chế</span>
+                    <span class="text-[8px] text-gray-600 text-center max-w-xs">Thiết lập cấm chế phong ấn hoặc ẩn giấu để tăng cường lớp bảo mật phụ cho Động Phủ!</span>
+                </div>
+            `;
+        }
+
+        // Available Cấm Chế in inventory
+        const camCheItems = state.player.inventory.allItems.filter(i => {
+            const itemData = getItemById(i.id);
+            return itemData?.categories?.some(c => c.category === 'tran_phap' && c.subcategory === 'cam_che');
+        });
+
+        if (camCheItems.length === 0) {
+            this.elCamCheList.innerHTML = `
+                <div class="text-center py-6 text-gray-600 italic text-[10px]">Túi đồ không có cấm chế nào...</div>
+            `;
+        } else {
+            camCheItems.forEach(item => {
+                const itemData = getItemById(item.id);
+                const power = state.systems.dongPhu ? state.systems.dongPhu._getCamChePower(item.id) : 100;
+                const el = document.createElement('div');
+                el.className = 'p-3.5 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-all';
+                el.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">${itemData?.icon || '🔒'}</span>
+                        <div>
+                            <div class="text-xs font-bold text-white">${itemData?.name || item.id}</div>
+                            <div class="text-[8px] text-gray-500 font-semibold mt-0.5">Sức phòng thủ: +${power} | Số lượng: ${item.quantity}</div>
+                        </div>
+                    </div>
+                    <button class="px-3 py-1.5 bg-qi-blue/10 text-qi-blue hover:bg-qi-blue/20 rounded-xl border border-qi-blue/20 text-[9px] font-bold tracking-widest transition-all"
+                        onclick="window.game.deployCamChe('${this.activeLocationId}', '${item.id}')">KÍCH HOẠT</button>
+                `;
+                this.elCamCheList.appendChild(el);
             });
         }
     }

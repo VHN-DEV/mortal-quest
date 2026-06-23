@@ -7966,6 +7966,246 @@ export const ITEMS = {
             { category: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.KEY, subcategory: ITEM_CATEGORIES_ENUM.NGUYEN_LIEU.SUBCATEGORIES.THIEN_TAI }
         ]
     },
+
+    // --- NEW PROFESSION MANUALS ---
+    'linh_thuc_kinh': {
+        id: 'linh_thuc_kinh',
+        name: 'Linh Thực Kinh',
+        type: ITEM_TYPES.SACH_CONG_PHAP,
+        icon: '📔',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 1200,
+        description: 'Sách cổ ghi chép sâu sắc về thực vật linh khí, cách kích thích mầm xanh và rút ngắn thời gian sinh trưởng. Mở khóa nghề Linh Thực Sư.',
+        effect: {
+            type: EFFECT_TYPES.MO_KHOA_NGHE,
+            profession: 'linh_thuc',
+            secretId: 'linh_thuc_kinh'
+        },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.BI_THUAT }
+        ]
+    },
+    'co_phuong_linh_tuu': {
+        id: 'co_phuong_linh_tuu',
+        name: 'Cổ Phương Linh Tửu',
+        type: ITEM_TYPES.SACH_CONG_PHAP,
+        icon: '📔',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 1500,
+        description: 'Ngọc giản ghi chép bí truyền chưng cất linh tửu, giữ trọn linh khí thiên địa. Mở khóa nghề Linh Tửu Sư.',
+        effect: {
+            type: EFFECT_TYPES.HOC_NHIEU_CONG_THUC,
+            value: [
+                { type: EFFECT_TYPES.MO_KHOA_NGHE, profession: 'linh_tuu', secretId: 'co_phuong_linh_tuu' },
+                { type: EFFECT_TYPES.HOC_CONG_THUC_RUOU, value: 'bach_hoa_linh_tuu' }
+            ]
+        },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.BI_THUAT }
+        ]
+    },
+    'thien_dia_cam_phap': {
+        id: 'thien_dia_cam_phap',
+        name: 'Thiên Địa Cấm Pháp',
+        type: ITEM_TYPES.SACH_CONG_PHAP,
+        icon: '📔',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2000,
+        description: 'Bí thuật khắc họa phong cấm thiên địa, dùng linh lực phong tỏa càn khôn. Mở khóa nghề Cấm Chế Sư.',
+        effect: {
+            type: EFFECT_TYPES.HOC_NHIEU_CONG_THUC,
+            value: [
+                { type: EFFECT_TYPES.MO_KHOA_NGHE, profession: 'cam_che', secretId: 'thien_dia_cam_phap' },
+                { type: EFFECT_TYPES.HOC_CONG_THUC_CAM_CHE, value: 'don_cam_phong_vat' }
+            ]
+        },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.CONG_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.CONG_PHAP.SUBCATEGORIES.BI_THUAT }
+        ]
+    },
+    // --- NEW PRODUCTS ---
+    // Spirit Wine (Linh Tửu - Đạo Tửu - Tiên Tửu)
+    'bach_hoa_linh_tuu': {
+        id: 'bach_hoa_linh_tuu',
+        name: 'Bách Hoa Linh Tửu',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '🍶',
+        quality: DAN_DUOC_QUALITIES.HA_PHAM,
+        price: 200,
+        description: 'Linh tửu chưng cất từ trăm loài linh hoa, uống vào giúp hồi phục 100 Pháp lực ngay lập tức.',
+        effect: {
+            type: EFFECT_TYPES.HOI_PHUC,
+            stat: 'mana',
+            value: 100
+        },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.HOI_PHUC }
+        ]
+    },
+    'hoa_duong_co_tuu': {
+        id: 'hoa_duong_co_tuu',
+        name: 'Hỏa Dương Cổ Tửu',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '🍶',
+        quality: DAN_DUOC_QUALITIES.TRUNG_PHAM,
+        price: 450,
+        description: 'Linh tửu mang đậm hỏa linh khí dồi dào, uống vào tăng mạnh 20% lực tấn công trong 15 phút.',
+        effect: {
+            type: EFFECT_TYPES.BUFF_TAM_THOI,
+            stat: 'atk',
+            value: 0.20,
+            duration: 900
+        },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.HOI_PHUC }
+        ]
+    },
+    'han_anh_tuu': {
+        id: 'han_anh_tuu',
+        name: 'Hàn Anh Tửu',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '🍶',
+        quality: DAN_DUOC_QUALITIES.THUONG_PHAM,
+        price: 800,
+        description: 'Linh tửu cực hàn tinh khiết, uống vào tăng 25% phòng ngự và kháng băng trong 15 phút.',
+        effect: {
+            type: EFFECT_TYPES.BUFF_TAM_THOI,
+            stat: 'def',
+            value: 0.25,
+            duration: 900
+        },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.HOI_PHUC }
+        ]
+    },
+    'thanh_linh_dao_tuu': {
+        id: 'thanh_linh_dao_tuu',
+        name: 'Thanh Linh Đạo Tửu',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '🍶',
+        quality: DAN_DUOC_QUALITIES.THUONG_PHAM,
+        price: 1200,
+        description: 'Đạo tửu dưỡng thần dưỡng khí, uống vào tăng 5% tốc độ tu luyện trong 6 giờ.',
+        effect: {
+            type: EFFECT_TYPES.BUFF_TAM_THOI,
+            stat: 'exp_rate',
+            value: 0.05,
+            duration: 21600
+        },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.HOI_PHUC }
+        ]
+    },
+    'ho_cot_tuu': {
+        id: 'ho_cot_tuu',
+        name: 'Hổ Cốt Luyện Thể Tửu',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '🍶',
+        quality: DAN_DUOC_QUALITIES.THUONG_PHAM,
+        price: 1800,
+        description: 'Luyện thể đạo tửu từ yêu đan hổ cốt, uống vào tăng 15% HP tối đa trong 12 giờ.',
+        effect: {
+            type: EFFECT_TYPES.BUFF_TAM_THOI,
+            stat: 'maxHp',
+            value: 0.15,
+            duration: 43200
+        },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.HOI_PHUC }
+        ]
+    },
+    'van_nien_kim_loi_tuu': {
+        id: 'van_nien_kim_loi_tuu',
+        name: 'Vạn Niên Kim Lôi Tửu',
+        type: ITEM_TYPES.DAN_DUOC,
+        icon: '🏺',
+        quality: DAN_DUOC_QUALITIES.CUC_PHAM,
+        price: 3000,
+        description: 'Tiên tửu chí tôn ủ từ Lôi Tam Mộc vạn năm, uống vào tăng 50 Tốc độ vĩnh viễn.',
+        effect: {
+            type: EFFECT_TYPES.BUFF_TAM_THOI,
+            stat: 'spd',
+            value: 50,
+            duration: 9999999
+        },
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.DAN_DUOC.KEY, subcategory: ITEM_CATEGORIES_ENUM.DAN_DUOC.SUBCATEGORIES.HOI_PHUC }
+        ]
+    },
+
+    // Cấm Chế (Sealing / Protecting locks)
+    'don_cam_phong_vat': {
+        id: 'don_cam_phong_vat',
+        name: 'Đơn Cấm Phong Vật',
+        type: ITEM_TYPES.TRAN_PHAP,
+        icon: '🔒',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 300,
+        description: 'Khóa cấm chế sơ cấp phong tỏa đồ vật, nâng cao khả năng phòng thủ cho Động Phủ (+100).',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.TRAN_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.TRAN_PHAP.SUBCATEGORIES.CAM_CHE }
+        ]
+    },
+    'don_cam_an_giau': {
+        id: 'don_cam_an_giau',
+        name: 'Đơn Cấm Ẩn Giấu',
+        type: ITEM_TYPES.TRAN_PHAP,
+        icon: '🌫️',
+        quality: PHAP_BAO_QUALITIES.PHAP_KHI,
+        price: 500,
+        description: 'Cấm chế ẩn giấu che phủ động phủ sơ cấp, nâng cao phòng thủ động phủ (+150).',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.TRAN_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.TRAN_PHAP.SUBCATEGORIES.CAM_CHE }
+        ]
+    },
+    'lien_hoan_bao_ve_cam': {
+        id: 'lien_hoan_bao_ve_cam',
+        name: 'Liên Hoàn Bảo Vệ Cấm',
+        type: ITEM_TYPES.TRAN_PHAP,
+        icon: '💥',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1000,
+        description: 'Cấm chế nhiều lớp bảo vệ động phủ cực kỳ kiên cố, phòng thủ động phủ (+350).',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.TRAN_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.TRAN_PHAP.SUBCATEGORIES.CAM_CHE }
+        ]
+    },
+    'lien_hoan_phong_an_dong_phu': {
+        id: 'lien_hoan_phong_an_dong_phu',
+        name: 'Liên Hoàn Phong Ấn Động Phủ',
+        type: ITEM_TYPES.TRAN_PHAP,
+        icon: '🔒',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 1800,
+        description: 'Cấm chế phong bế động phủ với uy lực lớn, tăng phòng thủ động phủ (+600).',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.TRAN_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.TRAN_PHAP.SUBCATEGORIES.CAM_CHE }
+        ]
+    },
+    'me_suong_an_giau_cam': {
+        id: 'me_suong_an_giau_cam',
+        name: 'Mê Sương Ẩn Giấu Cấm',
+        type: ITEM_TYPES.TRAN_PHAP,
+        icon: '🌫️',
+        quality: PHAP_BAO_QUALITIES.LINH_KHI,
+        price: 2500,
+        description: 'Cấm chế huyễn hóa mê vụ hắc ám che giấu động phủ cực tốt, tăng phòng thủ động phủ (+1000).',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.TRAN_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.TRAN_PHAP.SUBCATEGORIES.CAM_CHE }
+        ]
+    },
+    'co_cam_bao_tri_tuyet_ky': {
+        id: 'co_cam_bao_tri_tuyet_ky',
+        name: 'Cổ Cấm Bảo Trì Tuyệt Kỹ',
+        type: ITEM_TYPES.TRAN_PHAP,
+        icon: '🔒',
+        quality: PHAP_BAO_QUALITIES.CO_BAO,
+        price: 5000,
+        description: 'Cổ cấm thượng cổ cực phẩm phong tỏa hoàn hảo động phủ, gia tăng phòng thủ khổng lồ (+2500).',
+        categories: [
+            { category: ITEM_CATEGORIES_ENUM.TRAN_PHAP.KEY, subcategory: ITEM_CATEGORIES_ENUM.TRAN_PHAP.SUBCATEGORIES.CAM_CHE }
+        ]
+    },
 };
 
 // Mark unique items

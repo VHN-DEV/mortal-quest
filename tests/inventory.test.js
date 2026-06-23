@@ -140,6 +140,9 @@ describe('Inventory class', () => {
         }
         return { success: false, msg: 'Failed' };
       },
+      learnSecretTechnique(id) {
+        // Mock method
+      },
       calculateStats() {
         // Mock method
       }
@@ -169,6 +172,9 @@ describe('Inventory class', () => {
           return true;
         }
         return false;
+      },
+      learnSecretTechnique(id) {
+        // Mock method
       }
     };
     const inv = new Inventory(mockPlayer);
@@ -191,6 +197,9 @@ describe('Inventory class', () => {
           return true;
         }
         return false;
+      },
+      learnSecretTechnique(id) {
+        // Mock method
       }
     };
     const inv = new Inventory(mockPlayer);
@@ -213,6 +222,9 @@ describe('Inventory class', () => {
           return true;
         }
         return false;
+      },
+      learnSecretTechnique(id) {
+        // Mock method
       }
     };
     const inv = new Inventory(mockPlayer);
@@ -234,6 +246,9 @@ describe('Inventory class', () => {
           return true;
         }
         return false;
+      },
+      learnSecretTechnique(id) {
+        // Mock method
       }
     };
     const inv = new Inventory(mockPlayer);
@@ -255,6 +270,9 @@ describe('Inventory class', () => {
           return true;
         }
         return false;
+      },
+      learnSecretTechnique(id) {
+        // Mock method
       }
     };
     const inv = new Inventory(mockPlayer);
@@ -276,6 +294,9 @@ describe('Inventory class', () => {
           return true;
         }
         return false;
+      },
+      learnSecretTechnique(id) {
+        // Mock method
       }
     };
     const inv = new Inventory(mockPlayer);
@@ -297,6 +318,9 @@ describe('Inventory class', () => {
           return true;
         }
         return false;
+      },
+      learnSecretTechnique(id) {
+        // Mock method
       }
     };
     const inv = new Inventory(mockPlayer);

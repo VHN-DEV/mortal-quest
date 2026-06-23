@@ -1,0 +1,80 @@
+<!-- Cấm Chế Mini-game Overlay -->
+<div id="cam-che-minigame-overlay" class="hidden fixed inset-0 z-[160] flex items-center justify-center bg-[#03060a]/90 backdrop-blur-md">
+    <!-- Glowing background effects -->
+    <div class="absolute inset-0 opacity-20 pointer-events-none">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-qi-jade rounded-full blur-[100px]" id="minigame-glow"></div>
+    </div>
+
+    <div class="relative z-10 p-6 max-w-sm w-11/12 border border-qi-jade/20 rounded-3xl bg-[#080d16] flex flex-col space-y-6 shadow-2xl shadow-qi-jade/5 overflow-hidden">
+        <!-- Close button -->
+        <button id="cam-che-minigame-close" class="absolute top-4 right-4 p-1.5 hover:bg-white/5 rounded-full text-gray-500 hover:text-white transition-all">
+            <i class="ph ph-x text-lg"></i>
+        </button>
+
+        <!-- Header -->
+        <div class="text-center space-y-1">
+            <h3 class="text-base font-ancient text-qi-jade uppercase tracking-widest" id="minigame-title">Thiết Lập Cấm Chế</h3>
+            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Kích hoạt phong ấn/khóa cấm chế thông qua Bát Quái Trận Đồ</p>
+        </div>
+
+        <!-- Target Sequence Display -->
+        <div class="flex flex-col items-center space-y-2.5 bg-black/40 p-4 rounded-2xl border border-white/5">
+            <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Trật Tự Phong Ấn (Bát Quái)</span>
+            <div id="minigame-sequence-container" class="flex items-center justify-center space-x-2.5 py-1">
+                <!-- Runes will be dynamically rendered here -->
+            </div>
+        </div>
+
+        <!-- Timer progress bar -->
+        <div class="space-y-1">
+            <div class="flex justify-between text-[7px] text-gray-500 font-bold uppercase tracking-wider px-1">
+                <span>Lực lượng Thần Thức</span>
+                <span id="minigame-timer-text" class="text-qi-jade font-mono">10.0s</span>
+            </div>
+            <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                <div id="minigame-timer-bar" class="h-full bg-gradient-to-r from-qi-jade to-emerald-400 transition-all duration-100" style="width: 100%"></div>
+            </div>
+        </div>
+
+        <!-- Trigram Grid -->
+        <div class="grid grid-cols-4 gap-2.5">
+            <button class="minigame-trigram-btn p-3 bg-white/5 hover:bg-qi-jade/10 active:scale-95 border border-white/10 hover:border-qi-jade/30 rounded-xl transition-all flex flex-col items-center justify-center group" data-trigram="乾">
+                <span class="text-lg text-white font-bold group-hover:text-qi-jade transition-colors">乾</span>
+                <span class="text-[7px] text-gray-500 group-hover:text-qi-jade/70 mt-0.5">Càn</span>
+            </button>
+            <button class="minigame-trigram-btn p-3 bg-white/5 hover:bg-qi-jade/10 active:scale-95 border border-white/10 hover:border-qi-jade/30 rounded-xl transition-all flex flex-col items-center justify-center group" data-trigram="坤">
+                <span class="text-lg text-white font-bold group-hover:text-qi-jade transition-colors">坤</span>
+                <span class="text-[7px] text-gray-500 group-hover:text-qi-jade/70 mt-0.5">Khôn</span>
+            </button>
+            <button class="minigame-trigram-btn p-3 bg-white/5 hover:bg-qi-jade/10 active:scale-95 border border-white/10 hover:border-qi-jade/30 rounded-xl transition-all flex flex-col items-center justify-center group" data-trigram="震">
+                <span class="text-lg text-white font-bold group-hover:text-qi-jade transition-colors">震</span>
+                <span class="text-[7px] text-gray-500 group-hover:text-qi-jade/70 mt-0.5">Chấn</span>
+            </button>
+            <button class="minigame-trigram-btn p-3 bg-white/5 hover:bg-qi-jade/10 active:scale-95 border border-white/10 hover:border-qi-jade/30 rounded-xl transition-all flex flex-col items-center justify-center group" data-trigram="巽">
+                <span class="text-lg text-white font-bold group-hover:text-qi-jade transition-colors">巽</span>
+                <span class="text-[7px] text-gray-500 group-hover:text-qi-jade/70 mt-0.5">Tốn</span>
+            </button>
+            <button class="minigame-trigram-btn p-3 bg-white/5 hover:bg-qi-jade/10 active:scale-95 border border-white/10 hover:border-qi-jade/30 rounded-xl transition-all flex flex-col items-center justify-center group" data-trigram="坎">
+                <span class="text-lg text-white font-bold group-hover:text-qi-jade transition-colors">坎</span>
+                <span class="text-[7px] text-gray-500 group-hover:text-qi-jade/70 mt-0.5">Khảm</span>
+            </button>
+            <button class="minigame-trigram-btn p-3 bg-white/5 hover:bg-qi-jade/10 active:scale-95 border border-white/10 hover:border-qi-jade/30 rounded-xl transition-all flex flex-col items-center justify-center group" data-trigram="離">
+                <span class="text-lg text-white font-bold group-hover:text-qi-jade transition-colors">離</span>
+                <span class="text-[7px] text-gray-500 group-hover:text-qi-jade/70 mt-0.5">Ly</span>
+            </button>
+            <button class="minigame-trigram-btn p-3 bg-white/5 hover:bg-qi-jade/10 active:scale-95 border border-white/10 hover:border-qi-jade/30 rounded-xl transition-all flex flex-col items-center justify-center group" data-trigram="艮">
+                <span class="text-lg text-white font-bold group-hover:text-qi-jade transition-colors">艮</span>
+                <span class="text-[7px] text-gray-500 group-hover:text-qi-jade/70 mt-0.5">Cấn</span>
+            </button>
+            <button class="minigame-trigram-btn p-3 bg-white/5 hover:bg-qi-jade/10 active:scale-95 border border-white/10 hover:border-qi-jade/30 rounded-xl transition-all flex flex-col items-center justify-center group" data-trigram="兌">
+                <span class="text-lg text-white font-bold group-hover:text-qi-jade transition-colors">兌</span>
+                <span class="text-[7px] text-gray-500 group-hover:text-qi-jade/70 mt-0.5">Đoài</span>
+            </button>
+        </div>
+
+        <!-- Tips -->
+        <p class="text-[8px] text-gray-500 text-center font-semibold">
+            * Nhập chính xác trật tự các quái trận hiển thị ở trên trước khi thời gian cạn kiệt. Sai sót sẽ kích nổ cấm chế phản phệ!
+        </p>
+    </div>
+</div>

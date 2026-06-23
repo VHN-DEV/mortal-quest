@@ -3329,6 +3329,26 @@ export class Game {
         }
     }
 
+    deployCamChe(locationId, itemId) {
+        if (state.systems.dongPhu) {
+            const res = state.systems.dongPhu.deployCamChe(locationId, itemId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success) {
+                this.refreshUI();
+            }
+        }
+    }
+
+    undeployCamChe(locationId) {
+        if (state.systems.dongPhu) {
+            const res = state.systems.dongPhu.undeployCamChe(locationId);
+            state.ui.toast(res.msg, res.success ? 'success' : 'error');
+            if (res.success) {
+                this.refreshUI();
+            }
+        }
+    }
+
     setDongPhuTab(tab) {
         if (this.screens.dongPhu) {
             this.screens.dongPhu.setTab(tab);
@@ -5229,4 +5249,129 @@ export class Game {
         this.refreshUI();
         if (this.screens.vanKhiLau) this.screens.vanKhiLau.render();
     }
+
+    // =============================================
+    // NEW PROFESSIONS: Linh Tửu Sư (Spirit Wine), Cấm Chế Sư (Formation Lock)
+    // =============================================
+
+    brewSpiritWine(recipeId) {
+        const { SPIRIT_WINE_RECIPES } = window.__spiritWineData || {};
+        if (!SPIRIT_WINE_RECIPES) {
+            import('./configs/spirit-wine-data.js').then(m => {
+                window.__spiritWineData = m;
+                this.brewSpiritWine(recipeId);
+            });
+            return;
+        }
+        const recipe = SPIRIT_WINE_RECIPES[recipeId];
+        if (!recipe) return;
+        const player = state.player;
+
+        if ((player.spiritWineLevel || 1) < recipe.level) {
+            state.ui.toast(`Cần Linh Tửu Cấp ${recipe.level} để chưng cất!`, 'error'); return;
+        }
+        for (const mat of recipe.materials) {
+            const have = player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
+            if (have < mat.quantity) {
+                const item = getItemById(mat.id);
+                state.ui.toast(`Không đủ ${item?.name || mat.id}!`, 'error'); return;
+            }
+        }
+        if (player.mana < recipe.manaCost) { state.ui.toast('Không đủ Pháp Lực!', 'error'); return; }
+        if ((player.stamina || player.baseStamina) < recipe.staminaCost) { state.ui.toast('Không đủ Thể Lực!', 'error'); return; }
+
+        for (const mat of recipe.materials) player.inventory.removeItem(mat.id, mat.quantity);
+        player.mana -= recipe.manaCost;
+        if (player.stamina !== undefined) player.stamina -= recipe.staminaCost;
+
+        const success = Math.random() < recipe.baseSuccessRate;
+        if (success) {
+            if (recipe.agingTime > 0) {
+                // Put into aging queue — time-system will check and complete later
+                const timeSystem = this.systems?.time;
+                const startMinute = timeSystem ? timeSystem.totalMinutes : 0;
+                if (!player.agingWines) player.agingWines = [];
+                player.agingWines.push({
+                    recipeId,
+                    startMinute,
+                    agingTime: recipe.agingTime, // in real seconds
+                    quantity: 1
+                });
+                const item = getItemById(recipeId);
+                const leveled = player.addSpiritWineExp(recipe.expGain);
+                const minutes = Math.ceil(recipe.agingTime / 60);
+                state.ui.toast(`Đã chưng cất ${item?.name || recipeId}. Đang ủ trong ${minutes} phút...${leveled ? ' 🎉 Thăng cấp Linh Tửu!' : ''}`, 'success');
+            } else {
+                player.inventory.addItem(recipeId, 1);
+                const leveled = player.addSpiritWineExp(recipe.expGain);
+                const item = getItemById(recipeId);
+                state.ui.toast(`Chưng cất thành công: ${item?.name || recipeId}!${leveled ? ' 🎉 Thăng cấp Linh Tửu!' : ''}`, 'success');
+            }
+        } else {
+            player.addSpiritWineExp(Math.floor(recipe.expGain * 0.3));
+            state.ui.toast('Chưng cất thất bại! Vật liệu tan thành mây khói.', 'warning');
+        }
+        this.save();
+        if (this.systems?.ui?.spiritWineController) this.systems.ui.spiritWineController.render();
+        else if (this.screens?.systems?.spiritWineController) this.screens.systems.spiritWineController.render();
+    }
+
+    craftCamChe(recipeId) {
+        const { CAM_CHE_RECIPES } = window.__camCheData || {};
+        if (!CAM_CHE_RECIPES) {
+            import('./configs/cam-che-data.js').then(m => {
+                window.__camCheData = m;
+                this.craftCamChe(recipeId);
+            });
+            return;
+        }
+        const recipe = CAM_CHE_RECIPES[recipeId];
+        if (!recipe) return;
+        const player = state.player;
+
+        if ((player.camCheLevel || 1) < recipe.level) {
+            state.ui.toast(`Cần Cấm Chế Cấp ${recipe.level}!`, 'error'); return;
+        }
+        for (const mat of recipe.materials) {
+            const have = player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
+            if (have < mat.quantity) {
+                const item = getItemById(mat.id);
+                state.ui.toast(`Không đủ ${item?.name || mat.id}!`, 'error'); return;
+            }
+        }
+        if (player.mana < recipe.manaCost) { state.ui.toast('Không đủ Pháp Lực!', 'error'); return; }
+        if (player.stamina !== undefined && player.stamina < recipe.staminaCost) { state.ui.toast('Không đủ Thể Lực!', 'error'); return; }
+
+        const minigame = this.screens?.systems?.camCheMinigameController;
+        if (!minigame) {
+            state.ui.toast('Không thể khởi tạo Bát Quái Trận Đồ!', 'error');
+            return;
+        }
+
+        minigame.start(recipe, (success, cancelled) => {
+            if (cancelled) {
+                return;
+            }
+
+            // Deduct costs (both success and fail deduct ingredients & mana)
+            for (const mat of recipe.materials) player.inventory.removeItem(mat.id, mat.quantity);
+            player.mana -= recipe.manaCost;
+            if (player.stamina !== undefined) player.stamina -= recipe.staminaCost;
+
+            if (success) {
+                player.inventory.addItem(recipeId, 1);
+                const leveled = player.addCamCheExp(recipe.expGain);
+                const item = getItemById(recipeId);
+                state.ui.toast(`Thiết lập thành công: ${item?.name || recipeId}!${leveled ? ' 🎉 Thăng cấp Cấm Chế!' : ''}`, 'success');
+            } else {
+                player.addCamCheExp(Math.floor(recipe.expGain * 0.3));
+                state.ui.toast('Cấm chế sụp đổ! Vật liệu hao tổn sạch sành sanh.', 'warning');
+            }
+            
+            this.save();
+            if (this.screens?.systems?.camCheController) this.screens.systems.camCheController.render();
+            this.refreshUI();
+        });
+    }
 }
+

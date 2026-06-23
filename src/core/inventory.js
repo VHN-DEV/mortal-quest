@@ -862,17 +862,39 @@ export class Inventory {
                 duration: (effect.duration || 3600) * 1000
             });
         } else if (effect.type === EFFECT_TYPES.MO_KHOA_NGHE) {
+            const professionNames = {
+                alchemy: 'Luyện Đan', talisman: 'Phù Lục', smithing: 'Luyện Khí',
+                formation: 'Trận Pháp', puppet: 'Khôi Lỗi', corpse: 'Luyện Thi',
+                beast: 'Ngự Thú', insect: 'Khu Trùng',
+                linh_thuc: 'Linh Thực Sư', linh_tuu: 'Linh Tửu Sư',
+                cam_che: 'Cấm Chế Sư'
+            };
             if (this.player.unlockProfession(effect.profession)) {
-                state.ui.toast(`Chúc mừng! Ngươi đã lĩnh hội bí pháp và mở khóa nghề ${effect.profession === 'alchemy' ? 'Luyện Đan' :
-                    effect.profession === 'talisman' ? 'Phù Lục' :
-                        effect.profession === 'smithing' ? 'Luyện Khí' :
-                            effect.profession === 'formation' ? 'Trận Pháp' :
-                                effect.profession === 'puppet' ? 'Khôi Lỗi' :
-                                    effect.profession === 'corpse' ? 'Luyện Thi' :
-                                        effect.profession === 'beast' ? 'Ngự Thú' :
-                                            effect.profession === 'insect' ? 'Khu Trùng' : effect.profession}!`, "success");
+                const name = professionNames[effect.profession] || effect.profession;
+                state.ui.toast(`Chúc mừng! Ngươi đã mở khóa nghề ${name}!`, "success");
+                // Also learn the mastery secret if secretId provided
+                if (effect.secretId) this.player.learnSecretTechnique(effect.secretId);
             } else {
                 state.ui.toast("Ngươi đã lĩnh hội bí pháp này từ trước rồi.", "info");
+            }
+        } else if (effect.type === EFFECT_TYPES.HOC_NHIEU_CONG_THUC) {
+            // Dispatch to each sub-effect
+            if (Array.isArray(effect.value)) {
+                for (const subEffect of effect.value) {
+                    this.applyItemEffect(subEffect, multiplier);
+                }
+            }
+        } else if (effect.type === EFFECT_TYPES.HOC_CONG_THUC_RUOU) {
+            if (!this.player.knownWineRecipes) this.player.knownWineRecipes = [];
+            if (!this.player.knownWineRecipes.includes(effect.value)) {
+                this.player.knownWineRecipes.push(effect.value);
+                state.ui.toast(`Đã học công thức linh tửu mới!`, "info");
+            }
+        } else if (effect.type === EFFECT_TYPES.HOC_CONG_THUC_CAM_CHE) {
+            if (!this.player.knownCamCheRecipes) this.player.knownCamCheRecipes = [];
+            if (!this.player.knownCamCheRecipes.includes(effect.value)) {
+                this.player.knownCamCheRecipes.push(effect.value);
+                state.ui.toast(`Đã học công thức cấm chế mới!`, "info");
             }
         }
     }

@@ -6,6 +6,11 @@ import { ClanController } from './ClanController.js';
 import { CraftingController } from './CraftingController.js';
 import { MountainController } from './MountainController.js';
 import { TechniqueController } from './TechniqueController.js';
+import { SpiritPlanterController } from './SpiritPlanterController.js';
+import { SpiritWineController } from './SpiritWineController.js';
+import { CamCheController } from './CamCheController.js';
+import { CamCheMinigameController } from './CamCheMinigameController.js';
+
 import { getQualityClass } from '../../utils/ui-utils.js';
 
 /**
@@ -24,6 +29,11 @@ export class SystemsScreen {
         this.craftingController = new CraftingController(this);
         this.mountainController = new MountainController(this);
         this.techniqueController = new TechniqueController(this);
+        this.spiritPlanterController = new SpiritPlanterController(this);
+        this.spiritWineController = new SpiritWineController(this);
+        this.camCheController = new CamCheController(this);
+        this.camCheMinigameController = new CamCheMinigameController();
+
         
         this.initEvents();
     }

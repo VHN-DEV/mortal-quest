@@ -1,0 +1,26 @@
+<!-- Screen: Linh Thực Sư (Spirit Planter) -->
+<div id="screen-linh-thuc" class="screen hidden flex flex-col h-full">
+    <div class="flex items-center justify-between p-4 border-b border-white/10">
+        <button onclick="window.game.openCraftingHub()" class="text-gray-400 hover:text-white transition-colors">
+            <i class="ph ph-arrow-left text-lg"></i>
+        </button>
+        <div class="text-center">
+            <h2 class="text-lg font-ancient text-green-400">🌱 Linh Điền Các</h2>
+            <p id="linh-thuc-level-text" class="text-[9px] text-gray-500 uppercase tracking-widest">Linh Thực Sư Sơ Cấp</p>
+        </div>
+        <div class="w-8"></div>
+    </div>
+    <div class="px-4 py-2">
+        <div class="flex items-center gap-2">
+            <div class="flex-grow h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                <div id="linh-thuc-exp-bar" class="h-full bg-green-500 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+            <span id="linh-thuc-exp-text" class="text-[9px] text-gray-500">0 / 100 XP</span>
+        </div>
+    </div>
+    <div class="flex-grow overflow-y-auto custom-scroll p-4 space-y-4">
+        <div id="linh-thuc-plots-view">
+            <div class="text-center py-10 text-gray-600 italic text-xs">Ngươi chưa có Động Phủ nào với linh điền...</div>
+        </div>
+    </div>
+</div>

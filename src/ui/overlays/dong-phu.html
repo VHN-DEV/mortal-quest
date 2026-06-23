@@ -30,7 +30,7 @@
             </button>
             <button id="dong-phu-tab-formation" onclick="window.game.setDongPhuTab('formation')"
                 class="flex-1 py-2.5 text-gray-500 rounded-xl text-[9px] font-ancient uppercase tracking-wider font-bold transition-all">
-                Trận Pháp
+                Trận Pháp / Cấm Chế
             </button>
             <button id="dong-phu-tab-puppet" onclick="window.game.setDongPhuTab('puppet')"
                 class="flex-1 py-2.5 text-gray-500 rounded-xl text-[9px] font-ancient uppercase tracking-wider font-bold transition-all">
@@ -50,14 +50,34 @@
             <!-- View: Formation -->
             <div id="dong-phu-formation-view" class="hidden space-y-4">
                 <!-- Formation State Card -->
-                <div id="dong-phu-formation-status" class="p-4 border rounded-3xl bg-white/5 border-white/5 flex flex-col space-y-3">
-                    <!-- Dynamic Active Formation Info -->
+                <div class="space-y-2">
+                    <h3 class="text-xs font-ancient text-gray-400 uppercase tracking-widest pl-1">Trận Pháp Hộ Sơn</h3>
+                    <div id="dong-phu-formation-status" class="p-4 border rounded-3xl bg-white/5 border-white/5 flex flex-col space-y-3">
+                        <!-- Dynamic Active Formation Info -->
+                    </div>
                 </div>
                 <!-- Available Formations list -->
                 <div class="space-y-3">
                     <h3 class="text-xs font-ancient text-gray-400 uppercase tracking-widest pl-1">Trận Đồ Trong Túi</h3>
                     <div id="dong-phu-formations-list" class="space-y-2">
                         <!-- Dynamic Available Formations in inventory -->
+                    </div>
+                </div>
+
+                <div class="border-t border-white/5 my-4"></div>
+
+                <!-- Cấm Chế Section -->
+                <div class="space-y-2">
+                    <h3 class="text-xs font-ancient text-gray-400 uppercase tracking-widest pl-1">Cấm Chế Trấn Phong</h3>
+                    <div id="dong-phu-cam-che-status" class="p-4 border rounded-3xl bg-white/5 border-white/5 flex flex-col space-y-3">
+                        <!-- Dynamic Active Cấm Chế Info -->
+                    </div>
+                </div>
+                <!-- Available Cấm Chế list -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-ancient text-gray-400 uppercase tracking-widest pl-1">Cấm Chế Trong Túi</h3>
+                    <div id="dong-phu-cam-che-list" class="space-y-2">
+                        <!-- Dynamic Available Cấm Chế in inventory -->
                     </div>
                 </div>
             </div>
