@@ -1243,7 +1243,7 @@ export class MapScreen {
                 const isEligible = state.player.realmId >= 14;
                 if (isEligible) {
                     btnDongPhu.className = "col-span-2 py-3 bg-amber-600/10 border border-amber-500/30 rounded-xl text-amber-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2 mt-2 transition-all hover:bg-amber-500/20";
-                    btnDongPhu.innerHTML = '<i class="ph ph-plus-circle text-lg animate-pulse"></i><span>KHAI HOANG ĐỘNG PHỦ (5k LT)</span>';
+                    btnDongPhu.innerHTML = '<i class="ph ph-plus-circle text-lg animate-pulse"></i><span>KHAI HOANG ĐỘNG PHỦ</span>';
                     btnDongPhu.onclick = () => window.game.createDongPhu(loc.id);
                 } else {
                     btnDongPhu.className = "col-span-2 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-500 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2 mt-2 opacity-50 cursor-not-allowed";

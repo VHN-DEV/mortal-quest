@@ -38,17 +38,6 @@ export class DongPhuSystem {
             return { success: false, msg: 'Đạo hữu đã xây dựng Động Phủ ở địa điểm này rồi!' };
         }
 
-        const cost = 5000;
-        if (this.player.lingShi < cost) {
-            return { success: false, msg: `Cần ${cost.toLocaleString()} Linh Thạch để khai hoang Động Phủ!` };
-        }
-
-        // Deduct cost
-        const success = this.player.spendLingShi(cost);
-        if (!success) {
-            return { success: false, msg: 'Không thể khấu trừ Linh Thạch!' };
-        }
-
         const worldId = findWorldIdByLocId(locationId) || state.currentWorldId || 'nhan_gioi';
         const loc = getLocationById(worldId, locationId);
         const newAbode = {
