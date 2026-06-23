@@ -75,6 +75,7 @@ export class CreationSystem {
         if (!origin) return;
         this.selectedOrigin = originId;
         this.startingLingShi = origin.resources.lingShi;
+        this.startingRealmId = this.getDefaultStartingRealmId(this.selectedRace, originId);
         this.selectedSectId = null; // Reset khi đổi xuất thân
         this.selectedClanId = null; // Reset khi đổi xuất thân
 
@@ -600,7 +601,7 @@ export class CreationSystem {
         this.selectedOrigin = scenario.setup.origin;
         this.selectedTraits = [...scenario.setup.traits];
         this.startingLingShi = CREATION_ORIGINS[this.selectedOrigin].resources.lingShi;
-        this.startingRealmId = 0;
+        this.startingRealmId = this.getDefaultStartingRealmId(this.selectedRace, this.selectedOrigin);
         this.calculatePoints();
     }
 
@@ -697,7 +698,7 @@ export class CreationSystem {
         const originKeys = Object.keys(CREATION_ORIGINS);
         this.selectedOrigin = originKeys[Math.floor(Math.random() * originKeys.length)];
         this.startingLingShi = CREATION_ORIGINS[this.selectedOrigin].resources.lingShi;
-        this.startingRealmId = 0;
+        this.startingRealmId = this.getDefaultStartingRealmId(this.selectedRace, this.selectedOrigin);
 
         // Random talents
         for (const key in this.talents) {
@@ -715,6 +716,29 @@ export class CreationSystem {
         }
 
         this.calculatePoints();
+    }
+
+    getDefaultStartingRealmId(race, originId) {
+        if (race === 'HUMAN') {
+            if (originId === 'dai_gia_toc') {
+                return 3; // Luyện Khí Sơ Kỳ (Tầng 3)
+            } else if (['thu_nguyen_du_hanh_gia', 'hoi_quy_gia', 'chuyen_sinh_gia'].includes(originId)) {
+                return 5; // Luyện Khí Trung Kỳ (Tầng 5)
+            } else if (['gia_toc', 'tong_mon', 'ma_dao'].includes(originId)) {
+                return 1; // Luyện Khí Sơ Kỳ (Tầng 1)
+            } else {
+                return 0; // Phàm nhân
+            }
+        } else {
+            // YAO, DEMON default to level 1, but can be higher for supreme origins
+            if (originId === 'dai_gia_toc') {
+                return 3;
+            } else if (['thu_nguyen_du_hanh_gia', 'hoi_quy_gia', 'chuyen_sinh_gia'].includes(originId)) {
+                return 5;
+            } else {
+                return 1;
+            }
+        }
     }
 
     buildPlayer() {
@@ -774,27 +798,7 @@ export class CreationSystem {
 
         // Apply Origin resources
         player.origin = origin;
-        let startingId = 0;
-        if (this.selectedRace === 'HUMAN') {
-            if (this.selectedOrigin === 'dai_gia_toc') {
-                startingId = 3; // Luyện Khí Sơ Kỳ (Tầng 3)
-            } else if (['thu_nguyen_du_hanh_gia', 'hoi_quy_gia', 'chuyen_sinh_gia'].includes(this.selectedOrigin)) {
-                startingId = 5; // Luyện Khí Trung Kỳ (Tầng 5)
-            } else if (['gia_toc', 'tong_mon', 'ma_dao'].includes(this.selectedOrigin)) {
-                startingId = 1; // Luyện Khí Sơ Kỳ (Tầng 1)
-            } else {
-                startingId = 0; // Phàm nhân
-            }
-        } else {
-            // YAO, DEMON default to level 1, but can be higher for supreme origins
-            if (this.selectedOrigin === 'dai_gia_toc') {
-                startingId = 3;
-            } else if (['thu_nguyen_du_hanh_gia', 'hoi_quy_gia', 'chuyen_sinh_gia'].includes(this.selectedOrigin)) {
-                startingId = 5;
-            } else {
-                startingId = 1;
-            }
-        }
+        const startingId = this.startingRealmId ?? 0;
         player.realmId = startingId;
         player.bodyRealmId = startingId;
         player.soulRealmId = startingId;
