@@ -12,6 +12,7 @@ import { Capacitor } from '@capacitor/core';
 import { getSectById, SECTS } from './configs/sect-data.js';
 import { getRealmById } from './configs/realm-data.js';
 import { CREATION_SYSTEMS, CREATION_ORIGINS } from './configs/creation-data.js';
+import { SMITHING_RECIPES } from './configs/smithing-data.js';
 
 // Screens will be loaded dynamically
 import { logger } from './utils/logger.js';
@@ -50,6 +51,7 @@ import { CheatSystem } from './systems/CheatSystem.js';
 import { CheatSystemScreen } from './ui/controllers/CheatSystemScreen.js';
 import { DongPhuSystem } from './systems/DongPhuSystem.js';
 import { DongPhuScreen } from './ui/controllers/DongPhuScreen.js';
+import { VanKhiLauScreen } from './ui/controllers/VanKhiLauScreen.js';
 
 function slugifyName(name) {
     if (!name) return 'VoDanh';
@@ -147,6 +149,7 @@ export class Game {
         this.screens.loot = new LootScreen();
         this.screens.cheat = new CheatSystemScreen();
         this.screens.dongPhu = new DongPhuScreen();
+        this.screens.vanKhiLau = new VanKhiLauScreen();
 
         state.systems.creation = new CreationSystem();
 
@@ -5029,5 +5032,201 @@ export class Game {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
         }
+    }
+
+    // --- VẠN KHÍ LÂU SYSTEM ---
+    openVanKhiLau() {
+        if (this.screens.vanKhiLau) {
+            this.screens.vanKhiLau.open();
+        }
+    }
+
+    setVanKhiLauTab(tab) {
+        if (this.screens.vanKhiLau) {
+            this.screens.vanKhiLau.setTab(tab);
+        }
+    }
+
+    vanKhiLauForge(recipeId, withMaterials) {
+        const recipe = SMITHING_RECIPES[recipeId];
+        if (!recipe) {
+            state.ui.toast("Không tìm thấy công thức luyện khí!", "error");
+            return;
+        }
+
+        const item = getItemById(recipe.id);
+        if (!item) {
+            state.ui.toast("Vật phẩm lỗi!", "error");
+            return;
+        }
+
+        const serviceFee = 1000;
+        let totalCost = serviceFee;
+
+        // Calculate material costs
+        let missingMaterials = [];
+        recipe.materials.forEach(mat => {
+            const count = state.player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
+            const needed = mat.quantity;
+            if (count < needed) {
+                const missing = needed - count;
+                const matItem = getItemById(mat.id);
+                const price = matItem?.price || 100;
+                missingMaterials.push({ id: mat.id, needed: missing, price: price });
+                totalCost += missing * price;
+            }
+        });
+
+        if (withMaterials) {
+            if (missingMaterials.length > 0) {
+                state.ui.toast("Ngươi không mang đủ nguyên liệu!", "error");
+                return;
+            }
+            if (state.player.lingShi < serviceFee) {
+                state.ui.toast(`Cần ${serviceFee} Linh Thạch tiền công!`, "error");
+                return;
+            }
+
+            // Deduct materials
+            recipe.materials.forEach(mat => {
+                state.player.inventory.removeItem(mat.id, mat.quantity);
+            });
+            state.player.spendLingShi(serviceFee);
+        } else {
+            if (state.player.lingShi < totalCost) {
+                state.ui.toast(`Không đủ Linh Thạch để luyện nhanh (Cần ${totalCost} Linh Thạch)!`, "error");
+                return;
+            }
+
+            // Consume existing materials
+            recipe.materials.forEach(mat => {
+                const count = state.player.inventory.allItems.find(i => i.id === mat.id)?.quantity || 0;
+                const toRemove = Math.min(count, mat.quantity);
+                if (toRemove > 0) {
+                    state.player.inventory.removeItem(mat.id, toRemove);
+                }
+            });
+            state.player.spendLingShi(totalCost);
+        }
+
+        // Add crafted item
+        const success = state.player.inventory.addItem(recipe.id, 1);
+        if (success) {
+            state.ui.toast(`Luyện chế thành công ${item.name}!`, "success");
+            this.refreshUI();
+            if (this.screens.vanKhiLau) this.screens.vanKhiLau.render();
+        } else {
+            state.ui.toast("Luyện chế thất bại, túi trữ vật đầy!", "error");
+        }
+    }
+
+    vanKhiLauRepair(slot, withMaterial) {
+        if (!state.player.equipmentMetadata || !state.player.equipmentMetadata[slot]) {
+            state.ui.toast("Pháp bảo vẫn còn hoàn hảo!", "error");
+            return;
+        }
+
+        const meta = state.player.equipmentMetadata[slot];
+        if (meta.durability >= 100) {
+            state.ui.toast("Pháp bảo đã ở mức tối đa!", "error");
+            return;
+        }
+
+        const pointsNeeded = 100 - meta.durability;
+        const normalCost = pointsNeeded * 30;
+        const materialCost = pointsNeeded * 5;
+
+        if (withMaterial) {
+            // Find compatible material in inventory: Huyền Thiết or Tinh Kim
+            let matId = null;
+            if (state.player.inventory.hasItem('huyen_thiet', 1)) {
+                matId = 'huyen_thiet';
+            } else if (state.player.inventory.hasItem('tinh_kim', 1)) {
+                matId = 'tinh_kim';
+            }
+
+            if (!matId) {
+                state.ui.toast("Cần ít nhất 1x Huyền Thiết hoặc Tinh Kim để thối hỏa sửa chữa!", "error");
+                return;
+            }
+
+            if (state.player.lingShi < materialCost) {
+                state.ui.toast(`Cần ${materialCost} Linh Thạch để sửa chữa cùng quặng!`, "error");
+                return;
+            }
+
+            state.player.inventory.removeItem(matId, 1);
+            state.player.spendLingShi(materialCost);
+            meta.durability = 100;
+            state.ui.toast(`Đã thối hỏa sửa chữa pháp bảo thành công! Tiêu hao 1x ${getItemById(matId).name} và ${materialCost} Linh Thạch.`, "success");
+        } else {
+            if (state.player.lingShi < normalCost) {
+                state.ui.toast(`Cần ${normalCost} Linh Thạch để sửa chữa thường!`, "error");
+                return;
+            }
+
+            state.player.spendLingShi(normalCost);
+            meta.durability = 100;
+            state.ui.toast(`Đã sửa chữa pháp bảo thành công! Tiêu hao ${normalCost} Linh Thạch.`, "success");
+        }
+
+        state.player.calculateStats();
+        this.refreshUI();
+        if (this.screens.vanKhiLau) this.screens.vanKhiLau.render();
+    }
+
+    vanKhiLauUpgrade(slot) {
+        const itemId = state.player.equipment[slot];
+        if (!itemId) {
+            state.ui.toast("Không có pháp bảo ở vị trí này!", "error");
+            return;
+        }
+
+        if (!state.player.equipmentMetadata) state.player.equipmentMetadata = {};
+        if (!state.player.equipmentMetadata[slot]) {
+            state.player.equipmentMetadata[slot] = { spirit: 0, level: 1, durability: 100 };
+        }
+
+        const meta = state.player.equipmentMetadata[slot];
+        const currentLevel = meta.level || 1;
+
+        if (currentLevel >= 10) {
+            state.ui.toast("Pháp bảo đã đạt cấp tối đa (Cấp 10)!", "error");
+            return;
+        }
+
+        const goldCost = currentLevel * 2000;
+        
+        let reqMatId = 'huyen_thiet';
+        let reqQty = 1;
+        if (currentLevel >= 4 && currentLevel <= 7) {
+            reqMatId = 'huyen_thiet';
+            reqQty = 2;
+        } else if (currentLevel >= 8) {
+            reqMatId = 'tinh_kim';
+            reqQty = 1;
+        }
+
+        const currentMatQty = state.player.inventory.allItems.find(i => i.id === reqMatId)?.quantity || 0;
+        if (currentMatQty < reqQty) {
+            state.ui.toast(`Cần ${reqQty}x ${getItemById(reqMatId).name} để thăng cấp!`, "error");
+            return;
+        }
+
+        if (state.player.lingShi < goldCost) {
+            state.ui.toast(`Không đủ Linh Thạch để nâng cấp (Cần ${goldCost} Linh Thạch)!`, "error");
+            return;
+        }
+
+        state.player.inventory.removeItem(reqMatId, reqQty);
+        state.player.spendLingShi(goldCost);
+
+        meta.level = currentLevel + 1;
+        state.player.calculateStats();
+        
+        state.ui.toast(`Thăng cấp thành công! Pháp bảo của bạn đã đạt Cấp ${meta.level}. Uy lực chiến đấu gia tăng!`, "success");
+        
+        this.refreshUI();
+        if (this.screens.vanKhiLau) this.screens.vanKhiLau.render();
     }
 }

@@ -1118,6 +1118,13 @@ export class MapScreen {
                 </button>
                 ` : ''}
             `;
+        } else if (loc.type === 'van_khi_lau') {
+            hasSpecial = true;
+            this.elLocSpecialActions.innerHTML = `
+                <button onclick="window.game.openVanKhiLau()" class="col-span-2 py-3 bg-cultivation-gold/10 border border-cultivation-gold/30 rounded-xl text-cultivation-gold text-[10px] font-bold uppercase tracking-widest flex items-center justify-center space-x-2">
+                    <i class="ph ph-hammer text-lg"></i><span>TIẾN VÀO VẠN KHÍ LÂU</span>
+                </button>
+            `;
         } else if (SECTS[loc.id]) {
             hasSpecial = true;
             const isMember = state.player.sectId === loc.id;

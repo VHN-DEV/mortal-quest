@@ -2618,6 +2618,11 @@ export class Player {
                 mult *= 0.5; // 50% penalty for broken artifacts — affects atk/def/pierce/extra etc.
             }
 
+            // Level upgrade scaling: +10% stats per level
+            if (this.equipmentMetadata?.[slot]?.level !== undefined) {
+                mult *= (1.0 + (this.equipmentMetadata[slot].level - 1) * 0.1);
+            }
+
             // Apply all item stats dynamically
             Object.entries(item.stats).forEach(([key, val]) => {
                 if (key === 'atk') this.bonusStats.atk += val * mult;

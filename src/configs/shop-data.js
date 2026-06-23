@@ -673,6 +673,30 @@ export const SHOPS = {
                 { id: 'van_lac_tam_viem_chung', stock: 1, minVip: 2 }
             ]
         }
+    },
+    'van_khi_lau': {
+        name: 'Vạn Khí Lâu - Thiết Bị & Nguyên Liệu Rèn',
+        sections: {
+            'phap_bao': [
+                { id: 'phi_kiem_go', stock: 100 },
+                { id: 'thanh_hong_kiem', stock: 10 },
+                { id: 'thanh_tuyen_kiem', stock: 10 },
+                { id: 'bat_quai_kinh', stock: 8 },
+                { id: 'ngu_phong_phi_chu', stock: 5 },
+                { id: 'loi_dinh_than_binh', stock: 3 },
+                { id: 'ngu_hanh_ho_the_giap', stock: 3 },
+                { id: 'huyen_kim_long_tu_kiem', stock: 2, minVip: 1 },
+                { id: 'van_thuy_luu_ly_binh', stock: 2, minVip: 1 },
+                { id: 'thien_dao_bi', stock: 1, minVip: 2 }
+            ],
+            'luyen_khi': [
+                { id: 'huyen_thiet', stock: 500 },
+                { id: 'tinh_kim', stock: 100 },
+                { id: 'de_khi_dai', stock: 10 },
+                { id: 'luyen_khi_dai', stock: 5 },
+                { id: 'bach_nien_thiet_moc', stock: 20 }
+            ]
+        }
     }
 };
 

@@ -527,6 +527,23 @@ export const WORLDS = {
                 subRegionName: "Nguyên Vũ Quốc"
             },
             {
+                id: "van_khi_lau",
+                name: "Vạn Khí Lâu",
+                type: 'van_khi_lau',
+                minRealm: 0,
+                danger: "an_toan",
+                image: getLocImg("van_bao_cac"),
+                description: "Thiên Nam đệ nhất danh lâu chuyên rèn đúc, phục hồi và nâng cấp pháp bảo. Nơi hội tụ các đại tông sư Luyện Khí của Thần Binh Môn.",
+                resources: [],
+                energies: [],
+                elementQi: {},
+                eventProbs: { combat: 0, loot: 0, npc: 0, empty: 0 },
+                regionId: "thien_nam",
+                regionName: "Thiên Nam",
+                subRegionId: "nguyen_vu_quoc",
+                subRegionName: "Nguyên Vũ Quốc"
+            },
+            {
                 id: "tu_kim_quoc",
                 name: "Tử Kim Quốc",
                 minRealm: 0,
